@@ -34,8 +34,7 @@
     <use   name="CondFormats/L1TObjects"/>
     <use   name="CondFormats/DataRecord"/>
     <use   name="RecoTracker/TkSeedGenerator"/>
-  <use   name="CommonTools/UtilAlgos"/>
+    <use   name="CommonTools/UtilAlgos"/>
     <use   name="DataFormats/Phase2TrackerDigi"/>
-    <flags   CXXFLAGS="-g -O0"/>
   </library>
 </environment>
