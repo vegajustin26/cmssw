@@ -216,7 +216,7 @@ public:
       int ichi2rphifit = trk.chi2rphi() / 16;
       int ichi2rzfit = trk.chi2rz() / 16;
 
-      const vector<const tmtt::Stub*>& stubsFromFit = trk.getStubs();
+      const vector<const tmtt::Stub*>& stubsFromFit = trk.stubs();
       vector<L1TStub*> l1stubsFromFit;
       for (const tmtt::Stub* s : stubsFromFit) {
         unsigned int IDf = s->index();
@@ -248,7 +248,7 @@ public:
                            iz0fit,
                            ichi2rphifit,
                            ichi2rzfit,
-                           trk.getHitPattern(),
+                           trk.hitPattern(),
                            l1stubsFromFit);
     } else {
       if (printDebugKF)
