@@ -582,7 +582,8 @@ public:
         //cout << "Layer "<<layer_<<" phimatch "<<(std::abs(ideltaphi)<=phimatchcut_[seedindex])<<" "<<dphi*rmean[layer_-1]*10
         //     <<"mm zmatch "<<(std::abs(ideltaz*fact_)<=zmatchcut_[seedindex])<<endl;
 
-        bool imatch = (std::abs(ideltaphi) <= phimatchcut_[seedindex]) && (std::abs(ideltaz * fact_) <= zmatchcut_[seedindex]);
+        bool imatch =
+            (std::abs(ideltaphi) <= phimatchcut_[seedindex]) && (std::abs(ideltaz * fact_) <= zmatchcut_[seedindex]);
 
         //if (!imatch) {
         //  cout << "Match fail in layer "<<layer_<<" dphi dz : "<< (std::abs(ideltaphi)<=phimatchcut_[seedindex])<<" "<<(std::abs(ideltaz*fact_)<=zmatchcut_[seedindex])<<" "<<(std::abs(ideltaphi)/(phimatchcut_[seedindex]))<<" "<<std::abs(ideltaz*fact_)/(zmatchcut_[seedindex])<<endl;

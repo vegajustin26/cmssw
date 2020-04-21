@@ -1141,7 +1141,7 @@ void L1TrackNtuplePlot(TString type,
       }
 
       for (unsigned int layer = 0; layer < layers.size(); layer++) {
-        if (layers.at(layer)) {                                     // if there was a hit at this layer...
+        if (layers.at(layer)) {                                         // if there was a hit at this layer...
           h_trk_tracklet_hits->Fill(std::abs(trk_eta->at(it)), layer);  // ...fill this bin with the layer of the track.
         }
       }

@@ -678,7 +678,6 @@ public:
   }
 
   void setVMPhiBin() {
-
     if (innervmstubs_.size() != outervmstubs_.size())
       return;
 

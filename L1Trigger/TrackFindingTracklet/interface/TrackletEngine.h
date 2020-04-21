@@ -603,7 +603,6 @@ public:
               }
             }
 
-
             phitable_.push_back(rinvmin < rinvcutte);
 
             for (int ibend = 0; ibend < 8; ibend++) {

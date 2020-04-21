@@ -456,8 +456,8 @@ static const unsigned int NSector = 9;
 static const double rinvmax = 0.01 * 0.3 * 3.8 / 2.0;  //0.01 to convert to cm-1
 
 static const double dphisectorHG =
-  2 * M_PI / NSector + 2 * fmax(std::abs(asin(0.5 * rinvmax * rmean[0]) - asin(0.5 * rinvmax * rcrit)),
-				std::abs(asin(0.5 * rinvmax * rmean[5]) - asin(0.5 * rinvmax * rcrit)));
+    2 * M_PI / NSector + 2 * fmax(std::abs(asin(0.5 * rinvmax * rmean[0]) - asin(0.5 * rinvmax * rcrit)),
+                                  std::abs(asin(0.5 * rinvmax * rmean[5]) - asin(0.5 * rinvmax * rcrit)));
 
 static const double phicritmin = 0.5 * dphisectorHG - M_PI / NSector;
 static const double phicritmax = dphisectorHG - 0.5 * dphisectorHG + M_PI / NSector;

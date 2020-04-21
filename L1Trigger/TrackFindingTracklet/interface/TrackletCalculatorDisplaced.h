@@ -703,7 +703,6 @@ public:
         break;
       }
       for (unsigned int i = 0; i < stubtriplets_[l]->nStubTriplets(); i++) {
-
         countall++;
 
         L1TStub* innerStub = stubtriplets_[l]->getL1TStub1(i);
@@ -2092,7 +2091,6 @@ public:
     double z12 = (z1 * beta2 - z2 * beta1) / (beta2 - beta1);
     double t13 = (z3 - z1) / std::abs(beta3 - beta1) / R1;
     double z13 = (z1 * beta3 - z3 * beta1) / (beta3 - beta1);
-
 
     if (take3 > 0) {
       //take 13 (large lever arm)
