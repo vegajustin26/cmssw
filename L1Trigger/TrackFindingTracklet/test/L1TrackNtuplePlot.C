@@ -3,7 +3,7 @@
 //
 // e.g. in ROOT do: .L L1TrackNtuplePlot.C++, L1TrackNtuplePlot("TTbar_PU200_hybrid")
 //
-// By Louise Skinnari, June 2013
+// By Louise Skinnari, June 2013 
 // ----------------------------------------------------------------------------------------------------------------
 
 #include "TROOT.h"
