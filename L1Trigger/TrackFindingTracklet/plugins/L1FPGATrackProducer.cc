@@ -319,7 +319,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 
   sectors = new Sector*[NSector];
 
-  if (debug1) {
+  if (settings.debugTracklet()) {
     cout << "cabling DTC links :     " << DTCLinkFile.fullPath() << endl;
     cout << "module cabling :     " << moduleCablingFile.fullPath() << endl;
     cout << "DTC link layer disk :     " << DTCLinkLayerDiskFile.fullPath() << endl;
@@ -346,7 +346,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     sectors[i] = new Sector(i, &settings);
   }
 
-  if (debug1) {
+  if (settings.debugTracklet()) {
     cout << "fit pattern :     " << fitPatternFile.fullPath() << endl;
     cout << "process modules : " << processingModulesFile.fullPath() << endl;
     cout << "memory modules :  " << memoryModulesFile.fullPath() << endl;
@@ -355,7 +355,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 
   fitpatternfile = fitPatternFile.fullPath();
 
-  if (debug1)
+  if (settings.debugTracklet())
     cout << "Will read memory modules file" << endl;
 
   // Read list of memory modules (format: ModuleType: ModuleInstance)
@@ -375,7 +375,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     }
   }
 
-  if (debug1)
+  if (settings.debugTracklet())
     cout << "Will read processing modules file" << endl;
 
   // Read list of processing modules (format: ModuleType: ModuleInstance)
@@ -395,7 +395,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     }
   }
 
-  if (debug1)
+  if (settings.debugTracklet())
     cout << "Will read wiring information" << endl;
 
   // Reading wiring map (format: Mem  input=> ProcModuleWrite.pinX  output=>ProcModuleRead.pinY)
