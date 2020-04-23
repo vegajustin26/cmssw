@@ -11,8 +11,8 @@ class TrackletEngineDisplaced:public ProcessBase{
 
 public:
 
-  TrackletEngineDisplaced(string name, unsigned int iSector):
-  ProcessBase(name,0,iSector){
+ TrackletEngineDisplaced(string name, const Settings* settings, unsigned int iSector):
+  ProcessBase(name,settings,iSector){
     double dphi=2*M_PI/NSector;
     phimin_=iSector*dphi;
     phimax_=phimin_+dphi;

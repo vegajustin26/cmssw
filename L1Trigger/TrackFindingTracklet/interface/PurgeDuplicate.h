@@ -17,8 +17,8 @@ class PurgeDuplicate:public ProcessBase{
 
 public:
 
- PurgeDuplicate(string name, unsigned int iSector):
-  ProcessBase(name,0,iSector){
+ PurgeDuplicate(string name, const Settings* settings, unsigned int iSector):
+  ProcessBase(name,settings,iSector){
   }
 
   void addOutput(MemoryBase* memory,string output){

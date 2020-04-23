@@ -12,8 +12,8 @@ class TripletEngine:public ProcessBase{
 
 public:
 
-  TripletEngine(string name, unsigned int iSector):
-  ProcessBase(name,0,iSector){
+  TripletEngine(string name, const Settings* settings, unsigned int iSector):
+  ProcessBase(name,settings,iSector){
     double dphi=2*M_PI/NSector;
     phimin_=Util::phiRange(iSector*dphi);
     phimax_=Util::phiRange(phimin_+dphi);

@@ -14,8 +14,8 @@ class MatchProcessor:public ProcessBase{
 
 public:
 
- MatchProcessor(string name, unsigned int iSector):
-  ProcessBase(name,0,iSector), fullmatches_(12), inputProjBuffer_(3){
+ MatchProcessor(string name, const Settings* settings, unsigned int iSector):
+  ProcessBase(name,settings,iSector), fullmatches_(12), inputProjBuffer_(3){
     
     double dphi=2*M_PI/NSector;
     double dphiHG=0.5*dphisectorHG-M_PI/NSector;

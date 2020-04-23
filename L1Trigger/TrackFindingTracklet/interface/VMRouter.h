@@ -16,8 +16,8 @@ class VMRouter:public ProcessBase{
 
 public:
 
-  VMRouter(string name, unsigned int iSector):
-  ProcessBase(name,0,iSector){
+ VMRouter(string name, const Settings* settings, unsigned int iSector):
+  ProcessBase(name,settings,iSector){
       
     layerdisk_=initLayerDisk(4);
     initFineBinTable();

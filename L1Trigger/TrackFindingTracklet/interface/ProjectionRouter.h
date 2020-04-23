@@ -10,8 +10,8 @@ class ProjectionRouter:public ProcessBase{
 
 public:
 
-  ProjectionRouter(string name, unsigned int iSector):
-  ProcessBase(name,0,iSector){
+ ProjectionRouter(string name, const Settings* settings, unsigned int iSector):
+  ProcessBase(name,settings,iSector){
 
     layerdisk_=initLayerDisk(3);
 

@@ -17,8 +17,8 @@ class TrackletCalculatorDisplaced:public ProcessBase{
 
 public:
 
-  TrackletCalculatorDisplaced(string name, unsigned int iSector):
-  ProcessBase(name,0,iSector){
+ TrackletCalculatorDisplaced(string name, const Settings* settings, unsigned int iSector):
+  ProcessBase(name,settings,iSector){
     double dphi=2*M_PI/NSector;
     double dphiHG=0.5*dphisectorHG-M_PI/NSector;
     phimin_=iSector_*dphi-dphiHG;

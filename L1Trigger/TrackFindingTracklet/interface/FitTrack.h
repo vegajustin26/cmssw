@@ -15,8 +15,8 @@ class FitTrack:public ProcessBase{
 
  public:
 
-  FitTrack(string name, unsigned int iSector):
-  ProcessBase(name,0,iSector){
+ FitTrack(string name, const Settings* settings, unsigned int iSector):
+  ProcessBase(name,settings,iSector){
     trackfit_=0;
    }
 

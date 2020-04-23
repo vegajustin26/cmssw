@@ -11,8 +11,8 @@ class MatchEngine:public ProcessBase{
 
 public:
 
-  MatchEngine(string name, unsigned int iSector):
-  ProcessBase(name,0,iSector){
+ MatchEngine(string name, const Settings* settings, unsigned int iSector):
+  ProcessBase(name,settings,iSector){
     layer_=0;
     disk_=0;
     string subname=name.substr(3,2);

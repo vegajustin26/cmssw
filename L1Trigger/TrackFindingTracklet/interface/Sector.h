@@ -176,45 +176,44 @@ public:
 
   void addProc(string procType,string procName){
     if (procType=="VMRouter:") {
-      VMR_.push_back(new VMRouter(procName,isector_));
+      VMR_.push_back(new VMRouter(procName,settings_,isector_));
       Processes_[procName]=VMR_.back();
     } else if (procType=="TrackletEngine:") {
       TE_.push_back(new TrackletEngine(procName,settings_,isector_));
       Processes_[procName]=TE_.back();
     } else if (procType=="TrackletEngineDisplaced:") {
-      TED_.push_back(new TrackletEngineDisplaced(procName,isector_));
+      TED_.push_back(new TrackletEngineDisplaced(procName,settings_,isector_));
       Processes_[procName]=TED_.back();
     } else if (procType=="TripletEngine:") {
-      TRE_.push_back(new TripletEngine(procName,isector_));
+      TRE_.push_back(new TripletEngine(procName,settings_,isector_));
       Processes_[procName]=TRE_.back();
-    } else if (procType=="TrackletCalculator:"||
-	       procType=="TrackletDiskCalculator:") {
+    } else if (procType=="TrackletCalculator:") {
       TC_.push_back(new TrackletCalculator(procName,settings_,isector_));
       Processes_[procName]=TC_.back();
     } else if (procType=="TrackletProcessor:") {
       TP_.push_back(new TrackletProcessor(procName,settings_,isector_));
       Processes_[procName]=TP_.back();
     } else if (procType=="TrackletCalculatorDisplaced:") {
-      TCD_.push_back(new TrackletCalculatorDisplaced(procName,isector_));
+      TCD_.push_back(new TrackletCalculatorDisplaced(procName,settings_,isector_));
       Processes_[procName]=TCD_.back();
     } else if (procType=="ProjectionRouter:") {
-      PR_.push_back(new ProjectionRouter(procName,isector_));
+      PR_.push_back(new ProjectionRouter(procName,settings_,isector_));
       Processes_[procName]=PR_.back();
     } else if (procType=="MatchEngine:") {
-      ME_.push_back(new MatchEngine(procName,isector_));
+      ME_.push_back(new MatchEngine(procName,settings_,isector_));
       Processes_[procName]=ME_.back();
     } else if (procType=="MatchCalculator:"||
-               procType=="DiskMatchCalculator:") {
-      MC_.push_back(new MatchCalculator(procName,isector_));
+	       procType=="DiskMatchCalculator:") { //FIXME should not be used in configurations
+      MC_.push_back(new MatchCalculator(procName,settings_,isector_));
       Processes_[procName]=MC_.back();
     } else if (procType=="MatchProcessor:") {
-      MP_.push_back(new MatchProcessor(procName,isector_));
+      MP_.push_back(new MatchProcessor(procName,settings_,isector_));
       Processes_[procName]=MP_.back();
     } else if (procType=="FitTrack:") {
-      FT_.push_back(new FitTrack(procName,isector_));
+      FT_.push_back(new FitTrack(procName,settings_,isector_));
       Processes_[procName]=FT_.back();
     } else if (procType=="PurgeDuplicate:") {
-      PD_.push_back(new PurgeDuplicate(procName,isector_));
+      PD_.push_back(new PurgeDuplicate(procName,settings_,isector_));
       Processes_[procName]=PD_.back();
     } else {
       cout << "Don't know of processing type: "<<procType<<endl;
