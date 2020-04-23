@@ -20,13 +20,15 @@ class Stub{
 
 public:
 
-  Stub() {
+ Stub(const Settings* const settings):
+  settings_(settings){
   
   }
   
 
-  Stub(const L1TStub& stub,const Settings* const settings, double phiminsec, double phimaxsec) {
-
+ Stub(const L1TStub& stub,const Settings* const settings, double phiminsec, double phimaxsec):
+  settings_(settings){
+    
     double r=stub.r();
     double z=stub.z();
     double sbend = stub.bend();
@@ -53,8 +55,8 @@ public:
       disk_.set(0,4,false,__LINE__,__FILE__);
 
       assert(layer>=1&&layer<=6);
-      double rmin=rmean[layer-1]-drmax;
-      double rmax=rmean[layer-1]+drmax;
+      double rmin = settings_->rmean(layer-1) - settings_->drmax();
+      double rmax = settings_->rmean(layer-1) + settings_->drmax();
 
       if (r<rmin||r>rmax) cout << "Error r, rmin, rmeas,  rmax :"<<r
 			       <<" "<<rmin<<" "<<0.5*(rmin+rmax)<<" "<<rmax<<endl;
@@ -62,11 +64,11 @@ public:
       int irbits=nbitsrL123;
       if (layer>=4) irbits=nbitsrL456;
       
-      int ir=round_int((1<<irbits)*((r-rmean[layer-1])/(rmax-rmin)));
+      int ir=round_int((1<<irbits)*((r-settings_->rmean(layer-1))/(rmax-rmin)));
 
 
-      double zmin=-zlength;
-      double zmax=zlength;
+      double zmin=-settings_->zlength();
+      double zmax=settings_->zlength();
     
       if (z<zmin||z>zmax) cout << "Error z, zmin, zmax :"<<z
 			     <<" "<<zmin<<" "<<zmax<<endl;
@@ -110,14 +112,14 @@ public:
       int sign=1;
       if (z<0.0) sign=-1;
 
-      double zmin=sign*(zmean[disk-1]-sign*dzmax);
-      double zmax=sign*(zmean[disk-1]+sign*dzmax);
+      double zmin = sign*(settings_->zmean(disk-1) - sign*settings_->dzmax());
+      double zmax = sign*(settings_->zmean(disk-1) + sign*settings_->dzmax());
 
       if ((z>zmax)||(z<zmin)) {
 	cout << "Error disk z, zmax, zmin: "<<z<<" "<<zmax<<" "<<zmin<<endl;
       }
 
-      int iz=(1<<settings->nzbitsdisk())*((z-sign*zmean[disk-1])/std::abs(zmax-zmin));
+      int iz=(1<<settings->nzbitsdisk())*((z-sign*settings_->zmean(disk-1))/std::abs(zmax-zmin));
 
       assert(phimaxsec-phiminsec>0.0);
       if (stubphi<phiminsec-(phimaxsec-phiminsec)/6.0) {
@@ -136,7 +138,7 @@ public:
       int iphi=(1<<iphibits)*deltaphi/(phimaxsec-phiminsec);
       
       double rmin=0;
-      double rmax=rmaxdisk;
+      double rmax=settings_->rmaxdisk();
     
       if (r<rmin||r>rmax) cout << "Error disk r, rmin, rmax :"<<r
 			     <<" "<<rmin<<" "<<rmax<<endl;
@@ -327,7 +329,7 @@ public:
       if (layer_.value()>=3) {
 	lr=1<<(8-nbitsrL456);
       }
-      return r_.value()*kr*lr+rmean[layer_.value()];
+      return r_.value()*kr*lr+settings_->rmean(layer_.value());
     }
     return r_.value()*kr;
   }
@@ -343,11 +345,10 @@ public:
     int sign=1;
     if (disk_.value()<0) sign=-1;
     if (sign<0) {
-      return (z_.value()+1)*kz+sign*zmean[abs(disk_.value())-1];  //Not sure why this is needed to get agreement with integer calculations
+      return (z_.value()+1)*kz+sign*settings_->zmean(abs(disk_.value())-1);  //Not sure why this is needed to get agreement with integer calculations
     } else {
-      return z_.value()*kz+sign*zmean[abs(disk_.value())-1];
+      return z_.value()*kz+sign*settings_->zmean(abs(disk_.value())-1);
     }
-    //return z_.value()*kz+sign*zmean[abs(disk_.value())-1];
   }
 
   double phiapprox(double phimin, double) const {
@@ -483,7 +484,7 @@ private:
   FPGAWord finer_;   //FIXME should not be member data
   FPGAWord finez_;   //FIXME should not be member data
   
-
+  const Settings* const settings_;
 
 };
 

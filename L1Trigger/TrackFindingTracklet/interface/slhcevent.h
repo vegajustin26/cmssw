@@ -147,7 +147,6 @@ public:
 
     
     if (layer>999&&layer<1999&& z<0.0) {
-      //cout << "Will change layer by addding 1000, before layer = " << layer <<endl;
       layer+=1000;
     }
     
@@ -171,25 +170,8 @@ public:
     stub.setiphi(stub.diphi());
     stub.setiz(stub.diz());
 
-
-    double t=std::abs(stub.z())/stub.r();
-    double eta=asinh(t);
-    
-    double fact=1.0;
-    if (ptcut>=2.7) fact=-1.2;
-    fact=0.0;
-    
-    if (((std::abs(stub.pt())>1.8*fact)&&(std::abs(eta)<2.0))||
-	((std::abs(stub.pt())>1.4*fact)&&(std::abs(eta)>2.0))||
-	((std::abs(stub.pt())>1.0*fact)&&(std::abs(eta)>2.3))) {
-      if (std::abs(eta)<2.6) {
-	stubs_.push_back(stub);
-	return true;
-      }
-    }
-
-    return false;
-    
+    stubs_.push_back(stub);
+    return true;
   }
 
   L1TStub lastStub(){
@@ -349,19 +331,11 @@ public:
 
       double t=std::abs(stub.z())/stub.r();
       double eta=asinh(t);
-
-      double fact=1.0;
-      if (ptcut>=2.7) fact=-1.2;
-      fact=0.0;
       
-      if (((std::abs(stub.pt())>1.8*fact)&&(std::abs(eta)<2.0))||
-	  ((std::abs(stub.pt())>1.4*fact)&&(std::abs(eta)>2.0))||
-	  ((std::abs(stub.pt())>1.0*fact)&&(std::abs(eta)>2.3))) {
-	if (std::abs(eta)<2.6&&count<=100) {
-	  stubs_.push_back(stub);
-	}
+      if (std::abs(eta)<2.6&&count<=100) {
+	stubs_.push_back(stub);
       }
-
+      
     }
   }
 

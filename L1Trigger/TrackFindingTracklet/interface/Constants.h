@@ -340,7 +340,6 @@ static const double rDSSouter[10] = {rDSSouter_mod1-halfstrip, rDSSouter_mod1+ha
 
 
 static const double drmax=rmaxdisk/32.0;
-
 static const double dzmax=zlength/32.0;
 
 //static const double drdisk=rmaxdisk;
@@ -409,8 +408,9 @@ static const double zmaxD5=zmeanD5+dzmax;
 
 static const double two_pi=2*M_PI;
 
-static const double ptcut=1.91; //Minimum pt
-static const double rinvcut=0.01*0.3*3.8/ptcut; //0.01 to convert to cm-1
+static const double ptcut=1.91; //Minimum pt // ONLY USED IN IMATH STUFF 
+static const double rinvcut=0.01*0.3*3.8/ptcut; //0.01 to convert to cm-1  // ONLY USED IN IMATH STUFF 
+
 static const double ptcutte=1.8; //Minimum pt in TE
 static const double rinvcutte=0.01*0.3*3.8/ptcutte; //0.01 to convert to cm-1 in TE
 static const double bendcut=1.25;  //Obsolete should be removed

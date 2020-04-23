@@ -1035,7 +1035,7 @@ public:
     iz0   = z0approx / kz0;
 
     bool success = true;
-    if(std::abs(rinvapprox)>rinvcut){
+    if(std::abs(rinvapprox)>settings_->rinvcut()){
       if (debug1) 
 	cout << "TrackletCalculator::LLL Seeding irinv too large: "
 	     <<rinvapprox<<"("<<irinv<<")\n";
@@ -1316,7 +1316,7 @@ public:
     iz0   = z0approx / kz0;
 
     bool success = true;
-    if(std::abs(rinvapprox)>rinvcut){
+    if(std::abs(rinvapprox)>settings_->rinvcut()){
       if (debug1) 
 	cout << "TrackletCalculator::DDL Seeding irinv too large: "
 	     <<rinvapprox<<"("<<irinv<<")\n";
@@ -1586,7 +1586,7 @@ public:
     iz0   = z0approx / kz0;
 
     bool success = true;
-    if(std::abs(rinvapprox)>rinvcut){
+    if(std::abs(rinvapprox)>settings_->rinvcut()){
       if (debug1) 
 	cout << "TrackletCalculator:: LLD Seeding irinv too large: "
 	     <<rinvapprox<<"("<<irinv<<")\n";
