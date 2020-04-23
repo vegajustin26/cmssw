@@ -14,7 +14,6 @@
 #include <TLegend.h>
 #include <TLatex.h>
 
-#include "../interface/Constants.h"
 #include "../interface/IMATH_TrackletCalculator.h"
 
 #include "../interface/slhcevent.h"
@@ -49,7 +48,6 @@ bool   var_base::use_root = false;
 
 int main(const int argc, const char** argv)
 {
-  cout << "dphisectorHG = "<<dphisectorHG<<endl;
 
   Trklet::Settings settings;
   
@@ -132,8 +130,6 @@ int main(const int argc, const char** argv)
   ofstream outpars;
   if (writePars) outpars.open("trackpars.txt");
 
-  //ofstream out;
-  //out.open("evlist_skim.txt"); 
 
 //Open file to hold ROOT-Tree
 // --------------------------
@@ -219,7 +215,6 @@ int main(const int argc, const char** argv)
     stringstream ss(line);
     string mem,tmp1,procin,tmp2,procout;
     ss>>mem>>tmp1>>procin;
-    //cout <<"procin : "<<procin<<endl;
     if (procin=="output=>") {
       procin="";
       ss>>procout;
@@ -306,10 +301,8 @@ int main(const int argc, const char** argv)
     
     if (selectmu==1) {
 
-      //skip if no simtracks - new (180424) ascii files only print out simtrack info if we have clusters
       if (ev.nsimtracks()==0) {
       	eventnum--;
-	//cout <<"Skip event"<<endl;
 	continue;
       }
 
@@ -322,10 +315,6 @@ int main(const int argc, const char** argv)
 	     <<sinh(simtrk.eta())<<" "
 	     <<simtrk.vz()<<endl;
       }
-      
-      //double phisector=simtrk.phi();
-      //while(phisector<0.0) phisector+=3.141592/4.5;
-      //while(phisector>3.141592/4.5) phisector-=3.141592/4.5;
       
       bool good=(fabs(simtrk.pt())>2.0
 		 //&&fabs(simtrk.pt())<3.0
@@ -346,7 +335,6 @@ int main(const int argc, const char** argv)
 
       if (!good) {
 	eventnum--;
-	//cout <<"Skip event"<<endl;
 	continue;
       }
 

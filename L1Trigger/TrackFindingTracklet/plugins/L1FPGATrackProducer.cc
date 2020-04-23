@@ -81,7 +81,7 @@
 
 ///////////////
 // FPGA emulation
-#include "L1Trigger/TrackFindingTracklet/interface/Constants.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 #include "L1Trigger/TrackFindingTracklet/interface/CPUTimer.h"
@@ -195,6 +195,9 @@ private:
   Sector** sectors;
   Cabling cabling;
 
+  // settings containing various constants for the tracklet processing
+  Trklet::Settings settings;
+  
   unsigned int nHelixPar_;
   bool extended_;
 
@@ -340,7 +343,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   }
 
   for (unsigned int i = 0; i < NSector; i++) {
-    sectors[i] = new Sector(i);
+    sectors[i] = new Sector(i, &settings);
   }
 
   if (debug1) {
