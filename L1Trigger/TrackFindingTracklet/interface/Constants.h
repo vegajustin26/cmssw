@@ -5,9 +5,9 @@
 //#define USEROOT
 
 //Uncomment to run the hybrid algorithm
-#ifdef CMSSW_GIT_HASH
-#define USEHYBRID
-#endif
+//#ifdef CMSSW_GIT_HASH
+//#define USEHYBRID
+//#endif
 
 //Uncomment to use HLS version of KF. Also read TrackFindingTMTT/README_HLS.txt
 #ifdef USEHYBRID
@@ -21,7 +21,7 @@
 //
 // Turn on/off debug info
 //
-static const bool printDebugKF=false; // if true print lots of debugging statements related to the KF fit
+//static const bool printDebugKF=false; // if true print lots of debugging statements related to the KF fit
 //static const bool debug1=false; //Print detailed debug information about tracklet tracking
 static const bool writetrace=false; //Print out details about parsing configuration files
 

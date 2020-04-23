@@ -325,7 +325,7 @@ public:
         //double phicrit=tracklet->phi0()-asin(0.5*rcrit*tracklet->rinv());
         //bool keep=(phicrit>phicritmin)&&(phicrit<phicritmax);
 	
-	HybridFit hybridFitter(iSector_,extended_,nHelixPar_);
+	HybridFit hybridFitter(iSector_,settings_,extended_,nHelixPar_);
 	hybridFitter.Fit(tracklet, trackstublist);
 
         // If the track was accepted (and thus fit), add to output
