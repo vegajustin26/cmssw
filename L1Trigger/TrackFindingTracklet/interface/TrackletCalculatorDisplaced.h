@@ -1,4 +1,4 @@
-//This class implementes the tracklet engine
+//This class implements the displaced tracklet calculator (triplets)
 #ifndef TRACKLETCALCULATORDISPLACED_H
 #define TRACKLETCALCULATORDISPLACED_H
 
@@ -696,17 +696,12 @@ public:
     unsigned int countall=0;
     unsigned int countsel=0;
 
-    //cout << "TrackletCalculatorDisplaced execute "<<getName()<<" "<<stubtriplets_.size()<<endl;
-    
     for(unsigned int l=0;l<stubtriplets_.size();l++){
       if (trackletpars_->nTracklets()>=maxtracklet_) {
 	cout << "Will break on too many tracklets in "<<getName()<<endl;
 	break;
       }
       for(unsigned int i=0;i<stubtriplets_[l]->nStubTriplets();i++){
-
-	//if(stubtriplets_.size()>0)
-	//  cout << "TrackletCalculatorDisplaced execute "<<getName()<<" "<<stubtriplets_[l]->getName()<<" "<<stubtriplets_[l]->nStubTriplets()<<" "<<layer_<<endl;
 	
 	countall++;
 
@@ -855,8 +850,6 @@ public:
 
     int iphi=iphivmRaw/(32/nallstubslayers[layer-1]);
       
-    //cout << "layer fpgaphi iphivmRaw iphi : "<<layer<<" "<<fpgaphi.value()<<" "<<iphivmRaw<<" "<<iphi<<endl;
-
     
 
     if (layer==1) {
@@ -942,12 +935,7 @@ public:
     }
 	    
     assert(outerFPGAStub->isBarrel());
-    
-    //assert(layer_==innerFPGAStub->layer().value()+1);
-    
-    //assert(layer_==1||layer_==3||layer_==5);
-
-    	  
+        	  
     double r1=innerStub->r();
     double z1=innerStub->z();
     double phi1=innerStub->phi();
@@ -1097,7 +1085,6 @@ public:
 
       //adjust number of bits for phi and z projection
       if (rproj_[i]<60.0) {	
-	//iphider[i]>>=3;  //Check me - added by aryd as in L123 iphider was out of range
 	iphiproj[i]>>=(nbitsphistubL456-nbitsphistubL123);
 	if (iphiproj[i]>=(1<<nbitsphistubL123)-1) iphiproj[i]=(1<<nbitsphistubL123)-2; //-2 not to hit atExtreme
       }
@@ -1897,10 +1884,6 @@ void exacttracklet(double r1, double z1, double phi1,
     double t13 = (z3-z1)/std::abs(beta3-beta1)/R1;
     double z13 = (z1*beta3-z3*beta1)/(beta3-beta1);
 
-    // cout<<"::::: "<<sigmaz<<" "<<beta1<<"\t"<<beta2<<"\t"<<beta3<<"\n";
-    // cout<<"::::: "<<t12<<"\t"<<t13<<"\n";
-    // cout<<"::::: "<<z12<<"\t"<<z13<<"\n";
-    
     if(take3>0){
       //take 13 (large lever arm)
       t = t13;

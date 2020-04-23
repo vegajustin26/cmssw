@@ -122,7 +122,7 @@ void var_adjustK::adjust(double Knew, double epsilon, bool do_assert, int nbits)
   lr_ = (r > 1) ? log2(r) + epsilon : log2(r);
   K_ = K_ * pow(2, lr_);
   if (do_assert)
-    assert(fabs(Knew / K_ - 1) < epsilon);
+    assert(std::abs(Knew / K_ - 1) < epsilon);
 
   if (nbits > 0)
     nbits_ = nbits;

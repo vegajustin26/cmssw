@@ -57,10 +57,10 @@ bool var_base::calculate(int debug_level) {
 
   val_ = ival_ * K_;
   float ftest = val_;
-  float tolerance = 0.1 * fabs(fval_);
+  float tolerance = 0.1 * std::abs(fval_);
   if (tolerance < 2 * K_)
     tolerance = 2 * K_;
-  if (fabs(ftest - fval_) > tolerance) {
+  if (std::abs(ftest - fval_) > tolerance) {
     if (debug_level == 3 || (ival_ != ival_prev && (all_ok && (op_ != "inv" || debug_level >= 2)))) {
       std::cout << "imath: **GROSS** value mismatch!! " << fval_ << " != " << ftest << "\n";
       if (op_ == "inv")

@@ -1,7 +1,3 @@
-
-    //cout << "Read event:"<<ev.eventnum()<<" Number of stubs="
-    //	 <<ev.nstubs()<<endl;
-    
     cleanTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->clean();
@@ -48,10 +44,6 @@
     for (int j=0;j<ev.nstubs();j++){
 
       L1TStub stub=ev.stub(j);
-      //if (stub.layer()>999) {
-      //	 cout << "Found stub in disk : "<<stub.module()<<" r= "<<stub.r()
-	// <<" z= "<<stub.z()<<endl;
-      //}
 
       if (debug1) cout << "Stub: layer="<<stub.layer()+1
                        <<" disk="<<stub.disk()  
@@ -72,8 +64,6 @@
 
       if (stub.layer()<7) {
 
-        //cout << "Stub in layer : "<<stub.layer()+1<<endl;
-
 	hitlayer[stub.layer()]=true;
 
 	stub.lorentzcor(-40.0/10000.0);
@@ -84,7 +74,7 @@
         assert(iphi<24*NSector);
 	double max=115.0;
 	if (stub.layer()==0) max=70.0;
-        if (fabs(stub.z())<max) stubcount[stub.layer()][iphi]++;
+        if (std::abs(stub.z())<max) stubcount[stub.layer()][iphi]++;
 	unsigned int isector=iphi/24;
 	assert(isector<NSector);
 	stublayer1[stub.layer()][isector]++;
@@ -95,9 +85,6 @@
         hitdisk[abs(stub.disk())-1]=true;
       }
 
-
-
-      //cout << "stub layer : "<<stub.layer()<<endl;
 
       int layer=stub.layer()+1;
       int ladder=stub.ladder(); 
@@ -112,7 +99,6 @@
 	assert(0);
 	module=31;
       }	
-	//cout << "Done add stub"<<endl;	
 
       string dtc=cabling.dtc(layer,ladder,module);
       string dtcbase=dtc.substr(2,dtc.size()-2);
@@ -120,8 +106,6 @@
          dtcbase=dtc.substr(0,4)+dtc.substr(6,dtc.size()-6);
       }     
 
-      //cout << "Found dtc for : "<<layer<<" "<<ladder<<" "<<module<<" "<<dtc<<endl;
-      
       cabling.addphi(dtc,stub.phi(),layer, module);
 
       for (unsigned int k=0;k<NSector;k++) {
@@ -135,7 +119,6 @@
 	if (dphi>0.5*two_pi) dphi-=two_pi;
 	while (dphi<0.0) dphi+=two_pi;
 	if (dphi>dphisectorHG) continue;
-	//cout << "Will try to add stub to sector : "<<k<<endl;
         bool add=sectors[k]->addStub(stub,dtcbase);
 
 	static std::map<string,ofstream*> dtcstubs;
@@ -181,7 +164,6 @@
 	  Stub fpgastub(stub,&settings,sectors[k]->phimin(),sectors[k]->phimax());
 	  FPGAWord phi=fpgastub.phi();
 	  int topbit=phi.value()>>(phi.nbits()-1);
-	  //cout << "dtcbase:"<<dtcbase<<endl;
 	  std::vector<int> tmp=dtclayerdisk[dtcbase];
 	  int layerdisk=stub.layer()+1;
 	  if (layerdisk>999){
@@ -199,7 +181,6 @@
 	  FPGAWord ldcode;
 	  ldcode.set(layerdiskcode,2);
 	  string dataword=ldcode.str()+"|"+fpgastub.str();
-	  //cout << "fpgastub phi:"<<phi.str()<<" "<<topbit<<endl;
 	  if (topbit==0) {
 	    (*dtcstubs[dtcbase+"A"]) << dataword<<" "<<MemoryBase::hexFormat(dataword)<<endl;
 	  } else {
@@ -322,7 +303,6 @@ if (settings.writeMem()) {
       sectors[k]->executeTP();	 
       if(settings.writeMem()&&k==writememsect){
         sectors[k]->writeTPAR(first);
-        //sectors[k]->writeTPROJ(first);
       } 
     }
 
@@ -338,16 +318,15 @@ if (settings.writeMem()) {
       sectors[k]->executeTC();	 
       if(settings.writeMem()&&k==writememsect){
         sectors[k]->writeTPAR(first);
-        //sectors[k]->writeTPROJ(first);
       } 
     }
     TCTimer.stop();
 
     int nTP=GlobalHistTruth::event()->nsimtracks();
     for (int iTP=0;iTP<nTP;iTP++){
-      L1SimTrack simtrk=GlobalHistTruth::event()->simtrack(iTP);//Ryd200330 - used to have iTP-1 - not sure why
+      L1SimTrack simtrk=GlobalHistTruth::event()->simtrack(iTP);
       if (simtrk.pt()<2.0) continue;
-      if (fabs(simtrk.vz())>15.0) continue;
+      if (std::abs(simtrk.vz())>15.0) continue;
       if (hypot(simtrk.vx(),simtrk.vy())>0.1) continue;
       bool electron=(abs(simtrk.type())==11);
       bool muon=(abs(simtrk.type())==13);
@@ -455,7 +434,6 @@ if (settings.writeMem()) {
 
     bool match=false;
     for (unsigned int k=0;k<NSector;k++) {
-      //cout << "FPGA.icc " << k << " " << tracks.size() << endl;
       if (selectmu==1) {
 	if (ev.nsimtracks()>0) {
 	  match=match||sectors[k]->foundTrack(outres,simtrk);

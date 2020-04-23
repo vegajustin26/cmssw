@@ -1,4 +1,4 @@
-//This class implementes the tracklet engine
+//This class implements the tracklet engine
 #ifndef TRACKLETENGINE_H
 #define TRACKLETENGINE_H
 
@@ -65,9 +65,6 @@ public:
   void execute() {
 
     if (!settings_->useSeed(iSeed_)) return;
-    
-    //bool print=getName()=="TE_L1PHIE17_L2PHIB16" && iSector_==3;
-    //print=false;
     
     unsigned int countall=0;
     unsigned int countpass=0;

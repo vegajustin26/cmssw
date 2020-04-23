@@ -1,4 +1,4 @@
-//This class implementes the tracklet processor
+//This class implements the tracklet processor
 #ifndef TRACKLETPROCESSOR_H
 #define TRACKLETPROCESSOR_H
 
@@ -440,10 +440,6 @@ public:
 		  cout << "ibin j "<<ibin<<" "<<j<<endl;
 		}
 	      
-		//For debugging
-		//double trinv=rinv(innerstub.second->phi(), outerstub.second->phi(),
-		//		       innerstub.second->r(), outerstub.second->r());
-		
 		assert(innerphibits_!=-1);
 		assert(outerphibits_!=-1);
 	      
@@ -509,8 +505,6 @@ public:
 	    
 	    int rbinfirst=newbin&7;
 
-	    //cout << "rbinfirst+rdiffmax next "<<rdiffmax<<" "<<rbinfirst+rdiffmax<<" "<<(bin&1)<<endl;
-	  
 	    int start=(bin>>1);
 	    if (negdisk) start+=4;
 	    int last=start+(bin&1);
@@ -561,8 +555,7 @@ public:
 			 <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())
 			 <<" "
 			 <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule())
-		      //<<" FP bend: "<<innerstub.second->bend()<<" "<<outerstub.second->bend()
-		      <<" pass : "<<pttableinner_[phiindex][ptinnerindex]<<" "<<pttableouter_[phiindex][ptouterindex]
+			 <<" pass : "<<pttableinner_[phiindex][ptinnerindex]<<" "<<pttableouter_[phiindex][ptouterindex]
 			 <<endl;
 		  }
 		  continue;
@@ -681,8 +674,6 @@ public:
 
 
   void setVMPhiBin() {
-
-    //cout << "setVMPhiBin"<<innervmstubs_.size()<<" "<<outervmstubs_.size()<<endl;
     
     if (innervmstubs_.size()!=outervmstubs_.size() ) return;
 
@@ -765,7 +756,6 @@ public:
 	      }
 	    }
 	    
-	    //cout << "Fill: "<<getName()<<" "<<phiindex<<endl;
 	    phitable_[phiindex].push_back(rinvmin<rinvcutte);
 	    
 	    int nbins1=8;
@@ -868,10 +858,6 @@ public:
 		  }
 		}
 	      }
-	      
-	      //if (disk1_==1 && rinvmax>0.013 && rinvmin<0.0057){
-	      //  cout << "router rinvmax rinvmin :"<<router[0]<<" "<<rinvmax<<" "<<rinvmin<<endl;
-	      //}
 	      
 	      phitable_[phiindex].push_back(rinvmin<rinvcutte);
 
