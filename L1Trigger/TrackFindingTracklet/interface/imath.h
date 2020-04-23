@@ -1007,7 +1007,7 @@ protected:
 
 class var_cut : public var_base {
 public:
-  var_cut(double lower_cut, double upper_cut) : var_base("", 0, 0, 0, 0), lower_cut_(lower_cut), upper_cut_(upper_cut) {
+ var_cut(double lower_cut, double upper_cut) : var_base("", 0, 0, 0, 0), lower_cut_(lower_cut), upper_cut_(upper_cut), parent_flag_(0) {
     op_ = "cut";
   }
 

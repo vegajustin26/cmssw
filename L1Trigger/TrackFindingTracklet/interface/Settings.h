@@ -203,6 +203,20 @@ namespace Trklet{
       ptcut_ = 1.91; //Minimum pt
       rinvcut_ = 0.01*0.3*3.8/ptcut_; //0.01 to convert to cm-1
 
+      ITC_L1L2_ = new IMATH_TrackletCalculator(1,2);
+      ITC_L2L3_ = new IMATH_TrackletCalculator(2,3);
+      ITC_L3L4_ = new IMATH_TrackletCalculator(3,4);
+      ITC_L5L6_ = new IMATH_TrackletCalculator(5,6);
+      
+      ITC_F1F2_ = new IMATH_TrackletCalculatorDisk(1,2);
+      ITC_F3F4_ = new IMATH_TrackletCalculatorDisk(3,4);
+      ITC_B1B2_ = new IMATH_TrackletCalculatorDisk(-1,-2);
+      ITC_B3B4_ = new IMATH_TrackletCalculatorDisk(-3,-4);
+    
+      ITC_L1F1_ = new IMATH_TrackletCalculatorOverlap(1,1);
+      ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(2,1);
+      ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(1,-1);
+      ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(2,-1);
       
     }
 
@@ -268,6 +282,22 @@ namespace Trklet{
 
     double ptcut() const {return ptcut_;}
     double rinvcut() const {return rinvcut_;}
+
+    IMATH_TrackletCalculator* ITC_L1L2() const {return ITC_L1L2_;}
+    IMATH_TrackletCalculator* ITC_L2L3() const {return ITC_L2L3_;}
+    IMATH_TrackletCalculator* ITC_L3L4() const {return ITC_L3L4_;}
+    IMATH_TrackletCalculator* ITC_L5L6() const {return ITC_L5L6_;}
+
+    IMATH_TrackletCalculatorDisk* ITC_F1F2() const {return ITC_F1F2_;}
+    IMATH_TrackletCalculatorDisk* ITC_F3F4() const {return ITC_F3F4_;}
+    IMATH_TrackletCalculatorDisk* ITC_B1B2() const {return ITC_B1B2_;}
+    IMATH_TrackletCalculatorDisk* ITC_B3B4() const {return ITC_B3B4_;}
+    
+    IMATH_TrackletCalculatorOverlap* ITC_L1F1() const {return ITC_L1F1_;}
+    IMATH_TrackletCalculatorOverlap* ITC_L2F1() const {return ITC_L2F1_;}
+    IMATH_TrackletCalculatorOverlap* ITC_L1B1() const {return ITC_L1B1_;}
+    IMATH_TrackletCalculatorOverlap* ITC_L2B1() const {return ITC_L2B1_;}
+
     
   private:
 
@@ -337,6 +367,22 @@ namespace Trklet{
 
     double ptcut_;
     double rinvcut_;
+
+    mutable IMATH_TrackletCalculator* ITC_L1L2_;
+    mutable IMATH_TrackletCalculator* ITC_L2L3_;
+    mutable IMATH_TrackletCalculator* ITC_L3L4_;
+    mutable IMATH_TrackletCalculator* ITC_L5L6_;
+    
+    mutable IMATH_TrackletCalculatorDisk* ITC_F1F2_;
+    mutable IMATH_TrackletCalculatorDisk* ITC_F3F4_;
+    mutable IMATH_TrackletCalculatorDisk* ITC_B1B2_;
+    mutable IMATH_TrackletCalculatorDisk* ITC_B3B4_;
+    
+    mutable IMATH_TrackletCalculatorOverlap* ITC_L1F1_;
+    mutable IMATH_TrackletCalculatorOverlap* ITC_L2F1_;
+    mutable IMATH_TrackletCalculatorOverlap* ITC_L1B1_;
+    mutable IMATH_TrackletCalculatorOverlap* ITC_L2B1_;
+
     
   };
 }

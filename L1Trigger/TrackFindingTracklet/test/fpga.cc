@@ -14,7 +14,11 @@
 #include <TLegend.h>
 #include <TLatex.h>
 
+#include <iostream>
+
 #include "../interface/IMATH_TrackletCalculator.h"
+#include "../interface/IMATH_TrackletCalculatorDisk.h"
+#include "../interface/IMATH_TrackletCalculatorOverlap.h"
 
 #include "../interface/slhcevent.h"
 
@@ -33,7 +37,6 @@ TFile* var_base::h_file_=0;
 bool   var_base::use_root = false;
 #endif
 
-#include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <string>
@@ -51,15 +54,15 @@ int main(const int argc, const char** argv)
 
   Trklet::Settings settings;
   
-  krinvpars = TrackletCalculator::ITC_L1L2.rinv_final.get_K();
-  kphi0pars = TrackletCalculator::ITC_L1L2.phi0_final.get_K();
+  krinvpars = settings.ITC_L1L2()->rinv_final.get_K();
+  kphi0pars = settings.ITC_L1L2()->phi0_final.get_K();
   kd0pars   = kd0;
-  ktpars    = TrackletCalculator::ITC_L1L2.t_final.get_K();
-  kz0pars   = TrackletCalculator::ITC_L1L2.z0_final.get_K();
+  ktpars    = settings.ITC_L1L2()->t_final.get_K();
+  kz0pars   = settings.ITC_L1L2()->z0_final.get_K();
 
   krdisk = kr;
   kzpars = kz;  
-  krprojshiftdisk = TrackletCalculator::ITC_L1L2.rD_0_final.get_K();
+  krprojshiftdisk = settings.ITC_L1L2()->rD_0_final.get_K();
 
   //those can be made more transparent...
   kphiproj123=kphi0pars*4;

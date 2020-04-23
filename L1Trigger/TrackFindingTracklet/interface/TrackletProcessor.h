@@ -171,7 +171,7 @@ public:
     }
     
     if (usephicritapprox) {
-      double phicritFactor = 0.5 * rcrit * TrackletProcessor::ITC_L1L2.rinv_final.get_K() / TrackletProcessor::ITC_L1L2.phi0_final.get_K();
+      double phicritFactor = 0.5 * rcrit *settings_->ITC_L1L2()->rinv_final.get_K() /settings_->ITC_L1L2()->phi0_final.get_K();
       if (std::abs(phicritFactor - 2.) > 0.25)
         cout << "TrackletProcessor::TrackletProcessor phicrit approximation may be invalid! Please check." << endl;
     }

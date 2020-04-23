@@ -283,8 +283,8 @@ public:
     int ifactor=0.5*rcrit*krinvpars/kphi0pars*(1<<8);
     int iphicrit=iphi0-(irinv>>8)*ifactor;
   
-    int iphicritmincut=phicritminmc/ITC_L1L2.phi0_final.get_K();
-    int iphicritmaxcut=phicritmaxmc/ITC_L1L2.phi0_final.get_K(); 
+    int iphicritmincut=phicritminmc/settings_->ITC_L1L2()->phi0_final.get_K();
+    int iphicritmaxcut=phicritmaxmc/settings_->ITC_L1L2()->phi0_final.get_K(); 
 
     bool keepapprox=(phicritapprox>phicritminmc)&&(phicritapprox<phicritmaxmc),
          keep=(iphicrit>iphicritmincut)&&(iphicrit<iphicritmaxcut);
@@ -352,10 +352,10 @@ public:
     double phiprojdiskapprox[5],rprojdiskapprox[5];
     
     IMATH_TrackletCalculator *ITC;
-    if(layer_==1)      ITC = &ITC_L1L2;
-    else if(layer_==2) ITC = &ITC_L2L3;
-    else if(layer_==3) ITC = &ITC_L3L4;
-    else               ITC = &ITC_L5L6;
+    if(layer_==1)      ITC = settings_->ITC_L1L2();
+    else if(layer_==2) ITC = settings_->ITC_L2L3();
+    else if(layer_==3) ITC = settings_->ITC_L3L4();
+    else               ITC = settings_->ITC_L5L6();
     
     ITC->r1.set_fval(r1-rmean[layer_-1]);
     ITC->r2.set_fval(r2-rmean[layer_]);
@@ -736,10 +736,10 @@ public:
     double phiprojdiskapprox[3],rprojdiskapprox[3];
 	    
     IMATH_TrackletCalculatorDisk *ITC;
-    if(disk==1)       ITC = &ITC_F1F2;
-    else if(disk==3)  ITC = &ITC_F3F4;
-    else if(disk==-1) ITC = &ITC_B1B2;
-    else               ITC = &ITC_B3B4;
+    if(disk==1)       ITC = settings_->ITC_F1F2();
+    else if(disk==3)  ITC = settings_->ITC_F3F4();
+    else if(disk==-1) ITC = settings_->ITC_B1B2();
+    else               ITC = settings_->ITC_B3B4();
     
     ITC->r1.set_fval(r1);
     ITC->r2.set_fval(r2);
@@ -1055,10 +1055,10 @@ public:
 
     IMATH_TrackletCalculatorOverlap *ITC;
     int ll = outerFPGAStub->layer().value()+1;
-    if     (ll==1 && disk==1)  ITC = &ITC_L1F1;
-    else if(ll==2 && disk==1)  ITC = &ITC_L2F1;
-    else if(ll==1 && disk==-1) ITC = &ITC_L1B1;
-    else if(ll==2 && disk==-1) ITC = &ITC_L2B1;
+    if     (ll==1 && disk==1)  ITC = settings_->ITC_L1F1();
+    else if(ll==2 && disk==1)  ITC = settings_->ITC_L2F1();
+    else if(ll==1 && disk==-1) ITC = settings_->ITC_L1B1();
+    else if(ll==2 && disk==-1) ITC = settings_->ITC_L2B1();
     else assert(0);
     
     ITC->r1.set_fval(r2-rmean[ll-1]);
@@ -1361,38 +1361,38 @@ protected:
   vector<vector<TrackletProjectionsMemory*> > trackletprojdisks_;
 
  public:
-  static IMATH_TrackletCalculator ITC_L1L2;
-  static IMATH_TrackletCalculator ITC_L2L3;
-  static IMATH_TrackletCalculator ITC_L3L4;
-  static IMATH_TrackletCalculator ITC_L5L6;
+  //static IMATH_TrackletCalculator ITC_L1L2;
+  //static IMATH_TrackletCalculator ITC_L2L3;
+  //static IMATH_TrackletCalculator ITC_L3L4;
+  //static IMATH_TrackletCalculator ITC_L5L6;
   
-  static IMATH_TrackletCalculatorDisk ITC_F1F2;
-  static IMATH_TrackletCalculatorDisk ITC_F3F4;
-  static IMATH_TrackletCalculatorDisk ITC_B1B2;
-  static IMATH_TrackletCalculatorDisk ITC_B3B4;
+  //static IMATH_TrackletCalculatorDisk ITC_F1F2;
+  //static IMATH_TrackletCalculatorDisk ITC_F3F4;
+  //static IMATH_TrackletCalculatorDisk ITC_B1B2;
+  //static IMATH_TrackletCalculatorDisk ITC_B3B4;
 
-  static IMATH_TrackletCalculatorOverlap ITC_L1F1;
-  static IMATH_TrackletCalculatorOverlap ITC_L2F1;
-  static IMATH_TrackletCalculatorOverlap ITC_L1B1;
-  static IMATH_TrackletCalculatorOverlap ITC_L2B1;
+  //static IMATH_TrackletCalculatorOverlap ITC_L1F1;
+  //static IMATH_TrackletCalculatorOverlap ITC_L2F1;
+  //static IMATH_TrackletCalculatorOverlap ITC_L1B1;
+  //static IMATH_TrackletCalculatorOverlap ITC_L2B1;
 
     
 };
 
-IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L1L2{1,2};
-IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L2L3{2,3};
-IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L3L4{3,4};
-IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L5L6{5,6};
+//IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L1L2{1,2};
+//IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L2L3{2,3};
+//IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L3L4{3,4};
+//IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L5L6{5,6};
 
-IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_F1F2{1,2};
-IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_F3F4{3,4};
-IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_B1B2{-1,-2};
-IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_B3B4{-3,-4};
+//IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_F1F2{1,2};
+//IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_F3F4{3,4};
+//IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_B1B2{-1,-2};
+//IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_B3B4{-3,-4};
 
-IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L1F1{1,1};
-IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L2F1{2,1};
-IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L1B1{1,-1};
-IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L2B1{2,-1};
+//IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L1F1{1,1};
+//IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L2F1{2,1};
+//IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L1B1{1,-1};
+//IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L2B1{2,-1};
 
 
 #endif
