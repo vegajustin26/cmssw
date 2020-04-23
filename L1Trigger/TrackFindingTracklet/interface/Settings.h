@@ -13,7 +13,7 @@ namespace Trklet{
 
     Settings(){
 
-      geomTkTDR_=true;
+      geomTkTDR_=false;
       writeIL_=false;
       writeTE_=false;
       nzbitsdisk_=7;
@@ -154,9 +154,9 @@ namespace Trklet{
       rcut2S_[3]={{3.6, 3.8, 0.0, 0.0, 3.6, 0.0, 3.5, 3.8, 0.0, 0.0, 3.0, 3.0}};   //disk 4
       rcut2S_[4]={{0.0, 0.0, 0.0, 0.0, 3.6, 3.4, 3.7, 0.0, 0.0, 0.0, 0.0, 3.0}};   //disk 5
 
-      maxstep_={{{{"IL",108}},{{"VMR",108}}}};
+      maxstep_={{"IL",108},{"VMR",108}};
 
-      write_={{{{"IL",false}},{{"VMR",false}},{{"AS",false}}}};
+      write_={{"IL",false},{"VMR",false},{"AS",false}};
 
 
       double rDSSinner_mod1 = geomTkTDR_?69.2345:68.9391;
@@ -248,7 +248,7 @@ namespace Trklet{
 
     
     double rmean(unsigned int iLayer) const {return rmean_[iLayer];}
-    double zmean(unsigned int iDisk) const {return rmean_[iDisk];}
+    double zmean(unsigned int iDisk) const {return zmean_[iDisk];}
 
     bool printDebugKF() const {return printDebugKF_;}
     bool debug1() const {return debug1_;}
