@@ -544,7 +544,7 @@ class FitTrack:public ProcessBase{
    if (t<0.0) ttabi=-ttabi;
    double ttab=ttabi;
 
-   if (debug1) {
+   if (settings_->debugTracklet()) {
     cout << "Doing trackfit in  "<<getName()<<endl;
    }
 
@@ -566,16 +566,13 @@ class FitTrack:public ProcessBase{
 	} else {
 	  realrstub[i]=tracklet->innerStub()->r();
 	}
-     //r[i]=realrstub[i]; //test
     }
     if (layers[i]==tracklet->layer()+1) {
      realrstub[i]=tracklet->outerStub()->r();
-     //r[i]=realrstub[i]; //test
     }
     if (tracklet->validResid(layers[i])&&layers[i]<4) {
      std::pair<Stub*,L1TStub*> stubptrs=tracklet->stubptrs(layers[i]);
      realrstub[i]=stubptrs.second->r();
-     //r[i]=realrstub[i];  //test
      assert(std::abs(realrstub[i]-r[i])<5.0);
     }
     rstub[i]=r[i];
@@ -1028,7 +1025,7 @@ class FitTrack:public ProcessBase{
      }
      
      
-    if(debug1 && fullmatch[i]->nMatches()!=0) cout<<"orderedMatches: "<<fullmatch[i]->getName()<<" "<< fullmatch[i]->nMatches()<<"\n";
+    if(settings_->debugTracklet() && fullmatch[i]->nMatches()!=0) cout<<"orderedMatches: "<<fullmatch[i]->getName()<<" "<< fullmatch[i]->nMatches()<<"\n";
 
     indexArray.push_back(0);
    }
@@ -1078,7 +1075,7 @@ class FitTrack:public ProcessBase{
    std::vector<Tracklet*> matches3=orderedMatches(fullmatch3_);
    std::vector<Tracklet*> matches4=orderedMatches(fullmatch4_);
    
-   if (debug1&&(matches1.size()+matches2.size()+matches3.size()+matches4.size())>0) {
+   if (settings_->debugTracklet()&&(matches1.size()+matches2.size()+matches3.size()+matches4.size())>0) {
     for (unsigned int i=0;i<fullmatch1_.size();i++) {
      cout << fullmatch1_[i]->getName()<<" "<<fullmatch1_[i]->nMatches()<<endl;
     }
@@ -1188,7 +1185,7 @@ class FitTrack:public ProcessBase{
 
     if (match) nMatchesUniq++;
 
-    if(debug1) cout<<getName()<<" : nMatches = "<<nMatches<<" "<<asinh(bestTracklet->t())<<"\n";
+    if(settings_->debugTracklet()) cout<<getName()<<" : nMatches = "<<nMatches<<" "<<asinh(bestTracklet->t())<<"\n";
 
     std::vector<std::pair<Stub*,L1TStub*>> trackstublist;
     std::vector<std::pair<int,int>> stubidslist;

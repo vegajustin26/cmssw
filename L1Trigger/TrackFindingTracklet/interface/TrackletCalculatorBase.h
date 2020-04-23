@@ -261,13 +261,13 @@ public:
   
     bool success = true;
     if(!goodrinv){
-      if (debug1) {
+      if (settings_->debugTracklet()) {
 	cout << getName()<<" TrackletCalculatorBase irinv too large"<<endl;
       }
       success = false;
     }
     if (!goodz0){
-      if (debug1) {
+      if (settings_->debugTracklet()) {
 	cout << getName()<<" TrackletCalculatorBase z0 cut to large"<<endl;
       }
       success = false;
@@ -288,7 +288,7 @@ public:
 
     bool keepapprox=(phicritapprox>phicritminmc)&&(phicritapprox<phicritmaxmc),
          keep=(iphicrit>iphicritmincut)&&(iphicrit<iphicritmaxcut);
-    if (debug1)
+    if (settings_->debugTracklet())
       if (keepapprox && !keep)
         cout << getName() << " Tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
     if (usephicritapprox) {
@@ -306,7 +306,7 @@ public:
   
   bool barrelSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* outerFPGAStub, L1TStub* outerStub){
 	  
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "TrackletCalculator "<<getName()<<" "<<layer_<<" trying stub pair in layer (inner outer): "
 	   <<innerFPGAStub->layer().value()<<" "<<outerFPGAStub->layer().value()<<endl;
     }
@@ -617,7 +617,7 @@ public:
 				    diskprojs,
 				    false);
     
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "TrackletCalculator "<<getName()<<" Found tracklet in layer = "<<layer_<<" "
 	   <<iSector_<<" phi0 = "<<phi0<<endl;
     }
@@ -678,7 +678,7 @@ public:
   bool diskSeeding(Stub* innerFPGAStub,L1TStub* innerStub,Stub* outerFPGAStub,L1TStub* outerStub){
 
 	    
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout <<  "TrackletCalculator::execute calculate disk seeds" << endl;
     }
 	      
@@ -961,7 +961,7 @@ public:
 				    diskprojs,
 				    true);
     
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "Found tracklet in disk = "<<disk_<<" "<<tracklet
 	   <<" "<<iSector_<<endl;
     }
@@ -1004,7 +1004,7 @@ public:
     
     int disk=innerFPGAStub->disk().value();
 
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "trying to make overlap tracklet disk_ = "<<disk_<<" "<<getName()<<endl;
     }
     
@@ -1292,7 +1292,7 @@ public:
 				    diskprojs,
 				    false,true);
     
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "Found tracklet in overlap = "<<layer_<<" "<<disk_
 	   <<" "<<tracklet<<" "<<iSector_<<endl;
     }

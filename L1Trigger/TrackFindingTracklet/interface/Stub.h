@@ -111,7 +111,7 @@ public:
       assert(disk>=1&&disk<=5);
       int sign=1;
       if (z<0.0) sign=-1;
-
+      
       double zmin = sign*(settings_->zmean(disk-1) - sign*settings_->dzmax());
       double zmax = sign*(settings_->zmean(disk-1) + sign*settings_->dzmax());
 
@@ -274,7 +274,7 @@ public:
  
   void setAllStubIndex(int nstub){
     if (nstub>=(1<<7)){
-      if (debug1) cout << "Warning too large stubindex!"<<endl;
+      if (settings_->debugTracklet()) cout << "Warning too large stubindex!"<<endl;
       nstub=(1<<7)-1;
     }
 

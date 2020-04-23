@@ -265,7 +265,7 @@ public:
 	L1TStub* outerStub=stubpairs_[l]->getL1TStub2(i);
 	Stub* outerFPGAStub=stubpairs_[l]->getFPGAStub2(i);
 
-	if (debug1) {
+	if (settings_->debugTracklet()) {
 	  cout << "TrackletCalculator execute "<<getName()<<"["<<iSector_<<"]"<<endl;
 	}
 	
@@ -321,16 +321,16 @@ public:
 	}
 	
 	if (countall>=MAXTC) {
-	  if (debug1) cout << "Will break on MAXTC 1"<<endl;
+	  if (settings_->debugTracklet()) cout << "Will break on MAXTC 1"<<endl;
 	  break;
 	}
-	if (debug1) {
+	if (settings_->debugTracklet()) {
 	  cout << "TrackletCalculator execute done"<<endl;
 	}
 
       }
       if (countall>=MAXTC) {
-	if (debug1) cout << "Will break on MAXTC 2"<<endl;
+	if (settings_->debugTracklet()) cout << "Will break on MAXTC 2"<<endl;
 	break;
       }
     }

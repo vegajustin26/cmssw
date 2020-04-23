@@ -10,7 +10,8 @@ using namespace std;
 
 class StubTripletsMemory : public MemoryBase {
 public:
-  StubTripletsMemory(string name, unsigned int iSector, double phimin, double phimax) : MemoryBase(name, iSector) {
+  StubTripletsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+  MemoryBase(name, settings, iSector) {
     phimin_ = phimin;
     phimax_ = phimax;
   }

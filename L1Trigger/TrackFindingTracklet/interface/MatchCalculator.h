@@ -187,7 +187,7 @@ public:
     
     for(unsigned int j=0;j<mergedMatches.size();j++){
 	
-      if (debug1&&j==0) {
+      if (settings_->debugTracklet()&&j==0) {
         cout << getName() <<" has "<<mergedMatches.size()<<" candidate matches"<<endl;
       }
       
@@ -289,7 +289,7 @@ public:
 	
 	bool imatch=(std::abs(ideltaphi)<=(int)phimatchcut_[seedindex])&&(std::abs(ideltaz*fact_)<=(int)zmatchcut_[seedindex]);
 
-	if (debug1) {
+	if (settings_->debugTracklet()) {
 	  cout << getName()<<" imatch = "<<imatch<<" ideltaphi cut "<<ideltaphi
 	       <<" "<<phimatchcut_[seedindex]
 	       <<" ideltaz*fact cut "<<ideltaz*fact_<<" "<<zmatchcut_[seedindex]<<endl;
@@ -306,7 +306,7 @@ public:
 			     stub->r(),mergedMatches[j].second);
 	  
 
-	  if (debug1) {
+	  if (settings_->debugTracklet()) {
 	    cout << "Accepted full match in layer " <<getName()
 		 << " "<<tracklet
 		 << " "<<iSector_<<endl;	   
@@ -460,7 +460,7 @@ public:
 	bool imatch=(std::abs(ideltaphi*irstub)<idrphicut)&&(std::abs(ideltar)<idrcut);
 
 
-	if (debug1) {
+	if (settings_->debugTracklet()) {
 	  cout << "imatch match disk: "<<imatch<<" "<<match<<" "
 	       <<std::abs(ideltaphi)<<" "<<drphicut/(kphiproj123*stub->r())<<" "
 	       <<std::abs(ideltar)<<" "<<drcut/krprojshiftdisk<<" r = "<<stub->r()<<endl;
@@ -473,7 +473,7 @@ public:
 	    
 	  countsel++;
 	  
-	  if (debug1) {
+	  if (settings_->debugTracklet()) {
 	    cout << "MatchCalculator found match in disk "<<getName()<<endl;
 	  }
 
@@ -489,7 +489,7 @@ public:
 				 stub->alpha(),
 				 (fpgastub->phiregion().value()<<7)+fpgastub->stubindex().value(),
 				 stub->z(),tmp);
-	  if (debug1) {
+	  if (settings_->debugTracklet()) {
 	    cout << "Accepted full match in disk " <<getName()
 		 << " "<<tracklet
 		 << " "<<iSector_<<endl;	   

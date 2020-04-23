@@ -11,7 +11,8 @@ using namespace std;
 
 class VMStubsMEMemory : public MemoryBase {
 public:
-  VMStubsMEMemory(string name, unsigned int iSector, double phimin, double phimax) : MemoryBase(name, iSector) {
+  VMStubsMEMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+  MemoryBase(name, settings, iSector) {
     phimin_ = phimin;
     phimax_ = phimax;
   }

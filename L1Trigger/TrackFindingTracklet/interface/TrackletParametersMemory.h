@@ -10,18 +10,13 @@ using namespace std;
 
 class TrackletParametersMemory : public MemoryBase {
 public:
-  TrackletParametersMemory(string name, unsigned int iSector, double phimin, double phimax)
-      : MemoryBase(name, iSector) {
+  TrackletParametersMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax)
+    : MemoryBase(name, settings, iSector) {
     phimin_ = phimin;
     phimax_ = phimax;
   }
 
   void addTracklet(Tracklet *tracklet) {
-    //static int count=0;
-    //count++;
-    //cout <<"count = "<<count<<" "<<sizeof(Tracklet)
-    //	 <<" "<<count*sizeof(Tracklet)<<endl;
-    //cout << "Adding tracklet : "<<getName()<<" "<<tracklet<<endl;
     tracklets_.push_back(tracklet);
   }
 

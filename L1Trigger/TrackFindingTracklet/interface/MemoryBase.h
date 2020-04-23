@@ -2,13 +2,17 @@
 #ifndef MEMORYBASE_H
 #define MEMORYBASE_H
 
+#include "Settings.h"
+
+using namespace Trklet;
 using namespace std;
 
 class MemoryBase{
 
 public:
 
-  MemoryBase(string name, unsigned int iSector){
+  MemoryBase(string name, const Settings* const settings, unsigned int iSector):
+  settings_(settings){
     name_=name;
     iSector_=iSector;
     bx_=0;
@@ -195,6 +199,7 @@ protected:
   int bx_;
   int event_;
 
+  const Settings* const settings_;
 
 };
 

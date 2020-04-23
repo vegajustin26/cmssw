@@ -309,7 +309,7 @@ int main(const int argc, const char** argv)
       
       simtrk=ev.simtrack(0);
 
-      if (debug1) {
+      if (settings.debugTracklet()) {
 	cout <<"nstub simtrkid pt phi eta t vz:"<<ev.nstubs()<<" "<<simtrk.trackid()<<" "<<simtrk.pt()<<" "<<simtrk.phi()<<" "
 	     <<simtrk.eta()<<" "
 	     <<sinh(simtrk.eta())<<" "

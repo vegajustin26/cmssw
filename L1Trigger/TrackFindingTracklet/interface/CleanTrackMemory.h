@@ -9,7 +9,8 @@ using namespace std;
 
 class CleanTrackMemory : public MemoryBase {
 public:
-  CleanTrackMemory(string name, unsigned int iSector, double phimin, double phimax) : MemoryBase(name, iSector) {
+  CleanTrackMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+  MemoryBase(name, settings, iSector) {
     phimin_ = phimin;
     phimax_ = phimax;
   }
@@ -19,7 +20,6 @@ public:
   unsigned int nTracks() const { return tracks_.size(); }
 
   void clean() {
-    //cout << "Cleaning tracks : "<<tracks_.size()<<endl;
     tracks_.clear();
   }
 

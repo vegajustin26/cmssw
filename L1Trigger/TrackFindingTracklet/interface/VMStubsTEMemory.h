@@ -13,9 +13,9 @@ class VMStubsTEMemory:public MemoryBase{
 
 public:
   
- VMStubsTEMemory(string name, unsigned int iSector, 
+ VMStubsTEMemory(string name, const Settings* const settings, unsigned int iSector, 
 		 double phimin, double phimax):
-  MemoryBase(name,iSector){
+  MemoryBase(name,settings,iSector){
     phimin_=phimin;
     phimax_=phimax;
 
@@ -69,7 +69,7 @@ public:
     bool pass=passbend(vmstub.bend().value());
 
     if (!pass) {
-      if (debug1) cout << getName() << " Stub failed bend cut. bend = "<<Stub::benddecode(vmstub.bend().value(),vmstub.isPSmodule())<<endl;
+      if (settings_->debugTracklet()) cout << getName() << " Stub failed bend cut. bend = "<<Stub::benddecode(vmstub.bend().value(),vmstub.isPSmodule())<<endl;
       return false;
     }
     
@@ -77,11 +77,10 @@ public:
 
     if (overlap_) {
       if (disk_==1) {
-	//bool negdisk=vmstub.stub().first->disk().value()<0.0;
 	assert(bin<4);
 	if (negdisk) bin+=4;
 	stubsbinnedvm_[bin].push_back(vmstub);
-	if (debug1) cout << getName()<<" Stub in disk = "<<disk_<<"  in bin = "<<bin<<endl;
+	if (settings_->debugTracklet()) cout << getName()<<" Stub in disk = "<<disk_<<"  in bin = "<<bin<<endl;
       } else if (layer_==2) {
 	stubsbinnedvm_[bin].push_back(vmstub);
       }
@@ -92,9 +91,7 @@ public:
 	}
 	
       } else {
-	
-	//bool negdisk=vmstub.stub().first->disk().value()<0.0;
-	
+		
 	if (disk_%2==0) {
 	  assert(bin<4);
 	  if (negdisk) bin+=4;
@@ -103,7 +100,7 @@ public:
 	
       }
     }
-    if (debug1) cout << "Adding stubs to "<<getName()<<endl;
+    if (settings_->debugTracklet()) cout << "Adding stubs to "<<getName()<<endl;
     stubsvm_.push_back(vmstub);
     return true;
     
@@ -122,7 +119,7 @@ public:
     bool pass=passbend(vmstub.bend().value());
 
     if (!pass) {
-      if (debug1) cout << getName() << " Stub failed bend cut. bend = "<<Stub::benddecode(vmstub.bend().value(),vmstub.isPSmodule())<<endl;
+      if (settings_->debugTracklet()) cout << getName() << " Stub failed bend cut. bend = "<<Stub::benddecode(vmstub.bend().value(),vmstub.isPSmodule())<<endl;
       return false;
     }
 
@@ -131,12 +128,11 @@ public:
     if(!extended_){
       if (overlap_) {
 	if (disk_==1) {
-	  //bool negdisk=vmstub.stub().first->disk().value()<0.0;
 	  assert(bin<4);
 	  if (negdisk) bin+=4;
 	  stubsbinnedvm_[bin].push_back(vmstub);
-	  if (debug1) cout << getName()<<" Stub with lookup = "<<binlookup.value()
-			   <<" in disk = "<<disk_<<"  in bin = "<<bin<<endl;
+	  if (settings_->debugTracklet()) cout << getName()<<" Stub with lookup = "<<binlookup.value()
+					       <<" in disk = "<<disk_<<"  in bin = "<<bin<<endl;
 	}
       } else {
         if (vmstub.stub().first->isBarrel()){
@@ -145,8 +141,6 @@ public:
           }
 	
 	} else {
-
-	  //bool negdisk=vmstub.stub().first->disk().value()<0.0;
 
 	  if (disk_%2==0) {
 	    assert(bin<4);
@@ -176,7 +170,6 @@ public:
 	    }
 	    
 	  }
-	  //bool negdisk=vmstub.stub().first->disk().value()<0.0;
 	  assert(bin<4);
 	  if (negdisk) bin+=4;
 	  stubsbinnedvm_[bin].push_back(vmstub);	  
@@ -184,7 +177,7 @@ public:
       }
     }
 
-    if (debug1) cout << "Adding stubs to "<<getName()<<endl;
+    if (settings_->debugTracklet()) cout << "Adding stubs to "<<getName()<<endl;
     stubsvm_.push_back(vmstub);
     return true;
   }

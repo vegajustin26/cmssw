@@ -126,9 +126,8 @@ public:
 
       assert(firstvmstubs_.at(iInnerMem)->nVMStubs()==firstvmstubs_.at(iInnerMem)->nVMStubs());
       for(unsigned int i=0;i<firstvmstubs_.at(iInnerMem)->nVMStubs();i++){
-	//std::pair<Stub*,L1TStub*> firststub=firstvmstubs_.at(iInnerMem)->getStub(i);
 	VMStubTE firstvmstub=firstvmstubs_.at(iInnerMem)->getVMStubTE(i);
-	if (debug1) {
+	if (settings_->debugTracklet()) {
 	  cout << "In "<<getName()<<" have first stub"<<endl;
 	}
 	
@@ -144,12 +143,12 @@ public:
 	
 	  int start=(bin>>1);
 	  int last=start+(bin&1);
-	  if (debug1) {
+	  if (settings_->debugTracklet()) {
 	    cout << "Will look in zbins "<<start<<" to "<<last<<endl;
 	  }
 	  for(int ibin=start;ibin<=last;ibin++) {
 	    for(unsigned int j=0;j<secondvmstubs_->nVMStubsBinned(ibin);j++){
-	      if (debug1) {
+	      if (settings_->debugTracklet()) {
 		cout << "In "<<getName()<<" have second stub"<<endl;
 	      }
 
@@ -160,7 +159,7 @@ public:
 	      int zbin=(secondvmstub.vmbits().value()&7);
 	      if (start!=ibin) zbin+=8;
 	      if (zbin<zbinfirst||zbin-zbinfirst>zdiffmax) {
-		if (debug1) {
+		if (settings_->debugTracklet()) {
 		  cout << "Stubpair rejected because of wrong zbin"<<endl;
 		}
 		continue;
@@ -184,7 +183,7 @@ public:
                 table_.resize(index+1);
 	      
 	      if (table_.at(index).empty()) {
-		if (debug1) {
+		if (settings_->debugTracklet()) {
 		  cout << "Stub pair rejected because of stub pt cut bends : "
 		       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())
 		       <<" "
@@ -195,7 +194,7 @@ public:
                   continue;
 	      }
 	      		
-	      if (debug1) cout << "Adding layer-layer pair in " <<getName()<<endl;
+	      if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
                 if (writeTripletTables || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                   if (writeSeeds) {
@@ -222,12 +221,12 @@ public:
 	
 	  int start=(bin>>1);
 	  int last=start+(bin&1);
-	  if (debug1) {
+	  if (settings_->debugTracklet()) {
 	    cout << "Will look in zbins "<<start<<" to "<<last<<endl;
 	  }
 	  for(int ibin=start;ibin<=last;ibin++) {
 	    for(unsigned int j=0;j<secondvmstubs_->nVMStubsBinned(ibin);j++){
-	      if (debug1) {
+	      if (settings_->debugTracklet()) {
 		cout << "In "<<getName()<<" have second stub"<<endl;
 	      }
 
@@ -239,7 +238,7 @@ public:
 	      int zbin=(secondvmstub.vmbits().value()&7);
 	      if (start!=ibin) zbin+=8;
 	      if (zbin<zbinfirst||zbin-zbinfirst>zdiffmax) {
-		if (debug1) {
+		if (settings_->debugTracklet()) {
 		  cout << "Stubpair rejected because of wrong zbin"<<endl;
 		}
 		continue;
@@ -265,7 +264,7 @@ public:
                 table_.resize(index+1);
 	      
 	      if (table_.at(index).empty()) {
-		if (debug1) {
+		if (settings_->debugTracklet()) {
 		  cout << "Stub pair rejected because of stub pt cut bends : "
 		       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())
 		       <<" "
@@ -276,7 +275,7 @@ public:
                   continue;
 	      }
 
-	      if (debug1) cout << "Adding layer-layer pair in " <<getName()<<endl;
+	      if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
                 if (writeTripletTables || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                   if (writeSeeds) {
@@ -294,7 +293,7 @@ public:
 	
 	} else if (disk1_==1 && disk2_==2){
 	  
-	  if (debug1) cout << getName()<<"["<<iSector_<<"] Disk-disk pair" <<endl;
+	  if (settings_->debugTracklet()) cout << getName()<<"["<<iSector_<<"] Disk-disk pair" <<endl;
 
 	  int lookupbits=firstvmstub.vmbits().value()&511;
 	  bool negdisk=firstvmstub.stub().first->disk().value()<0; //FIXME
@@ -308,8 +307,8 @@ public:
 	  if (negdisk) start+=4;
 	  int last=start+(bin&1);
 	  for(int ibin=start;ibin<=last;ibin++) {
-	    if (debug1) cout << getName() << " looking for matching stub in bin "<<ibin
-			     <<" with "<<secondvmstubs_->nVMStubsBinned(ibin)<<" stubs"<<endl;
+	    if (settings_->debugTracklet()) cout << getName() << " looking for matching stub in bin "<<ibin
+						 <<" with "<<secondvmstubs_->nVMStubsBinned(ibin)<<" stubs"<<endl;
 	    for(unsigned int j=0;j<secondvmstubs_->nVMStubsBinned(ibin);j++){
 	      if (countall>=MAXTE) break;
 	      countall++;
@@ -340,20 +339,18 @@ public:
                 table_.resize(index+1);
 	      
 	      if (table_.at(index).empty()) {
-		if (debug1) {
+		if (settings_->debugTracklet()) {
 		  cout << "Stub pair rejected because of stub pt cut bends : "
 		       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())
 		       <<" "
 		       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
-		    //<<" FP bend: "<<firststub.second->bend()<<" "<<secondstub.second->bend()
-		       //<<" pass : "<<pttablefirst_[ptfirstindex]<<" "<<pttablesecond_[ptsecondindex]
 		       <<endl;
 		}
                 if (!writeTripletTables)
                   continue;
 	      }
 
-	      if (debug1) cout << "Adding disk-disk pair in " <<getName()<<endl;
+	      if (settings_->debugTracklet()) cout << "Adding disk-disk pair in " <<getName()<<endl;
 	      
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
                 if (writeTripletTables || table_.at(index).count(stubpairs_.at(isp)->getName())) {

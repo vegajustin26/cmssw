@@ -74,20 +74,16 @@ public:
     bool add=false;
     
     double phi=stub.phi();
-    //cout << "Sector::addStub layer phi phimin_ phimax_ : "<<stub.layer()+1<<" "<<" "<<dtc<<" "<<phi<<" "<<phimin_<<" "<<phimax_<<endl;
     double dphi=0.5*dphisectorHG-M_PI/NSector;
     
     static std::map<string,std::vector<int> > ILindex;
     std::vector<int>& tmp=ILindex[dtc];
     if (tmp.size()==0){
-      //cout << "Adding entries for dtc : "<<dtc;
       for (unsigned int i=0;i<IL_.size();i++){
 	if (IL_[i]->getName().find("_"+dtc)!=string::npos){
-	  //cout << " Adding link "<<IL_[i]->getName()<<endl;
 	  tmp.push_back(i);
 	}
       }
-	//cout << endl;
     }
     
     if (((phi>phimin_-dphi)&&(phi<phimax_+dphi))||
@@ -96,7 +92,6 @@ public:
       std::vector<int>& tmp=ILindex[dtc];
       assert(tmp.size()!=0);
       for (unsigned int i=0;i<tmp.size();i++){
-	//cout << "Add stub to link"<<IL_[tmp[i]]->getName()<<endl;
 	if (IL_[tmp[i]]->addStub(settings_,stub,fpgastub,dtc)) add=true;
       }
     }
@@ -109,60 +104,60 @@ public:
     
   void addMem(string memType,string memName){
     if (memType=="InputLink:") {
-      IL_.push_back(new InputLinkMemory(memName,isector_,phimin_,phimax_));
+      IL_.push_back(new InputLinkMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=IL_.back();
       MemoriesV_.push_back(IL_.back());
     } else if (memType=="AllStubs:") {
-      AS_.push_back(new AllStubsMemory(memName,isector_,phimin_,phimax_));
+      AS_.push_back(new AllStubsMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=AS_.back();
       MemoriesV_.push_back(AS_.back());
     } else if (memType=="VMStubsTE:") {
-      VMSTE_.push_back(new VMStubsTEMemory(memName,isector_,phimin_,phimax_));
+      VMSTE_.push_back(new VMStubsTEMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=VMSTE_.back();
       MemoriesV_.push_back(VMSTE_.back());
     } else if (memType=="VMStubsME:") {
-      VMSME_.push_back(new VMStubsMEMemory(memName,isector_,phimin_,phimax_));
+      VMSME_.push_back(new VMStubsMEMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=VMSME_.back();
       MemoriesV_.push_back(VMSME_.back());
     } else if (memType=="StubPairs:"||
                memType=="StubPairsDisplaced:") {
-      SP_.push_back(new StubPairsMemory(memName,isector_,phimin_,phimax_));
+      SP_.push_back(new StubPairsMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=SP_.back();
       MemoriesV_.push_back(SP_.back());
     } else if (memType=="StubTriplets:") {
-      ST_.push_back(new StubTripletsMemory(memName,isector_,phimin_,phimax_));
+      ST_.push_back(new StubTripletsMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=ST_.back();
       MemoriesV_.push_back(ST_.back());
     } else if (memType=="TrackletParameters:") {
-      TPAR_.push_back(new TrackletParametersMemory(memName,isector_,phimin_,phimax_));
+      TPAR_.push_back(new TrackletParametersMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=TPAR_.back();
       MemoriesV_.push_back(TPAR_.back());
     } else if (memType=="TrackletProjections:") {
-      TPROJ_.push_back(new TrackletProjectionsMemory(memName,isector_,phimin_,phimax_));
+      TPROJ_.push_back(new TrackletProjectionsMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=TPROJ_.back();
       MemoriesV_.push_back(TPROJ_.back());
     } else if (memType=="AllProj:") {
-      AP_.push_back(new AllProjectionsMemory(memName,isector_,phimin_,phimax_));
+      AP_.push_back(new AllProjectionsMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=AP_.back();
       MemoriesV_.push_back(AP_.back());
     } else if (memType=="VMProjections:") {
-      VMPROJ_.push_back(new VMProjectionsMemory(memName,isector_,phimin_,phimax_));
+      VMPROJ_.push_back(new VMProjectionsMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=VMPROJ_.back();
       MemoriesV_.push_back(VMPROJ_.back());
     } else if (memType=="CandidateMatch:") {
-      CM_.push_back(new CandidateMatchMemory(memName,isector_,phimin_,phimax_));
+      CM_.push_back(new CandidateMatchMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=CM_.back();
       MemoriesV_.push_back(CM_.back());
     } else if (memType=="FullMatch:") {
-      FM_.push_back(new FullMatchMemory(memName,isector_,phimin_,phimax_));
+      FM_.push_back(new FullMatchMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=FM_.back();
       MemoriesV_.push_back(FM_.back());
     } else if (memType=="TrackFit:") {
-      TF_.push_back(new TrackFitMemory(memName,isector_,phimin_,phimax_));
+      TF_.push_back(new TrackFitMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=TF_.back();
       MemoriesV_.push_back(TF_.back());
     } else if (memType=="CleanTrack:") {
-      CT_.push_back(new CleanTrackMemory(memName,isector_,phimin_,phimax_));
+      CT_.push_back(new CleanTrackMemory(memName,settings_,isector_,phimin_,phimax_));
       Memories_[memName]=CT_.back();
       MemoriesV_.push_back(CT_.back());
     } else {

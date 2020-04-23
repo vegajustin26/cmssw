@@ -713,7 +713,7 @@ public:
 	L1TStub* outerStub=stubtriplets_[l]->getL1TStub3(i);
 	Stub* outerFPGAStub=stubtriplets_[l]->getFPGAStub3(i);
 
-	if (debug1) {
+	if (settings_->debugTracklet()) {
 	  cout << "TrackletCalculatorDisplaced execute "<<getName()<<"["<<iSector_<<"]"<<endl;
 	}
 	
@@ -750,16 +750,16 @@ public:
 	}
 	
 	if (countall>=MAXTC) {
-	  if (debug1) cout << "Will break on MAXTC 1"<<endl;
+	  if (settings_->debugTracklet()) cout << "Will break on MAXTC 1"<<endl;
 	  break;
 	}
-	if (debug1) {
+	if (settings_->debugTracklet()) {
 	  cout << "TrackletCalculatorDisplaced execute done"<<endl;
 	}
 
       }
       if (countall>=MAXTC) {
-	if (debug1) cout << "Will break on MAXTC 2"<<endl;
+	if (settings_->debugTracklet()) cout << "Will break on MAXTC 2"<<endl;
 	break;
       }
     }
@@ -928,7 +928,7 @@ public:
 
   bool LLLSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* middleFPGAStub, L1TStub* middleStub, Stub* outerFPGAStub, L1TStub* outerStub){
 	  
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "TrackletCalculatorDisplaced "<<getName()<<" "<<layer_<<" trying stub triplet in layer (L L L): "
 	   <<innerFPGAStub->layer().value()<<" "<<middleFPGAStub->layer().value()<<" "<<outerFPGAStub->layer().value()<<endl;
     }
@@ -1036,17 +1036,17 @@ public:
 
     bool success = true;
     if(std::abs(rinvapprox)>settings_->rinvcut()){
-      if (debug1) 
+      if (settings_->debugTracklet()) 
 	cout << "TrackletCalculator::LLL Seeding irinv too large: "
 	     <<rinvapprox<<"("<<irinv<<")\n";
       success = false;
     }
     if (std::abs(z0approx)>1.8*z0cut) { 
-      if (debug1) cout << "Failed tracklet z0 cut "<<z0approx<<" in layer "<<layer_<<endl;
+      if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<" in layer "<<layer_<<endl;
       success = false;
     }
     if (std::abs(d0approx)>maxd0) {
-      if (debug1) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
+      if (settings_->debugTracklet()) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
       success = false;
     }
     
@@ -1056,7 +1056,7 @@ public:
     int phicritapprox=iphi0-2*irinv;
     bool keep=(phicrit>phicritminmc)&&(phicrit<phicritmaxmc),
          keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);
-    if (debug1)
+    if (settings_->debugTracklet())
       if (keep && !keepapprox)
         cout << "TrackletCalculatorDisplaced::LLLSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
     if (usephicritapprox) {
@@ -1166,7 +1166,7 @@ public:
 				    diskprojs,
 				    false);
     
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "TrackletCalculatorDisplaced "<<getName()<<" Found LLL tracklet in sector = "
 	   <<iSector_<<" phi0 = "<<phi0<<endl;
     }
@@ -1186,7 +1186,7 @@ public:
     bool addL6=false;
     for(unsigned int j=0;j<toR_.size();j++){
       bool added=false;
-      if(debug1)
+      if(settings_->debugTracklet())
 	cout<<"adding layer projection "<<j<<"/"<<toR_.size()<<" "<<lproj_[j]<<"\n";
       if (tracklet->validProj(lproj_[j])) {
 	added=addLayerProj(tracklet,lproj_[j]);
@@ -1202,7 +1202,7 @@ public:
       if (disk==2&&addL5) continue;
       if (disk==1&&addL6) continue;
       if (it<0) disk=-disk;
-      if(debug1)
+      if(settings_->debugTracklet())
 	cout<<"adding disk projection "<<j<<"/"<<toZ_.size()<<" "<<disk<<"\n";
       if (tracklet->validProjDisk(abs(disk))) {
 	addDiskProj(tracklet,disk);
@@ -1215,7 +1215,7 @@ public:
     
   bool DDLSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* middleFPGAStub, L1TStub* middleStub, Stub* outerFPGAStub, L1TStub* outerStub){
 	  
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "TrackletCalculatorDisplaced "<<getName()<<" "<<layer_<<" trying stub triplet in  (L2 D1 D2): "
 	   <<innerFPGAStub->layer().value()<<" "<<middleFPGAStub->disk().value()<<" "<<outerFPGAStub->disk().value()<<endl;
     }
@@ -1317,17 +1317,17 @@ public:
 
     bool success = true;
     if(std::abs(rinvapprox)>settings_->rinvcut()){
-      if (debug1) 
+      if (settings_->debugTracklet()) 
 	cout << "TrackletCalculator::DDL Seeding irinv too large: "
 	     <<rinvapprox<<"("<<irinv<<")\n";
       success = false;
     }
     if (std::abs(z0approx)>1.8*z0cut) {
-      if (debug1) cout << "Failed tracklet z0 cut "<<z0approx<<endl;
+      if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<endl;
       success = false;
     }
     if (std::abs(d0approx)>maxd0) {
-      if (debug1) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
+      if (settings_->debugTracklet()) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
       success = false;
     }
     
@@ -1337,7 +1337,7 @@ public:
     int phicritapprox=iphi0-2*irinv;
     bool keep=(phicrit>phicritminmc)&&(phicrit<phicritmaxmc),
          keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);
-    if (debug1)
+    if (settings_->debugTracklet())
       if (keep && !keepapprox)
         cout << "TrackletCalculatorDisplaced::DDLSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
     if (usephicritapprox) {
@@ -1442,7 +1442,7 @@ public:
 				    diskprojs,
 				    false);
     
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "TrackletCalculatorDisplaced "<<getName()<<" Found DDL tracklet in sector = "
 	   <<iSector_<<" phi0 = "<<phi0<<endl;
     }
@@ -1459,7 +1459,7 @@ public:
     trackletpars_->addTracklet(tracklet);
     
     for(unsigned int j=0;j<toR_.size();j++){
-      if(debug1)
+      if(settings_->debugTracklet())
 	cout<<"adding layer projection "<<j<<"/"<<toR_.size()<<" "<<lproj_[j]<<" "<<tracklet->validProj(lproj_[j])<<"\n";      
       if (tracklet->validProj(lproj_[j])) {
 	addLayerProj(tracklet,lproj_[j]);
@@ -1471,7 +1471,7 @@ public:
       int disk=dproj_[j];
       if(disk == 0) continue;
       if (it<0) disk=-disk;
-      if(debug1)
+      if(settings_->debugTracklet())
 	cout<<"adding disk projection "<<j<<"/"<<toZ_.size()<<" "<<disk<<" "<<tracklet->validProjDisk(abs(disk))<<"\n";
       if (tracklet->validProjDisk(abs(disk))) {
 	addDiskProj(tracklet,disk);
@@ -1484,7 +1484,7 @@ public:
     
   bool LLDSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* middleFPGAStub, L1TStub* middleStub, Stub* outerFPGAStub, L1TStub* outerStub){
 	  
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "TrackletCalculatorDisplaced "<<getName()<<" "<<layer_<<" trying stub triplet in  (L2L3D1): "
 	   <<middleFPGAStub->layer().value()<<" "<<outerFPGAStub->layer().value()<<" "<<innerFPGAStub->disk().value()<<endl;
     }
@@ -1587,17 +1587,17 @@ public:
 
     bool success = true;
     if(std::abs(rinvapprox)>settings_->rinvcut()){
-      if (debug1) 
+      if (settings_->debugTracklet()) 
 	cout << "TrackletCalculator:: LLD Seeding irinv too large: "
 	     <<rinvapprox<<"("<<irinv<<")\n";
       success = false;
     }
     if (std::abs(z0approx)>1.8*z0cut) {
-      if (debug1) cout << "Failed tracklet z0 cut "<<z0approx<<endl;
+      if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<endl;
       success = false;
     }
     if (std::abs(d0approx)>maxd0) {
-      if (debug1) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
+      if (settings_->debugTracklet()) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
       success = false;
     }
     
@@ -1607,7 +1607,7 @@ public:
     int phicritapprox=iphi0-2*irinv;
     bool keep=(phicrit>phicritminmc)&&(phicrit<phicritmaxmc),
          keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);
-    if (debug1)
+    if (settings_->debugTracklet())
       if (keep && !keepapprox)
         cout << "TrackletCalculatorDisplaced::LLDSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
     if (usephicritapprox) {
@@ -1714,7 +1714,7 @@ public:
 				    diskprojs,
 				    false);
     
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "TrackletCalculatorDisplaced "<<getName()<<" Found LLD tracklet in sector = "
 	   <<iSector_<<" phi0 = "<<phi0<<endl;
     }
@@ -1731,7 +1731,7 @@ public:
     trackletpars_->addTracklet(tracklet);
     
     for(unsigned int j=0;j<toR_.size();j++){
-      if(debug1)
+      if(settings_->debugTracklet())
 	cout<<"adding layer projection "<<j<<"/"<<toR_.size()<<" "<<lproj_[j]<<"\n";
       if (tracklet->validProj(lproj_[j])) {
 	addLayerProj(tracklet,lproj_[j]);
@@ -1743,7 +1743,7 @@ public:
       int disk=dproj_[j];
       if(disk == 0) continue;
       if (it<0) disk=-disk;
-      if(debug1)
+      if(settings_->debugTracklet())
 	cout<<"adding disk projection "<<j<<"/"<<toZ_.size()<<" "<<disk<<"\n";      
       if (tracklet->validProjDisk(abs(disk))) {
 	addDiskProj(tracklet,disk);
@@ -1775,7 +1775,7 @@ void exactproj(double rproj,double rinv, double phi0, double d0,
   phider=-0.5*rinv/sqrt(1-pow(0.5*rproj*rinv,2))-d0/(rproj*rproj);
   zder=t/sqrt(1-pow(0.5*rproj*rinv,2));
 
-  if(debug1) cout <<"exact proj layer at "<<rproj<<" : "<< phiproj <<" "<<zproj<<"\n";
+  if(settings_->debugTracklet()) cout <<"exact proj layer at "<<rproj<<" : "<< phiproj <<" "<<zproj<<"\n";
 }
 
   
@@ -1804,7 +1804,7 @@ void exactproj(double rproj,double rinv, double phi0, double d0,
   phider = c / t / (x*x+y*y) * (rho + x0*cos(phiV+c*beta) + y0*sin(phiV+c*beta));
   rder   = c / t / rproj * ( y0*cos(phiV+c*beta) - x0*sin(phiV+c*beta));
 
-  if(debug1) cout <<"exact proj disk at"<<zproj<<" : "<< phiproj <<" "<<rproj<<"\n";
+  if(settings_->debugTracklet()) cout <<"exact proj disk at"<<zproj<<" : "<< phiproj <<" "<<rproj<<"\n";
 
 }
 
@@ -1894,7 +1894,7 @@ void exacttracklet(double r1, double z1, double phi1,
       z0 = z12;
     }
     
-    if(debug1)
+    if(settings_->debugTracklet())
       cout<<"exact tracklet: "<<rinv<<" "<<phi0<<" "<<d0<<" "<<t<<" "<<z0<<"\n";
 
     for (unsigned int i=0;i<toR_.size();i++) {

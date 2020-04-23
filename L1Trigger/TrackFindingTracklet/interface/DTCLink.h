@@ -22,7 +22,6 @@ public:
   void addStub(std::pair<Stub*, L1TStub*> stub) { stubs_.push_back(stub); }
 
   bool inRange(double phi, bool overlaplayer) {
-    //cout << "DTCLink::inRange "<<phi<<" "<<phimin_<<" "<<phimax_<<endl;
     double phimax = phimax_;
     double phimin = phimin_;
     if (overlaplayer) {
@@ -32,8 +31,6 @@ public:
       phimin -= dphi / 6.0;
       phimax += dphi / 6.0;
     }
-    //cout << "DTCLink::inRange phi : "<<phi
-    // 	 <<" phi min max "<<phimin<<" "<<phimax<<endl;
     return (phi < phimax && phi > phimin) || (phi + 2 * M_PI < phimax && phi + 2 * M_PI > phimin);
   }
 

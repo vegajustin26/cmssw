@@ -9,7 +9,8 @@ using namespace std;
 
 class TrackFitMemory : public MemoryBase {
 public:
-  TrackFitMemory(string name, unsigned int iSector, double phimin, double phimax) : MemoryBase(name, iSector) {
+  TrackFitMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+  MemoryBase(name, settings, iSector) {
     phimin_ = phimin;
     phimax_ = phimax;
   }
@@ -42,40 +43,6 @@ public:
         match = true;
       if (tracks_[i]->foundTrack(simtrk, phioffset)) {
         Tracklet* tracklet = tracks_[i];
-
-        /*
-	
-	int psmatches=0;
-	
-	if (tracklet->match(1)) psmatches++;
-	if (tracklet->match(2)) psmatches++;
-	if (tracklet->match(3)) psmatches++;
-
-	cout << "psmatches : "<<psmatches<<endl;
-
-	if (!tracklet->match(3)) continue;
-
-	
-	
-	if (psmatches<3) continue;
-	
-	cout << "Tracklet: "
-	     <<sinh(simtrk.eta())<<" "
-	     <<simtrk.vz()<<" "
-	     <<tracklet->stubptrs(1).second->r()<<" "
-	     <<tracklet->stubptrs(1).second->z()<<" "
-	     <<tracklet->zresid(1)<<" "
-	     <<tracklet->stubptrs(2).second->r()<<" "
-	     <<tracklet->stubptrs(2).second->z()<<" "
-	     <<tracklet->zresid(2)<<" "
-	     <<tracklet->innerStub()->r()<<" "
-	     <<tracklet->innerStub()->z()<<" "
-	     <<tracklet->t()<<" "
-	     <<tracklet->z0()<<" "
-      	     <<tracklet->tfitexact()<<" "
-	     <<tracklet->z0fitexact()<<" "
-	     <<endl;
-	*/
 
         int charge = simtrk.trackid() / abs(simtrk.trackid());
         if (abs(simtrk.trackid()) < 100)

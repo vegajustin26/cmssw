@@ -18,7 +18,6 @@ public:
     phimin_=Util::phiRange(iSector*dphi);
     phimax_=Util::phiRange(phimin_+dphi);
     if (phimin_>phimax_)  phimin_-=2*M_PI;
-    //cout << "phimin_ phimax_ "<<phimin_<<" "<<phimax_<<endl;
     assert(phimax_>phimin_);
     stubpairs_.clear();
     thirdvmstubs_.clear();
@@ -184,7 +183,7 @@ public:
               if (stubpairs_.at(i)->getLastPartOfName() != vmsteSuffix)
                 continue;
               for(unsigned int l=0;l<thirdvmstubs_.at(k)->nVMStubsBinned(ibin);l++){
-                if (debug1) {
+                if (settings_->debugTracklet()) {
                   cout << "In "<<getName()<<" have third stub"<<endl;
                 }
 
@@ -217,7 +216,7 @@ public:
                   table_.resize(index+1, false);
                 
                 if (!table_[index]) {
-                  if (debug1) {
+                  if (settings_->debugTracklet()) {
                     cout << "Stub pair rejected because of stub pt cut bends : "
                          <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
                          <<" "
@@ -238,7 +237,7 @@ public:
                   tmpSPTable_.at(tedName).resize (spIndex + 1);
                 tmpSPTable_.at(tedName).at(spIndex).push_back (stubpairs_.at(i)->getName());
 
-                if (debug1) cout << "Adding layer-layer pair in " <<getName()<<endl;
+                if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
                 if (writeSeeds) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
@@ -297,7 +296,7 @@ public:
                   table_.resize(index+1, false);
                 
                 if (!table_[index]) {
-                  if (debug1) {
+                  if (settings_->debugTracklet()) {
                     cout << "Stub pair rejected because of stub pt cut bends : "
                          <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
                          <<" "
@@ -318,7 +317,7 @@ public:
                   tmpSPTable_.at(tedName).resize (spIndex + 1);
                 tmpSPTable_.at(tedName).at(spIndex).push_back (stubpairs_.at(i)->getName());
 
-                if (debug1) cout << "Adding layer-disk pair in " <<getName()<<endl;
+                if (settings_->debugTracklet()) cout << "Adding layer-disk pair in " <<getName()<<endl;
                 if (writeSeeds) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
@@ -381,7 +380,7 @@ public:
                   table_.resize(index+1, false);
                 
                 if (!table_[index]) {
-                  if (debug1) {
+                  if (settings_->debugTracklet()) {
                     cout << "Stub pair rejected because of stub pt cut bends : "
                          <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
                          <<" "
@@ -402,7 +401,7 @@ public:
                   tmpSPTable_.at(tedName).resize (spIndex + 1);
                 tmpSPTable_.at(tedName).at(spIndex).push_back (stubpairs_.at(i)->getName());
 
-                if (debug1) cout << "Adding layer-disk pair in " <<getName()<<endl;
+                if (settings_->debugTracklet()) cout << "Adding layer-disk pair in " <<getName()<<endl;
                 if (writeSeeds) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;

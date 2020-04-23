@@ -250,7 +250,7 @@ public:
 	  assert(nmem>0);
 	  
 	  for (unsigned int l=0;l<nmem;l++){
-	    if (debug1) {
+	    if (settings_->debugTracklet()) {
 	      cout << getName()<<" try adding stub to "<<vmstubsTEPHI_[i].second[ivmte][l]->getName()<<" inner="<<inner<<" bin="<<bin<<endl;
 	    }
 	    if (inner==0) {

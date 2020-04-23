@@ -21,8 +21,6 @@ public:
     assert(layer >= 1);
     assert(layer <= 6);
 
-    //cout << "Initiating projection to layer = "<<projlayer<< " at radius = "<<rproj<<endl;
-
     if (valid_ && (std::abs(iphiresid) > std::abs(fpgaphiresid_.value())))
       return;
 

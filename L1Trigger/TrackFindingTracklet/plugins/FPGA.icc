@@ -45,7 +45,7 @@
 
       L1TStub stub=ev.stub(j);
 
-      if (debug1) cout << "Stub: layer="<<stub.layer()+1
+      if (settings.debugTracklet()) cout << "Stub: layer="<<stub.layer()+1
                        <<" disk="<<stub.disk()  
 		       <<" phi="<<stub.phi()
 	               <<" r="<<stub.r()

@@ -120,7 +120,7 @@ public:
 	  int ptouterindex=(index<<outerbend.nbits())+outerbend.value();
 	  
 	  if (!(pttableinner_[ptinnerindex]&&pttableouter_[ptouterindex])) {
-	    if (debug1) {
+	    if (settings_->debugTracklet()) {
 	      cout << "Stub pair rejected because of stub pt cut bends : "
 		   <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())
 		   <<" "
@@ -130,7 +130,7 @@ public:
 	    continue;
 	  }
 	  
-	  if (debug1) cout << "Adding stub pair in " <<getName()<<endl;
+	  if (settings_->debugTracklet()) cout << "Adding stub pair in " <<getName()<<endl;
 
 	  stubpairs_->addStubPair(innervmstub,outervmstub);
 	  countpass++;

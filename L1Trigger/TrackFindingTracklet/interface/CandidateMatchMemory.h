@@ -11,7 +11,8 @@ using namespace std;
 
 class CandidateMatchMemory : public MemoryBase {
 public:
-  CandidateMatchMemory(string name, unsigned int iSector, double phimin, double phimax) : MemoryBase(name, iSector) {
+  CandidateMatchMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+  MemoryBase(name, settings, iSector) {
     phimin_ = phimin;
     phimax_ = phimax;
     string subname = name.substr(3, 2);

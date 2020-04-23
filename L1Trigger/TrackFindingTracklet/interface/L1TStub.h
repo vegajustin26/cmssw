@@ -38,15 +38,6 @@ public:
     isFlipped_ = isFlipped;
 
     allstubindex_=999;
-
-    /*
-    if (layer_>999&&z_<0.0) {
-      //cout <<"Flipping pt sign"<<endl;
-      pt_=-pt_;
-      bend_ = -bend_;
-    }
-    */
-
   }
 
   void AddInnerDigi(int ladder, int module, int irphi,int iz){
@@ -75,7 +66,6 @@ public:
 	<< module_ << "\t"
 	<< strip_<< "\t"
 	<< eventid_ << "\t"
-      //<< simtrackid_ << "\t"
 	<< pt_ << "\t" 
 	<< x_ << "\t" 
 	<< y_ << "\t" 
@@ -116,7 +106,6 @@ public:
   int ptsign() {
     int ptsgn=-1.0;
     if (diphi()<iphiouter()) ptsgn=-ptsgn;
-    //if (layer_>999 && z_>0.0) ptsgn=-ptsgn; //sign fix for forward endcap
     return ptsgn;
   }
 

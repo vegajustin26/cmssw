@@ -8,7 +8,8 @@ using namespace std;
 
 class AllProjectionsMemory : public MemoryBase {
 public:
-  AllProjectionsMemory(string name, unsigned int iSector, double phimin, double phimax) : MemoryBase(name, iSector) {
+  AllProjectionsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+  MemoryBase(name, settings, iSector) {
     phimin_ = phimin;
     phimax_ = phimax;
     string subname = name.substr(3, 2);

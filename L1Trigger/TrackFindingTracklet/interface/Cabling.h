@@ -38,7 +38,6 @@ public:
         dtcbase = "neg_" + dtc.substr(6, dtc.size() - 6);
       }
       if (dtcranges.find(dtcbase) == dtcranges.end()) {
-        //cout << "Initiating "<<dtcbase<<endl;
         dtcranges[dtcbase].init(dtcbase);
       }
     }

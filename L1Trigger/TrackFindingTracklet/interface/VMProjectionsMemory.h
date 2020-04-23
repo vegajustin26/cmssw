@@ -9,7 +9,8 @@ using namespace std;
 
 class VMProjectionsMemory : public MemoryBase {
 public:
-  VMProjectionsMemory(string name, unsigned int iSector, double phimin, double phimax) : MemoryBase(name, iSector) {
+  VMProjectionsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+  MemoryBase(name, settings, iSector) {
     phimin_ = phimin;
     phimax_ = phimax;
     string subname = name.substr(7, 2);

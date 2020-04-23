@@ -11,7 +11,8 @@ using namespace std;
 
 class FullMatchMemory : public MemoryBase {
 public:
-  FullMatchMemory(string name, unsigned int iSector, double phimin, double phimax) : MemoryBase(name, iSector) {
+  FullMatchMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+  MemoryBase(name, settings, iSector) {
     phimin_ = phimin;
     phimax_ = phimax;
     string subname = name.substr(8, 2);

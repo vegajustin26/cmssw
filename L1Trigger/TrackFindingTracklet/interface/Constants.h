@@ -22,7 +22,7 @@
 // Turn on/off debug info
 //
 static const bool printDebugKF=false; // if true print lots of debugging statements related to the KF fit
-static const bool debug1=false; //Print detailed debug information about tracklet tracking
+//static const bool debug1=false; //Print detailed debug information about tracklet tracking
 static const bool writetrace=false; //Print out details about parsing configuration files
 
 static const bool warnNoMem=false;  //If true will print out warnings about missing projection memories

@@ -271,7 +271,7 @@ public:
     unsigned int countteall=0;
     unsigned int counttepass=0;
 
-    StubPairsMemory stubpairs("tmp",iSector_,0.0,1.0); //dummy arguments for now
+    StubPairsMemory stubpairs("tmp",settings_,iSector_,0.0,1.0); //dummy arguments for now
 
     bool print=false;
     
@@ -306,7 +306,7 @@ public:
 	  int last=start+(bin&1);
 	  
 	  for(int ibin=start;ibin<=last;ibin++) {
-	    if (debug1) cout << getName() << " looking for matching stub in bin "<<ibin
+	    if (settings_->debugTracklet()) cout << getName() << " looking for matching stub in bin "<<ibin
 			     <<" with "<<outervmstubs_[ivmmem]->nVMStubsBinned(ibin)<<" stubs"<<endl;
 	    for(unsigned int j=0;j<outervmstubs_[ivmmem]->nVMStubsBinned(ibin);j++){
 	      //if (countall>=MAXTE) break;
@@ -317,7 +317,7 @@ public:
 	      int rbin=(outervmstub.vmbits().value()&7);
 	      if (start!=ibin) rbin+=8;
 	      if ((rbin<rbinfirst)||(rbin-rbinfirst>rdiffmax)) {
-		if (debug1) {
+		if (settings_->debugTracklet()) {
 		  cout << getName() << " layer-disk stub pair rejected because rbin cut : "
 		     <<rbin<<" "<<rbinfirst<<" "<<rdiffmax<<endl;
 		}
@@ -339,7 +339,7 @@ public:
 	      assert(index<phitable_[phiindex].size());
 	      
 	      if (!phitable_[phiindex][index]) {
-		if (debug1) {
+		if (settings_->debugTracklet()) {
 		  cout << "Stub pair rejected because of tracklet pt cut"<<endl;
 		}
 		continue;
@@ -352,7 +352,7 @@ public:
 	      int ptouterindex=(index<<outerbend.nbits())+outerbend.value();
 	      
 	      if (!(pttableinner_[phiindex][ptinnerindex]&&pttableouter_[phiindex][ptouterindex])) {
-		if (debug1) {
+		if (settings_->debugTracklet()) {
 		  cout << "Stub pair rejected because of stub pt cut bends : "
 		       <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())
 		       <<" "
@@ -363,7 +363,7 @@ public:
 	      }
 
 	      
-	      if (debug1) cout << "Adding layer-disk pair in " <<getName()<<endl;
+	      if (settings_->debugTracklet()) cout << "Adding layer-disk pair in " <<getName()<<endl;
 	      if (writeSeeds) {
 		ofstream fout("seeds.txt", ofstream::app);
 		fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
@@ -381,7 +381,7 @@ public:
 
 
 	for(unsigned int i=0;i<innervmstubs_[ivmmem]->nVMStubs();i++){
-	  if (debug1) {
+	  if (settings_->debugTracklet()) {
 	    cout << "In "<<getName()<<" have inner stub"<<endl;
 	  }
 
@@ -410,12 +410,12 @@ public:
 	      cout << "start last : "<<start<<" "<<last<<endl;
 	    }
 	    
-	    if (debug1) {
+	    if (settings_->debugTracklet()) {
 	      cout << "Will look in zbins "<<start<<" to "<<last<<endl;
 	    }
 	    for(int ibin=start;ibin<=last;ibin++) {
 	      for(unsigned int j=0;j<outervmstubs_[ivmmem]->nVMStubsBinned(ibin);j++){
-		if (debug1) {
+		if (settings_->debugTracklet()) {
 		  cout << "In "<<getName()<<" have outer stub"<<endl;
 		}
 		
@@ -430,7 +430,7 @@ public:
 		if (start!=ibin) zbin+=8;
 		
 		if (zbin<zbinfirst||zbin-zbinfirst>zdiffmax) {
-		  if (debug1) {
+		  if (settings_->debugTracklet()) {
 		    cout << "Stubpair rejected because of wrong fine z"<<endl;
 		  }
 		  continue;
@@ -452,7 +452,7 @@ public:
 		
 		
 		if (!phitable_[phiindex][index]) {
-		  if (debug1) {
+		  if (settings_->debugTracklet()) {
 		    cout << "Stub pair rejected because of tracklet pt cut"<<endl;
 		  }
 		  continue;
@@ -467,7 +467,7 @@ public:
 		
 		
 		if (!(pttableinner_[phiindex][ptinnerindex]&&pttableouter_[phiindex][ptouterindex])) {
-		  if (debug1) {
+		  if (settings_->debugTracklet()) {
 		    cout << "Stub pair rejected because of stub pt cut bends : "
 			 <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())
 			 <<" "
@@ -477,7 +477,7 @@ public:
 		  continue;
 		}
 		
-		if (debug1) cout << "Adding layer-layer pair in " <<getName()<<endl;
+		if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
 		if (writeSeeds) {
 		  ofstream fout("seeds.txt", ofstream::app);
 		  fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
@@ -492,7 +492,7 @@ public:
 	  } else if ((disk_==1 && layer_==0)||
 		     (disk_==3 && layer_==0)) {
 	    
-	    if (debug1) cout << getName()<<"["<<iSector_<<"] Disk-disk pair" <<endl;
+	    if (settings_->debugTracklet()) cout << getName()<<"["<<iSector_<<"] Disk-disk pair" <<endl;
 
 	    VMStubTE innervmstub=innervmstubs_[ivmmem]->getVMStubTE(i);
 
@@ -509,7 +509,7 @@ public:
 	    if (negdisk) start+=4;
 	    int last=start+(bin&1);
 	    for(int ibin=start;ibin<=last;ibin++) {
-	      if (debug1) cout << getName() << " looking for matching stub in bin "<<ibin
+	      if (settings_->debugTracklet()) cout << getName() << " looking for matching stub in bin "<<ibin
 			       <<" with "<<outervmstubs_[ivmmem]->nVMStubsBinned(ibin)<<" stubs"<<endl;
 	      for(unsigned int j=0;j<outervmstubs_[ivmmem]->nVMStubsBinned(ibin);j++){
 		//if (countall>=MAXTE) break;
@@ -534,7 +534,7 @@ public:
 		
 		assert(index<phitable_[phiindex].size());		
 		if (!phitable_[phiindex][index]) {
-		  if (debug1) {
+		  if (settings_->debugTracklet()) {
 		    cout << "Stub pair rejected because of tracklet pt cut"<<endl;
 		  }
 		  continue;
@@ -550,7 +550,7 @@ public:
 		assert(ptouterindex<pttableouter_[phiindex].size());
 	      
 		if (!(pttableinner_[phiindex][ptinnerindex]&&pttableouter_[phiindex][ptouterindex])) {
-		  if (debug1) {
+		  if (settings_->debugTracklet()) {
 		    cout << "Stub pair rejected because of stub pt cut bends : "
 			 <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())
 			 <<" "
@@ -561,7 +561,7 @@ public:
 		  continue;
 		}
 
-		if (debug1) cout << "Adding disk-disk pair in " <<getName()<<endl;
+		if (settings_->debugTracklet()) cout << "Adding disk-disk pair in " <<getName()<<endl;
 	      
 		if (writeSeeds) {
 		  ofstream fout("seeds.txt", ofstream::app);
@@ -598,7 +598,7 @@ public:
       L1TStub* outerStub=stubpairs.getL1TStub2(i);
       Stub* outerFPGAStub=stubpairs.getFPGAStub2(i);
       
-      if (debug1) {
+      if (settings_->debugTracklet()) {
 	cout << "TrackletProcessor execute "<<getName()<<"["<<iSector_<<"]"<<endl;
       }
 
@@ -651,16 +651,16 @@ public:
       }
       
       if (countall>=MAXTC) {
-	if (debug1) cout << "Will break on MAXTC 1"<<endl;
+	if (settings_->debugTracklet()) cout << "Will break on MAXTC 1"<<endl;
 	break;
       }
-      if (debug1) {
+      if (settings_->debugTracklet()) {
 	cout << "TrackletProcessor execute done"<<endl;
       }
       
     }
     if (countall>=MAXTC) {
-      if (debug1) cout << "Will break on MAXTC 2"<<endl;
+      if (settings_->debugTracklet()) cout << "Will break on MAXTC 2"<<endl;
       //break;
     }
   

@@ -25,8 +25,8 @@ public:
     assert(abs(projdisk) >= 1);
     assert(abs(projdisk) <= 5);
 
-    if (debug1)
-      cout << "Initiating projection to diak = " << projdisk << " at z = " << zproj << endl;
+    //if (debug1)
+    //cout << "Initiating projection to disk = " << projdisk << " at z = " << zproj << endl;
 
     valid_ = true;
 

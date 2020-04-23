@@ -21,9 +21,9 @@ class InputLinkMemory:public MemoryBase{
 
 public:
 
- InputLinkMemory(string name, unsigned int iSector, 
+ InputLinkMemory(string name, const Settings* const settings, unsigned int iSector, 
 		 double, double):
-  MemoryBase(name,iSector){
+  MemoryBase(name, settings, iSector){
     
     string subname=name.substr(5,7);
     phiregion_=subname[3]-'A';
@@ -77,7 +77,7 @@ public:
     if (half[0]=='B' && iphivmRaw<=15) return false;
     if (half[0]=='A' && iphivmRaw>15) return false;
     
-    if (debug1) {
+    if (settings_->debugTracklet()) {
       cout << "Will add stub in "<<getName()<<" "<<"iphiwmRaw = "<<iphivmRaw<<" phi="<<al1stub.phi()<<" z="<<al1stub.z()<<" r="<<al1stub.r()<<endl;
     }
     if (stubs_.size()<MAXSTUBSLINK) {

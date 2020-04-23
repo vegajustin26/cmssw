@@ -186,7 +186,7 @@ namespace Trklet{
 		    rDSSouter_mod5-halfstrip, rDSSouter_mod5+halfstrip}};
 
       printDebugKF_=false; // if true print lots of debugging statements related to the KF fit
-      debug1_=false; //Print detailed debug information about tracklet tracking
+      debugTracklet_=false; //Print detailed debug information about tracklet tracking
       writetrace_=false; //Print out details about parsing configuration files
       
       warnNoMem_=false;  //If true will print out warnings about missing projection memories
@@ -251,7 +251,7 @@ namespace Trklet{
     double zmean(unsigned int iDisk) const {return zmean_[iDisk];}
 
     bool printDebugKF() const {return printDebugKF_;}
-    bool debug1() const {return debug1_;}
+    bool debugTracklet() const {return debugTracklet_;}
     bool writetrace() const {return writetrace_;}
     
     bool warnNoMem() const {return warnNoMem_;}
@@ -321,7 +321,7 @@ namespace Trklet{
     std::array<double,10> rDSSouter_;
 			       
     bool printDebugKF_;
-    bool debug1_;
+    bool debugTracklet_;
     bool writetrace_;
     
     bool warnNoMem_;

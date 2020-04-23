@@ -23,8 +23,6 @@ public:
     assert(abs(disk) >= 1);
     assert(abs(disk) <= 5);
 
-    //cout << "Initiating projection to disk = "<<projdisk<< " at radius = "<<rproj<<endl;
-
     if (valid_ && (std::abs(iphiresid) > std::abs(fpgaphiresid_.value())))
       return;
 

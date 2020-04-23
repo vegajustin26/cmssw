@@ -32,7 +32,6 @@ public:
   }
 
   void addLink(double phimin, double phimax) {
-    //cout << "DTC addLink "<<name_<<endl;
     DTCLink link(phimin, phimax);
     links_.push_back(link);
   }
@@ -40,14 +39,10 @@ public:
   int addStub(std::pair<Stub*, L1TStub*> stub) {
     double phi = Util::phiRange(stub.second->phi());
     bool overlaplayer = ((stub.second->layer() + 1) % 2 == 0);
-    //cout << "layer overlaplayer : "<<stub.second->layer()+1<<" "<<overlaplayer
-    //	 <<endl;
     int added = 0;
-    //cout << "In DTC : "<<name_<<" #links "<<links_.size()<<endl;
     for (unsigned int i = 0; i < links_.size(); i++) {
       if (links_[i].inRange(phi, overlaplayer)) {
         added++;
-        //cout << "Added stub in DTC"<<endl;
         links_[i].addStub(stub);
       }
     }

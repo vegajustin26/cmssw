@@ -12,7 +12,8 @@ using namespace std;
 
 class AllStubsMemory : public MemoryBase {
 public:
-  AllStubsMemory(string name, unsigned int iSector, double phimin, double phimax) : MemoryBase(name, iSector) {
+  AllStubsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+  MemoryBase(name, settings, iSector) {
     phimin_ = phimin;
     phimax_ = phimax;
 

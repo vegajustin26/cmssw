@@ -25,8 +25,8 @@ public:
     assert(projlayer >= 1);
     assert(projlayer <= 6);
 
-    if (debug1)
-      cout << "Initiating projection to layer = " << projlayer << " at radius = " << rproj << endl;
+    //if (debug1)
+    //cout << "Initiating projection to layer = " << projlayer << " at radius = " << rproj << endl;
 
     valid_ = true;
 
@@ -44,9 +44,6 @@ public:
       }
       fpgaphiprojvm_.set(iphivm, 3, true, __LINE__, __FILE__);
       fpgazproj_.set(izproj, nbitszprojL123, false, __LINE__, __FILE__);
-      //if (fpgazproj_.atExtreme()) {
-      //	cout << "LayerProjection fpgazproj at extreme (case1)" << endl;
-      //}
       int izvm = izproj >> (12 - 7) & 0xf;
       fpgazprojvm_.set(izvm, 4, true, __LINE__, __FILE__);
       fpgaphiprojder_.set(iphider, nbitsphiprojderL123, false, __LINE__, __FILE__);

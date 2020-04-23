@@ -11,7 +11,8 @@ using namespace std;
 
 class StubPairsMemory : public MemoryBase {
 public:
-  StubPairsMemory(string name, unsigned int iSector, double phimin, double phimax) : MemoryBase(name, iSector) {
+  StubPairsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+  MemoryBase(name, settings, iSector) {
     phimin_ = phimin;
     phimax_ = phimax;
   }
