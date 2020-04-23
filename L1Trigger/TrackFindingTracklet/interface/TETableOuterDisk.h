@@ -14,14 +14,14 @@ class TETableOuterDisk : public TETableBase {
 public:
   TETableOuterDisk() { nbits_ = 5; }
 
-  TETableOuterDisk(int disk, int zbits, int rbits) {
+  TETableOuterDisk(const Settings* settings, int disk, int zbits, int rbits) {
     nbits_ = 5;
-    init(disk, zbits, rbits);
+    init(settings, disk, zbits, rbits);
   }
 
   ~TETableOuterDisk() {}
 
-  void init(int disk, int zbits, int rbits) {
+  void init(const Settings* settings, int disk, int zbits, int rbits) {
     disk_ = disk;
     rbits_ = rbits;
     zbits_ = zbits;
@@ -44,7 +44,7 @@ public:
         table_.push_back(value);
       }
     }
-    if (writeVMTables) {
+    if (settings->writeTable()) {
       writeVMTable("VMTableOuterD" + std::to_string(disk_) + ".tab");
     }
   }

@@ -60,7 +60,7 @@ public:
       }
     }
 
-    if (iSector_==0&&layerdisk_<6&&writeMCcuts) {
+    if (iSector_==0&&layerdisk_<6&&settings_->writeTable()) {
 
       ofstream outphicut;
       outphicut.open(getName()+"_phicut.tab");
@@ -83,7 +83,7 @@ public:
       outzcut.close();
     }
 
-    if (iSector_==0&&layerdisk_>=6&&writeMCcuts) {
+    if (iSector_==0&&layerdisk_>=6&&settings_->writeTable()) {
 
       ofstream outphicut;
       outphicut.open(getName()+"_PSphicut.tab");

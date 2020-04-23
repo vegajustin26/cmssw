@@ -47,7 +47,7 @@ public:
 	}
       }
 
-      if (writeMETables){
+      if (settings_->writeTable()){
 	ofstream out;
 	char layer='0'+layer_;
 	string fname="METable_L";

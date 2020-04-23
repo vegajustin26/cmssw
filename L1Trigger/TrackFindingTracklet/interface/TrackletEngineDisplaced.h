@@ -111,13 +111,7 @@ public:
 
   void execute() {
 
-    
-    if (!((doL2L3D1&&(layer1_==2)&&(layer2_==3))||
-	  (doL3L4L2&&(layer1_==3)&&(layer2_==4))||
-	  (doL5L6L4&&(layer1_==5)&&(layer2_==6))||
-	  (doD1D2L2&&(disk1_==1)&&(disk2_==2)))){
-      return;
-    }
+    if (!settings_->useSeed(iSeed_)) return;
 
     unsigned int countall=0;
     unsigned int countpass=0;

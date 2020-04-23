@@ -14,16 +14,16 @@ class TETableInner : public TETableBase {
 public:
   TETableInner() { nbits_ = 20; }
 
-  TETableInner(int layer1, int layer2, int layer3, int zbits, int rbits, bool thirdLayerIsDisk = false) {
+  TETableInner(const Settings* settings, int layer1, int layer2, int layer3, int zbits, int rbits, bool thirdLayerIsDisk = false) {
     nbits_ = 20;
-    init(layer1, layer2, layer3, zbits, rbits, thirdLayerIsDisk);
+    init(settings,layer1, layer2, layer3, zbits, rbits, thirdLayerIsDisk);
   }
 
   ~TETableInner() {}
 
-  void init(int layer1, int layer2, int zbits, int rbits) { init(layer1, layer2, -1, zbits, rbits); }
+  void init(const Settings* settings, int layer1, int layer2, int zbits, int rbits) { init(settings, layer1, layer2, -1, zbits, rbits); }
 
-  void init(int layer1, int layer2, int layer3, int zbits, int rbits, bool thirdLayerIsDisk = false) {
+  void init(const Settings* settings, int layer1, int layer2, int layer3, int zbits, int rbits, bool thirdLayerIsDisk = false) {
     thirdLayerIsDisk_ = thirdLayerIsDisk;
 
     layer1_ = layer1;
@@ -72,7 +72,7 @@ public:
       }
     }
 
-    if (writeVMTables) {
+    if (settings->writeTable()) {
       writeVMTable("VMTableInnerL" + std::to_string(layer1_) + "L" + std::to_string(layer2_) + ".tab");
     }
   }

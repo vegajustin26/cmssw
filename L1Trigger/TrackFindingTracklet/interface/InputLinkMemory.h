@@ -32,7 +32,7 @@ public:
     layerdisk_=initLayerDisk(3);
   }
 
-  bool addStub(L1TStub& al1stub, Stub& stub, string dtc="") {
+  bool addStub(const Settings* settings, L1TStub& al1stub, Stub& stub, string dtc="") {
 
     static bool first=true;
     static VMRouterPhiCorrTable phiCorrLayers[6];
@@ -41,7 +41,7 @@ public:
       for (int l=0;l<6;l++){
 	int nbits=3;
 	if (l>=3) nbits=4;
-        phiCorrLayers[l].init(l+1,nbits,3);
+        phiCorrLayers[l].init(settings,l+1,nbits,3);
       }
       first=false;
     }

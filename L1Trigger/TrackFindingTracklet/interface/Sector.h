@@ -97,7 +97,7 @@ public:
       assert(tmp.size()!=0);
       for (unsigned int i=0;i<tmp.size();i++){
 	//cout << "Add stub to link"<<IL_[tmp[i]]->getName()<<endl;
-	if (IL_[tmp[i]]->addStub(stub,fpgastub,dtc)) add=true;
+	if (IL_[tmp[i]]->addStub(settings_,stub,fpgastub,dtc)) add=true;
       }
     }
     

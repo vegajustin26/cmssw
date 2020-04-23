@@ -276,18 +276,9 @@ public:
     bool print=false;
     
     assert(innervmstubs_.size()==outervmstubs_.size());
-    
-    if (!((doL1L2&&(layer_==1)&&(disk_==0))||
-	  (doL2L3&&(layer_==2)&&(disk_==0))||
-	  (doL3L4&&(layer_==3)&&(disk_==0))||
-	  (doL5L6&&(layer_==5)&&(disk_==0))||
-	  (doD1D2&&(disk_==1)&&(layer_==0))||
-	  (doD3D4&&(disk_==3)&&(layer_==0))||
-	  (doL1D1&&(layer_==1)&&(disk_==1))||
-	  (doL2D1&&(layer_==2)&&(disk_==1)))) return;
-    
 
-
+    if (!settings_->useSeed(iSeed_)) return;
+    
     for (unsigned int ivmmem=0;ivmmem<innervmstubs_.size();ivmmem++) {
 
       unsigned int innerphibin=innervmstubs_[ivmmem]->phibin();
@@ -801,10 +792,10 @@ public:
 	  }
 	}
 
-	innervmstubs_[ivmmem]->setbendtable(vmbendinner);
-	outervmstubs_[ivmmem]->setbendtable(vmbendouter);
+	innervmstubs_[ivmmem]->setbendtable(settings_,vmbendinner);
+	outervmstubs_[ivmmem]->setbendtable(settings_,vmbendouter);
       
-	if (iSector_==0&&writeTETables) writeTETable();
+	if (iSector_==0&&settings_->writeTable()) writeTETable();
       
       }
 
@@ -907,10 +898,10 @@ public:
 	  }
 	}
 	
-	innervmstubs_[ivmmem]->setbendtable(vmbendinner);
-	outervmstubs_[ivmmem]->setbendtable(vmbendouter);
+	innervmstubs_[ivmmem]->setbendtable(settings_,vmbendinner);
+	outervmstubs_[ivmmem]->setbendtable(settings_,vmbendouter);
 	
-	if (iSector_==0&&writeTETables) writeTETable();
+	if (iSector_==0&&settings_->writeTable()) writeTETable();
 	
       } else if (disk_==1 && (layer_==1 || layer_==2)) {
 	
@@ -999,10 +990,10 @@ public:
 	}
 	
     
-	innervmstubs_[ivmmem]->setbendtable(vmbendinner);
-	outervmstubs_[ivmmem]->setbendtable(vmbendouter);
+	innervmstubs_[ivmmem]->setbendtable(settings_,vmbendinner);
+	outervmstubs_[ivmmem]->setbendtable(settings_,vmbendouter);
 	
-	if (iSector_==0&&writeTETables) writeTETable();
+	if (iSector_==0&&settings_->writeTable()) writeTETable();
 	
 	
       }

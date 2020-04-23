@@ -198,7 +198,7 @@ public:
 
   int getEntries() const { return nextLayerDiskValue_; }
 
-  void fillTable() {
+  void fillTable(const Settings* settings) {
     int nentries = getEntries();
 
     for (int i = 0; i < nentries; i++) {
@@ -391,7 +391,7 @@ public:
       }
     }
 
-    if (writeFitDerTable) {
+    if (settings->writeTable()) {
       /*
       for (unsigned int seedlayer=1;seedlayer<=5;seedlayer+=2) {
 	for(unsigned int j=0;j<8;j++) {

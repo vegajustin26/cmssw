@@ -64,16 +64,8 @@ public:
 
   void execute() {
 
-    if (!((doL1L2&&(iSeed_==0))||
-	  (doL2L3&&(iSeed_==1))||
-	  (doL3L4&&(iSeed_==2))||
-	  (doL5L6&&(iSeed_==3))||
-	  (doD1D2&&(iSeed_==4))||
-	  (doD3D4&&(iSeed_==5))||
-	  (doL1D1&&(iSeed_==6))||
-	  (doL2D1&&(iSeed_==7)))) return;
-
-
+    if (!settings_->useSeed(iSeed_)) return;
+    
     //bool print=getName()=="TE_L1PHIE17_L2PHIB16" && iSector_==3;
     //print=false;
     
@@ -261,10 +253,10 @@ public:
       }
     }
     
-    innervmstubs_->setbendtable(vmbendinner);
-    outervmstubs_->setbendtable(vmbendouter);
+    innervmstubs_->setbendtable(settings_,vmbendinner);
+    outervmstubs_->setbendtable(settings_,vmbendouter);
     
-    if (iSector_==0&&writeTETables) writeTETable();
+    if (iSector_==0&&settings_->writeTable()) writeTETable();
       
   }
 

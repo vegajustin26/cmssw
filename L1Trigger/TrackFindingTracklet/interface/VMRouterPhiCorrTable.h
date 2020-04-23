@@ -16,7 +16,7 @@ public:
 
   ~VMRouterPhiCorrTable() {}
 
-  void init(int layer, int bendbits, int rbits) {
+  void init(const Settings* settings, int layer, int bendbits, int rbits) {
     assert(bendbits == 3 || bendbits == 4);
 
     layer_ = layer;
@@ -39,7 +39,7 @@ public:
       }
     }
 
-    if (writeVMTables) {
+    if (settings->writeTable()) {
       writeVMTable("VMPhiCorrL" + std::to_string(layer_) + ".txt", false);
     }
   }

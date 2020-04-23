@@ -275,13 +275,13 @@ public:
     return other_;
   }
 
-  void setbendtable(std::vector<bool> vmbendtable){
+  void setbendtable(const Settings* settings, std::vector<bool> vmbendtable){
     assert(vmbendtable_.size()==vmbendtable.size());
     for (unsigned int i=0;i<vmbendtable.size();i++){
       vmbendtable_[i]=vmbendtable[i];
     }
 
-    if (iSector_==0&&writeTETables) writeVMBendTable();
+    if (iSector_==0&&settings->writeTable()) writeVMBendTable();
   }
 
   bool passbend(unsigned int ibend) const {

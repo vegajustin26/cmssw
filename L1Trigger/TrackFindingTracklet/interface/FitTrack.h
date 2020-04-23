@@ -233,7 +233,7 @@ class FitTrack:public ProcessBase{
    static bool first=true;
    if (first) {
     derTable.readPatternFile(fitpatternfile);
-    derTable.fillTable();
+    derTable.fillTable(settings_);
     cout << "Number of entries in derivative table: "
      <<derTable.getEntries()<<endl;
     assert(derTable.getEntries()!=0);

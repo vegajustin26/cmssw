@@ -19,13 +19,14 @@ public:
     nbits_ = 10;
   }
 
-  TETableInnerOverlap(int layer1,
+  TETableInnerOverlap(const Settings* settings,
+		      int layer1,
 		      int disk2,
 		      int zbits,
 		      int rbits
 		      ) {
     nbits_ = 10;
-    init(layer1,disk2,zbits,rbits);
+    init(settings,layer1,disk2,zbits,rbits);
   }
 
   ~TETableInnerOverlap() {
@@ -33,7 +34,8 @@ public:
   }
 
 
-  void init(int layer1,
+  void init(const Settings* settings,
+	    int layer1,
 	    int disk2,
 	    int zbits,
 	    int rbits
@@ -78,7 +80,7 @@ public:
       }
     }
 
-    if (writeVMTables) {
+    if (settings->writeTable()) {
       writeVMTable("VMTableInnerL"+std::to_string(layer1_)+"D"+std::to_string(disk2_)+".tab");
     }
     

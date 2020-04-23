@@ -140,7 +140,7 @@
 
 	static std::map<string,ofstream*> dtcstubs;
 
-	if (writememLinks) {
+	if (settings.writeMem()) {
 	  vector<string>  dtcs=cabling.DTCs();
 	  for(auto it=dtcs.begin();it!=dtcs.end();++it){
 	    string dtc=*it;
@@ -177,7 +177,7 @@
 	  }
 	}
 
-	if(add&&writememLinks&&k==writememsect) {
+	if(add&&settings.writeMem()&&k==writememsect) {
 	  Stub fpgastub(stub,&settings,sectors[k]->phimin(),sectors[k]->phimax());
 	  FPGAWord phi=fpgastub.phi();
 	  int topbit=phi.value()>>(phi.nbits()-1);
@@ -233,7 +233,7 @@
 //  //cout << "Done write DTC links"<<endl;
 // }
 
-if (writestubs) {
+if (settings.writeMem()) {
   for (unsigned int k=0;k<NSector;k++) {
     if(k==writememsect)
       sectors[k]->writeInputStubs(first);
@@ -288,7 +288,7 @@ if (writestubs) {
     VMRouterTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeVMR();	 
-      if(writemem&&k==writememsect) {
+      if(settings.writeMem()&&k==writememsect) {
         sectors[k]->writeInputStubs(first);	 
         sectors[k]->writeVMSTE(first);	 
         sectors[k]->writeVMSME(first);	 
@@ -312,7 +312,7 @@ if (writestubs) {
     TRETimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeTRE();	
-      if(writemem&&k==writememsect){
+      if(settings.writeMem()&&k==writememsect){
         sectors[k]->writeST(first);
       } 
     }
@@ -320,14 +320,14 @@ if (writestubs) {
 
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeTP();	 
-      if(writemem&&k==writememsect){
+      if(settings.writeMem()&&k==writememsect){
         sectors[k]->writeTPAR(first);
         //sectors[k]->writeTPROJ(first);
       } 
     }
 
     for (unsigned int k=0;k<NSector;k++) {
-      if(writemem&&k==writememsect){
+      if(settings.writeMem()&&k==writememsect){
         sectors[k]->writeSP(first);
       } 
     }
@@ -335,11 +335,8 @@ if (writestubs) {
 
     TCTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
-      if (writeTC) {
-	cout << "TCSector" << endl;
-      }
       sectors[k]->executeTC();	 
-      if(writemem&&k==writememsect){
+      if(settings.writeMem()&&k==writememsect){
         sectors[k]->writeTPAR(first);
         //sectors[k]->writeTPROJ(first);
       } 
@@ -390,7 +387,7 @@ if (writestubs) {
     TCDTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeTCD();	 
-      if(writemem&&k==writememsect){
+      if(settings.writeMem()&&k==writememsect){
         sectors[k]->writeTPAR(first);
         sectors[k]->writeTPROJ(first);
       } 
@@ -401,7 +398,7 @@ if (writestubs) {
     PRTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executePR();	
-      if(writemem&&k==writememsect){
+      if(settings.writeMem()&&k==writememsect){
         sectors[k]->writeVMPROJ(first);
         sectors[k]->writeAP(first);
       }
@@ -411,7 +408,7 @@ if (writestubs) {
     METimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeME();	
-      if(writemem&&k==writememsect){
+      if(settings.writeMem()&&k==writememsect){
         sectors[k]->writeCM(first);
       } 
     }
@@ -431,7 +428,7 @@ if (writestubs) {
     MPTimer.stop();
 
     for (unsigned int k=0;k<NSector;k++) {
-      if(writemem&&k==writememsect){
+      if(settings.writeMem()&&k==writememsect){
         sectors[k]->writeMC(first);
       }
     }
@@ -441,7 +438,7 @@ if (writestubs) {
     FTTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeFT();	 
-      if((writemem||writeifit)&&k==writememsect){
+      if((settings.writeMem()||writeifit)&&k==writememsect){
          sectors[k]->writeTF(first);
       }
     }
@@ -450,7 +447,7 @@ if (writestubs) {
     PDTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executePD(tracks);	  
-      if(((writemem||writeifit)&&k==writememsect) || writeAllCT){
+      if(((settings.writeMem()||writeifit)&&k==writememsect) || writeAllCT){
          sectors[k]->writeCT(first);
       }
     }

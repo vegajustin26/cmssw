@@ -14,16 +14,16 @@ class TETableInnerDisk : public TETableBase {
 public:
   TETableInnerDisk() { nbits_ = 19; }
 
-  TETableInnerDisk(int disk1, int disk2, int layer3, int zbits, int rbits) {
+  TETableInnerDisk(const Settings* settings,int disk1, int disk2, int layer3, int zbits, int rbits) {
     nbits_ = 19;
-    init(disk1, disk2, layer3, zbits, rbits);
+    init(settings, disk1, disk2, layer3, zbits, rbits);
   }
 
   ~TETableInnerDisk() {}
 
-  void init(int disk1, int disk2, int zbits, int rbits) { init(disk1, disk2, -1, zbits, rbits); }
+  void init(const Settings* settings, int disk1, int disk2, int zbits, int rbits) { init(settings, disk1, disk2, -1, zbits, rbits); }
 
-  void init(int disk1, int disk2, int layer3, int zbits, int rbits) {
+  void init(const Settings* settings, int disk1, int disk2, int layer3, int zbits, int rbits) {
     disk1_ = disk1;
     disk2_ = disk2;
     layer3_ = layer3;
@@ -53,7 +53,7 @@ public:
         table_.push_back(value);
       }
     }
-    if (writeVMTables) {
+    if (settings->writeTable()) {
       writeVMTable("VMTableInnerD" + std::to_string(disk1_) + "D" + std::to_string(disk2_) + ".tab");
     }
   }

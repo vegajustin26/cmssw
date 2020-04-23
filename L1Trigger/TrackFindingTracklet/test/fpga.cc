@@ -282,13 +282,6 @@ int main(const int argc, const char** argv)
     
     readTimer.start();
     SLHCEvent ev(*in);
-    //ev.read(*in);  
-    //ev.read(*in);  
-    //ev.read(*in);  
-    //ev.read(*in);  
-    if (allSector) {
-      ev.allSector();
-    }
     readTimer.stop();
 
     GlobalHistTruth::event()=&ev;

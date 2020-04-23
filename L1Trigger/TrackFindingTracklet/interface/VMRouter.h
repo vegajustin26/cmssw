@@ -297,7 +297,7 @@ public:
       }
     }
     
-    if (iSector_==0&&writeVMRTables) {
+    if (iSector_==0&&settings_->writeTable()) {
 
       ofstream outfinebin;
       outfinebin.open(getName()+"_finebin.tab");
@@ -327,29 +327,29 @@ public:
 	}
       }
 
-      LUTs[0][0]=new TETableInner(1,2,-1,zbitstab[0][0],rbitstab[0][0]);
-      LUTs[0][1]=new TETableInner(2,3,-1,zbitstab[0][1],rbitstab[0][1]);
-      LUTs[0][2]=new TETableInner(3,4,2,zbitstab[0][2],rbitstab[0][2]);
-      LUTs[0][3]=new TETableInner(5,6,4,zbitstab[0][3],rbitstab[0][3]);
-      LUTs[0][4]=new TETableInnerDisk(1,2,-1,zbitstab[0][4],rbitstab[0][4]);
-      LUTs[0][5]=new TETableInnerDisk(3,4,-1,zbitstab[0][5],rbitstab[0][5]);
-      LUTs[0][6]=new TETableInnerOverlap(1,1,zbitstab[0][6],rbitstab[0][6]);
-      LUTs[0][7]=new TETableInnerOverlap(2,1,zbitstab[0][7],rbitstab[0][7]);
-      LUTs[0][10]=new TETableInner(2,3,1,zbitstab[0][10],rbitstab[0][10],true);
+      LUTs[0][0]=new TETableInner(settings_,1,2,-1,zbitstab[0][0],rbitstab[0][0]);
+      LUTs[0][1]=new TETableInner(settings_,2,3,-1,zbitstab[0][1],rbitstab[0][1]);
+      LUTs[0][2]=new TETableInner(settings_,3,4,2,zbitstab[0][2],rbitstab[0][2]);
+      LUTs[0][3]=new TETableInner(settings_,5,6,4,zbitstab[0][3],rbitstab[0][3]);
+      LUTs[0][4]=new TETableInnerDisk(settings_,1,2,-1,zbitstab[0][4],rbitstab[0][4]);
+      LUTs[0][5]=new TETableInnerDisk(settings_,3,4,-1,zbitstab[0][5],rbitstab[0][5]);
+      LUTs[0][6]=new TETableInnerOverlap(settings_,1,1,zbitstab[0][6],rbitstab[0][6]);
+      LUTs[0][7]=new TETableInnerOverlap(settings_,2,1,zbitstab[0][7],rbitstab[0][7]);
+      LUTs[0][10]=new TETableInner(settings_,2,3,1,zbitstab[0][10],rbitstab[0][10],true);
 
       
-      LUTs[1][0]=new TETableOuter(2,zbitstab[1][0],rbitstab[1][0]);
-      LUTs[1][1]=new TETableOuter(3,zbitstab[1][1],rbitstab[1][1]);
-      LUTs[1][2]=new TETableOuter(4,zbitstab[1][2],rbitstab[1][2]);
-      LUTs[1][3]=new TETableOuter(6,zbitstab[1][3],rbitstab[1][3]);
-      LUTs[1][4]=new TETableOuterDisk(2,zbitstab[1][4],rbitstab[1][4]);
-      LUTs[1][5]=new TETableOuterDisk(4,zbitstab[1][5],rbitstab[1][5]);
-      LUTs[1][6]=new TETableOuterDisk(1,zbitstab[1][6],rbitstab[1][6]);
-      LUTs[1][7]=new TETableOuterDisk(1,zbitstab[1][7],rbitstab[1][7]);
-      LUTs[1][10]=new TETableOuter(3,zbitstab[1][10],rbitstab[1][10]);
+      LUTs[1][0]=new TETableOuter(settings_,2,zbitstab[1][0],rbitstab[1][0]);
+      LUTs[1][1]=new TETableOuter(settings_,3,zbitstab[1][1],rbitstab[1][1]);
+      LUTs[1][2]=new TETableOuter(settings_,4,zbitstab[1][2],rbitstab[1][2]);
+      LUTs[1][3]=new TETableOuter(settings_,6,zbitstab[1][3],rbitstab[1][3]);
+      LUTs[1][4]=new TETableOuterDisk(settings_,2,zbitstab[1][4],rbitstab[1][4]);
+      LUTs[1][5]=new TETableOuterDisk(settings_,4,zbitstab[1][5],rbitstab[1][5]);
+      LUTs[1][6]=new TETableOuterDisk(settings_,1,zbitstab[1][6],rbitstab[1][6]);
+      LUTs[1][7]=new TETableOuterDisk(settings_,1,zbitstab[1][7],rbitstab[1][7]);
+      LUTs[1][10]=new TETableOuter(settings_,3,zbitstab[1][10],rbitstab[1][10]);
 
-      LUTs[2][10]=new TETableOuterDisk(1,zbitstab[2][10],rbitstab[2][10]);
-      LUTs[2][11]=new TETableOuter(2,zbitstab[2][11],rbitstab[2][11]);
+      LUTs[2][10]=new TETableOuterDisk(settings_,1,zbitstab[2][10],rbitstab[2][10]);
+      LUTs[2][11]=new TETableOuter(settings_,2,zbitstab[2][11],rbitstab[2][11]);
 
     }
 

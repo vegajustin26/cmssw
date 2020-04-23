@@ -74,7 +74,7 @@ public:
 
     
     
-    if (iSector_==0&&layer_>0&&writeMCcuts) {
+    if (iSector_==0&&layer_>0&&settings_->writeTable()) {
 
       ofstream outphicut;
       outphicut.open(getName()+"_phicut.tab");
@@ -116,7 +116,7 @@ public:
 	}
       }
 
-      if (writeMETables){
+      if (settings_->writeTable()){
 	ofstream out;
 	char layer='0'+layer_;
 	string fname="METable_L";

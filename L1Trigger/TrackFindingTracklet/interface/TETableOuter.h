@@ -14,14 +14,14 @@ class TETableOuter : public TETableBase {
 public:
   TETableOuter() { nbits_ = 6; }
 
-  TETableOuter(int layer, int zbits, int rbits) {
+  TETableOuter(const Settings* settings, int layer, int zbits, int rbits) {
     nbits_ = 6;
-    init(layer, zbits, rbits);
+    init(settings, layer, zbits, rbits);
   }
 
   ~TETableOuter() {}
 
-  void init(int layer, int zbits, int rbits) {
+  void init(const Settings* settings,int layer, int zbits, int rbits) {
     layer_ = layer;
     zbits_ = zbits;
     rbits_ = rbits;
@@ -46,7 +46,7 @@ public:
       }
     }
 
-    if (writeVMTables) {
+    if (settings->writeTable()) {
       writeVMTable("VMTableOuterL" + std::to_string(layer_) + ".tab");
     }
   }

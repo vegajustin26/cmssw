@@ -539,9 +539,6 @@ public:
     izproj[2]   = ITC->zL_2_final.get_ival();
     izproj[3]   = ITC->zL_3_final.get_ival();
 
-    if (writeTC) {
-      cout << "TC "<<layer_<<" "<<innerFPGAStub->iphivmRaw()<<" "<<outerFPGAStub->iphivmRaw();
-    }
 
     if (!goodTrackPars(ITC->rinv_final.local_passes(),
 		       ITC->z0_final.local_passes())) return false;
@@ -578,9 +575,6 @@ public:
     }
 
     
-    if (writeTC) {
-      cout << endl;
-    }
       
     iphiprojdisk[0] = ITC->phiD_0_final.get_ival();
     iphiprojdisk[1] = ITC->phiD_1_final.get_ival();

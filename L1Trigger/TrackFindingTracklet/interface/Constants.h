@@ -50,28 +50,6 @@ static std::string geomext=hourglassExtended?"hourglassExtended":"hourglass";
 
 static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR" (T5/T6 tracker, D21/D11/D17 CMS geometries)
 
-//Program flow (should be true for normal operation)
-//enables the stub finding in these layer/disk combinations
-static const bool doL1L2=true;
-static const bool doL2L3=true;
-static const bool doL3L4=true;
-static const bool doL5L6=true;
-
-static const bool doD1D2=true; 
-static const bool doD3D4=true;
-
-static const bool doL1D1=true;
-static const bool doL2D1=true;
-
-static const bool doL3L4L2=true; // only run if hourglassExtended is true
-static const bool doL5L6L4=true; // only run if hourglassExtended is true
-static const bool doL2L3D1=true; // only run if hourglassExtended is true
-static const bool doD1D2L2=true; // only run if hourglassExtended is true
-
-static const bool allSector=false; //if true duplicate stubs in all sectors -FIXME remove
-
-
-//static const int TMUX = 6; //Only used for link capacity - not affecting tracking
 
 static std::string fitpatternfile="../data/fitpattern.txt"; //list of the different hit patterns for fits
 
@@ -93,26 +71,15 @@ static const bool writeInvTable=false;    //Write out tables of drinv and invt i
 
 static const bool writeHLSInvTable=false; //Write out tables of drinv and invt in tracklet calculator for HLS module
 
-// For HLS testing: produce data/MemPrints/*/*.dat files of input/output data of processing modules.
-static const bool writememLinks = false; //Write files for dtc links
-static const bool writemem = false; //Note that for 'full' detector this will open
-                            //a LOT of files, and the program will run excruciatingly slow
 static const unsigned int writememsect=3;  //writemem only for this sector (note that the files will have _4 extension 
 
-static const bool writeVMRTables = false; //write tables used by VMRouter
 static const bool writeTripletTables=false; //Train and write the TED and TRE tables. N.B.: the tables
                                       //cannot be applied while they are being trained, i.e.,
                                       //this flag effectively turns off the cuts in
                                       //TrackletEngineDisplaced and TripletEngine
 
-static const bool writeTETables=false;  //LUTs used in TE
-static const bool writeVMTables=false;  //LUTs used for VM consistency in TE
-static const bool writeMETables=false;  //LUTS used by ME
-static const bool writeMCcuts=false;    //cuts used by MC
 
-static const bool writeFitDerTable=false; //Write out track derivative tables
-
-static const bool writestubs=false;  // write input stubs in the normal format
+//static const bool writestubs=false;  // write input stubs in the normal format
 static const bool writeoutReal = false; 
 
 
@@ -141,8 +108,6 @@ static const bool writeMatchCalculator=false;
 static const bool writeResiduals=false;
 static const bool writeFitTrack=true;
 static const bool writeChiSq=false;
-
-static const bool writeTC=false; //if true write out which memories track projetions will fill
 
 static const bool writeNMatches=false;
 static const bool writeHitEff=false;
