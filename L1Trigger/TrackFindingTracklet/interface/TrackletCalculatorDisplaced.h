@@ -9,7 +9,6 @@
 #include "ProcessBase.h"
 #include "TrackletProjectionsMemory.h"
 #include "StubTripletsMemory.h"
-#include "Constants.h"
 
 using namespace std;
 

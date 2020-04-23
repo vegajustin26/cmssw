@@ -7,7 +7,6 @@
 #include <math.h>
 
 #include "FPGAWord.h"
-#include "Constants.h"
 #include "Stub.h"
 #include "L1TStub.h"
 

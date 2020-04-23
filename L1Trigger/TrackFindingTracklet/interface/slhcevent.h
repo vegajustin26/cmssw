@@ -10,7 +10,6 @@
 #include <math.h>
 #include <assert.h>
 #include "L1TStub.h"
-#include "Constants.h"
 
 using namespace std;
 

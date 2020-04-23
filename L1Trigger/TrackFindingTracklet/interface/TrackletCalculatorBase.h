@@ -364,7 +364,6 @@ public:
     double sphi1 = phi1 - phioffset_;
     if(sphi1<0) sphi1 += 8*atan(1.);
     if(sphi1>8*atan(1.)) sphi1 -= 8*atan(1.);
-    //cout << "sphi1: "<<phi2<<endl;
     double sphi2 = phi2 - phioffset_;
     if(sphi2<0) sphi2 += 8*atan(1.);
     if(sphi2>8*atan(1.)) sphi2 -= 8*atan(1.);
@@ -419,18 +418,7 @@ public:
     phi0approx = ITC->phi0_final.get_fval();
     tapprox    = ITC->t_final.get_fval();
     z0approx   = ITC->z0_final.get_fval();
-    
-    /*
-    cout << "texact:"<<t<<" tapprox:"<<tapprox<<endl;
-    cout << "z0exact:"<<z0<<" z0approx:"<<z0approx<<" "
-	 <<" zeroth order:"<<z1-tapprox*r1
-	 <<" first order:"
-	 <<z1-tapprox*r1*(1+r1*r1*rinvapprox*rinvapprox/24.0)
-	 <<" wrong first order:"
-	 <<z1-tapprox*r1*(1+r1*r1*rinvapprox*rinvapprox/6.0)
-	 <<endl;
-    */
-    
+        
     phiprojapprox[0] = ITC->phiL_0_final.get_fval();
     phiprojapprox[1] = ITC->phiL_1_final.get_fval();
     phiprojapprox[2] = ITC->phiL_2_final.get_fval();
@@ -660,12 +648,9 @@ public:
     bool addL5=false;
     bool addL6=false;
     for(unsigned int j=0;j<4;j++){
-      //	    cout<<" LL to L "<<lproj[j]<<"\n";
       bool added=false;
       if (tracklet->validProj(lproj_[j])) {
 	added=addLayerProj(tracklet,lproj_[j]);
-	//cout << "Add tracklet proj for layer "<<lproj_[j]<<": "<<phiproj[j]<<" "<<iphiproj[j]<<" added = "
-	//     <<added<<endl;
 	if (added&&lproj_[j]==3) addL3=true;
 	if (added&&lproj_[j]==4) addL4=true;
 	if (added&&lproj_[j]==5) addL5=true;
@@ -681,9 +666,7 @@ public:
       if (disk==2&&addL5) continue;
       if (disk==1&&addL6) continue;
       if (it<0) disk=-disk;
-      //	    cout<<" LL to disk "<<disk<<"\n";
       if (tracklet->validProjDisk(abs(disk))) {
-	//cout << "Add tracklet "<<tracklet<<" for disk "<<disk<<endl;
 	addDiskProj(tracklet,disk);
       }
     }
@@ -811,18 +794,6 @@ public:
     phi0approx = ITC->phi0_final.get_fval();
     tapprox    = ITC->t_final.get_fval();
     z0approx   = ITC->z0_final.get_fval();
-
-    /*
-    cout << "texact:"<<t<<" tapprox:"<<tapprox<<endl;
-    cout << "z0exact:"<<z0<<" z0approx:"<<z0approx<<" "
-	 <<" zeroth order:"<<z1-tapprox*r1
-	 <<" first order:"
-	 <<z1-tapprox*r1*(1+r1*r1*rinvapprox*rinvapprox/24.0)
-	 <<" wrong first order:"
-	 <<z1-tapprox*r1*(1+r1*r1*rinvapprox*rinvapprox/6.0)
-	 <<endl;
-    */
-    
     
     phiprojapprox[0] = ITC->phiL_0_final.get_fval();
     phiprojapprox[1] = ITC->phiL_1_final.get_fval();

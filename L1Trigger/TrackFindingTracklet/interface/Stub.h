@@ -11,7 +11,6 @@
 #include "FPGAWord.h"
 #include "Util.h"
 #include "Settings.h"
-#include "Constants.h"
 
 
 using namespace Trklet;
