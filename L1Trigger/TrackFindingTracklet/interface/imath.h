@@ -118,10 +118,10 @@
 #include <fstream>
 #include <vector>
 #include <map>
-#include <math.h>
+#include <cmath>
 #include <sstream>
 #include <string>
-#include <assert.h>
+#include <cassert>
 #include <set>
 
 #ifdef IMATH_ROOT

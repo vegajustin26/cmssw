@@ -5,8 +5,8 @@
 #include <fstream>
 #include <sstream>
 #include <bitset>
-#include <assert.h>
-#include <math.h>
+#include <cassert>
+#include <cmath>
 
 #include "Util.h"
 

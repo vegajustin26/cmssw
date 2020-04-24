@@ -4,8 +4,8 @@
 #include "TETableBase.h"
 #include <iostream>
 #include <fstream>
-#include <assert.h>
-#include <math.h>
+#include <cassert>
+#include <cmath>
 #include <vector>
 
 

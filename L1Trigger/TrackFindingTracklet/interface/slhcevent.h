@@ -7,8 +7,8 @@
 #include <vector>
 #include <map>
 #include <ext/hash_set>
-#include <math.h>
-#include <assert.h>
+#include <cmath>
+#include <cassert>
 #include "L1TStub.h"
 
 using namespace std;

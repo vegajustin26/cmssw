@@ -1,8 +1,9 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_CPUTimer_h
 #define L1Trigger_TrackFindingTracklet_interface_CPUTimer_h
 
-#include <math.h>
+#include <cmath>
 #include <sys/time.h>
+
 
 class CPUTimer {
 public:

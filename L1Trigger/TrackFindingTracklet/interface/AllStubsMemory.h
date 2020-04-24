@@ -6,7 +6,7 @@
 #include "Stub.h"
 #include "MemoryBase.h"
 
-#include <ctype.h>
+#include <cctype>
 
 using namespace std;
 

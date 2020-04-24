@@ -10,9 +10,9 @@
 #include "Stub.h"
 #include "MemoryBase.h"
 #include "VMRouterPhiCorrTable.h"
-#include <math.h>
+#include <cmath>
 #include <sstream>
-#include <ctype.h>
+#include <cctype>
 
 using namespace std;
 
