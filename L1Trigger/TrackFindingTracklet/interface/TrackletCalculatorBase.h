@@ -291,7 +291,7 @@ public:
     if (settings_->debugTracklet())
       if (keepapprox && !keep)
         cout << getName() << " Tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
-    if (usephicritapprox) {
+    if (settings_->usephicritapprox()) {
       return keepapprox;
     } else {
       return keep;
@@ -337,7 +337,7 @@ public:
 		  phiproj,zproj,phider,zder,
 		  phiprojdisk,rprojdisk,phiderdisk,rderdisk);
 
-    if (useapprox) {
+    if (settings_->useapprox()) {
       phi1=innerFPGAStub->phiapprox(phimin_,phimax_);
       z1=innerFPGAStub->zapprox();
       r1=innerFPGAStub->rapprox();
@@ -721,7 +721,7 @@ public:
 
     //Truncates floating point positions to integer
     //representation precision
-    if (useapprox) {
+    if (settings_->useapprox()) {
       phi1=innerFPGAStub->phiapprox(phimin_,phimax_);
       z1=innerFPGAStub->zapprox();
       r1=innerFPGAStub->rapprox();
@@ -1039,7 +1039,7 @@ public:
     
     //Truncates floating point positions to integer
     //representation precision
-    if (useapprox) {
+    if (settings_->useapprox()) {
       phi1=innerFPGAStub->phiapprox(phimin_,phimax_);
       z1=innerFPGAStub->zapprox();
       r1=innerFPGAStub->rapprox();

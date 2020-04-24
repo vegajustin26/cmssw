@@ -226,7 +226,7 @@ public:
 	double z=stub->z();
 
 	
-	if (useapprox) {
+	if (settings_->useapprox()) {
 	  double dphi=Util::phiRange(phi-fpgastub->phiapprox(0.0,0.0));
 	  assert(std::abs(dphi)<0.001);
 	  phi=fpgastub->phiapprox(0.0,0.0);
@@ -375,7 +375,7 @@ public:
 	double z=stub->z();
 	double r=stub->r();
 		
-	if (useapprox) {
+	if (settings_->useapprox()) {
 	  double dphi=Util::phiRange(phi-fpgastub->phiapprox(0.0,0.0));
 	  assert(std::abs(dphi)<0.001);
 	  phi=fpgastub->phiapprox(0.0,0.0);

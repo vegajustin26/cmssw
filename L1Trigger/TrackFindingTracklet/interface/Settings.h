@@ -263,6 +263,13 @@ namespace Trklet{
       ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(1,-1);
       ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(2,-1);
 
+      // Options for chisq fit
+      useMSFit_ = false;
+      exactderivatives_ = false;  //for both the integer and float
+      exactderivativesforfloating_ = true; //only for the floating point
+      useapprox_ = true; //use approximate postion based on integer representation for floating point
+      usephicritapprox_ = false; //use floating point approximate version of phicrit cut if true
+
       // Duplicate Removal
       // "merge" (hybrid dup removal)
       // "ichi" (pairwise, keep track with best ichisq), "nstub" (pairwise, keep track with more stubs)
@@ -385,6 +392,12 @@ namespace Trklet{
 
     std::string geomext() const {return extended_?"hourglassExtended":"hourglass";}  
 
+    bool useMSFit() const {return useMSFit_;}
+    bool exactderivatives() const {return exactderivatives_;}
+    bool exactderivativesforfloating() const {return exactderivativesforfloating_;}
+    bool useapprox() const {return useapprox_;}
+    bool usephicritapprox() const {return usephicritapprox_;}
+    
     unsigned int minIndStubs() const {return minIndStubs_;}
     std::string removalType() const {return removalType_;}
     std::string mergeComparison() const {return mergeComparison_;}
@@ -493,6 +506,12 @@ namespace Trklet{
     mutable IMATH_TrackletCalculatorOverlap* ITC_L2F1_;
     mutable IMATH_TrackletCalculatorOverlap* ITC_L1B1_;
     mutable IMATH_TrackletCalculatorOverlap* ITC_L2B1_;
+
+    bool useMSFit_;
+    bool exactderivatives_;
+    bool exactderivativesforfloating_;
+    bool useapprox_;
+    bool usephicritapprox_;
 
     unsigned int minIndStubs_;
     std::string removalType_;

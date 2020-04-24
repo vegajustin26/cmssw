@@ -965,7 +965,7 @@ public:
 		  phiderdisk,rderdisk
 		  );
 
-    if (useapprox) {
+    if (settings_->useapprox()) {
       phi1=innerFPGAStub->phiapprox(phimin_,phimax_);
       z1=innerFPGAStub->zapprox();
       r1=innerFPGAStub->rapprox();
@@ -1057,7 +1057,7 @@ public:
     if (settings_->debugTracklet())
       if (keep && !keepapprox)
         cout << "TrackletCalculatorDisplaced::LLLSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
-    if (usephicritapprox) {
+    if (settings_->usephicritapprox()) {
       if (!keep) return false;
     }
     else {
@@ -1246,7 +1246,7 @@ public:
 		  phiderdisk,rderdisk
 		  );
 
-    if (useapprox) {
+    if (settings_->useapprox()) {
       phi1=innerFPGAStub->phiapprox(phimin_,phimax_);
       z1=innerFPGAStub->zapprox();
       r1=innerFPGAStub->rapprox();
@@ -1338,7 +1338,7 @@ public:
     if (settings_->debugTracklet())
       if (keep && !keepapprox)
         cout << "TrackletCalculatorDisplaced::DDLSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
-    if (usephicritapprox) {
+    if (settings_->usephicritapprox()) {
       if (!keep) return false;
     }
     else {
@@ -1516,7 +1516,7 @@ public:
 		  phiderdisk,rderdisk
 		  );
 
-    if (useapprox) {
+    if (settings_->useapprox()) {
       phi1=innerFPGAStub->phiapprox(phimin_,phimax_);
       z1=innerFPGAStub->zapprox();
       r1=innerFPGAStub->rapprox();
@@ -1608,7 +1608,7 @@ public:
     if (settings_->debugTracklet())
       if (keep && !keepapprox)
         cout << "TrackletCalculatorDisplaced::LLDSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
-    if (usephicritapprox) {
+    if (settings_->usephicritapprox()) {
       if (!keep) return false;
     }
     else {

@@ -7,18 +7,6 @@
 
 static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR" (T5/T6 tracker, D21/D11/D17 CMS geometries)
 
-
-//
-// Options for chisq fit
-//
-static const bool useMSFit=false;
-static const bool tcorrection=true;
-static const bool exactderivatives=false;  //for both the integer and float
-static const bool exactderivativesforfloating=true; //only for the floating point
-static const bool useapprox=true; //use approximate postion based on integer representation for floating point
-static const bool usephicritapprox=false; //use floating point approximate version of phicrit cut if true
-
-
 //
 // Parameters for bit sizes
 //
