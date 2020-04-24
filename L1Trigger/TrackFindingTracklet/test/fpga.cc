@@ -251,7 +251,7 @@ int main(const int argc, const char** argv)
   }
   
   ofstream skimout;
-  if (skimfile!="") skimout.open(skimfile.c_str());
+  if (settings.skimfile() != "") skimout.open(settings.skimfile().c_str());
 
   CPUTimer readTimer;
   CPUTimer cleanTimer;
@@ -341,7 +341,7 @@ int main(const int argc, const char** argv)
 	continue;
       }
 
-      if (skimfile!="") ev.write(skimout);
+      if (settings.skimfile() != "") ev.write(skimout);
  
     } 
 
@@ -642,7 +642,7 @@ int main(const int argc, const char** argv)
        <<setw(20)<<setprecision(3)<<PDTimer.tottime()<<endl;
 
 
-  if (skimfile!="") skimout.close();
+  if (settings.skimfile()!="") skimout.close();
 
   histimp->close();
   

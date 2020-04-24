@@ -305,7 +305,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   }
 
   // adding capability of booking histograms internal to tracklet steps
-  if (bookHistos) {
+  if (settings.bookHistos()) {
     histimp = new HistImp;
     TH1::AddDirectory(kTRUE);
     histimp->init();
@@ -433,7 +433,7 @@ L1FPGATrackProducer::~L1FPGATrackProducer() {
     asciiEventOut_.close();
   }
 
-  if (bookHistos) {
+  if (settings.bookHistos()) {
     histimp->close();
   }
 

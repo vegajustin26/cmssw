@@ -263,7 +263,7 @@ namespace Trklet{
 #ifdef USEHYBRID
       removalType_ = "merge";
       // "CompareBest" (recommended) Compares only the best stub in each track for each region (best = smallest phi residual)
-      //    and will merge the two tracks if stubs are shared in three or more regions
+      // and will merge the two tracks if stubs are shared in three or more regions
       // "CompareAll" Compares all stubs in a region, looking for matches, and will merge the two tracks if stubs are shared in three or more regions
       mergeComparison_ = "CompareBest";
       doKF_ = true; 
@@ -274,6 +274,8 @@ namespace Trklet{
       // configuration options
       fitpatternfile_ = "../data/fitpattern.txt"; // list of the different hit patterns for fits (read in through python config for CMSSW running)
 
+      skimfile_ = ""; // if this string is non-empty, write ascii file with processed events
+      
     }
 
     bool geomTkTDR() const {return geomTkTDR_;}
@@ -377,6 +379,8 @@ namespace Trklet{
     std::string fitpatternfile() const {return fitpatternfile_;}
     void setFitpatternfile(std::string fitpatternfile) {fitpatternfile_ = fitpatternfile;}
 
+    std::string skimfile() const {return skimfile_;}
+    void setSkimfile(std::string skimfile) {skimfile_ = skimfile;}
     
   private:
 
@@ -466,7 +470,8 @@ namespace Trklet{
     bool extended_;
 
     std::string fitpatternfile_;
-    
+    std::string skimfile_;
+
   };
 }
 

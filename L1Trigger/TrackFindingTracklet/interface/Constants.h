@@ -22,17 +22,7 @@
 // Overall configuration switches
 //
 
-static const bool bookHistos=false; //set to true/false to turn on/off histogram booking internal to the tracking (class "HistImp")
-
-
 static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR" (T5/T6 tracker, D21/D11/D17 CMS geometries)
-
-
-
-//If this string is non-empty we will write ascii file with
-//processed events
-static const std::string skimfile="";
-//static const std::string skimfile="evlist_skim.txt";
 
 
 
