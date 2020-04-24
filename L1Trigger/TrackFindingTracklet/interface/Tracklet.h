@@ -24,7 +24,7 @@ class Tracklet{
 
 public:
 
-  Tracklet(L1TStub* innerStub, L1TStub* middleStub, L1TStub* outerStub,
+  Tracklet(const Settings * settings, L1TStub* innerStub, L1TStub* middleStub, L1TStub* outerStub,
 	   Stub* innerFPGAStub, Stub* middleFPGAStub, Stub* outerFPGAStub,
 	   double rinv, double phi0, double d0, double z0, double t,
 	   double rinvapprox, double phi0approx, double d0approx,
@@ -80,12 +80,12 @@ public:
 
     //fill projection layers
     for(unsigned int i=0;i<4;i++) {
-      projlayer_[i]=projlayers[seedIndex_][i];
+      projlayer_[i]=settings->projlayers(seedIndex_,i);
     }
 
     //fill projection disks
     for(unsigned int i=0;i<5;i++) {
-      projdisk_[i]=projdisks[seedIndex_][i];
+      projdisk_[i]=settings->projdisks(seedIndex_,i);
     }
 
     

@@ -21,8 +21,8 @@ public:
 
     initLayerDisksandISeed(layerdisk1_,layerdisk2_,iSeed_);
 
-    innerphibits_=nfinephi_[0][iSeed_];
-    outerphibits_=nfinephi_[1][iSeed_];
+    innerphibits_=settings->nfinephi(0,iSeed_);
+    outerphibits_=settings->nfinephi(1,iSeed_);
   }
 
   void addOutput(MemoryBase* memory,string output){

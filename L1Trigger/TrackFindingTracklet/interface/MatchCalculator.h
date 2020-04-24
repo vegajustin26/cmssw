@@ -50,13 +50,13 @@ public:
     
     for(unsigned int iSeed=0;iSeed<12;iSeed++) {
       if (layerdisk_<6) {
-	phimatchcut_[iSeed]=rphimatchcut[layerdisk_][iSeed]/(kphi1*rmean[layerdisk_]);
-	zmatchcut_[iSeed]=zmatchcut[layerdisk_][iSeed]/kz;
+	phimatchcut_[iSeed]=settings_->rphimatchcut(iSeed,layerdisk_)/(kphi1*rmean[layerdisk_]);
+	zmatchcut_[iSeed]=settings_->zmatchcut(iSeed,layerdisk_)/kz;
       } else {
-	rphicutPS_[iSeed]=rphicutPS[layerdisk_-6][iSeed]/(kphiproj123*kr);
-	rphicut2S_[iSeed]=rphicut2S[layerdisk_-6][iSeed]/(kphiproj123*kr);
-	rcut2S_[iSeed]=rcut2S[layerdisk_-6][iSeed]/krprojshiftdisk;
-	rcutPS_[iSeed]=rcutPS[layerdisk_-6][iSeed]/krprojshiftdisk;
+	rphicutPS_[iSeed]=settings_->rphicutPS(iSeed,layerdisk_-6)/(kphiproj123*kr);
+	rphicut2S_[iSeed]=settings_->rphicut2S(iSeed,layerdisk_-6)/(kphiproj123*kr);
+	rcut2S_[iSeed]=settings_->rcut2S(iSeed,layerdisk_-6)/krprojshiftdisk;
+	rcutPS_[iSeed]=settings_->rcutPS(iSeed,layerdisk_-6)/krprojshiftdisk;
       }
     }
 

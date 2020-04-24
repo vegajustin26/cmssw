@@ -607,7 +607,7 @@ public:
 	  <<endl;
     }	        
         
-    Tracklet* tracklet=new Tracklet(innerStub,NULL,outerStub,
+    Tracklet* tracklet=new Tracklet(settings_,innerStub,NULL,outerStub,
 				    innerFPGAStub,NULL,outerFPGAStub,
 				    rinv,phi0,0.0,z0,t,
 				    rinvapprox,phi0approx,0.0,
@@ -951,7 +951,7 @@ public:
 	  <<endl;
     }
 	    
-    Tracklet* tracklet=new Tracklet(innerStub,NULL,outerStub,
+    Tracklet* tracklet=new Tracklet(settings_,innerStub,NULL,outerStub,
 				    innerFPGAStub,NULL,outerFPGAStub,
 				    rinv,phi0,0.0,z0,t,
 				    rinvapprox,phi0approx,0.0,
@@ -1282,7 +1282,7 @@ public:
 	  <<endl;
     }
 	      
-    Tracklet* tracklet=new Tracklet(innerStub,NULL,outerStub,
+    Tracklet* tracklet=new Tracklet(settings_,innerStub,NULL,outerStub,
 				    innerFPGAStub,NULL,outerFPGAStub,
 				    rinv,phi0,0.0,z0,t,
 				    rinvapprox,phi0approx,0.0,

@@ -61,14 +61,14 @@ public:
 
     for(unsigned int iSeed=0;iSeed<12;iSeed++) {
       if (layer_>0) {
-	phimatchcut_[iSeed]=rphimatchcut[layer_-1][iSeed]/(kphi1*rmean[layer_-1]);
-	zmatchcut_[iSeed]=zmatchcut[layer_-1][iSeed]/kz;
+	phimatchcut_[iSeed]=settings_->rphimatchcut(iSeed,layer_-1)/(kphi1*rmean[layer_-1]);
+	zmatchcut_[iSeed]=settings_->zmatchcut(iSeed,layer_-1)/kz;
       }
       if (disk_!=0) {
-	rphicutPS_[iSeed]=rphicutPS[abs(disk_)-1][iSeed]/(kphiproj123*kr);
-	rphicut2S_[iSeed]=rphicut2S[abs(disk_)-1][iSeed]/(kphiproj123*kr);
-	rcut2S_[iSeed]=rcut2S[abs(disk_)-1][iSeed]/krprojshiftdisk;
-	rcutPS_[iSeed]=rcutPS[abs(disk_)-1][iSeed]/krprojshiftdisk;
+	rphicutPS_[iSeed]=settings_->rphicutPS(iSeed,abs(disk_)-1)/(kphiproj123*kr);
+	rphicut2S_[iSeed]=settings_->rphicut2S(iSeed,abs(disk_)-1)/(kphiproj123*kr);
+	rcut2S_[iSeed]=settings_->rcut2S(iSeed,abs(disk_)-1)/krprojshiftdisk;
+	rcutPS_[iSeed]=settings_->rcutPS(iSeed,abs(disk_)-1)/krprojshiftdisk;
       }
     }
 
