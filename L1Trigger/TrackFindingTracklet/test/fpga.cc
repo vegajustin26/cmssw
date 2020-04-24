@@ -163,7 +163,7 @@ int main(const int argc, const char** argv)
 
   cout << "Will read memory modules file"<<endl;
 
-  string memfile="../data/memorymodules_"+geomext+".dat";
+  string memfile="../data/memorymodules_"+settings.geomext()+".dat";
   ifstream inmem(memfile.c_str());
   assert(inmem.good());
 
@@ -183,7 +183,7 @@ int main(const int argc, const char** argv)
 
   cout << "Will read processing modules file"<<endl;
 
-  string procfile="../data/processingmodules_"+geomext+".dat";
+  string procfile="../data/processingmodules_"+settings.geomext()+".dat";
   ifstream inproc(procfile.c_str());
   assert(inproc.good());
 
@@ -203,7 +203,7 @@ int main(const int argc, const char** argv)
 
   cout << "Will read wiring information"<<endl;
 
-  string wirefile="../data/wires_"+geomext+".dat";
+  string wirefile="../data/wires_"+settings.geomext()+".dat";
   ifstream inwire(wirefile.c_str());
   assert(inwire.good());
 

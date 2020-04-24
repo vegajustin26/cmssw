@@ -17,7 +17,7 @@ public:
     string subname = name.substr(11, 2);
     if (subname[0] == '_')
       subname = name.substr(12, 2);
-    if (hourglassExtended) {
+    if (settings_->extended()) {
       subname = name.substr(14, 2);
       if (subname[0] == '_')
         subname = name.substr(15, 2);

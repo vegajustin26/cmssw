@@ -17,8 +17,6 @@ public:
     iSector_=iSector;
     bx_=0;
     event_=0;
-    extended_=hourglassExtended;
-    nHelixPar_=nHelixPar;
   }
 
   virtual ~MemoryBase(){}
@@ -192,8 +190,6 @@ protected:
 
   string name_;
   unsigned int iSector_;
-  bool extended_;
-  unsigned int nHelixPar_;
   
   ofstream out_;
   int bx_;

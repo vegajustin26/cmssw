@@ -276,8 +276,8 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 
   extended_ = iConfig.getUntrackedParameter<bool>("Extended", false);
   nHelixPar_ = iConfig.getUntrackedParameter<unsigned int>("Hnpar", 4);
-  hourglassExtended = extended_;
-  nHelixPar = nHelixPar_;
+  settings.setExtended(extended_);
+  settings.setNHelixPar(nHelixPar_);
 
   krinvpars = TrackletCalculator::ITC_L1L2.rinv_final.get_K();
   kphi0pars = TrackletCalculator::ITC_L1L2.phi0_final.get_K();
@@ -448,7 +448,7 @@ void L1FPGATrackProducer::endJob() {
 #ifdef USEHYBRID
 #ifdef USE_HLS
   TMTT::Settings settingsTMTT;
-  TMTT::KFParamsCombCallHLS fitterKF(&settingsTMTT, nHelixPar, "KFfitterHLS");
+  TMTT::KFParamsCombCallHLS fitterKF(&settingsTMTT, settings.nHelixPar(), "KFfitterHLS");
   fitterKF.endJob();  // Check bits ranges of KF HLS.
 #endif
 #endif
@@ -875,8 +875,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     unsigned int tmp_hit = track->hitpattern();
     double tmp_Bfield = mMagneticFieldStrength;
 
-    TTTrack<Ref_Phase2TrackerDigi_> aTrack(
-        tmp_rinv, tmp_phi, tmp_tanL, tmp_z0, tmp_d0, tmp_chi2rphi, tmp_chi2rz, 0, 0, 0, tmp_hit, nHelixPar_, tmp_Bfield);
+    TTTrack<Ref_Phase2TrackerDigi_> aTrack(tmp_rinv, tmp_phi, tmp_tanL, tmp_z0, tmp_d0, tmp_chi2rphi, tmp_chi2rz, 0, 0, 0, tmp_hit, settings.nHelixPar(), tmp_Bfield);
 
     unsigned int trksector = track->sector();
     unsigned int trkseed = (unsigned int)abs(track->seed());
@@ -902,8 +901,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     }
 
     // pt consistency
-    float ptconsistency =
-        StubPtConsistency::getConsistency(aTrack, theTrackerGeom, tTopo, mMagneticFieldStrength, nHelixPar_);
+    float ptconsistency = StubPtConsistency::getConsistency(aTrack, theTrackerGeom, tTopo, mMagneticFieldStrength, settings.nHelixPar());
     aTrack.setStubPtConsistency(ptconsistency);
 
     // set TTTrack word

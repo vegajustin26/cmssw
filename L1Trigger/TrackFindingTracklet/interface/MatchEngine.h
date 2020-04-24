@@ -250,8 +250,8 @@ public:
 
 	  projrinv=barrel?(16+(((-2)*proj->fpgaphiprojder(layer_).value())>>(proj->fpgaphiprojder(layer_).nbits()-4))):proj->getBendIndex(disk_).value();
 	  assert(projrinv>=0);
-	  if (hourglassExtended&&projrinv==32){ //FIXME - should not need this
-	    //cout << "Warning: projrinv:"<<projrinv<<endl;
+	  if (settings_->extended()&&projrinv==32){ //FIXME - should not need this
+	    cout << "Warning: projrinv:"<<projrinv<<endl;
 	    projrinv=31;
 	  }
 	  assert(projrinv<32);

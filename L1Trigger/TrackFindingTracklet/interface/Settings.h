@@ -13,6 +13,11 @@ namespace Trklet{
 
     Settings(){
 
+      //Uncomment to run the hybrid algorithm
+      //#ifdef CMSSW_GIT_HASH
+      //#define USEHYBRID
+      //#endif
+
       geomTkTDR_=false;
       nzbitsdisk_=7;
 
@@ -226,8 +231,8 @@ namespace Trklet{
 
       bookHistos_=false; //set to true/false to turn on/off histogram booking internal to the tracking (class "HistImp")
 
-      nHelixPar_ = 4; // 4 or 5 param helix fit.
-      hourglassExtended_=false; // turn on displaced tracking, also edit L1TrackNtupleMaker_cfg.py (search for "Extended" on several lines)
+      nHelixPar_ = 4; // 4 or 5 param helix fit
+      extended_ = false; // turn on displaced tracking
 
       ptcut_ = 1.91; //Minimum pt
       rinvcut_ = 0.01*0.3*3.8/ptcut_; //0.01 to convert to cm-1
@@ -246,7 +251,29 @@ namespace Trklet{
       ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(2,1);
       ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(1,-1);
       ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(2,-1);
+
+      // Duplicate Removal
+      // "merge" (hybrid dup removal)
+      // "ichi" (pairwise, keep track with best ichisq), "nstub" (pairwise, keep track with more stubs)
+      // "grid" (TMTT-like removal), "" (no removal)
+      minIndStubs_ = 3; // not used with merge removal
+      removalType_ = "ichi";
+      doKF_ = false;
       
+#ifdef USEHYBRID
+      removalType_ = "merge";
+      // "CompareBest" (recommended) Compares only the best stub in each track for each region (best = smallest phi residual)
+      //    and will merge the two tracks if stubs are shared in three or more regions
+      // "CompareAll" Compares all stubs in a region, looking for matches, and will merge the two tracks if stubs are shared in three or more regions
+      mergeComparison_ = "CompareBest";
+      doKF_ = true; 
+#endif
+      fakefit_ = false; // if true, run a dummy fit, producing TTracks directly from output of tracklet pattern reco stage
+
+      
+      // configuration options
+      fitpatternfile_ = "../data/fitpattern.txt"; // list of the different hit patterns for fits (read in through python config for CMSSW running)
+
     }
 
     bool geomTkTDR() const {return geomTkTDR_;}
@@ -312,10 +339,7 @@ namespace Trklet{
 
     
     bool bookHistos() const {return bookHistos_;}
-
-    unsigned int nHelixPar() const {return nHelixPar_;}
-    bool hourglassExtended() const {return hourglassExtended_;}
-
+    
     double ptcut() const {return ptcut_;}
     double rinvcut() const {return rinvcut_;}
 
@@ -333,6 +357,25 @@ namespace Trklet{
     IMATH_TrackletCalculatorOverlap* ITC_L2F1() const {return ITC_L2F1_;}
     IMATH_TrackletCalculatorOverlap* ITC_L1B1() const {return ITC_L1B1_;}
     IMATH_TrackletCalculatorOverlap* ITC_L2B1() const {return ITC_L2B1_;}
+
+    std::string geomext() const {return extended_?"hourglassExtended":"hourglass";}  
+
+    unsigned int minIndStubs() const {return minIndStubs_;}
+    std::string removalType() const {return removalType_;}
+    std::string mergeComparison() const {return mergeComparison_;}
+    bool doKF() const {return doKF_;}
+    bool fakefit() const {return fakefit_;}
+
+    
+    // configurable 
+    unsigned int nHelixPar() const {return nHelixPar_;}
+    void setNHelixPar(unsigned int nHelixPar) {nHelixPar_ = nHelixPar;}
+
+    bool extended() const {return extended_;}
+    void setExtended(bool extended) {extended_ = extended;}
+    
+    std::string fitpatternfile() const {return fitpatternfile_;}
+    void setFitpatternfile(std::string fitpatternfile) {fitpatternfile_ = fitpatternfile;}
 
     
   private:
@@ -395,9 +438,6 @@ namespace Trklet{
 
     bool bookHistos_;
 	  
-    unsigned int nHelixPar_;
-    bool hourglassExtended_;
-
     double ptcut_;
     double rinvcut_;
 
@@ -416,6 +456,16 @@ namespace Trklet{
     mutable IMATH_TrackletCalculatorOverlap* ITC_L1B1_;
     mutable IMATH_TrackletCalculatorOverlap* ITC_L2B1_;
 
+    unsigned int minIndStubs_;
+    std::string removalType_;
+    std::string mergeComparison_;
+    bool doKF_;
+    bool fakefit_;
+
+    unsigned int nHelixPar_;
+    bool extended_;
+
+    std::string fitpatternfile_;
     
   };
 }

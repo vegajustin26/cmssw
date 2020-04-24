@@ -34,16 +34,10 @@ static const bool warnNoDer=false;  //If true will print out warnings about miss
 
 static const bool bookHistos=false; //set to true/false to turn on/off histogram booking internal to the tracking (class "HistImp")
 
-static unsigned int nHelixPar = 4; // 4 or 5 param helix fit.
-static bool hourglassExtended=false; // turn on displaced tracking, also edit L1TrackNtupleMaker_cfg.py (search for "Extended" on several lines)
-
-//Gemetry extensions -- used only by stand-alone code.
-static std::string geomext=hourglassExtended?"hourglassExtended":"hourglass";  
 
 static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR" (T5/T6 tracker, D21/D11/D17 CMS geometries)
 
 
-static std::string fitpatternfile="../data/fitpattern.txt"; //list of the different hit patterns for fits
 
 //If this string is non-empty we will write ascii file with
 //processed events
@@ -368,25 +362,6 @@ static double krinvpars, kphi0pars, kd0pars, ktpars, kz0pars;
 static double kphiproj123, kphiproj456, kzproj, kphider, kzder;
 static double krprojshiftdisk, kphiprojdisk,krprojderdisk;
 static double krdisk,krprojderdiskshift, kzpars;
-
-
-//Duplicate Removal
-static const int minIndStubs=3; // not used with merge removal
-//"ichi" (pairwise, keep track with best ichisq), "nstub" (pairwise, keep track with more stubs), "grid" (TMTT-like removal), "" (no removal), "merge" (hybrid dup removal)
-
-#ifdef USEHYBRID
-static const std::string RemovalType="merge";
-// "CompareBest" (recommended) Compares only the best stub in each track for each region (best = smallest phi residual) and will merge the two tracks if stubs are shared in three or more regions
-// "CompareAll" Compares all stubs in a region, looking for matches, and will merge the two tracks if stubs are shared in three or more regions
-static const std::string MergeComparison="CompareBest";
-static const bool doKF=true; //true => use KF (USEHYBRID is defined)
-#else
-static const std::string RemovalType="ichi";
-static const bool doKF=false; //false => use chi2 fit (USEHYBRID is not defined)
-#endif
-//static const std::string RemovalType=""; // Run without duplicate removal
-
-static const bool fakefit=false; //if true, run a dummy fit, producing TTracks directly from output of tracklet pattern reco stage. (Not working for Hybrid)
 
 #endif
 

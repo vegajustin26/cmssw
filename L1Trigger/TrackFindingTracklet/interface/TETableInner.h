@@ -24,6 +24,8 @@ public:
   void init(const Settings* settings, int layer1, int layer2, int zbits, int rbits) { init(settings, layer1, layer2, -1, zbits, rbits); }
 
   void init(const Settings* settings, int layer1, int layer2, int layer3, int zbits, int rbits, bool thirdLayerIsDisk = false) {
+    extended_ = settings->extended();
+
     thirdLayerIsDisk_ = thirdLayerIsDisk;
 
     layer1_ = layer1;
@@ -66,7 +68,6 @@ public:
 
     for (int izbin = 0; izbin < zbins_; izbin++) {
       for (int irbin = 0; irbin < rbins_; irbin++) {
-        //int ibin=irbin+izbin*rbins_;
         int value = getLookupValue(izbin, irbin, extra);
         table_.push_back(value);
       }
@@ -127,9 +128,6 @@ public:
     int zbinmin = NBINS * (zminl2 + zlength) / (2 * zlength);
     int zbinmax = NBINS * (zmaxl2 + zlength) / (2 * zlength);
 
-    //cout << "zbinmin zminl2 "<<zbinmin<<" "<<zminl2<<endl;
-    //cout << "zbinmax zmaxl2 "<<zbinmax<<" "<<zmaxl2<<endl;
-
     if (zbinmin < 0)
       zbinmin = 0;
     if (zbinmax >= NBINS)
@@ -144,17 +142,15 @@ public:
       valueL2 += 1;
     valueL2 *= 8;
     valueL2 += (zbinmin & 7);
-    //cout << "zbinmax/8 zbinmin/8 valueL2 "<<zbinmax/8<<" "<<zbinmin/8<<" "<<valueL2<<endl;
     assert(valueL2 / 8 < 15);
     int deltaz = zbinmax - zbinmin;
     if (deltaz > 7) {
-      //cout << "deltaz = "<<deltaz<<endl;
       deltaz = 7;
     }
     assert(deltaz < 8);
     valueL2 += (deltaz << 7);
 
-    if (!hourglassExtended) {
+    if (!extended_) {
       return valueL2;
     }
 
@@ -162,9 +158,6 @@ public:
 
     zbinmin = NBINS * (zminl3 + zlength) / (2 * zlength);
     zbinmax = NBINS * (zmaxl3 + zlength) / (2 * zlength);
-
-    //cout << "zbinmin zminl2 "<<zbinmin<<" "<<zminl2<<endl;
-    //cout << "zbinmax zmaxl2 "<<zbinmax<<" "<<zmaxl2<<endl;
 
     if (zbinmin < 0)
       zbinmin = 0;
@@ -180,11 +173,9 @@ public:
       valueL3 += 1;
     valueL3 *= 8;
     valueL3 += (zbinmin & 7);
-    //cout << "zbinmax/8 zbinmin/8 valueL3 "<<zbinmax/8<<" "<<zbinmin/8<<" "<<valueL3<<endl;
     assert(valueL3 / 8 < 15);
     deltaz = zbinmax - zbinmin;
     if (deltaz > 7) {
-      //cout << "deltaz = "<<deltaz<<endl;
       deltaz = 7;
     }
     assert(deltaz < 8);
@@ -226,16 +217,12 @@ public:
       if (rmaxd3 < rmaxdiskvm)
         rbinmax = 0;
 
-      //cout << "zbinmin zminl2 "<<zbinmin<<" "<<zminl2<<endl;
-      //cout << "zbinmax zmaxl2 "<<zbinmax<<" "<<zmaxl2<<endl;
-
       if (rbinmin < 0)
         rbinmin = 0;
       if (rbinmax >= NBINS)
         rbinmax = NBINS - 1;
 
       assert(rbinmin <= rbinmax);
-      //assert(rbinmax-rbinmin<=(int)NLONGVMBINS);
 
       valueD3 = rbinmin / 8;
       if (z1 < 0)
@@ -245,11 +232,9 @@ public:
         valueD3 += 1;
       valueD3 *= 8;
       valueD3 += (rbinmin & 7);
-      //cout << "zbinmax/8 zbinmin/8 valueD3 "<<zbinmax/8<<" "<<zbinmin/8<<" "<<valueD3<<endl;
       assert(valueD3 / 8 < 15);
       int deltar = rbinmax - rbinmin;
       if (deltar > 7) {
-        //cout << "deltar = "<<deltar<<endl;
         deltar = 7;
       }
       assert(deltar < 8);
@@ -311,16 +296,12 @@ public:
   void findr(double r, double z, double& rmind2, double& rmaxd2) {
     double rd2 = rintercept(z0cut, r, z);
 
-    //cout << "rd2 : "<<r<<" "<<z<<" "<<rd2<<endl;
-
     if (rd2 < rmind2)
       rmind2 = rd2;
     if (rd2 > rmaxd2)
       rmaxd2 = rd2;
 
     rd2 = rintercept(-z0cut, r, z);
-
-    //cout << "rd2 : "<<rd2<<endl;
 
     if (rd2 < rmind2)
       rmind2 = rd2;
@@ -329,7 +310,6 @@ public:
   }
 
   double rintercept(double zcut, double r, double z) {
-    //cout << "zcut z "<<zcut<<" "<<z<<endl;
 
     double zmean = (z > 0.0) ? zmeand3_ : -zmeand3_;
 
@@ -367,6 +347,8 @@ private:
 
   double rmaxdisk_;
   double rmindisk_;
+
+  bool extended_;
 };
 
 #endif

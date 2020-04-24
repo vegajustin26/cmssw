@@ -82,7 +82,7 @@ public:
     inputstublists_.clear();
     mergedstubidslists_.clear();
     
-    if(RemovalType!="merge") {
+    if (settings_->removalType()!="merge") {
       for (unsigned int i=0;i<inputtrackfits_.size();i++) {
         if(inputtrackfits_[i]->nTracks()==0) continue;
         for(unsigned int j=0;j<inputtrackfits_[i]->nTracks();j++){
@@ -101,7 +101,7 @@ public:
     ////////////////////
     #ifdef USEHYBRID
 
-    if(RemovalType=="merge") {
+    if(settings_->removalType()=="merge") {
 
       std::vector<std::pair<int,bool>> trackInfo; // Track seed & duplicate flag
       std::vector<int> seedRank; // Vector to store the relative rank of the track candidate for merging, based on seed type
@@ -147,10 +147,10 @@ public:
             seedRank.push_back(7);
           } else if (curSeed == 21) {
             seedRank.push_back(8);
-          } else if (extended_) {
+          } else if (settings_->extended()) {
             seedRank.push_back(9);
           } else {
-            cout << "Error: Seed " << curSeed << " not found in list, and extended_ not set." << endl;
+            cout << "Error: Seed " << curSeed << " not found in list, and settings->extended() not set." << endl;
             assert(0);
           }
 
@@ -182,10 +182,10 @@ public:
           std::vector<std::pair<int,int>> stubsTrk2 = inputstubidslists_[jtrk];
 
           // Count number of Unique Regions (UR) that share stubs, and the number of UR that each track hits
-          int nShareUR = 0;
-          int nURStubTrk1 = 0;
-          int nURStubTrk2 = 0;
-          if (MergeComparison == "CompareAll") {
+          unsigned int nShareUR = 0;
+          unsigned int nURStubTrk1 = 0;
+          unsigned int nURStubTrk2 = 0;
+          if (settings_->mergeComparison() == "CompareAll") {
             bool URArray[16];
             for (int i=0; i<16; i++) { URArray[i] = false; };
             for(std::vector<std::pair<int, int>>::iterator  st1=stubsTrk1.begin(); st1!=stubsTrk1.end(); st1++) {
@@ -203,7 +203,7 @@ public:
                 }
               }
             }
-          } else if (MergeComparison == "CompareBest") {
+          } else if (settings_->mergeComparison() == "CompareBest") {
             std::vector<std::pair<Stub*,L1TStub*>> fullStubslistsTrk1 = inputstublists_[itrk];
             std::vector<std::pair<Stub*,L1TStub*>> fullStubslistsTrk2 = inputstublists_[jtrk];
 
@@ -246,7 +246,7 @@ public:
             {
               int t1i = URStubidsTrk1[i];
               int t2i = URStubidsTrk2[i];
-              if (t1i != -1 && t2i != -1 && stubsTrk1[t1i].first == stubsTrk2[t2i].first && stubsTrk1[t1i].second == stubsTrk2[t2i].second) nShareUR ++;
+              if (t1i != -1 && t2i != -1 && stubsTrk1[t1i].first == stubsTrk2[t2i].first && stubsTrk1[t1i].second == stubsTrk2[t2i].second) nShareUR++;
             }
             // Calculate the number of unique regions hit by each track, so that this number can be used in calculating the number of independent
             // stubs on a track (not enabled/used by default)
@@ -321,11 +321,7 @@ public:
         Tracklet* tracklet = inputtracklets_[itrk];
         std::vector<std::pair<Stub*,L1TStub*>> trackstublist = inputstublists_[itrk];
   
-        //add phicrit cut to reduce duplicates
-        //double phicrit=tracklet->phi0()-asin(0.5*rcrit*tracklet->rinv());
-        //bool keep=(phicrit>phicritmin)&&(phicrit<phicritmax);
-	
-	HybridFit hybridFitter(iSector_,settings_,extended_,nHelixPar_);
+	HybridFit hybridFitter(iSector_,settings_);
 	hybridFitter.Fit(tracklet, trackstublist);
 
         // If the track was accepted (and thus fit), add to output
@@ -347,7 +343,7 @@ public:
     //////////////////
     // Grid removal //
     //////////////////
-    if(RemovalType=="grid") {
+    if(settings_->removalType()=="grid") {
 
       // Sort tracks by ichisq/DoF so that removal will keep the lower ichisq/DoF track
       std::sort(inputtracks_.begin(), inputtracks_.end(), [](const Track* lhs, const Track* rhs)
@@ -381,7 +377,7 @@ public:
     //////////////////////////
     // ichi + nstub removal //
     //////////////////////////
-    if(RemovalType=="ichi" || RemovalType=="nstub") {
+    if(settings_->removalType()=="ichi" || settings_->removalType()=="nstub") {
       //print tracks for debugging
       for(unsigned int itrk=0; itrk<numTrk; itrk++) {
         std::map<int, int> stubsTrk1 = inputtracks_[itrk]->stubID();
@@ -398,9 +394,9 @@ public:
         // If primary track is a duplicate, it cannot veto any...move on
         if(inputtracks_[itrk]->duplicate()==1) continue;
 
-        int nStubP = 0;
-        vector<int> nStubS(numTrk);
-        vector<int> nShare(numTrk);
+        unsigned int nStubP = 0;
+        vector<unsigned int> nStubS(numTrk);
+        vector<unsigned int> nShare(numTrk);
         // Get and count primary stubs
         std::map<int, int> stubsTrk1 = inputtracks_[itrk]->stubID();
         nStubP = stubsTrk1.size();
@@ -427,14 +423,12 @@ public:
           if(inputtracks_[jtrk]->duplicate()==1) continue;
 	  
           // Chi2 duplicate removal
-          if(RemovalType=="ichi") {
-            if((nStubP-nShare[jtrk] < minIndStubs) || (nStubS[jtrk]-nShare[jtrk] < minIndStubs)) {
+          if(settings_->removalType()=="ichi") {
+            if((nStubP-nShare[jtrk] < settings_->minIndStubs()) || (nStubS[jtrk]-nShare[jtrk] < settings_->minIndStubs())) {
               if((int)inputtracks_[itrk]->ichisq()/(2*inputtracks_[itrk]->stubID().size()-4) > (int)inputtracks_[jtrk]->ichisq()/(2*inputtracks_[itrk]->stubID().size()-4)) {
-		//cout << "Dup1: "<<inputtracks_[itrk]->phi0()<<" "<<sinh(inputtracks_[itrk]->eta())<<" "<<inputtracks_[itrk]->rinv()<<" "<<inputtracks_[itrk]->phi0()-inputtracks_[jtrk]->phi0()<<" "<<sinh(inputtracks_[itrk]->eta())-sinh(inputtracks_[jtrk]->eta())<<" "<<inputtracks_[itrk]->rinv()-inputtracks_[jtrk]->rinv()<<endl;
                 inputtracks_[itrk]->setDuplicate(true);
               }
               else if((int)inputtracks_[itrk]->ichisq()/(2*inputtracks_[itrk]->stubID().size()-4) <= (int)inputtracks_[jtrk]->ichisq()/(2*inputtracks_[itrk]->stubID().size()-4)) {
-		//cout << "Dup2: "<<inputtracks_[itrk]->phi0()<<" "<<sinh(inputtracks_[itrk]->eta())<<" "<<inputtracks_[itrk]->rinv()<<" "<<inputtracks_[itrk]->phi0()-inputtracks_[jtrk]->phi0()<<" "<<sinh(inputtracks_[itrk]->eta())-sinh(inputtracks_[jtrk]->eta())<<" "<<inputtracks_[itrk]->rinv()-inputtracks_[jtrk]->rinv()<<endl;
                 inputtracks_[jtrk]->setDuplicate(true);
               }
               else cout << "Error: Didn't tag either track in duplicate pair." << endl;
@@ -442,11 +436,11 @@ public:
           } // end ichi removal
 
           // nStub duplicate removal
-          if(RemovalType=="nstub") {
-            if((nStubP-nShare[jtrk] < minIndStubs) && (nStubP <  nStubS[jtrk])) {
+          if(settings_->removalType()=="nstub") {
+            if((nStubP-nShare[jtrk] < settings_->minIndStubs()) && (nStubP <  nStubS[jtrk])) {
               inputtracks_[itrk]->setDuplicate(true);
             }
-            else if((nStubS[jtrk]-nShare[jtrk] < minIndStubs) && (nStubS[jtrk] <= nStubP)) {
+            else if((nStubS[jtrk]-nShare[jtrk] < settings_->minIndStubs()) && (nStubS[jtrk] <= nStubP)) {
               inputtracks_[jtrk]->setDuplicate(true);
             }
             else cout << "Error: Didn't tag either track in duplicate pair." << endl;
@@ -459,7 +453,7 @@ public:
     } // end ichi + nstub removal
 
     //Add tracks to output
-    if(RemovalType!="merge") {
+    if(settings_->removalType()!="merge") {
       for(unsigned int i=0;i<inputtrackfits_.size();i++) {
         for(unsigned int j=0;j<inputtrackfits_[i]->nTracks();j++) {
 	  if(inputtrackfits_[i]->getTrack(j)->getTrack()->duplicate()==0) {

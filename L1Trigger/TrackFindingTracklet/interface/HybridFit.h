@@ -23,15 +23,13 @@ using namespace std;
 
 class HybridFit {
 public:
-  HybridFit(unsigned int iSector, const Settings* const settings, bool extended, unsigned int nHelixPar) {
+  HybridFit(unsigned int iSector, const Settings* const settings) {
     iSector_ = iSector;
     settings_ = settings;
-    extended_ = extended;
-    nHelixPar_ = nHelixPar;
   }
 
   void Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>& trackstublist) {
-    if (fakefit) {
+    if (settings_->fakefit()) {
       tracklet->setFitPars(tracklet->rinvapprox(),
                            tracklet->phi0approx(),
                            tracklet->d0approx(),
@@ -179,12 +177,12 @@ public:
     static bool firstPrint = true;
 #ifdef USE_HLS
     if (firstPrint)
-      cout << "Will make KFParamsCombHLS for " << nHelixPar_ << " param fit" << endl;
-    static thread_local tmtt::KFParamsCombCallHLS fitterKF(&TMTTsettings, nHelixPar_, "KFfitterHLS");
+      cout << "Will make KFParamsCombHLS for " << settings_->nHelixPar() << " param fit" << endl;
+    static thread_local tmtt::KFParamsCombCallHLS fitterKF(&TMTTsettings, settings_->nHelixPar(), "KFfitterHLS");
 #else
     if (firstPrint)
-      cout << "Will make KFParamsComb for " << nHelixPar_ << " param fit" << endl;
-    static thread_local tmtt::KFParamsComb fitterKF(&TMTTsettings, nHelixPar_, "KFfitter");
+      cout << "Will make KFParamsComb for " << settings_->nHelixPar() << " param fit" << endl;
+    static thread_local tmtt::KFParamsComb fitterKF(&TMTTsettings, settings_->nHelixPar(), "KFfitter");
 #endif
     firstPrint = false;
 
@@ -263,8 +261,6 @@ public:
 
 private:
   unsigned int iSector_;
-  bool extended_;
-  unsigned int nHelixPar_;
 
   const Settings* const settings_;
 

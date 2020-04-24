@@ -17,8 +17,6 @@ public:
   settings_(settings){
     name_=name;
     iSector_=iSector;
-    extended_=hourglassExtended;
-    nHelixPar_=nHelixPar;
   }
 
   virtual ~ProcessBase() { } 
@@ -178,8 +176,6 @@ protected:
 
   string name_;
   unsigned int iSector_;
-  bool extended_;
-  unsigned int nHelixPar_;
 
   const Settings* const settings_;
   

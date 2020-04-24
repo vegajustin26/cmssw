@@ -163,7 +163,7 @@ class FitTrack:public ProcessBase{
 
 #ifdef USEHYBRID
   void trackFitNew(Tracklet* tracklet, std::vector<std::pair<Stub*,L1TStub*>> &trackstublist, std::vector<std::pair<int,int>> &stubidslist){
-   if (doKF) {
+    if (settings_->doKF()) {
 
     // From full match lists, collect all the stubs associated with the tracklet seed
 
@@ -207,7 +207,7 @@ class FitTrack:public ProcessBase{
 
 
     // For merge removal, loop through the resulting list of stubs to calculate their stubids
-    if(RemovalType=="merge") {
+    if(settings_->removalType()=="merge") {
       for(std::vector<std::pair<Stub*,L1TStub*>>::iterator it=trackstublist.begin(); it!=trackstublist.end(); it++) {
         int layer = it->first->layer().value()+1; // Assume layer (1-6) stub first
         if(it->first->layer().value() < 0) { // if disk stub, though...
@@ -220,7 +220,7 @@ class FitTrack:public ProcessBase{
       return;
     }
 
-    HybridFit hybridFitter(iSector_,settings_,extended_,nHelixPar_);
+    HybridFit hybridFitter(iSector_,settings_);
     hybridFitter.Fit(tracklet, trackstublist);
     return;
    }
@@ -228,14 +228,12 @@ class FitTrack:public ProcessBase{
 
    static TrackDerTable derTable;
 
-
    //test
    static bool first=true;
    if (first) {
-    derTable.readPatternFile(fitpatternfile);
+     derTable.readPatternFile(settings_->fitpatternfile());
     derTable.fillTable(settings_);
-    cout << "Number of entries in derivative table: "
-     <<derTable.getEntries()<<endl;
+    cout << "Number of entries in derivative table: " << derTable.getEntries() << endl;
     assert(derTable.getEntries()!=0);
 
     //testDer();
@@ -1194,13 +1192,13 @@ class FitTrack:public ProcessBase{
       #ifdef USEHYBRID
       trackFitNew(bestTracklet,trackstublist,stubidslist);
       #else
-      if (fakefit) {
+      if (settings_->fakefit()) {
         trackFitFake(bestTracklet,trackstublist,stubidslist);
       } else {
         trackFitNew(bestTracklet,trackstublist,stubidslist);
       }
       #endif
-      if(RemovalType=="merge") {
+      if(settings_->removalType()=="merge") {
         trackfit_->addStubList(trackstublist);
         trackfit_->addStubidsList(stubidslist);
         trackfit_->addTrack(bestTracklet);

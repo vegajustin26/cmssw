@@ -374,7 +374,7 @@ public:
     unsigned int rbits=settings_->rbitstab(inner,iseed);
     assert(rbits!=0);
     unsigned int lutwidth=settings_->lutwidthtab(inner,iseed);
-    if (hourglassExtended){
+    if (settings_->extended()){
       lutwidth=settings_->lutwidthtabextended(inner,iseed);
     }
     assert(lutwidth!=0);
@@ -387,6 +387,7 @@ public:
     } 
 
     int lutvalue=LUTs[inner][iseed]->lookup(zbin,rbin);
+
     if (lutvalue<0) {
       return FPGAWord(lutvalue,2,false,__LINE__,__FILE__);
     } else {

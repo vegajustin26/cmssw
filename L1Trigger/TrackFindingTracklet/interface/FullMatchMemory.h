@@ -16,7 +16,7 @@ public:
     phimin_ = phimin;
     phimax_ = phimax;
     string subname = name.substr(8, 2);
-    if (extended_)
+    if (settings_->extended())
       subname = name.substr(10, 2);
     layer_ = 0;
     disk_ = 0;
@@ -69,7 +69,7 @@ public:
   }
 
   void addMatch(Tracklet* tracklet, std::pair<Stub*, L1TStub*> stub) {
-    if (!doKF) {  //When using KF we allow multiple matches
+    if (!settings_->doKF()) {  //When using KF we allow multiple matches
       for (unsigned int i = 0; i < matches_.size(); i++) {
         if (matches_[i].first == tracklet) {  //Better match, replace
           matches_[i].second = stub;
@@ -80,8 +80,8 @@ public:
     std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > tmp(tracklet, stub);
     //Check that we have the right TCID order
     if (matches_.size() > 0) {
-      if ((!doKF && matches_[matches_.size() - 1].first->TCID() >= tracklet->TCID()) ||
-          (doKF && matches_[matches_.size() - 1].first->TCID() > tracklet->TCID())) {
+      if ((!settings_->doKF() && matches_[matches_.size() - 1].first->TCID() >= tracklet->TCID()) ||
+          (settings_->doKF() && matches_[matches_.size() - 1].first->TCID() > tracklet->TCID())) {
         cout << "Wrong TCID ordering in " << getName() << " : " << matches_[matches_.size() - 1].first->TCID() << " "
              << tracklet->TCID() << " " << matches_[matches_.size() - 1].first->trackletIndex() << " "
              << tracklet->trackletIndex() << endl;

@@ -24,7 +24,7 @@ class Tracklet{
 
 public:
 
-  Tracklet(const Settings * settings, L1TStub* innerStub, L1TStub* middleStub, L1TStub* outerStub,
+  Tracklet(const Settings* settings, L1TStub* innerStub, L1TStub* middleStub, L1TStub* outerStub,
 	   Stub* innerFPGAStub, Stub* middleFPGAStub, Stub* outerFPGAStub,
 	   double rinv, double phi0, double d0, double z0, double t,
 	   double rinvapprox, double phi0approx, double d0approx,
@@ -35,9 +35,8 @@ public:
 	   DiskProjection diskprojs[4],
 	   bool disk, bool overlap=false){
 
+    settings_ = settings;
     
-    //cout << "New Tracklet"<<endl;
-
     overlap_=overlap;
     disk_=disk;
     assert(!(disk&&overlap));
@@ -281,7 +280,7 @@ public:
     // top 5 bits of rinv and shifted to be positive
     int irinvvm = 16+(tmp_irinv>>(nbits_irinv-5));
 
-    if (hourglassExtended&&(irinvvm>31)) { //FIXME - shoud not need this
+    if (settings_->extended() && (irinvvm>31)) { //FIXME - shoud not need this
       cout << "Warning irinvvm too large:"<<irinvvm<<endl;
       irinvvm=31;
     }
@@ -328,7 +327,7 @@ public:
     }
     tmp.set(trackletIndex_,7,true,__LINE__,__FILE__);
     FPGAWord tcid;
-    if (hourglassExtended) {
+    if (settings_->extended()) {
       tcid.set(TCIndex_,8,true,__LINE__,__FILE__);
     } else {
       tcid.set(TCIndex_,7,true,__LINE__,__FILE__);
@@ -355,7 +354,7 @@ public:
     }
     tmp.set(trackletIndex_,7,true,__LINE__,__FILE__);
     FPGAWord tcid;
-    if (hourglassExtended) {
+    if (settings_->extended()) {
       tcid.set(TCIndex_,8,true,__LINE__,__FILE__);
     } else {
       tcid.set(TCIndex_,7,true,__LINE__,__FILE__);
@@ -716,7 +715,7 @@ public:
     }
     tmp.set(trackletIndex_,7,true,__LINE__,__FILE__);
     FPGAWord tcid;
-    if (hourglassExtended) {
+    if (settings_->extended()) {
       tcid.set(TCIndex_,8,true,__LINE__,__FILE__);
     } else {
       tcid.set(TCIndex_,7,true,__LINE__,__FILE__);
@@ -742,7 +741,7 @@ public:
     }
     tmp.set(trackletIndex_,7,true,__LINE__,__FILE__);
     FPGAWord tcid;
-    if (hourglassExtended) {
+    if (settings_->extended()) {
       tcid.set(TCIndex_,8,true,__LINE__,__FILE__);
     } else {
       tcid.set(TCIndex_,7,true,__LINE__,__FILE__);
@@ -1444,6 +1443,7 @@ private:
   LayerResidual layerresid_[6];
   DiskResidual diskresid_[5];
 
+  const Settings* settings_;
   
 };
 
