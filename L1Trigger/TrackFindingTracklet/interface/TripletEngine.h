@@ -83,7 +83,7 @@ public:
   }
 
   ~TripletEngine() {
-    if (writeTripletTables)
+    if (settings_->writeTripletTables())
       writeTables();
   }
 
@@ -221,10 +221,10 @@ public:
                          <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule())
                          <<endl;
                   }		
-                  if (!writeTripletTables)
+                  if (!settings_->writeTripletTables())
                     continue;
                 }
-                if (writeTripletTables)
+                if (settings_->writeTripletTables())
                   table_[index] = true;
 
                 const unsigned spIndex = stubpairs_.at(i)->getIndex(j);
@@ -301,10 +301,10 @@ public:
                          <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule())
                          <<endl;
                   }		
-                  if (!writeTripletTables)
+                  if (!settings_->writeTripletTables())
                     continue;
                 }
-                if (writeTripletTables)
+                if (settings_->writeTripletTables())
                   table_[index] = true;
 
                 const unsigned spIndex = stubpairs_.at(i)->getIndex(j);
@@ -385,10 +385,10 @@ public:
                          <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule())
                          <<endl;
                   }		
-                  if (!writeTripletTables)
+                  if (!settings_->writeTripletTables())
                     continue;
                 }
-                if (writeTripletTables)
+                if (settings_->writeTripletTables())
                   table_[index] = true;
 
                 const unsigned spIndex = stubpairs_.at(i)->getIndex(j);

@@ -188,13 +188,13 @@ public:
 		       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
 		       <<endl;
 		}		
-                if (!writeTripletTables)
+                if (!settings_->writeTripletTables())
                   continue;
 	      }
 	      		
 	      if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
-                if (writeTripletTables || table_.at(index).count(stubpairs_.at(isp)->getName())) {
+                if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                   if (settings_->writeMonitorData("Seeds")) {
                     ofstream fout("seeds.txt", ofstream::app);
                     fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
@@ -269,13 +269,13 @@ public:
 		       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
 		       <<endl;
 		}		
-                if (!writeTripletTables)
+                if (!settings_->writeTripletTables())
                   continue;
 	      }
 
 	      if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
-                if (writeTripletTables || table_.at(index).count(stubpairs_.at(isp)->getName())) {
+                if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                   if (settings_->writeMonitorData("Seeds")) {
                     ofstream fout("seeds.txt", ofstream::app);
                     fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
@@ -344,14 +344,14 @@ public:
 		       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
 		       <<endl;
 		}
-                if (!writeTripletTables)
+                if (!settings_->writeTripletTables())
                   continue;
 	      }
 
 	      if (settings_->debugTracklet()) cout << "Adding disk-disk pair in " <<getName()<<endl;
 	      
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
-                if (writeTripletTables || table_.at(index).count(stubpairs_.at(isp)->getName())) {
+                if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                   if (settings_->writeMonitorData("Seeds")) {
                     ofstream fout("seeds.txt", ofstream::app);
                     fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;

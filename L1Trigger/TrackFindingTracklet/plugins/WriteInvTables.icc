@@ -1,9 +1,9 @@
-if (writeInvTable || writeHLSInvTable) {
+if (settings.writeInvTable() || settings.writeHLSInvTable()) {
   cout << " Writing Inverse Tables \n";
   ofstream finv;
   void (*writeLUT)(const var_inv&, ofstream&) = NULL;
   string extension = "";
-  if (writeInvTable) {
+  if (settings.writeInvTable()) {
     writeLUT = [](const var_inv& x, ofstream& fs) -> void { return x.writeLUT(fs, var_base::verilog); };
     extension = "h";
   } else {

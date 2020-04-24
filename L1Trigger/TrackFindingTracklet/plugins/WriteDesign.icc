@@ -1,5 +1,5 @@
 
-if (writeVerilog || writeHLS) {
+if (settings.writeVerilog() || settings.writeHLS()) {
   std::map<std::string, std::vector<var_base *> > v;
 
   ////////////////////////////////////////////////////////////////////////////
@@ -640,9 +640,9 @@ if (writeVerilog || writeHLS) {
   for (const auto &calculator : v) {
     const std::string &layer = calculator.first;
     const std::vector<var_base *> v = calculator.second;
-    ofstream fv("TC_" + layer + (writeVerilog ? ".v" : ".cpp"));
+    ofstream fv("TC_" + layer + (settings.writeVerilog() ? ".v" : ".cpp"));
 
-    if (writeVerilog)
+    if (settings.writeVerilog())
       var_base::Design_print(v, fv, var_base::verilog);
     else
       var_base::Design_print(v, fv, var_base::hls);

@@ -160,7 +160,7 @@
 	  }
 	}
 
-	if(add&&settings.writeMem()&&k==writememsect) {
+	if(add&&settings.writeMem()&&k==settings.writememsect()) {
 	  Stub fpgastub(stub,&settings,sectors[k]->phimin(),sectors[k]->phimax());
 	  FPGAWord phi=fpgastub.phi();
 	  int topbit=phi.value()>>(phi.nbits()-1);
@@ -216,7 +216,7 @@
 
 if (settings.writeMem()) {
   for (unsigned int k=0;k<NSector;k++) {
-    if(k==writememsect)
+    if(k==settings.writememsect())
       sectors[k]->writeInputStubs(first);
   }
  }
@@ -269,7 +269,7 @@ if (settings.writeMem()) {
     VMRouterTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeVMR();	 
-      if(settings.writeMem()&&k==writememsect) {
+      if(settings.writeMem()&&k==settings.writememsect()) {
         sectors[k]->writeInputStubs(first);	 
         sectors[k]->writeVMSTE(first);	 
         sectors[k]->writeVMSME(first);	 
@@ -293,7 +293,7 @@ if (settings.writeMem()) {
     TRETimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeTRE();	
-      if(settings.writeMem()&&k==writememsect){
+      if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeST(first);
       } 
     }
@@ -301,13 +301,13 @@ if (settings.writeMem()) {
 
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeTP();	 
-      if(settings.writeMem()&&k==writememsect){
+      if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeTPAR(first);
       } 
     }
 
     for (unsigned int k=0;k<NSector;k++) {
-      if(settings.writeMem()&&k==writememsect){
+      if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeSP(first);
       } 
     }
@@ -316,7 +316,7 @@ if (settings.writeMem()) {
     TCTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeTC();	 
-      if(settings.writeMem()&&k==writememsect){
+      if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeTPAR(first);
       } 
     }
@@ -366,7 +366,7 @@ if (settings.writeMem()) {
     TCDTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeTCD();	 
-      if(settings.writeMem()&&k==writememsect){
+      if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeTPAR(first);
         sectors[k]->writeTPROJ(first);
       } 
@@ -377,7 +377,7 @@ if (settings.writeMem()) {
     PRTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executePR();	
-      if(settings.writeMem()&&k==writememsect){
+      if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeVMPROJ(first);
         sectors[k]->writeAP(first);
       }
@@ -387,7 +387,7 @@ if (settings.writeMem()) {
     METimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeME();	
-      if(settings.writeMem()&&k==writememsect){
+      if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeCM(first);
       } 
     }
@@ -407,7 +407,7 @@ if (settings.writeMem()) {
     MPTimer.stop();
 
     for (unsigned int k=0;k<NSector;k++) {
-      if(settings.writeMem()&&k==writememsect){
+      if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeMC(first);
       }
     }
@@ -417,7 +417,7 @@ if (settings.writeMem()) {
     FTTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeFT();	 
-      if((settings.writeMem()||settings.writeMonitorData("IFit"))&&k==writememsect){
+      if((settings.writeMem()||settings.writeMonitorData("IFit"))&&k==settings.writememsect()){
          sectors[k]->writeTF(first);
       }
     }
@@ -426,7 +426,7 @@ if (settings.writeMem()) {
     PDTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executePD(tracks);	  
-      if(((settings.writeMem()||settings.writeMonitorData("IFit"))&&k==writememsect) || settings.writeMonitorData("CT")){
+      if(((settings.writeMem()||settings.writeMonitorData("IFit"))&&k==settings.writememsect()) || settings.writeMonitorData("CT")){
          sectors[k]->writeCT(first);
       }
     }

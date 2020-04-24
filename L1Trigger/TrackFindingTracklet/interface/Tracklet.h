@@ -234,7 +234,7 @@ public:
   //Tracklet parameters print out
   std::string trackletparstr() {
     std::ostringstream oss;
-    if(writeoutReal){
+    if(settings_->writeoutReal()){
       oss << fpgapars_.rinv().value()*krinvpars<<" "
 	  << fpgapars_.phi0().value()*kphi0pars<<" "
 	  << fpgapars_.d0().value()*kd0pars<<" "
@@ -243,7 +243,7 @@ public:
     }
     
     //Binary Print out
-    if(!writeoutReal){
+    if(!settings_->writeoutReal()){
       oss << innerFPGAStub_->stubindex().str()<<"|";
       if (middleFPGAStub_) {
         oss << middleFPGAStub_->stubindex().str()<<"|";
@@ -1189,36 +1189,33 @@ public:
     
     
     // real Q print out for fitted tracks
-    if(writeoutReal){
+    if(settings_->writeoutReal()){
       oss << (fpgafitpars_.rinv().value())*krinvpars<<" "
 	  << (fpgafitpars_.phi0().value())*kphi0pars<<" "
 	  << (fpgafitpars_.d0().value())*kd0pars<<" "
 	  << (fpgafitpars_.t().value())*ktpars<<" "
 	  << (fpgafitpars_.z0().value())*kz<<" "
-      //<< ichisqfit_.str()<< "|"                            
-        << innerFPGAStub_->phiregionaddressstr()<<" ";
-    if (middleFPGAStub_) {
-      oss << middleFPGAStub_->phiregionaddressstr()<<" ";
-    }
-    oss << outerFPGAStub_->phiregionaddressstr()<<" "
-	<< stubid0<<"|"
-	<< stubid1<<"|"
-	<< stubid2<<"|"
-	<< stubid3;
+	  << innerFPGAStub_->phiregionaddressstr()<<" ";
+      if (middleFPGAStub_) {
+	oss << middleFPGAStub_->phiregionaddressstr()<<" ";
+      }
+      oss << outerFPGAStub_->phiregionaddressstr()<<" "
+	  << stubid0<<"|"
+	  << stubid1<<"|"
+	  << stubid2<<"|"
+	  << stubid3;
     }
     //Binary print out
-    if(!writeoutReal){
+    if(!settings_->writeoutReal()){
       oss << fpgafitpars_.rinv().str()<<"|"
 	  << fpgafitpars_.phi0().str()<<"|"
 	  << fpgafitpars_.d0().str()<<"|"
-	//<< "xxxxxxxxxxx|"
 	  << fpgafitpars_.t().str()<<"|"
 	  << fpgafitpars_.z0().str()<<"|"
-	//<< ichisqfit_.str()<< "|"
 	  << innerFPGAStub_->phiregionaddressstr()<<"|";
-    if (middleFPGAStub_) {
-      oss << middleFPGAStub_->phiregionaddressstr()<<"|";
-    }
+      if (middleFPGAStub_) {
+	oss << middleFPGAStub_->phiregionaddressstr()<<"|";
+      }
       oss << outerFPGAStub_->phiregionaddressstr()<<"|"
 	  << stubid0<<"|"
 	  << stubid1<<"|"
