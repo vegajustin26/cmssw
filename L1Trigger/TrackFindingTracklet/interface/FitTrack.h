@@ -224,7 +224,7 @@ class FitTrack:public ProcessBase{
    }
 #endif
 
-   static TrackDerTable derTable;
+    static TrackDerTable derTable(settings_);
 
    //test
    static bool first=true;
@@ -315,7 +315,7 @@ class FitTrack:public ProcessBase{
     for (unsigned int d=1;d<=5;d++) {
      if (layermask&(1<<(d-1))) continue;
 
-     if (mult==1<<(3*alphaBitsTable)) continue;
+     if (mult==1<<(3*settings_->alphaBitsTable())) continue;
 
      if (ndisks+nlayers>=6) continue;
      if (tracklet->matchdisk(d)) {
@@ -326,14 +326,14 @@ class FitTrack:public ProcessBase{
       else{
        int ialpha = tracklet->ialphadisk(d).value();
        int nalpha = tracklet->ialphadisk(d).nbits();
-       nalpha = nalpha - alphaBitsTable; 
-       ialpha = (1<<(alphaBitsTable-1)) + (ialpha>>nalpha);
+       nalpha = nalpha - settings_->alphaBitsTable(); 
+       ialpha = (1<<(settings_->alphaBitsTable()-1)) + (ialpha>>nalpha);
 
        alphaindex+=ialpha*power;
-       power=power<<alphaBitsTable;
+       power=power<<settings_->alphaBitsTable();
        matches2[2*(d-1)+1]='1';
        diskmask|=(1<<(2*(5-d)));
-       mult=mult<<alphaBitsTable;
+       mult=mult<<settings_->alphaBitsTable();
       }
       alpha[ndisks]=tracklet->alphadisk(d);
       phiresid[nlayers+ndisks]=tracklet->phiresidapproxdisk(d);
@@ -347,7 +347,7 @@ class FitTrack:public ProcessBase{
      }
     }
 
-    if (mult<=1<<(3*alphaBitsTable)) {
+    if (mult<=1<<(3*settings_->alphaBitsTable())) {
       if (settings_->writeMonitorData("HitPattern")) {
       out2<<matches<<" "<<matches2<<" "<<mult<<endl;
      }
@@ -401,14 +401,14 @@ class FitTrack:public ProcessBase{
       else{
        int ialpha = tracklet->ialphadisk(d).value();
        int nalpha = tracklet->ialphadisk(d).nbits();
-       nalpha = nalpha - alphaBitsTable;
-       ialpha = (1<<(alphaBitsTable-1)) + (ialpha>>nalpha);
+       nalpha = nalpha - settings_->alphaBitsTable();
+       ialpha = (1<<(settings_->alphaBitsTable()-1)) + (ialpha>>nalpha);
 
        alphaindex+=ialpha*power;
-       power=power<<alphaBitsTable;
+       power=power<<settings_->alphaBitsTable();
        matches2[2*(d1-1)+1]='1';
        diskmask|=(1<<(2*(5-d1)));
-       mult=mult<<alphaBitsTable;
+       mult=mult<<settings_->alphaBitsTable();
       }
 
       alpha[ndisks]=tracklet->alphadisk(d);
@@ -455,7 +455,7 @@ class FitTrack:public ProcessBase{
 
     for (unsigned int d1=1;d1<=5;d1++) {
 
-     if (mult==1<<(3*alphaBitsTable)) continue;
+     if (mult==1<<(3*settings_->alphaBitsTable())) continue;
      int d=d1;
      if (tracklet->fpgat().value()<0.0) d=-d1;
      if (d==tracklet->disk()){  //All seeds in PS modules
@@ -478,16 +478,16 @@ class FitTrack:public ProcessBase{
       else{
        int ialpha = tracklet->ialphadisk(d).value();
        int nalpha = tracklet->ialphadisk(d).nbits();
-       nalpha = nalpha - alphaBitsTable;
-       ialpha = (1<<(alphaBitsTable-1)) + (ialpha>>nalpha);
+       nalpha = nalpha - settings_->alphaBitsTable();
+       ialpha = (1<<(settings_->alphaBitsTable()-1)) + (ialpha>>nalpha);
 
        alphaindex+=ialpha*power;
-       power=power<<alphaBitsTable;
+       power=power<<settings_->alphaBitsTable();
        matches2[2*(d1-1)+1]='1';
        diskmask|=(1<<(2*(5-d1)));
        FPGAWord tmp;
        tmp.set(diskmask,10);
-       mult=mult<<alphaBitsTable;
+       mult=mult<<settings_->alphaBitsTable();
       }
 
       alpha[ndisks]=tracklet->alphadisk(d);
@@ -506,16 +506,16 @@ class FitTrack:public ProcessBase{
 
    } 
 
-   int rinvindex=(1<<(nrinvBitsTable-1))*rinv/0.0057+(1<<(nrinvBitsTable-1));
+   int rinvindex=(1<<(settings_->nrinvBitsTable()-1))*rinv/0.0057+(1<<(settings_->nrinvBitsTable()-1));
    if (rinvindex<0) rinvindex=0;
-   if (rinvindex>=(1<<nrinvBitsTable)) rinvindex=(1<<nrinvBitsTable)-1;
+   if (rinvindex>=(1<<settings_->nrinvBitsTable())) rinvindex=(1<<settings_->nrinvBitsTable())-1;
 
    int ptbin=0;
    if (std::abs(rinv)<0.0057/2) ptbin=1;
    if (std::abs(rinv)<0.0057/4) ptbin=2;
    if (std::abs(rinv)<0.0057/8) ptbin=3;
 
-   TrackDer* derivatives=derTable.getDerivatives(layermask, diskmask,alphaindex,rinvindex,settings_->warnNoDer());
+   TrackDer* derivatives=derTable.getDerivatives(layermask, diskmask,alphaindex,rinvindex);
 
    if (derivatives==0) {
      if (settings_->warnNoDer()) { 

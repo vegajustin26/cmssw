@@ -157,9 +157,9 @@ public:
 
     for (unsigned int i=0; i<10; i++) {
       ialphafactinner_[i]= 
-	(1<<alphashift)*krprojshiftdisk*half2SmoduleWidth/(1<<(nbitsalpha-1))/(settings_->rDSSinner(i)*settings_->rDSSinner(i))/kphiproj123;
+	(1<<settings_->alphashift())*krprojshiftdisk*half2SmoduleWidth/(1<<(settings_->nbitsalpha()-1))/(settings_->rDSSinner(i)*settings_->rDSSinner(i))/kphiproj123;
       ialphafactouter_[i]= 
-	(1<<alphashift)*krprojshiftdisk*half2SmoduleWidth/(1<<(nbitsalpha-1))/(settings_->rDSSouter(i)*settings_->rDSSouter(i))/kphiproj123;
+	(1<<settings_->alphashift())*krprojshiftdisk*half2SmoduleWidth/(1<<(settings_->nbitsalpha()-1))/(settings_->rDSSouter(i)*settings_->rDSSouter(i))/kphiproj123;
     }
 
     barrel_=layer_>0;
@@ -566,7 +566,7 @@ public:
       
       if (!stub->isPSmodule()) {	  
 	int ialphanew=fpgastub->alphanew().value();
-	int iphialphacor=((ideltar*ialphanew*ialphafact)>>alphashift);
+	int iphialphacor=((ideltar*ialphanew*ialphafact)>>settings_->alphashift());
 	ideltaphi+=iphialphacor;
       }
       

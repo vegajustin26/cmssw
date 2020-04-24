@@ -12,7 +12,10 @@ using namespace std;
 
 class TrackDerTable {
 public:
-  TrackDerTable() {
+  TrackDerTable(const Settings* settings) {
+
+    settings_ = settings;
+    
     Nlay_ = 6;
     Ndisk_ = 5;
 
@@ -21,7 +24,7 @@ public:
 
     LayerDiskMemBits_ = 18;
 
-    alphaBits_ = alphaBitsTable;
+    alphaBits_ = settings_->alphaBitsTable();
 
     nextLayerValue_ = 0;
     nextDiskValue_ = 0;
@@ -48,16 +51,15 @@ public:
   TrackDer* getDerivatives(unsigned int layermask,
                            unsigned int diskmask,
                            unsigned int alphaindex,
-                           unsigned int rinvindex,
-			   bool warnNoDer) {
-    int index = getIndex(layermask, diskmask, warnNoDer);
+                           unsigned int rinvindex) {
+    int index = getIndex(layermask, diskmask);
     if (index < 0) {
       return 0;
     }
-    return &derivatives_[index + alphaindex * (1 << nrinvBitsTable) + rinvindex];
+    return &derivatives_[index + alphaindex * (1 << settings_->nrinvBitsTable()) + rinvindex];
   }
 
-  int getIndex(unsigned int layermask, unsigned int diskmask, bool warnNoDer) {
+  int getIndex(unsigned int layermask, unsigned int diskmask) {
     assert(layermask < LayerMem_.size());
 
     assert(diskmask < DiskMem_.size());
@@ -66,7 +68,7 @@ public:
     int diskcode = DiskMem_[diskmask];
 
     if (diskcode < 0 || layercode < 0) {
-      if (warnNoDer) {
+      if (settings_->warnNoDer()) {
         cout << "layermask diskmask : " << layermask << " " << diskmask << endl;
       }
       return -1;
@@ -85,7 +87,7 @@ public:
     int address = LayerDiskMem_[layerdiskaddress];
 
     if (address < 0) {
-      if (warnNoDer) {
+      if (settings_->warnNoDer()) {
         cout << "layermask diskmask : " << layermask << " " << diskmask << endl;
       }
       return -1;
@@ -187,7 +189,7 @@ public:
       int layers = strtol(layerstr.c_str(), tmpptr, 2);
       int disks = strtol(diskstr.c_str(), tmpptr, 2);
 
-      addEntry(layers, disks, multiplicity, (1 << nrinvBitsTable));
+      addEntry(layers, disks, multiplicity, (1 << settings_->nrinvBitsTable()));
     }
   }
 
@@ -203,7 +205,7 @@ public:
       int alphamask = der.getAlphaMask();
       int irinv = der.getirinv();
 
-      double rinv = (irinv - ((1 << (nrinvBitsTable - 1)) - 0.5)) * 0.0057 / (1 << (nrinvBitsTable - 1));
+      double rinv = (irinv - ((1 << (settings_->nrinvBitsTable() - 1)) - 0.5)) * 0.0057 / (1 << (settings_->nrinvBitsTable() - 1));
 
       bool print = false;
 
@@ -1483,6 +1485,9 @@ private:
   int nextDiskValue_;
   int nextLayerDiskValue_;
   int lastMultiplicity_;
+
+  const Settings* settings_;
+
 };
 
 #endif

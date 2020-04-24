@@ -8,7 +8,8 @@ class LayerProjection {
 public:
   LayerProjection() { valid_ = false; }
 
-  void init(int projlayer,
+  void init(const Settings* settings,
+	    int projlayer,
             double rproj,
             int iphiproj,
             int izproj,
@@ -25,9 +26,8 @@ public:
     assert(projlayer >= 1);
     assert(projlayer <= 6);
 
-    //if (debug1)
-    //cout << "Initiating projection to layer = " << projlayer << " at radius = " << rproj << endl;
-
+    settings_ = settings;
+    
     valid_ = true;
 
     rproj_ = rproj;
@@ -67,16 +67,16 @@ public:
     ////int zbin=4+(zproj.value()>>(zproj.nbits()-3));
     ////But we need some range (particularly for L5L6 seed projecting to L1-L3):
     unsigned int zbin1 =
-        (1 << (MEBinsBits - 1)) + (((fpgazproj_.value() >> (fpgazproj_.nbits() - MEBinsBits - 2)) - 2) >> 2);
+      (1 << (settings_->MEBinsBits() - 1)) + (((fpgazproj_.value() >> (fpgazproj_.nbits() - settings_->MEBinsBits() - 2)) - 2) >> 2);
     unsigned int zbin2 =
-        (1 << (MEBinsBits - 1)) + (((fpgazproj_.value() >> (fpgazproj_.nbits() - MEBinsBits - 2)) + 2) >> 2);
-    if (zbin1 >= MEBins)
+      (1 << (settings_->MEBinsBits() - 1)) + (((fpgazproj_.value() >> (fpgazproj_.nbits() - settings_->MEBinsBits() - 2)) + 2) >> 2);
+    if (zbin1 >= settings_->MEBins())
       zbin1 = 0;  //note that zbin1 is unsigned
-    if (zbin2 >= MEBins)
-      zbin2 = MEBins - 1;
+    if (zbin2 >= settings_->MEBins())
+      zbin2 = settings_->MEBins() - 1;
     assert(zbin1 <= zbin2);
     assert(zbin2 - zbin1 <= 1);
-    fpgazbin1projvm_.set(zbin1, MEBinsBits, true, __LINE__, __FILE__);  // first z bin
+    fpgazbin1projvm_.set(zbin1, settings_->MEBinsBits(), true, __LINE__, __FILE__);  // first z bin
     if (zbin1 == zbin2)
       fpgazbin2projvm_.set(0, 1, true, __LINE__, __FILE__);  // don't need to check adjacent z bin
     else
@@ -84,7 +84,7 @@ public:
 
     //fine vm z bits. Use 4 bits for fine position. starting at zbin 1
     int finez =
-        ((1 << (MEBinsBits + 2)) + (fpgazproj_.value() >> (fpgazproj_.nbits() - (MEBinsBits + 3)))) - (zbin1 << 3);
+      ((1 << (settings_->MEBinsBits() + 2)) + (fpgazproj_.value() >> (fpgazproj_.nbits() - (settings_->MEBinsBits() + 3)))) - (zbin1 << 3);
 
     fpgafinezvm_.set(finez, 4, true, __LINE__, __FILE__);  // fine z postions starting at zbin1
 
@@ -229,6 +229,9 @@ protected:
   double zprojapprox_;
   double phiprojderapprox_;
   double zprojderapprox_;
+  
+  const Settings* settings_;
+
 };
 
 #endif

@@ -34,7 +34,8 @@ namespace Trklet{
       nbitsvmme_={{2,3,3,3,3,3,3,2,2,2,2}};
       
       nbitsallstubs_={{3,2,2,2,2,2,2,2,2,2,2}}; 
-      
+
+      // geometry related 
       zlength_=120.0;
       rmaxdisk_=120.0;
 
@@ -54,6 +55,7 @@ namespace Trklet{
 	      (zlength_*3782)/2048,
 	      (zlength_*4523)/2048}};
 
+      // stub bend cuts
       bendcutte_[0]={{1.25,1.25,1.25,1.25,1.25,1.25,1.25,1.25}};   //inner
       bendcutte_[1]={{1.25,1.25,1.25,1.25,1.25,1.25,1.25,1.25}};   //outer
 
@@ -217,6 +219,7 @@ namespace Trklet{
 		    rDSSouter_mod4-halfstrip, rDSSouter_mod4+halfstrip,
 		    rDSSouter_mod5-halfstrip, rDSSouter_mod5+halfstrip}};
 
+      // various printouts for debugging and warnings 
       printDebugKF_=false; // if true print lots of debugging statements related to the KF fit
       debugTracklet_=false; //Print detailed debug information about tracklet tracking
       writetrace_=false; //Print out details about parsing configuration files
@@ -244,10 +247,25 @@ namespace Trklet{
 
       
       bookHistos_=false; //set to true/false to turn on/off histogram booking internal to the tracking (class "HistImp")
-
+      
+      // pt constants
       ptcut_ = 1.91; //Minimum pt
       rinvcut_ = 0.01*0.3*3.8/ptcut_; //0.01 to convert to cm-1
 
+      // Parameters for bit sizes
+      alphashift_ = 12;  
+      nbitsalpha_ = 4;  //bits used to store alpha
+      alphaBitsTable_ = 2; //For number of bits in track derivative table
+      nrinvBitsTable_ = 3; //number of bits for tabulating rinv dependence
+      
+      MEBinsBits_ = 3;
+      MEBins_ = (1<<MEBinsBits_);
+      MEBinsDisks_ = 8; //on each side
+
+
+
+      
+      // tracklet calculators 
       ITC_L1L2_ = new IMATH_TrackletCalculator(1,2);
       ITC_L2L3_ = new IMATH_TrackletCalculator(2,3);
       ITC_L3L4_ = new IMATH_TrackletCalculator(3,4);
@@ -289,7 +307,7 @@ namespace Trklet{
       fakefit_ = false; // if true, run a dummy fit, producing TTracks directly from output of tracklet pattern reco stage
 
       
-      // configuration options
+      // configurable options
       nHelixPar_ = 4; // 4 or 5 param helix fit
       extended_ = false; // turn on displaced tracking
       
@@ -379,6 +397,15 @@ namespace Trklet{
     
     double ptcut() const {return ptcut_;}
     double rinvcut() const {return rinvcut_;}
+
+    int alphashift() const {return alphashift_;}
+    int nbitsalpha() const {return nbitsalpha_;}
+    int alphaBitsTable() const {return alphaBitsTable_;}
+    int nrinvBitsTable() const {return nrinvBitsTable_;}
+      
+    unsigned int MEBinsBits() const {return MEBinsBits_;}
+    unsigned int MEBins() const {return MEBins_;}
+    unsigned int MEBinsDisks() const {return MEBinsDisks_;}
 
     IMATH_TrackletCalculator* ITC_L1L2() const {return ITC_L1L2_;}
     IMATH_TrackletCalculator* ITC_L2L3() const {return ITC_L2L3_;}
@@ -496,6 +523,15 @@ namespace Trklet{
 	  
     double ptcut_;
     double rinvcut_;
+
+    int alphashift_;
+    int nbitsalpha_;
+    int alphaBitsTable_;
+    int nrinvBitsTable_;
+    
+    unsigned int MEBinsBits_;
+    unsigned int MEBins_;
+    unsigned int MEBinsDisks_;
 
     mutable IMATH_TrackletCalculator* ITC_L1L2_;
     mutable IMATH_TrackletCalculator* ITC_L2L3_;

@@ -1107,7 +1107,7 @@ public:
 	}
       }
 
-      layerprojs[i].init(lproj_[i],rproj_[i],
+      layerprojs[i].init(settings_,lproj_[i],rproj_[i],
 			 iphiproj[i],izproj[i],
 			 iphider[i],izder[i],
 			 phiproj[i],zproj[i],
@@ -1380,7 +1380,7 @@ public:
         if (iphider[i]>=(1<<(nbitsphiprojderL456-1))) iphider[i] = (1<<(nbitsphiprojderL456-1))-1;
       }
 
-      layerprojs[i].init(lproj_[i],rproj_[i],
+      layerprojs[i].init(settings_,lproj_[i],rproj_[i],
 			 iphiproj[i],izproj[i],
 			 iphider[i],izder[i],
 			 phiproj[i],zproj[i],
@@ -1652,7 +1652,7 @@ public:
         if (iphider[i]>=(1<<(nbitsphiprojderL456-1))) iphider[i] = (1<<(nbitsphiprojderL456-1))-1;
       }
 
-      layerprojs[i].init(lproj_[i],rproj_[i],
+      layerprojs[i].init(settings_,lproj_[i],rproj_[i],
 			 iphiproj[i],izproj[i],
 			 iphider[i],izder[i],
 			 phiproj[i],zproj[i],

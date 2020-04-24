@@ -7,19 +7,6 @@
 
 static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR" (T5/T6 tracker, D21/D11/D17 CMS geometries)
 
-//
-// Parameters for bit sizes
-//
-
-static const int alphashift=12;  
-static const int nbitsalpha=4;  //bits used to store alpha
-static const int alphaBitsTable=2; //For number of bits in track derivative table
-static const int nrinvBitsTable=3; //number of bits for tabulating rinv dependence
-
-static const int MEBinsBits=3;
-static const int MEBins=(1<<MEBinsBits);
-
-static const int MEBinsDisks=8; //on each side
 
 
 //Constants for defining stub representations
@@ -169,8 +156,6 @@ static const double half2SmoduleWidth=4.57;
 
 static const double drmax=rmaxdisk/32.0;
 static const double dzmax=zlength/32.0;
-
-//static const double drdisk=rmaxdisk;
 
 static const double rmean[6]={rmeanL1,rmeanL2,rmeanL3,rmeanL4,rmeanL5,rmeanL6};
 

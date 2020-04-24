@@ -30,25 +30,25 @@ public:
   std::pair<Stub*, L1TStub*> getStub(unsigned int i) const { return stubs_[i].stub(); }
 
   unsigned int nStubsBin(unsigned int bin) const {
-    assert(bin < MEBinsDisks * 2);
+    assert(bin < settings_->MEBinsDisks() * 2);
     return binnedstubs_[bin].size();
   }
 
   VMStubME getVMStubMEBin(unsigned int bin, unsigned int i) const {
-    assert(bin < MEBinsDisks * 2);
+    assert(bin < settings_->MEBinsDisks() * 2);
     assert(i < binnedstubs_[bin].size());
     return binnedstubs_[bin][i];
   }
 
   std::pair<Stub*, L1TStub*> getStubBin(unsigned int bin, unsigned int i) const {
-    assert(bin < MEBinsDisks * 2);
+    assert(bin < settings_->MEBinsDisks() * 2);
     assert(i < binnedstubs_[bin].size());
     return binnedstubs_[bin][i].stub();
   }
 
   void clean() {
     stubs_.clear();
-    for (unsigned int i = 0; i < MEBinsDisks * 2; i++) {
+    for (unsigned int i = 0; i < settings_->MEBinsDisks() * 2; i++) {
       binnedstubs_[i].clear();
     }
   }
@@ -99,8 +99,10 @@ private:
   double phimin_;
   double phimax_;
   std::vector<VMStubME> stubs_;
-
-  std::vector<VMStubME> binnedstubs_[MEBinsDisks * 2];
+  //std::vector<VMStubME> binnedstubs_[settings_->MEBinsDisks() * 2];
+  // LS HACK: the above doesn't work :(
+  // settings_->MEBinsDisks() * 2 = 16
+  std::vector<VMStubME> binnedstubs_[16];
 };
 
 #endif

@@ -183,10 +183,10 @@ public:
 
       double alphanew=stub.alphanew();
       assert(std::abs(alphanew)<1.0);
-      int ialphanew=alphanew*(1<<(nbitsalpha-1));
-      assert(ialphanew<(1<<(nbitsalpha-1)));
-      assert(ialphanew>=-(1<<(nbitsalpha-1)));
-      alphanew_.set(ialphanew,nbitsalpha,false,__LINE__,__FILE__);
+      int ialphanew=alphanew*(1<<(settings->nbitsalpha()-1));
+      assert(ialphanew<(1<<(settings->nbitsalpha()-1)));
+      assert(ialphanew>=-(1<<(settings->nbitsalpha()-1)));
+      alphanew_.set(ialphanew,settings->nbitsalpha(),false,__LINE__,__FILE__);
 
       
     }

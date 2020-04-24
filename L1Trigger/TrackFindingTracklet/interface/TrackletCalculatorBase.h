@@ -552,7 +552,7 @@ public:
 	izproj[i]>>=(nbitszprojL123-nbitszprojL456);
       }
 
-      layerprojs[i].init(lproj_[i],rproj_[i],
+      layerprojs[i].init(settings_,lproj_[i],rproj_[i],
 			 iphiproj[i],izproj[i],
 			 ITC->der_phiL_final.get_ival(),ITC->der_zL_final.get_ival(),
 			 phiproj[i],zproj[i],
@@ -899,7 +899,7 @@ public:
       //shift bits - allways in PS modules for disk seeding
       iphiproj[i]>>=(nbitsphistubL456-nbitsphistubL123);
       
-      layerprojs[i].init(i+1,rmean[i],
+      layerprojs[i].init(settings_,i+1,rmean[i],
 			 iphiproj[i],izproj[i],
 			 ITC->der_phiL_final.get_ival(),ITC->der_zL_final.get_ival(),
 			 phiproj[i],zproj[i],
@@ -1239,7 +1239,7 @@ public:
       //adjust bits for PS modules (no 2S modules in overlap seeds)
       iphiproj[i]>>=(nbitsphistubL456-nbitsphistubL123);
       
-      layerprojs[i].init(i+1,rmean[i],
+      layerprojs[i].init(settings_,i+1,rmean[i],
 			 iphiproj[i],izproj[i],
 			 ITC->der_phiL_final.get_ival(),ITC->der_zL_final.get_ival(),
 			 phiproj[i],zproj[i],
