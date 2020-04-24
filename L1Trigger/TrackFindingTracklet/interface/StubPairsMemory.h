@@ -1,6 +1,6 @@
 // This class holds the list of candidate stub pairs
-#ifndef STUBPAIRSMEMORY_H
-#define STUBPAIRSMEMORY_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_StubPairsMemory_h
+#define L1Trigger_TrackFindingTracklet_interface_StubPairsMemory_h
 
 #include "L1TStub.h"
 #include "Stub.h"

@@ -1,5 +1,5 @@
-#ifndef TRACKDERTABLE_H
-#define TRACKDERTABLE_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TrackDerTable_h
+#define L1Trigger_TrackFindingTracklet_interface_TrackDerTable_h
 
 #include <iostream>
 #include <fstream>

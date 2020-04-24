@@ -1,5 +1,5 @@
-#ifndef FPGATRACK_HH
-#define FPGATRACK_HH
+#ifndef L1Trigger_TrackFindingTracklet_interface_Track_h
+#define L1Trigger_TrackFindingTracklet_interface_Track_h
 
 #include <iostream>
 #include <fstream>

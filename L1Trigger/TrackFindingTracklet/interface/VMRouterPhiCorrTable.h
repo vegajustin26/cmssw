@@ -1,5 +1,5 @@
-#ifndef VMROUTERPHICORRTABLE_H
-#define VMROUTERPHICORRTABLE_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_VMRouterPhiCorrTable_h
+#define L1Trigger_TrackFindingTracklet_interface_VMRouterPhiCorrTable_h
 
 #include "TETableBase.h"
 #include <iostream>

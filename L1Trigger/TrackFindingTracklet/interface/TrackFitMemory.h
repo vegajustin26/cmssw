@@ -1,6 +1,6 @@
 //This class stores the track fit
-#ifndef TRACKFITMEMORY_H
-#define TRACKFITMEMORY_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TrackFitMemory_h
+#define L1Trigger_TrackFindingTracklet_interface_TrackFitMemory_h
 
 #include "Tracklet.h"
 #include "MemoryBase.h"

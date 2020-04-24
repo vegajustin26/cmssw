@@ -1,5 +1,5 @@
-#ifndef GLOBALHISTTRUTH_H
-#define GLOBALHISTTRUTH_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_GlobalHistTruth_h
+#define L1Trigger_TrackFindingTracklet_interface_GlobalHistTruth_h
 
 #include "HistBase.h"
 

@@ -1,5 +1,5 @@
-#ifndef SLHCEVENT_H
-#define SLHCEVENT_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_slhcevent_h
+#define L1Trigger_TrackFindingTracklet_interface_slhcevent_h
 
 #include <iostream>
 #include <fstream>

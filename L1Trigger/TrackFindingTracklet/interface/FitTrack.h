@@ -1,6 +1,6 @@
 //This class implementes the track fit
-#ifndef FITTRACK_H
-#define FITTRACK_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_FitTrack_H
+#define L1Trigger_TrackFindingTracklet_interface_FitTrack_H
 
 #include "ProcessBase.h"
 #include "TrackDerTable.h"

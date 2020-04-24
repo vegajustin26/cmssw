@@ -1,6 +1,6 @@
 //This class implementes the tracklet engine
-#ifndef TRACKLETENGINEDISPLACED_H
-#define TRACKLETENGINEDISPLACED_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TrackletEngineDisplaced_h
+#define L1Trigger_TrackFindingTracklet_interface_TrackletEngineDisplaced_h
 
 #include "ProcessBase.h"
 

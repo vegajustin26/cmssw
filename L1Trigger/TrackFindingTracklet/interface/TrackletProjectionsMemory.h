@@ -1,6 +1,6 @@
 // This class holds the projections
-#ifndef TRACKLETPROJECTIONSMEMORY_H
-#define TRACKLETPROJECTIONSMEMORY_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TrackletProjectionsMemory_h
+#define L1Trigger_TrackFindingTracklet_interface_TrackletProjectionsMemory_h
 
 #include "MemoryBase.h"
 #include "Tracklet.h"

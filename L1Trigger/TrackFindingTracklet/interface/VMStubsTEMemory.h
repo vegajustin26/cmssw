@@ -1,6 +1,6 @@
 //This class holds the reduced VM stubs
-#ifndef VMSTUBSTEMEMORY_H
-#define VMSTUBSTEMEMORY_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_VMStubsTEMemory_h
+#define L1Trigger_TrackFindingTracklet_interface_VMStubsTEMemory_h
 
 #include "L1TStub.h"
 #include "Stub.h"

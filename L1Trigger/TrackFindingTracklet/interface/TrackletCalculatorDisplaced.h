@@ -1,6 +1,6 @@
 //This class implements the displaced tracklet calculator (triplets)
-#ifndef TRACKLETCALCULATORDISPLACED_H
-#define TRACKLETCALCULATORDISPLACED_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TrackletCalculatorDisplaced_h
+#define L1Trigger_TrackFindingTracklet_interface_TrackletCalculatorDisplaced_h
 
 #include "IMATH_TrackletCalculator.h"
 #include "IMATH_TrackletCalculatorDisk.h"

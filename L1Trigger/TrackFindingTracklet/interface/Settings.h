@@ -1,5 +1,5 @@
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_Settings_h
+#define L1Trigger_TrackFindingTracklet_interface_Settings_h
 
 #include <array>
 #include <set>

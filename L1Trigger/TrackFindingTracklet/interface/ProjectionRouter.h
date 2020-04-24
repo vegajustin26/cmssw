@@ -1,6 +1,6 @@
 //This class implementes the projection router
-#ifndef PROJECTIONROUTER_H
-#define PROJECTIONROUTER_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_ProjectionRouter_h
+#define L1Trigger_TrackFindingTracklet_interface_ProjectionRouter_h
 
 #include "ProcessBase.h"
 

@@ -1,5 +1,5 @@
-#ifndef INVERSETABLE_H
-#define INVERSETABLE_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_InverseTable_h
+#define L1Trigger_TrackFindingTracklet_interface_InverseTable_h
 
 #include <iostream>
 #include <fstream>

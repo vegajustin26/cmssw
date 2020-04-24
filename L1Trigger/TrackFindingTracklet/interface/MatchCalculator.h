@@ -1,6 +1,6 @@
 //This class implementes the match calculator
-#ifndef MATCHCALCULATOR_H
-#define MATCHCALCULATOR_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_MatchCalculator_h
+#define L1Trigger_TrackFindingTracklet_interface_MatchCalculator_h
 
 #include "ProcessBase.h"
 #include "GlobalHistTruth.h"

@@ -1,5 +1,5 @@
-#ifndef TRACKLET_H
-#define TRACKLET_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_Tracklet_h
+#define L1Trigger_TrackFindingTracklet_interface_Tracklet_h
 
 #include <iostream>
 #include <fstream>

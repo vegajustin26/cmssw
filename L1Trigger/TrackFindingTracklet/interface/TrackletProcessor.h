@@ -1,6 +1,6 @@
 //This class implements the tracklet processor
-#ifndef TRACKLETPROCESSOR_H
-#define TRACKLETPROCESSOR_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TrackletProcessor_h
+#define L1Trigger_TrackFindingTracklet_interface_TrackletProcessor_h
 
 #include "IMATH_TrackletCalculator.h"
 #include "IMATH_TrackletCalculatorDisk.h"

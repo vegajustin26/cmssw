@@ -1,5 +1,5 @@
-#ifndef ALLPROJECTIONSMEMORY_H
-#define ALLPROJECTIONSMEMORY_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_AllProjectionsMemory_h
+#define L1Trigger_TrackFindingTracklet_interface_AllProjectionsMemory_h
 
 #include "Tracklet.h"
 #include "MemoryBase.h"

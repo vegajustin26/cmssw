@@ -1,6 +1,6 @@
 //This class implementes the tracklet engine
-#ifndef TRIPLETENGINE_H
-#define TRIPLETENGINE_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TripletEngine_h
+#define L1Trigger_TrackFindingTracklet_interface_TripletEngine_h
 
 #include "ProcessBase.h"
 #include "StubTripletsMemory.h"

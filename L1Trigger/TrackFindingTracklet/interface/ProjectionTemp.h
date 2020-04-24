@@ -1,5 +1,5 @@
-#ifndef PROJECTIONTEMP_H
-#define PROJECTIONTEMP_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_ProjectionTemp_h
+#define L1Trigger_TrackFindingTracklet_interface_ProjectionTemp_h
 
 #include <assert.h>
 #include "Tracklet.h"

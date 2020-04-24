@@ -1,5 +1,5 @@
-#ifndef VMSTUBME_H
-#define VMSTUBME_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_VMStubME_h
+#define L1Trigger_TrackFindingTracklet_interface_VMStubME_h
 
 #include <iostream>
 #include <fstream>

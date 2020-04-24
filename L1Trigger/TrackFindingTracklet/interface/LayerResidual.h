@@ -1,6 +1,6 @@
-//Base class for processing modules
-#ifndef LAYERRESIDUAL_H
-#define LAYERRESIDUAL_H
+//Class for layer residuals
+#ifndef L1Trigger_TrackFindingTracklet_interface_LayerResidual_h
+#define L1Trigger_TrackFindingTracklet_interface_LayerResidual_h
 
 using namespace std;
 

@@ -1,5 +1,5 @@
-#ifndef TRACKPARS_H
-#define TRACKPARS_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TrackPars_h
+#define L1Trigger_TrackFindingTracklet_interface_TrackPars_h
 
 #include <iostream>
 #include <fstream>

@@ -1,6 +1,6 @@
 //This class implementes the tracklet engine
-#ifndef TRACKLETCALCULATOR_H
-#define TRACKLETCALCULATOR_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TrackletCalculator_h
+#define L1Trigger_TrackFindingTracklet_interface_TrackletCalculator_h
 
 #include "IMATH_TrackletCalculator.h"
 #include "IMATH_TrackletCalculatorDisk.h"

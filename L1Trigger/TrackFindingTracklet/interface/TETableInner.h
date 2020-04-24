@@ -1,5 +1,5 @@
-#ifndef TETABLEINNER_H
-#define TETABLEINNER_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TETableInner_h
+#define L1Trigger_TrackFindingTracklet_interface_TETableInner_h
 
 #include "TETableBase.h"
 #include <iostream>

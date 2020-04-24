@@ -1,5 +1,5 @@
-#ifndef IMATH_TRACKLETCALCULATOR_H
-#define IMATH_TRACKLETCALCULATOR_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_IMATH_TrackletCalculator_h
+#define L1Trigger_TrackFindingTracklet_interface_IMATH_TrackletCalculator_h
 
 #include "Constants.h"
 #include "imath.h"

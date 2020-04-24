@@ -1,7 +1,7 @@
 // This class holds the tracklet parameters for the selected stub pairs
 //This class owns the tracklets. Furhter modules only holds pointers
-#ifndef TRACKLETPARAMETERSMEMORY_H
-#define TRACKLETPARAMETERSMEMORY_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TrackletParametersMemory_h
+#define L1Trigger_TrackFindingTracklet_interface_TrackletParametersMemory_h
 
 #include "Tracklet.h"
 #include "MemoryBase.h"

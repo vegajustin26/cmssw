@@ -1,6 +1,6 @@
 // This class holds all the stubs in a DTC region for a give layer
-#ifndef ALLSTUBSMEMORY_H
-#define ALLSTUBSMEMORY_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_AllStubsMemory_h
+#define L1Trigger_TrackFindingTracklet_interface_AllStubsMemory_h
 
 #include "L1TStub.h"
 #include "Stub.h"

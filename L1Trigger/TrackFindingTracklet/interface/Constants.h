@@ -1,9 +1,5 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
-
-//
-// Overall configuration switches
-//
+#ifndef L1Trigger_TrackFindingTracklet_interface_Constants_h
+#define L1Trigger_TrackFindingTracklet_interface_Constants_h
 
 static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR" (T5/T6 tracker, D21/D11/D17 CMS geometries)
 

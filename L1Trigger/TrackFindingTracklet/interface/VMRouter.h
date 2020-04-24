@@ -1,6 +1,6 @@
 //This class implementes the VM router
-#ifndef VMROUTER_H
-#define VMROUTER_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_VMRouter_h
+#define L1Trigger_TrackFindingTracklet_interface_VMRouter_h
 
 #include "ProcessBase.h"
 #include "VMStubTE.h"

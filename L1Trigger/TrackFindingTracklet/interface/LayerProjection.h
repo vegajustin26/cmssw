@@ -1,6 +1,5 @@
-//Base class for processing modules
-#ifndef FPGAMLAYERPROJECTION_H
-#define FPGAMLAYERPROJECTION_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_LayerProjection_h
+#define L1Trigger_TrackFindingTracklet_interface_LayerProjection_h
 
 using namespace std;
 

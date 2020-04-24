@@ -1,6 +1,6 @@
 //This class implementes the match processor
-#ifndef MATCHPROCESSOR_H
-#define MATCHPROCESSOR_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_MatchProcessor_h
+#define L1Trigger_TrackFindingTracklet_interface_MatchProcessor_h
 
 #include "ProcessBase.h"
 #include "CircularBuffer.h"

@@ -2,10 +2,9 @@
 //This modules 'owns' the pointers to the stubs. All
 //subsequent modules that handles stubs uses a pointer
 //to the original stored here
-
  
-#ifndef INPUTLINKMEMORY_H
-#define INPUTLINKMEMORY_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_InputLinkMemory_h
+#define L1Trigger_TrackFindingTracklet_interface_InputLinkMemory_h
 
 #include "L1TStub.h"
 #include "Stub.h"

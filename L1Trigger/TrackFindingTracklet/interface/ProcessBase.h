@@ -1,6 +1,6 @@
 //Base class for processing modules
-#ifndef PROCESSBASE_H
-#define PROCESSBASE_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_ProcessBase_h
+#define L1Trigger_TrackFindingTracklet_interface_ProcessBase_h
 
 #include "Settings.h"
 

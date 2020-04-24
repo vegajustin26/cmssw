@@ -1,6 +1,5 @@
-//Base class for processing modules
-#ifndef DISKPROJECTION_H
-#define DISKPROJECTION_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_DiskProjection_h
+#define L1Trigger_TrackFindingTracklet_interface_DiskProjection_h
 
 using namespace std;
 

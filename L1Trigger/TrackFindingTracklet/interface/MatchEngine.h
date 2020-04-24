@@ -1,6 +1,6 @@
-//This class implementes the tracklet engine
-#ifndef MATCHENGINE_H
-#define MATCHENGINE_H
+//This class implementes the match engine
+#ifndef L1Trigger_TrackFindingTracklet_interface_MatchEngine_h
+#define L1Trigger_TrackFindingTracklet_interface_MatchEngine_h
 
 #include "ProcessBase.h"
 #include "TrackletCalculator.h"

@@ -1,5 +1,5 @@
-#ifndef TETABLEOUTER_H
-#define TETABLEOUTER_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TETableOuter_h
+#define L1Trigger_TrackFindingTracklet_interface_TETableOuter_h
 
 #include "TETableBase.h"
 #include <iostream>

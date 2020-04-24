@@ -1,5 +1,6 @@
-#ifndef _FPGATIMER_H_
-#define _FPGATIMER_H_
+#ifndef L1Trigger_TrackFindingTracklet_interface_CPUTimer_h
+#define L1Trigger_TrackFindingTracklet_interface_CPUTimer_h
+
 #include <math.h>
 #include <sys/time.h>
 

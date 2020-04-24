@@ -1,5 +1,5 @@
-#ifndef STUBVARIANCE_H
-#define STUBVARIANCE_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_StubVariance_h
+#define L1Trigger_TrackFindingTracklet_interface_StubVariance_h
 
 #include <iostream>
 #include <fstream>

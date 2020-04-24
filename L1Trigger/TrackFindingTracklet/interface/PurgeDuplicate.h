@@ -1,6 +1,6 @@
 //This class implementes the duplicate removal
-#ifndef PURGEDUPLICATE_H
-#define PURGEDUPLICATE_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_PurgeDuplicate_h
+#define L1Trigger_TrackFindingTracklet_interface_PurgeDuplicate_h
 
 #include "ProcessBase.h"
 

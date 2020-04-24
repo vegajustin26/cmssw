@@ -1,6 +1,6 @@
 //This class implementes the track fit for the hybrid project
-#ifndef HYBRIDFIT_H
-#define HYBRIDFIT_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_HybridFit_h
+#define L1Trigger_TrackFindingTracklet_interface_HybridFit_h
 
 #ifdef USEHYBRID
 #include "DataFormats/L1TrackTrigger/interface/TTStub.h"

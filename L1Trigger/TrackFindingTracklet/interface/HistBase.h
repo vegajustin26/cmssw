@@ -1,5 +1,5 @@
-#ifndef HISTBASE_H
-#define HISTBASE_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_HistBase_h
+#define L1Trigger_TrackFindingTracklet_interface_HistBase_h
 
 #include <iostream>
 #include <fstream>

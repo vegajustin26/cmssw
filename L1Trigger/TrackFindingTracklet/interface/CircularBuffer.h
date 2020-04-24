@@ -1,5 +1,5 @@
-#ifndef CIRCULARBUFFER_H
-#define CIRCULARBUFFER_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_CircularBuffer_h
+#define L1Trigger_TrackFindingTracklet_interface_CircularBuffer_h
 
 #include <assert.h>
 #include <vector>

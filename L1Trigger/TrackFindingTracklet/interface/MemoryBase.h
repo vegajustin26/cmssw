@@ -1,6 +1,6 @@
-//Base class for processing modules
-#ifndef MEMORYBASE_H
-#define MEMORYBASE_H
+//Base class for memory modules
+#ifndef L1Trigger_TrackFindingTracklet_interface_MemoryBase_h
+#define L1Trigger_TrackFindingTracklet_interface_MemoryBase_h
 
 #include "Settings.h"
 

@@ -105,8 +105,8 @@
 //                    var_base::local_passes() method can be used to query if a given variable passes
 //                    its associated cuts, regardless of whether its children do.
 //
-#ifndef IMATH_H
-#define IMATH_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_imath_h
+#define L1Trigger_TrackFindingTracklet_interface_imath_h
 
 //use root if uncommented
 #ifndef CMSSW_GIT_HASH

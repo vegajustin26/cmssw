@@ -1,5 +1,5 @@
-#ifndef HISTIMP_H
-#define HISTIMP_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_HistImp_h
+#define L1Trigger_TrackFindingTracklet_interface_HistImp_h
 
 #include <TFile.h>
 #include <TH1F.h>

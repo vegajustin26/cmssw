@@ -1,6 +1,5 @@
-//Base class for processing modules
-#ifndef DISKRESIDUAL_H
-#define DISKRESIDUAL_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_DiskResidual_h
+#define L1Trigger_TrackFindingTracklet_interface_DiskResidual_h
 
 using namespace std;
 

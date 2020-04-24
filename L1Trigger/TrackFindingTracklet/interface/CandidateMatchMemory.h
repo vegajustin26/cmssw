@@ -1,6 +1,6 @@
 //Holds the candidate matches
-#ifndef CANDIDATEMATCHMEMORY_H
-#define CANDIDATEMATCHMEMORY_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_CandidateMatchMemory_h
+#define L1Trigger_TrackFindingTracklet_interface_CandidateMatchMemory_h
 
 #include "Tracklet.h"
 #include "MemoryBase.h"

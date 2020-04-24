@@ -1,8 +1,6 @@
 //This class holds functional blocks of a sector
-
- 
-#ifndef SECTOR_H
-#define SECTOR_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_Sector_h
+#define L1Trigger_TrackFindingTracklet_interface_Sector_h
 
 #include "InputLinkMemory.h"
 #include "AllStubsMemory.h"

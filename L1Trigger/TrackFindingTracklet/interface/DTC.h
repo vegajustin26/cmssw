@@ -1,6 +1,6 @@
 // This class holds a list of stubs that are in a given layer and DCT region
-#ifndef DTC_H
-#define DTC_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_DTC_h
+#define L1Trigger_TrackFindingTracklet_interface_DTC_h
 
 #include "L1TStub.h"
 #include "Stub.h"

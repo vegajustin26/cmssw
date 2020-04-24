@@ -1,5 +1,5 @@
-#ifndef TETABLEINNEROVERLAP_H
-#define TETABLEINNEROVERLAP_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TETableInnerOverlap_h
+#define L1Trigger_TrackFindingTracklet_interface_TETableInnerOverlap_h
 
 #include "TETableBase.h"
 #include <iostream>

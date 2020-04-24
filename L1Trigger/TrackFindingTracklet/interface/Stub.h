@@ -1,5 +1,5 @@
-#ifndef STUB_H
-#define STUB_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_Stub_h
+#define L1Trigger_TrackFindingTracklet_interface_Stub_h
 
 #include <iostream>
 #include <fstream>

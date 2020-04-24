@@ -1,5 +1,5 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_Util_h
+#define L1Trigger_TrackFindingTracklet_interface_Util_h
 
 class Util {
 public:

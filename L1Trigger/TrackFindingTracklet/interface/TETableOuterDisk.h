@@ -1,5 +1,5 @@
-#ifndef TETABLEOUTERDISK_H
-#define TETABLEOUTERDISK_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_TETableOuterDisk_h
+#define L1Trigger_TrackFindingTracklet_interface_TETableOuterDisk_h
 
 #include "TETableBase.h"
 #include <iostream>

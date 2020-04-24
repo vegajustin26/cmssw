@@ -1,6 +1,6 @@
 //Holds the VM projections
-#ifndef VMPROJECTIONSMEMORY_H
-#define VMPROJECTIONSMEMORY_H
+#ifndef L1Trigger_TrackFindingTracklet_interface_VMProjectionsMemory_h
+#define L1Trigger_TrackFindingTracklet_interface_VMProjectionsMemory_h
 
 #include "Tracklet.h"
 #include "MemoryBase.h"
