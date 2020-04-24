@@ -328,6 +328,8 @@ namespace Trklet{
     double drmax() const {return drmax_;}
     double dzmax() const {return dzmax_;}
 
+
+    
     double bendcutte(unsigned int inner, unsigned int iSeed) const {return bendcutte_[inner][iSeed];}
     double nfinephi(unsigned int inner, unsigned int iSeed) const {return nfinephi_[inner][iSeed];}
     double nphireg(unsigned int inner, unsigned int iSeed) const {return nphireg_[inner][iSeed];}
@@ -345,10 +347,13 @@ namespace Trklet{
     double rphicut2S(unsigned int iSeed, unsigned int idisk) const {return rphicut2S_[idisk][iSeed];}
     double rcut2S(unsigned int iSeed, unsigned int idisk) const {return rcut2S_[idisk][iSeed];}
 
-    
     double rmean(unsigned int iLayer) const {return rmean_[iLayer];}
     double zmean(unsigned int iDisk) const {return zmean_[iDisk];}
 
+    double rDSSinner(unsigned int iBin) const {return rDSSinner_[iBin];} 
+    double rDSSouter(unsigned int iBin) const {return rDSSouter_[iBin];} 
+
+    
     bool printDebugKF() const {return printDebugKF_;}
     bool debugTracklet() const {return debugTracklet_;}
     bool writetrace() const {return writetrace_;}

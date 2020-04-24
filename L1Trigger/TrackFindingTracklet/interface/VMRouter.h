@@ -284,7 +284,7 @@ public:
 	double rstub=kr*(i<<(nrbitsdisk-nbitsfinebintable_));;
 
 	//use tabulated values for the 2S modules
-	if (i<10) rstub=(layerdisk_<=7)?rDSSinner[i]:rDSSouter[i];
+	if (i<10) rstub=(layerdisk_<=7)?settings_->rDSSinner(i):settings_->rDSSouter(i);
 	  
 	if (rstub<rmindiskvm) {
 	  finebintable_.push_back(-1);

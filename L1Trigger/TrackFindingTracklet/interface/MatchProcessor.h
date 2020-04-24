@@ -157,9 +157,9 @@ public:
 
     for (unsigned int i=0; i<10; i++) {
       ialphafactinner_[i]= 
-	(1<<alphashift)*krprojshiftdisk*half2SmoduleWidth/(1<<(nbitsalpha-1))/(rDSSinner[i]*rDSSinner[i])/kphiproj123;
+	(1<<alphashift)*krprojshiftdisk*half2SmoduleWidth/(1<<(nbitsalpha-1))/(settings_->rDSSinner(i)*settings_->rDSSinner(i))/kphiproj123;
       ialphafactouter_[i]= 
-	(1<<alphashift)*krprojshiftdisk*half2SmoduleWidth/(1<<(nbitsalpha-1))/(rDSSouter[i]*rDSSouter[i])/kphiproj123;
+	(1<<alphashift)*krprojshiftdisk*half2SmoduleWidth/(1<<(nbitsalpha-1))/(settings_->rDSSouter(i)*settings_->rDSSouter(i))/kphiproj123;
     }
 
     barrel_=layer_>0;
@@ -555,10 +555,10 @@ public:
 	assert(irstub<10);
 	if (disk_<=2) {
 	  ialphafact = ialphafactinner_[irstub];
-	  irstub = rDSSinner[irstub]/kr;
+	  irstub = settings_->rDSSinner(irstub)/kr;
 	} else {
 	  ialphafact = ialphafactouter_[irstub];
-	  irstub = rDSSouter[irstub]/kr;
+	  irstub = settings_->rDSSouter(irstub)/kr;
 	}
       }
       

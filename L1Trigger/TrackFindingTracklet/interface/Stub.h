@@ -149,12 +149,12 @@ public:
       if (!isPSmodule_) {
 	for (int i=0; i<10; ++i){
 	  if (disk<=2) {
-	    if (std::abs(r-rDSSinner[i])<.2){
+	    if (std::abs(r-settings_->rDSSinner(i)) < 0.2){
 	      irSS = i;
 	      break;
 	    }
 	  } else {
-	    if (std::abs(r-rDSSouter[i])<.2){
+	    if (std::abs(r-settings_->rDSSouter(i)) < 0.2){
 	      irSS = i;
 	      break;
 	    }

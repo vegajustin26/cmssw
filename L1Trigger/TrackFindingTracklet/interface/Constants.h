@@ -166,27 +166,6 @@ static const double rmindiskl3overlapvm=50.0;
 
 static const double half2SmoduleWidth=4.57;
 
-// need separate lookup values for inner two vs outer three disks for 2S modules
-
-static const double rDSSinner_mod1 = geomTkTDR?69.2345:68.9391;
-static const double rDSSinner_mod2 = geomTkTDR?80.0056:78.7750;
-static const double rDSSinner_mod3 = geomTkTDR?87.3444:85.4550;
-static const double rDSSinner_mod4 = geomTkTDR?98.2515:96.3150;
-static const double rDSSinner_mod5 = geomTkTDR?104.9750:102.3160;
-
-static const double rDSSouter_mod1 = geomTkTDR?67.6317:66.4903;
-static const double rDSSouter_mod2 = geomTkTDR?78.1300:76.7750;
-static const double rDSSouter_mod3 = geomTkTDR?86.4293:84.4562;
-static const double rDSSouter_mod4 = geomTkTDR?97.1316:94.9920;
-static const double rDSSouter_mod5 = geomTkTDR?104.9750:102.3160;
-
-static const double halfstrip = 2.5; //we want the center of the two strip positions in a module, not just the center of a module 
-
-static const double rDSSinner[10] = {rDSSinner_mod1-halfstrip, rDSSinner_mod1+halfstrip, rDSSinner_mod2-halfstrip, rDSSinner_mod2+halfstrip, rDSSinner_mod3-halfstrip, rDSSinner_mod3+halfstrip,
-			       rDSSinner_mod4-halfstrip, rDSSinner_mod4+halfstrip, rDSSinner_mod5-halfstrip, rDSSinner_mod5+halfstrip};
-static const double rDSSouter[10] = {rDSSouter_mod1-halfstrip, rDSSouter_mod1+halfstrip, rDSSouter_mod2-halfstrip, rDSSouter_mod2+halfstrip, rDSSouter_mod3-halfstrip, rDSSouter_mod3+halfstrip, 
-			       rDSSouter_mod4-halfstrip, rDSSouter_mod4+halfstrip, rDSSouter_mod5-halfstrip, rDSSouter_mod5+halfstrip};
-
 
 static const double drmax=rmaxdisk/32.0;
 static const double dzmax=zlength/32.0;
