@@ -11,10 +11,7 @@
 #include "L1Trigger/TrackFindingTMTT/interface/Stub.h"
 #include "L1Trigger/TrackFindingTMTT/interface/KFParamsComb.h"
 #include "L1Trigger/TrackFindingTracklet/interface/HybridFit.h"
-#ifdef USE_HLS
-#include "L1Trigger/TrackFindingTMTT/interface/HLS/KFParamsCombCallHLS.h"
-#endif
-#include "L1Trigger/TrackFindingTMTT/interface/Settings.h"
+s#include "L1Trigger/TrackFindingTMTT/interface/Settings.h"
 #include "L1Trigger/TrackFindingTMTT/interface/L1fittedTrack.h"
 #include "L1Trigger/TrackFindingTMTT/interface/KFTrackletTrack.h"
 #endif
@@ -175,15 +172,9 @@ public:
 
     // Create Kalman track fitter.
     static bool firstPrint = true;
-#ifdef USE_HLS
-    if (firstPrint)
-      cout << "Will make KFParamsCombHLS for " << settings_->nHelixPar() << " param fit" << endl;
-    static thread_local tmtt::KFParamsCombCallHLS fitterKF(&TMTTsettings, settings_->nHelixPar(), "KFfitterHLS");
-#else
     if (firstPrint)
       cout << "Will make KFParamsComb for " << settings_->nHelixPar() << " param fit" << endl;
     static thread_local tmtt::KFParamsComb fitterKF(&TMTTsettings, settings_->nHelixPar(), "KFfitter");
-#endif
     firstPrint = false;
 
     // Call Kalman fit

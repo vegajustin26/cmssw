@@ -41,6 +41,9 @@ bool   var_base::use_root = false;
 #include <fstream>
 #include <string>
 
+//Uncomment if you want root output
+//#define USEROOT
+
 
 // Include file to define ROOT-Tree
 // --------------------------------

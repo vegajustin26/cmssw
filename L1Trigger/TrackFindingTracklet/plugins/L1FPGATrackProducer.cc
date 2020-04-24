@@ -97,18 +97,11 @@
 // PHYSICS TOOLS
 #include "RecoTracker/TkSeedGenerator/interface/FastHelix.h"
 #include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
-//
+
 #include "DataFormats/GeometryCommonDetAlgo/interface/MeasurementVector.h"
 #include "DataFormats/GeometrySurface/interface/BoundPlane.h"
 
 #include "L1Trigger/TrackTrigger/interface/StubPtConsistency.h"
-
-// L1Trk HLS end-of-job bit range checks etc.
-#ifdef USEHYBRID
-#ifdef USE_HLS
-#include "L1Trigger/TrackFindingTMTT/interface/HLS/KFParamsCombCallHLS.h"
-#endif
-#endif
 
 //////////////
 // STD HEADERS
