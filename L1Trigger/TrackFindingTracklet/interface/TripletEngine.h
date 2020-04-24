@@ -238,7 +238,7 @@ public:
                 tmpSPTable_.at(tedName).at(spIndex).push_back (stubpairs_.at(i)->getName());
 
                 if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
-                if (writeSeeds) {
+                if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                   fout.close();
@@ -318,7 +318,7 @@ public:
                 tmpSPTable_.at(tedName).at(spIndex).push_back (stubpairs_.at(i)->getName());
 
                 if (settings_->debugTracklet()) cout << "Adding layer-disk pair in " <<getName()<<endl;
-                if (writeSeeds) {
+                if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                   fout.close();
@@ -402,7 +402,7 @@ public:
                 tmpSPTable_.at(tedName).at(spIndex).push_back (stubpairs_.at(i)->getName());
 
                 if (settings_->debugTracklet()) cout << "Adding layer-disk pair in " <<getName()<<endl;
-                if (writeSeeds) {
+                if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                   fout.close();
@@ -435,7 +435,7 @@ public:
       }
     }
       
-    if (writeTRE) {
+    if (settings_->writeMonitorData("TRE")) {
       static ofstream out("tripletengine.txt");
       out << getName()<<" "<<countall<<" "<<countpass<<endl;
     }

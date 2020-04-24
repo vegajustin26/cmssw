@@ -275,7 +275,7 @@ class FitTrack:public ProcessBase{
 
 
    static ofstream out2;
-   if (writeHitPattern) out2.open("hitpattern.txt");
+   if (settings_->writeMonitorData("HitPattern")) out2.open("hitpattern.txt");
 
    char matches[8]="000000\0";
    char matches2[12]="0000000000\0";
@@ -355,7 +355,7 @@ class FitTrack:public ProcessBase{
     }
 
     if (mult<=1<<(3*alphaBitsTable)) {
-     if (writeHitPattern) {
+      if (settings_->writeMonitorData("HitPattern")) {
       out2<<matches<<" "<<matches2<<" "<<mult<<endl;
      }
     }
@@ -952,7 +952,7 @@ class FitTrack:public ProcessBase{
    //cout <<"chisq ichisq : "<< chisqfit << " " << ichisqfit/16.0<<endl;
 
 
-   if (writeChiSq) {
+   if (settings_->writeMonitorData("ChiSq")) {
     static ofstream out("chisq.txt");
     out << asinh(itfit*ktpars)<<" "<<chisqfit << " " << ichisqfit/16.0<<endl;
    }
@@ -1207,7 +1207,7 @@ class FitTrack:public ProcessBase{
       }
       else if (bestTracklet->fit()){
         assert(trackfit_!=0);
-        if (writeSeeds) {
+        if (settings_->writeMonitorData("Seeds")) {
           ofstream fout("seeds.txt", ofstream::app);
           fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << bestTracklet->getISeed() << endl;
           fout.close();
@@ -1217,10 +1217,10 @@ class FitTrack:public ProcessBase{
     }
 
    } while (bestTracklet!=0);
-
-   if (writeFitTrack) {
-    static ofstream out("fittrack.txt");
-    out<<getName()<<" "<<countAll<<" "<<countFit<<endl;
+   
+   if (settings_->writeMonitorData("FT")) {
+     static ofstream out("fittrack.txt");
+     out<<getName()<<" "<<countAll<<" "<<countFit<<endl;
    }
 
   }

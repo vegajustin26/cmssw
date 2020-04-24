@@ -597,7 +597,7 @@ public:
     }
  
     
-    if (writeTrackletPars) {
+    if (settings_->writeMonitorData("TPars")) {
       static ofstream out("trackletpars.txt");
       out <<"Trackpars "<<layer_
 	  <<"   "<<rinv<<" "<<rinvapprox<<" "<<ITC->rinv_final.get_fval()
@@ -626,7 +626,7 @@ public:
     tracklet->setTrackletIndex(trackletpars_->nTracklets());
     tracklet->setTCIndex(TCIndex_);
 
-    if (writeSeeds) {
+    if (settings_->writeMonitorData("Seeds")) {
       ofstream fout("seeds.txt", ofstream::app);
       fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed() << endl;
       fout.close();
@@ -941,7 +941,7 @@ public:
     }
 
     
-    if (writeTrackletParsDisk) {
+    if (settings_->writeMonitorData("TPars")) {
       static ofstream out("trackletparsdisk.txt");
       out <<"Trackpars         "<<disk_
 	  <<"   "<<rinv<<" "<<rinvapprox<<" "<<ITC->rinv_final.get_fval()
@@ -969,7 +969,7 @@ public:
     tracklet->setTrackletIndex(trackletpars_->nTracklets());
     tracklet->setTCIndex(TCIndex_);
 
-    if (writeSeeds) {
+    if (settings_->writeMonitorData("Seeds")) {
       ofstream fout("seeds.txt", ofstream::app);
       fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed() << endl;
       fout.close();
@@ -1272,7 +1272,7 @@ public:
     }
 
        
-    if (writeTrackletParsOverlap) {
+    if (settings_->writeMonitorData("TPars")) {
       static ofstream out("trackletparsoverlap.txt");
       out <<"Trackpars "<<disk_
 	  <<"   "<<rinv<<" "<<irinv<<" "<<ITC->rinv_final.get_fval()
@@ -1301,7 +1301,7 @@ public:
     tracklet->setTrackletIndex(trackletpars_->nTracklets());
     tracklet->setTCIndex(TCIndex_);
     
-    if (writeSeeds) {
+    if (settings_->writeMonitorData("Seeds")) {
       ofstream fout("seeds.txt", ofstream::app);
       fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed() << endl;
       fout.close();
@@ -1361,38 +1361,8 @@ protected:
   vector<vector<TrackletProjectionsMemory*> > trackletprojdisks_;
 
  public:
-  //static IMATH_TrackletCalculator ITC_L1L2;
-  //static IMATH_TrackletCalculator ITC_L2L3;
-  //static IMATH_TrackletCalculator ITC_L3L4;
-  //static IMATH_TrackletCalculator ITC_L5L6;
-  
-  //static IMATH_TrackletCalculatorDisk ITC_F1F2;
-  //static IMATH_TrackletCalculatorDisk ITC_F3F4;
-  //static IMATH_TrackletCalculatorDisk ITC_B1B2;
-  //static IMATH_TrackletCalculatorDisk ITC_B3B4;
-
-  //static IMATH_TrackletCalculatorOverlap ITC_L1F1;
-  //static IMATH_TrackletCalculatorOverlap ITC_L2F1;
-  //static IMATH_TrackletCalculatorOverlap ITC_L1B1;
-  //static IMATH_TrackletCalculatorOverlap ITC_L2B1;
-
     
 };
-
-//IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L1L2{1,2};
-//IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L2L3{2,3};
-//IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L3L4{3,4};
-//IMATH_TrackletCalculator TrackletCalculatorBase::ITC_L5L6{5,6};
-
-//IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_F1F2{1,2};
-//IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_F3F4{3,4};
-//IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_B1B2{-1,-2};
-//IMATH_TrackletCalculatorDisk TrackletCalculatorBase::ITC_B3B4{-3,-4};
-
-//IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L1F1{1,1};
-//IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L2F1{2,1};
-//IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L1B1{1,-1};
-//IMATH_TrackletCalculatorOverlap TrackletCalculatorBase::ITC_L2B1{2,-1};
 
 
 #endif

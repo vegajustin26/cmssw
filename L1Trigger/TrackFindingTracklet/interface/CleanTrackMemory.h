@@ -104,7 +104,7 @@ public:
 
     // --------------------------------------------------------------
     // print separately ALL cleaned tracks in single file
-    if (writeAllCT) {
+    if (settings_->writeMonitorData("CT")) {
       std::string fnameAll = "CleanTracksAll.dat";
       if (first && getName() == "CT_L1L2" && iSector_ == 0)
         out_.open(fnameAll.c_str());

@@ -335,7 +335,7 @@ public:
       }
     }
 
-    if (writeTrackletCalculator) {
+    if (settings_->writeMonitorData("TC")) {
       static ofstream out("trackletcalculator.txt");
       out << getName()<<" "<<countall<<" "<<countsel<<endl;
     }

@@ -130,13 +130,13 @@ public:
     }
     
     
-    if (writeAllProjections) {
+    if (settings_->writeMonitorData("AP")) {
       static ofstream out("allprojections.txt"); 
       out << getName() << " " << allproj_->nTracklets() << endl;
     } 
    
 
-    if (writeVMProjections) {
+    if (settings_->writeMonitorData("VMP")) {
       static ofstream out("vmprojections.txt");
       for (unsigned int i=0;i<8;i++) {
 	if (vmprojs_[i]!=0) {

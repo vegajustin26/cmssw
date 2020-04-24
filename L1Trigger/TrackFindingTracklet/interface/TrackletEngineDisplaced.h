@@ -197,7 +197,7 @@ public:
 	      if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
                 if (writeTripletTables || table_.at(index).count(stubpairs_.at(isp)->getName())) {
-                  if (writeSeeds) {
+                  if (settings_->writeMonitorData("Seeds")) {
                     ofstream fout("seeds.txt", ofstream::app);
                     fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                     fout.close();
@@ -278,7 +278,7 @@ public:
 	      if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
                 if (writeTripletTables || table_.at(index).count(stubpairs_.at(isp)->getName())) {
-                  if (writeSeeds) {
+                  if (settings_->writeMonitorData("Seeds")) {
                     ofstream fout("seeds.txt", ofstream::app);
                     fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                     fout.close();
@@ -354,7 +354,7 @@ public:
 	      
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
                 if (writeTripletTables || table_.at(index).count(stubpairs_.at(isp)->getName())) {
-                  if (writeSeeds) {
+                  if (settings_->writeMonitorData("Seeds")) {
                     ofstream fout("seeds.txt", ofstream::app);
                     fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                     fout.close();
@@ -396,7 +396,7 @@ public:
       
     }
       
-    if (writeTED) {
+    if (settings_->writeMonitorData("TED")) {
       static ofstream out("trackletenginedisplaced.txt");
       out << getName()<<" "<<countall<<" "<<countpass<<endl;
     }

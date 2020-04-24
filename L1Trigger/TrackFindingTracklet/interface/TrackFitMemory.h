@@ -59,7 +59,7 @@ public:
         } else {
           layerordisk = tracklet->disk();
         }
-        if (writeResEff) {
+        if (settings_->writeMonitorData("ResEff")) {
           outres << layerordisk << " " << tracklet->nMatches() << " " << simtrk.pt() * charge << " " << simphi << " "
                  << simtrk.eta() << " " << simtrk.vz() << "   " << (0.3 * 3.8 / 100.0) / tracklet->rinvfit() << " "
                  << tracklet->phi0fit() + phioffset << " " << asinh(tracklet->tfit()) << " " << tracklet->z0fit()

@@ -317,7 +317,7 @@ public:
 	  if (barrel?table_[index]:(isPSmodule?tablePS_[index]:table2S_[index])) {
 	    Tracklet* proj=vmprojs_->getFPGATracklet(projindex);
 	    std::pair<Tracklet*,int> tmp(proj,vmprojs_->getAllProjIndex(projindex));
-            if (writeSeeds) {
+            if (settings_->writeMonitorData("Seeds")) {
               ofstream fout("seeds.txt", ofstream::app);
               fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << proj->getISeed() << endl;
               fout.close();
@@ -330,7 +330,7 @@ public:
       
     }
 
-    if (writeME) {
+    if (settings_->writeMonitorData("ME")) {
       static ofstream out("matchengine.txt");
       out << getName()<<" "<<countall<<" "<<countpass<<endl;
     }

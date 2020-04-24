@@ -352,13 +352,10 @@ void var_base::add_cut(var_cut *cut, const bool call_set_cut_var) {
 
 void var_cut::set_cut_var(var_base *cut_var, const bool call_add_cut) {
   cut_var_ = cut_var;
-  std::cout << "here0001"<<std::endl;
   if (call_add_cut)
     cut_var->add_cut(this, false);
-  std::cout << "here0005:"<<parent_flag_<<std::endl;
   if (parent_flag_)
     parent_flag_->calculate_step();
-  std::cout << "here0009"<<std::endl;
 }
 
 void var_flag::add_cut(var_base *cut, const bool call_set_parent_flag) {

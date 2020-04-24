@@ -14,8 +14,6 @@ namespace Trklet{
     Settings(){
 
       geomTkTDR_=false;
-      writeIL_=false;
-      writeTE_=false;
       nzbitsdisk_=7;
 
       nzbitsstub_={{12,12,12,8,8,8,7,7,7,7,7}};
@@ -156,7 +154,38 @@ namespace Trklet{
 
       maxstep_={{"IL",108},{"VMR",108}};
 
-      write_={{"IL",false},{"VMR",false},{"AS",false}};
+      writeMonitorData_={{"IL",false},
+			 {"TE",false},
+			 {"CT",false},
+			 {"HitPattern",false},
+			 {"ChiSq",false},
+			 {"Seeds",false},
+			 {"FT",false},
+			 {"Residuals",false},
+			 {"MC",false},
+			 {"ME",false},
+			 {"AP",false},
+			 {"VMP",false},
+			 {"NMatches",false},
+			 {"TrackProjOcc",false},
+			 {"TC",false},
+			 {"Pars",false},
+			 {"TPars",false},
+			 {"TPD",false},
+			 {"TrackletPars",false},
+			 {"TED",false},
+			 {"TP",false},
+			 {"TRE",false},
+			 {"VMR",false},
+			 {"Variance",false},
+			 {"StubsLayer",false},
+			 {"StubsLayerSector",false},
+			 {"ResEff",false},
+			 {"HitEff",false},
+			 {"MatchEff",false},
+			 {"Cabling",false},
+			 {"IFit",false},
+			 {"AS",false}};
 
 
       double rDSSinner_mod1 = geomTkTDR_?69.2345:68.9391;
@@ -221,8 +250,6 @@ namespace Trklet{
     }
 
     bool geomTkTDR() const {return geomTkTDR_;}
-    bool writeIL() const {return writeIL_;}
-    bool writeTE() const {return writeTE_;}
     unsigned int nzbitsdisk() const {return nzbitsdisk_;}
     unsigned int nzbitsstub(unsigned int layerdisk) const {return nzbitsstub_[layerdisk];}
     unsigned int nphibitsstub(unsigned int layerdisk) const {return nphibitsstub_[layerdisk];}
@@ -236,7 +263,16 @@ namespace Trklet{
 
     unsigned int nbitsallstubs(unsigned int layerdisk) const {return nbitsallstubs_[layerdisk];}
     unsigned int nallstubs(unsigned int layerdisk) const {return (1<<nbitsallstubs_[layerdisk]);}
-    
+
+    bool writeMonitorData(std::string module) const {
+      if (writeMonitorData_.find(module)==writeMonitorData_.end()){
+	std::cout << "Settings::writeMonitorData module = "<<module<<" not known" << std::endl;
+	assert(0);
+      }
+      return writeMonitorData_.at(module);
+    }
+
+
     double zlength() const { return zlength_;}
     double rmaxdisk() const { return rmaxdisk_;}
 
@@ -306,9 +342,6 @@ namespace Trklet{
     std::array<double,6> rmean_;
     std::array<double,5> zmean_;
     
-    bool writeIL_;
-    bool writeTE_;
-    
     unsigned int nzbitsdisk_;
 
     std::array<unsigned int,11> nzbitsstub_;
@@ -345,7 +378,7 @@ namespace Trklet{
     std::array<std::array<double, 12>, 5> rcut2S_;  
 
     std::map<std::string,unsigned int> maxstep_;
-    std::map<std::string,bool> write_;
+    std::map<std::string,bool> writeMonitorData_;
 
     std::array<double,10> rDSSinner_; 
     std::array<double,10> rDSSouter_;

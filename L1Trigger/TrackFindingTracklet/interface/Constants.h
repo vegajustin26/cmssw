@@ -21,19 +21,11 @@
 //
 // Turn on/off debug info
 //
-//static const bool printDebugKF=false; // if true print lots of debugging statements related to the KF fit
-//static const bool debug1=false; //Print detailed debug information about tracklet tracking
+
 static const bool writetrace=false; //Print out details about parsing configuration files
 
 static const bool warnNoMem=false;  //If true will print out warnings about missing projection memories
 static const bool warnNoDer=false;  //If true will print out warnings about missing track fit derivatives
-
-//Debug options in TC (should be false for 'normal' operation) FIXME - should be cleaned
-//up and removedd
-//static const bool dumppars=false;
-//static const bool dumpproj=false;
-
-
 
 
 //
@@ -88,46 +80,6 @@ static const bool writeoutReal = false;
 //
 
 
-static const bool writeStubsLayer=false;
-static const bool writeStubsLayerperSector=false;
-static const bool writeAllStubs=false;
-static const bool writeVMOccupancyME=false;
-static const bool writeVMOccupancyTE=false;
-static const bool writeSeeds=false;
-static const bool writeTED=false;
-static const bool writeTRE=false;
-static const bool writeTrackletProcessor=false;
-static const bool writeTrackletCalculator=false;
-static const bool writeTrackletCalculatorDisplaced=false;
-static const bool writeTrackletPars=false;
-static const bool writeAllProjections=false;
-static const bool writeVMProjections=false;
-static const bool writeTrackProjOcc=false;
-static const bool writeME=false;
-static const bool writeMatchCalculator=false;
-static const bool writeResiduals=false;
-static const bool writeFitTrack=true;
-static const bool writeChiSq=false;
-
-static const bool writeNMatches=false;
-static const bool writeHitEff=false;
-
-
-static const bool writeCabling=false;
-static const bool writeHitPattern=false;
-static const bool writeTrackletParsOverlap=false;
-static const bool writeTrackletParsDisk=false;
-
-static const bool writeAllCT=false; //write out .dat file containing all output tracks in bitwise format
-static const bool writeifit=false;
-
-static const bool writeVariance=false; //write out residuals for variand matrix determination
-static const bool writeResEff=false; //write files for making resolution & efficiency plots for standable code version
-static const bool writePars=false; //write files for making plots of track parameters
-
-static const bool writeMatchEff=false; //write files for making plots with truth matched efficiency
-
-
 //
 // Options for chisq fit
 //
@@ -153,15 +105,6 @@ static const int MEBins=(1<<MEBinsBits);
 
 static const int MEBinsDisks=8; //on each side
 
-//static const int Nphibits=2;         //Number of bits required to label the phi VM
-//static const int L1Nphi=(1<<Nphibits)-1; //Number of odd layer VMs
-//static const int Nzbits=3;         //Number of bits required to label the z VM
-//static const int L1Nz=(1<<Nzbits); //Number of z VMs in odd layers
-//static const int VMzbits=4;        //Number of bits for the z position in VM
-//static const int L2Nphi=(1<<Nphibits); //Number of even layer VMs
-//static const int L2Nz=(1<<Nzbits); //Number of z VMs in even layers
-//static const int VMrbits=2;        //Number of bits for r position 'in VM'
-//static const int VMphibits=3;      //Number of bits for phi position in VM
 
 //Constants for defining stub representations
 static const int nbitsrL123=7;
@@ -309,16 +252,6 @@ static const double half2SmoduleWidth=4.57;
 
 // need separate lookup values for inner two vs outer three disks for 2S modules
 
-// T5 tracker geometry (= D11, D17, D21, ... CMS geometry)!
-// http://cms-tklayout.web.cern.ch/cms-tklayout/layouts/recent-layouts/OT616_200_IT404/layout.html
-//static const double rDSSinner[10] = {66.7728, 71.7967, 77.5409, 82.5584, 84.8736, 89.8953, 95.7791, 100.798, 102.495, 107.52};  // <=== these 10 are for inner 2 disks
-//static const double rDSSouter[10] = {65.1694, 70.1936, 75.6641, 80.6908, 83.9581, 88.9827, 94.6539, 99.6772, 102.494, 107.519}; // <=== these 10 are for outer 3 disks
-
-// T14 tracker geometry (= D41 CMS geometry) 
-// http://cms-tklayout.web.cern.ch/cms-tklayout/layouts/recent-layouts/OT616_200_IT404/layout.html
-//static const double rDSSinner[10] = {66.4391, 71.4391, 76.275, 81.275, 82.9550, 87.9550, 93.815, 98.815, 99.816, 104.816};
-//static const double rDSSouter[10] = {63.9903, 68.9903, 74.275, 79.275, 81.9562, 86.9562, 92.492, 97.492, 99.816, 104.816};
-
 static const double rDSSinner_mod1 = geomTkTDR?69.2345:68.9391;
 static const double rDSSinner_mod2 = geomTkTDR?80.0056:78.7750;
 static const double rDSSinner_mod3 = geomTkTDR?87.3444:85.4550;
@@ -386,24 +319,9 @@ static const unsigned int nvmteoverlapdisks[2] = {4, 4};         // FIXME should
 
 static const double rcrit=55.0;
 
-
-//static const double rmaxL1=rmeanL1+drmax; 
-//static const double rmaxL2=rmeanL2+drmax; 
-//static const double rmaxL3=rmeanL3+drmax; 
-//static const double rmaxL4=rmeanL4+drmax; 
-//static const double rmaxL5=rmeanL5+drmax; 
 static const double rmaxL6=rmeanL6+drmax; 
 
 
-//static const double zminD1=zmeanD1-dzmax; 
-//static const double zmaxD1=zmeanD1+dzmax; 
-//static const double zminD2=zmeanD2-dzmax; 
-//static const double zmaxD2=zmeanD2+dzmax; 
-//static const double zminD3=zmeanD3-dzmax; 
-//static const double zmaxD3=zmeanD3+dzmax; 
-//static const double zminD4=zmeanD4-dzmax; 
-//static const double zmaxD4=zmeanD4+dzmax; 
-//static const double zminD5=zmeanD5-dzmax; 
 static const double zmaxD5=zmeanD5+dzmax; 
 
 static const double two_pi=2*M_PI;
@@ -443,12 +361,8 @@ static const int iphicritminmc=9253;
 static const int iphicritmaxmc=56269;
 
 static const unsigned int NLONGVMBITS=3; 
-//static const unsigned int NLONGVMRBITS=3;   //4 bins on each side (+-z)
-static const unsigned int NLONGVMBINS=(1<<NLONGVMBITS);
-//static const unsigned int NLONGVMRBINS=(1<<NLONGVMRBITS);
-//static const unsigned int NLONGVMODDLAYERBITS=6;
-//static const unsigned int NLONGVMODDDISKBITS=6;
 
+static const unsigned int NLONGVMBINS=(1<<NLONGVMBITS);
 
 //
 // Truncation cuts

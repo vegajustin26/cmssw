@@ -364,7 +364,7 @@ public:
 
 	      
 	      if (settings_->debugTracklet()) cout << "Adding layer-disk pair in " <<getName()<<endl;
-	      if (writeSeeds) {
+	      if (settings_->writeMonitorData("Seeds")) {
 		ofstream fout("seeds.txt", ofstream::app);
 		fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
 		fout.close();
@@ -478,7 +478,7 @@ public:
 		}
 		
 		if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
-		if (writeSeeds) {
+		if (settings_->writeMonitorData("Seeds")) {
 		  ofstream fout("seeds.txt", ofstream::app);
 		  fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
 		  fout.close();
@@ -563,7 +563,7 @@ public:
 
 		if (settings_->debugTracklet()) cout << "Adding disk-disk pair in " <<getName()<<endl;
 	      
-		if (writeSeeds) {
+		if (settings_->writeMonitorData("Seeds")) {
 		  ofstream fout("seeds.txt", ofstream::app);
 		  fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
 		  fout.close();
@@ -580,7 +580,7 @@ public:
       }
     }
 
-    if (settings_->writeTE()) {
+    if (settings_->writeMonitorData("TE")) {
       static ofstream out("trackletprocessor.txt");
       out << getName()<<" "<<countteall<<" "<<counttepass<<endl;
     }
@@ -639,8 +639,8 @@ public:
       }
 
       if (accept) countsel++;
-
-      if (writeTrackletProcessor) {
+      
+      if (settings_->writeMonitorData("TP")) {
 	static ofstream out("tc_seedpairs.txt");
 	out << stubpairs.getTEDName(i)<<" "<<accept<<endl;
       }
@@ -663,9 +663,9 @@ public:
       if (settings_->debugTracklet()) cout << "Will break on MAXTC 2"<<endl;
       //break;
     }
-  
+      
     
-    if (writeTrackletProcessor) {
+    if (settings_->writeMonitorData("TP")) {
       static ofstream out("trackletcalculator.txt");
       out << getName()<<" "<<countall<<" "<<countsel<<endl;
     }

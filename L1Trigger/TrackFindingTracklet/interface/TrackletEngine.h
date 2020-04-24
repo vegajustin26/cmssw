@@ -138,7 +138,7 @@ public:
       }
     }
 	  
-    if (settings_->writeTE()) {
+    if (settings_->writeMonitorData("TE")) {
       static ofstream out("trackletengine.txt");
       out << getName()<<" "<<countall<<" "<<countpass<<endl;
     }

@@ -463,7 +463,7 @@ public:
       for(unsigned int i=0;i<inputtrackfits_.size();i++) {
         for(unsigned int j=0;j<inputtrackfits_[i]->nTracks();j++) {
 	  if(inputtrackfits_[i]->getTrack(j)->getTrack()->duplicate()==0) {
-            if (writeSeeds) {
+            if (settings_->writeMonitorData("Seeds")) {
               ofstream fout("seeds.txt", ofstream::app);
               fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << inputtrackfits_[i]->getTrack(j)->getISeed() << endl;
               fout.close();

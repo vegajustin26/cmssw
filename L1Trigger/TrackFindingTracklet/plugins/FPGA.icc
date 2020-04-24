@@ -222,14 +222,14 @@ if (settings.writeMem()) {
  }
 
 
-    if (writeStubsLayer) {
+    if (settings.writeMonitorData("StubsLayer")) {
       static ofstream out("stubslayer.txt");
       out <<stublayer[0]<<" "<<stublayer[1]<<" "<<stublayer[2]<<" "
           <<stublayer[3]<<" "<<stublayer[4]<<" "<<stublayer[5]<<endl;
     }     
 
 
-    if (writeStubsLayerperSector) {
+    if (settings.writeMonitorData("StubsLayerSector")) {
       static ofstream out("stubslayerpersector.txt");
       for(unsigned int jj=0;jj<NSector;jj++){
         out <<stublayer1[0][jj]<<" "<<stublayer1[1][jj]<<" "
@@ -340,7 +340,7 @@ if (settings.writeMem()) {
       unsigned int hitmask=ev.layersHit(simtrackid,nlayers,ndisks);
       if (nlayers+ndisks<4) continue;
 
-      if (writeHitEff) {
+      if (settings.writeMonitorData("HitEff")) {
         static ofstream outhit("hiteff.txt");
     	outhit << simtrk.eta()<<" "
 	       <<(hitmask&1) << " " << (hitmask&2) << " "
@@ -417,7 +417,7 @@ if (settings.writeMem()) {
     FTTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executeFT();	 
-      if((settings.writeMem()||writeifit)&&k==writememsect){
+      if((settings.writeMem()||settings.writeMonitorData("IFit"))&&k==writememsect){
          sectors[k]->writeTF(first);
       }
     }
@@ -426,7 +426,7 @@ if (settings.writeMem()) {
     PDTimer.start();
     for (unsigned int k=0;k<NSector;k++) {
       sectors[k]->executePD(tracks);	  
-      if(((settings.writeMem()||writeifit)&&k==writememsect) || writeAllCT){
+      if(((settings.writeMem()||settings.writeMonitorData("IFit"))&&k==writememsect) || settings.writeMonitorData("CT")){
          sectors[k]->writeCT(first);
       }
     }

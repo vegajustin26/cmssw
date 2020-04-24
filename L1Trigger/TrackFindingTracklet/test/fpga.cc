@@ -125,13 +125,13 @@ int main(const int argc, const char** argv)
   }
 
   ofstream outres;
-  if (writeResEff) outres.open("trackres.txt");
+  if (settings.writeMonitorData("ResEff")) outres.open("trackres.txt");
 
   ofstream outeff;
-  if (writeResEff) outeff.open("trackeff.txt");
+  if (settings.writeMonitorData("ResEff")) outeff.open("trackeff.txt");
 
   ofstream outpars;
-  if (writePars) outpars.open("trackpars.txt");
+  if (settings.writeMonitorData("Pars")) outpars.open("trackpars.txt");
 
 
 //Open file to hold ROOT-Tree
@@ -269,7 +269,7 @@ int main(const int argc, const char** argv)
   CPUTimer FTTimer;
   CPUTimer PDTimer;
 
-  if (writeSeeds) {
+  if (settings.writeMonitorData("Seeds")) {
     ofstream fout("seeds.txt", ofstream::out);
     fout.close();
   }
@@ -345,7 +345,7 @@ int main(const int argc, const char** argv)
  
     } 
 
-    if (writeSeeds) {
+    if (settings.writeMonitorData("Seeds")) {
       ofstream fout("seeds.txt", ofstream::app);
       fout << "======== Event " << eventnum << " ========" << endl;
       for(unsigned nst=0; nst<ev.nsimtracks(); nst++) {
@@ -399,7 +399,7 @@ int main(const int argc, const char** argv)
       fout.close();
     }
 
-    if (writeVariance) {
+    if (settings.writeMonitorData("Variance")) {
       StubVariance variance(ev);
     }
 
@@ -421,14 +421,14 @@ int main(const int argc, const char** argv)
 #endif
 // ------------------------------
 
-    if (writeResEff) {
+    if (settings.writeMonitorData("ResEff")) {
       outeff << simtrk.pt()*simtrk.trackid()/fabs(simtrk.trackid())<<" "<<simtrk.eta()
 	     <<" "<<simtrk.phi();
       if (match) outeff << " 1"<<endl;
        else outeff << " 0"<<endl;
     }
 
-    if (writeMatchEff) {
+    if (settings.writeMonitorData("MatchEff")) { 
       static ofstream out("matcheff.txt");
       int nsim=0;
       for(unsigned int isimtrack=0;isimtrack<ev.nsimtracks();isimtrack++){
@@ -528,7 +528,7 @@ int main(const int argc, const char** argv)
     int ntrack=0;
     for(unsigned int l=0;l<tracks.size();l++) {
       //  cout <<tracks[l].duplicate()<<" ";
-      if (writePars) {
+      if (settings.writeMonitorData("Pars")) {
 	double phi=tracks[l]->iphi0()*kphi0pars+tracks[l]->sector()*two_pi/NSector;
 	if (phi>0.5*two_pi) phi-=two_pi;
 	double phisec=phi-two_pi;
@@ -575,7 +575,7 @@ int main(const int argc, const char** argv)
 
   }
 
-  if (writeCabling) {
+  if (settings.writeMonitorData("Cabling")) {
     cabling.writephirange();
   }
   

@@ -363,7 +363,7 @@ public:
   }
 
   void clean() {
-    if (writeNMatches) {
+    if (settings_->writeMonitorData("NMatches")) {
       int matchesL1=0;
       int matchesL3=0;
       int matchesL5=0;
@@ -382,7 +382,7 @@ public:
 
   void executeVMR(){
 
-    if (settings_->writeIL()) {
+    if (settings_->writeMonitorData("IL")) {
       static ofstream out("inputlink.txt");
       for (unsigned int i=0;i<IL_.size();i++){
 	out<<IL_[i]->getName()<<" "<<IL_[i]->nStubs()<<endl;
@@ -423,7 +423,7 @@ public:
       TC_[i]->execute();
     }
 
-    if (writeTrackProjOcc) {
+    if (settings_->writeMonitorData("TrackProjOcc")) {
       static ofstream out("trackprojocc.txt");
       for (unsigned int i=0; i<TPROJ_.size();i++){
         out << TPROJ_[i]->getName()<<" "<<TPROJ_[i]->nTracklets()<<endl;

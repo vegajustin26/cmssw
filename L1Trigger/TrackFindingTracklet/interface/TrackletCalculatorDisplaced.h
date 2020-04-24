@@ -764,7 +764,7 @@ public:
       }
     }
 
-    if (writeTrackletCalculatorDisplaced) {
+    if (settings_->writeMonitorData("TPD")) {
       static ofstream out("trackletcalculatordisplaced.txt");
       out << getName()<<" "<<countall<<" "<<countsel<<endl;
     }
@@ -1146,7 +1146,7 @@ public:
     }
 
     
-    if (writeTrackletPars) {
+    if (settings_->writeMonitorData("TrackletPars")) {
       static ofstream out("trackletpars.txt");
       out <<"Trackpars "<<layer_
 	  <<"   "<<rinv<<" "<<rinvapprox<<" "<<rinvapprox
@@ -1175,7 +1175,7 @@ public:
     tracklet->setTrackletIndex(trackletpars_->nTracklets());
     tracklet->setTCIndex(TCIndex_);
 
-    if (writeSeeds) {
+    if (settings_->writeMonitorData("Seeds")) {
       ofstream fout("seeds.txt", ofstream::app);
       fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed() << endl;
       fout.close();
@@ -1422,7 +1422,7 @@ public:
     }
 
     
-    if (writeTrackletPars) {
+    if (settings_->writeMonitorData("TrackletPars")) {
       static ofstream out("trackletpars.txt");
       out <<"Trackpars "<<layer_
 	  <<"   "<<rinv<<" "<<rinvapprox<<" "<<rinvapprox
@@ -1451,7 +1451,7 @@ public:
     tracklet->setTrackletIndex(trackletpars_->nTracklets());
     tracklet->setTCIndex(TCIndex_);
 
-    if (writeSeeds) {
+    if (settings_->writeMonitorData("Seeds")) {
       ofstream fout("seeds.txt", ofstream::app);
       fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed() << endl;
       fout.close();
@@ -1694,7 +1694,7 @@ public:
     }
 
     
-    if (writeTrackletPars) {
+    if (settings_->writeMonitorData("TrackletPars")) {
       static ofstream out("trackletpars.txt");
       out <<"Trackpars "<<layer_
 	  <<"   "<<rinv<<" "<<rinvapprox<<" "<<rinvapprox
@@ -1723,7 +1723,7 @@ public:
     tracklet->setTrackletIndex(trackletpars_->nTracklets());
     tracklet->setTCIndex(TCIndex_);
 
-    if (writeSeeds) {
+    if (settings_->writeMonitorData("Seeds")) {
       ofstream fout("seeds.txt", ofstream::app);
       fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed() << endl;
       fout.close();

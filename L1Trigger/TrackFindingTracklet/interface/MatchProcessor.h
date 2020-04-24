@@ -388,7 +388,7 @@ public:
 
     }
     
-    if (writeMatchCalculator) {
+    if (settings_->writeMonitorData("MC")) {
       static ofstream out("matchcalculator.txt");
       out << getName()<<" "<<countall<<" "<<countsel<<endl;
     }
@@ -465,7 +465,7 @@ public:
       
       
       
-      if (writeResiduals) {
+      if (settings_->writeMonitorData("Residuals")) {
 	static ofstream out("layerresiduals.txt");
 	
 	double pt=0.003*3.8/std::abs(tracklet->rinv());
@@ -648,7 +648,7 @@ public:
       double drcut=idrcut*krprojshiftdisk;
       
       
-      if (writeResiduals) {
+      if (settings_->writeMonitorData("Residuals")) {
 	static ofstream out("diskresiduals.txt");
 	
 	double pt=0.003*3.8/std::abs(tracklet->rinv());
