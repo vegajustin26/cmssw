@@ -234,7 +234,7 @@ public:
 
   void addProjection(int layer,int iphi,TrackletProjectionsMemory* trackletprojs, Tracklet* tracklet){
     if (trackletprojs==0) {
-      if (warnNoMem) {
+      if (settings_->warnNoMem()) {
 	cout << "No projection memory exists in "<<getName()<<" for layer = "<<layer<<" iphi = "<<iphi+1<<endl;
       }
       return;
@@ -247,7 +247,7 @@ public:
     if (iSeed_==1&&abs(disk)==4) return; //L3L4 projections to D3 are not used. Should be in configuration
     if (trackletprojs==0) {
       if (layer_==3&&abs(disk)==3) return; //L3L4 projections to D3 are not used.
-      if (warnNoMem) {       
+      if (settings_->warnNoMem()) {       
 	cout << "No projection memory exists in "<<getName()<<" for disk = "<<abs(disk)<<" iphi = "<<iphi+1<<endl;
       }
       return;

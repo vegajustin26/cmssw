@@ -515,10 +515,10 @@ class FitTrack:public ProcessBase{
    if (std::abs(rinv)<0.0057/4) ptbin=2;
    if (std::abs(rinv)<0.0057/8) ptbin=3;
 
-   TrackDer* derivatives=derTable.getDerivatives(layermask, diskmask,alphaindex,rinvindex);
+   TrackDer* derivatives=derTable.getDerivatives(layermask, diskmask,alphaindex,rinvindex,settings_->warnNoDer());
 
    if (derivatives==0) {
-     if (warnNoDer) { 
+     if (settings_->warnNoDer()) { 
        FPGAWord tmpl,tmpd;
        tmpl.set(layermask,6);
        tmpd.set(diskmask,10);

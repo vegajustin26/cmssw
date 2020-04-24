@@ -19,14 +19,6 @@
 //#define USE_HLS
 
 //
-// Turn on/off debug info
-//
-
-static const bool warnNoMem=false;  //If true will print out warnings about missing projection memories
-static const bool warnNoDer=false;  //If true will print out warnings about missing track fit derivatives
-
-
-//
 // Overall configuration switches
 //
 
@@ -65,11 +57,6 @@ static const bool writeTripletTables=false; //Train and write the TED and TRE ta
 
 //static const bool writestubs=false;  // write input stubs in the normal format
 static const bool writeoutReal = false; 
-
-
-//
-// Write out internal processing status. Scripts to make plots in PlotMacros
-//
 
 
 //

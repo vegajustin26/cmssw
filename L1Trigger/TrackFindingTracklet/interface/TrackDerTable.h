@@ -48,17 +48,16 @@ public:
   TrackDer* getDerivatives(unsigned int layermask,
                            unsigned int diskmask,
                            unsigned int alphaindex,
-                           unsigned int rinvindex) {
-    int index = getIndex(layermask, diskmask);
-    //if (index<0||index!=17984||alphaindex!=20) {
+                           unsigned int rinvindex,
+			   bool warnNoDer) {
+    int index = getIndex(layermask, diskmask, warnNoDer);
     if (index < 0) {
       return 0;
     }
-    //cout << "getDerivatives index alphaindex "<<index<<" "<<alphaindex<<" "<<rinvindex<<endl;
     return &derivatives_[index + alphaindex * (1 << nrinvBitsTable) + rinvindex];
   }
 
-  int getIndex(unsigned int layermask, unsigned int diskmask) {
+  int getIndex(unsigned int layermask, unsigned int diskmask, bool warnNoDer) {
     assert(layermask < LayerMem_.size());
 
     assert(diskmask < DiskMem_.size());
@@ -93,14 +92,12 @@ public:
     }
 
     assert(address >= 0);
-    //cout << "address LayerDiskMemBits_ : "<<address<<" "<<LayerDiskMemBits_<<endl;
     assert(address < (1 << LayerDiskMemBits_));
 
     return address;
   }
 
   void addEntry(unsigned int layermask, unsigned int diskmask, int multiplicity, int nrinv) {
-    //cout << "layermask diskmatch "<<layermask<<" "<<diskmask<<endl;
 
     assert(multiplicity <= (1 << (3 * alphaBits_)));
 
@@ -190,8 +187,6 @@ public:
       int layers = strtol(layerstr.c_str(), tmpptr, 2);
       int disks = strtol(diskstr.c_str(), tmpptr, 2);
 
-      //cout << "adding: "<<layers<<" "<<disks<<" "<<multiplicity<<endl;
-
       addEntry(layers, disks, multiplicity, (1 << nrinvBitsTable));
     }
   }
@@ -211,37 +206,29 @@ public:
       double rinv = (irinv - ((1 << (nrinvBitsTable - 1)) - 0.5)) * 0.0057 / (1 << (nrinvBitsTable - 1));
 
       bool print = false;
-      //bool print=getIndex(layermask,diskmask)==300 && alphamask==1;
-      //print=false;
 
       if (print) {
         cout << "PRINT i " << i << " " << layermask << " " << diskmask << " " << alphamask << " " << print << endl;
       }
 
       int nlayers = 0;
-      //int layers[6];
       double r[6];
 
       for (unsigned l = 0; l < 6; l++) {
         if (layermask & (1 << (5 - l))) {
-          //layers[nlayers]=l+1;
           r[nlayers] = rmean[l];
-          //cout << "Hit in layer "<<layers[nlayers]<<" "<<r[nlayers]<<endl;
           nlayers++;
         }
       }
 
       int ndisks = 0;
-      //int disks[5];
       double z[5];
       double alpha[5];
 
       double t = gett(diskmask, layermask);
-      //double rinv=0.00000001;
 
       for (unsigned d = 0; d < 5; d++) {
         if (diskmask & (3 << (2 * (4 - d)))) {
-          //disks[ndisks]=d+1;
           z[ndisks] = zmean[d];
           alpha[ndisks] = 0.0;
           double r = zmean[d] / t;
@@ -250,25 +237,19 @@ public:
             if (alphaBits_ == 3) {
               int ialpha = alphamask & 7;
               alphamask = alphamask >> 3;
-              //double r=zmean[d]/t;
               alpha[ndisks] = 4.57 * (ialpha - 3.5) / 4.0 / r2;
-              //alpha[ndisks]=480*0.009*(ialpha-3.5)/(4.0*r*r);
               if (print)
                 cout << "PRINT 3 alpha ialpha : " << alpha[ndisks] << " " << ialpha << endl;
             }
             if (alphaBits_ == 2) {
               int ialpha = alphamask & 3;
               alphamask = alphamask >> 2;
-              //double r=zmean[d]/t;
               alpha[ndisks] = 4.57 * (ialpha - 1.5) / 2.0 / r2;
-              //alpha[ndisks]=480*0.009*(ialpha-1.5)/(4.0*r*r);
             }
             if (alphaBits_ == 1) {
               int ialpha = alphamask & 1;
               alphamask = alphamask >> 1;
-              //double r=zmean[d]/t;
               alpha[ndisks] = 4.57 * (ialpha - 0.5) / r2;
-              //alpha[ndisks]=480*0.009*(ialpha-0.5)/(4.0*r*r);
               if (print)
                 cout << "PRINT 1 alpha ialpha : " << alpha[ndisks] << " " << ialpha << endl;
             }
@@ -339,21 +320,6 @@ public:
       }
 
       for (int j = 0; j < nlayers + ndisks; j++) {
-        /*
-	if (print) {
-	  cout << "Table "<<endl;
-	  cout << MinvDt[0][2*j] <<" "
-	       << MinvDt[1][2*j] <<" "
-	       << MinvDt[2][2*j] <<" "
-	       << MinvDt[3][2*j] <<" "
-	       <<endl;
-	  cout << MinvDt[0][2*j+1] <<" "
-	       << MinvDt[1][2*j+1] <<" "
-	       << MinvDt[2][2*j+1] <<" "
-	       << MinvDt[3][2*j+1] <<" "
-	       <<endl;
-	}
-	*/
 
         der.sett(t);
 
@@ -392,88 +358,7 @@ public:
     }
 
     if (settings->writeTable()) {
-      /*
-      for (unsigned int seedlayer=1;seedlayer<=5;seedlayer+=2) {
-	for(unsigned int j=0;j<8;j++) {
-	  std::ostringstream oss;
-	  oss << "FitDerTable_L"<<seedlayer<<"_"<<j+1<<".txt";
-	  std::string fname=oss.str();
-	  ofstream out(fname.c_str());
-	  for(unsigned int imask=0;imask<16;imask++) {
-	    int nmatches=0;
-	    for (unsigned int i=0;i<4;i++) {
-	      if (((1<<i)&imask)!=0) nmatches++;
-	    }
-	    unsigned int ifullmask=0;
-	    if (seedlayer==5) ifullmask=(imask<<2)+3;
-	    if (seedlayer==3) ifullmask=(imask&12)*4+12+(imask&3);
-	    if (seedlayer==1) ifullmask=imask+48;
-	    
-	    unsigned int layer=j/2;
-	    if (seedlayer==1) layer+=2;
-	    if (seedlayer==3&&layer>1) layer+=2;
-	    assert(layer<6);
-
-	    bool hitlayer=((1<<(5-layer))&ifullmask)!=0;
-
-	    TrackDer* der=0;
-	    if (hitlayer&&(nmatches>1)) {
-	      der=getDerivatives(ifullmask,0,0); 
-	    }
-	    
-
-	   
-	    if (der!=0) {
-
-	      unsigned int index=0;
-	      for (unsigned int i=0;i<layer;i++) {
-		if (((1<<(5-i))&ifullmask)!=0) index++;
-		//cout << "layer index : "<<layer<<" "<<index<<endl;
-	      }
-	      
-	      //cout << "seedlayer j imask ifullmask layer index "<<seedlayer<<" "
-	      //		   <<j<<" "<<imask<<" "<<ifullmask<<" "<<layer<<" "
-	      //   <<index<<endl;
-
-
-	      //for (unsigned int i=0;i<6;i++) {
-	      //	cout <<der->getirinvdphi(i)<<" ";
-	      //}
-	      //cout << endl;
-
-	      assert(index<6);
-
-
-
-	      FPGAWord tmp1,tmp2,tmp3,tmp4;
-	      if (j%2==0) {
-		tmp1.set(der->getirinvdphi(index),15,false); 
-		tmp2.set(der->getiphi0dphi(index),15,false); 
-		tmp3.set(der->getitdphi(index),15,false); 
-		tmp4.set(der->getiz0dphi(index),15,false); 
-	      } else {
-		tmp1.set(der->getirinvdzordr(index),15,false); 
-		tmp2.set(der->getiphi0dzordr(index),15,false); 
-		tmp3.set(der->getitdzordr(index),15,false); 
-		tmp4.set(der->getiz0dzordr(index),15,false); 
-	      }
-	      //FPGAWord tmp;
-	      //tmp.set(imask,4,true);
-	      out //<< tmp.str()<<" "<<index<<" "
-		  <<tmp1.str()<<tmp2.str()<<tmp3.str()<<tmp4.str()<<endl;
-	   
-	    } else {
-	      //FPGAWord tmp;
-	      //tmp.set(ifullmask,6,true);
-	      out //<<tmp.str()<<" "<<hitlayer
-		<<"000000000000000000000000000000000000000000000000000000000000"<<endl;
-	    }
-	  }
-	}
-      }
-	  */
-
-      // New table format with disks
+      
       ofstream outL("FitDerTableNew_LayerMem.txt");
       for (unsigned int i = 0; i < LayerMem_.size(); i++) {
         FPGAWord tmp;
@@ -1574,8 +1459,6 @@ public:
           tmax = lmax;
       }
     }
-
-    //cout << "diskmask tmin tmax : "<<diskmask<<" "<<tmin<<" "<<tmax<<endl;
 
     return 0.5 * (tmax + tmin) * 1.07;
   }
