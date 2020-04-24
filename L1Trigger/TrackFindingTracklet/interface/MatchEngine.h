@@ -89,9 +89,8 @@ public:
   }
 
   void addOutput(MemoryBase* memory,string output){
-    if (writetrace) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName()
-	   << " to output "<<output<<endl;
+    if (settings_->writetrace()) {
+      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
     }
     if (output=="matchout") {
       CandidateMatchMemory* tmp=dynamic_cast<CandidateMatchMemory*>(memory);
@@ -104,9 +103,8 @@ public:
   }
 
   void addInput(MemoryBase* memory,string input){
-    if (writetrace) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName()
-	   << " to input "<<input<<endl;
+    if (settings_->writetrace()) {
+      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
     }
     if (input=="vmstubin") {
       VMStubsMEMemory* tmp=dynamic_cast<VMStubsMEMemory*>(memory);

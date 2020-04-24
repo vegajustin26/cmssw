@@ -22,8 +22,6 @@
 // Turn on/off debug info
 //
 
-static const bool writetrace=false; //Print out details about parsing configuration files
-
 static const bool warnNoMem=false;  //If true will print out warnings about missing projection memories
 static const bool warnNoDer=false;  //If true will print out warnings about missing track fit derivatives
 

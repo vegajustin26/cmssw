@@ -171,7 +171,7 @@ int main(const int argc, const char** argv)
     string memType, memName, size;
     inmem >>memType>>memName>>size;
     if (!inmem.good()) continue;
-    if (writetrace) {
+    if (settings.writetrace()) {
       cout << "Read memory: "<<memType<<" "<<memName<<endl;
     }
     for (unsigned int i=0;i<NSector;i++) {
@@ -191,7 +191,7 @@ int main(const int argc, const char** argv)
     string procType, procName;
     inproc >>procType>>procName;
     if (!inproc.good()) continue;
-    if (writetrace) {
+    if (settings.writetrace()) {
       cout << "Read process: "<<procType<<" "<<procName<<endl;
     }
     for (unsigned int i=0;i<NSector;i++) {
@@ -212,7 +212,7 @@ int main(const int argc, const char** argv)
     string line;
     getline(inwire,line);
     if (!inwire.good()) continue;
-    if (writetrace) {
+    if (settings.writetrace()) {
       cout << "Line : "<<line<<endl;
     }
     stringstream ss(line);

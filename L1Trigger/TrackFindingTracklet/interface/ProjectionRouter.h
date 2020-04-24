@@ -22,9 +22,8 @@ public:
   }
 
   void addOutput(MemoryBase* memory,string output){
-    if (writetrace) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName()
-	   << " to output "<<output<<endl;
+    if (settings_->writetrace()) {
+      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
     }
     if (output=="allprojout"){
       AllProjectionsMemory* tmp=dynamic_cast<AllProjectionsMemory*>(memory);
@@ -55,9 +54,8 @@ public:
   }
 
   void addInput(MemoryBase* memory,string input){
-    if (writetrace) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName()
-	   << " to input "<<input<<endl;
+    if (settings_->writetrace()) {
+      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
     }
     if (input.substr(0,4)=="proj" && input.substr(input.size()-2,2)=="in"){
       TrackletProjectionsMemory* tmp=dynamic_cast<TrackletProjectionsMemory*>(memory);

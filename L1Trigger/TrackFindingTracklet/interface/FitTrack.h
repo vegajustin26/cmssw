@@ -21,9 +21,8 @@ class FitTrack:public ProcessBase{
    }
 
   void addOutput(MemoryBase* memory,string output){
-   if (writetrace) {
-    cout << "In "<<name_<<" adding output to "<<memory->getName()
-     << " to output "<<output<<endl;
+   if (settings_->writetrace()) {
+    cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
    }
    if (output=="trackout"){
     TrackFitMemory* tmp=dynamic_cast<TrackFitMemory*>(memory);
@@ -37,9 +36,8 @@ class FitTrack:public ProcessBase{
 
 
   void addInput(MemoryBase* memory,string input){
-   if (writetrace) {
-    cout << "In "<<name_<<" adding input from "<<memory->getName()
-     << " to input "<<input<<endl;
+   if (settings_->writetrace()) {
+    cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
    }
    if (input=="tparin"||
        input=="tpar1in"||
@@ -327,12 +325,9 @@ class FitTrack:public ProcessBase{
       }
       else{
        int ialpha = tracklet->ialphadisk(d).value();
-       //cout << "StubA ialpha "<<ialpha<<endl;
        int nalpha = tracklet->ialphadisk(d).nbits();
-       //cout << "StubA ialpha nalpha "<<ialpha<<" "<<nalpha<<endl;
        nalpha = nalpha - alphaBitsTable; 
        ialpha = (1<<(alphaBitsTable-1)) + (ialpha>>nalpha);
-       //cout << "ialpha ialphatable : "<<tracklet->ialphadisk(d).value()<<" "<<ialpha<<endl;
 
        alphaindex+=ialpha*power;
        power=power<<alphaBitsTable;
@@ -405,9 +400,7 @@ class FitTrack:public ProcessBase{
       }
       else{
        int ialpha = tracklet->ialphadisk(d).value();
-       //cout << "StubB ialpha "<<ialpha<<endl;
        int nalpha = tracklet->ialphadisk(d).nbits();
-       //cout << "StubB ialpha nalpha "<<ialpha<<" "<<nalpha<<endl;
        nalpha = nalpha - alphaBitsTable;
        ialpha = (1<<(alphaBitsTable-1)) + (ialpha>>nalpha);
 
@@ -469,7 +462,6 @@ class FitTrack:public ProcessBase{
       disks[ndisks]=tracklet->disk();
       matches2[2*(5-d1)]='1';
       diskmask|=(1<<(2*(5-d1)+1));
-      //alpha[ndisks]=0.0;
       ndisks++;
       continue;
      }
@@ -485,9 +477,7 @@ class FitTrack:public ProcessBase{
       }
       else{
        int ialpha = tracklet->ialphadisk(d).value();
-       //cout << "StubC ialpha "<<ialpha<<endl;	    
        int nalpha = tracklet->ialphadisk(d).nbits();
-       //cout << "StubC ialpha nalpha "<<ialpha<<" "<<nalpha<<endl;
        nalpha = nalpha - alphaBitsTable;
        ialpha = (1<<(alphaBitsTable-1)) + (ialpha>>nalpha);
 
