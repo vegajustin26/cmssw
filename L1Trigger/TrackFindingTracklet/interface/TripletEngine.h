@@ -185,7 +185,7 @@ public:
                   cout << "In "<<getName()<<" have third stub"<<endl;
                 }
 
-                if (countall>=MAXTRE) break;
+                if (countall>=settings_->maxStep("TRE")) break;
                 countall++;
 
                 VMStubTE thirdvmstub=thirdvmstubs_.at(k)->getVMStubTEBinned(ibin,l);
@@ -270,7 +270,7 @@ public:
               if (stubpairs_.at(i)->getLastPartOfName() != vmsteSuffix)
                 continue;
               for(unsigned int l=0;l<thirdvmstubs_.at(k)->nVMStubsBinned(ibin);l++){
-                if (countall>=MAXTRE) break;
+                if (countall>=settings_->maxStep("TRE")) break;
                 countall++;
 
                 VMStubTE thirdvmstub=thirdvmstubs_.at(k)->getVMStubTEBinned(ibin,l);
@@ -346,7 +346,7 @@ public:
                 continue;
 	      assert(thirdvmstubs_.at(k)->nVMStubsBinned(ibin)==thirdvmstubs_.at(k)->nVMStubsBinned(ibin));
               for(unsigned int l=0;l<thirdvmstubs_.at(k)->nVMStubsBinned(ibin);l++){
-                if (countall>=MAXTRE) break;
+                if (countall>=settings_->maxStep("TRE")) break;
                 countall++;
 
                 VMStubTE thirdvmstub=thirdvmstubs_.at(k)->getVMStubTEBinned(ibin,l);

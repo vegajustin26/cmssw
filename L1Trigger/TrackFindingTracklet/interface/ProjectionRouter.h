@@ -80,7 +80,7 @@ public:
 
       for (unsigned int i=0;i<inputproj_[j]->nTracklets();i++){
 
-	if (allprojcount>MAXPROJROUTER) continue;
+	if (allprojcount>settings_->maxStep("PR")) continue;
 
 	Tracklet* tracklet=inputproj_[j]->getFPGATracklet(i);
 

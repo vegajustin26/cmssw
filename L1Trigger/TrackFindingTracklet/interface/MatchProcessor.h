@@ -252,7 +252,7 @@ public:
 
     inputProjBuffer_.reset();
     
-    for (unsigned int istep=0;istep<MAXMP;istep++) {
+    for (unsigned int istep=0;istep<settings_->maxStep("MP");istep++) {
 
       //Step 1
       //First step here checks if we have more input projections to put into

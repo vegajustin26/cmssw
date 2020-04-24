@@ -318,7 +318,7 @@ public:
 	  break;
 	}
 	
-	if (countall>=MAXTC) {
+	if (countall>=settings_->maxStep("TC")) {
 	  if (settings_->debugTracklet()) cout << "Will break on MAXTC 1"<<endl;
 	  break;
 	}
@@ -327,7 +327,7 @@ public:
 	}
 
       }
-      if (countall>=MAXTC) {
+      if (countall>=settings_->maxStep("TC")) {
 	if (settings_->debugTracklet()) cout << "Will break on MAXTC 2"<<endl;
 	break;
       }

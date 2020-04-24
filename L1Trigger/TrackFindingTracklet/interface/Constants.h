@@ -202,25 +202,6 @@ static const unsigned int NLONGVMBITS=3;
 
 static const unsigned int NLONGVMBINS=(1<<NLONGVMBITS);
 
-//
-// Truncation cuts
-//
-static const unsigned int MAXOFFSET=10000; //set to 0 to enable regular truncation or 10000 to disable it.
-
-static const unsigned int MAXSTUBSLINK = 108 + MAXOFFSET; //Max stubs per link
-static const unsigned int MAXLAYERROUTER = 108 + MAXOFFSET; //Max stubs handled by layer router
-static const unsigned int MAXDISKROUTER = 108 + MAXOFFSET; //Max stubs handled by disk router
-static const unsigned int MAXVMROUTER = 108 + MAXOFFSET; //Max stubs handled by VM router
-static const unsigned int MAXTE = 108 + MAXOFFSET; //Maximum number of stub pairs to try in TE 
-static const unsigned int MAXTRE = 108 + MAXOFFSET; //Maximum number of stub pairs to try in TRE 
-static const unsigned int MAXTC = 108 + MAXOFFSET; //Maximum number of tracklet parameter calculations
-static const unsigned int MAXPROJROUTER = 108 + MAXOFFSET; //Maximum number of projections to route
-static const unsigned int MAXME = 108 + MAXOFFSET; //Maximum number of stub-projection matches to try
-static const unsigned int MAXMC = 108 + MAXOFFSET; //Maximum number of match calculations
-static const unsigned int MAXMP = 108 + MAXOFFSET; //Maximum number of match calculations
-static const unsigned int MAXFIT = 108 + MAXOFFSET; //Maximum number of track fits
-
-
 static const double dphisector=2*M_PI/NSector;
 
 

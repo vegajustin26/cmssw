@@ -138,7 +138,7 @@ public:
     //Loop over the input stubs
     for(unsigned int j=0;j<stubinputs_.size();j++){
       for(unsigned int i=0;i<stubinputs_[j]->nStubs();i++){
-	if (allStubCounter>MAXVMROUTER) continue;
+	if (allStubCounter>settings_->maxStep("VMR")) continue;
 	if (allStubCounter>127) continue;
 	std::pair<Stub*,L1TStub*> stub=stubinputs_[j]->getStub(i);
 

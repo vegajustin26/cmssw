@@ -157,7 +157,17 @@ namespace Trklet{
       rcut2S_[3]={{3.6, 3.8, 0.0, 0.0, 3.6, 0.0, 3.5, 3.8, 0.0, 0.0, 3.0, 3.0}};   //disk 4
       rcut2S_[4]={{0.0, 0.0, 0.0, 0.0, 3.6, 3.4, 3.7, 0.0, 0.0, 0.0, 0.0, 3.0}};   //disk 5
 
-      maxstep_={{"IL",108},{"VMR",108}};
+      maxstepoffset_=10000;
+      maxstep_={{"Link",108},
+		{"MC",108},
+		{"ME",108},
+		{"MP",108},
+		{"PR",108},
+		{"TC",108},
+		{"TE",108},
+		{"TP",108},
+		{"TRE",108},
+		{"VMR",108}};
 
       writeMonitorData_={{"IL",false},
 			 {"TE",false},
@@ -339,6 +349,14 @@ namespace Trklet{
       return writeMonitorData_.at(module);
     }
 
+    unsigned int maxStep(std::string module) const {
+      if (maxstep_.find(module)==maxstep_.end()){
+	std::cout << "Settings::maxStep module = "<<module<<" not known" << std::endl;
+	assert(0);
+      }
+      return maxstep_.at(module)+maxstepoffset_;;
+    }
+    
 
     double zlength() const { return zlength_;}
     double rmaxdisk() const { return rmaxdisk_;}
@@ -492,6 +510,7 @@ namespace Trklet{
     std::array<std::array<double, 12>, 5> rphicut2S_;
     std::array<std::array<double, 12>, 5> rcut2S_;  
 
+    unsigned int maxstepoffset_;
     std::map<std::string,unsigned int> maxstep_;
     std::map<std::string,bool> writeMonitorData_;
 

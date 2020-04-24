@@ -159,7 +159,7 @@ public:
     int istub=0;
 
     //Main processing loops starts here  
-    for (unsigned int istep=0;istep<MAXME;istep++) {
+    for (unsigned int istep=0;istep<settings_->maxStep("ME");istep++) {
 
       countall++;
       

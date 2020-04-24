@@ -11,7 +11,7 @@
 #include "L1Trigger/TrackFindingTMTT/interface/Stub.h"
 #include "L1Trigger/TrackFindingTMTT/interface/KFParamsComb.h"
 #include "L1Trigger/TrackFindingTracklet/interface/HybridFit.h"
-s#include "L1Trigger/TrackFindingTMTT/interface/Settings.h"
+#include "L1Trigger/TrackFindingTMTT/interface/Settings.h"
 #include "L1Trigger/TrackFindingTMTT/interface/L1fittedTrack.h"
 #include "L1Trigger/TrackFindingTMTT/interface/KFTrackletTrack.h"
 #endif

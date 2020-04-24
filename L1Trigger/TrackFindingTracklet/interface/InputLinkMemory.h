@@ -79,7 +79,7 @@ public:
     if (settings_->debugTracklet()) {
       cout << "Will add stub in "<<getName()<<" "<<"iphiwmRaw = "<<iphivmRaw<<" phi="<<al1stub.phi()<<" z="<<al1stub.z()<<" r="<<al1stub.r()<<endl;
     }
-    if (stubs_.size()<MAXSTUBSLINK) {
+    if (stubs_.size()<settings_->maxStep("Link")) {
       L1TStub* l1stub=new L1TStub(al1stub);
       Stub* stubptr=new Stub(stub);
 

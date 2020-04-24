@@ -307,7 +307,7 @@ public:
 	    if (settings_->debugTracklet()) cout << getName() << " looking for matching stub in bin "<<ibin
 			     <<" with "<<outervmstubs_[ivmmem]->nVMStubsBinned(ibin)<<" stubs"<<endl;
 	    for(unsigned int j=0;j<outervmstubs_[ivmmem]->nVMStubsBinned(ibin);j++){
-	      //if (countall>=MAXTE) break;
+	      //if (countall>=settings_->maxStep("TE")) break;
 	      countall++;
 	      countteall++;
 	      
@@ -417,7 +417,7 @@ public:
 		  cout << "In "<<getName()<<" have outer stub"<<endl;
 		}
 		
-		//if (countall>=MAXTE) break;
+		//if (countall>=settings_->maxStep("TE")) break;
 		countteall++;
 		countall++;
 
@@ -510,7 +510,7 @@ public:
 	      if (settings_->debugTracklet()) cout << getName() << " looking for matching stub in bin "<<ibin
 			       <<" with "<<outervmstubs_[ivmmem]->nVMStubsBinned(ibin)<<" stubs"<<endl;
 	      for(unsigned int j=0;j<outervmstubs_[ivmmem]->nVMStubsBinned(ibin);j++){
-		//if (countall>=MAXTE) break;
+		//if (countall>=settings_->maxStep("TE")) break;
 		countall++;
 		countteall++;
 		
@@ -648,7 +648,7 @@ public:
 	break;
       }
       
-      if (countall>=MAXTC) {
+      if (countall>=settings_->maxStep("TP")) {
 	if (settings_->debugTracklet()) cout << "Will break on MAXTC 1"<<endl;
 	break;
       }
@@ -657,7 +657,7 @@ public:
       }
       
     }
-    if (countall>=MAXTC) {
+    if (countall>=settings_->maxStep("TP")) {
       if (settings_->debugTracklet()) cout << "Will break on MAXTC 2"<<endl;
       //break;
     }

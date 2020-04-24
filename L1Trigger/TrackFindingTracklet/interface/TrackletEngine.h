@@ -90,7 +90,7 @@ public:
       for(int ibin=start;ibin<=last;ibin++) {
 	
 	for(unsigned int j=0;j<outervmstubs_->nVMStubsBinned(ibin);j++){
-	  if (countall>=MAXTE) break;
+	  if (countall>=settings_->maxStep("TE")) break;
 	  countall++;
 	  VMStubTE outervmstub=outervmstubs_->getVMStubTEBinned(ibin,j);
 	  

@@ -496,7 +496,7 @@ public:
 	  fullMatches_[seedindex]->addMatch(tracklet,mergedMatches[j].second);
 	}
       }
-      if (countall>=MAXMC) break;
+      if (countall>=settings_->maxStep("MC")) break;
     }
 
 

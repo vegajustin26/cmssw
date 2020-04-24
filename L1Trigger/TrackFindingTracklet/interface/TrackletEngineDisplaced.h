@@ -150,7 +150,7 @@ public:
 		cout << "In "<<getName()<<" have second stub"<<endl;
 	      }
 
-	      if (countall>=MAXTE) break;
+	      if (countall>=settings_->maxStep("TE")) break;
 	      countall++;
 	      VMStubTE secondvmstub=secondvmstubs_->getVMStubTEBinned(ibin,j);
 
@@ -228,7 +228,7 @@ public:
 		cout << "In "<<getName()<<" have second stub"<<endl;
 	      }
 
-	      if (countall>=MAXTE) break;
+	      if (countall>=settings_->maxStep("TE")) break;
 	      countall++;
 
 	      VMStubTE secondvmstub=secondvmstubs_->getVMStubTEBinned(ibin,j);
@@ -308,7 +308,7 @@ public:
 	    if (settings_->debugTracklet()) cout << getName() << " looking for matching stub in bin "<<ibin
 						 <<" with "<<secondvmstubs_->nVMStubsBinned(ibin)<<" stubs"<<endl;
 	    for(unsigned int j=0;j<secondvmstubs_->nVMStubsBinned(ibin);j++){
-	      if (countall>=MAXTE) break;
+	      if (countall>=settings_->maxStep("TE")) break;
 	      countall++;
 
 	      VMStubTE secondvmstub=secondvmstubs_->getVMStubTEBinned(ibin,j);	
