@@ -36,12 +36,12 @@ public:
     maxtracklet_=127;
 
     for(unsigned int ilayer=0;ilayer<6;ilayer++){
-      vector<TrackletProjectionsMemory*> tmp(nallstubslayers[ilayer],0);
+      vector<TrackletProjectionsMemory*> tmp(settings_->nallstubs(ilayer),0);
       trackletprojlayers_.push_back(tmp);
     }
 
     for(unsigned int idisk=0;idisk<5;idisk++){
-      vector<TrackletProjectionsMemory*> tmp(nallstubsdisks[idisk],0);
+      vector<TrackletProjectionsMemory*> tmp(settings_->nallstubs(idisk+6),0);
       trackletprojdisks_.push_back(tmp);
     }
           
@@ -704,11 +704,11 @@ public:
 	int outerphibins=(1<<outerphibits_);
 	
 	double innerphimin, innerphimax;
-	innervmstubs_[ivmmem]->getPhiRange(innerphimin,innerphimax);
+	innervmstubs_[ivmmem]->getPhiRange(innerphimin,innerphimax,iSeed_,0);
 	double rinner=rmean[layer_-1];
 	
 	double outerphimin, outerphimax;
-	outervmstubs_[ivmmem]->getPhiRange(outerphimin,outerphimax);
+	outervmstubs_[ivmmem]->getPhiRange(outerphimin,outerphimax,iSeed_,1);
 	double router=rmean[layer_];
 	
 	double phiinner[2];
@@ -803,10 +803,10 @@ public:
 	int outerphibins=(1<<outerphibits_);
 	
 	double innerphimin, innerphimax;
-	innervmstubs_[ivmmem]->getPhiRange(innerphimin,innerphimax);
+	innervmstubs_[ivmmem]->getPhiRange(innerphimin,innerphimax,iSeed_,0);
 	
 	double outerphimin, outerphimax;
-	outervmstubs_[ivmmem]->getPhiRange(outerphimin,outerphimax);
+	outervmstubs_[ivmmem]->getPhiRange(outerphimin,outerphimax,iSeed_,1);
 	
 	
 	double phiinner[2];
@@ -899,10 +899,10 @@ public:
 	int outerphibins=(1<<outerphibits_);
 	
 	double innerphimin, innerphimax;
-	innervmstubs_[ivmmem]->getPhiRange(innerphimin,innerphimax);
+	innervmstubs_[ivmmem]->getPhiRange(innerphimin,innerphimax,iSeed_,0);
 	
 	double outerphimin, outerphimax;
-	outervmstubs_[ivmmem]->getPhiRange(outerphimin,outerphimax);
+	outervmstubs_[ivmmem]->getPhiRange(outerphimin,outerphimax,iSeed_,1);
 	
 	double phiinner[2];
 	double phiouter[2];

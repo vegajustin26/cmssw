@@ -161,10 +161,10 @@ public:
     int outerphibins=(1<<outerphibits_);
     
     double innerphimin, innerphimax;
-    innervmstubs_->getPhiRange(innerphimin,innerphimax);
+    innervmstubs_->getPhiRange(innerphimin,innerphimax,iSeed_,0);
 
     double outerphimin, outerphimax;
-    outervmstubs_->getPhiRange(outerphimin,outerphimax);
+    outervmstubs_->getPhiRange(outerphimin,outerphimax,iSeed_,1);
 
     double phiinner[2];
     double phiouter[2];

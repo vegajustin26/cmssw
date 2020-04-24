@@ -281,42 +281,6 @@ static const double rmean[6]={rmeanL1,rmeanL2,rmeanL3,rmeanL4,rmeanL5,rmeanL6};
 
 static const double zmean[5]={zmeanD1,zmeanD2,zmeanD3,zmeanD4,zmeanD5};
 
-//Number of VM regions for TE by inner/outer layer for each seed
-static const unsigned int nvmte_[3][12]={{4,4,4,4,4,4,2,2,4,4,8,4},
-					 {8,4,8,8,4,4,4,4,8,8,4,4},
-					 {0,0,0,0,0,0,0,0,0,0,4,2}};
-//number of bits for VM regions for TE by inner/outer layer for each seed
-static const unsigned int nbitsvmte[3][12]={{2,2,2,2,2,2,1,1,2,2,3,2},
-					     {3,2,3,3,2,2,2,2,3,3,2,2},
-					     {0,0,0,0,0,0,0,0,0,0,2,1}};
-
-//Number of allstub memories (phi regions) for each of the layers+disks
-static const unsigned int nallstubs_[11]={8,4,4,4,4,4,4,4,4,4,4}; 
-static const unsigned int nbitsallstubs_[11]={3,2,2,2,2,2,2,2,2,2,2}; 
-//Number of vm for ME memories per phi region for each of the layers+disks
-static const unsigned int nvmme[11]={4,8,8,8,8,8,8,4,4,4,4};
-static const unsigned int nbitsvmme[11]={2,3,3,3,3,3,3,2,2,2,2};
-
-
-static const unsigned int nallstubslayers[6]={8,4,4,4,4,4};  // FIXME should retire
-static const unsigned int nvmtelayers[6]={4,8,4,8,4,8};      // FIXME should retire
-static const unsigned int nvmteextralayers[6]={0,4,4,0,0,0}; // FIXME should retire
-
-static const unsigned int nallprojlayers[6]={8,4,4,4,4,4};   // FIXME should retire
-static const unsigned int nvmmelayers[6]={4,8,8,8,8,8};      // FIXME should retire
-
-static const unsigned int nallstubsdisks[5]={4,4,4,4,4};     // FIXME should retire
-static const unsigned int nvmtedisks[5]={4,4,4,4,4};         // FIXME should retire
-
-static const unsigned int nallprojdisks[5]={4,4,4,4,4};      // FIXME should retire
-static const unsigned int nvmmedisks[5]={8,4,4,4,4};         // FIXME should retire
-//for seeding in L1D1 L2D1
-static const unsigned int nallstubsoverlaplayers[3] = {8, 4, 4};  // FIXME should retire
-static const unsigned int nvmteoverlaplayers[3] = {2, 2, 2};      // FIXME should retire
-
-static const unsigned int nallstubsoverlapdisks[2] = {4, 4};     // FIXME should retire
-static const unsigned int nvmteoverlapdisks[2] = {4, 4};         // FIXME should retire
-
 static const double rcrit=55.0;
 
 static const double rmaxL6=rmeanL6+drmax; 
@@ -339,8 +303,6 @@ static const double mecutdisk=1.5;
 
 static const double bendcut_[2][8]={ {1.25,1.25,1.25,1.25,1.25,1.25,1.25,1.25},     //inner
 				     {1.25,1.25,1.25,1.25,1.25,1.25,1.25,1.25} };     //outer
-
-
 
 static const unsigned int NSector=9; 
 

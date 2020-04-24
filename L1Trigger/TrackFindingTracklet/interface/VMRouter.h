@@ -22,10 +22,10 @@ public:
     layerdisk_=initLayerDisk(4);
     initFineBinTable();
 
-    vmstubsMEPHI_.resize(nvmme[layerdisk_],0);
+    vmstubsMEPHI_.resize(settings_->nvmme(layerdisk_),0);
 
     overlapbits_=7;
-    nextrabits_=overlapbits_-(nbitsallstubs_[layerdisk_]+nbitsvmme[layerdisk_]);
+    nextrabits_=overlapbits_-(settings_->nbitsallstubs(layerdisk_)+settings_->nbitsvmme(layerdisk_));
     
   }
    
@@ -94,17 +94,17 @@ public:
 	if (seedindex==-1) {
 	  seedindex=vmstubsTEPHI_.size();
 	  vector<VMStubsTEMemory*> avectmp;
-	  vector< vector<VMStubsTEMemory*> > vectmp(nvmte_[inner][iseed],avectmp);
+	  vector< vector<VMStubsTEMemory*> > vectmp(settings_->nvmte(inner,iseed),avectmp);
 	  pair<unsigned int, unsigned int > tmppair(iseed,inner);
 	  std::pair< std::pair<unsigned int, unsigned int>, vector< vector< VMStubsTEMemory* > > > atmp(tmppair,vectmp);
 	  vmstubsTEPHI_.push_back(atmp);
 	}
-	vmstubsTEPHI_[seedindex].second[(vmbin-1)&(nvmte_[inner][iseed]-1)].push_back(tmp);
+	vmstubsTEPHI_[seedindex].second[(vmbin-1)&(settings_->nvmte(inner,iseed)-1)].push_back(tmp);
 	
       } else if (memory->getName().substr(3,2)=="ME") {
 	VMStubsMEMemory* tmp=dynamic_cast<VMStubsMEMemory*>(memory);
 	assert(tmp!=0);
-	vmstubsMEPHI_[(vmbin-1)&(nvmme[layerdisk_]-1)]=tmp;
+	vmstubsMEPHI_[(vmbin-1)&(settings_->nvmme(layerdisk_)-1)]=tmp;
       } else {
 	assert(0);
       }
@@ -163,12 +163,12 @@ public:
 	//Fill all the ME VM memories 
 
 	FPGAWord iphi=stub.first->phicorr();
-	unsigned int ivm=iphi.bits(iphi.nbits()-(nbitsallstubs_[layerdisk_]+nbitsvmme[layerdisk_]),nbitsvmme[layerdisk_]);
+	unsigned int ivm=iphi.bits(iphi.nbits()-(settings_->nbitsallstubs(layerdisk_)+settings_->nbitsvmme(layerdisk_)),settings_->nbitsvmme(layerdisk_));
 	unsigned int extrabits=iphi.bits(iphi.nbits()-overlapbits_,nextrabits_);
 
 	unsigned int ivmPlus=ivm; 
 
-	if (extrabits==((1U<<nextrabits_)-1)&&ivm!=((1U<<nbitsvmme[layerdisk_])-1)) ivmPlus++;
+	if (extrabits==((1U<<nextrabits_)-1)&&ivm!=((1U<<settings_->nbitsvmme(layerdisk_))-1)) ivmPlus++;
 	unsigned int ivmMinus=ivm; 
 	if (extrabits==0&&ivm!=0) ivmMinus--;
 
@@ -227,8 +227,8 @@ public:
 
 	  if (binlookup.value()<0) continue;
 
-	  unsigned int ivmte=iphi.bits(iphi.nbits()-(nbitsallstubs_[layerdisk_]+nbitsvmte[inner][iseed]),
-					nbitsvmte[inner][iseed]);
+	  unsigned int ivmte=iphi.bits(iphi.nbits()-(settings_->nbitsallstubs(layerdisk_)+settings_->nbitsvmte(inner,iseed)),
+				       settings_->nbitsvmte(inner,iseed));
 
 	  int bin=-1;
 	  if (inner!=0) {

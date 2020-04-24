@@ -199,7 +199,7 @@ public:
     
     int iphivmRaw=fpgaphi.value()>>(fpgaphi.nbits()-5);
 
-    int iphi=iphivmRaw/(32/nallstubsdisks[abs(disk)-1]);
+    int iphi=iphivmRaw/(32/settings_->nallstubs(abs(disk)+5));
 
     addProjectionDisk(disk,iphi,trackletprojdisks_[abs(disk)-1][iphi],tracklet);
 
@@ -224,7 +224,7 @@ public:
 
     int iphivmRaw=fpgaphi.value()>>(fpgaphi.nbits()-5);
 
-    int iphi=iphivmRaw/(32/nallstubslayers[layer-1]);
+    int iphi=iphivmRaw/(32/settings_->nallstubs(layer-1));
 
     addProjection(layer,iphi,trackletprojlayers_[layer-1][iphi],tracklet);
     

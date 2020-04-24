@@ -61,7 +61,7 @@ public:
     }
     
     int iphivmRaw=stub.iphivmRaw();
-    int phibin=iphivmRaw/(32/nallstubs_[layerdisk_]);
+    int phibin=iphivmRaw/(32/settings_->nallstubs(layerdisk_));
     
     if (phibin!=phiregion_) return false;
     

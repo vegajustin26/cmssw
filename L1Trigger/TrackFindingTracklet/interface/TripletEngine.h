@@ -195,7 +195,7 @@ public:
                 assert(secondphibits_!=-1);
                 assert(thirdphibits_!=-1);
                 
-		unsigned int nvmsecond=nallstubslayers[layer2_-1]*nvmtelayers[layer2_-1];
+		unsigned int nvmsecond=settings_->nallstubs(layer2_-1)*settings_->nvmte(1,iSeed_);
 		unsigned int nvmbitssecond=nbits(nvmsecond);
 
 		FPGAWord iphisecondbin=secondvmstub.stub().first->iphivmFineBins(nvmbitssecond,secondphibits_);
@@ -358,7 +358,7 @@ public:
                 
 		unsigned int nvmsecond;
 
-		nvmsecond=nallstubsoverlaplayers[layer2_-1]*nvmteoverlaplayers[layer2_-1];
+		nvmsecond=settings_->nallstubs(layer2_-1)*settings_->nvmte(1,iSeed_);
 		unsigned int nvmbitssecond=nbits(nvmsecond);
 
 		FPGAWord iphisecondbin=secondvmstub.stub().first->iphivmFineBins(nvmbitssecond,secondphibits_);

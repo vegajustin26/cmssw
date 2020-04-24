@@ -228,26 +228,26 @@ public:
     return phibin_;
   }
 
-  void getPhiRange(double &phimin, double &phimax) {
+  void getPhiRange(double &phimin, double &phimax,unsigned int iSeed, unsigned int inner) {
 
 
     int nvm=-1;
     if (overlap_) {
       if (layer_>0) {
-	nvm=nallstubsoverlaplayers[layer_-1]*nvmteoverlaplayers[layer_-1];
+	nvm=settings_->nallstubs(layer_-1)*settings_->nvmte(inner,iSeed);
       }
       if (disk_>0) {
-	nvm=nallstubsoverlapdisks[disk_-1]*nvmteoverlapdisks[disk_-1];
+	nvm=settings_->nallstubs(disk_+5)*settings_->nvmte(inner,iSeed);
       }
     } else {
       if (layer_>0) {
-	nvm=nallstubslayers[layer_-1]*nvmtelayers[layer_-1];
+	nvm=settings_->nallstubs(layer_-1)*settings_->nvmte(inner,iSeed);
 	if (extra_) {
-	  nvm=nallstubslayers[layer_-1]*nvmteextralayers[layer_-1];
+	  nvm=settings_->nallstubs(layer_-1)*settings_->nvmte(inner,iSeed);
 	}
       }
       if (disk_>0) {
-	nvm=nallstubsdisks[disk_-1]*nvmtedisks[disk_-1];
+	nvm=settings_->nallstubs(disk_+5)*settings_->nvmte(inner,iSeed);
       }
     }
     assert(nvm>0);

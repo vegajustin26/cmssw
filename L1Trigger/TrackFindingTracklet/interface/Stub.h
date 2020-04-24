@@ -255,14 +255,14 @@ public:
   FPGAWord phiregion() const {
     // 3 bits
     if (layer_.value()>=0) {
-      unsigned int nallstubs=nallstubslayers[layer_.value()];
+      unsigned int nallstubs=settings_->nallstubs(layer_.value());
       int iphiregion=iphivmRaw()/(32/nallstubs);
       FPGAWord phi;
       phi.set(iphiregion,3);
       return phi;
     }
     if (abs(disk_.value())>=1) {
-      unsigned int nallstubs=nallstubsdisks[abs(disk_.value())-1];
+      unsigned int nallstubs=settings_->nallstubs(abs(disk_.value())+5);
       int iphiregion=iphivmRaw()/(32/nallstubs);
       FPGAWord phi;
       phi.set(iphiregion,3);

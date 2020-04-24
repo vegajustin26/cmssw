@@ -786,7 +786,7 @@ public:
     
     int iphivmRaw=fpgaphi.value()>>(fpgaphi.nbits()-5);
 
-    int iphi=iphivmRaw/(32/nallstubsdisks[abs(disk)-1]);
+    int iphi=iphivmRaw/(32/settings_->nallstubs(abs(disk)+5));
       
     
     if (abs(disk)==1) {
@@ -847,7 +847,7 @@ public:
     
     int iphivmRaw=fpgaphi.value()>>(fpgaphi.nbits()-5);
 
-    int iphi=iphivmRaw/(32/nallstubslayers[layer-1]);
+    int iphi=iphivmRaw/(32/settings_->nallstubs(layer-1));
       
     
 

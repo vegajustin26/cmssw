@@ -33,12 +33,12 @@ public:
       maxtracklet_=127;
       
       for(unsigned int ilayer=0;ilayer<6;ilayer++){
-	vector<TrackletProjectionsMemory*> tmp(nallstubslayers[ilayer],0);
+	vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(ilayer),0);
 	trackletprojlayers_.push_back(tmp);
       }
 
       for(unsigned int idisk=0;idisk<5;idisk++){
-	vector<TrackletProjectionsMemory*> tmp(nallstubsdisks[idisk],0);
+	vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(idisk+6),0);
 	trackletprojdisks_.push_back(tmp);
       }
           

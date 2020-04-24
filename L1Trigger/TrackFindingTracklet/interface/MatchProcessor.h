@@ -164,8 +164,8 @@ public:
 
     barrel_=layer_>0;
 
-    nvm_=barrel_?nvmmelayers[layer_-1]*nallstubslayers[layer_-1]:nvmmedisks[disk_-1]*nallstubsdisks[disk_-1];
-    nvmbins_=barrel_?nvmmelayers[layer_-1]:nvmmedisks[disk_-1];
+    nvm_=barrel_?settings_->nvmme(layer_-1)*settings_->nallstubs(layer_-1):settings_->nvmme(disk_+5)*settings_->nallstubs(disk_+5);
+    nvmbins_=barrel_?settings_->nvmme(layer_-1):settings_->nvmme(disk_+5);
 
     if (nvm_==32) nvmbits_=5;
     if (nvm_==16) nvmbits_=4;

@@ -15,7 +15,7 @@ public:
 
     layerdisk_=initLayerDisk(3);
 
-    vmprojs_.resize(nvmme[layerdisk_],0);
+    vmprojs_.resize(settings_->nvmme(layerdisk_),0);
 
     nrbits_=5;
     nphiderbits_=6;
@@ -33,8 +33,8 @@ public:
       return;
     }
     
-    unsigned int nproj=nallstubs_[layerdisk_];
-    unsigned int nprojvm=nvmme[layerdisk_];
+    unsigned int nproj=settings_->nallstubs(layerdisk_);
+    unsigned int nprojvm=settings_->nvmme(layerdisk_);
     
     for (unsigned int iproj=0;iproj<nproj;iproj++) {
       for (unsigned int iprojvm=0;iprojvm<nprojvm;iprojvm++) {
@@ -111,7 +111,7 @@ public:
 	  tracklet->setBendIndex(ibendproj,disk);
 	}
 	
-	unsigned int iphivm=fpgaphi.bits(fpgaphi.nbits()-nbitsallstubs_[layerdisk_]-nbitsvmme[layerdisk_],nbitsvmme[layerdisk_]);
+	unsigned int iphivm=fpgaphi.bits(fpgaphi.nbits()-settings_->nbitsallstubs(layerdisk_)-settings_->nbitsvmme(layerdisk_),settings_->nbitsvmme(layerdisk_));
 	  
 	//This block of code just checks that the configuration is consistent
 	if (lastTCID>=tracklet->TCID()) {
