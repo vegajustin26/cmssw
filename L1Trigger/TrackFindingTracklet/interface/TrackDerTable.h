@@ -218,7 +218,7 @@ public:
 
       for (unsigned l = 0; l < 6; l++) {
         if (layermask & (1 << (5 - l))) {
-          r[nlayers] = rmean[l];
+          r[nlayers] = settings_->rmean(l);
           nlayers++;
         }
       }
@@ -227,7 +227,7 @@ public:
       double z[5];
       double alpha[5];
 
-      double t = gett(diskmask, layermask);
+      double t = gett(settings,diskmask, layermask);
 
       for (unsigned d = 0; d < 5; d++) {
         if (diskmask & (3 << (2 * (4 - d)))) {
@@ -1169,7 +1169,7 @@ public:
       disk[i] = false;
     for (unsigned int i = 0; i < nlayers; i++) {
       for (unsigned int j = 0; j < 6; j++) {
-        if (std::abs(r[i] - rmean[j]) < drmax)
+        if (std::abs(r[i] - settings->rmean(j)) < drmax)
           layer[j] = true;
       }
     }
@@ -1427,7 +1427,7 @@ public:
     }
   }
 
-  static double gett(int diskmask, int layermask) {
+  static double gett(const Settings* settings, int diskmask, int layermask) {
     if (diskmask == 0)
       return 0.0;
 
@@ -1458,7 +1458,7 @@ public:
 
     for (int l = 1; l <= 6; l++) {
       if (layermask & (1 << (6 - l))) {
-        double lmax = zlength / rmean[l - 1];
+        double lmax = zlength / settings->rmean(l - 1);
         if (lmax < tmax)
           tmax = lmax;
       }

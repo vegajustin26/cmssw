@@ -24,13 +24,13 @@ public:
     rbits_ = rbits;
 
     rbins_ = (1 << rbits);
-    rmin_ = rmean[layer - 1] - drmax;
-    rmax_ = rmean[layer - 1] + drmax;
+    rmin_ = settings->rmean(layer - 1) - drmax;
+    rmax_ = settings->rmean(layer - 1) + drmax;
     dr_ = 2 * drmax / rbins_;
 
     bendbins_ = (1 << bendbits);
 
-    rmean_ = rmean[layer - 1];
+    rmean_ = settings->rmean(layer - 1);
 
     for (int ibend = 0; ibend < bendbins_; ibend++) {
       for (int irbin = 0; irbin < rbins_; irbin++) {

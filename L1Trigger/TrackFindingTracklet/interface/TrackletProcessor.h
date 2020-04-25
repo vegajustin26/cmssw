@@ -98,10 +98,10 @@ public:
    
     if (iSeed_==0||iSeed_==1||iSeed_==2||iSeed_==3) {
       if (layer_==1) {
-	rproj_[0]=rmeanL3;
-	rproj_[1]=rmeanL4;
-	rproj_[2]=rmeanL5;
-	rproj_[3]=rmeanL6;
+	rproj_[0]=settings_->rmean(2);
+	rproj_[1]=settings_->rmean(3);
+	rproj_[2]=settings_->rmean(4);
+	rproj_[3]=settings_->rmean(5);
 	lproj_[0]=3;
 	lproj_[1]=4;
 	lproj_[2]=5;
@@ -109,10 +109,10 @@ public:
       }
       
       if (layer_==2) {
-	rproj_[0]=rmeanL1;
-	rproj_[1]=rmeanL4;
-	rproj_[2]=rmeanL5;
-	rproj_[3]=rmeanL6;
+	rproj_[0]=settings_->rmean(0);
+	rproj_[1]=settings_->rmean(3);
+	rproj_[2]=settings_->rmean(4);
+	rproj_[3]=settings_->rmean(5);
 	lproj_[0]=1;
 	lproj_[1]=4;
 	lproj_[2]=5;
@@ -120,10 +120,10 @@ public:
       }
       
       if (layer_==3) {
-	rproj_[0]=rmeanL1;
-	rproj_[1]=rmeanL2;
-	rproj_[2]=rmeanL5;
-	rproj_[3]=rmeanL6;
+	rproj_[0]=settings_->rmean(0);
+	rproj_[1]=settings_->rmean(1);
+	rproj_[2]=settings_->rmean(4);
+	rproj_[3]=settings_->rmean(5);
 	lproj_[0]=1;
 	lproj_[1]=2;
 	lproj_[2]=5;
@@ -131,10 +131,10 @@ public:
       }
       
       if (layer_==5) {
-	rproj_[0]=rmeanL1;
-	rproj_[1]=rmeanL2;
-	rproj_[2]=rmeanL3;
-	rproj_[3]=rmeanL4;
+	rproj_[0]=settings_->rmean(0);
+	rproj_[1]=settings_->rmean(1);
+	rproj_[2]=settings_->rmean(2);
+	rproj_[3]=settings_->rmean(3);
 	lproj_[0]=1;
 	lproj_[1]=2;
 	lproj_[2]=3;
@@ -703,11 +703,11 @@ public:
 	
 	double innerphimin, innerphimax;
 	innervmstubs_[ivmmem]->getPhiRange(innerphimin,innerphimax,iSeed_,0);
-	double rinner=rmean[layer_-1];
+	double rinner=settings_->rmean(layer_-1);
 	
 	double outerphimin, outerphimax;
 	outervmstubs_[ivmmem]->getPhiRange(outerphimin,outerphimax,iSeed_,1);
-	double router=rmean[layer_];
+	double router=settings_->rmean(layer_);
 	
 	double phiinner[2];
 	double phiouter[2];
@@ -934,7 +934,7 @@ public:
 	      for(int i1=0;i1<2;i1++) {
 		for(int i2=0;i2<2;i2++) {
 		  for(int i3=0;i3<2;i3++) {
-		    double rinner=rmean[layer_-1];
+		    double rinner=settings_->rmean(layer_-1);
 		    double rinv1=rinv(phiinner[i1],phiouter[i2],rinner,router[i3]);
 		    double abendinner=bend(rinner,rinv1);
 		    double abendouter=bend(router[i3],rinv1);

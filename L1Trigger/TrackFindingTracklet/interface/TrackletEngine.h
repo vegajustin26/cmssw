@@ -192,8 +192,8 @@ public:
 	    router[0]=rmindiskvm+irouterbin*(rmaxdiskvm-rmindiskvm)/outerrbins;
 	    router[1]=rmindiskvm+(irouterbin+1)*(rmaxdiskvm-rmindiskvm)/outerrbins;
 	  } else {
-	    router[0]=rmean[layerdisk2_];
-	    router[1]=rmean[layerdisk2_];
+	    router[0]=settings_->rmean(layerdisk2_);
+	    router[1]=settings_->rmean(layerdisk2_);
 	  }
 	  
 	  double bendinnermin=20.0;
@@ -208,7 +208,7 @@ public:
 		if (iSeed_==4 || iSeed_==5) {
 		  rinner=router[i3]*zmean[layerdisk1_-6]/zmean[layerdisk2_-6];
 		} else {
-		  rinner=rmean[layerdisk1_];
+		  rinner=settings_->rmean(layerdisk1_);
 		}
 		double rinv1=rinv(phiinner[i1],phiouter[i2],rinner,router[i3]);
 		double abendinner=bend(rinner,rinv1);

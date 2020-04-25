@@ -98,7 +98,7 @@ public:
 
 
     for (int i=0;i<3;i++) {
-      exactproj(rmean[i],rinv,phi0,t,z0,
+      exactproj(settings_->rmean(i),rinv,phi0,t,z0,
 		    phiprojLayer[i],zprojLayer[i],
 		    phiderLayer[i],zderLayer[i]);
     }
@@ -146,7 +146,7 @@ public:
 
 
     for (int i=0;i<1;i++) {
-      exactproj(rmean[i],rinv,phi0,t,z0,
+      exactproj(settings_->rmean(i),rinv,phi0,t,z0,
 		    phiprojLayer[i],zprojLayer[i],
 		    phiderLayer[i],zderLayer[i]);
     }
@@ -357,8 +357,8 @@ public:
     else if(layer_==3) ITC = settings_->ITC_L3L4();
     else               ITC = settings_->ITC_L5L6();
     
-    ITC->r1.set_fval(r1-rmean[layer_-1]);
-    ITC->r2.set_fval(r2-rmean[layer_]);
+    ITC->r1.set_fval(r1-settings_->rmean(layer_-1));
+    ITC->r2.set_fval(r2-settings_->rmean(layer_));
     ITC->z1.set_fval(z1);
     ITC->z2.set_fval(z2);
     double sphi1 = phi1 - phioffset_;
@@ -748,9 +748,9 @@ public:
     ITC->phi1.set_fval(sphi1);
     ITC->phi2.set_fval(sphi2);
 	    
-    ITC->rproj0.set_fval(rmean[0]);
-    ITC->rproj1.set_fval(rmean[1]);
-    ITC->rproj2.set_fval(rmean[2]);
+    ITC->rproj0.set_fval(settings_->rmean(0));
+    ITC->rproj1.set_fval(settings_->rmean(1));
+    ITC->rproj2.set_fval(settings_->rmean(2));
 
     ITC->zproj0.set_fval(t>0? zproj_[0] : -zproj_[0]);
     ITC->zproj1.set_fval(t>0? zproj_[1] : -zproj_[1]);
@@ -892,7 +892,7 @@ public:
       //shift bits - allways in PS modules for disk seeding
       iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
       
-      layerprojs[i].init(settings_,i+1,rmean[i],
+      layerprojs[i].init(settings_,i+1,settings_->rmean(i),
 			 iphiproj[i],izproj[i],
 			 ITC->der_phiL_final.get_ival(),ITC->der_zL_final.get_ival(),
 			 phiproj[i],zproj[i],
@@ -1054,7 +1054,7 @@ public:
     else if(ll==2 && disk==-1) ITC = settings_->ITC_L2B1();
     else assert(0);
     
-    ITC->r1.set_fval(r2-rmean[ll-1]);
+    ITC->r1.set_fval(r2-settings_->rmean(ll-1));
     ITC->r2.set_fval(r1);
     int signt = t>0? 1 : -1;
     ITC->z1.set_fval(z2);
@@ -1068,9 +1068,9 @@ public:
     ITC->phi1.set_fval(sphi2);
     ITC->phi2.set_fval(sphi1);
 
-    ITC->rproj0.set_fval(rmean[0]);
-    ITC->rproj1.set_fval(rmean[1]);
-    ITC->rproj2.set_fval(rmean[2]);
+    ITC->rproj0.set_fval(settings_->rmean(0));
+    ITC->rproj1.set_fval(settings_->rmean(1));
+    ITC->rproj2.set_fval(settings_->rmean(2));
     
     ITC->zproj0.set_fval(t>0? zprojoverlap_[0] : -zprojoverlap_[0]);
     ITC->zproj1.set_fval(t>0? zprojoverlap_[1] : -zprojoverlap_[1]);
@@ -1232,7 +1232,7 @@ public:
       //adjust bits for PS modules (no 2S modules in overlap seeds)
       iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
       
-      layerprojs[i].init(settings_,i+1,rmean[i],
+      layerprojs[i].init(settings_,i+1,settings_->rmean(i),
 			 iphiproj[i],izproj[i],
 			 ITC->der_phiL_final.get_ival(),ITC->der_zL_final.get_ival(),
 			 phiproj[i],zproj[i],

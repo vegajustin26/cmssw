@@ -528,7 +528,7 @@ class FitTrack:public ProcessBase{
      return;
    }
 
-   double ttabi=TrackDerTable::gett(diskmask, layermask);
+   double ttabi=TrackDerTable::gett(settings_,diskmask, layermask);
    if (t<0.0) ttabi=-ttabi;
    double ttab=ttabi;
 
@@ -547,7 +547,7 @@ class FitTrack:public ProcessBase{
    realrstub[2]=-1.0;
 
    for (unsigned i=0;i<nlayers;i++){
-    r[i]=rmean[layers[i]-1];
+     r[i]=settings_->rmean(layers[i]-1);
     if (layers[i]==tracklet->layer()) {
 	if (tracklet->isOverlap()) {
 	  realrstub[i]=tracklet->outerStub()->r();

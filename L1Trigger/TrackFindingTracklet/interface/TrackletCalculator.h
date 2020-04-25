@@ -90,10 +90,10 @@ public:
       
       if (iSeed_==0||iSeed_==1||iSeed_==2||iSeed_==3) {
 	if (layer_==1) {
-	  rproj_[0]=rmeanL3;
-	  rproj_[1]=rmeanL4;
-	  rproj_[2]=rmeanL5;
-	  rproj_[3]=rmeanL6;
+	  rproj_[0]=settings_->rmean(2);
+	  rproj_[1]=settings_->rmean(3);
+	  rproj_[2]=settings_->rmean(4);
+	  rproj_[3]=settings_->rmean(5);
 	  lproj_[0]=3;
 	  lproj_[1]=4;
 	  lproj_[2]=5;
@@ -101,10 +101,10 @@ public:
 	}
 	
 	if (layer_==2) {
-	  rproj_[0]=rmeanL1;
-	  rproj_[1]=rmeanL4;
-	  rproj_[2]=rmeanL5;
-	  rproj_[3]=rmeanL6;
+	  rproj_[0]=settings_->rmean(0);
+	  rproj_[1]=settings_->rmean(3);
+	  rproj_[2]=settings_->rmean(4);
+	  rproj_[3]=settings_->rmean(5);
 	  lproj_[0]=1;
 	  lproj_[1]=4;
 	  lproj_[2]=5;
@@ -112,10 +112,10 @@ public:
 	}
       
       if (layer_==3) {
-	rproj_[0]=rmeanL1;
-	rproj_[1]=rmeanL2;
-	rproj_[2]=rmeanL5;
-	rproj_[3]=rmeanL6;
+	rproj_[0]=settings_->rmean(0);
+	rproj_[1]=settings_->rmean(1);
+	rproj_[2]=settings_->rmean(4);
+	rproj_[3]=settings_->rmean(5);
 	lproj_[0]=1;
 	lproj_[1]=2;
 	lproj_[2]=5;
@@ -123,10 +123,10 @@ public:
       }
       
       if (layer_==5) {
-	rproj_[0]=rmeanL1;
-	rproj_[1]=rmeanL2;
-	rproj_[2]=rmeanL3;
-	rproj_[3]=rmeanL4;
+	rproj_[0]=settings_->rmean(0);
+	rproj_[1]=settings_->rmean(1);
+	rproj_[2]=settings_->rmean(2);
+	rproj_[3]=settings_->rmean(3);
 	lproj_[0]=1;
 	lproj_[1]=2;
 	lproj_[2]=3;

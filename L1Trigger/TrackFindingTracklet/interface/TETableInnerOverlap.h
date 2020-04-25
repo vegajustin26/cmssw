@@ -47,8 +47,8 @@ public:
     rbits_=rbits;
 
     rbins_=(1<<rbits);
-    rminl1_=rmean[layer1-1]-drmax;
-    rmaxl1_=rmean[layer1-1]-drmax;
+    rminl1_=settings->rmean(layer1-1)-drmax;
+    rmaxl1_=settings->rmean(layer1-1)-drmax;
     dr_=2*drmax/rbins_;
 
     zbins_=(1<<zbits);

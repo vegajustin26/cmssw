@@ -61,7 +61,7 @@ public:
 
     for(unsigned int iSeed=0;iSeed<12;iSeed++) {
       if (layer_>0) {
-	phimatchcut_[iSeed]=settings_->rphimatchcut(iSeed,layer_-1)/(kphi1*rmean[layer_-1]);
+	phimatchcut_[iSeed]=settings_->rphimatchcut(iSeed,layer_-1)/(kphi1*settings_->rmean(layer_-1));
 	zmatchcut_[iSeed]=settings_->zmatchcut(iSeed,layer_-1)/kz;
       }
       if (disk_!=0) {
@@ -108,7 +108,7 @@ public:
       
       for(unsigned int irinv=0;irinv<32;irinv++){
 	double rinv=(irinv-15.5)*(1<<(nbitsrinv-5))*krinvpars;
-	double projbend=bend(rmean[layer_-1],rinv);
+	double projbend=bend(settings_->rmean(layer_-1),rinv);
 	for(unsigned int ibend=0;ibend<(unsigned int)(1<<nbits);ibend++){
 	  double stubbend=Stub::benddecode(ibend,layer_<=3);
 	  bool pass=std::abs(stubbend-projbend)<mecut;
@@ -455,8 +455,8 @@ public:
       
       HistBase* hists=GlobalHistTruth::histograms();
       hists->FillLayerResidual(layer_, seedindex,
-			       dphiapprox*rmean[layer_-1],
-			       ideltaphi*kphi1*rmean[layer_-1],
+			       dphiapprox*settings_->rmean(layer_-1),
+			       ideltaphi*kphi1*settings_->rmean(layer_-1),
 			       ideltaz*fact_*kz, dz,truthmatch);
       
       
@@ -467,9 +467,9 @@ public:
 	
 	double pt=0.003*3.8/std::abs(tracklet->rinv());
 	  
-	out << layer_<<" "<<seedindex<<" "<<pt<<" "<<ideltaphi*kphi1*rmean[layer_-1]
-	    <<" "<<dphiapprox*rmean[layer_-1]
-	    <<" "<<phimatchcut_[seedindex]*kphi1*rmean[layer_-1]
+	out << layer_<<" "<<seedindex<<" "<<pt<<" "<<ideltaphi*kphi1*settings_->rmean(layer_-1)
+	    <<" "<<dphiapprox*settings_->rmean(layer_-1)
+	    <<" "<<phimatchcut_[seedindex]*kphi1*settings_->rmean(layer_-1)
 	    <<"   "<<ideltaz*fact_*kz<<" "<<dz<<" "<<zmatchcut_[seedindex]*kz<<endl;	  
       }
       

@@ -38,8 +38,8 @@ public:
     bool extra = layer1 == 2 && layer2 == 3 && !extended;
 
     rbins_ = (1 << rbits);
-    rminl1_ = rmean[layer1 - 1] - drmax;
-    rmaxl1_ = rmean[layer1 - 1] + drmax;
+    rminl1_ = settings->rmean(layer1 - 1) - drmax;
+    rmaxl1_ = settings->rmean(layer1 - 1) + drmax;
     dr_ = 2 * drmax / rbins_;
 
     zbins_ = (1 << zbits);
@@ -57,9 +57,9 @@ public:
       rmaxdisk_ = (extended ? rmaxdisk : rmaxdiskvm);
     }
 
-    rmeanl2_ = rmean[layer2 - 1];
+    rmeanl2_ = settings->rmean(layer2 - 1);
     if (layer3_ > 0) {
-      rmeanl3_ = rmean[layer3 - 1];
+      rmeanl3_ = settings->rmean(layer3 - 1);
       zmeand3_ = zmean[layer3 - 1];
     } else {
       rmeanl3_ = 0.;

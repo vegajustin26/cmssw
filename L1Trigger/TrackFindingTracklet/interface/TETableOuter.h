@@ -27,8 +27,8 @@ public:
     rbits_ = rbits;
 
     rbins_ = (1 << rbits);
-    rmin_ = rmean[layer - 1] - drmax;
-    rmax_ = rmean[layer - 1] + drmax;
+    rmin_ = settings->rmean(layer - 1) - drmax;
+    rmax_ = settings->rmean(layer - 1) + drmax;
     dr_ = 2 * drmax / rbins_;
 
     zbins_ = (1 << zbits);
@@ -36,7 +36,7 @@ public:
     zmax_ = zlength;
     dz_ = 2 * zlength / zbins_;
 
-    rmean_ = rmean[layer - 1];
+    rmean_ = settings->rmean(layer - 1);
 
     for (int izbin = 0; izbin < zbins_; izbin++) {
       for (int irbin = 0; irbin < rbins_; irbin++) {

@@ -171,9 +171,9 @@ public:
    
    if (iSeed==8||iSeed==9) {
      if (layer_==3) {
-       rproj_[0]=rmeanL1;
-       rproj_[1]=rmeanL5;
-       rproj_[2]=rmeanL6;
+       rproj_[0]=settings_->rmean(0);
+       rproj_[1]=settings_->rmean(4);
+       rproj_[2]=settings_->rmean(5);
        lproj_[0]=1;
        lproj_[1]=5;
        lproj_[2]=6;
@@ -186,9 +186,9 @@ public:
        
      }     
      if (layer_==5) {
-       rproj_[0]=rmeanL1;
-       rproj_[1]=rmeanL2;
-       rproj_[2]=rmeanL3;
+       rproj_[0]=settings_->rmean(0);
+       rproj_[1]=settings_->rmean(1);
+       rproj_[2]=settings_->rmean(2);
        lproj_[0]=1;
        lproj_[1]=2;
        lproj_[2]=3;
@@ -203,7 +203,7 @@ public:
 
    if (iSeed==10||iSeed==11) {
      if (layer_==2) {
-       rproj_[0]=rmeanL1;
+       rproj_[0]=settings_->rmean(0);
        lproj_[0]=1;
        lproj_[1]=-1;
        lproj_[2]=-1;
@@ -216,7 +216,7 @@ public:
        dproj_[2]=4;
      }
      if (disk_==1) {
-       rproj_[0]=rmeanL1;
+       rproj_[0]=settings_->rmean(0);
        lproj_[0]=1;
        lproj_[1]=-1;
        lproj_[2]=-1;
@@ -228,7 +228,7 @@ public:
        dproj_[1]=4;
        dproj_[2]=5;
      }
-     toR_.push_back(rmeanL1);
+     toR_.push_back(settings_->rmean(0));
      for(int i=0; i<3; ++i) toZ_.push_back(zproj_[i]);
    }
       

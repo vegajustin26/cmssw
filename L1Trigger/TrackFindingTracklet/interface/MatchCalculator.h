@@ -50,7 +50,7 @@ public:
     
     for(unsigned int iSeed=0;iSeed<12;iSeed++) {
       if (layerdisk_<6) {
-	phimatchcut_[iSeed]=settings_->rphimatchcut(iSeed,layerdisk_)/(kphi1*rmean[layerdisk_]);
+	phimatchcut_[iSeed]=settings_->rphimatchcut(iSeed,layerdisk_)/(kphi1*settings_->rmean(layerdisk_));
 	zmatchcut_[iSeed]=settings_->zmatchcut(iSeed,layerdisk_)/kz;
       } else {
 	rphicutPS_[iSeed]=settings_->rphicutPS(iSeed,layerdisk_-6)/(kphiproj123*kr);
@@ -258,8 +258,8 @@ public:
 
 	HistBase* hists=GlobalHistTruth::histograms();
 	hists->FillLayerResidual(layerdisk_+1, seedindex,
-				 dphiapprox*rmean[layerdisk_],
-				 ideltaphi*kphi1*rmean[layerdisk_],
+				 dphiapprox*settings_->rmean(layerdisk_),
+				 ideltaphi*kphi1*settings_->rmean(layerdisk_),
 				 ideltaz*fact_*kz, dz,truthmatch);
     
 
@@ -278,9 +278,9 @@ public:
 	  
 	  double pt=0.003*3.8/std::abs(tracklet->rinv());
 	  
-	  out << layerdisk_+1<<" "<<seedindex<<" "<<pt<<" "<<ideltaphi*kphi1*rmean[layerdisk_]
-	      <<" "<<dphiapprox*rmean[layerdisk_]
-	      <<" "<<phimatchcut_[seedindex]*kphi1*rmean[layerdisk_]
+	  out << layerdisk_+1<<" "<<seedindex<<" "<<pt<<" "<<ideltaphi*kphi1*settings_->rmean(layerdisk_)
+	      <<" "<<dphiapprox*settings_->rmean(layerdisk_)
+	      <<" "<<phimatchcut_[seedindex]*kphi1*settings_->rmean(layerdisk_)
 	      <<"   "<<ideltaz*fact_*kz<<" "<<dz<<" "<<zmatchcut_[seedindex]*kz<<endl;	  
 	}
 
