@@ -695,8 +695,8 @@ public:
 	  (layer_==3 && disk_==0)||
 	  (layer_==5 && disk_==0)){
       
-	innerphibits_=nfinephibarrelinner;
-	outerphibits_=nfinephibarrelouter;
+	innerphibits_=settings_->nfinephi(0,iSeed_);
+	outerphibits_=settings_->nfinephi(1,iSeed_);
 	
 	int innerphibins=(1<<innerphibits_);
 	int outerphibins=(1<<outerphibits_);
@@ -790,8 +790,8 @@ public:
       if ((disk_==1 && layer_==0)||
 	  (disk_==3 && layer_==0)){
 	
-	innerphibits_=nfinephidiskinner;
-	outerphibits_=nfinephidiskouter;
+	innerphibits_=settings_->nfinephi(0,iSeed_);
+	outerphibits_=settings_->nfinephi(0,iSeed_);
 	
 	
 	int outerrbits=3;
@@ -889,8 +889,8 @@ public:
 	
       } else if (disk_==1 && (layer_==1 || layer_==2)) {
 	
-	innerphibits_=nfinephioverlapinner;
-	outerphibits_=nfinephioverlapouter;
+	innerphibits_=settings_->nfinephi(0,iSeed_);
+	outerphibits_=settings_->nfinephi(1,iSeed_);
 	unsigned int nrbits=5;
 	
 	int innerphibins=(1<<innerphibits_);

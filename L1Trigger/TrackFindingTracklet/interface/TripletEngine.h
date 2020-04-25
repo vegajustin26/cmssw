@@ -70,13 +70,13 @@ public:
         
     if ((layer2_==4 && layer3_==2)||
 	(layer2_==6 && layer3_==4)){
-      secondphibits_=nfinephibarrelinner;
-      thirdphibits_=nfinephibarrelouter;
+      secondphibits_=settings_->nfinephi(1,iSeed_);
+      thirdphibits_=settings_->nfinephi(2,iSeed_);
     }
     if ((layer2_==3 && disk3_==1)||
         (disk2_==2 && layer3_==2)){
-      secondphibits_=nfinephioverlapinner;
-      thirdphibits_=nfinephioverlapouter;
+      secondphibits_=settings_->nfinephi(1,iSeed_);
+      thirdphibits_=settings_->nfinephi(2,iSeed_);
     }
 
     readTables();

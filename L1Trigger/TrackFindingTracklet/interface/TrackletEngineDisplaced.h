@@ -52,7 +52,11 @@ public:
     if (layer1_ == 5 && layer2_ == 6) iSeed_ = 9;
     if (layer1_ == 2 && layer2_ == 3) iSeed_ = 10;
     if (disk1_ == 1 && disk2_ == 2) iSeed_ = 11;
+
+    firstphibits_=settings_->nfinephi(0,iSeed_);
+    secondphibits_=settings_->nfinephi(1,iSeed_);
     
+    /*
     firstphibits_=-1;
     secondphibits_=-1;
     
@@ -66,6 +70,7 @@ public:
       firstphibits_=nfinephidiskinner;
       secondphibits_=nfinephidiskouter;
     }
+    */
 
     readTables();
   }

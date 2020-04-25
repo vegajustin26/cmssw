@@ -3,25 +3,6 @@
 
 static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR" (T5/T6 tracker, D21/D11/D17 CMS geometries)
 
-//static const int nrbitsprojderdisk=9;
-
-//static const int nbitsphiprojderL123=8+2;
-//static const int nbitsphiprojderL456=8+2;
-
-//static const int nbitszprojderL123=8+2;
-//static const int nbitszprojderL456=7+2;
-
-//vm stubs
-static const int nfinephibarrelinner=2;
-static const int nfinephibarrelouter=3;
-
-static const int nfinephidiskinner=2; //too small!
-static const int nfinephidiskouter=3;
-
-static const int nfinephioverlapinner=2;
-static const int nfinephioverlapouter=3;
-
-
 //Bits used to store track parameter in tracklet
 static const int nbitsrinv=14;
 static const int nbitsphi0=18;
