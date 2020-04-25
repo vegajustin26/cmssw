@@ -282,22 +282,6 @@ namespace Trklet{
 
 
       
-      // tracklet calculators 
-      ITC_L1L2_ = new IMATH_TrackletCalculator(1,2);
-      ITC_L2L3_ = new IMATH_TrackletCalculator(2,3);
-      ITC_L3L4_ = new IMATH_TrackletCalculator(3,4);
-      ITC_L5L6_ = new IMATH_TrackletCalculator(5,6);
-      
-      ITC_F1F2_ = new IMATH_TrackletCalculatorDisk(1,2);
-      ITC_F3F4_ = new IMATH_TrackletCalculatorDisk(3,4);
-      ITC_B1B2_ = new IMATH_TrackletCalculatorDisk(-1,-2);
-      ITC_B3B4_ = new IMATH_TrackletCalculatorDisk(-3,-4);
-    
-      ITC_L1F1_ = new IMATH_TrackletCalculatorOverlap(1,1);
-      ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(2,1);
-      ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(1,-1);
-      ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(2,-1);
-
       // Options for chisq fit
       useMSFit_ = false;
       exactderivatives_ = false;  //for both the integer and float
@@ -439,6 +423,7 @@ namespace Trklet{
     unsigned int MEBins() const {return MEBins_;}
     unsigned int MEBinsDisks() const {return MEBinsDisks_;}
 
+    /*
     IMATH_TrackletCalculator* ITC_L1L2() const {return ITC_L1L2_;}
     IMATH_TrackletCalculator* ITC_L2L3() const {return ITC_L2L3_;}
     IMATH_TrackletCalculator* ITC_L3L4() const {return ITC_L3L4_;}
@@ -453,6 +438,7 @@ namespace Trklet{
     IMATH_TrackletCalculatorOverlap* ITC_L2F1() const {return ITC_L2F1_;}
     IMATH_TrackletCalculatorOverlap* ITC_L1B1() const {return ITC_L1B1_;}
     IMATH_TrackletCalculatorOverlap* ITC_L2B1() const {return ITC_L2B1_;}
+    */
 
     std::string geomext() const {return extended_?"hourglassExtended":"hourglass";}  
 
@@ -573,6 +559,7 @@ namespace Trklet{
     unsigned int MEBins_;
     unsigned int MEBinsDisks_;
 
+    /*
     mutable IMATH_TrackletCalculator* ITC_L1L2_;
     mutable IMATH_TrackletCalculator* ITC_L2L3_;
     mutable IMATH_TrackletCalculator* ITC_L3L4_;
@@ -587,6 +574,7 @@ namespace Trklet{
     mutable IMATH_TrackletCalculatorOverlap* ITC_L2F1_;
     mutable IMATH_TrackletCalculatorOverlap* ITC_L1B1_;
     mutable IMATH_TrackletCalculatorOverlap* ITC_L2B1_;
+    */
 
     bool useMSFit_;
     bool exactderivatives_;

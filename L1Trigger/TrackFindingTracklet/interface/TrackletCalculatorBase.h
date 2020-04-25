@@ -283,8 +283,8 @@ public:
     int ifactor=0.5*rcrit*krinvpars/kphi0pars*(1<<8);
     int iphicrit=iphi0-(irinv>>8)*ifactor;
   
-    int iphicritmincut=phicritminmc/settings_->ITC_L1L2()->phi0_final.get_K();
-    int iphicritmaxcut=phicritmaxmc/settings_->ITC_L1L2()->phi0_final.get_K(); 
+    int iphicritmincut=phicritminmc/GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
+    int iphicritmaxcut=phicritmaxmc/GlobalHistTruth::ITC_L1L2()->phi0_final.get_K(); 
 
     bool keepapprox=(phicritapprox>phicritminmc)&&(phicritapprox<phicritmaxmc),
          keep=(iphicrit>iphicritmincut)&&(iphicrit<iphicritmaxcut);
@@ -352,10 +352,10 @@ public:
     double phiprojdiskapprox[5],rprojdiskapprox[5];
     
     IMATH_TrackletCalculator *ITC;
-    if(layer_==1)      ITC = settings_->ITC_L1L2();
-    else if(layer_==2) ITC = settings_->ITC_L2L3();
-    else if(layer_==3) ITC = settings_->ITC_L3L4();
-    else               ITC = settings_->ITC_L5L6();
+    if(layer_==1)      ITC = GlobalHistTruth::ITC_L1L2();
+    else if(layer_==2) ITC = GlobalHistTruth::ITC_L2L3();
+    else if(layer_==3) ITC = GlobalHistTruth::ITC_L3L4();
+    else               ITC = GlobalHistTruth::ITC_L5L6();
     
     ITC->r1.set_fval(r1-settings_->rmean(layer_-1));
     ITC->r2.set_fval(r2-settings_->rmean(layer_));
@@ -729,10 +729,10 @@ public:
     double phiprojdiskapprox[3],rprojdiskapprox[3];
 	    
     IMATH_TrackletCalculatorDisk *ITC;
-    if(disk==1)       ITC = settings_->ITC_F1F2();
-    else if(disk==3)  ITC = settings_->ITC_F3F4();
-    else if(disk==-1) ITC = settings_->ITC_B1B2();
-    else               ITC = settings_->ITC_B3B4();
+    if(disk==1)       ITC = GlobalHistTruth::ITC_F1F2();
+    else if(disk==3)  ITC = GlobalHistTruth::ITC_F3F4();
+    else if(disk==-1) ITC = GlobalHistTruth::ITC_B1B2();
+    else               ITC = GlobalHistTruth::ITC_B3B4();
     
     ITC->r1.set_fval(r1);
     ITC->r2.set_fval(r2);
@@ -1048,10 +1048,10 @@ public:
 
     IMATH_TrackletCalculatorOverlap *ITC;
     int ll = outerFPGAStub->layer().value()+1;
-    if     (ll==1 && disk==1)  ITC = settings_->ITC_L1F1();
-    else if(ll==2 && disk==1)  ITC = settings_->ITC_L2F1();
-    else if(ll==1 && disk==-1) ITC = settings_->ITC_L1B1();
-    else if(ll==2 && disk==-1) ITC = settings_->ITC_L2B1();
+    if     (ll==1 && disk==1)  ITC = GlobalHistTruth::ITC_L1F1();
+    else if(ll==2 && disk==1)  ITC = GlobalHistTruth::ITC_L2F1();
+    else if(ll==1 && disk==-1) ITC = GlobalHistTruth::ITC_L1B1();
+    else if(ll==2 && disk==-1) ITC = GlobalHistTruth::ITC_L2B1();
     else assert(0);
     
     ITC->r1.set_fval(r2-settings_->rmean(ll-1));

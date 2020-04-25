@@ -56,16 +56,48 @@ int main(const int argc, const char** argv)
 {
 
   Trklet::Settings settings;
+
+  // tracklet calculators 
+  IMATH_TrackletCalculator* ITC_L1L2 = new IMATH_TrackletCalculator(&settings,1,2);
+  IMATH_TrackletCalculator* ITC_L2L3 = new IMATH_TrackletCalculator(&settings,2,3);
+  IMATH_TrackletCalculator* ITC_L3L4 = new IMATH_TrackletCalculator(&settings,3,4);
+  IMATH_TrackletCalculator* ITC_L5L6 = new IMATH_TrackletCalculator(&settings,5,6);
   
-  krinvpars = settings.ITC_L1L2()->rinv_final.get_K();
-  kphi0pars = settings.ITC_L1L2()->phi0_final.get_K();
+  IMATH_TrackletCalculatorDisk* ITC_F1F2 = new IMATH_TrackletCalculatorDisk(1,2);
+  IMATH_TrackletCalculatorDisk* ITC_F3F4 = new IMATH_TrackletCalculatorDisk(3,4);
+  IMATH_TrackletCalculatorDisk* ITC_B1B2 = new IMATH_TrackletCalculatorDisk(-1,-2);
+  IMATH_TrackletCalculatorDisk* ITC_B3B4 = new IMATH_TrackletCalculatorDisk(-3,-4);
+  
+  IMATH_TrackletCalculatorOverlap* ITC_L1F1 = new IMATH_TrackletCalculatorOverlap(1,1);
+  IMATH_TrackletCalculatorOverlap* ITC_L2F1 = new IMATH_TrackletCalculatorOverlap(2,1);
+  IMATH_TrackletCalculatorOverlap* ITC_L1B1 = new IMATH_TrackletCalculatorOverlap(1,-1);
+  IMATH_TrackletCalculatorOverlap* ITC_L2B1 = new IMATH_TrackletCalculatorOverlap(2,-1);
+
+  GlobalHistTruth::ITC_L1L2()=ITC_L1L2;
+  GlobalHistTruth::ITC_L2L3()=ITC_L2L3;
+  GlobalHistTruth::ITC_L3L4()=ITC_L3L4;
+  GlobalHistTruth::ITC_L5L6()=ITC_L5L6;
+
+  GlobalHistTruth::ITC_F1F2()=ITC_F1F2;
+  GlobalHistTruth::ITC_F3F4()=ITC_F3F4;
+  GlobalHistTruth::ITC_B1B2()=ITC_B1B2;
+  GlobalHistTruth::ITC_B3B4()=ITC_B3B4;
+
+  GlobalHistTruth::ITC_L1F1()=ITC_L1F1;
+  GlobalHistTruth::ITC_L2F1()=ITC_L2F1;
+  GlobalHistTruth::ITC_L1B1()=ITC_L1B1;
+  GlobalHistTruth::ITC_L2B1()=ITC_L2B1;
+
+  
+  krinvpars = ITC_L1L2->rinv_final.get_K();
+  kphi0pars = ITC_L1L2->phi0_final.get_K();
   kd0pars   = kd0;
-  ktpars    = settings.ITC_L1L2()->t_final.get_K();
-  kz0pars   = settings.ITC_L1L2()->z0_final.get_K();
+  ktpars    = ITC_L1L2->t_final.get_K();
+  kz0pars   = ITC_L1L2->z0_final.get_K();
 
   krdisk = kr;
   kzpars = kz;  
-  krprojshiftdisk = settings.ITC_L1L2()->rD_0_final.get_K();
+  krprojshiftdisk = ITC_L1L2->rD_0_final.get_K();
 
   //those can be made more transparent...
   kphiproj123=kphi0pars*4;

@@ -1,6 +1,7 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_IMATH_TrackletCalculator_h
 #define L1Trigger_TrackFindingTracklet_interface_IMATH_TrackletCalculator_h
 
+#include "Settings.h"
 #include "Constants.h"
 #include "imath.h"
 
@@ -16,7 +17,7 @@
 
 class IMATH_TrackletCalculator {
 public:
-  IMATH_TrackletCalculator(int i1, int i2) {
+  IMATH_TrackletCalculator(const Trklet::Settings* settings, int i1, int i2) {
 #ifndef CMSSW_GIT_HASH
     printf("=============================================\n");
     printf("IMATH Tracklet Calculator %i %i", i1, i2);
@@ -40,14 +41,14 @@ public:
            kr / kz * pow(2, PS_rderD_shift));
     printf("=============================================\n");
 
-    printf("initilaizing 1/dr LUT %f %f\n", rmean[i1 - 1], rmean[i2 - 1]);
+    printf("initilaizing 1/dr LUT %f %f\n", settings->rmean(i1 - 1), settings->rmean(i2 - 1));
 #endif
 
-    double dr_mean = rmean[i2 - 1] - rmean[i1 - 1];
+    double dr_mean = settings->rmean(i2 - 1) - settings->rmean(i1 - 1);
     drinv.initLUT(dr_mean);
-    r1mean.set_fval(rmean[i1 - 1]);
-    r2mean.set_fval(rmean[i2 - 1]);
-    r12mean.set_fval(rmean[i1 - 1] + rmean[i2 - 1]);
+    r1mean.set_fval(settings->rmean(i1 - 1));
+    r2mean.set_fval(settings->rmean(i2 - 1));
+    r12mean.set_fval(settings->rmean(i1 - 1) + settings->rmean(i2 - 1));
 
     if (i1 == 1)
       z0_final.add_cut(&z0_final_L1_cut);

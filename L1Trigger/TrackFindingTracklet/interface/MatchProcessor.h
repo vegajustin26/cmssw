@@ -750,7 +750,7 @@ public:
 	      iphider=iphider<<(settings_->nbitsphiprojderL123()-nphiderbits_);
 	      
 	      double rproj=ir*krprojshiftdisk;
-	      double phider=iphider*settings_->ITC_L1L2()->der_phiD_final.get_K();
+	      double phider=iphider*GlobalHistTruth::ITC_L1L2()->der_phiD_final.get_K();
 	      double t=zmean[idisk]/rproj;
 	      
 	      if (isignbin) t=-t;
