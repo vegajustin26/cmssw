@@ -839,7 +839,7 @@ public:
 	      for(int i1=0;i1<2;i1++) {
 		for(int i2=0;i2<2;i2++) {
 		  for(int i3=0;i3<2;i3++) {
-		    double rinner=router[i3]*zmean[disk_-1]/zmean[disk_];
+		    double rinner=router[i3]*settings_->zmean(disk_-1)/settings_->zmean(disk_);
 		    double rinv1=rinv(phiinner[i1],phiouter[i2],rinner,router[i3]);
 		    double abendinner=bend(rinner,rinv1);
 		    double abendouter=bend(router[i3],rinv1);

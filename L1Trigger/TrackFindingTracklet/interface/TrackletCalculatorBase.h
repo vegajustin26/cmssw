@@ -53,7 +53,7 @@ public:
     for (int i=0;i<5;i++) {
       //int sign=1;
       //if (t<0) sign=-1;
-      exactprojdisk(zmean[i],rinv,phi0,t,z0,
+      exactprojdisk(settings_->zmean(i),rinv,phi0,t,z0,
 		phiprojdisk[i],rprojdisk[i],phiderdisk[i],rderdisk[i]);
     }
 
@@ -375,11 +375,11 @@ public:
     ITC->rproj2.set_fval(rproj_[2]);
     ITC->rproj3.set_fval(rproj_[3]);
 
-    ITC->zproj0.set_fval(t>0? zmean[0] : -zmean[0]);
-    ITC->zproj1.set_fval(t>0? zmean[1] : -zmean[1]);
-    ITC->zproj2.set_fval(t>0? zmean[2] : -zmean[2]);
-    ITC->zproj3.set_fval(t>0? zmean[3] : -zmean[3]);
-    ITC->zproj4.set_fval(t>0? zmean[4] : -zmean[4]);
+    ITC->zproj0.set_fval(t>0? settings_->zmean(0) : -settings_->zmean(0));
+    ITC->zproj1.set_fval(t>0? settings_->zmean(1) : -settings_->zmean(1));
+    ITC->zproj2.set_fval(t>0? settings_->zmean(2) : -settings_->zmean(2));
+    ITC->zproj3.set_fval(t>0? settings_->zmean(3) : -settings_->zmean(3));
+    ITC->zproj4.set_fval(t>0? settings_->zmean(4) : -settings_->zmean(4));
 
     ITC->rinv_final.calculate();
     ITC->phi0_final.calculate();
@@ -737,8 +737,8 @@ public:
     ITC->r1.set_fval(r1);
     ITC->r2.set_fval(r2);
     int signt = t>0? 1 : -1;
-    ITC->z1.set_fval(z1-signt*zmean[abs(disk_)-1]);
-    ITC->z2.set_fval(z2-signt*zmean[abs(disk_)]);
+    ITC->z1.set_fval(z1-signt*settings_->zmean(abs(disk_)-1));
+    ITC->z2.set_fval(z2-signt*settings_->zmean(abs(disk_)));
     double sphi1 = phi1 - phioffset_;
     if(sphi1<0) sphi1 += 8*atan(1.);
     if(sphi1>8*atan(1.)) sphi1 -= 8*atan(1.);
@@ -1058,7 +1058,7 @@ public:
     ITC->r2.set_fval(r1);
     int signt = t>0? 1 : -1;
     ITC->z1.set_fval(z2);
-    ITC->z2.set_fval(z1-signt*zmean[abs(disk_)-1]);
+    ITC->z2.set_fval(z1-signt*settings_->zmean(abs(disk_)));
     double sphi1 = phi1 - phioffset_;
     if(sphi1<0) sphi1 += 8*atan(1.);
     if(sphi1>8*atan(1.)) sphi1 -= 8*atan(1.);

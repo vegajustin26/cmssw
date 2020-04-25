@@ -591,7 +591,7 @@ public:
       if (phi<0) phi+=2*M_PI;
       phi-=phioffset_;
       
-      double dz=z-sign*zmean[disk_-1];
+      double dz=z-sign*settings_->zmean(disk_-1);
       
       if(std::abs(dz) > dzmax){
 	cout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed() << endl;
@@ -751,7 +751,7 @@ public:
 	      
 	      double rproj=ir*krprojshiftdisk;
 	      double phider=iphider*GlobalHistTruth::ITC_L1L2()->der_phiD_final.get_K();
-	      double t=zmean[idisk]/rproj;
+	      double t=settings_->zmean(idisk)/rproj;
 	      
 	      if (isignbin) t=-t;
 	  

@@ -231,9 +231,9 @@ public:
 
       for (unsigned d = 0; d < 5; d++) {
         if (diskmask & (3 << (2 * (4 - d)))) {
-          z[ndisks] = zmean[d];
+          z[ndisks] = settings_->zmean(d);
           alpha[ndisks] = 0.0;
-          double r = zmean[d] / t;
+          double r = settings_->zmean(d) / t;
           double r2 = r * r;
           if (diskmask & (1 << (2 * (4 - d)))) {
             if (alphaBits_ == 3) {
@@ -1175,9 +1175,9 @@ public:
     }
     for (unsigned int i = 0; i < ndisks; i++) {
       for (unsigned int j = 0; j < 5; j++) {
-        if (std::abs(std::abs(z[i]) - zmean[j]) < dzmax) {
+        if (std::abs(std::abs(z[i]) - settings->zmean(j)) < dzmax) {
           disk[j] = true;
-          cout << "z zmean ndisks" << z[i] << " " << zmean[j] << " " << ndisks << " " << nlayers << endl;
+          cout << "z zmean ndisks" << z[i] << " " << settings->zmean(j) << " " << ndisks << " " << nlayers << endl;
         }
       }
     }
@@ -1436,10 +1436,10 @@ public:
 
     for (int d = 1; d <= 5; d++) {
       if (diskmask & (1 << (2 * (5 - d) + 1))) {  //PS hit
-        double dmax = zmean[d - 1] / 22.0;
+        double dmax = settings->zmean(d - 1) / 22.0;
         if (dmax > sinh(2.4))
           dmax = sinh(2.4);
-        double dmin = zmean[d - 1] / 65.0;
+        double dmin = settings->zmean(d - 1) / 65.0;
         if (dmax < tmax)
           tmax = dmax;
         if (dmin > tmin)
@@ -1447,8 +1447,8 @@ public:
       }
 
       if (diskmask & (1 << (2 * (5 - d)))) {  //2S hit
-        double dmax = zmean[d - 1] / 65.0;
-        double dmin = zmean[d - 1] / 105.0;
+        double dmax = settings->zmean(d - 1) / 65.0;
+        double dmin = settings->zmean(d - 1) / 105.0;
         if (dmax < tmax)
           tmax = dmax;
         if (dmin > tmin)

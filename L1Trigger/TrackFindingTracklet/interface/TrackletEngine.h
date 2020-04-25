@@ -206,7 +206,7 @@ public:
 	      for(int i3=0;i3<2;i3++) {
 		double rinner=0.0;
 		if (iSeed_==4 || iSeed_==5) {
-		  rinner=router[i3]*zmean[layerdisk1_-6]/zmean[layerdisk2_-6];
+		  rinner=router[i3]*settings_->zmean(layerdisk1_-6)/settings_->zmean(layerdisk2_-6);
 		} else {
 		  rinner=settings_->rmean(layerdisk1_);
 		}

@@ -385,7 +385,7 @@ public:
 
 	if (phi<0) phi+=2*M_PI;
 
-	double dz=z-sign*zmean[layerdisk_-6];
+	double dz=z-sign*settings_->zmean(layerdisk_-6);
 	
 	if(std::abs(dz) > dzmax){
 	  cout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed() << endl;

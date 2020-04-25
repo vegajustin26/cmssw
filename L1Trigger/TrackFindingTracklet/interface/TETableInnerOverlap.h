@@ -69,7 +69,7 @@ public:
     }
 
       
-    zmeand2_=zmean[disk2-1];
+    zmeand2_=settings->zmean(disk2-1);
 
     for (int izbin=0;izbin<zbins_;izbin++) {
       for (int irbin=0;irbin<rbins_;irbin++) {

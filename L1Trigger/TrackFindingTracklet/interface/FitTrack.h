@@ -566,8 +566,8 @@ class FitTrack:public ProcessBase{
     rstub[i]=r[i];
    }
    for (unsigned i=0;i<ndisks;i++){
-    z[i]=sign*zmean[abs(disks[i])-1];
-    rstub[i+nlayers]=z[i]/ttabi;
+     z[i]=sign*settings_->zmean(abs(disks[i])-1);
+     rstub[i+nlayers]=z[i]/ttabi;
    }
 
    double D[4][12];

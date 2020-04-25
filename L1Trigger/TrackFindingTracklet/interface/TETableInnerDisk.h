@@ -36,11 +36,11 @@ public:
     dr_ = rmaxdisk / rbins_;
 
     zbins_ = (1 << zbits);
-    zmind1_ = zmean[disk1 - 1] - dzmax;
-    zmaxd1_ = zmean[disk1 - 1] + dzmax;
+    zmind1_ = settings->zmean(disk1 - 1) - dzmax;
+    zmaxd1_ = settings->zmean(disk1 - 1) + dzmax;
     dz_ = 2 * dzmax / zbins_;
 
-    zmeand2_ = zmean[disk2 - 1];
+    zmeand2_ = settings->zmean(disk2 - 1);
     rmeanl3_ = 0.;
     if (layer3 > 0)
       rmeanl3_ = settings->rmean(layer3 - 1);

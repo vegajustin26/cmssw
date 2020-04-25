@@ -60,7 +60,7 @@ public:
     rmeanl2_ = settings->rmean(layer2 - 1);
     if (layer3_ > 0) {
       rmeanl3_ = settings->rmean(layer3 - 1);
-      zmeand3_ = zmean[layer3 - 1];
+      zmeand3_ = settings->zmean(layer3 - 1);
     } else {
       rmeanl3_ = 0.;
       zmeand3_ = 0.;

@@ -32,11 +32,11 @@ public:
     dr_ = rmaxdisk / rbins_;
 
     zbins_ = (1 << zbits);
-    zmin_ = zmean[disk - 1] - dzmax;
-    zmax_ = zmean[disk - 1] + dzmax;
+    zmin_ = settings->zmean(disk - 1) - dzmax;
+    zmax_ = settings->zmean(disk - 1) + dzmax;
     dz_ = 2 * dzmax / zbins_;
 
-    zmean_ = zmean[disk - 1];
+    zmean_ = settings->zmean(disk - 1);
 
     for (int irbin = 0; irbin < rbins_; irbin++) {
       for (int izbin = 0; izbin < zbins_; izbin++) {

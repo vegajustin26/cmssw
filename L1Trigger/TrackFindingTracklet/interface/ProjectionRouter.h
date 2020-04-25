@@ -184,7 +184,7 @@ public:
 	      
 	      double rproj=ir*krprojshiftdisk;
 	      double phider=iphider*GlobalHistTruth::ITC_L1L2()->der_phiD_final.get_K();
-	      double t=zmean[idisk]/rproj;
+	      double t=settings_->zmean(idisk)/rproj;
 	      
 	      if (isignbin) t=-t;
 	  

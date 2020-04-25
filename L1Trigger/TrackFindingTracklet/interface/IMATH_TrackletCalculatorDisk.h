@@ -42,11 +42,11 @@ public:
 #endif
 
     z1mean.set_fval(settings->zmean(abs(i1) - 1));
-    z2mean.set_fval(zmean[abs(i2) - 1]);
+    z2mean.set_fval(settings->zmean(abs(i2) - 1));
 
     if (i2 < 0) {  //t is negative
-      z1mean.set_fval(-zmean[abs(i1) - 1]);
-      z2mean.set_fval(-zmean[abs(i2) - 1]);
+      z1mean.set_fval(-settings->zmean(abs(i1) - 1));
+      z2mean.set_fval(-settings->zmean(abs(i2) - 1));
       invt.set_mode(var_inv::mode::neg);
       invt.initLUT(0.);
     }
