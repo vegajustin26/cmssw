@@ -79,9 +79,9 @@ public:
   int sector() const { return sector_; }
 
   double pt(double bfield = 3.811202) const { return (0.3 * bfield / 100.0) / (irinv_ * krinvpars); }
-  double phi0() const {
+  double phi0(const Settings* settings) const {
     double dphi = 2 * M_PI / NSector;
-    double dphiHG = 0.5 * dphisectorHG - M_PI / NSector;
+    double dphiHG = 0.5 * settings->dphisectorHG() - M_PI / NSector;
     double phimin = sector_ * dphi - dphiHG;
     double phimax = phimin + dphi + 2 * dphiHG;
     phimin -= M_PI / NSector;

@@ -63,15 +63,15 @@ int main(const int argc, const char** argv)
   IMATH_TrackletCalculator* ITC_L3L4 = new IMATH_TrackletCalculator(&settings,3,4);
   IMATH_TrackletCalculator* ITC_L5L6 = new IMATH_TrackletCalculator(&settings,5,6);
   
-  IMATH_TrackletCalculatorDisk* ITC_F1F2 = new IMATH_TrackletCalculatorDisk(1,2);
-  IMATH_TrackletCalculatorDisk* ITC_F3F4 = new IMATH_TrackletCalculatorDisk(3,4);
-  IMATH_TrackletCalculatorDisk* ITC_B1B2 = new IMATH_TrackletCalculatorDisk(-1,-2);
-  IMATH_TrackletCalculatorDisk* ITC_B3B4 = new IMATH_TrackletCalculatorDisk(-3,-4);
+  IMATH_TrackletCalculatorDisk* ITC_F1F2 = new IMATH_TrackletCalculatorDisk(&settings,1,2);
+  IMATH_TrackletCalculatorDisk* ITC_F3F4 = new IMATH_TrackletCalculatorDisk(&settings,3,4);
+  IMATH_TrackletCalculatorDisk* ITC_B1B2 = new IMATH_TrackletCalculatorDisk(&settings,-1,-2);
+  IMATH_TrackletCalculatorDisk* ITC_B3B4 = new IMATH_TrackletCalculatorDisk(&settings,-3,-4);
   
-  IMATH_TrackletCalculatorOverlap* ITC_L1F1 = new IMATH_TrackletCalculatorOverlap(1,1);
-  IMATH_TrackletCalculatorOverlap* ITC_L2F1 = new IMATH_TrackletCalculatorOverlap(2,1);
-  IMATH_TrackletCalculatorOverlap* ITC_L1B1 = new IMATH_TrackletCalculatorOverlap(1,-1);
-  IMATH_TrackletCalculatorOverlap* ITC_L2B1 = new IMATH_TrackletCalculatorOverlap(2,-1);
+  IMATH_TrackletCalculatorOverlap* ITC_L1F1 = new IMATH_TrackletCalculatorOverlap(&settings,1,1);
+  IMATH_TrackletCalculatorOverlap* ITC_L2F1 = new IMATH_TrackletCalculatorOverlap(&settings,2,1);
+  IMATH_TrackletCalculatorOverlap* ITC_L1B1 = new IMATH_TrackletCalculatorOverlap(&settings,1,-1);
+  IMATH_TrackletCalculatorOverlap* ITC_L2B1 = new IMATH_TrackletCalculatorOverlap(&settings,2,-1);
 
   GlobalHistTruth::ITC_L1L2()=ITC_L1L2;
   GlobalHistTruth::ITC_L2L3()=ITC_L2L3;
@@ -535,7 +535,7 @@ int main(const int argc, const char** argv)
 
 	  if (itrackmatch>=0) {
 	    dpt=tracks[itrackmatch]->pt()-q*simtrack.pt();
-	    dphi=tracks[itrackmatch]->phi0()-simtrack.phi();
+	    dphi=tracks[itrackmatch]->phi0(&settings)-simtrack.phi();
 	    if (dphi>0.5*two_pi) dphi-=two_pi;
 	    if (dphi<-0.5*two_pi) dphi+=two_pi;
 	    deta=tracks[itrackmatch]->eta()-simtrack.eta();

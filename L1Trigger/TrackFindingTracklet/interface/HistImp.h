@@ -138,7 +138,8 @@ public:
   // double ieta, eta
   // double iz0, z0
   // int tp
-  virtual void fillTrackletParams(int seedIndex,
+  virtual void fillTrackletParams(const Settings* settings,
+				  int seedIndex,
                                   int iSector,
                                   double rinv,
                                   double irinv,
@@ -185,7 +186,7 @@ public:
         h_rinvres_L1L2_->Fill(rinv - simtrk.rinv());
         h_irinvres_L1L2_->Fill(irinv - simtrk.rinv());
         double simtrkphi0 = simtrk.phi();
-        double dphiHG = 0.5 * dphisectorHG - M_PI / NSector;
+        double dphiHG = 0.5 * settings->dphisectorHG() - M_PI / NSector;
         double phimin = +dphiHG - M_PI / NSector;
         double phioffset = phimin;
         while (iphi0 - phioffset - simtrkphi0 > M_PI / NSector)

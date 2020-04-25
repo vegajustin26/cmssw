@@ -16,7 +16,7 @@
 
 class IMATH_TrackletCalculatorOverlap {
 public:
-  IMATH_TrackletCalculatorOverlap(int i1, int i2) {
+  IMATH_TrackletCalculatorOverlap(const Trklet::Settings* settings, int i1, int i2) {
 #ifndef CMSSW_GIT_HASH
     printf("=============================================\n");
     printf("IMATH Tracklet Calculator for Overlap %i %i", i1, i2);
@@ -41,7 +41,7 @@ public:
     printf("=============================================\n");
 #endif
 
-    r1mean.set_fval(rmean[i1 - 1]);
+    r1mean.set_fval(settings->rmean(i1 - 1));
     z2mean.set_fval(zmean[abs(i2) - 1]);
 
     if (i2 < 0) {  //t is negative

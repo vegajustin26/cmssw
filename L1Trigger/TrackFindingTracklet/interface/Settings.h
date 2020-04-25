@@ -21,6 +21,11 @@ namespace Trklet{
       geomTkTDR_=false;
       nzbitsdisk_=7;
 
+      NSector_=9;
+      rcrit_=55.0;
+
+      rinvmax_=0.01*0.3*3.8/2.0; //0.01 to convert to cm-1 -  FIXME should not have all these hardcoded numbers
+      
       nzbitsstub_={{12,12,12,8,8,8,7,7,7,7,7}};
       nphibitsstub_={{14,14,14,17,17,17,14,14,14,14,14}};
       nrbitsstub_={{7,7,7,7,7,7,12,12,12,12,12}};
@@ -423,23 +428,6 @@ namespace Trklet{
     unsigned int MEBins() const {return MEBins_;}
     unsigned int MEBinsDisks() const {return MEBinsDisks_;}
 
-    /*
-    IMATH_TrackletCalculator* ITC_L1L2() const {return ITC_L1L2_;}
-    IMATH_TrackletCalculator* ITC_L2L3() const {return ITC_L2L3_;}
-    IMATH_TrackletCalculator* ITC_L3L4() const {return ITC_L3L4_;}
-    IMATH_TrackletCalculator* ITC_L5L6() const {return ITC_L5L6_;}
-
-    IMATH_TrackletCalculatorDisk* ITC_F1F2() const {return ITC_F1F2_;}
-    IMATH_TrackletCalculatorDisk* ITC_F3F4() const {return ITC_F3F4_;}
-    IMATH_TrackletCalculatorDisk* ITC_B1B2() const {return ITC_B1B2_;}
-    IMATH_TrackletCalculatorDisk* ITC_B3B4() const {return ITC_B3B4_;}
-    
-    IMATH_TrackletCalculatorOverlap* ITC_L1F1() const {return ITC_L1F1_;}
-    IMATH_TrackletCalculatorOverlap* ITC_L2F1() const {return ITC_L2F1_;}
-    IMATH_TrackletCalculatorOverlap* ITC_L1B1() const {return ITC_L1B1_;}
-    IMATH_TrackletCalculatorOverlap* ITC_L2B1() const {return ITC_L2B1_;}
-    */
-
     std::string geomext() const {return extended_?"hourglassExtended":"hourglass";}  
 
     bool useMSFit() const {return useMSFit_;}
@@ -467,11 +455,23 @@ namespace Trklet{
 
     std::string skimfile() const {return skimfile_;}
     void setSkimfile(std::string skimfile) {skimfile_ = skimfile;}
+
+    double dphisectorHG() const { return 2*M_PI/NSector_+2*fmax(std::abs(asin(0.5*rinvmax_*rmean(0))-asin(0.5*rinvmax_*rcrit_)),
+								std::abs(asin(0.5*rinvmax_*rmean(5))-asin(0.5*rinvmax_*rcrit_)));}
+    
+    double phicritmin() const { return 0.5*dphisectorHG()-M_PI/NSector_; }
+    double phicritmax() const { return dphisectorHG()-0.5*dphisectorHG()+M_PI/NSector_; }
+
     
   private:
 
     bool geomTkTDR_;
 
+    unsigned int NSector_;
+
+    double rcrit_;
+    double rinvmax_;
+    
     std::array<double,6> rmean_;
     std::array<double,5> zmean_;
     

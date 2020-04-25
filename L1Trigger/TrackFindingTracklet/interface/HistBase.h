@@ -32,7 +32,7 @@ public:
   // double ieta, eta
   // double iz0, z0
   // int tp
-  virtual void fillTrackletParams(int, int, double, double, double, double, double, double, double, double, int) {
+  virtual void fillTrackletParams(const Settings*, int, int, double, double, double, double, double, double, double, double, int) {
     return;  //default implementation does nothing
   }
 

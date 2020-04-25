@@ -252,7 +252,7 @@ public:
     }
     assert(nvm>0);
     assert(nvm<=32);
-    double dphi=dphisectorHG/nvm;
+    double dphi=settings_->dphisectorHG()/nvm;
     phimax=phibin()*dphi;
     phimin=phimax-dphi;
 

@@ -45,7 +45,7 @@ public:
   {
     isector_=i;
     double dphi=2*M_PI/NSector;
-    double dphiHG=0.5*dphisectorHG-M_PI/NSector;
+    double dphiHG=0.5*settings_->dphisectorHG()-M_PI/NSector;
     phimin_=isector_*dphi-dphiHG;
     phimax_=phimin_+dphi+2*dphiHG;
     phimin_-=M_PI/NSector;
@@ -72,7 +72,7 @@ public:
     bool add=false;
     
     double phi=stub.phi();
-    double dphi=0.5*dphisectorHG-M_PI/NSector;
+    double dphi=0.5*settings_->dphisectorHG()-M_PI/NSector;
     
     static std::map<string,std::vector<int> > ILindex;
     std::vector<int>& tmp=ILindex[dtc];

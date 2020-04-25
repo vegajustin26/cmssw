@@ -16,7 +16,7 @@
 
 class IMATH_TrackletCalculatorDisk {
 public:
-  IMATH_TrackletCalculatorDisk(int i1, int i2) {
+  IMATH_TrackletCalculatorDisk(const Trklet::Settings* settings, int i1, int i2) {
 #ifndef CMSSW_GIT_HASH
     printf("=============================================\n");
     printf("IMATH Tracklet Calculator for Disk %i %i", i1, i2);
@@ -41,7 +41,7 @@ public:
     printf("=============================================\n");
 #endif
 
-    z1mean.set_fval(zmean[abs(i1) - 1]);
+    z1mean.set_fval(settings->zmean(abs(i1) - 1));
     z2mean.set_fval(zmean[abs(i2) - 1]);
 
     if (i2 < 0) {  //t is negative

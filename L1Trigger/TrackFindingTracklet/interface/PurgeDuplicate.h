@@ -353,7 +353,7 @@ public:
 
         if(inputtracks_[itrk]->duplicate()) cout << "WARNING: Track already tagged as duplicate!!" << endl;
 
-        double phiBin = (inputtracks_[itrk]->phi0()-2*M_PI/27*iSector_)/(2*M_PI/9/50) + 9;
+        double phiBin = (inputtracks_[itrk]->phi0(settings_)-2*M_PI/27*iSector_)/(2*M_PI/9/50) + 9;
         phiBin = std::max(phiBin,0.);
         phiBin = std::min(phiBin,34.);
 
@@ -364,7 +364,7 @@ public:
         if(grid[(int)phiBin][(int)ptBin]) inputtracks_[itrk]->setDuplicate(true);
         grid[(int)phiBin][(int)ptBin] = true;
 
-        double phiTest = inputtracks_[itrk]->phi0()-2*M_PI/27*iSector_;
+        double phiTest = inputtracks_[itrk]->phi0(settings_)-2*M_PI/27*iSector_;
         if(phiTest < -2*M_PI/27) cout << "track phi too small!" << endl;
         if(phiTest > 2*2*M_PI/27) cout << "track phi too big!" << endl;
 
