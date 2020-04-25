@@ -350,7 +350,7 @@ public:
     if (layer_.value()>=3) {
       lphi=8;
     }
-    return Util::phiRange(phimin+phi_.value()*kphi/lphi);
+    return Util::phiRange(phimin+phi_.value()*settings_->kphi()/lphi);
   }
 
   void setfiner(int finer) {

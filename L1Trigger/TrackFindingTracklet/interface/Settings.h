@@ -462,6 +462,9 @@ namespace Trklet{
     double phicritmin() const { return 0.5*dphisectorHG()-M_PI/NSector_; }
     double phicritmax() const { return dphisectorHG()-0.5*dphisectorHG()+M_PI/NSector_; }
 
+    double kphi() const { return dphisectorHG()/(1<<nphibitsstub(0)); } 
+    double kphi1() const { return dphisectorHG()/(1<<nphibitsstub(5)); }
+
     
   private:
 

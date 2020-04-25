@@ -19,6 +19,8 @@ public:
   void init(const Settings* settings, int layer, int bendbits, int rbits) {
     assert(bendbits == 3 || bendbits == 4);
 
+    settings_=settings;
+    
     layer_ = layer;
     bendbits_ = bendbits;
     rbits_ = rbits;
@@ -56,7 +58,7 @@ public:
     int idphi = 0;
 
     if (layer_ <= 3) {
-      idphi = dphi / kphi;
+      idphi = dphi / settings_->kphi();
     } else {
       idphi = dphi / kphi1;
     }
@@ -71,6 +73,9 @@ public:
   }
 
 private:
+
+  const Settings* settings_;
+  
   double rmean_;
 
   double rmin_;

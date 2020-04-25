@@ -546,7 +546,7 @@ public:
       
       ir+=ircorr;
       
-      int ideltaphi=fpgastub->phi().value()*kphi/kphiproj123-iphi; 
+      int ideltaphi=fpgastub->phi().value()*settings_->kphi()/kphiproj123-iphi; 
       
       
       int irstub = fpgastub->r().value();
