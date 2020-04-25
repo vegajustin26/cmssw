@@ -283,10 +283,10 @@ public:
     int ifactor=0.5*rcrit*krinvpars/kphi0pars*(1<<8);
     int iphicrit=iphi0-(irinv>>8)*ifactor;
   
-    int iphicritmincut=phicritminmc/GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
-    int iphicritmaxcut=phicritmaxmc/GlobalHistTruth::ITC_L1L2()->phi0_final.get_K(); 
+    int iphicritmincut=settings_->phicritminmc()/GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
+    int iphicritmaxcut=settings_->phicritmaxmc()/GlobalHistTruth::ITC_L1L2()->phi0_final.get_K(); 
 
-    bool keepapprox=(phicritapprox>phicritminmc)&&(phicritapprox<phicritmaxmc),
+    bool keepapprox=(phicritapprox>settings_->phicritminmc())&&(phicritapprox<settings_->phicritmaxmc()),
          keep=(iphicrit>iphicritmincut)&&(iphicrit<iphicritmaxcut);
     if (settings_->debugTracklet())
       if (keepapprox && !keep)

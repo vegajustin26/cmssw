@@ -23,6 +23,8 @@ namespace Trklet{
 
       NSector_=9;
       rcrit_=55.0;
+      
+      dphicritmc_=0.005; //lose for MC
 
       rinvmax_=0.01*0.3*3.8/2.0; //0.01 to convert to cm-1 -  FIXME should not have all these hardcoded numbers
       
@@ -462,6 +464,9 @@ namespace Trklet{
     double phicritmin() const { return 0.5*dphisectorHG()-M_PI/NSector_; }
     double phicritmax() const { return dphisectorHG()-0.5*dphisectorHG()+M_PI/NSector_; }
 
+    double phicritminmc() const { return phicritmin()-dphicritmc_; }
+    double phicritmaxmc() const { return phicritmax()+dphicritmc_; }
+
     double kphi() const { return dphisectorHG()/(1<<nphibitsstub(0)); } 
     double kphi1() const { return dphisectorHG()/(1<<nphibitsstub(5)); }
 
@@ -474,7 +479,9 @@ namespace Trklet{
 
     double rcrit_;
     double rinvmax_;
-    
+
+    double dphicritmc_;
+
     std::array<double,6> rmean_;
     std::array<double,5> zmean_;
     
@@ -561,23 +568,6 @@ namespace Trklet{
     unsigned int MEBinsBits_;
     unsigned int MEBins_;
     unsigned int MEBinsDisks_;
-
-    /*
-    mutable IMATH_TrackletCalculator* ITC_L1L2_;
-    mutable IMATH_TrackletCalculator* ITC_L2L3_;
-    mutable IMATH_TrackletCalculator* ITC_L3L4_;
-    mutable IMATH_TrackletCalculator* ITC_L5L6_;
-    
-    mutable IMATH_TrackletCalculatorDisk* ITC_F1F2_;
-    mutable IMATH_TrackletCalculatorDisk* ITC_F3F4_;
-    mutable IMATH_TrackletCalculatorDisk* ITC_B1B2_;
-    mutable IMATH_TrackletCalculatorDisk* ITC_B3B4_;
-    
-    mutable IMATH_TrackletCalculatorOverlap* ITC_L1F1_;
-    mutable IMATH_TrackletCalculatorOverlap* ITC_L2F1_;
-    mutable IMATH_TrackletCalculatorOverlap* ITC_L1B1_;
-    mutable IMATH_TrackletCalculatorOverlap* ITC_L2B1_;
-    */
 
     bool useMSFit_;
     bool exactderivatives_;

@@ -144,15 +144,15 @@ static const unsigned int NSector=9;
 
 static const double rinvmax=0.01*0.3*3.8/2.0; //0.01 to convert to cm-1
 
-static const double dphisectorHG=2*M_PI/NSector+2*fmax(std::abs(asin(0.5*rinvmax*rmean[0])-asin(0.5*rinvmax*rcrit)),
-						std::abs(asin(0.5*rinvmax*rmean[5])-asin(0.5*rinvmax*rcrit)));
+//static const double dphisectorHG=2*M_PI/NSector+2*fmax(std::abs(asin(0.5*rinvmax*rmean[0])-asin(0.5*rinvmax*rcrit)),
+//						std::abs(asin(0.5*rinvmax*rmean[5])-asin(0.5*rinvmax*rcrit)));
 
-static const double phicritmin=0.5*dphisectorHG-M_PI/NSector;
-static const double phicritmax=dphisectorHG-0.5*dphisectorHG+M_PI/NSector;
+//static const double phicritmin=0.5*dphisectorHG-M_PI/NSector;
+//static const double phicritmax=dphisectorHG-0.5*dphisectorHG+M_PI/NSector;
 
-static const double dphicritmc=0.005; //lose for MC
-static const double phicritminmc=phicritmin-dphicritmc;
-static const double phicritmaxmc=phicritmax+dphicritmc;
+//static const double dphicritmc=0.005; //lose for MC
+//static const double phicritminmc=phicritmin-dphicritmc;
+//static const double phicritmaxmc=phicritmax+dphicritmc;
 
 // Obsolete - only used in TrackletCalculatorDisplaced (Ryd - 2020-01-16)
 static const int iphicritminmc=9253;
@@ -172,8 +172,6 @@ static const double maxd0=10.;
 
 //These are constants defining global coordinate system
 
-//static const double kphi=dphisectorHG/(1<<14); //nbitsphistubL123
-//static const double kphi1=dphisectorHG/(1<<17); //nbitsphistubL456
 static const double kz=2*zlength/(1<<12);   //nbitszL123
 static const double kr=rmaxdisk/(1<<12);  //nrbitsdisk
 static const double kd0 = 2*maxd0/(1<<nbitsd0);

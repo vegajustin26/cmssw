@@ -1052,7 +1052,7 @@ public:
 
     double phicrit=phi0approx-asin(0.5*rcrit*rinvapprox);
     int phicritapprox=iphi0-2*irinv;
-    bool keep=(phicrit>phicritminmc)&&(phicrit<phicritmaxmc),
+    bool keep=(phicrit>settings_->phicritminmc())&&(phicrit<settings_->phicritmaxmc()),
          keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);
     if (settings_->debugTracklet())
       if (keep && !keepapprox)
@@ -1333,7 +1333,7 @@ public:
 
     double phicrit=phi0approx-asin(0.5*rcrit*rinvapprox);
     int phicritapprox=iphi0-2*irinv;
-    bool keep=(phicrit>phicritminmc)&&(phicrit<phicritmaxmc),
+    bool keep=(phicrit>settings_->phicritminmc())&&(phicrit<settings_->phicritmaxmc()),
          keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);
     if (settings_->debugTracklet())
       if (keep && !keepapprox)
@@ -1603,7 +1603,7 @@ public:
 
     double phicrit=phi0approx-asin(0.5*rcrit*rinvapprox);
     int phicritapprox=iphi0-2*irinv;
-    bool keep=(phicrit>phicritminmc)&&(phicrit<phicritmaxmc),
+    bool keep=(phicrit>settings_->phicritminmc())&&(phicrit<settings_->phicritmaxmc()),
          keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);
     if (settings_->debugTracklet())
       if (keep && !keepapprox)

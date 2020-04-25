@@ -54,7 +54,7 @@
 
 
       double phi=stub.phi();
-      phi+=0.5*dphisectorHG;
+      phi+=0.5*settings.dphisectorHG();
 
       if (phi<0.0) phi+=two_pi;
       unsigned int isector=NSector*phi/two_pi;
@@ -114,11 +114,11 @@
         if (diff>nSector/2) diff-=NSector;
         if (diff<-nSector/2) diff+=NSector;
 	if (abs(diff)>1) continue;
-	double phiminsect=k*two_pi/NSector-0.5*(dphisectorHG-two_pi/NSector)-0.5*two_pi/NSector;
+	double phiminsect=k*two_pi/NSector-0.5*(settings.dphisectorHG()-two_pi/NSector)-0.5*two_pi/NSector;
 	double dphi=stub.phi()-phiminsect;
 	if (dphi>0.5*two_pi) dphi-=two_pi;
 	while (dphi<0.0) dphi+=two_pi;
-	if (dphi>dphisectorHG) continue;
+	if (dphi>settings.dphisectorHG()) continue;
         bool add=sectors[k]->addStub(stub,dtcbase);
 
 	static std::map<string,ofstream*> dtcstubs;

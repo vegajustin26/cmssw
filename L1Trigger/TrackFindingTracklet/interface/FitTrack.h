@@ -972,7 +972,7 @@ class FitTrack:public ProcessBase{
 
 
    double phicrit=phi0fit-asin(0.5*rcrit*rinvfit);
-   bool keep=(phicrit>phicritmin)&&(phicrit<phicritmax);
+   bool keep=(phicrit>settings_->phicritmin())&&(phicrit<settings_->phicritmax());
 
    
    if (!keep) {
