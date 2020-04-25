@@ -3,18 +3,13 @@
 
 static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR" (T5/T6 tracker, D21/D11/D17 CMS geometries)
 
+//static const int nrbitsprojderdisk=9;
 
-static const int nrbitsprojdisk=12;
-static const int nrbitsprojderdisk=9;
+//static const int nbitsphiprojderL123=8+2;
+//static const int nbitsphiprojderL456=8+2;
 
-//static const int nbitszprojL123=12;
-//static const int nbitszprojL456=8;
-
-static const int nbitsphiprojderL123=8+2;
-static const int nbitsphiprojderL456=8+2;
-
-static const int nbitszprojderL123=8+2;
-static const int nbitszprojderL456=7+2;
+//static const int nbitszprojderL123=8+2;
+//static const int nbitszprojderL456=7+2;
 
 //vm stubs
 static const int nfinephibarrelinner=2;

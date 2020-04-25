@@ -24,6 +24,13 @@ namespace Trklet{
       nzbitsstub_={{12,12,12,8,8,8,7,7,7,7,7}};
       nphibitsstub_={{14,14,14,17,17,17,14,14,14,14,14}};
       nrbitsstub_={{7,7,7,7,7,7,12,12,12,12,12}};
+
+      nrbitsprojderdisk_=9;
+      nbitsphiprojderL123_=8+2;
+      nbitsphiprojderL456_=8+2;
+      nbitszprojderL123_=8+2;
+      nbitszprojderL456_=7+2;
+
       
       useseeding_={{0,1,2,3,4,5,6,7,8,9,10,11}};
 
@@ -331,6 +338,13 @@ namespace Trklet{
     unsigned int nzbitsstub(unsigned int layerdisk) const {return nzbitsstub_[layerdisk];}
     unsigned int nphibitsstub(unsigned int layerdisk) const {return nphibitsstub_[layerdisk];}
     unsigned int nrbitsstub(unsigned int layerdisk) const {return nrbitsstub_[layerdisk];}
+
+    unsigned int nrbitsprojderdisk() const {return nrbitsprojderdisk_;}
+    unsigned int nbitsphiprojderL123() const {return nbitsphiprojderL123_;}
+    unsigned int nbitsphiprojderL456() const {return nbitsphiprojderL456_;}
+    unsigned int nbitszprojderL123() const {return nbitszprojderL123_;}
+    unsigned int nbitszprojderL456() const {return nbitszprojderL456_;}
+
     bool useSeed(unsigned int iSeed) const {return useseeding_.find(iSeed)!=useseeding_.end();}
     unsigned int nbitsvmte(unsigned int inner, unsigned int iSeed) const {return nbitsvmte_[inner][iSeed];}
     unsigned int nvmte(unsigned int inner, unsigned int iSeed) const {return (1<<nbitsvmte_[inner][iSeed]);}
@@ -480,6 +494,13 @@ namespace Trklet{
     std::array<unsigned int,11> nzbitsstub_;
     std::array<unsigned int,11> nphibitsstub_;
     std::array<unsigned int,11> nrbitsstub_;
+
+    unsigned int nrbitsprojderdisk_;
+    unsigned int nbitsphiprojderL123_;
+    unsigned int nbitsphiprojderL456_;
+    unsigned int nbitszprojderL123_;
+    unsigned int nbitszprojderL456_;
+
     std::set<unsigned int> useseeding_;
 
     std::array<unsigned int,11> nbitsallstubs_;

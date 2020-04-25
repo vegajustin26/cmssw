@@ -176,11 +176,11 @@ public:
 	  for(unsigned int irbin=0;irbin<nrbins;irbin++) {
 	    int ir=irbin;
 	    if (ir>(1<<(nrbits_-1))) ir-=(1<<nrbits_);
-	    ir=ir<<(nrbitsprojdisk-nrbits_);
+	    ir=ir<<(settings_->nrbitsstub(6)-nrbits_);
 	    for(unsigned int iphiderbin=0;iphiderbin<nphiderbins;iphiderbin++) {
 	      int iphider=iphiderbin;
 	      if (iphider>(1<<(nphiderbits_-1))) iphider-=(1<<nphiderbits_);
-	      iphider=iphider<<(nbitsphiprojderL123-nphiderbits_);
+	      iphider=iphider<<(settings_->nbitsphiprojderL123()-nphiderbits_);
 	      
 	      double rproj=ir*krprojshiftdisk;
 	      double phider=iphider*settings_->ITC_L1L2()->der_phiD_final.get_K();

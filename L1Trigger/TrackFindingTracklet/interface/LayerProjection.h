@@ -45,8 +45,8 @@ public:
       fpgazproj_.set(izproj, settings_->nzbitsstub(0), false, __LINE__, __FILE__);
       int izvm = izproj >> (12 - 7) & 0xf;
       fpgazprojvm_.set(izvm, 4, true, __LINE__, __FILE__);
-      fpgaphiprojder_.set(iphider, nbitsphiprojderL123, false, __LINE__, __FILE__);
-      fpgazprojder_.set(izder, nbitszprojderL123, false, __LINE__, __FILE__);
+      fpgaphiprojder_.set(iphider, settings_->nbitsphiprojderL123(), false, __LINE__, __FILE__);
+      fpgazprojder_.set(izder, settings_->nbitszprojderL123(), false, __LINE__, __FILE__);
     } else {
       fpgaphiproj_.set(iphiproj, settings_->nphibitsstub(5), true, __LINE__, __FILE__);
       int iphivm = (iphiproj >> (settings_->nphibitsstub(5) - 5)) & 0x7;
@@ -57,8 +57,8 @@ public:
       fpgazproj_.set(izproj, settings_->nzbitsstub(5), false, __LINE__, __FILE__);
       int izvm = izproj >> (8 - 7) & 0xf;
       fpgazprojvm_.set(izvm, 4, true, __LINE__, __FILE__);
-      fpgaphiprojder_.set(iphider, nbitsphiprojderL456, false, __LINE__, __FILE__);
-      fpgazprojder_.set(izder, nbitszprojderL456, false, __LINE__, __FILE__);
+      fpgaphiprojder_.set(iphider, settings_->nbitsphiprojderL456(), false, __LINE__, __FILE__);
+      fpgazprojder_.set(izder, settings_->nbitszprojderL456(), false, __LINE__, __FILE__);
     }
 
     ////Separate the vm projections into zbins

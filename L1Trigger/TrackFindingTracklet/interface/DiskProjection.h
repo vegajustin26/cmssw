@@ -42,11 +42,11 @@ public:
       iphivm ^= 4;
     }
     fpgaphiprojvm_.set(iphivm, 3, true, __LINE__, __FILE__);
-    fpgarproj_.set(irproj, nrbitsprojdisk, false, __LINE__, __FILE__);
+    fpgarproj_.set(irproj, settings->nrbitsstub(6), false, __LINE__, __FILE__);
     int irvm = irproj >> (13 - 7) & 0xf;
     fpgarprojvm_.set(irvm, 4, true, __LINE__, __FILE__);
-    fpgaphiprojder_.set(iphider, nbitsphiprojderL123, false, __LINE__, __FILE__);
-    fpgarprojder_.set(irder, nrbitsprojderdisk, false, __LINE__, __FILE__);
+    fpgaphiprojder_.set(iphider, settings->nbitsphiprojderL123(), false, __LINE__, __FILE__);
+    fpgarprojder_.set(irder, settings->nrbitsprojderdisk(), false, __LINE__, __FILE__);
 
     //FIXME the -3 and +3 should be evaluated and efficiency for matching hits checked.
     int rbin1 = 8.0 * (irproj * krprojshiftdisk - 3 - rmindiskvm) / (rmaxdisk - rmindiskvm);

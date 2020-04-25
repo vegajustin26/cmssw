@@ -1091,19 +1091,19 @@ public:
 
 
       if (rproj_[i]<60.0) {
-        if (iphider[i]<-(1<<(nbitsphiprojderL123-1))) {
-	  iphider[i] = -(1<<(nbitsphiprojderL123-1));
+        if (iphider[i]<-(1<<(settings_->nbitsphiprojderL123()-1))) {
+	  iphider[i] = -(1<<(settings_->nbitsphiprojderL123()-1));
 	}
-        if (iphider[i]>=(1<<(nbitsphiprojderL123-1))) {
-	  iphider[i] = (1<<(nbitsphiprojderL123-1))-1;
+        if (iphider[i]>=(1<<(settings_->nbitsphiprojderL123()-1))) {
+	  iphider[i] = (1<<(settings_->nbitsphiprojderL123()-1))-1;
 	}
       }
       else {
-        if (iphider[i]<-(1<<(nbitsphiprojderL456-1))) {
-	  iphider[i] = -(1<<(nbitsphiprojderL456-1));
+        if (iphider[i]<-(1<<(settings_->nbitsphiprojderL456()-1))) {
+	  iphider[i] = -(1<<(settings_->nbitsphiprojderL456()-1));
 	}
-        if (iphider[i]>=(1<<(nbitsphiprojderL456-1))) {
-	  iphider[i] = (1<<(nbitsphiprojderL456-1))-1;
+        if (iphider[i]>=(1<<(settings_->nbitsphiprojderL456()-1))) {
+	  iphider[i] = (1<<(settings_->nbitsphiprojderL456()-1))-1;
 	}
       }
 
@@ -1372,12 +1372,12 @@ public:
 
       
       if (rproj_[i]<60.0) {
-        if (iphider[i]<-(1<<(nbitsphiprojderL123-1))) iphider[i] = -(1<<(nbitsphiprojderL123-1));
-        if (iphider[i]>=(1<<(nbitsphiprojderL123-1))) iphider[i] = (1<<(nbitsphiprojderL123-1))-1;
+        if (iphider[i]<-(1<<(settings_->nbitsphiprojderL123()-1))) iphider[i] = -(1<<(settings_->nbitsphiprojderL123()-1));
+        if (iphider[i]>=(1<<(settings_->nbitsphiprojderL123()-1))) iphider[i] = (1<<(settings_->nbitsphiprojderL123()-1))-1;
       }
       else {
-        if (iphider[i]<-(1<<(nbitsphiprojderL456-1))) iphider[i] = -(1<<(nbitsphiprojderL456-1));
-        if (iphider[i]>=(1<<(nbitsphiprojderL456-1))) iphider[i] = (1<<(nbitsphiprojderL456-1))-1;
+        if (iphider[i]<-(1<<(settings_->nbitsphiprojderL456()-1))) iphider[i] = -(1<<(settings_->nbitsphiprojderL456()-1));
+        if (iphider[i]>=(1<<(settings_->nbitsphiprojderL456()-1))) iphider[i] = (1<<(settings_->nbitsphiprojderL456()-1))-1;
       }
 
       layerprojs[i].init(settings_,lproj_[i],rproj_[i],
@@ -1644,12 +1644,12 @@ public:
 
 
       if (rproj_[i]<60.0) {
-        if (iphider[i]<-(1<<(nbitsphiprojderL123-1))) iphider[i] = -(1<<(nbitsphiprojderL123-1));
-        if (iphider[i]>=(1<<(nbitsphiprojderL123-1))) iphider[i] = (1<<(nbitsphiprojderL123-1))-1;
+        if (iphider[i]<-(1<<(settings_->nbitsphiprojderL123()-1))) iphider[i] = -(1<<(settings_->nbitsphiprojderL123()-1));
+        if (iphider[i]>=(1<<(settings_->nbitsphiprojderL123()-1))) iphider[i] = (1<<(settings_->nbitsphiprojderL123()-1))-1;
       }
       else {
-        if (iphider[i]<-(1<<(nbitsphiprojderL456-1))) iphider[i] = -(1<<(nbitsphiprojderL456-1));
-        if (iphider[i]>=(1<<(nbitsphiprojderL456-1))) iphider[i] = (1<<(nbitsphiprojderL456-1))-1;
+        if (iphider[i]<-(1<<(settings_->nbitsphiprojderL456()-1))) iphider[i] = -(1<<(settings_->nbitsphiprojderL456()-1));
+        if (iphider[i]>=(1<<(settings_->nbitsphiprojderL456()-1))) iphider[i] = (1<<(settings_->nbitsphiprojderL456()-1))-1;
       }
 
       layerprojs[i].init(settings_,lproj_[i],rproj_[i],
