@@ -113,7 +113,7 @@ int main(const int argc, const char** argv)
   cout << "Conversion factors for global coordinates:"<<endl;
   cout << "z    kz            = "<< kz <<endl;
   cout << "r    kr            = "<< kr <<endl;
-  cout << "phi  kphi1         = "<< kphi1 <<endl;
+  cout << "phi  kphi1         = "<< settings.kphi1() <<endl;
   cout << "=========================================================" << endl;
   cout << "Conversion factors for track(let) parameters:"<<endl;
   cout << "rinv krinvpars     = "<< krinvpars <<endl;

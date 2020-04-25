@@ -937,7 +937,7 @@ public:
       D[2][j] = 0.0;
       D[3][j] = 0.0;
       sigma[j] = sigmax;
-      kfactor[j] = kphi1;
+      kfactor[j] = settings->kphi1();
       j++;
       //second the z position
       D[0][j] = 0.0;
@@ -1059,10 +1059,10 @@ public:
         MinvDt[2][2 * i] *= rnew[i] / sigmax;
         MinvDt[3][2 * i] *= rnew[i] / sigmax;
 
-        iMinvDt[0][2 * i] = (1 << fitrinvbitshift) * MinvDt[0][2 * i] * kphi1 / krinvpars;
-        iMinvDt[1][2 * i] = (1 << fitphi0bitshift) * MinvDt[1][2 * i] * kphi1 / kphi0pars;
-        iMinvDt[2][2 * i] = (1 << fittbitshift) * MinvDt[2][2 * i] * kphi1 / ktpars;
-        iMinvDt[3][2 * i] = (1 << fitz0bitshift) * MinvDt[3][2 * i] * kphi1 / kzpars;
+        iMinvDt[0][2 * i] = (1 << fitrinvbitshift) * MinvDt[0][2 * i] * settings->kphi1() / krinvpars;
+        iMinvDt[1][2 * i] = (1 << fitphi0bitshift) * MinvDt[1][2 * i] * settings->kphi1() / kphi0pars;
+        iMinvDt[2][2 * i] = (1 << fittbitshift) * MinvDt[2][2 * i] * settings->kphi1() / ktpars;
+        iMinvDt[3][2 * i] = (1 << fitz0bitshift) * MinvDt[3][2 * i] * settings->kphi1() / kzpars;
 
         if (rnew[i] < 60.0) {
           MinvDt[0][2 * i + 1] /= sigmazpsbarrel;
@@ -1227,7 +1227,7 @@ public:
       D[2][j] = 0.0;
       D[3][j] = 0.0;
       sigma[j] = sigmax;
-      kfactor[j] = kphi1;
+      kfactor[j] = settings->kphi1();
       j++;
       //second the z position
       D[0][j] = 0.0;
@@ -1349,10 +1349,10 @@ public:
         MinvDt[2][2 * i] *= rnew[i];
         MinvDt[3][2 * i] *= rnew[i];
 
-        iMinvDt[0][2 * i] = (1 << fitrinvbitshift) * MinvDt[0][2 * i] * kphi1 / krinvpars;
-        iMinvDt[1][2 * i] = (1 << fitphi0bitshift) * MinvDt[1][2 * i] * kphi1 / kphi0pars;
-        iMinvDt[2][2 * i] = (1 << fittbitshift) * MinvDt[2][2 * i] * kphi1 / ktpars;
-        iMinvDt[3][2 * i] = (1 << fitz0bitshift) * MinvDt[3][2 * i] * kphi1 / kzpars;
+        iMinvDt[0][2 * i] = (1 << fitrinvbitshift) * MinvDt[0][2 * i] * settings->kphi1() / krinvpars;
+        iMinvDt[1][2 * i] = (1 << fitphi0bitshift) * MinvDt[1][2 * i] * settings->kphi1() / kphi0pars;
+        iMinvDt[2][2 * i] = (1 << fittbitshift) * MinvDt[2][2 * i] * settings->kphi1() / ktpars;
+        iMinvDt[3][2 * i] = (1 << fitz0bitshift) * MinvDt[3][2 * i] * settings->kphi1() / kzpars;
 
         if (rnew[i] < 60.0) {
           //MinvDt[0][2*i+1]/=sigmaz;

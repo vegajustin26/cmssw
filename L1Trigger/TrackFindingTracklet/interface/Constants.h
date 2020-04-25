@@ -173,7 +173,7 @@ static const double maxd0=10.;
 //These are constants defining global coordinate system
 
 //static const double kphi=dphisectorHG/(1<<14); //nbitsphistubL123
-static const double kphi1=dphisectorHG/(1<<17); //nbitsphistubL456
+//static const double kphi1=dphisectorHG/(1<<17); //nbitsphistubL456
 static const double kz=2*zlength/(1<<12);   //nbitszL123
 static const double kr=rmaxdisk/(1<<12);  //nrbitsdisk
 static const double kd0 = 2*maxd0/(1<<nbitsd0);

@@ -60,7 +60,7 @@ public:
     if (layer_ <= 3) {
       idphi = dphi / settings_->kphi();
     } else {
-      idphi = dphi / kphi1;
+      idphi = dphi / settings_->kphi1();
     }
 
     return idphi;

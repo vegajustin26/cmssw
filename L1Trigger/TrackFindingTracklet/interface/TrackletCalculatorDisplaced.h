@@ -1008,16 +1008,16 @@ public:
     }
 
     //now binary
-    double krinv = kphi1/kr*pow(2,rinv_shift),
-           kphi0 = kphi1*pow(2,phi0_shift),
+    double krinv = settings_->kphi1()/kr*pow(2,rinv_shift),
+           kphi0 = settings_->kphi1()*pow(2,phi0_shift),
            kt = kz/kr*pow(2,t_shift),
            kz0 = kz*pow(2,z0_shift),
-           kphiproj = kphi1*pow(2,SS_phiL_shift),
-           kphider = kphi1/kr*pow(2,SS_phiderL_shift),
+           kphiproj = settings_->kphi1()*pow(2,SS_phiL_shift),
+           kphider = settings_->kphi1()/kr*pow(2,SS_phiderL_shift),
            kzproj = kz*pow(2,PS_zL_shift),
            kzder = kz/kr*pow(2,PS_zderL_shift),
-           kphiprojdisk = kphi1*pow(2,SS_phiD_shift),
-           kphiderdisk = kphi1/kr*pow(2,SS_phiderD_shift),
+           kphiprojdisk = settings_->kphi1()*pow(2,SS_phiD_shift),
+           kphiderdisk = settings_->kphi1()/kr*pow(2,SS_phiderD_shift),
            krprojdisk = kr*pow(2,PS_rD_shift),
            krderdisk = kr/kz*pow(2,PS_rderD_shift);
     
@@ -1289,16 +1289,16 @@ public:
     }
 
     //now binary
-    double krinv = kphi1/kr*pow(2,rinv_shift),
-           kphi0 = kphi1*pow(2,phi0_shift),
+    double krinv = settings_->kphi1()/kr*pow(2,rinv_shift),
+           kphi0 = settings_->kphi1()*pow(2,phi0_shift),
            kt = kz/kr*pow(2,t_shift),
            kz0 = kz*pow(2,z0_shift),
-           kphiproj = kphi1*pow(2,SS_phiL_shift),
-           kphider = kphi1/kr*pow(2,SS_phiderL_shift),
+           kphiproj = settings_->kphi1()*pow(2,SS_phiL_shift),
+           kphider = settings_->kphi1()/kr*pow(2,SS_phiderL_shift),
            kzproj = kz*pow(2,PS_zL_shift),
            kzder = kz/kr*pow(2,PS_zderL_shift),
-           kphiprojdisk = kphi1*pow(2,SS_phiD_shift),
-           kphiderdisk = kphi1/kr*pow(2,SS_phiderD_shift),
+           kphiprojdisk = settings_->kphi1()*pow(2,SS_phiD_shift),
+           kphiderdisk = settings_->kphi1()/kr*pow(2,SS_phiderD_shift),
            krprojdisk = kr*pow(2,PS_rD_shift),
            krderdisk = kr/kz*pow(2,PS_rderD_shift);
     
@@ -1559,16 +1559,16 @@ public:
     }
 
     //now binary
-    double krinv = kphi1/kr*pow(2,rinv_shift),
-           kphi0 = kphi1*pow(2,phi0_shift),
+    double krinv = settings_->kphi1()/kr*pow(2,rinv_shift),
+           kphi0 = settings_->kphi1()*pow(2,phi0_shift),
            kt = kz/kr*pow(2,t_shift),
            kz0 = kz*pow(2,z0_shift),
-           kphiproj = kphi1*pow(2,SS_phiL_shift),
-           kphider = kphi1/kr*pow(2,SS_phiderL_shift),
+           kphiproj = settings_->kphi1()*pow(2,SS_phiL_shift),
+           kphider = settings_->kphi1()/kr*pow(2,SS_phiderL_shift),
            kzproj = kz*pow(2,PS_zL_shift),
            kzder = kz/kr*pow(2,PS_zderL_shift),
-           kphiprojdisk = kphi1*pow(2,SS_phiD_shift),
-           kphiderdisk = kphi1/kr*pow(2,SS_phiderD_shift),
+           kphiprojdisk = settings_->kphi1()*pow(2,SS_phiD_shift),
+           kphiderdisk = settings_->kphi1()/kr*pow(2,SS_phiderD_shift),
            krprojdisk = kr*pow(2,PS_rD_shift),
            krderdisk = kr/kz*pow(2,PS_rderD_shift);
     
