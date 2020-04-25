@@ -4,24 +4,8 @@
 static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR" (T5/T6 tracker, D21/D11/D17 CMS geometries)
 
 
-
-//Constants for defining stub representations
-static const int nbitsrL123=7;
-static const int nbitsrL456=7;
-
-static const int nbitszL123=12;
-static const int nbitszL456=8;
-
-static const int nbitsphistubL123=14;
-static const int nbitsphistubL456=17;
-
-static const int nrbitsdisk=12;
-
 static const int nrbitsprojdisk=12;
 static const int nrbitsprojderdisk=9;
-
-static const int nbitsphiprojL123=nbitsphistubL123;
-static const int nbitsphiprojL456=nbitsphistubL456;
 
 static const int nbitszprojL123=12;
 static const int nbitszprojL456=8;
@@ -212,11 +196,10 @@ static const double maxd0=10.;
 
 //These are constants defining global coordinate system
 
-static const double kphi=dphisectorHG/(1<<nbitsphistubL123);
-static const double kphi1=dphisectorHG/(1<<nbitsphistubL456);
-static const double kz=2*zlength/(1<<nbitszL123);
-//static const double kr=2*drmax/(1<<nbitsrL456);
-static const double kr=rmaxdisk/(1<<nrbitsdisk);
+static const double kphi=dphisectorHG/(1<<14); //nbitsphistubL123
+static const double kphi1=dphisectorHG/(1<<17); //nbitsphistubL456
+static const double kz=2*zlength/(1<<12);   //nbitszL123
+static const double kr=rmaxdisk/(1<<12);  //nrbitsdisk
 static const double kd0 = 2*maxd0/(1<<nbitsd0);
 
 

@@ -61,9 +61,8 @@ public:
       if (r<rmin||r>rmax) cout << "Error r, rmin, rmeas,  rmax :"<<r
 			       <<" "<<rmin<<" "<<0.5*(rmin+rmax)<<" "<<rmax<<endl;
 
-      int irbits=nbitsrL123;
-      if (layer>=4) irbits=nbitsrL456;
-      
+      int irbits=settings_->nrbitsstub(layer-1);
+
       int ir=round_int((1<<irbits)*((r-settings_->rmean(layer-1))/(rmax-rmin)));
 
 
@@ -73,8 +72,7 @@ public:
       if (z<zmin||z>zmax) cout << "Error z, zmin, zmax :"<<z
 			     <<" "<<zmin<<" "<<zmax<<endl;
     
-      int izbits=nbitszL123;
-      if (layer>=4) izbits=nbitszL456;
+      int izbits=settings_->nzbitsstub(layer-1);
       
       int iz=round_int((1<<izbits)*z/(zmax-zmin));
 
@@ -88,8 +86,7 @@ public:
       }
       assert((phimaxsec-phiminsec)>0.0);
 
-      int iphibits=nbitsphistubL123;
-      if (layer>=4) iphibits=nbitsphistubL456;
+      int iphibits=settings_->nphibitsstub(layer-1);
 
       double deltaphi=Util::phiRange(stubphi-phiminsec);
       
@@ -131,7 +128,7 @@ public:
 	stubphi+=2*M_PI;
       }
 
-      int iphibits=nbitsphistubL123;
+      int iphibits=settings_->nphibitsstub(disk+5);
 
       double deltaphi=Util::phiRange(stubphi-phiminsec);
       
@@ -143,7 +140,7 @@ public:
       if (r<rmin||r>rmax) cout << "Error disk r, rmin, rmax :"<<r
 			     <<" "<<rmin<<" "<<rmax<<endl;
     
-      int ir=(1<<nrbitsdisk)*(r-rmin)/(rmax-rmin);
+      int ir=(1<<settings_->nrbitsstub(disk+5))*(r-rmin)/(rmax-rmin);
 
       int irSS = -1;
       if (!isPSmodule_) {
@@ -167,7 +164,7 @@ public:
       }
       if(irSS < 0){
 	//PS modules
-	r_.set(ir,nrbitsdisk,true,__LINE__,__FILE__);
+	r_.set(ir,settings_->nrbitsstub(disk+5),true,__LINE__,__FILE__);
       }
       else {
 	//SS modules
@@ -325,10 +322,7 @@ public:
 
   double rapprox() const {
     if (disk_.value()==0){
-      int lr=1<<(8-nbitsrL123);
-      if (layer_.value()>=3) {
-	lr=1<<(8-nbitsrL456);
-      }
+      int lr=1<<(8-settings_->nrbitsstub(layer_.value()));
       return r_.value()*kr*lr+settings_->rmean(layer_.value());
     }
     return r_.value()*kr;

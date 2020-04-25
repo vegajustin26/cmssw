@@ -36,8 +36,8 @@ public:
     assert(iphiproj >= 0);
 
     if (rproj < 60.0) {
-      fpgaphiproj_.set(iphiproj, nbitsphiprojL123, true, __LINE__, __FILE__);
-      int iphivm = (iphiproj >> (nbitsphiprojL123 - 5)) & 0x7;
+      fpgaphiproj_.set(iphiproj, settings_->nphibitsstub(0), true, __LINE__, __FILE__);
+      int iphivm = (iphiproj >> (settings_->nphibitsstub(0) - 5)) & 0x7;
       if ((projlayer_ % 2) == 1) {
         iphivm ^= 4;
       }
@@ -48,8 +48,8 @@ public:
       fpgaphiprojder_.set(iphider, nbitsphiprojderL123, false, __LINE__, __FILE__);
       fpgazprojder_.set(izder, nbitszprojderL123, false, __LINE__, __FILE__);
     } else {
-      fpgaphiproj_.set(iphiproj, nbitsphiprojL456, true, __LINE__, __FILE__);
-      int iphivm = (iphiproj >> (nbitsphiprojL456 - 5)) & 0x7;
+      fpgaphiproj_.set(iphiproj, settings_->nphibitsstub(5), true, __LINE__, __FILE__);
+      int iphivm = (iphiproj >> (settings_->nphibitsstub(5) - 5)) & 0x7;
       if ((projlayer_ % 2) == 1) {
         iphivm ^= 4;
       }

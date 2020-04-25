@@ -281,7 +281,7 @@ public:
     } else {
       for(unsigned int i=0;i<nbins;i++) {
 
-	double rstub=kr*(i<<(nrbitsdisk-nbitsfinebintable_));;
+	double rstub=kr*(i<<(settings_->nrbitsstub(layerdisk_)-nbitsfinebintable_));;
 
 	//use tabulated values for the 2S modules
 	if (i<10) rstub=(layerdisk_<=7)?settings_->rDSSinner(i):settings_->rDSSouter(i);

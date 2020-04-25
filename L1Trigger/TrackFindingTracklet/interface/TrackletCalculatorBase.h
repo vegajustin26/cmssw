@@ -457,20 +457,13 @@ public:
     int iphi2=outerFPGAStub->iphi();
     int iz2=outerFPGAStub->iz();
     
-    if (layer_<4) iphi1<<=(nbitsphistubL456-nbitsphistubL123);
-    if (layer_<3) iphi2<<=(nbitsphistubL456-nbitsphistubL123);
-    if (layer_<4) {
-      ir1<<=(8-nbitsrL123);
-    } else {
-      ir1<<=(8-nbitsrL456);
-    }
-    if (layer_<3) {
-      ir2<<=(8-nbitsrL123);
-    } else {
-      ir2<<=(8-nbitsrL456);
-    }
-    if (layer_>3) iz1<<=(nbitszL123-nbitszL456);
-    if (layer_>2) iz2<<=(nbitszL123-nbitszL456);  
+    iphi1<<=(settings_->nphibitsstub(5)-settings_->nphibitsstub(layer_-1));
+    iphi2<<=(settings_->nphibitsstub(5)-settings_->nphibitsstub(layer_));
+    ir1<<=(8-settings_->nrbitsstub(layer_-1));
+    ir2<<=(8-settings_->nrbitsstub(layer_));
+
+    iz1<<=(settings_->nzbitsstub(0)-settings_->nzbitsstub(layer_-1));
+    iz2<<=(settings_->nzbitsstub(0)-settings_->nzbitsstub(layer_));  
       
     ITC->r1.set_ival(ir1);
     ITC->r2.set_ival(ir2);
@@ -541,12 +534,12 @@ public:
       if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
 
       //reject projection if phi is out of range
-      if (iphiproj[i]>=(1<<nbitsphistubL456)-1) continue;
+      if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;
       if (iphiproj[i]<=0) continue;
       
       //Adjust bits for r and z projection depending on layer
-      if (lproj_[i]<=3) {
-	iphiproj[i]>>=(nbitsphistubL456-nbitsphistubL123);
+      if (lproj_[i]<=3) {  //FIXME clean up logic
+	iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(lproj_[i]-1));
       }
       else {
 	izproj[i]>>=(nbitszprojL123-nbitszprojL456);
@@ -580,12 +573,12 @@ public:
       for(int i=0; i<5; ++i){
 
 	if (iphiprojdisk[i]<=0) continue;
-	if (iphiprojdisk[i]>=(1<<nbitsphistubL123)-1) continue;
+	if (iphiprojdisk[i]>=(1<<settings_->nphibitsstub(0))-1) continue;
 	
 	if(irprojdisk[i]< 20. / ITC->rD_0_final.get_K() ||
 	   irprojdisk[i] > 120. / ITC->rD_0_final.get_K() ) continue;
 
-	diskprojs[i].init(i+1,rproj_[i],
+	diskprojs[i].init(settings_,i+1,rproj_[i],
 			   iphiprojdisk[i],irprojdisk[i],
 			   ITC->der_phiD_final.get_ival(),ITC->der_rD_final.get_ival(),
 			   phiprojdisk[i],rprojdisk[i],
@@ -827,8 +820,8 @@ public:
     int iz2=outerFPGAStub->iz();
     
     //To get same precission as for layers.
-    iphi1<<=(nbitsphistubL456-nbitsphistubL123);
-    iphi2<<=(nbitsphistubL456-nbitsphistubL123);
+    iphi1<<=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
+    iphi2<<=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
     
     ITC->r1.set_ival(ir1);
     ITC->r2.set_ival(ir2);
@@ -893,11 +886,11 @@ public:
       if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
 
       //Check if outside phi range
-      if (iphiproj[i]>=(1<<nbitsphistubL456)-1) continue;
+      if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;
       if (iphiproj[i]<=0) continue;
 
       //shift bits - allways in PS modules for disk seeding
-      iphiproj[i]>>=(nbitsphistubL456-nbitsphistubL123);
+      iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
       
       layerprojs[i].init(settings_,i+1,rmean[i],
 			 iphiproj[i],izproj[i],
@@ -923,13 +916,13 @@ public:
 
       //check that phi projection in range
       if (iphiprojdisk[i]<=0) continue;
-      if (iphiprojdisk[i]>=(1<<nbitsphistubL123)-1) continue;
+      if (iphiprojdisk[i]>=(1<<settings_->nphibitsstub(0))-1) continue;
 
       //check that r projection in range
       if(irprojdisk[i]<=0 ||
 	 irprojdisk[i] > 120. / ITC->rD_0_final.get_K() ) continue;
 
-      diskprojs[i].init(i+1,rproj_[i],
+      diskprojs[i].init(settings_,i+1,rproj_[i],
 			iphiprojdisk[i],irprojdisk[i],
 			ITC->der_phiD_final.get_ival(),ITC->der_rD_final.get_ival(),
 			phiprojdisk[i],rprojdisk[i],
@@ -1153,9 +1146,9 @@ public:
     int iz1=outerFPGAStub->iz();
       
     //To get global precission
-    ir1<<=(8-nbitsrL123);
-    iphi1<<=(nbitsphistubL456-nbitsphistubL123);
-    iphi2<<=(nbitsphistubL456-nbitsphistubL123);
+    ir1<<=(8-settings_->nrbitsstub(ll-1));
+    iphi1<<=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
+    iphi2<<=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
 
     ITC->r1.set_ival(ir1);
     ITC->r2.set_ival(ir2);
@@ -1233,11 +1226,11 @@ public:
       if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
 
       //check that phiproj is in range
-      if (iphiproj[i]>=(1<<nbitsphistubL456)-1) continue;
+      if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;
       if (iphiproj[i]<=0) continue;
 
       //adjust bits for PS modules (no 2S modules in overlap seeds)
-      iphiproj[i]>>=(nbitsphistubL456-nbitsphistubL123);
+      iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
       
       layerprojs[i].init(settings_,i+1,rmean[i],
 			 iphiproj[i],izproj[i],
@@ -1254,13 +1247,13 @@ public:
 
       //check that phi projection in range
       if (iphiprojdisk[i]<=0) continue;
-      if (iphiprojdisk[i]>=(1<<nbitsphistubL123)-1) continue;
+      if (iphiprojdisk[i]>=(1<<settings_->nphibitsstub(0))-1) continue;
 
       //check that r projection in range
       if(irprojdisk[i]<=0 ||
 	 irprojdisk[i] > 120. / ITC->rD_0_final.get_K() ) continue;
 
-      diskprojs[i].init(i+1,rproj_[i],
+      diskprojs[i].init(settings_,i+1,rproj_[i],
 			iphiprojdisk[i],irprojdisk[i],
 			ITC->der_phiD_final.get_ival(),ITC->der_rD_final.get_ival(),
 			phiprojdisk[i],rprojdisk[i],

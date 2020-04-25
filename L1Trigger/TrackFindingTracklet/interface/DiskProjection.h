@@ -7,7 +7,8 @@ class DiskProjection {
 public:
   DiskProjection() { valid_ = false; }
 
-  void init(int projdisk,
+  void init(const Settings* settings,
+	    int projdisk,
             double zproj,
             int iphiproj,
             int irproj,
@@ -35,8 +36,8 @@ public:
 
     assert(iphiproj >= 0);
 
-    fpgaphiproj_.set(iphiproj, nbitsphiprojL123, true, __LINE__, __FILE__);
-    int iphivm = (iphiproj >> (nbitsphiprojL123 - 5)) & 0x7;
+    fpgaphiproj_.set(iphiproj, settings->nphibitsstub(0), true, __LINE__, __FILE__);
+    int iphivm = (iphiproj >> (settings->nphibitsstub(0) - 5)) & 0x7;
     if ((abs(projdisk_) % 2) == 1) {
       iphivm ^= 4;
     }

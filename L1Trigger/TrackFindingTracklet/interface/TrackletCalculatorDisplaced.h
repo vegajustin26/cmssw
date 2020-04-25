@@ -1077,13 +1077,13 @@ public:
       if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
 
       //check that phi projection is in range
-      if (iphiproj[i]>=(1<<nbitsphistubL456)-1) continue;
+      if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;
       if (iphiproj[i]<=0) continue;
 
       //adjust number of bits for phi and z projection
       if (rproj_[i]<60.0) {	
-	iphiproj[i]>>=(nbitsphistubL456-nbitsphistubL123);
-	if (iphiproj[i]>=(1<<nbitsphistubL123)-1) iphiproj[i]=(1<<nbitsphistubL123)-2; //-2 not to hit atExtreme
+	iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
+	if (iphiproj[i]>=(1<<settings_->nphibitsstub(0))-1) iphiproj[i]=(1<<settings_->nphibitsstub(0))-2; //-2 not to hit atExtreme
       }
       else {
 	izproj[i]>>=(nbitszprojL123-nbitszprojL456);
@@ -1128,12 +1128,12 @@ public:
 
 	//check phi projection in range
 	if (iphiprojdisk[i]<=0) continue;
-	if (iphiprojdisk[i]>=(1<<nbitsphistubL123)-1) continue;
+	if (iphiprojdisk[i]>=(1<<settings_->nphibitsstub(0))-1) continue;
 	
 	//check r projection in range
 	if(rprojdiskapprox[i]< 20. || rprojdiskapprox[i] > 120.) continue;
 
-	diskprojs[i].init(i+1,rproj_[i],
+	diskprojs[i].init(settings_,i+1,rproj_[i],
 			  iphiprojdisk[i],irprojdisk[i],
 			  iphiderdisk[i],irderdisk[i],
 			  phiprojdisk[i],rprojdisk[i],
@@ -1360,11 +1360,11 @@ public:
       if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
       
       //check that phi projection in range
-      if (iphiproj[i]>=(1<<nbitsphistubL456)-1) continue;
+      if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;
       if (iphiproj[i]<=0) continue;
       
       if (rproj_[i]<60.0) {
-	iphiproj[i]>>=(nbitsphistubL456-nbitsphistubL123);
+	iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
       }
       else {
 	izproj[i]>>=(nbitszprojL123-nbitszprojL456);
@@ -1402,12 +1402,12 @@ public:
 	irderdisk[i]   = rderdiskapprox[i] / krderdisk;
       
 	if (iphiprojdisk[i]<=0) continue;	
-	if (iphiprojdisk[i]>=(1<<nbitsphistubL123)-1) continue;
+	if (iphiprojdisk[i]>=(1<<settings_->nphibitsstub(0))-1) continue;
       
 	if(irprojdisk[i]< 20. / krprojdisk ||
 	   irprojdisk[i] > 120. / krprojdisk ) continue;
 
-	diskprojs[i].init(i+1,rproj_[i],
+	diskprojs[i].init(settings_,i+1,rproj_[i],
 			  iphiprojdisk[i],irprojdisk[i],
 			  iphiderdisk[i],irderdisk[i],
 			  phiprojdisk[i],rprojdisk[i],
@@ -1632,11 +1632,11 @@ public:
       if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
       
       //this is left from the original....
-      if (iphiproj[i]>=(1<<nbitsphistubL456)-1) continue;
+      if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;
       if (iphiproj[i]<=0) continue;
       
       if (rproj_[i]<60.0) {
-	iphiproj[i]>>=(nbitsphistubL456-nbitsphistubL123);
+	iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
       }
       else {
 	izproj[i]>>=(nbitszprojL123-nbitszprojL456);
@@ -1673,13 +1673,13 @@ public:
 
 	//Check phi range of projection
 	if (iphiprojdisk[i]<=0) continue;
-	if (iphiprojdisk[i]>=(1<<nbitsphistubL123)-1) continue;
+	if (iphiprojdisk[i]>=(1<<settings_->nphibitsstub(0))-1) continue;
       
 	//Check r range of projection
 	if(irprojdisk[i]< 20. / krprojdisk ||
 	   irprojdisk[i] > 120. / krprojdisk ) continue;
 
-	diskprojs[i].init(i+1,rproj_[i],
+	diskprojs[i].init(settings_,i+1,rproj_[i],
 			  iphiprojdisk[i],irprojdisk[i],
 			  iphiderdisk[i],irderdisk[i],
 			  phiprojdisk[i],rprojdisk[i],
