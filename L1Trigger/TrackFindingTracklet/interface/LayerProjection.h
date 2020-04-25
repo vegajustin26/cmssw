@@ -42,7 +42,7 @@ public:
         iphivm ^= 4;
       }
       fpgaphiprojvm_.set(iphivm, 3, true, __LINE__, __FILE__);
-      fpgazproj_.set(izproj, nbitszprojL123, false, __LINE__, __FILE__);
+      fpgazproj_.set(izproj, settings_->nzbitsstub(0), false, __LINE__, __FILE__);
       int izvm = izproj >> (12 - 7) & 0xf;
       fpgazprojvm_.set(izvm, 4, true, __LINE__, __FILE__);
       fpgaphiprojder_.set(iphider, nbitsphiprojderL123, false, __LINE__, __FILE__);
@@ -54,7 +54,7 @@ public:
         iphivm ^= 4;
       }
       fpgaphiprojvm_.set(iphivm, 3, true, __LINE__, __FILE__);
-      fpgazproj_.set(izproj, nbitszprojL456, false, __LINE__, __FILE__);
+      fpgazproj_.set(izproj, settings_->nzbitsstub(5), false, __LINE__, __FILE__);
       int izvm = izproj >> (8 - 7) & 0xf;
       fpgazprojvm_.set(izvm, 4, true, __LINE__, __FILE__);
       fpgaphiprojder_.set(iphider, nbitsphiprojderL456, false, __LINE__, __FILE__);

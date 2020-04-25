@@ -580,19 +580,19 @@ class FitTrack:public ProcessBase{
    unsigned int n=nlayers+ndisks;
 
    if (settings_->exactderivatives()) {
-    TrackDerTable::calculateDerivatives(nlayers,r,ndisks,z,alpha,t,rinv,
+     TrackDerTable::calculateDerivatives(settings_,nlayers,r,ndisks,z,alpha,t,rinv,
       D,iD,MinvDt,iMinvDt,sigma,kfactor);
     ttabi=t;
     ttab=t;
    } else {
      if (settings_->exactderivativesforfloating()) {
       if (settings_->useMSFit()) {
-      TrackDerTable::calculateDerivativesMS(nlayers,r,ndisks,z,alpha,
+	TrackDerTable::calculateDerivativesMS(settings_,nlayers,r,ndisks,z,alpha,
 	t,rinv,D,iD,MinvDt,iMinvDt,
 	sigma,kfactor,ptbin);
      } else {
 
-      TrackDerTable::calculateDerivatives(nlayers,r,ndisks,z,alpha,t,
+	TrackDerTable::calculateDerivatives(settings_,nlayers,r,ndisks,z,alpha,t,
 	rinv,D,iD,MinvDt,iMinvDt,
 	sigma,kfactor);
 

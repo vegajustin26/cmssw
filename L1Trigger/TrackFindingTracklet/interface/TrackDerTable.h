@@ -275,7 +275,7 @@ public:
         }
       }
 
-      calculateDerivatives(nlayers, r, ndisks, z, alpha, t, rinv, D, iD, MinvDt, iMinvDt, sigma, kfactor);
+      calculateDerivatives(settings_,nlayers, r, ndisks, z, alpha, t, rinv, D, iD, MinvDt, iMinvDt, sigma, kfactor);
 
       double delta = 0.1;
 
@@ -286,7 +286,7 @@ public:
 
         r[i] += delta;
 
-        calculateDerivatives(nlayers, r, ndisks, z, alpha, t, rinv, D, iD, MinvDtDelta, iMinvDt, sigma, kfactor);
+        calculateDerivatives(settings_,nlayers, r, ndisks, z, alpha, t, rinv, D, iD, MinvDtDelta, iMinvDt, sigma, kfactor);
 
         for (int ii = 0; ii < nlayers; ii++) {
           if (r[ii] > 60.0)
@@ -887,7 +887,8 @@ public:
     }
   }
 
-  static void calculateDerivatives(unsigned int nlayers,
+  static void calculateDerivatives(const Settings* settings,
+				   unsigned int nlayers,
                                    double r[6],
                                    unsigned int ndisks,
                                    double z[5],
@@ -1079,7 +1080,7 @@ public:
           MinvDt[2][2 * i + 1] /= sigmaz2;
           MinvDt[3][2 * i + 1] /= sigmaz2;
 
-          int fact = (1 << (nbitszprojL123 - nbitszprojL456));
+          int fact = (1 << (settings->nzbitsstub(0) - settings->nzbitsstub(5)));
 
           iMinvDt[0][2 * i + 1] = (1 << fitrinvbitshift) * MinvDt[0][2 * i + 1] * fact * kzproj / krinvpars;
           iMinvDt[1][2 * i + 1] = (1 << fitphi0bitshift) * MinvDt[1][2 * i + 1] * fact * kzproj / kphi0pars;
@@ -1134,7 +1135,8 @@ public:
     }
   }
 
-  static void calculateDerivativesMS(unsigned int nlayers,
+  static void calculateDerivativesMS(const Settings* settings,
+				     unsigned int nlayers,
                                      double r[6],
                                      unsigned int ndisks,
                                      double z[5],
@@ -1368,7 +1370,7 @@ public:
           //MinvDt[2][2*i+1]/=sigmaz2;
           //MinvDt[3][2*i+1]/=sigmaz2;
 
-          int fact = (1 << (nbitszprojL123 - nbitszprojL456));
+          int fact = (1 << (settings->nzbitsstub(0) - settings->nzbitsstub(5)));
 
           iMinvDt[0][2 * i + 1] = (1 << fitrinvbitshift) * MinvDt[0][2 * i + 1] * fact * kzproj / krinvpars;
           iMinvDt[1][2 * i + 1] = (1 << fitphi0bitshift) * MinvDt[1][2 * i + 1] * fact * kzproj / kphi0pars;

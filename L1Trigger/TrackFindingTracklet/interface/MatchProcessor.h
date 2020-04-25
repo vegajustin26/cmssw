@@ -43,9 +43,9 @@ public:
     phi0shift_=3;
     fact_=1;
     if (layer_>=4) {
-      fact_=(1<<(nbitszprojL123-nbitszprojL456));
+      fact_=(1<<(settings_->nzbitsstub(0)-settings_->nzbitsstub(5)));
       icorrshift_-=(10-settings_->nrbitsstub(layer_-1));
-      icorzshift_+=(nbitszprojL123-nbitszprojL456+settings_->nrbitsstub(layer_-1)-settings_->nrbitsstub(0));
+      icorzshift_+=(settings_->nzbitsstub(0)-settings_->nzbitsstub(5)+settings_->nrbitsstub(layer_-1)-settings_->nrbitsstub(0));
       phi0shift_=0;
     }
 

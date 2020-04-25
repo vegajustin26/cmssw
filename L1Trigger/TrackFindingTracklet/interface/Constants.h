@@ -7,8 +7,8 @@ static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR"
 static const int nrbitsprojdisk=12;
 static const int nrbitsprojderdisk=9;
 
-static const int nbitszprojL123=12;
-static const int nbitszprojL456=8;
+//static const int nbitszprojL123=12;
+//static const int nbitszprojL456=8;
 
 static const int nbitsphiprojderL123=8+2;
 static const int nbitsphiprojderL456=8+2;

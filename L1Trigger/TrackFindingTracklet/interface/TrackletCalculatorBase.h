@@ -530,8 +530,8 @@ public:
     for(int i=0; i<4; ++i){
 
       //reject projection if z is out of range
-      if (izproj[i]<-(1<<(nbitszprojL123-1))) continue;
-      if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
+      if (izproj[i]<-(1<<(settings_->nzbitsstub(0)-1))) continue;
+      if (izproj[i]>=(1<<(settings_->nzbitsstub(0)-1))) continue;
 
       //reject projection if phi is out of range
       if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;
@@ -542,7 +542,7 @@ public:
 	iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(lproj_[i]-1));
       }
       else {
-	izproj[i]>>=(nbitszprojL123-nbitszprojL456);
+	izproj[i]>>=(settings_->nzbitsstub(0)-settings_->nzbitsstub(5));
       }
 
       layerprojs[i].init(settings_,lproj_[i],rproj_[i],
@@ -882,8 +882,8 @@ public:
     for(int i=0; i<3; ++i){
 
       //Check is outside z range
-      if (izproj[i]<-(1<<(nbitszprojL123-1))) continue;
-      if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
+      if (izproj[i]<-(1<<(settings_->nzbitsstub(0)-1))) continue;
+      if (izproj[i]>=(1<<(settings_->nzbitsstub(0)-1))) continue;
 
       //Check if outside phi range
       if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;
@@ -1222,8 +1222,8 @@ public:
     for(int i=0; i<3; ++i){
 
       //check that zproj is in range
-      if (izproj[i]<-(1<<(nbitszprojL123-1))) continue;
-      if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
+      if (izproj[i]<-(1<<(settings_->nzbitsstub(0)-1))) continue;
+      if (izproj[i]>=(1<<(settings_->nzbitsstub(0)-1))) continue;
 
       //check that phiproj is in range
       if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;

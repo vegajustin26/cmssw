@@ -1073,8 +1073,8 @@ public:
       izder[i]   = zderapprox[i] / kzder;
 
       //check that z projection is in range
-      if (izproj[i]<-(1<<(nbitszprojL123-1))) continue;
-      if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
+      if (izproj[i]<-(1<<(settings_->nzbitsstub(0)-1))) continue;
+      if (izproj[i]>=(1<<(settings_->nzbitsstub(0)-1))) continue;
 
       //check that phi projection is in range
       if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;
@@ -1086,7 +1086,7 @@ public:
 	if (iphiproj[i]>=(1<<settings_->nphibitsstub(0))-1) iphiproj[i]=(1<<settings_->nphibitsstub(0))-2; //-2 not to hit atExtreme
       }
       else {
-	izproj[i]>>=(nbitszprojL123-nbitszprojL456);
+	izproj[i]>>=(settings_->nzbitsstub(0)-settings_->nzbitsstub(5));
       }
 
 
@@ -1356,8 +1356,8 @@ public:
       izder[i]   = zderapprox[i] / kzder;
 
       //check that z projection in range
-      if (izproj[i]<-(1<<(nbitszprojL123-1))) continue;
-      if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
+      if (izproj[i]<-(1<<(settings_->nzbitsstub(0)-1))) continue;
+      if (izproj[i]>=(1<<(settings_->nzbitsstub(0)-1))) continue;
       
       //check that phi projection in range
       if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;
@@ -1367,7 +1367,7 @@ public:
 	iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
       }
       else {
-	izproj[i]>>=(nbitszprojL123-nbitszprojL456);
+	izproj[i]>>=(settings_->nzbitsstub(0)-settings_->nzbitsstub(5));
       }
 
       
@@ -1628,8 +1628,8 @@ public:
       iphider[i] = phiderapprox[i] / kphider;
       izder[i]   = zderapprox[i] / kzder;
 
-      if (izproj[i]<-(1<<(nbitszprojL123-1))) continue;
-      if (izproj[i]>=(1<<(nbitszprojL123-1))) continue;
+      if (izproj[i]<-(1<<(settings_->nzbitsstub(0)-1))) continue;
+      if (izproj[i]>=(1<<(settings_->nzbitsstub(0)-1))) continue;
       
       //this is left from the original....
       if (iphiproj[i]>=(1<<settings_->nphibitsstub(5))-1) continue;
@@ -1639,7 +1639,7 @@ public:
 	iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
       }
       else {
-	izproj[i]>>=(nbitszprojL123-nbitszprojL456);
+	izproj[i]>>=(settings_->nzbitsstub(0)-settings_->nzbitsstub(5));
       }
 
 
