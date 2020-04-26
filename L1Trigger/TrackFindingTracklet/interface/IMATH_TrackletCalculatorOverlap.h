@@ -308,7 +308,7 @@ public:
   var_adjustK der_rD_final{"der_rD_final", &invt, kr / kz* pow(2, PS_rderD_shift)};
 
   var_cut t_final_cut{&t_final, -10, 10};
-  var_cut rinv_final_cut{&rinv_final, -rinvcut, rinvcut};
+  var_cut rinv_final_cut{&rinv_final, -settings_->rinvcut(), settings_->rinvcut()};
   var_cut z0_final_cut{&z0_final, -z0cut, z0cut};
 
   var_cut r1abs_cut{&r1abs, -settings_->rmax(5), settings_->rmax(5)};

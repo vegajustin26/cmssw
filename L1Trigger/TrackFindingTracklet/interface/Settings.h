@@ -23,6 +23,9 @@ namespace Trklet{
 
       NSector_=9;
       rcrit_=55.0;
+
+      half2SmoduleWidth_=4.57;
+
       
       dphicritmc_=0.005; //lose for MC
 
@@ -369,6 +372,7 @@ namespace Trklet{
     double drmax() const {return drmax_;}
     double dzmax() const {return dzmax_;}
 
+    double half2SmoduleWidth() const { return half2SmoduleWidth_; }
 
     
     double bendcutte(unsigned int inner, unsigned int iSeed) const {return bendcutte_[inner][iSeed];}
@@ -522,6 +526,8 @@ namespace Trklet{
     double drmax_;
     double dzmax_;
 
+    double half2SmoduleWidth_;
+    
     std::array<std::array<unsigned int, 12>, 3> nfinephi_;
     std::array<std::array<unsigned int, 12>, 3> nphireg_;
     std::array<std::array<unsigned int, 12>, 3> zbitstab_;

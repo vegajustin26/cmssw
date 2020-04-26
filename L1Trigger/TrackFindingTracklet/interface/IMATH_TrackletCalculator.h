@@ -343,7 +343,7 @@ public:
 
   var_adjustK der_rD_final{"der_rD_final", &invt, kr / kz* pow(2, PS_rderD_shift)};
 
-  var_cut rinv_final_cut{&rinv_final, -rinvcut, rinvcut};
+  var_cut rinv_final_cut{&rinv_final, -settings_->rinvcut(), settings_->rinvcut()};
   // the following two are not associated with any variable yet; this is done
   // in the constructor of this class since it depends on the layer
   var_cut z0_final_L1_cut{-z0cut, z0cut};

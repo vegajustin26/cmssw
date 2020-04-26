@@ -72,14 +72,9 @@ static const int rcorrbits=6;
 static const int chisqphifactbits=14;
 static const int chisqzfactbits=14;
 
-
 //
 //Geometry 
 //
-
-//These define the length scale for both r and z
-static const double zlength=120.0;
-static const double rmaxdisk=120.0;
 
 static const double rmindiskvm=22.5;
 static const double rmaxdiskvm=67.0;
@@ -88,10 +83,8 @@ static const double rmaxdiskl1overlapvm=45.0;
 static const double rmindiskl2overlapvm=40.0;
 static const double rmindiskl3overlapvm=50.0;
 
-static const double half2SmoduleWidth=4.57;
-
-static const double ptcut=1.91; //Minimum pt // ONLY USED IN IMATH STUFF 
-static const double rinvcut=0.01*0.3*3.8/ptcut; //0.01 to convert to cm-1  // ONLY USED IN IMATH STUFF 
+//static const double ptcut=1.91; //Minimum pt // ONLY USED IN IMATH STUFF 
+//static const double rinvcut=0.01*0.3*3.8/ptcut; //0.01 to convert to cm-1  // ONLY USED IN IMATH STUFF 
 
 static const double ptcutte=1.8; //Minimum pt in TE
 static const double rinvcutte=0.01*0.3*3.8/ptcutte; //0.01 to convert to cm-1 in TE
@@ -115,8 +108,8 @@ static const double maxd0=10.;
 
 //These are constants defining global coordinate system
 
-static const double kz=2*zlength/(1<<12);   //nbitszL123
-static const double kr=rmaxdisk/(1<<12);  //nrbitsdisk
+static const double kz=2*120.0/(1<<12);   //zlength/ nbitszL123
+static const double kr=120.0/(1<<12);  //rmaxdisk nrbitsdisk
 static const double kd0 = 2*maxd0/(1<<nbitsd0);
 
 
