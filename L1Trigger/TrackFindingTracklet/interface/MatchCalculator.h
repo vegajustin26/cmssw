@@ -32,7 +32,8 @@ public:
     fullMatches_.resize(12,0);
     
     //FIXME should sort out constants here
-    icorrshift_=7+idrinvbits+phi0bitshift-rinvbitshift-phiderbitshift;
+    icorrshift_=7;
+
     if (layerdisk_<3) {
       icorzshift_=-1-PS_zderL_shift;
     } else {
@@ -328,16 +329,17 @@ public:
 	int iz=fpgastub->z().value();
 	int iphi=tracklet->fpgaphiprojdisk(disk).value();
 
-	int shifttmp=t2bits+tbitshift+phi0bitshift+2-rinvbitshiftdisk-phiderdiskbitshift-PS_phiderD_shift;
+	//FIXME - need to express interms of constants
+	int shifttmp=6;
 	assert(shifttmp>=0);
 	int iphicorr=(iz*tracklet->fpgaphiprojderdisk(disk).value())>>shifttmp;
 	
 	iphi+=iphicorr;
 
 	int ir=tracklet->fpgarprojdisk(disk).value();
-	
 	  
-	int shifttmp2=rprojdiskbitshift+t3shift-rderdiskbitshift;
+	//FIXME - need to express interms of constants
+	int shifttmp2=7;
 	
 	assert(shifttmp2>=0);
 	int ircorr=(iz*tracklet->fpgarprojderdisk(disk).value())>>shifttmp2;

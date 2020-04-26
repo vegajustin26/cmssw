@@ -34,7 +34,8 @@ public:
     initLayerDisk(3,layer_,disk_);
 
     //FIXME should sort out constants here
-    icorrshift_=7+idrinvbits+phi0bitshift-rinvbitshift-phiderbitshift;
+    icorrshift_=7;
+
     if (layer_<=3) {
       icorzshift_=-1-PS_zderL_shift;
     } else {
@@ -530,7 +531,7 @@ public:
       int iz=fpgastub->z().value();
       int iphi=tracklet->fpgaphiprojdisk(disk).value();
       
-      int shifttmp=t2bits+tbitshift+phi0bitshift+2-rinvbitshiftdisk-phiderdiskbitshift-PS_phiderD_shift;
+      int shifttmp=6;  //FIXME - express in terms of constants
       assert(shifttmp>=0);
       int iphicorr=(iz*tracklet->fpgaphiprojderdisk(disk).value())>>shifttmp;
       
@@ -538,9 +539,7 @@ public:
       
       int ir=tracklet->fpgarprojdisk(disk).value();
       
-      
-      int shifttmp2=rprojdiskbitshift+t3shift-rderdiskbitshift;
-      
+      int shifttmp2=7; //FIXME - express in terms of constants
       assert(shifttmp2>=0);
       int ircorr=(iz*tracklet->fpgarprojderdisk(disk).value())>>shifttmp2;
       

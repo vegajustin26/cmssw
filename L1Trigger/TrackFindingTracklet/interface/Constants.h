@@ -40,19 +40,16 @@ const int PS_rderD_shift   = -6;  //Kderrdisk = 2^shift * Kr/Kz
 const int SS_rderD_shift   = -6;  
 
 //numbers needed for matches & fit, unclear what they are.
-static const int idrinvbits=19;
 static const int phi0bitshift=1;
-static const int rinvbitshift=13;
-static const int tbitshift=9;
-static const int z0bitshift=0;
+//static const int rinvbitshift=13;
+//static const int tbitshift=9;
+//static const int z0bitshift=0;
 static const int phiderbitshift=7;
 static const int zderbitshift=6;
-static const int t2bits=23;
-static const int t3shift=8;
-static const int rinvbitshiftdisk=13; 
-static const int rprojdiskbitshift=6;
-static const int phiderdiskbitshift=20;
-static const int rderdiskbitshift=7;
+//static const int rinvbitshiftdisk=13; 
+//static const int rprojdiskbitshift=6;
+//static const int phiderdiskbitshift=20;
+//static const int rderdiskbitshift=7;
 
 
 static const int phiresidbits=12; 
@@ -75,8 +72,8 @@ static const int chisqzfactbits=14;
 //constants derivative from the above
 static double krinvpars, kphi0pars, kd0pars, ktpars, kz0pars;
 static double kphiproj123, kphiproj456, kzproj, kphider, kzder;
-static double krprojshiftdisk, kphiprojdisk,krprojderdisk;
-static double krdisk,krprojderdiskshift, kzpars;
+static double krprojshiftdisk, kphiprojdisk;
+static double krdisk, kzpars;
 
 #endif
 
