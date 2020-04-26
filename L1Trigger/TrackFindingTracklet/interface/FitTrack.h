@@ -760,8 +760,8 @@ class FitTrack:public ProcessBase{
      cout << "DUMPFITLINNEW2"<<" "<<j
       <<" "<<tracklet->fpgarinv().value()*settings_->krinvpars()
       <<" + "<<((iMinvDt[0][j]*idelta[j]))*settings_->krinvpars()/1024.0
-      <<" "<<iMinvDt[0][j]*settings_->krinvpars()/kphiprojdisk/1024.0
-      <<" "<<idelta[j]*kphiproj123*rstub[j/2]*10000
+      <<" "<<iMinvDt[0][j]*settings_->krinvpars()/settings_->kphiprojdisk()/1024.0
+      <<" "<<idelta[j]*settings_->kphiproj123()*rstub[j/2]*10000
       <<" "<<idelta[j]
       <<endl;
 

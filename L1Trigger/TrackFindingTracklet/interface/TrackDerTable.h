@@ -292,9 +292,9 @@ public:
           if (r[ii] > 60.0)
             continue;
           double tder = (MinvDtDelta[2][2 * ii + 1] - MinvDt[2][2 * ii + 1]) / delta;
-          int itder = (1 << (settings_->fittbitshift() + settings_->rcorrbits())) * tder * settings_->kr() * kzproj / settings_->ktpars();
+          int itder = (1 << (settings_->fittbitshift() + settings_->rcorrbits())) * tder * settings_->kr() * settings_->kzproj() / settings_->ktpars();
           double zder = (MinvDtDelta[3][2 * ii + 1] - MinvDt[3][2 * ii + 1]) / delta;
-          int izder = (1 << (settings_->fitz0bitshift() + settings_->rcorrbits())) * zder * settings_->kr() * kzproj / settings_->kzpars();
+          int izder = (1 << (settings_->fitz0bitshift() + settings_->rcorrbits())) * zder * settings_->kr() * settings_->kzproj() / settings_->kzpars();
           der.settdzcorr(i, ii, tder);
           der.setz0dzcorr(i, ii, zder);
           der.setitdzcorr(i, ii, itder);
@@ -990,7 +990,7 @@ public:
       D[1][j] = (phimultiplier * dphidphi0 + rmultiplier * drdphi0) / sigma[j];
       D[2][j] = (phimultiplier * dphidt + rmultiplier * drdt) / sigma[j];
       D[3][j] = (phimultiplier * dphidz0 + rmultiplier * drdz0) / sigma[j];
-      kfactor[j] = kphiproj123;
+      kfactor[j] = settings->kphiproj123();
 
       j++;
 
@@ -1070,10 +1070,10 @@ public:
           MinvDt[2][2 * i + 1] /= sigmazpsbarrel;
           MinvDt[3][2 * i + 1] /= sigmazpsbarrel;
 
-          iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * kzproj / settings->krinvpars();
-          iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * kzproj / settings->kphi0pars();
-          iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * kzproj / settings->ktpars();
-          iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * kzproj / settings->kzpars();
+          iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * settings->kzproj() / settings->krinvpars();
+          iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * settings->kzproj() / settings->kphi0pars();
+          iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * settings->kzproj() / settings->ktpars();
+          iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * settings->kzproj() / settings->kzpars();
         } else {
           MinvDt[0][2 * i + 1] /= sigmaz2;
           MinvDt[1][2 * i + 1] /= sigmaz2;
@@ -1082,10 +1082,10 @@ public:
 
           int fact = (1 << (settings->nzbitsstub(0) - settings->nzbitsstub(5)));
 
-          iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * fact * kzproj / settings->krinvpars();
-          iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * fact * kzproj / settings->kphi0pars();
-          iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * fact * kzproj / settings->ktpars();
-          iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * fact * kzproj / settings->kzpars();
+          iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * fact * settings->kzproj() / settings->krinvpars();
+          iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * fact * settings->kzproj() / settings->kphi0pars();
+          iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * fact * settings->kzproj() / settings->ktpars();
+          iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * fact * settings->kzproj() / settings->kzpars();
         }
       }
 
@@ -1105,10 +1105,10 @@ public:
 
         assert(MinvDt[0][2 * i] == MinvDt[0][2 * i]);
 
-        iMinvDt[0][2 * i] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i] * kphiproj123 / settings->krinvpars();
-        iMinvDt[1][2 * i] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i] * kphiproj123 / settings->kphi0pars();
-        iMinvDt[2][2 * i] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i] * kphiproj123 / settings->ktpars();
-        iMinvDt[3][2 * i] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i] * kphiproj123 / settings->kz();
+        iMinvDt[0][2 * i] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i] * settings->kphiproj123() / settings->krinvpars();
+        iMinvDt[1][2 * i] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i] * settings->kphiproj123() / settings->kphi0pars();
+        iMinvDt[2][2 * i] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i] * settings->kphiproj123() / settings->ktpars();
+        iMinvDt[3][2 * i] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i] * settings->kphiproj123() / settings->kz();
 
         if (std::abs(alpha[i - nlayers]) < 1e-10) {
           MinvDt[0][2 * i + 1] /= sigmazpsdisk;
@@ -1122,10 +1122,10 @@ public:
           MinvDt[3][2 * i + 1] /= sigmaz2sdisk;
         }
 
-        iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * krprojshiftdisk / settings->krinvpars();
-        iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * krprojshiftdisk / settings->kphi0pars();
-        iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * krprojshiftdisk / settings->ktpars();
-        iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * krprojshiftdisk / settings->kz();
+        iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * settings->krprojshiftdisk() / settings->krinvpars();
+        iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * settings->krprojshiftdisk() / settings->kphi0pars();
+        iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * settings->krprojshiftdisk() / settings->ktpars();
+        iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * settings->krprojshiftdisk() / settings->kz();
       }
     }
   }
@@ -1271,7 +1271,7 @@ public:
       D[2][j] = (phimultiplier * dphidt + rmultiplier * drdt);
       D[3][j] = (phimultiplier * dphidz0 + rmultiplier * drdz0);
       sigma[j] = sigmax;
-      kfactor[j] = kphiproj123;
+      kfactor[j] = settings->kphiproj123();
 
       j++;
 
@@ -1351,18 +1351,18 @@ public:
 
         if (rnew[i] < 60.0) {
 
-          iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * kzproj / settings->krinvpars();
-          iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * kzproj / settings->kphi0pars();
-          iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * kzproj / settings->ktpars();
-          iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * kzproj / settings->kzpars();
+          iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * settings->kzproj() / settings->krinvpars();
+          iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * settings->kzproj() / settings->kphi0pars();
+          iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * settings->kzproj() / settings->ktpars();
+          iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * settings->kzproj() / settings->kzpars();
         } else {
 
           int fact = (1 << (settings->nzbitsstub(0) - settings->nzbitsstub(5)));
 
-          iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * fact * kzproj / settings->krinvpars();
-          iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * fact * kzproj / settings->kphi0pars();
-          iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * fact * kzproj / settings->ktpars();
-          iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * fact * kzproj / settings->kzpars();
+          iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * fact * settings->kzproj() / settings->krinvpars();
+          iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * fact * settings->kzproj() / settings->kphi0pars();
+          iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * fact * settings->kzproj() / settings->ktpars();
+          iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * fact * settings->kzproj() / settings->kzpars();
         }
       }
 
@@ -1383,16 +1383,16 @@ public:
         assert(MinvDt[0][2 * i] == MinvDt[0][2 * i]);
 
 
-        iMinvDt[0][2 * i] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i] * kphiproj123 / settings->krinvpars();
-        iMinvDt[1][2 * i] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i] * kphiproj123 / settings->kphi0pars();
-        iMinvDt[2][2 * i] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i] * kphiproj123 / settings->ktpars();
-        iMinvDt[3][2 * i] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i] * kphiproj123 / settings->kz();
+        iMinvDt[0][2 * i] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i] * settings->kphiproj123() / settings->krinvpars();
+        iMinvDt[1][2 * i] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i] * settings->kphiproj123() / settings->kphi0pars();
+        iMinvDt[2][2 * i] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i] * settings->kphiproj123() / settings->ktpars();
+        iMinvDt[3][2 * i] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i] * settings->kphiproj123() / settings->kz();
 
 
-        iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * krprojshiftdisk / settings->krinvpars();
-        iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * krprojshiftdisk / settings->kphi0pars();
-        iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * krprojshiftdisk / settings->ktpars();
-        iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * krprojshiftdisk / settings->kz();
+        iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * settings->krprojshiftdisk() / settings->krinvpars();
+        iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * settings->krprojshiftdisk() / settings->kphi0pars();
+        iMinvDt[2][2 * i + 1] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * settings->krprojshiftdisk() / settings->ktpars();
+        iMinvDt[3][2 * i + 1] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * settings->krprojshiftdisk() / settings->kz();
       }
     }
   }

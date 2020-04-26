@@ -1,7 +1,6 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_IMATH_TrackletCalculatorOverlap_h
 #define L1Trigger_TrackFindingTracklet_interface_IMATH_TrackletCalculatorOverlap_h
 
-#include "Constants.h"
 #include "imath.h"
 
 //

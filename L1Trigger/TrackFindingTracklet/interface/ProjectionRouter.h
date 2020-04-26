@@ -182,7 +182,7 @@ public:
 	      if (iphider>(1<<(nphiderbits_-1))) iphider-=(1<<nphiderbits_);
 	      iphider=iphider<<(settings_->nbitsphiprojderL123()-nphiderbits_);
 	      
-	      double rproj=ir*krprojshiftdisk;
+	      double rproj=ir*settings_->krprojshiftdisk();
 	      double phider=iphider*GlobalHistTruth::ITC_L1L2()->der_phiD_final.get_K();
 	      double t=settings_->zmean(idisk)/rproj;
 	      

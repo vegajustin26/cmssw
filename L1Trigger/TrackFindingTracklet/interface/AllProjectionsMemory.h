@@ -4,12 +4,6 @@
 #include "Tracklet.h"
 #include "MemoryBase.h"
 
-/*
-//constants derivative from the above
-static double kphiproj123, kzproj, kphider, kzder;
-static double krprojshiftdisk, kphiprojdisk;
-static double krdisk;
-*/
 
 using namespace std;
 

@@ -66,10 +66,10 @@ public:
 	zmatchcut_[iSeed]=settings_->zmatchcut(iSeed,layer_-1)/settings_->kz();
       }
       if (disk_!=0) {
-	rphicutPS_[iSeed]=settings_->rphicutPS(iSeed,abs(disk_)-1)/(kphiproj123*settings_->kr());
-	rphicut2S_[iSeed]=settings_->rphicut2S(iSeed,abs(disk_)-1)/(kphiproj123*settings_->kr());
-	rcut2S_[iSeed]=settings_->rcut2S(iSeed,abs(disk_)-1)/krprojshiftdisk;
-	rcutPS_[iSeed]=settings_->rcutPS(iSeed,abs(disk_)-1)/krprojshiftdisk;
+	rphicutPS_[iSeed]=settings_->rphicutPS(iSeed,abs(disk_)-1)/(settings_->kphiproj123()*settings_->kr());
+	rphicut2S_[iSeed]=settings_->rphicut2S(iSeed,abs(disk_)-1)/(settings_->kphiproj123()*settings_->kr());
+	rcut2S_[iSeed]=settings_->rcut2S(iSeed,abs(disk_)-1)/settings_->krprojshiftdisk();
+	rcutPS_[iSeed]=settings_->rcutPS(iSeed,abs(disk_)-1)/settings_->krprojshiftdisk();
       }
     }
 
@@ -158,9 +158,9 @@ public:
 
     for (unsigned int i=0; i<10; i++) {
       ialphafactinner_[i]= 
-	(1<<settings_->alphashift())*krprojshiftdisk*settings_->half2SmoduleWidth()/(1<<(settings_->nbitsalpha()-1))/(settings_->rDSSinner(i)*settings_->rDSSinner(i))/kphiproj123;
+	(1<<settings_->alphashift())*settings_->krprojshiftdisk()*settings_->half2SmoduleWidth()/(1<<(settings_->nbitsalpha()-1))/(settings_->rDSSinner(i)*settings_->rDSSinner(i))/settings_->kphiproj123();
       ialphafactouter_[i]= 
-	(1<<settings_->alphashift())*krprojshiftdisk*settings_->half2SmoduleWidth()/(1<<(settings_->nbitsalpha()-1))/(settings_->rDSSouter(i)*settings_->rDSSouter(i))/kphiproj123;
+	(1<<settings_->alphashift())*settings_->krprojshiftdisk()*settings_->half2SmoduleWidth()/(1<<(settings_->nbitsalpha()-1))/(settings_->rDSSouter(i)*settings_->rDSSouter(i))/settings_->kphiproj123();
     }
 
     barrel_=layer_>0;
@@ -545,7 +545,7 @@ public:
       
       ir+=ircorr;
       
-      int ideltaphi=fpgastub->phi().value()*settings_->kphi()/kphiproj123-iphi; 
+      int ideltaphi=fpgastub->phi().value()*settings_->kphi()/settings_->kphiproj123()-iphi; 
       
       
       int irstub = fpgastub->r().value();
@@ -561,7 +561,7 @@ public:
 	}
       }
       
-      int ideltar=(irstub*krdisk)/krprojshiftdisk-ir;
+      int ideltar=(irstub*settings_->krdisk())/settings_->krprojshiftdisk()-ir;
       
       if (!stub->isPSmodule()) {	  
 	int ialphanew=fpgastub->alphanew().value();
@@ -640,8 +640,8 @@ public:
 	idrcut=rcut2S_[seedindex]; 
       }
       
-      double drphicut=idrphicut*kphiproj123*settings_->kr();
-      double drcut=idrcut*krprojshiftdisk;
+      double drphicut=idrphicut*settings_->kphiproj123()*settings_->kr();
+      double drcut=idrcut*settings_->krprojshiftdisk();
       
       
       if (settings_->writeMonitorData("Residuals")) {
@@ -651,9 +651,9 @@ public:
 	  
 	out << disk_<<" "<<stub->isPSmodule()<<" "<<tracklet->layer()<<" "
 	    <<abs(tracklet->disk())<<" "<<pt<<" "
-	    <<ideltaphi*kphiproj123*stub->r()<<" "<<drphiapprox<<" "
+	    <<ideltaphi*settings_->kphiproj123()*stub->r()<<" "<<drphiapprox<<" "
 	    <<drphicut<<" "
-	    <<ideltar*krprojshiftdisk<<" "<<deltar<<" "
+	    <<ideltar*settings_->krprojshiftdisk()<<" "<<deltar<<" "
 	    <<drcut<<" "
 	    <<endl;	  
       }
@@ -666,8 +666,8 @@ public:
       
       if (settings_->debugTracklet()) {
 	cout << "imatch match disk: "<<imatch<<" "<<match<<" "
-	     <<std::abs(ideltaphi)<<" "<<drphicut/(kphiproj123*stub->r())<<" "
-	     <<std::abs(ideltar)<<" "<<drcut/krprojshiftdisk<<" r = "<<stub->r()<<endl;
+	     <<std::abs(ideltaphi)<<" "<<drphicut/(settings_->kphiproj123()*stub->r())<<" "
+	     <<std::abs(ideltar)<<" "<<drcut/settings_->krprojshiftdisk()<<" r = "<<stub->r()<<endl;
       }
       
       
@@ -685,7 +685,7 @@ public:
           }
 	assert(std::abs(dphi)<0.25);
 	assert(std::abs(dphiapprox)<0.25);
-	
+
 	tracklet->addMatchDisk(disk,ideltaphi,ideltar,
 			       drphi/stub->r(),dr,drphiapprox/stub->r(),drapprox,
 			       stub->alpha(),
@@ -748,7 +748,7 @@ public:
 	      if (iphider>(1<<(nphiderbits_-1))) iphider-=(1<<nphiderbits_);
 	      iphider=iphider<<(settings_->nbitsphiprojderL123()-nphiderbits_);
 	      
-	      double rproj=ir*krprojshiftdisk;
+	      double rproj=ir*settings_->krprojshiftdisk();
 	      double phider=iphider*GlobalHistTruth::ITC_L1L2()->der_phiD_final.get_K();
 	      double t=settings_->zmean(idisk)/rproj;
 	      

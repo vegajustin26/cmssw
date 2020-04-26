@@ -2,7 +2,6 @@
 #define L1Trigger_TrackFindingTracklet_interface_IMATH_TrackletCalculator_h
 
 #include "Settings.h"
-#include "Constants.h"
 #include "imath.h"
 
 //

@@ -93,34 +93,14 @@ int main(const int argc, const char** argv)
   settings.kd0pars()   = settings.kd0();
   settings.ktpars()    = ITC_L1L2->t_final.get_K();
   settings.kz0pars()   = ITC_L1L2->z0_final.get_K();
-  settings.kphiproj123() =kphi0pars*4;
+  settings.kphiproj123() =ITC_L1L2->phi0_final.get_K()*4;
   settings.kzproj()=settings.kz();
-  settings.kphider()=krinvpars*(1<<settings.phiderbitshift());
-  settings.kzder()=ktpars*(1<<settings.zderbitshift());
+  settings.kphider()=ITC_L1L2->rinv_final.get_K()*(1<<settings.phiderbitshift());
+  settings.kzder()=ITC_L1L2->t_final.get_K()*(1<<settings.zderbitshift());
   settings.krprojshiftdisk() = ITC_L1L2->rD_0_final.get_K();
-  settings.kphiprojdisk()=kphi0pars*4.0;
+  settings.kphiprojdisk()=ITC_L1L2->phi0_final.get_K()*4.0;
   settings.krdisk() = settings.kr();
   settings.kzpars() = settings.kz();  
-
-  
-  
-  krinvpars = ITC_L1L2->rinv_final.get_K();
-  kphi0pars = ITC_L1L2->phi0_final.get_K();
-  kd0pars   = settings.kd0();
-  ktpars    = ITC_L1L2->t_final.get_K();
-  kz0pars   = ITC_L1L2->z0_final.get_K();
-
-  krdisk = settings.kr();
-  kzpars = settings.kz();  
-  krprojshiftdisk = ITC_L1L2->rD_0_final.get_K();
-
-  //those can be made more transparent...
-  kphiproj123=kphi0pars*4;
-  //kphiproj456=kphi0pars/2;
-  kzproj=settings.kz();
-  kphider=krinvpars*(1<<settings.phiderbitshift());
-  kzder=ktpars*(1<<settings.zderbitshift());
-  kphiprojdisk=kphi0pars*4.0;
 
 
   cout << "=========================================================" << endl;
@@ -130,11 +110,11 @@ int main(const int argc, const char** argv)
   cout << "phi  kphi1         = "<< settings.kphi1() <<endl;
   cout << "=========================================================" << endl;
   cout << "Conversion factors for track(let) parameters:"<<endl;
-  cout << "rinv krinvpars     = "<< krinvpars <<endl;
-  cout << "phi0 kphi0pars     = "<< kphi0pars <<endl;
-  cout << "d0   kd0pars       = "<< kd0pars <<endl;
-  cout << "t    ktpars        = "<< ktpars <<endl;
-  cout << "z0   kz0pars       = "<< kzpars <<endl;
+  cout << "rinv krinvpars     = "<< settings.krinvpars() <<endl;
+  cout << "phi0 kphi0pars     = "<< settings.kphi0pars() <<endl;
+  cout << "d0   kd0pars       = "<< settings.kd0pars() <<endl;
+  cout << "t    ktpars        = "<< settings.ktpars() <<endl;
+  cout << "z0   kz0pars       = "<< settings.kzpars() <<endl;
   cout << "=========================================================" << endl;
   cout << "phi0bitshift = "<<settings.phi0bitshift()<<endl;
   cout << "d0bitshift   = "<<"???"<<endl;
@@ -575,13 +555,13 @@ int main(const int argc, const char** argv)
     for(unsigned int l=0;l<tracks.size();l++) {
       //  cout <<tracks[l].duplicate()<<" ";
       if (settings.writeMonitorData("Pars")) {
-	double phi=tracks[l]->iphi0()*kphi0pars+tracks[l]->sector()*2*M_PI/settings.NSector();
+	double phi=tracks[l]->iphi0()*settings.kphi0pars()+tracks[l]->sector()*2*M_PI/settings.NSector();
 	if (phi>M_PI) phi-=2*M_PI;
 	double phisec=phi-2*M_PI;
 	while (phisec<0.0) phisec+=2*M_PI/settings.NSector();
-	outpars  <<tracks[l]->duplicate()<<" "<<asinh(tracks[l]->it()*ktpars)<<" "
+	outpars  <<tracks[l]->duplicate()<<" "<<asinh(tracks[l]->it()*settings.ktpars())<<" "
 		 <<phi<<" "<<tracks[l]->iz0()*settings.kz()<<" "<<phisec/(2*M_PI/settings.NSector())<<" "
-		 <<tracks[l]->irinv()*krinvpars<<endl;
+		 <<tracks[l]->irinv()*settings.krinvpars()<<endl;
       }   	
       if (!tracks[l]->duplicate()) {
 	//cout << "FPGA Track pt, eta, phi, z0, chi2 = " 

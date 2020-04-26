@@ -190,8 +190,8 @@ public:
 
     FPGAWord fpgar=tracklet->fpgarprojdisk(disk);
 
-    if (fpgar.value()*krprojshiftdisk<12.0) return;
-    if (fpgar.value()*krprojshiftdisk>112.0) return;
+    if (fpgar.value()*settings_->krprojshiftdisk()<12.0) return;
+    if (fpgar.value()*settings_->krprojshiftdisk()>112.0) return;
 
 
     

@@ -29,7 +29,7 @@ public:
     valid_ = true;
 
     disk_ = disk;
-
+    
     fpgaphiresid_.set(iphiresid, settings->phiresidbits(), false, __LINE__, __FILE__);
     fpgarresid_.set(irresid, settings->rresidbits(), false, __LINE__, __FILE__);
     assert(istubid >= 0);
