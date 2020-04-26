@@ -103,8 +103,8 @@ int main(const int argc, const char** argv)
   kphiproj123=kphi0pars*4;
   kphiproj456=kphi0pars/2;
   kzproj=settings.kz();
-  kphider=krinvpars*(1<<phiderbitshift);
-  kzder=ktpars*(1<<zderbitshift);
+  kphider=krinvpars*(1<<settings.phiderbitshift());
+  kzder=ktpars*(1<<settings.zderbitshift());
   kphiprojdisk=kphi0pars*4.0;
   //krprojderdiskshift=krprojderdisk*(1<<rderdiskbitshift);
   //krprojderdisk=(1.0/ktpars)/(1<<t2bits);
@@ -122,7 +122,7 @@ int main(const int argc, const char** argv)
   cout << "t    ktpars        = "<< ktpars <<endl;
   cout << "z0   kz0pars       = "<< kzpars <<endl;
   cout << "=========================================================" << endl;
-  cout << "phi0bitshift = "<<phi0bitshift<<endl;
+  cout << "phi0bitshift = "<<settings.phi0bitshift()<<endl;
   cout << "d0bitshift   = "<<"???"<<endl;
   cout << endl;
   cout << "=========================================================" << endl;

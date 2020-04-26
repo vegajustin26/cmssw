@@ -37,9 +37,9 @@ public:
     icorrshift_=7;
 
     if (layer_<=3) {
-      icorzshift_=-1-PS_zderL_shift;
+      icorzshift_=-1-settings_->PS_zderL_shift();
     } else {
-      icorzshift_=-1-SS_zderL_shift;      
+      icorzshift_=-1-settings_->SS_zderL_shift();      
     }
     phi0shift_=3;
     fact_=1;
@@ -108,7 +108,7 @@ public:
       if (layer_>=4) nbits=4;
       
       for(unsigned int irinv=0;irinv<32;irinv++){
-	double rinv=(irinv-15.5)*(1<<(nbitsrinv-5))*krinvpars;
+	double rinv=(irinv-15.5)*(1<<(settings_->nbitsrinv()-5))*krinvpars;
 	double projbend=bend(settings_->rmean(layer_-1),rinv);
 	for(unsigned int ibend=0;ibend<(unsigned int)(1<<nbits);ibend++){
 	  double stubbend=Stub::benddecode(ibend,layer_<=3);
@@ -413,7 +413,7 @@ public:
       iz+=izcor;	
       
       int ideltaz=fpgastub->z().value()-iz;
-      int ideltaphi=(fpgastub->phi().value()<<phi0shift_)-(iphi<<(phi0bitshift-1+phi0shift_)); 
+      int ideltaphi=(fpgastub->phi().value()<<phi0shift_)-(iphi<<(settings_->phi0bitshift()-1+phi0shift_)); 
       
       
       //Floating point calculations

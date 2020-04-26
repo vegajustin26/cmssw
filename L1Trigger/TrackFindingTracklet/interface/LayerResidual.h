@@ -8,7 +8,8 @@ class LayerResidual {
 public:
   LayerResidual() { valid_ = false; }
 
-  void init(int layer,
+  void init(const Settings* settings,
+	    int layer,
             int iphiresid,
             int izresid,
             int istubid,
@@ -28,8 +29,8 @@ public:
 
     layer_ = layer;
 
-    fpgaphiresid_.set(iphiresid, phiresidbits, false, __LINE__, __FILE__);
-    fpgazresid_.set(izresid, zresidbits, false, __LINE__, __FILE__);
+    fpgaphiresid_.set(iphiresid, settings->phiresidbits(), false, __LINE__, __FILE__);
+    fpgazresid_.set(izresid, settings->zresidbits(), false, __LINE__, __FILE__);
     int nbitsid = 10;
     fpgastubid_.set(istubid, nbitsid, true, __LINE__, __FILE__);
     assert(!fpgaphiresid_.atExtreme());

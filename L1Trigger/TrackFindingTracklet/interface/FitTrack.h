@@ -626,8 +626,8 @@ class FitTrack:public ProcessBase{
 	 
 	 int idr=dr/settings_->kr();
 	 
-	 iMinvDt[2][2*ii+1]+=((idr*itder)>>rcorrbits);
-	 iMinvDt[3][2*ii+1]+=((idr*izder)>>rcorrbits);
+	 iMinvDt[2][2*ii+1]+=((idr*itder)>>settings_->rcorrbits());
+	 iMinvDt[3][2*ii+1]+=((idr*izder)>>settings_->rcorrbits());
 	 
        }    
      }
@@ -782,12 +782,12 @@ class FitTrack:public ProcessBase{
    int itseed=tracklet->fpgat().value();
    int iz0seed=tracklet->fpgaz0().value();
 
-   int irinvfit=irinvseed+((idrinv+(1<<fitrinvbitshift))>>fitrinvbitshift);
-   int iphi0fit=iphi0seed+(idphi0>>fitphi0bitshift);
+   int irinvfit=irinvseed+((idrinv+(1<<settings_->fitrinvbitshift()))>>settings_->fitrinvbitshift());
+   int iphi0fit=iphi0seed+(idphi0>>settings_->fitphi0bitshift());
 
-   int itfit=itseed+(idt>>fittbitshift);
+   int itfit=itseed+(idt>>settings_->fittbitshift());
 
-   int iz0fit=iz0seed+(idz0>>fitz0bitshift);
+   int iz0fit=iz0seed+(idz0>>settings_->fitz0bitshift());
 
    double rinvfit=rinvseed-drinv;
    double phi0fit=phi0seed-dphi0;
@@ -835,15 +835,8 @@ class FitTrack:public ProcessBase{
      +D[0][k]*drinv+D[1][k]*dphi0+D[2][k]*dt+D[3][k]*dz0;
 
 
-    iphifactor=kfactor[k]*rstub[k/2]*idelta[k]*(1<<chisqphifactbits)/sigma[k]
+    iphifactor=kfactor[k]*rstub[k/2]*idelta[k]*(1<<settings_->chisqphifactbits())/sigma[k]
      -iD[0][k]*idrinv-iD[1][k]*idphi0-iD[2][k]*idt-iD[3][k]*idz0;
-
-    //double kchisqphi=1.0/(1<<chisqphifactbits);
-    //cout << "=================================================="<<endl;
-    //cout << "*** old phi resid iresid : "<<rstub[k/2]*delta[k]/sigma[k]<<" "<<kfactor[k]*rstub[k/2]*idelta[k]*(1<<chisqphifactbits)/sigma[k]/(1<<chisqphifactbits)<<" rstub "<<rstub[k/2]<<endl;
-    //cout << "phi k  D "<<k<<" "<<D[0][k]*drinv<<" "<<D[1][k]*dphi0<<" "<<D[2][k]*dt<<" "<<D[3][k]*dz0<<endl;
-    //cout << "phi k iD "<<k<<" "<<iD[0][k]*idrinv*kchisqphi<<" "<<iD[1][k]*idphi0*kchisqphi<<" "<<iD[2][k]*idt*kchisqphi<<" "<<iD[3][k]*idz0*kchisqphi<<endl;
-    //cout << "### new phi resid iresid : "<<phifactor<<" "<<iphifactor*kchisqphi<<endl;
 
     if(NewChisqDebug){
      cout << "delta[k]/sigma = " << delta[k]/sigma[k] << "  delta[k] = " << delta[k]  << endl;
@@ -852,31 +845,13 @@ class FitTrack:public ProcessBase{
     }
 
     chisqfit+=phifactor*phifactor;
-    ichisqfit+=iphifactor*iphifactor/(1<<(2*chisqphifactbits-4));
-
-    //cout << "i phi chisq :" << i << " " << phifactor*phifactor << " " << iphifactor*iphifactor/(1<<(2*chisqphifactbits-4))/16.0 << endl;
+    ichisqfit+=iphifactor*iphifactor/(1<<(2*settings_->chisqphifactbits()-4));
 
     k++;
 
-
     rzfactor=delta[k]/sigma[k]+D[0][k]*drinv+D[1][k]*dphi0+D[2][k]*dt+D[3][k]*dz0;
 
-
-    irzfactor=kfactor[k]*idelta[k]*(1<<chisqzfactbits)/sigma[k]-iD[0][k]*idrinv-iD[1][k]*idphi0-iD[2][k]*idt-iD[3][k]*idz0;
-
-    //double kchisqz=1.0/(1<<chisqzfactbits);
-    //cout << "idrinv: "<<iD[0][k]<<" "<<idrinv<<endl;
-    //cout << "idphi0: "<<iD[1][k]<<" "<<idphi0<<endl;
-    //cout << "idt:    "<<iD[2][k]<<" "<<idt<<endl;
-    //cout << "idz0:   "<<iD[3][k]<<" "<<idz0<<endl;
-
-    //cout << "dt idt : "<<dt<<" "<<idt*ktpars/(1<<fittbitshift)<<endl;
-
-    //cout << "old z resid : "<<delta[k]/sigma[k]<<" "<<kfactor[k]*idelta[k]/sigma[k]<<endl;
-    //cout << "r-z k  D "<<k<<" "<<D[0][k]*drinv<<" "<<D[1][k]*dphi0<<" "<<D[2][k]*dt<<" "<<D[3][k]*dz0<<endl;
-    //cout << "r-z k iD "<<k<<" "<<iD[0][k]*idrinv*kchisqz<<" "<<iD[1][k]*idphi0*kchisqz<<" "<<iD[2][k]*idt*kchisqz<<" "<<iD[3][k]*idz0*kchisqz<<endl;
-
-    //cout << "new z resid: "<<rzfactor<<" "<<irzfactor*kchisqz<<endl;
+    irzfactor=kfactor[k]*idelta[k]*(1<<settings_->chisqzfactbits())/sigma[k]-iD[0][k]*idrinv-iD[1][k]*idphi0-iD[2][k]*idt-iD[3][k]*idz0;
 
     if(NewChisqDebug){
      cout << "delta[k]/sigma = " << delta[k]/sigma[k] << "  delta[k] = " << delta[k]  << endl;
@@ -885,16 +860,11 @@ class FitTrack:public ProcessBase{
     }
 
     chisqfit+=rzfactor*rzfactor;
-    ichisqfit+=irzfactor*irzfactor/(1<<(2*chisqzfactbits-4));
-
-    //cout << "i z chisq   :" << i << " " << rzfactor*rzfactor << " " << irzfactor*irzfactor/(1<<(2*chisqzfactbits-4))/16.0 << endl;
-
+    ichisqfit+=irzfactor*irzfactor/(1<<(2*settings_->chisqzfactbits()-4));
 
 
     k++;
    }
-
-   //cout <<"chisq ichisq : "<< chisqfit << " " << ichisqfit/16.0<<endl;
 
 
    if (settings_->writeMonitorData("ChiSq")) {
@@ -902,20 +872,7 @@ class FitTrack:public ProcessBase{
     out << asinh(itfit*ktpars)<<" "<<chisqfit << " " << ichisqfit/16.0<<endl;
    }
 
-   // Divide by degrees of freedom
-   // NOT ANYMORE! Raw chisquare!
-   //chisqfit=chisqfit/(2*n-4);
-   //chisqfitexact=chisqfitexact/(2*n-4);
-   //ichisqfit=ichisqfit/(2*n-4);
 
-   // Experimental strategy:
-   //    if(ichisqfit < (1<<8));
-   //    else if(ichisqfit < (1<<12)) ichisqfit = (1<<8)+(ichisqfit>>4);
-   //    else if(ichisqfit < (1<<16)) ichisqfit = (1<<9)+(ichisqfit>>8);
-   //    else if(ichisqfit < (1<<20)) ichisqfit = (1<<9)+(1<<8)+(ichisqfit>>12);
-   //    else ichisqfit = (1<<10)-1;
-
-   // Cap out at 15 bits -- Any larger is useless
    // Chisquare per DOF capped out at 11 bits, so 15 is an educated guess
    if(ichisqfit >= (1<<15)) {
     //cout << "CHISQUARE (" << ichisqfit << ") LARGER THAN 11 BITS!!" << endl;

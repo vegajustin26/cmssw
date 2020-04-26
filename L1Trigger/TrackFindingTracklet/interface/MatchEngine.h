@@ -38,7 +38,7 @@ public:
       if (layer_>=4) nbits=4;
       
       for(unsigned int irinv=0;irinv<32;irinv++){
-	double rinv=(irinv-15.5)*(1<<(nbitsrinv-5))*krinvpars;
+	double rinv=(irinv-15.5)*(1<<(settings_->nbitsrinv()-5))*krinvpars;
 	double projbend=bend(settings_->rmean(layer_-1),rinv);
 	for(unsigned int ibend=0;ibend<(unsigned int)(1<<nbits);ibend++){
 	  double stubbend=Stub::benddecode(ibend,layer_<=3);

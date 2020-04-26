@@ -24,20 +24,20 @@ public:
     printf("rmaxL6 = %f, zmaxD5 = %f\n", settings_->rmax(5), settings_->zmax(4));
     printf("      stub Ks: kr, kphi1, kz = %g, %g, %g\n", settings_->kr(), settings->kphi1(), settings_->kz());
     printf("  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g\n",
-           settings->kphi1() / settings_->kr() * pow(2, rinv_shift),
-           settings->kphi1() * pow(2, phi0_shift),
-           settings_->kz() / settings_->kr() * pow(2, t_shift),
-           settings_->kz() * pow(2, z0_shift));
+           settings->kphi1() / settings_->kr() * pow(2, settings_->rinv_shift()),
+           settings->kphi1() * pow(2, settings_->phi0_shift()),
+           settings_->kz() / settings_->kr() * pow(2, settings_->t_shift()),
+           settings_->kz() * pow(2, settings_->z0_shift()));
     printf("layer proj Ks: kphiproj456, kphider, kzproj, kzder = %g, %g, %g, %g\n",
-           settings->kphi1() * pow(2, SS_phiL_shift),
-           settings->kphi1() / settings_->kr() * pow(2, SS_phiderL_shift),
-           settings_->kz() * pow(2, PS_zL_shift),
-           settings_->kz() / settings_->kr() * pow(2, PS_zderL_shift));
+           settings->kphi1() * pow(2, settings_->SS_phiL_shift()),
+           settings->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderL_shift()),
+           settings_->kz() * pow(2, settings_->PS_zL_shift()),
+           settings_->kz() / settings_->kr() * pow(2, settings_->PS_zderL_shift()));
     printf(" disk proj Ks: kphiprojdisk, kphiprojderdisk, krprojdisk, krprojderdisk = %g, %g, %g, %g\n",
-           settings->kphi1() * pow(2, SS_phiD_shift),
-           settings->kphi1() / settings_->kr() * pow(2, SS_phiderD_shift),
-           settings_->kr() * pow(2, PS_rD_shift),
-           settings_->kr() / settings_->kz() * pow(2, PS_rderD_shift));
+           settings->kphi1() * pow(2, settings_->SS_phiD_shift()),
+           settings->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderD_shift()),
+           settings_->kr() * pow(2, settings_->PS_rD_shift()),
+           settings_->kr() / settings_->kz() * pow(2, settings_->PS_rderD_shift()));
     printf("=============================================\n");
 #endif
 
@@ -172,10 +172,10 @@ public:
   var_mult t{"t", &a, &deltaZ, 7.9};
   var_add z0{"z0", &z1, &z0b, 320.};
 
-  var_adjustK rinv_final{"rinv_final", &rinv, settings_->kphi1() / settings_->kr()* pow(2, rinv_shift)};
-  var_adjustK phi0_final{"phi0_final", &phi0, settings_->kphi1()* pow(2, phi0_shift)};
-  var_adjustK t_final{"t_final", &t, settings_->kz() / settings_->kr()* pow(2, t_shift)};
-  var_adjustK z0_final{"z0_final", &z0, settings_->kz()* pow(2, z0_shift)};
+  var_adjustK rinv_final{"rinv_final", &rinv, settings_->kphi1() / settings_->kr()* pow(2, settings_->rinv_shift())};
+  var_adjustK phi0_final{"phi0_final", &phi0, settings_->kphi1()* pow(2, settings_->phi0_shift())};
+  var_adjustK t_final{"t_final", &t, settings_->kz() / settings_->kr()* pow(2, settings_->t_shift())};
+  var_adjustK z0_final{"z0_final", &z0, settings_->kz()* pow(2, settings_->z0_shift())};
 
   //projection to r
   //
@@ -216,11 +216,11 @@ public:
   var_shift x3{"x3", &rinv, 1};
   var_neg der_phiL{"der_phiL", &x3};
 
-  var_adjustK phiL_0_final{"phiL_0_final", &phiL_0, settings_->kphi1()* pow(2, SS_phiL_shift)};
-  var_adjustK phiL_1_final{"phiL_1_final", &phiL_1, settings_->kphi1()* pow(2, SS_phiL_shift)};
-  var_adjustK phiL_2_final{"phiL_2_final", &phiL_2, settings_->kphi1()* pow(2, SS_phiL_shift)};
+  var_adjustK phiL_0_final{"phiL_0_final", &phiL_0, settings_->kphi1()* pow(2, settings_->SS_phiL_shift())};
+  var_adjustK phiL_1_final{"phiL_1_final", &phiL_1, settings_->kphi1()* pow(2, settings_->SS_phiL_shift())};
+  var_adjustK phiL_2_final{"phiL_2_final", &phiL_2, settings_->kphi1()* pow(2, settings_->SS_phiL_shift())};
 
-  var_adjustK der_phiL_final{"der_phiL_final", &der_phiL, settings_->kphi1() / settings_->kr()* pow(2, SS_phiderL_shift)};
+  var_adjustK der_phiL_final{"der_phiL_final", &der_phiL, settings_->kphi1() / settings_->kr()* pow(2, settings_->SS_phiderL_shift())};
 
   var_mult x11_0{"x11_0", &rproj0, &t};
   var_mult x11_1{"x11_1", &rproj1, &t};
@@ -234,11 +234,11 @@ public:
   var_add zL_1{"zL_1", &z0, &x23_1};
   var_add zL_2{"zL_2", &z0, &x23_2};
 
-  var_adjustK zL_0_final{"zL_0_final", &zL_0, settings_->kz()* pow(2, PS_zL_shift)};
-  var_adjustK zL_1_final{"zL_1_final", &zL_1, settings_->kz()* pow(2, PS_zL_shift)};
-  var_adjustK zL_2_final{"zL_2_final", &zL_2, settings_->kz()* pow(2, PS_zL_shift)};
+  var_adjustK zL_0_final{"zL_0_final", &zL_0, settings_->kz()* pow(2, settings_->PS_zL_shift())};
+  var_adjustK zL_1_final{"zL_1_final", &zL_1, settings_->kz()* pow(2, settings_->PS_zL_shift())};
+  var_adjustK zL_2_final{"zL_2_final", &zL_2, settings_->kz()* pow(2, settings_->PS_zL_shift())};
 
-  var_adjustK der_zL_final{"der_zL_final", &t_final, settings_->kz() / settings_->kr()* pow(2, PS_zderL_shift)};
+  var_adjustK der_zL_final{"der_zL_final", &t_final, settings_->kz() / settings_->kr()* pow(2, settings_->PS_zderL_shift())};
 
   //projection to z
   //
@@ -266,14 +266,14 @@ public:
   var_add phiD_2{"phiD_2", &phi0, &x25_2, 4 * settings_->dphisector()};
   var_add phiD_3{"phiD_3", &phi0, &x25_3, 4 * settings_->dphisector()};
 
-  var_adjustK phiD_0_final{"phiD_0_final", &phiD_0, settings_->kphi1()* pow(2, SS_phiD_shift)};
-  var_adjustK phiD_1_final{"phiD_1_final", &phiD_1, settings_->kphi1()* pow(2, SS_phiD_shift)};
-  var_adjustK phiD_2_final{"phiD_2_final", &phiD_2, settings_->kphi1()* pow(2, SS_phiD_shift)};
-  var_adjustK phiD_3_final{"phiD_3_final", &phiD_3, settings_->kphi1()* pow(2, SS_phiD_shift)};
+  var_adjustK phiD_0_final{"phiD_0_final", &phiD_0, settings_->kphi1()* pow(2, settings_->SS_phiD_shift())};
+  var_adjustK phiD_1_final{"phiD_1_final", &phiD_1, settings_->kphi1()* pow(2, settings_->SS_phiD_shift())};
+  var_adjustK phiD_2_final{"phiD_2_final", &phiD_2, settings_->kphi1()* pow(2, settings_->SS_phiD_shift())};
+  var_adjustK phiD_3_final{"phiD_3_final", &phiD_3, settings_->kphi1()* pow(2, settings_->SS_phiD_shift())};
 
   var_mult der_phiD{"der_phiD", &x7, &invt, 8 * der_phiD_max};
 
-  var_adjustK der_phiD_final{"der_phiD_final", &der_phiD, settings_->kphi1() / settings_->kr()* pow(2, SS_phiderD_shift)};
+  var_adjustK der_phiD_final{"der_phiD_final", &der_phiD, settings_->kphi1() / settings_->kr()* pow(2, settings_->SS_phiderD_shift())};
 
   var_mult x26_0{"x26_0", &x25_0, &x25_0};
   var_mult x26_1{"x26_1", &x25_1, &x25_1};
@@ -300,12 +300,12 @@ public:
   var_mult rD_2{"rD_2", &x13_2, &x27m_2, settings_->rmaxdisk()};
   var_mult rD_3{"rD_3", &x13_3, &x27m_3, settings_->rmaxdisk()};
 
-  var_adjustK rD_0_final{"rD_0_final", &rD_0, settings_->kr()* pow(2, PS_rD_shift)};
-  var_adjustK rD_1_final{"rD_1_final", &rD_1, settings_->kr()* pow(2, PS_rD_shift)};
-  var_adjustK rD_2_final{"rD_2_final", &rD_2, settings_->kr()* pow(2, PS_rD_shift)};
-  var_adjustK rD_3_final{"rD_3_final", &rD_3, settings_->kr()* pow(2, PS_rD_shift)};
+  var_adjustK rD_0_final{"rD_0_final", &rD_0, settings_->kr()* pow(2, settings_->PS_rD_shift())};
+  var_adjustK rD_1_final{"rD_1_final", &rD_1, settings_->kr()* pow(2, settings_->PS_rD_shift())};
+  var_adjustK rD_2_final{"rD_2_final", &rD_2, settings_->kr()* pow(2, settings_->PS_rD_shift())};
+  var_adjustK rD_3_final{"rD_3_final", &rD_3, settings_->kr()* pow(2, settings_->PS_rD_shift())};
 
-  var_adjustK der_rD_final{"der_rD_final", &invt, settings_->kr() / settings_->kz()* pow(2, PS_rderD_shift)};
+  var_adjustK der_rD_final{"der_rD_final", &invt, settings_->kr() / settings_->kz()* pow(2, settings_->PS_rderD_shift())};
 
   var_cut t_final_cut{&t_final, -10, 10};
   var_cut rinv_final_cut{&rinv_final, -settings_->rinvcut(), settings_->rinvcut()};

@@ -35,9 +35,9 @@ public:
     icorrshift_=7;
 
     if (layerdisk_<3) {
-      icorzshift_=-1-PS_zderL_shift;
+      icorzshift_=-1-settings_->PS_zderL_shift();
     } else {
-      icorzshift_=-1-SS_zderL_shift;      
+      icorzshift_=-1-settings_->SS_zderL_shift();      
     }
     phi0shift_=3;
     fact_=1;
@@ -217,7 +217,7 @@ public:
 	iz+=izcor;	
 
 	int ideltaz=fpgastub->z().value()-iz;
-	int ideltaphi=(fpgastub->phi().value()<<phi0shift_)-(iphi<<(phi0bitshift-1+phi0shift_)); 
+	int ideltaphi=(fpgastub->phi().value()<<phi0shift_)-(iphi<<(settings_->phi0bitshift()-1+phi0shift_)); 
 
 
 	//Floating point calculations

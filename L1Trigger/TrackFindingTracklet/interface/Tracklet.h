@@ -61,11 +61,11 @@ public:
 
     trackparsapprox_.init(rinvapprox,phi0approx,d0approx,tapprox,z0approx);
 
-    fpgapars_.rinv().set(irinv,nbitsrinv,false,__LINE__,__FILE__); 
-    fpgapars_.phi0().set(iphi0,nbitsphi0,false,__LINE__,__FILE__); 
+    fpgapars_.rinv().set(irinv,settings_->nbitsrinv(),false,__LINE__,__FILE__); 
+    fpgapars_.phi0().set(iphi0,settings_->nbitsphi0(),false,__LINE__,__FILE__); 
     fpgapars_.d0().set(id0,settings_->nbitsd0(),false,__LINE__,__FILE__); 
-    fpgapars_.z0().set(iz0,nbitsz0,false,__LINE__,__FILE__);
-    fpgapars_.t().set(it,nbitst,false,__LINE__,__FILE__);       
+    fpgapars_.z0().set(iz0,settings_->nbitsz0(),false,__LINE__,__FILE__);
+    fpgapars_.t().set(it,settings_->nbitst(),false,__LINE__,__FILE__);       
 
     fpgatrack_ = NULL;
     
@@ -651,7 +651,7 @@ public:
     
     assert(layer>=1&&layer<=6);
     
-    layerresid_[layer-1].init(layer,ideltaphi,ideltaz,stubid,dphi,dz,dphiapprox,dzapprox,rstub,stubptrs);
+    layerresid_[layer-1].init(settings_,layer,ideltaphi,ideltaz,stubid,dphi,dz,dphiapprox,dzapprox,rstub,stubptrs);
     
   }
   
@@ -665,7 +665,7 @@ public:
     
     assert(abs(disk)>=1&&abs(disk)<=5);
     
-    diskresid_[abs(disk)-1].init(disk,ideltaphi,ideltar,stubid,dphi,dr,dphiapprox,drapprox,zstub,alpha,stubptrs.first->alphanew(),stubptrs);
+    diskresid_[abs(disk)-1].init(settings_,disk,ideltaphi,ideltar,stubid,dphi,dr,dphiapprox,drapprox,zstub,alpha,stubptrs.first->alphanew(),stubptrs);
     
   }
 
@@ -1035,15 +1035,15 @@ public:
     fpgafitpars_.d0().set(id0fit,19,false,__LINE__,__FILE__);
     fpgafitpars_.t().set(itfit,14,false,__LINE__,__FILE__);
 
-    if (iz0fit>=(1<<(nbitsz0-1))) {
-      iz0fit=(1<<(nbitsz0-1))-1; 
+    if (iz0fit>=(1<<(settings_->nbitsz0()-1))) {
+      iz0fit=(1<<(settings_->nbitsz0()-1))-1; 
     }
 
-    if (iz0fit<=-(1<<(nbitsz0-1))) {
-      iz0fit=1-(1<<(nbitsz0-1)); 
+    if (iz0fit<=-(1<<(settings_->nbitsz0()-1))) {
+      iz0fit=1-(1<<(settings_->nbitsz0()-1)); 
     }
     
-    fpgafitpars_.z0().set(iz0fit,nbitsz0,false,__LINE__,__FILE__);
+    fpgafitpars_.z0().set(iz0fit,settings_->nbitsz0(),false,__LINE__,__FILE__);
     ichisqrphifit_.set(ichisqrphifit,8,true,__LINE__,__FILE__);
     ichisqrzfit_.set(ichisqrzfit,8,true,__LINE__,__FILE__);
 

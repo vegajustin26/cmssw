@@ -7,7 +7,8 @@ class DiskResidual {
 public:
   DiskResidual() { valid_ = false; }
 
-  void init(int disk,
+  void init(const Settings* settings,
+	    int disk,
             int iphiresid,
             int irresid,
             int istubid,
@@ -29,8 +30,8 @@ public:
 
     disk_ = disk;
 
-    fpgaphiresid_.set(iphiresid, phiresidbits, false, __LINE__, __FILE__);
-    fpgarresid_.set(irresid, rresidbits, false, __LINE__, __FILE__);
+    fpgaphiresid_.set(iphiresid, settings->phiresidbits(), false, __LINE__, __FILE__);
+    fpgarresid_.set(irresid, settings->rresidbits(), false, __LINE__, __FILE__);
     assert(istubid >= 0);
     unsigned int nbitsstubid = 10;
     fpgastubid_.set(istubid, nbitsstubid, true, __LINE__, __FILE__);

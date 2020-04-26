@@ -512,6 +512,57 @@ namespace Trklet{
 
     unsigned int NLONGVMBITS() const { return NLONGVMBITS_; } 
     unsigned int NLONGVMBINS() const { return (1<<NLONGVMBITS_); }
+
+    //Bits used to store track parameter in tracklet
+    int nbitsrinv() const { return nbitsrinv_; }
+    int nbitsphi0() const { return nbitsphi0_; }
+    int nbitst() const { return nbitst_; }
+    int nbitsz0() const { return nbitsz0_; }
+
+    //track and tracklet parameters
+    int rinv_shift() const { return rinv_shift_; }
+    int phi0_shift() const { return phi0_shift_; }
+    int t_shift() const { return t_shift_; }
+    int z0_shift() const { return z0_shift_; }
+    
+    //projections are coarsened from global to stub precision  
+    
+    //projection to R parameters
+    int SS_phiL_shift() const { return SS_phiL_shift_; }   
+    int PS_zL_shift() const { return PS_zL_shift_; }
+    
+    int SS_phiderL_shift() const { return SS_phiderL_shift_; } 
+    int PS_zderL_shift() const { return PS_zderL_shift_; }
+    int SS_zderL_shift() const { return SS_zderL_shift_; }  
+  
+    //projection to Z parameters
+    int SS_phiD_shift() const { return SS_phiD_shift_; }
+    int PS_rD_shift() const { return PS_rD_shift_; }
+    
+    int SS_phiderD_shift() const { return SS_phiderD_shift_; }
+    int PS_rderD_shift() const { return PS_rderD_shift_; }
+    
+    //numbers needed for matches & fit, unclear what they are.
+    int phi0bitshift() const { return phi0bitshift_; }
+    int phiderbitshift() const { return phiderbitshift_; }
+    int zderbitshift() const { return zderbitshift_; }
+    
+    int phiresidbits() const { return phiresidbits_; }
+    int zresidbits() const { return zresidbits_; }
+    int rresidbits() const { return rresidbits_; }
+    
+    //Trackfit
+    int fitrinvbitshift() const { return fitrinvbitshift_; }
+    int fitphi0bitshift() const { return fitphi0bitshift_; }
+    int fittbitshift() const { return fittbitshift_; }
+    int fitz0bitshift() const { return fitz0bitshift_; }
+    
+    //r correction bits
+    int rcorrbits() const { return rcorrbits_; }
+    
+    int chisqphifactbits() const { return chisqphifactbits_; }
+    int chisqzfactbits() const { return chisqzfactbits_; }
+
     
   private:
 
@@ -577,6 +628,56 @@ namespace Trklet{
     unsigned int nbitsd0_{13};
 
     double ptcutte_{1.8}; //Minimum pt in TE
+
+    //Bits used to store track parameter in tracklet
+    int nbitsrinv_{14};
+    int nbitsphi0_{18};
+    int nbitst_{14};
+    int nbitsz0_{10};
+
+    //track and tracklet parameters
+    int rinv_shift_{-8};  // Krinv = 2^shift * Kphi/Kr
+    int phi0_shift_{1};   // Kphi0 = 2^shift * Kphi
+    int t_shift_{-10}; // Kt    = 2^shift * Kz/Kr
+    int z0_shift_{0};   // Kz0   = 2^shift * kz
+    
+    //projections are coarsened from global to stub precision  
+    
+    //projection to R parameters
+    int SS_phiL_shift_{0};   
+    int PS_zL_shift_{0};   // z projections have global precision in ITC
+    
+    int SS_phiderL_shift_{-5}; 
+    int PS_zderL_shift_{-7};  // Kderz = 2^shift * Kz/Kr
+    int SS_zderL_shift_{-7};  
+  
+    //projection to Z parameters
+    int SS_phiD_shift_{3};   
+    int PS_rD_shift_{1};   // a bug?! coarser by a factor of two then stubs??
+    
+    int SS_phiderD_shift_{-4}; 
+    int PS_rderD_shift_{-6};  //Kderrdisk = 2^shift * Kr/Kz
+    
+    //numbers needed for matches & fit, unclear what they are.
+    int phi0bitshift_{1};
+    int phiderbitshift_{7};
+    int zderbitshift_{6};
+    
+    int phiresidbits_{12}; 
+    int zresidbits_{9};
+    int rresidbits_{7};
+    
+    //Trackfit
+    int fitrinvbitshift_{9};  //6 OK?
+    int fitphi0bitshift_{6};  //4 OK?
+    int fittbitshift_{10};     //4 OK? //lower number gives rounding problems
+    int fitz0bitshift_{8};    //6 OK?
+    
+    //r correction bits
+    int rcorrbits_{6};
+    
+    int chisqphifactbits_{14};
+    int chisqzfactbits_{14};
     
     std::array<std::array<unsigned int, 12>, 3> nfinephi_;
     std::array<std::array<unsigned int, 12>, 3> nphireg_;
