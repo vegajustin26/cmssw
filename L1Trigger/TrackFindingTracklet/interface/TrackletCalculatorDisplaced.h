@@ -18,12 +18,12 @@ public:
 
  TrackletCalculatorDisplaced(string name, const Settings* settings, unsigned int iSector):
   ProcessBase(name,settings,iSector){
-    double dphi=2*M_PI/NSector;
-    double dphiHG=0.5*settings_->dphisectorHG()-M_PI/NSector;
+    double dphi=2*M_PI/settings_->NSector();
+    double dphiHG=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();
     phimin_=iSector_*dphi-dphiHG;
     phimax_=phimin_+dphi+2*dphiHG;
-    phimin_-=M_PI/NSector;
-    phimax_-=M_PI/NSector;
+    phimin_-=M_PI/settings_->NSector();
+    phimax_-=M_PI/settings_->NSector();
     if (phimin_>M_PI) phimin_-=2*M_PI;
     if (phimax_>M_PI) phimax_-=2*M_PI;
     if (phimin_>phimax_)  phimin_-=2*M_PI;

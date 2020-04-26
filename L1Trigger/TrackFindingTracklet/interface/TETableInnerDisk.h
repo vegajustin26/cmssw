@@ -36,9 +36,9 @@ public:
     dr_ = rmaxdisk / rbins_;
 
     zbins_ = (1 << zbits);
-    zmind1_ = settings->zmean(disk1 - 1) - dzmax;
-    zmaxd1_ = settings->zmean(disk1 - 1) + dzmax;
-    dz_ = 2 * dzmax / zbins_;
+    zmind1_ = settings->zmean(disk1 - 1) - settings->dzmax();
+    zmaxd1_ = settings->zmean(disk1 - 1) + settings->dzmax();
+    dz_ = 2 * settings->dzmax() / zbins_;
 
     zmeand2_ = settings->zmean(disk2 - 1);
     rmeanl3_ = 0.;

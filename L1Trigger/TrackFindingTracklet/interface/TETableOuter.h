@@ -27,9 +27,9 @@ public:
     rbits_ = rbits;
 
     rbins_ = (1 << rbits);
-    rmin_ = settings->rmean(layer - 1) - drmax;
-    rmax_ = settings->rmean(layer - 1) + drmax;
-    dr_ = 2 * drmax / rbins_;
+    rmin_ = settings->rmean(layer - 1) - settings->drmax();
+    rmax_ = settings->rmean(layer - 1) + settings->drmax();
+    dr_ = 2 * settings->drmax() / rbins_;
 
     zbins_ = (1 << zbits);
     zmin_ = -zlength;

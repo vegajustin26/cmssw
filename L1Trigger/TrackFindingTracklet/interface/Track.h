@@ -51,7 +51,7 @@ public:
 
     seed_ = seed;
     duplicate_ = false;
-    sector_ = NSector;
+    sector_ = -1; 
   }
 
   ~Track() {}
@@ -80,12 +80,12 @@ public:
 
   double pt(double bfield = 3.811202) const { return (0.3 * bfield / 100.0) / (irinv_ * krinvpars); }
   double phi0(const Settings* settings) const {
-    double dphi = 2 * M_PI / NSector;
-    double dphiHG = 0.5 * settings->dphisectorHG() - M_PI / NSector;
+    double dphi = 2 * M_PI / settings->NSector();
+    double dphiHG = 0.5 * settings->dphisectorHG() - M_PI / settings->NSector();
     double phimin = sector_ * dphi - dphiHG;
     double phimax = phimin + dphi + 2 * dphiHG;
-    phimin -= M_PI / NSector;
-    phimax -= M_PI / NSector;
+    phimin -= M_PI / settings->NSector();
+    phimax -= M_PI / settings->NSector();
     phimin = Util::phiRange(phimin);
     phimax = Util::phiRange(phimax);
     if (phimin > phimax)

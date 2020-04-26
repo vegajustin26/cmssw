@@ -38,9 +38,9 @@ public:
     bool extra = layer1 == 2 && layer2 == 3 && !extended;
 
     rbins_ = (1 << rbits);
-    rminl1_ = settings->rmean(layer1 - 1) - drmax;
-    rmaxl1_ = settings->rmean(layer1 - 1) + drmax;
-    dr_ = 2 * drmax / rbins_;
+    rminl1_ = settings->rmean(layer1 - 1) - settings->drmax();
+    rmaxl1_ = settings->rmean(layer1 - 1) + settings->drmax();
+    dr_ = 2 * settings->drmax() / rbins_;
 
     zbins_ = (1 << zbits);
     zminl1_ = -zlength;

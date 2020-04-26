@@ -13,7 +13,7 @@ public:
 
  TrackletEngineDisplaced(string name, const Settings* settings, unsigned int iSector):
   ProcessBase(name,settings,iSector){
-    double dphi=2*M_PI/NSector;
+    double dphi=2*M_PI/settings_->NSector();
     phimin_=iSector*dphi;
     phimax_=phimin_+dphi;
     if (phimin_>M_PI) phimin_-=2*M_PI;

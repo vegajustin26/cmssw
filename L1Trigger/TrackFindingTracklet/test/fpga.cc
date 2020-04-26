@@ -183,7 +183,7 @@ int main(const int argc, const char** argv)
 
 
 // Define Sectors (boards)	 
-  Sector** sectors=new Sector*[NSector];
+  Sector** sectors=new Sector*[settings.NSector()];
 
   Cabling cabling;
 
@@ -191,7 +191,7 @@ int main(const int argc, const char** argv)
 
 
   
-  for (unsigned int i=0;i<NSector;i++) {
+  for (unsigned int i=0;i<settings.NSector();i++) {
     sectors[i]=new Sector(i,&settings);
   }  
 
@@ -209,7 +209,7 @@ int main(const int argc, const char** argv)
     if (settings.writetrace()) {
       cout << "Read memory: "<<memType<<" "<<memName<<endl;
     }
-    for (unsigned int i=0;i<NSector;i++) {
+    for (unsigned int i=0;i<settings.NSector();i++) {
       sectors[i]->addMem(memType,memName);
     }
     
@@ -229,7 +229,7 @@ int main(const int argc, const char** argv)
     if (settings.writetrace()) {
       cout << "Read process: "<<procType<<" "<<procName<<endl;
     }
-    for (unsigned int i=0;i<NSector;i++) {
+    for (unsigned int i=0;i<settings.NSector();i++) {
       sectors[i]->addProc(procType,procName);
     }
     
@@ -261,7 +261,7 @@ int main(const int argc, const char** argv)
       ss>>tmp2>>procout;
     }
 
-    for (unsigned int i=0;i<NSector;i++) {
+    for (unsigned int i=0;i<settings.NSector();i++) {
       sectors[i]->addWire(mem,procin,procout);
     }
   
@@ -564,12 +564,12 @@ int main(const int argc, const char** argv)
     for(unsigned int l=0;l<tracks.size();l++) {
       //  cout <<tracks[l].duplicate()<<" ";
       if (settings.writeMonitorData("Pars")) {
-	double phi=tracks[l]->iphi0()*kphi0pars+tracks[l]->sector()*2*M_PI/NSector;
+	double phi=tracks[l]->iphi0()*kphi0pars+tracks[l]->sector()*2*M_PI/settings.NSector();
 	if (phi>M_PI) phi-=2*M_PI;
 	double phisec=phi-2*M_PI;
-	while (phisec<0.0) phisec+=2*M_PI/NSector;
+	while (phisec<0.0) phisec+=2*M_PI/settings.NSector();
 	outpars  <<tracks[l]->duplicate()<<" "<<asinh(tracks[l]->it()*ktpars)<<" "
-		 <<phi<<" "<<tracks[l]->iz0()*kz<<" "<<phisec/(2*M_PI/NSector)<<" "
+		 <<phi<<" "<<tracks[l]->iz0()*kz<<" "<<phisec/(2*M_PI/settings.NSector())<<" "
 		 <<tracks[l]->irinv()*krinvpars<<endl;
       }   	
       if (!tracks[l]->duplicate()) {
@@ -689,7 +689,7 @@ int main(const int argc, const char** argv)
 #endif
 // --------------------------  
 
-  for (unsigned int i=0;i<NSector;i++)
+  for (unsigned int i=0;i<settings.NSector();i++)
     delete sectors[i];
 
 } 

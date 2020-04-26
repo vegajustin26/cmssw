@@ -1,5 +1,5 @@
     cleanTimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->clean();
     }
     
@@ -12,25 +12,25 @@
     bool hitlayer[6];
     bool hitdisk[5];
     int stublayer[6];
-    int stublayer1[6][NSector];
-    int stubdisk1[5][NSector];
+    int stublayer1[6][settings.NSector()];
+    int stubdisk1[5][settings.NSector()];
     for (unsigned int ll=0;ll<6;ll++){
       hitlayer[ll]=false;
       stublayer[ll]=0;
-      for (unsigned int jj=0;jj<NSector;jj++){
+      for (unsigned int jj=0;jj<settings.NSector();jj++){
         stublayer1[ll][jj]=0;
       }
     }
     for (unsigned int ll=0;ll<5;ll++){
       hitdisk[ll]=false;
-      for (unsigned int jj=0;jj<NSector;jj++){
+      for (unsigned int jj=0;jj<settings.NSector();jj++){
         stubdisk1[ll][jj]=0;
       }
     }	
 
 
-    int stubcount[6][24*NSector];	
-    for (unsigned int ll=0;ll<24*NSector;ll++){
+    int stubcount[6][24*settings.NSector()];	
+    for (unsigned int ll=0;ll<24*settings.NSector();ll++){
       stubcount[0][ll]=0;
       stubcount[1][ll]=0;
       stubcount[2][ll]=0;
@@ -57,8 +57,8 @@
       phi+=0.5*settings.dphisectorHG();
 
       if (phi<0.0) phi+=2*M_PI;
-      unsigned int isector=NSector*phi/(2*M_PI);
-      assert(isector<NSector);
+      unsigned int isector=settings.NSector()*phi/(2*M_PI);
+      assert(isector<settings.NSector());
 
 
 
@@ -70,13 +70,13 @@
 
         double phi=stub.phi();
         if (phi<0.0) phi+=2*M_PI;
-        unsigned int iphi=24*NSector*phi/(2*M_PI);
-        assert(iphi<24*NSector);
+        unsigned int iphi=24*settings.NSector()*phi/(2*M_PI);
+        assert(iphi<24*settings.NSector());
 	double max=115.0;
 	if (stub.layer()==0) max=70.0;
         if (std::abs(stub.z())<max) stubcount[stub.layer()][iphi]++;
 	unsigned int isector=iphi/24;
-	assert(isector<NSector);
+	assert(isector<settings.NSector());
 	stublayer1[stub.layer()][isector]++;
         stublayer[stub.layer()]++;
 
@@ -108,13 +108,13 @@
 
       cabling.addphi(dtc,stub.phi(),layer, module);
 
-      for (unsigned int k=0;k<NSector;k++) {
+      for (unsigned int k=0;k<settings.NSector();k++) {
         int diff=k-isector;
-	int nSector=NSector;
-        if (diff>nSector/2) diff-=NSector;
-        if (diff<-nSector/2) diff+=NSector;
+	int nSector=settings.NSector();
+        if (diff>nSector/2) diff-=settings.NSector();
+        if (diff<-nSector/2) diff+=settings.NSector();
 	if (abs(diff)>1) continue;
-	double phiminsect=k*2*M_PI/NSector-0.5*(settings.dphisectorHG()-2*M_PI/NSector)-M_PI/NSector;
+	double phiminsect=k*2*M_PI/settings.NSector()-0.5*(settings.dphisectorHG()-2*M_PI/settings.NSector())-M_PI/settings.NSector();
 	double dphi=stub.phi()-phiminsect;
 	if (dphi>M_PI) dphi-=2*M_PI;
 	while (dphi<0.0) dphi+=2*M_PI;
@@ -215,7 +215,7 @@
 // }
 
 if (settings.writeMem()) {
-  for (unsigned int k=0;k<NSector;k++) {
+  for (unsigned int k=0;k<settings.NSector();k++) {
     if(k==settings.writememsect())
       sectors[k]->writeInputStubs(first);
   }
@@ -231,14 +231,14 @@ if (settings.writeMem()) {
 
     if (settings.writeMonitorData("StubsLayerSector")) {
       static ofstream out("stubslayerpersector.txt");
-      for(unsigned int jj=0;jj<NSector;jj++){
+      for(unsigned int jj=0;jj<settings.NSector();jj++){
         out <<stublayer1[0][jj]<<" "<<stublayer1[1][jj]<<" "
 	    <<stublayer1[2][jj]<<" "
             <<stublayer1[3][jj]<<" "<<stublayer1[4][jj]<<" "
             <<stublayer1[5][jj]<<endl; 
       }
       static ofstream out1("stubsdiskpersector.txt");
-      for(unsigned int jj=0;jj<NSector;jj++){
+      for(unsigned int jj=0;jj<settings.NSector();jj++){
         out1 <<stubdisk1[0][jj]<<" "<<stubdisk1[1][jj]<<" "
 	    <<stubdisk1[2][jj]<<" "
             <<stubdisk1[3][jj]<<" "<<stubdisk1[4][jj]<<endl; 
@@ -249,7 +249,7 @@ if (settings.writeMem()) {
     
     if (0) {
       static ofstream out("newvmoccupancy.txt");
-      for (unsigned int ll=0;ll<24*NSector;ll++){
+      for (unsigned int ll=0;ll<24*settings.NSector();ll++){
         out<<1<<" "<<stubcount[0][ll]<<endl;
         out<<2<<" "<<stubcount[1][ll]<<endl;
         out<<3<<" "<<stubcount[2][ll]<<endl;
@@ -267,7 +267,7 @@ if (settings.writeMem()) {
     //Now start processing
 
     VMRouterTimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executeVMR();	 
       if(settings.writeMem()&&k==settings.writememsect()) {
         sectors[k]->writeInputStubs(first);	 
@@ -279,19 +279,19 @@ if (settings.writeMem()) {
     VMRouterTimer.stop();
 
     TETimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executeTE();	
     }
     TETimer.stop();
 
     TEDTimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executeTED();	
     }
     TEDTimer.stop();
 
     TRETimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executeTRE();	
       if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeST(first);
@@ -299,14 +299,14 @@ if (settings.writeMem()) {
     }
     TRETimer.stop();
 
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executeTP();	 
       if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeTPAR(first);
       } 
     }
 
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeSP(first);
       } 
@@ -314,7 +314,7 @@ if (settings.writeMem()) {
 
 
     TCTimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executeTC();	 
       if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeTPAR(first);
@@ -353,7 +353,7 @@ if (settings.writeMem()) {
 
 
       std::set<int> matchseed;
-      for (unsigned int k=0;k<NSector;k++) {
+      for (unsigned int k=0;k<settings.NSector();k++) {
 	std::set<int> matchseedtmp=sectors[k]->seedMatch(iTP);
 	matchseed.insert(matchseedtmp.begin(),matchseedtmp.end());
       }
@@ -364,7 +364,7 @@ if (settings.writeMem()) {
     } 
 
     TCDTimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executeTCD();	 
       if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeTPAR(first);
@@ -375,7 +375,7 @@ if (settings.writeMem()) {
 
 
     PRTimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executePR();	
       if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeVMPROJ(first);
@@ -385,7 +385,7 @@ if (settings.writeMem()) {
     PRTimer.stop();
     
     METimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executeME();	
       if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeCM(first);
@@ -394,19 +394,19 @@ if (settings.writeMem()) {
     METimer.stop();
 
     MCTimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executeMC();
     }
     MCTimer.stop();
 
 
     MPTimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executeMP();
     }
     MPTimer.stop();
 
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       if(settings.writeMem()&&k==settings.writememsect()){
         sectors[k]->writeMC(first);
       }
@@ -415,7 +415,7 @@ if (settings.writeMem()) {
 
 
     FTTimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executeFT();	 
       if((settings.writeMem()||settings.writeMonitorData("IFit"))&&k==settings.writememsect()){
          sectors[k]->writeTF(first);
@@ -424,7 +424,7 @@ if (settings.writeMem()) {
     FTTimer.stop();
 
     PDTimer.start();
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       sectors[k]->executePD(tracks);	  
       if(((settings.writeMem()||settings.writeMonitorData("IFit"))&&k==settings.writememsect()) || settings.writeMonitorData("CT")){
          sectors[k]->writeCT(first);
@@ -433,7 +433,7 @@ if (settings.writeMem()) {
     PDTimer.stop();
 
     bool match=false;
-    for (unsigned int k=0;k<NSector;k++) {
+    for (unsigned int k=0;k<settings.NSector();k++) {
       if (selectmu==1) {
 	if (ev.nsimtracks()>0) {
 	  match=match||sectors[k]->foundTrack(outres,simtrk);

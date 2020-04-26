@@ -21,7 +21,7 @@ public:
 #ifndef CMSSW_GIT_HASH
     printf("=============================================\n");
     printf("IMATH Tracklet Calculator %i %i", i1, i2);
-    printf("dphisector = %f\n", dphisector);
+    printf("dphisector = %f\n", settings_->dphisector());
     printf("rmaxL6 = %f, zmaxD5 = %f\n", settings->rmax(5), settings->zmax(4));
     printf("      stub Ks: kr, kphi1, kz = %g, %g, %g\n", kr, settings->kphi1(), kz);
     printf("  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g\n",
@@ -124,13 +124,13 @@ public:
   var_param r12mean{"r12mean", "Kr", 2 * settings_->rmax(5), kr};
 
   //inputs
-  var_def r1{"r1", "Kr", drmax, kr};
-  var_def r2{"r2", "Kr", drmax, kr};
+  var_def r1{"r1", "Kr", settings_->drmax(), kr};
+  var_def r2{"r2", "Kr", settings_->drmax(), kr};
   var_def z1{"z1", "Kz", zlength, kz};
   var_def z2{"z2", "Kz", zlength, kz};
 
-  var_def phi1{"phi1", "Kphi", dphisector / 0.75, settings_->kphi1()};
-  var_def phi2{"phi2", "Kphi", dphisector / 0.75, settings_->kphi1()};
+  var_def phi1{"phi1", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
+  var_def phi2{"phi2", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
 
   var_def rproj0{"rproj0", "Kr", settings_->rmax(5), kr};
   var_def rproj1{"rproj1", "Kr", settings_->rmax(5), kr};
@@ -154,7 +154,7 @@ public:
   //R LUT
   var_inv drinv{"drinv", &dr, 0, 18, 24, 0, var_inv::mode::both};
 
-  var_subtract dphi{"dphi", &phi2, &phi1, dphisector / 4.};
+  var_subtract dphi{"dphi", &phi2, &phi1, settings_->dphisector() / 4.};
   var_subtract dz{"dz", &z2, &z1, 50.};
 
   var_mult delta0{"delta0", &dphi, &drinv, delta0_max};
@@ -174,12 +174,12 @@ public:
   var_mult x6a{"x6a", &delta2, &x4, 0.04};
   var_nounits x6b{"x6b", &x6a};
   var_add x6m{"x6m", &minus1, &x6b, 2.};
-  var_mult phi0a{"phi0a", &delta1, &x6m, dphisector};
+  var_mult phi0a{"phi0a", &delta1, &x6m, settings_->dphisector()};
 
   var_mult z0a{"z0a", &r1abs, &deltaZ, 120.};
   var_mult z0b{"z0b", &z0a, &x6m, 120.};
 
-  var_add phi0{"phi0", &phi1, &phi0a, 2 * dphisector};
+  var_add phi0{"phi0", &phi1, &phi0a, 2 * settings_->dphisector()};
   var_mult rinv{"rinv", &a2n, &delta0, 2 * maxrinv};
   var_mult t{"t", &a, &deltaZ, 4};
   var_add z0{"z0", &z1, &z0b, 40.};
@@ -283,17 +283,17 @@ public:
   var_mult x13_3{"x13_3", &x5_3, &invt, x13_max};
   var_mult x13_4{"x13_4", &x5_4, &invt, x13_max};
 
-  var_mult x25_0{"x25_0", &x13_0, &x7, 2 * dphisector};
-  var_mult x25_1{"x25_1", &x13_1, &x7, 2 * dphisector};
-  var_mult x25_2{"x25_2", &x13_2, &x7, 2 * dphisector};
-  var_mult x25_3{"x25_3", &x13_3, &x7, 2 * dphisector};
-  var_mult x25_4{"x25_4", &x13_4, &x7, 2 * dphisector};
+  var_mult x25_0{"x25_0", &x13_0, &x7, 2 * settings_->dphisector()};
+  var_mult x25_1{"x25_1", &x13_1, &x7, 2 * settings_->dphisector()};
+  var_mult x25_2{"x25_2", &x13_2, &x7, 2 * settings_->dphisector()};
+  var_mult x25_3{"x25_3", &x13_3, &x7, 2 * settings_->dphisector()};
+  var_mult x25_4{"x25_4", &x13_4, &x7, 2 * settings_->dphisector()};
 
-  var_add phiD_0{"phiD_0", &phi0, &x25_0, 2 * dphisector};
-  var_add phiD_1{"phiD_1", &phi0, &x25_1, 2 * dphisector};
-  var_add phiD_2{"phiD_2", &phi0, &x25_2, 2 * dphisector};
-  var_add phiD_3{"phiD_3", &phi0, &x25_3, 2 * dphisector};
-  var_add phiD_4{"phiD_4", &phi0, &x25_4, 2 * dphisector};
+  var_add phiD_0{"phiD_0", &phi0, &x25_0, 2 * settings_->dphisector()};
+  var_add phiD_1{"phiD_1", &phi0, &x25_1, 2 * settings_->dphisector()};
+  var_add phiD_2{"phiD_2", &phi0, &x25_2, 2 * settings_->dphisector()};
+  var_add phiD_3{"phiD_3", &phi0, &x25_3, 2 * settings_->dphisector()};
+  var_add phiD_4{"phiD_4", &phi0, &x25_4, 2 * settings_->dphisector()};
 
   var_adjustK phiD_0_final{"phiD_0_final", &phiD_0, settings_->kphi1()* pow(2, SS_phiD_shift)};
   var_adjustK phiD_1_final{"phiD_1_final", &phiD_1, settings_->kphi1()* pow(2, SS_phiD_shift)};
@@ -351,16 +351,16 @@ public:
 
   var_cut r1abs_cut{&r1abs, -settings_->rmax(5), settings_->rmax(5)};
   var_cut r2abs_cut{&r2abs, -settings_->rmax(5), settings_->rmax(5)};
-  var_cut dphi_cut{&dphi, -dphisector / 4., dphisector / 4.};
+  var_cut dphi_cut{&dphi, -settings_->dphisector() / 4., settings_->dphisector() / 4.};
   var_cut dz_cut{&dz, -50., 50.};
   var_cut delta0_cut{&delta0, -delta0_max, delta0_max};
   var_cut a2a_cut{&a2a, -a2a_max, a2a_max};
   var_cut a2_cut{&a2, -3., 3.};
   var_cut x6a_cut{&x6a, -0.02, 0.02};
   var_cut x6m_cut{&x6m, -2., 2.};
-  var_cut phi0a_cut{&phi0a, -dphisector, dphisector};
+  var_cut phi0a_cut{&phi0a, -settings_->dphisector(), settings_->dphisector()};
   var_cut z0a_cut{&z0a, -120., 120.};
-  var_cut phi0_cut{&phi0, -2 * dphisector, 2 * dphisector};
+  var_cut phi0_cut{&phi0, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
   var_cut rinv_cut{&rinv, -maxrinv, maxrinv};
   var_cut t_cut{&t, -4, 4};
   var_cut z0_cut{&z0, -20., 20.};
@@ -381,16 +381,16 @@ public:
   var_cut x13_2_cut{&x13_2, -x13_max, x13_max};
   var_cut x13_3_cut{&x13_3, -x13_max, x13_max};
   var_cut x13_4_cut{&x13_4, -x13_max, x13_max};
-  var_cut x25_0_cut{&x25_0, -dphisector, dphisector};
-  var_cut x25_1_cut{&x25_1, -dphisector, dphisector};
-  var_cut x25_2_cut{&x25_2, -dphisector, dphisector};
-  var_cut x25_3_cut{&x25_3, -dphisector, dphisector};
-  var_cut x25_4_cut{&x25_4, -dphisector, dphisector};
-  var_cut phiD_0_cut{&phiD_0, -2 * dphisector, 2 * dphisector};
-  var_cut phiD_1_cut{&phiD_1, -2 * dphisector, 2 * dphisector};
-  var_cut phiD_2_cut{&phiD_2, -2 * dphisector, 2 * dphisector};
-  var_cut phiD_3_cut{&phiD_3, -2 * dphisector, 2 * dphisector};
-  var_cut phiD_4_cut{&phiD_4, -2 * dphisector, 2 * dphisector};
+  var_cut x25_0_cut{&x25_0, -settings_->dphisector(), settings_->dphisector()};
+  var_cut x25_1_cut{&x25_1, -settings_->dphisector(), settings_->dphisector()};
+  var_cut x25_2_cut{&x25_2, -settings_->dphisector(), settings_->dphisector()};
+  var_cut x25_3_cut{&x25_3, -settings_->dphisector(), settings_->dphisector()};
+  var_cut x25_4_cut{&x25_4, -settings_->dphisector(), settings_->dphisector()};
+  var_cut phiD_0_cut{&phiD_0, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
+  var_cut phiD_1_cut{&phiD_1, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
+  var_cut phiD_2_cut{&phiD_2, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
+  var_cut phiD_3_cut{&phiD_3, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
+  var_cut phiD_4_cut{&phiD_4, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
   var_cut der_phiD_cut{&der_phiD, -der_phiD_max, der_phiD_max};
   var_cut rD_0_cut{&rD_0, -rmaxdisk, rmaxdisk};
   var_cut rD_1_cut{&rD_1, -rmaxdisk, rmaxdisk};

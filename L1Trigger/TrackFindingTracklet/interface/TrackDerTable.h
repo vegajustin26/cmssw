@@ -1169,13 +1169,13 @@ public:
       disk[i] = false;
     for (unsigned int i = 0; i < nlayers; i++) {
       for (unsigned int j = 0; j < 6; j++) {
-        if (std::abs(r[i] - settings->rmean(j)) < drmax)
+        if (std::abs(r[i] - settings->rmean(j)) < settings->drmax())
           layer[j] = true;
       }
     }
     for (unsigned int i = 0; i < ndisks; i++) {
       for (unsigned int j = 0; j < 5; j++) {
-        if (std::abs(std::abs(z[i]) - settings->zmean(j)) < dzmax) {
+        if (std::abs(std::abs(z[i]) - settings->zmean(j)) < settings->dzmax()) {
           disk[j] = true;
           cout << "z zmean ndisks" << z[i] << " " << settings->zmean(j) << " " << ndisks << " " << nlayers << endl;
         }

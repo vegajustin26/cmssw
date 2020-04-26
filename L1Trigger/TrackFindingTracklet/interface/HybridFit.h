@@ -131,7 +131,7 @@ public:
     }
 
     // KF wants global phi0, not phi0 measured with respect to lower edge of sector (Tracklet convention).
-    kfphi0 = kfphi0 + iSector_ * 2 * M_PI / NSector - 0.5 * settings_->dphisectorHG();
+    kfphi0 = kfphi0 + iSector_ * 2 * M_PI / settings_->NSector() - 0.5 * settings_->dphisectorHG();
 
     if (kfphi0 > M_PI)
       kfphi0 -= 2 * M_PI;
@@ -189,7 +189,7 @@ public:
              << ", chi2 = " << trk.chi2() << ", accepted = " << trk.accepted() << endl;
 
       // Tracklet wants phi0 with respect to lower edge of sector, not global phi0.
-      double phi0fit = trk.phi0() - iSector_ * 2 * M_PI / NSector + 0.5 * settings_->dphisectorHG();
+      double phi0fit = trk.phi0() - iSector_ * 2 * M_PI / settings_->NSector() + 0.5 * settings_->dphisectorHG();
 
       if (phi0fit > M_PI)
         phi0fit -= 2 * M_PI;

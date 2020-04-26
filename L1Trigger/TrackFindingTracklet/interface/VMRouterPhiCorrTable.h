@@ -26,9 +26,9 @@ public:
     rbits_ = rbits;
 
     rbins_ = (1 << rbits);
-    rmin_ = settings->rmean(layer - 1) - drmax;
-    rmax_ = settings->rmean(layer - 1) + drmax;
-    dr_ = 2 * drmax / rbins_;
+    rmin_ = settings->rmean(layer - 1) - settings->drmax();
+    rmax_ = settings->rmean(layer - 1) + settings->drmax();
+    dr_ = 2 * settings->drmax() / rbins_;
 
     bendbins_ = (1 << bendbits);
 
@@ -50,7 +50,7 @@ public:
     double bend = Stub::benddecode(ibend, layer_ <= 3);
 
     //for the rbin - calculate the distance to the nominal layer radius
-    double Delta = (irbin + 0.5) * dr_ - drmax;
+    double Delta = (irbin + 0.5) * dr_ - settings_->drmax();
 
     //calculate the phi correction - this is a somewhat approximate formula
     double dphi = (Delta / 0.18) * (bend * 0.009) / rmean_;

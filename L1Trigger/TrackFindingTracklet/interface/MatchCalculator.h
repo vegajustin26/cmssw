@@ -15,12 +15,12 @@ public:
  MatchCalculator(string name, const Settings* settings, unsigned int iSector):
   ProcessBase(name,settings,iSector){
     
-    double dphi=2*M_PI/NSector;
-    double dphiHG=0.5*settings_->dphisectorHG()-M_PI/NSector;
+    double dphi=2*M_PI/settings_->NSector();
+    double dphiHG=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();
     phimin_=iSector_*dphi-dphiHG;
     phimax_=phimin_+dphi+2*dphiHG;
-    phimin_-=M_PI/NSector;
-    phimax_-=M_PI/NSector;
+    phimin_-=M_PI/settings_->NSector();
+    phimax_-=M_PI/settings_->NSector();
     if (phimin_>M_PI) {
       phimin_-=2*M_PI;
       phimax_-=2*M_PI;
@@ -237,7 +237,7 @@ public:
 	if (phi<0) phi+=2*M_PI;
 
 	double dr=r-tracklet->rproj(layerdisk_+1);
-	assert(std::abs(dr)<drmax);
+	assert(std::abs(dr)<settings_->drmax());
 
 	double dphi=Util::phiRange(phi-(tracklet->phiproj(layerdisk_+1)+dr*tracklet->phiprojder(layerdisk_+1)));
 	
@@ -387,10 +387,10 @@ public:
 
 	double dz=z-sign*settings_->zmean(layerdisk_-6);
 	
-	if(std::abs(dz) > dzmax){
+	if(std::abs(dz) > settings_->dzmax()){
 	  cout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed() << endl;
 	  cout << "stub "<<stub->z() <<" disk "<<disk<<" "<<dz<<endl;
-	  assert(std::abs(dz)<dzmax);
+	  assert(std::abs(dz)<settings_->dzmax());
 	}	
 		  
 
@@ -532,8 +532,8 @@ public:
 	}
 	int TCID=candmatch[i]->getFPGATracklet(indexArray[i])->TCID();
 	int dSector=0;
-	if (dSector>2) dSector-=NSector;
-	if (dSector<-2) dSector+=NSector;
+	if (dSector>2) dSector-=settings_->NSector();
+	if (dSector<-2) dSector+=settings_->NSector();
 	assert(abs(dSector)<2);
 	if (dSector==-1) dSector=2;
 	if (dSector<bestSector) {

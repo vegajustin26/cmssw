@@ -229,7 +229,7 @@ public:
 	  for(int ibend=0;ibend<(1<<nbendbitsinner);ibend++) {
 	    double bend=Stub::benddecode(ibend,nbendbitsinner==3); 
 	    
-	    bool passinner=bend-bendinnermin>-bendcut_[0][iSeed_]&&bend-bendinnermax<bendcut_[0][iSeed_]; 
+	    bool passinner=bend-bendinnermin>-settings_->bendcutte(0,iSeed_)&&bend-bendinnermax<settings_->bendcutte(0,iSeed_); 
 	    if (passinner) vmbendinner[ibend]=true;
 	    pttableinner_.push_back(passinner&&passptcut);
 	    
@@ -238,7 +238,7 @@ public:
 	  for(int ibend=0;ibend<(1<<nbendbitsouter);ibend++) {
 	    double bend=Stub::benddecode(ibend,nbendbitsouter==3); 
 	    
-	    bool passouter=bend-bendoutermin>-bendcut_[1][iSeed_]&&bend-bendoutermax<bendcut_[1][iSeed_]; 
+	    bool passouter=bend-bendoutermin>-settings_->bendcutte(1,iSeed_)&&bend-bendoutermax<settings_->bendcutte(1,iSeed_); 
 	    if (passouter) vmbendouter[ibend]=true;
 	    pttableouter_.push_back(passouter&&passptcut);
 	    

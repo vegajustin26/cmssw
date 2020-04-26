@@ -90,13 +90,6 @@ static const double rmindiskl3overlapvm=50.0;
 
 static const double half2SmoduleWidth=4.57;
 
-
-static const double drmax=rmaxdisk/32.0;
-static const double dzmax=zlength/32.0;
-
-
-//static const double rcrit=55.0;
-
 static const double ptcut=1.91; //Minimum pt // ONLY USED IN IMATH STUFF 
 static const double rinvcut=0.01*0.3*3.8/ptcut; //0.01 to convert to cm-1  // ONLY USED IN IMATH STUFF 
 
@@ -108,15 +101,6 @@ static const double z0cut=15.0;
 static const double mecut=2.0;
 static const double mecutdisk=1.5;
 
-static const double bendcut_[2][8]={ {1.25,1.25,1.25,1.25,1.25,1.25,1.25,1.25},     //inner
-				     {1.25,1.25,1.25,1.25,1.25,1.25,1.25,1.25} };     //outer
-
-static const unsigned int NSector=9; 
-
-static const double rinvmax=0.01*0.3*3.8/2.0; //0.01 to convert to cm-1
-
-
-
 // Obsolete - only used in TrackletCalculatorDisplaced (Ryd - 2020-01-16)
 static const int iphicritminmc=9253;
 static const int iphicritmaxmc=56269;
@@ -125,13 +109,9 @@ static const unsigned int NLONGVMBITS=3;
 
 static const unsigned int NLONGVMBINS=(1<<NLONGVMBITS);
 
-static const double dphisector=2*M_PI/NSector;
-
-
 //Minimal ranges for track parameters
 static const double maxrinv=0.006;
 static const double maxd0=10.;
-
 
 //These are constants defining global coordinate system
 

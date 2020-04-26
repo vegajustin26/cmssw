@@ -14,7 +14,7 @@ public:
 
   TripletEngine(string name, const Settings* settings, unsigned int iSector):
   ProcessBase(name,settings,iSector){
-    double dphi=2*M_PI/NSector;
+    double dphi=2*M_PI/settings_->NSector();
     phimin_=Util::phiRange(iSector*dphi);
     phimax_=Util::phiRange(phimin_+dphi);
     if (phimin_>phimax_)  phimin_-=2*M_PI;
