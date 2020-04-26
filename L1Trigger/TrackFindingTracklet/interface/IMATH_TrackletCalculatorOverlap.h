@@ -21,7 +21,7 @@ public:
     printf("=============================================\n");
     printf("IMATH Tracklet Calculator for Overlap %i %i", i1, i2);
     printf("dphisector = %f\n", dphisector);
-    printf("rmaxL6 = %f, zmaxD5 = %f\n", rmaxL6, zmaxD5);
+    printf("rmaxL6 = %f, zmaxD5 = %f\n", settings_->rmax(5), settings_->zmax(4));
     printf("      stub Ks: kr, kphi1, kz = %g, %g, %g\n", kr, settings->kphi1(), kz);
     printf("  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g\n",
            settings->kphi1() / kr * pow(2, rinv_shift),
@@ -110,32 +110,32 @@ public:
   var_param minus1{"minus1", -1, 10};
   //
   //
-  var_param r1mean{"r1mean", "Kr", rmaxL6, kr};
-  var_param z2mean{"z2mean", "Kz", zmaxD5, kz};
+  var_param r1mean{"r1mean", "Kr", settings_->rmax(5), kr};
+  var_param z2mean{"z2mean", "Kz", settings_->zmax(4), kz};
 
   //inputs
   var_def r1{"r1", "Kr", drmax, kr};
-  var_def r2{"r2", "Kr", rmaxL6, kr};
+  var_def r2{"r2", "Kr", settings_->rmax(5), kr};
   var_def z1{"z1", "Kz", zlength, kz};
   var_def z2{"z2", "Kz", dzmax, kz};
 
   var_def phi1{"phi1", "Kphi", dphisector / 0.75, settings_->kphi1()};
   var_def phi2{"phi2", "Kphi", dphisector / 0.75, settings_->kphi1()};
 
-  var_def rproj0{"rproj0", "Kr", rmaxL6, kr};
-  var_def rproj1{"rproj1", "Kr", rmaxL6, kr};
-  var_def rproj2{"rproj2", "Kr", rmaxL6, kr};
+  var_def rproj0{"rproj0", "Kr", settings_->rmax(5), kr};
+  var_def rproj1{"rproj1", "Kr", settings_->rmax(5), kr};
+  var_def rproj2{"rproj2", "Kr", settings_->rmax(5), kr};
 
-  var_def zproj0{"zproj0", "Kz", zmaxD5, kz};
-  var_def zproj1{"zproj1", "Kz", zmaxD5, kz};
-  var_def zproj2{"zproj2", "Kz", zmaxD5, kz};
-  var_def zproj3{"zproj3", "Kz", zmaxD5, kz};
+  var_def zproj0{"zproj0", "Kz", settings_->zmax(4), kz};
+  var_def zproj1{"zproj1", "Kz", settings_->zmax(4), kz};
+  var_def zproj2{"zproj2", "Kz", settings_->zmax(4), kz};
+  var_def zproj3{"zproj3", "Kz", settings_->zmax(4), kz};
 
   //calculations
 
   //tracklet
-  var_add r1abs{"r1abs", &r1, &r1mean, rmaxL6};
-  var_add z2abs{"z2abs", &z2, &z2mean, zmaxD5};
+  var_add r1abs{"r1abs", &r1, &r1mean, settings_->rmax(5)};
+  var_add z2abs{"z2abs", &z2, &z2mean, settings_->zmax(4)};
 
   var_subtract dr{"dr", &r2, &r1abs, dr_max};
 
@@ -311,8 +311,8 @@ public:
   var_cut rinv_final_cut{&rinv_final, -rinvcut, rinvcut};
   var_cut z0_final_cut{&z0_final, -z0cut, z0cut};
 
-  var_cut r1abs_cut{&r1abs, -rmaxL6, rmaxL6};
-  var_cut z2abs_cut{&z2abs, -zmaxD5, zmaxD5};
+  var_cut r1abs_cut{&r1abs, -settings_->rmax(5), settings_->rmax(5)};
+  var_cut z2abs_cut{&z2abs, -settings_->zmax(4), settings_->zmax(4)};
   var_cut dr_cut{&dr, -dr_max, dr_max};
   var_cut dphi_cut{&dphi, -dphisector / 4., dphisector / 4.};
   var_cut dz_cut{&dz, -50., 50.};

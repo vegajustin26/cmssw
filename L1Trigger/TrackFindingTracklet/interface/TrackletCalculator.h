@@ -136,18 +136,18 @@ public:
     
     if (iSeed_==4||iSeed_==5) {
       if (disk_==1) {
-	zproj_[0]=zmeanD3;
-	zproj_[1]=zmeanD4;
-	zproj_[2]=zmeanD5;
+	zproj_[0]=settings_->zmean(2);
+	zproj_[1]=settings_->zmean(3);
+	zproj_[2]=settings_->zmean(4);
 	dproj_[0]=3;
 	dproj_[1]=4;
 	dproj_[2]=5;
       }
       
       if (disk_==3) {
-	zproj_[0]=zmeanD1;
-	zproj_[1]=zmeanD2;
-	zproj_[2]=zmeanD5;
+	zproj_[0]=settings_->zmean(0);
+	zproj_[1]=settings_->zmean(1);
+	zproj_[2]=settings_->zmean(4);
 	dproj_[0]=1;
 	dproj_[1]=2;
 	dproj_[2]=5;
@@ -156,10 +156,10 @@ public:
     
     
     if (iSeed_==6||iSeed_==7) {
-      zprojoverlap_[0]=zmeanD2;
-      zprojoverlap_[1]=zmeanD3;
-      zprojoverlap_[2]=zmeanD4;
-      zprojoverlap_[3]=zmeanD5;
+      zprojoverlap_[0]=settings_->zmean(1);
+      zprojoverlap_[1]=settings_->zmean(2);
+      zprojoverlap_[2]=settings_->zmean(3);
+      zprojoverlap_[3]=settings_->zmean(4);
     }
     
     if (settings_->usephicritapprox()) {

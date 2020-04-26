@@ -389,7 +389,11 @@ namespace Trklet{
     double rcut2S(unsigned int iSeed, unsigned int idisk) const {return rcut2S_[idisk][iSeed];}
 
     double rmean(unsigned int iLayer) const {return rmean_[iLayer];}
+    double rmax(unsigned int iLayer) const {return rmean_[iLayer]+drmax_;}
+    double rmin(unsigned int iLayer) const {return rmean_[iLayer]-drmax_;}
     double zmean(unsigned int iDisk) const {return zmean_[iDisk];}
+    double zmax(unsigned int iDisk) const {return zmean_[iDisk]+dzmax_;}
+    double zmin(unsigned int iDisk) const {return zmean_[iDisk]-dzmax_;}
 
     double rDSSinner(unsigned int iBin) const {return rDSSinner_[iBin];} 
     double rDSSouter(unsigned int iBin) const {return rDSSouter_[iBin];} 

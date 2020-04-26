@@ -181,8 +181,8 @@ public:
        dproj_[0]=1;
        dproj_[1]=2;
        dproj_[2]=0;
-       toZ_.push_back(zmeanD1);
-       toZ_.push_back(zmeanD2);
+       toZ_.push_back(settings_->zmean(0));
+       toZ_.push_back(settings_->zmean(1));
        
      }     
      if (layer_==5) {
@@ -208,9 +208,9 @@ public:
        lproj_[1]=-1;
        lproj_[2]=-1;
 
-       zproj_[0]=zmeanD2;
-       zproj_[1]=zmeanD3;
-       zproj_[2]=zmeanD4;
+       zproj_[0]=settings_->zmean(1);
+       zproj_[1]=settings_->zmean(2);
+       zproj_[2]=settings_->zmean(3);
        dproj_[0]=2;
        dproj_[1]=3;
        dproj_[2]=4;
@@ -221,9 +221,9 @@ public:
        lproj_[1]=-1;
        lproj_[2]=-1;
 
-       zproj_[0]=zmeanD3;
-       zproj_[1]=zmeanD4;
-       zproj_[2]=zmeanD5;
+       zproj_[0]=settings_->zmean(2);
+       zproj_[1]=settings_->zmean(3);
+       zproj_[2]=settings_->zmean(4);
        dproj_[0]=3;
        dproj_[1]=4;
        dproj_[2]=5;

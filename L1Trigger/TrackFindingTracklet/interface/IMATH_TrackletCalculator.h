@@ -22,7 +22,7 @@ public:
     printf("=============================================\n");
     printf("IMATH Tracklet Calculator %i %i", i1, i2);
     printf("dphisector = %f\n", dphisector);
-    printf("rmaxL6 = %f, zmaxD5 = %f\n", rmaxL6, zmaxD5);
+    printf("rmaxL6 = %f, zmaxD5 = %f\n", settings->rmax(5), settings->zmax(4));
     printf("      stub Ks: kr, kphi1, kz = %g, %g, %g\n", kr, settings->kphi1(), kz);
     printf("  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g\n",
            settings->kphi1() / kr * pow(2, rinv_shift),
@@ -119,9 +119,9 @@ public:
   var_param minus1{"minus1", -1., 10};
   //
   //
-  var_param r1mean{"r1mean", "Kr", rmaxL6, kr};
-  var_param r2mean{"r2mean", "Kr", rmaxL6, kr};
-  var_param r12mean{"r12mean", "Kr", 2 * rmaxL6, kr};
+  var_param r1mean{"r1mean", "Kr", settings_->rmax(5), kr};
+  var_param r2mean{"r2mean", "Kr", settings_->rmax(5), kr};
+  var_param r12mean{"r12mean", "Kr", 2 * settings_->rmax(5), kr};
 
   //inputs
   var_def r1{"r1", "Kr", drmax, kr};
@@ -132,22 +132,22 @@ public:
   var_def phi1{"phi1", "Kphi", dphisector / 0.75, settings_->kphi1()};
   var_def phi2{"phi2", "Kphi", dphisector / 0.75, settings_->kphi1()};
 
-  var_def rproj0{"rproj0", "Kr", rmaxL6, kr};
-  var_def rproj1{"rproj1", "Kr", rmaxL6, kr};
-  var_def rproj2{"rproj2", "Kr", rmaxL6, kr};
-  var_def rproj3{"rproj3", "Kr", rmaxL6, kr};
+  var_def rproj0{"rproj0", "Kr", settings_->rmax(5), kr};
+  var_def rproj1{"rproj1", "Kr", settings_->rmax(5), kr};
+  var_def rproj2{"rproj2", "Kr", settings_->rmax(5), kr};
+  var_def rproj3{"rproj3", "Kr", settings_->rmax(5), kr};
 
-  var_def zproj0{"zproj0", "Kz", zmaxD5, kz};
-  var_def zproj1{"zproj1", "Kz", zmaxD5, kz};
-  var_def zproj2{"zproj2", "Kz", zmaxD5, kz};
-  var_def zproj3{"zproj3", "Kz", zmaxD5, kz};
-  var_def zproj4{"zproj4", "Kz", zmaxD5, kz};
+  var_def zproj0{"zproj0", "Kz", settings_->zmax(4), kz};
+  var_def zproj1{"zproj1", "Kz", settings_->zmax(4), kz};
+  var_def zproj2{"zproj2", "Kz", settings_->zmax(4), kz};
+  var_def zproj3{"zproj3", "Kz", settings_->zmax(4), kz};
+  var_def zproj4{"zproj4", "Kz", settings_->zmax(4), kz};
 
   //calculations
 
   //tracklet
-  var_add r1abs{"r1abs", &r1, &r1mean, rmaxL6};
-  var_add r2abs{"r2abs", &r2, &r2mean, rmaxL6};
+  var_add r1abs{"r1abs", &r1, &r1mean, settings_->rmax(5)};
+  var_add r2abs{"r2abs", &r2, &r2mean, settings_->rmax(5)};
 
   var_subtract dr{"dr", &r2, &r1};
 
@@ -349,8 +349,8 @@ public:
   var_cut z0_final_L1_cut{-z0cut, z0cut};
   var_cut z0_final_cut{-1.5 * z0cut, 1.5 * z0cut};
 
-  var_cut r1abs_cut{&r1abs, -rmaxL6, rmaxL6};
-  var_cut r2abs_cut{&r2abs, -rmaxL6, rmaxL6};
+  var_cut r1abs_cut{&r1abs, -settings_->rmax(5), settings_->rmax(5)};
+  var_cut r2abs_cut{&r2abs, -settings_->rmax(5), settings_->rmax(5)};
   var_cut dphi_cut{&dphi, -dphisector / 4., dphisector / 4.};
   var_cut dz_cut{&dz, -50., 50.};
   var_cut delta0_cut{&delta0, -delta0_max, delta0_max};
