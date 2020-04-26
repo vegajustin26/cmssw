@@ -163,7 +163,7 @@ public:
     }
     
     if (settings_->usephicritapprox()) {
-      double phicritFactor = 0.5 * rcrit *GlobalHistTruth::ITC_L1L2()->rinv_final.get_K() /GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
+      double phicritFactor = 0.5 * settings_->rcrit() *GlobalHistTruth::ITC_L1L2()->rinv_final.get_K() /GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
       if (std::abs(phicritFactor - 2.) > 0.25)
         cout << "TrackletCalculator::TrackletCalculator phicrit approximation may be invalid! Please check." << endl;
     }

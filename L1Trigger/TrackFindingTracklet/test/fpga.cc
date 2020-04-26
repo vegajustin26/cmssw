@@ -536,8 +536,8 @@ int main(const int argc, const char** argv)
 	  if (itrackmatch>=0) {
 	    dpt=tracks[itrackmatch]->pt()-q*simtrack.pt();
 	    dphi=tracks[itrackmatch]->phi0(&settings)-simtrack.phi();
-	    if (dphi>0.5*two_pi) dphi-=two_pi;
-	    if (dphi<-0.5*two_pi) dphi+=two_pi;
+	    if (dphi>M_PI) dphi-=2*M_PI;
+	    if (dphi<-M_PI) dphi+=2*M_PI;
 	    deta=tracks[itrackmatch]->eta()-simtrack.eta();
 	    dz0=tracks[itrackmatch]->z0()-simtrack.vz();
 	    //cout <<" z0 "<<tracks[itrackmatch]->z0()<<" "<<simtrack.vz()<<endl;
@@ -564,12 +564,12 @@ int main(const int argc, const char** argv)
     for(unsigned int l=0;l<tracks.size();l++) {
       //  cout <<tracks[l].duplicate()<<" ";
       if (settings.writeMonitorData("Pars")) {
-	double phi=tracks[l]->iphi0()*kphi0pars+tracks[l]->sector()*two_pi/NSector;
-	if (phi>0.5*two_pi) phi-=two_pi;
-	double phisec=phi-two_pi;
-	while (phisec<0.0) phisec+=two_pi/NSector;
+	double phi=tracks[l]->iphi0()*kphi0pars+tracks[l]->sector()*2*M_PI/NSector;
+	if (phi>M_PI) phi-=2*M_PI;
+	double phisec=phi-2*M_PI;
+	while (phisec<0.0) phisec+=2*M_PI/NSector;
 	outpars  <<tracks[l]->duplicate()<<" "<<asinh(tracks[l]->it()*ktpars)<<" "
-		 <<phi<<" "<<tracks[l]->iz0()*kz<<" "<<phisec/(two_pi/NSector)<<" "
+		 <<phi<<" "<<tracks[l]->iz0()*kz<<" "<<phisec/(2*M_PI/NSector)<<" "
 		 <<tracks[l]->irinv()*krinvpars<<endl;
       }   	
       if (!tracks[l]->duplicate()) {

@@ -464,6 +464,8 @@ namespace Trklet{
 
     double dphisectorHG() const { return 2*M_PI/NSector_+2*fmax(std::abs(asin(0.5*rinvmax_*rmean(0))-asin(0.5*rinvmax_*rcrit_)),
 								std::abs(asin(0.5*rinvmax_*rmean(5))-asin(0.5*rinvmax_*rcrit_)));}
+
+    double rcrit() const { return rcrit_; }
     
     double phicritmin() const { return 0.5*dphisectorHG()-M_PI/NSector_; }
     double phicritmax() const { return dphisectorHG()-0.5*dphisectorHG()+M_PI/NSector_; }

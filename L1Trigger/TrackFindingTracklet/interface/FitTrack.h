@@ -971,7 +971,7 @@ class FitTrack:public ProcessBase{
    if(ichisqfit >= (1<<8)) ichisqfit = (1<<8)-1;
 
 
-   double phicrit=phi0fit-asin(0.5*rcrit*rinvfit);
+   double phicrit=phi0fit-asin(0.5*settings_->rcrit()*rinvfit);
    bool keep=(phicrit>settings_->phicritmin())&&(phicrit<settings_->phicritmax());
 
    

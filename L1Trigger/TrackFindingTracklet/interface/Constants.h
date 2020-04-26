@@ -81,26 +81,6 @@ static const int chisqzfactbits=14;
 static const double zlength=120.0;
 static const double rmaxdisk=120.0;
 
-
-// these assume either "TDR" tracker geometry (T5 or T6), or otherwise most recent T14 tracker 
-// T5: http://cms-tklayout.web.cern.ch/cms-tklayout/layouts/recent-layouts/OT616_200_IT404/layout.html
-// T14: http://cms-tklayout.web.cern.ch/cms-tklayout/layouts/recent-layouts/OT616_200_IT404/layout.html
-
-/*
-static const double rmeanL1=geomTkTDR?(rmaxdisk*858)/4096:(rmaxdisk*851)/4096;
-static const double rmeanL2=geomTkTDR?(rmaxdisk*1279)/4096:(rmaxdisk*1269)/4096;
-static const double rmeanL3=geomTkTDR?(rmaxdisk*1795)/4096:(rmaxdisk*1784)/4096;
-static const double rmeanL4=geomTkTDR?(rmaxdisk*2347)/4096:(rmaxdisk*2347)/4096;
-static const double rmeanL5=geomTkTDR?(rmaxdisk*2937)/4096:(rmaxdisk*2936)/4096;
-static const double rmeanL6=geomTkTDR?(rmaxdisk*3783)/4096:(rmaxdisk*3697)/4096;
-
-static const double zmeanD1=(zlength*2239)/2048;
-static const double zmeanD2=(zlength*2645)/2048;
-static const double zmeanD3=(zlength*3163)/2048;
-static const double zmeanD4=(zlength*3782)/2048;
-static const double zmeanD5=(zlength*4523)/2048;
-*/
-
 static const double rmindiskvm=22.5;
 static const double rmaxdiskvm=67.0;
 
@@ -115,9 +95,7 @@ static const double drmax=rmaxdisk/32.0;
 static const double dzmax=zlength/32.0;
 
 
-static const double rcrit=55.0;
-
-static const double two_pi=2*M_PI;
+//static const double rcrit=55.0;
 
 static const double ptcut=1.91; //Minimum pt // ONLY USED IN IMATH STUFF 
 static const double rinvcut=0.01*0.3*3.8/ptcut; //0.01 to convert to cm-1  // ONLY USED IN IMATH STUFF 

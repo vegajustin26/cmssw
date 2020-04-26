@@ -1050,7 +1050,7 @@ public:
     
     if (!success) return false;
 
-    double phicrit=phi0approx-asin(0.5*rcrit*rinvapprox);
+    double phicrit=phi0approx-asin(0.5*settings_->rcrit()*rinvapprox);
     int phicritapprox=iphi0-2*irinv;
     bool keep=(phicrit>settings_->phicritminmc())&&(phicrit<settings_->phicritmaxmc()),
          keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);
@@ -1331,7 +1331,7 @@ public:
     
     if (!success) return false;
 
-    double phicrit=phi0approx-asin(0.5*rcrit*rinvapprox);
+    double phicrit=phi0approx-asin(0.5*settings_->rcrit()*rinvapprox);
     int phicritapprox=iphi0-2*irinv;
     bool keep=(phicrit>settings_->phicritminmc())&&(phicrit<settings_->phicritmaxmc()),
          keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);
@@ -1601,7 +1601,7 @@ public:
     
     if (!success) return false;
 
-    double phicrit=phi0approx-asin(0.5*rcrit*rinvapprox);
+    double phicrit=phi0approx-asin(0.5*settings_->rcrit()*rinvapprox);
     int phicritapprox=iphi0-2*irinv;
     bool keep=(phicrit>settings_->phicritminmc())&&(phicrit<settings_->phicritmaxmc()),
          keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);

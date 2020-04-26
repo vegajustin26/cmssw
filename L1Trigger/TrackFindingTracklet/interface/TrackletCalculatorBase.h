@@ -278,9 +278,9 @@ public:
 
   bool inSector(int iphi0, int irinv, double phi0approx, double rinvapprox) {
       
-    double phicritapprox=phi0approx-asin(0.5*rcrit*rinvapprox);
+    double phicritapprox=phi0approx-asin(0.5*settings_->rcrit()*rinvapprox);
 
-    int ifactor=0.5*rcrit*krinvpars/kphi0pars*(1<<8);
+    int ifactor=0.5*settings_->rcrit()*krinvpars/kphi0pars*(1<<8);
     int iphicrit=iphi0-(irinv>>8)*ifactor;
   
     int iphicritmincut=settings_->phicritminmc()/GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();

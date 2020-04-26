@@ -56,8 +56,8 @@
       double phi=stub.phi();
       phi+=0.5*settings.dphisectorHG();
 
-      if (phi<0.0) phi+=two_pi;
-      unsigned int isector=NSector*phi/two_pi;
+      if (phi<0.0) phi+=2*M_PI;
+      unsigned int isector=NSector*phi/(2*M_PI);
       assert(isector<NSector);
 
 
@@ -69,8 +69,8 @@
 	stub.lorentzcor(-40.0/10000.0);
 
         double phi=stub.phi();
-        if (phi<0.0) phi+=two_pi;
-        unsigned int iphi=24*NSector*phi/two_pi;
+        if (phi<0.0) phi+=2*M_PI;
+        unsigned int iphi=24*NSector*phi/(2*M_PI);
         assert(iphi<24*NSector);
 	double max=115.0;
 	if (stub.layer()==0) max=70.0;
@@ -114,10 +114,10 @@
         if (diff>nSector/2) diff-=NSector;
         if (diff<-nSector/2) diff+=NSector;
 	if (abs(diff)>1) continue;
-	double phiminsect=k*two_pi/NSector-0.5*(settings.dphisectorHG()-two_pi/NSector)-0.5*two_pi/NSector;
+	double phiminsect=k*2*M_PI/NSector-0.5*(settings.dphisectorHG()-2*M_PI/NSector)-M_PI/NSector;
 	double dphi=stub.phi()-phiminsect;
-	if (dphi>0.5*two_pi) dphi-=two_pi;
-	while (dphi<0.0) dphi+=two_pi;
+	if (dphi>M_PI) dphi-=2*M_PI;
+	while (dphi<0.0) dphi+=2*M_PI;
 	if (dphi>settings.dphisectorHG()) continue;
         bool add=sectors[k]->addStub(stub,dtcbase);
 

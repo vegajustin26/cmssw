@@ -157,7 +157,8 @@ public:
 	zproj_[1]=settings_->zmean(1);
 	zproj_[2]=settings_->zmean(4);
 	dproj_[0]=1;
-	dproj_[1]=2;dproj_[2]=5;
+	dproj_[1]=2;
+	dproj_[2]=5;
       }
     }
     
@@ -170,7 +171,7 @@ public:
     }
     
     if (settings_->usephicritapprox()) {
-      double phicritFactor = 0.5 * rcrit *GlobalHistTruth::ITC_L1L2()->rinv_final.get_K() /GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
+      double phicritFactor = 0.5 * settings_->rcrit() *GlobalHistTruth::ITC_L1L2()->rinv_final.get_K() /GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
       if (std::abs(phicritFactor - 2.) > 0.25)
         cout << "TrackletProcessor::TrackletProcessor phicrit approximation may be invalid! Please check." << endl;
     }
