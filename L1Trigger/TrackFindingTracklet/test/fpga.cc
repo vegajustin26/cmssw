@@ -88,6 +88,21 @@ int main(const int argc, const char** argv)
   GlobalHistTruth::ITC_L1B1()=ITC_L1B1;
   GlobalHistTruth::ITC_L2B1()=ITC_L2B1;
 
+  settings.krinvpars() = ITC_L1L2->rinv_final.get_K();
+  settings.kphi0pars() = ITC_L1L2->phi0_final.get_K();
+  settings.kd0pars()   = settings.kd0();
+  settings.ktpars()    = ITC_L1L2->t_final.get_K();
+  settings.kz0pars()   = ITC_L1L2->z0_final.get_K();
+  settings.kphiproj123() =kphi0pars*4;
+  settings.kzproj()=settings.kz();
+  settings.kphider()=krinvpars*(1<<settings.phiderbitshift());
+  settings.kzder()=ktpars*(1<<settings.zderbitshift());
+  settings.krprojshiftdisk() = ITC_L1L2->rD_0_final.get_K();
+  settings.kphiprojdisk()=kphi0pars*4.0;
+  settings.krdisk() = settings.kr();
+  settings.kzpars() = settings.kz();  
+
+  
   
   krinvpars = ITC_L1L2->rinv_final.get_K();
   kphi0pars = ITC_L1L2->phi0_final.get_K();
@@ -101,13 +116,12 @@ int main(const int argc, const char** argv)
 
   //those can be made more transparent...
   kphiproj123=kphi0pars*4;
-  kphiproj456=kphi0pars/2;
+  //kphiproj456=kphi0pars/2;
   kzproj=settings.kz();
   kphider=krinvpars*(1<<settings.phiderbitshift());
   kzder=ktpars*(1<<settings.zderbitshift());
   kphiprojdisk=kphi0pars*4.0;
-  //krprojderdiskshift=krprojderdisk*(1<<rderdiskbitshift);
-  //krprojderdisk=(1.0/ktpars)/(1<<t2bits);
+
 
   cout << "=========================================================" << endl;
   cout << "Conversion factors for global coordinates:"<<endl;
@@ -531,12 +545,12 @@ int main(const int argc, const char** argv)
 	  }
 
 	  if (itrackmatch>=0) {
-	    dpt=tracks[itrackmatch]->pt()-q*simtrack.pt();
+	    dpt=tracks[itrackmatch]->pt(&settings)-q*simtrack.pt();
 	    dphi=tracks[itrackmatch]->phi0(&settings)-simtrack.phi();
 	    if (dphi>M_PI) dphi-=2*M_PI;
 	    if (dphi<-M_PI) dphi+=2*M_PI;
-	    deta=tracks[itrackmatch]->eta()-simtrack.eta();
-	    dz0=tracks[itrackmatch]->z0()-simtrack.vz();
+	    deta=tracks[itrackmatch]->eta(&settings)-simtrack.eta();
+	    dz0=tracks[itrackmatch]->z0(&settings)-simtrack.vz();
 	    //cout <<" z0 "<<tracks[itrackmatch]->z0()<<" "<<simtrack.vz()<<endl;
 	  }
 

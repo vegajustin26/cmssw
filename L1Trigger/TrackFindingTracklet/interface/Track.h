@@ -78,7 +78,7 @@ public:
   int duplicate() const { return duplicate_; }
   int sector() const { return sector_; }
 
-  double pt(double bfield = 3.811202) const { return (0.3 * bfield / 100.0) / (irinv_ * krinvpars); }
+  double pt(const Settings* settings, double bfield = 3.811202) const { return (0.3 * bfield / 100.0) / (irinv_ * settings->krinvpars()); }
   double phi0(const Settings* settings) const {
     double dphi = 2 * M_PI / settings->NSector();
     double dphiHG = 0.5 * settings->dphisectorHG() - M_PI / settings->NSector();
@@ -92,13 +92,13 @@ public:
       phimin -= 2 * M_PI;
     double phioffset = phimin;
 
-    return iphi0_ * kphi0pars + phioffset;
+    return iphi0_ * settings->kphi0pars() + phioffset;
   }
-  double eta() const { return asinh(it_ * ktpars); }
-  double tanL() const { return it_ * ktpars; }
-  double z0() const { return iz0_ * kz0pars; }
-  double rinv() const { return irinv_ * krinvpars; }
-  double d0() const { return id0_ * kd0pars; }  //Fix when fit for 5 pars
+  double eta(const Settings* settings) const { return asinh(it_ * settings->ktpars()); }
+  double tanL(const Settings* settings) const { return it_ * settings->ktpars(); }
+  double z0(const Settings* settings) const { return iz0_ * settings->kz0pars(); }
+  double rinv(const Settings* settings) const { return irinv_ * settings->krinvpars(); }
+  double d0(const Settings* settings) const { return id0_ * settings->kd0pars(); }  //Fix when fit for 5 pars
   double chisq() const { return chisqrphi_ + chisqrz_; }
 
   double chisqrphi() const { return chisqrphi_; }

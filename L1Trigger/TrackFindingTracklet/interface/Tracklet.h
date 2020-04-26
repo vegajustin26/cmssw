@@ -235,11 +235,11 @@ public:
   std::string trackletparstr() {
     std::ostringstream oss;
     if(settings_->writeoutReal()){
-      oss << fpgapars_.rinv().value()*krinvpars<<" "
-	  << fpgapars_.phi0().value()*kphi0pars<<" "
-	  << fpgapars_.d0().value()*kd0pars<<" "
+      oss << fpgapars_.rinv().value()*settings_->krinvpars()<<" "
+	  << fpgapars_.phi0().value()*settings_->kphi0pars()<<" "
+	  << fpgapars_.d0().value()*settings_->kd0pars()<<" "
 	  << fpgapars_.z0().value()*settings_->kz()<<" "
-	  << fpgapars_.t().value()*ktpars;
+	  << fpgapars_.t().value()*settings_->ktpars();
     }
     
     //Binary Print out
@@ -1190,10 +1190,10 @@ public:
     
     // real Q print out for fitted tracks
     if(settings_->writeoutReal()){
-      oss << (fpgafitpars_.rinv().value())*krinvpars<<" "
-	  << (fpgafitpars_.phi0().value())*kphi0pars<<" "
-	  << (fpgafitpars_.d0().value())*kd0pars<<" "
-	  << (fpgafitpars_.t().value())*ktpars<<" "
+      oss << (fpgafitpars_.rinv().value())*settings_->krinvpars()<<" "
+	  << (fpgafitpars_.phi0().value())*settings_->kphi0pars()<<" "
+	  << (fpgafitpars_.d0().value())*settings_->kd0pars()<<" "
+	  << (fpgafitpars_.t().value())*settings_->ktpars()<<" "
 	  << (fpgafitpars_.z0().value())*settings_->kz()<<" "
 	  << innerFPGAStub_->phiregionaddressstr()<<" ";
       if (middleFPGAStub_) {
@@ -1298,8 +1298,8 @@ public:
 
   bool foundTrack(L1SimTrack simtrk,double phioffset){
 
-    double deta=simtrk.eta()-asinh(itfit().value()*ktpars);
-    double dphi=Util::phiRange(simtrk.phi()-(iphi0fit().value()*kphi0pars+phioffset));
+    double deta=simtrk.eta()-asinh(itfit().value()*settings_->ktpars());
+    double dphi=Util::phiRange(simtrk.phi()-(iphi0fit().value()*settings_->kphi0pars()+phioffset));
     
     bool found=(std::abs(deta)<0.06)&&(std::abs(dphi)<0.01);
     

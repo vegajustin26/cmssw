@@ -198,11 +198,11 @@ public:
 
       double rinvfit = 0.01 * 0.3 * TMTTsettings.getBfield() * trk.qOverPt();
 
-      int irinvfit = rinvfit / krinvpars;
-      int iphi0fit = phi0fit / kphi0pars;
-      int itanlfit = trk.tanLambda() / ktpars;
-      int iz0fit = trk.z0() / kz0pars;
-      int id0fit = trk.d0() / kd0pars;
+      int irinvfit = rinvfit / settings_->krinvpars();
+      int iphi0fit = phi0fit / settings_->kphi0pars();
+      int itanlfit = trk.tanLambda() / settings_->ktpars();
+      int iz0fit = trk.z0() / settings_->kz0pars();
+      int id0fit = trk.d0() / settings_->kd0pars;
       int ichi2rphifit = trk.chi2rphi() / 16;
       int ichi2rzfit = trk.chi2rz() / 16;
 

@@ -65,12 +65,12 @@ public:
                  << tracklet->phi0fit() + phioffset << " " << asinh(tracklet->tfit()) << " " << tracklet->z0fit()
                  << "   " << (0.3 * 3.8 / 100.0) / tracklet->rinvfitexact() << " "
                  << tracklet->phi0fitexact() + phioffset << " " << asinh(tracklet->tfitexact()) << " "
-                 << tracklet->z0fitexact() << "   " << (0.3 * 3.8 / 100.0) / (irinv * krinvpars) << " "
-                 << tracklet->iphi0fit().value() * kphi0pars + phioffset << " "
-                 << asinh(tracklet->itfit().value() * ktpars) << " " << tracklet->iz0fit().value() * settings_->kz() << "   "
-                 << (0.3 * 3.8 / 100.0) / (1e-20 + tracklet->fpgarinv().value() * krinvpars) << " "
-                 << tracklet->fpgaphi0().value() * kphi0pars + phioffset << " "
-                 << asinh(tracklet->fpgat().value() * ktpars) << " " << tracklet->fpgaz0().value() * settings_->kz()
+                 << tracklet->z0fitexact() << "   " << (0.3 * 3.8 / 100.0) / (irinv * settings_->krinvpars()) << " "
+                 << tracklet->iphi0fit().value() * settings_->kphi0pars() + phioffset << " "
+                 << asinh(tracklet->itfit().value() * settings_->ktpars()) << " " << tracklet->iz0fit().value() * settings_->kz() << "   "
+                 << (0.3 * 3.8 / 100.0) / (1e-20 + tracklet->fpgarinv().value() * settings_->krinvpars()) << " "
+                 << tracklet->fpgaphi0().value() * settings_->kphi0pars() + phioffset << " "
+                 << asinh(tracklet->fpgat().value() * settings_->ktpars()) << " " << tracklet->fpgaz0().value() * settings_->kz()
                  << "               " << (0.3 * 3.8 / 100.0) / (1e-20 + tracklet->rinvapprox()) << " "
                  << tracklet->phi0approx() + phioffset << " " << asinh(tracklet->tapprox()) << " "
                  << tracklet->z0approx() << endl;

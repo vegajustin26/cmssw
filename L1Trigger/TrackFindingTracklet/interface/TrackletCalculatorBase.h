@@ -280,7 +280,7 @@ public:
       
     double phicritapprox=phi0approx-asin(0.5*settings_->rcrit()*rinvapprox);
 
-    int ifactor=0.5*settings_->rcrit()*krinvpars/kphi0pars*(1<<8);
+    int ifactor=0.5*settings_->rcrit()*settings_->krinvpars()/settings_->kphi0pars()*(1<<8);
     int iphicrit=iphi0-(irinv>>8)*ifactor;
   
     int iphicritmincut=settings_->phicritminmc()/GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();

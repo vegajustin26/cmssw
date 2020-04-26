@@ -357,7 +357,7 @@ public:
         phiBin = std::max(phiBin,0.);
         phiBin = std::min(phiBin,34.);
 
-        double ptBin = 1/inputtracks_[itrk]->pt()*40+20;
+        double ptBin = 1/inputtracks_[itrk]->pt(settings_)*40+20;
         ptBin = std::max(ptBin,0.);
         ptBin = std::min(ptBin,39.);
 

@@ -563,6 +563,21 @@ namespace Trklet{
     int chisqphifactbits() const { return chisqphifactbits_; }
     int chisqzfactbits() const { return chisqzfactbits_; }
 
+    //should not return reference...
+    double& krinvpars() const {return krinvpars_; }
+    double& kphi0pars() const {return kphi0pars_; }
+    double& kd0pars() const {return kd0pars_; }
+    double& ktpars() const {return ktpars_; }
+    double& kz0pars() const {return kz0pars_; }
+    double& kphiproj123() const {return kphiproj123_; }
+    double& kzproj() const {return kzproj_; }
+    double& kphider() const {return kphider_; }
+    double& kzder() const {return kzder_; }
+    double& krprojshiftdisk() const {return krprojshiftdisk_; }
+    double& kphiprojdisk() const {return kphiprojdisk_; }
+    double& krdisk() const {return krdisk_; }
+    double& kzpars() const {return kzpars_; }
+
     
   private:
 
@@ -755,6 +770,24 @@ namespace Trklet{
     std::string fitpatternfile_;
     std::string skimfile_;
 
+
+    //constants derivative from the above - FIXME should be calculated in Settings.h, not set externally
+    //then we can remove the mutable
+    
+    mutable double krinvpars_;
+    mutable double kphi0pars_;
+    mutable double kd0pars_;
+    mutable double ktpars_;
+    mutable double kz0pars_;
+    mutable double kphiproj123_;
+    mutable double kzproj_;
+    mutable double kphider_;
+    mutable double kzder_;
+    mutable double krprojshiftdisk_;
+    mutable double kphiprojdisk_;
+    mutable double krdisk_;
+    mutable double kzpars_;
+    
   };
 }
 
