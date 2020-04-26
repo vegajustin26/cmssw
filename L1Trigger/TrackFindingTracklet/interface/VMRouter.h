@@ -289,7 +289,7 @@ public:
 	if (rstub<rmindiskvm) {
 	  finebintable_.push_back(-1);
 	} else {	
-	  int rfine=64*(rstub-rmindiskvm)/(rmaxdisk-rmindiskvm);
+	  int rfine=64*(rstub-rmindiskvm)/(settings_->rmaxdisk()-rmindiskvm);
 	  finebintable_.push_back(rfine);
 	}
       }

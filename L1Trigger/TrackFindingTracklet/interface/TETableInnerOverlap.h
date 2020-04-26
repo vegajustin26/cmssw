@@ -52,9 +52,9 @@ public:
     dr_=2*settings->drmax()/rbins_;
 
     zbins_=(1<<zbits);
-    zminl1_=-zlength;
-    zmaxl1_=zlength;
-    dz_=2*zlength/zbins_;
+    zminl1_=-settings->zlength();
+    zmaxl1_=settings->zlength();
+    dz_=2*settings->zlength()/zbins_;
 
     assert(layer1==1||layer1==2);
     
@@ -74,7 +74,7 @@ public:
     for (int izbin=0;izbin<zbins_;izbin++) {
       for (int irbin=0;irbin<rbins_;irbin++) {
 	//int ibin=irbin+izbin*rbins_;
-	int value=getLookupValue(izbin,irbin);
+	int value=getLookupValue(settings,izbin,irbin);
 	//cout << "table "<<table_.size()<<" "<<value<<" "<<rmeanl2_<<endl;
 	table_.push_back(value);
       }
@@ -87,7 +87,7 @@ public:
   }
 
   // negative return means that seed can not be formed
-  int getLookupValue(int izbin, int irbin){
+  int getLookupValue(const Settings* settings, int izbin, int irbin){
 
     bool print=false;
     //print=(izbin==127)&&(irbin==2);
@@ -101,8 +101,8 @@ public:
     if (std::abs(z1)<=z0cut) return -1;
     if (std::abs(z2)<=z0cut) return -1;
 
-    double rmaxd2=-2*rmaxdisk;
-    double rmind2=2*rmaxdisk;
+    double rmaxd2=-2*settings->rmaxdisk();
+    double rmind2=2*settings->rmaxdisk();
 
     findr(r1,z1,rmind2,rmaxd2);
     findr(r1,z2,rmind2,rmaxd2);

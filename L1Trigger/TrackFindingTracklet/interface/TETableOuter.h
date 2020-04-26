@@ -32,16 +32,16 @@ public:
     dr_ = 2 * settings->drmax() / rbins_;
 
     zbins_ = (1 << zbits);
-    zmin_ = -zlength;
-    zmax_ = zlength;
-    dz_ = 2 * zlength / zbins_;
+    zmin_ = -settings->zlength();
+    zmax_ = settings->zlength();
+    dz_ = 2 * settings->zlength() / zbins_;
 
     rmean_ = settings->rmean(layer - 1);
 
     for (int izbin = 0; izbin < zbins_; izbin++) {
       for (int irbin = 0; irbin < rbins_; irbin++) {
         //int ibin=irbin+izbin*rbins_;
-        int value = getLookupValue(izbin, irbin);
+        int value = getLookupValue(settings, izbin, irbin);
         table_.push_back(value);
       }
     }
@@ -52,7 +52,7 @@ public:
   }
 
   // negative return means that seed can not be formed
-  int getLookupValue(int izbin, int irbin) {
+  int getLookupValue(const Settings* settings, int izbin, int irbin) {
     double z = zmin_ + (izbin + 0.5) * dz_;
     double r = rmin_ + (irbin + 0.5) * dr_;
 
@@ -60,7 +60,7 @@ public:
 
     int NBINS = NLONGVMBINS * NLONGVMBINS;
 
-    int zbin = NBINS * (zproj + zlength) / (2 * zlength);
+    int zbin = NBINS * (zproj + settings->zlength()) / (2 * settings->zlength());
 
     if (zbin < 0)
       zbin = 0;

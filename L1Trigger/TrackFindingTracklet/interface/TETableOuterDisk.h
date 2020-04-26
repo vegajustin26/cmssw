@@ -28,8 +28,8 @@ public:
 
     rbins_ = (1 << rbits);
     rmin_ = 0;
-    rmax_ = rmaxdisk;
-    dr_ = rmaxdisk / rbins_;
+    rmax_ = settings->rmaxdisk();
+    dr_ = settings->rmaxdisk() / rbins_;
 
     zbins_ = (1 << zbits);
     zmin_ = settings->zmean(disk - 1) - settings->dzmax();

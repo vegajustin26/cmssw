@@ -220,7 +220,7 @@ public:
     
     if (fpgaz.atExtreme()) return false;
 
-    if (std::abs(fpgaz.value()*kz)>zlength) return false;
+    if (std::abs(fpgaz.value()*kz)>settings_->zlength()) return false;
 
     int iphivmRaw=fpgaphi.value()>>(fpgaphi.nbits()-5);
 

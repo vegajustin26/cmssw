@@ -43,9 +43,9 @@ public:
     dr_ = 2 * settings->drmax() / rbins_;
 
     zbins_ = (1 << zbits);
-    zminl1_ = -zlength;
-    zminl2_ = zlength;
-    dz_ = 2 * zlength / zbins_;
+    zminl1_ = -settings->zlength();
+    zminl2_ = settings->zlength();
+    dz_ = 2 * settings->zlength() / zbins_;
 
     if (layer1 == 1) {
       rmindisk_ = rmindiskvm;
@@ -54,7 +54,7 @@ public:
 
     if (layer1 == 2) {
       rmindisk_ = rmindiskl2overlapvm;
-      rmaxdisk_ = (extended ? rmaxdisk : rmaxdiskvm);
+      rmaxdisk_ = (extended ? settings->rmaxdisk() : rmaxdiskvm);
     }
 
     rmeanl2_ = settings->rmean(layer2 - 1);
@@ -68,7 +68,7 @@ public:
 
     for (int izbin = 0; izbin < zbins_; izbin++) {
       for (int irbin = 0; irbin < rbins_; irbin++) {
-        int value = getLookupValue(izbin, irbin, extra);
+        int value = getLookupValue(settings, izbin, irbin, extra);
         table_.push_back(value);
       }
     }
@@ -79,7 +79,7 @@ public:
   }
 
   // negative return means that seed can not be formed
-  int getLookupValue(int izbin, int irbin, bool extra) {
+  int getLookupValue(const Settings* settings, int izbin, int irbin, bool extra) {
     double z1 = zminl1_ + izbin * dz_;
     double z2 = zminl1_ + (izbin + 1) * dz_;
 
@@ -91,8 +91,8 @@ public:
       return -1;
     }
 
-    double zmaxl2 = -2 * zlength;
-    double zminl2 = 2 * zlength;
+    double zmaxl2 = -2 * settings->zlength();
+    double zminl2 = 2 * settings->zlength();
 
     findzL2(z1, r1, zminl2, zmaxl2);
     findzL2(z1, r2, zminl2, zmaxl2);
@@ -101,13 +101,13 @@ public:
 
     assert(zminl2 < zmaxl2);
 
-    if (zminl2 > zlength)
+    if (zminl2 > settings->zlength())
       return -1;
-    if (zmaxl2 < -zlength)
+    if (zmaxl2 < -settings->zlength())
       return -1;
 
-    double zmaxl3 = -2 * zlength;
-    double zminl3 = 2 * zlength;
+    double zmaxl3 = -2 * settings->zlength();
+    double zminl3 = 2 * settings->zlength();
 
     findzL3(z1, r1, zminl3, zmaxl3);
     findzL3(z1, r2, zminl3, zmaxl3);
@@ -116,17 +116,17 @@ public:
 
     assert(zminl3 < zmaxl3);
 
-    if (zminl3 > zlength && layer3_ > 0 && !thirdLayerIsDisk_)
+    if (zminl3 > settings->zlength() && layer3_ > 0 && !thirdLayerIsDisk_)
       return -1;
-    if (zmaxl3 < -zlength && layer3_ > 0 && !thirdLayerIsDisk_)
+    if (zmaxl3 < -settings->zlength() && layer3_ > 0 && !thirdLayerIsDisk_)
       return -1;
 
     int NBINS = NLONGVMBINS * NLONGVMBINS;
 
     // first pack zbinmin and deltaz for second layer
 
-    int zbinmin = NBINS * (zminl2 + zlength) / (2 * zlength);
-    int zbinmax = NBINS * (zmaxl2 + zlength) / (2 * zlength);
+    int zbinmin = NBINS * (zminl2 + settings->zlength()) / (2 * settings->zlength());
+    int zbinmax = NBINS * (zmaxl2 + settings->zlength()) / (2 * settings->zlength());
 
     if (zbinmin < 0)
       zbinmin = 0;
@@ -156,8 +156,8 @@ public:
 
     // then pack zbinmin and deltaz for third layer
 
-    zbinmin = NBINS * (zminl3 + zlength) / (2 * zlength);
-    zbinmax = NBINS * (zmaxl3 + zlength) / (2 * zlength);
+    zbinmin = NBINS * (zminl3 + settings->zlength()) / (2 * settings->zlength());
+    zbinmax = NBINS * (zmaxl3 + settings->zlength()) / (2 * settings->zlength());
 
     if (zbinmin < 0)
       zbinmin = 0;
@@ -188,8 +188,8 @@ public:
       if (std::abs(z2) <= z0cut)
         return -1;
 
-      double rmaxd3 = -2 * rmaxdisk;
-      double rmind3 = 2 * rmaxdisk;
+      double rmaxd3 = -2 * settings->rmaxdisk();
+      double rmind3 = 2 * settings->rmaxdisk();
 
       findr(r1, z1, rmind3, rmaxd3);
       findr(r1, z2, rmind3, rmaxd3);
@@ -209,8 +209,8 @@ public:
 
       int NBINS = NLONGVMBINS * NLONGVMBINS / 2;  //divide by two for + and - z
 
-      int rbinmin = NBINS * (rmind3 - rmindiskvm) / (rmaxdisk - rmindiskvm);
-      int rbinmax = NBINS * (rmaxd3 - rmindiskvm) / (rmaxdisk - rmindiskvm);
+      int rbinmin = NBINS * (rmind3 - rmindiskvm) / (settings->rmaxdisk() - rmindiskvm);
+      int rbinmax = NBINS * (rmaxd3 - rmindiskvm) / (settings->rmaxdisk() - rmindiskvm);
 
       if (rmind3 < rmaxdiskvm)
         rbinmin = 0;

@@ -126,8 +126,8 @@ public:
   //inputs
   var_def r1{"r1", "Kr", settings_->drmax(), kr};
   var_def r2{"r2", "Kr", settings_->drmax(), kr};
-  var_def z1{"z1", "Kz", zlength, kz};
-  var_def z2{"z2", "Kz", zlength, kz};
+  var_def z1{"z1", "Kz", settings_->zlength(), kz};
+  var_def z2{"z2", "Kz", settings_->zlength(), kz};
 
   var_def phi1{"phi1", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
   var_def phi2{"phi2", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
@@ -329,11 +329,11 @@ public:
   var_subtract x27m_3{"x27_3", &plus1, &x9_3};
   var_subtract x27m_4{"x27_4", &plus1, &x9_4};
 
-  var_mult rD_0{"rD_0", &x13_0, &x27m_0, 2 * rmaxdisk};
-  var_mult rD_1{"rD_1", &x13_1, &x27m_1, 2 * rmaxdisk};
-  var_mult rD_2{"rD_2", &x13_2, &x27m_2, 2 * rmaxdisk};
-  var_mult rD_3{"rD_3", &x13_3, &x27m_3, 2 * rmaxdisk};
-  var_mult rD_4{"rD_4", &x13_4, &x27m_4, 2 * rmaxdisk};
+  var_mult rD_0{"rD_0", &x13_0, &x27m_0, 2 * settings_->rmaxdisk()};
+  var_mult rD_1{"rD_1", &x13_1, &x27m_1, 2 * settings_->rmaxdisk()};
+  var_mult rD_2{"rD_2", &x13_2, &x27m_2, 2 * settings_->rmaxdisk()};
+  var_mult rD_3{"rD_3", &x13_3, &x27m_3, 2 * settings_->rmaxdisk()};
+  var_mult rD_4{"rD_4", &x13_4, &x27m_4, 2 * settings_->rmaxdisk()};
 
   var_adjustK rD_0_final{"rD_0_final", &rD_0, kr* pow(2, PS_rD_shift)};
   var_adjustK rD_1_final{"rD_1_final", &rD_1, kr* pow(2, PS_rD_shift)};
@@ -392,11 +392,11 @@ public:
   var_cut phiD_3_cut{&phiD_3, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
   var_cut phiD_4_cut{&phiD_4, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
   var_cut der_phiD_cut{&der_phiD, -der_phiD_max, der_phiD_max};
-  var_cut rD_0_cut{&rD_0, -rmaxdisk, rmaxdisk};
-  var_cut rD_1_cut{&rD_1, -rmaxdisk, rmaxdisk};
-  var_cut rD_2_cut{&rD_2, -rmaxdisk, rmaxdisk};
-  var_cut rD_3_cut{&rD_3, -rmaxdisk, rmaxdisk};
-  var_cut rD_4_cut{&rD_4, -rmaxdisk, rmaxdisk};
+  var_cut rD_0_cut{&rD_0, -settings_->rmaxdisk(), settings_->rmaxdisk()};
+  var_cut rD_1_cut{&rD_1, -settings_->rmaxdisk(), settings_->rmaxdisk()};
+  var_cut rD_2_cut{&rD_2, -settings_->rmaxdisk(), settings_->rmaxdisk()};
+  var_cut rD_3_cut{&rD_3, -settings_->rmaxdisk(), settings_->rmaxdisk()};
+  var_cut rD_4_cut{&rD_4, -settings_->rmaxdisk(), settings_->rmaxdisk()};
 
   var_cut t_disk_cut_left{&t, -4, -1};
   var_cut t_disk_cut_right{&t, 1, 4};

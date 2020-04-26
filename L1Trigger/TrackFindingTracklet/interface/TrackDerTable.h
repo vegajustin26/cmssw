@@ -1458,7 +1458,7 @@ public:
 
     for (int l = 1; l <= 6; l++) {
       if (layermask & (1 << (6 - l))) {
-        double lmax = zlength / settings->rmean(l - 1);
+        double lmax = settings->zlength() / settings->rmean(l - 1);
         if (lmax < tmax)
           tmax = lmax;
       }

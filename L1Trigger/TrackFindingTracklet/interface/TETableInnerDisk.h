@@ -32,8 +32,8 @@ public:
 
     rbins_ = (1 << rbits);
     rmind1_ = 0.0;
-    rmaxd1_ = rmaxdisk;
-    dr_ = rmaxdisk / rbins_;
+    rmaxd1_ = settings->rmaxdisk();
+    dr_ = settings->rmaxdisk() / rbins_;
 
     zbins_ = (1 << zbits);
     zmind1_ = settings->zmean(disk1 - 1) - settings->dzmax();
@@ -48,7 +48,7 @@ public:
     for (int irbin = 0; irbin < rbins_; irbin++) {
       for (int izbin = 0; izbin < zbins_; izbin++) {
         //int ibin=irbin+izbin*rbins_;
-        int value = getLookupValue(irbin, izbin);
+        int value = getLookupValue(settings, irbin, izbin);
         //cout << "table "<<table_.size()<<" "<<value<<" "<<rmeanl2_<<endl;
         table_.push_back(value);
       }
@@ -59,15 +59,15 @@ public:
   }
 
   // negative return means that seed can not be formed
-  int getLookupValue(int irbin, int izbin) {
+  int getLookupValue(const Settings* settings, int irbin, int izbin) {
     double r1 = rmind1_ + irbin * dr_;
     double r2 = rmind1_ + (irbin + 1) * dr_;
 
     double z1 = zmind1_ + izbin * dz_;
     double z2 = zmind1_ + (izbin + 1) * dz_;
 
-    double rmaxd2 = -2 * rmaxdisk;
-    double rmind2 = 2 * rmaxdisk;
+    double rmaxd2 = -2 * settings->rmaxdisk();
+    double rmind2 = 2 * settings->rmaxdisk();
 
     findr(r1, z1, rmind2, rmaxd2);
     findr(r1, z2, rmind2, rmaxd2);
@@ -81,8 +81,8 @@ public:
     if (rmaxd2 < rmindiskvm)
       return -1;
 
-    double zmaxl3 = -2 * zlength;
-    double zminl3 = 2 * zlength;
+    double zmaxl3 = -2 * settings->zlength();
+    double zminl3 = 2 * settings->zlength();
 
     findz(z1, r1, zminl3, zmaxl3);
     findz(z1, r2, zminl3, zmaxl3);
@@ -91,9 +91,9 @@ public:
 
     assert(zminl3 < zmaxl3);
 
-    if (zminl3 > zlength && layer3_ > 0)
+    if (zminl3 > settings->zlength() && layer3_ > 0)
       return -1;
-    if (zmaxl3 < -zlength && layer3_ > 0)
+    if (zmaxl3 < -settings->zlength() && layer3_ > 0)
       return -1;
 
     int NBINS = NLONGVMBINS * NLONGVMBINS / 2;  //divide by two for + and - z
@@ -143,8 +143,8 @@ public:
 
     NBINS = NLONGVMBINS * NLONGVMBINS;
 
-    int zbinmin = NBINS * (zminl3 + zlength) / (2 * zlength);
-    int zbinmax = NBINS * (zmaxl3 + zlength) / (2 * zlength);
+    int zbinmin = NBINS * (zminl3 + settings->zlength()) / (2 * settings->zlength());
+    int zbinmax = NBINS * (zmaxl3 + settings->zlength()) / (2 * settings->zlength());
 
     //cout << "zbinmin zminl2 "<<zbinmin<<" "<<zminl2<<endl;
     //cout << "zbinmax zmaxl2 "<<zbinmax<<" "<<zmaxl2<<endl;
