@@ -15,7 +15,7 @@ class TETableInnerOverlap:public TETableBase{
 
 public:
 
-  TETableInnerOverlap() {
+  TETableInnerOverlap(const Settings* settings) :TETableBase(settings) {
     nbits_ = 10;
   }
 
@@ -24,7 +24,7 @@ public:
 		      int disk2,
 		      int zbits,
 		      int rbits
-		      ) {
+		      ) : TETableBase(settings) {
     nbits_ = 10;
     init(settings,layer1,disk2,zbits,rbits);
   }
@@ -59,13 +59,13 @@ public:
     assert(layer1==1||layer1==2);
     
     if (layer1==1){
-      rmindisk_=rmindiskvm;
-      rmaxdisk_=rmaxdiskl1overlapvm;
+      rmindisk_=settings_->rmindiskvm();
+      rmaxdisk_=settings_->rmaxdiskl1overlapvm();
     }
 
     if (layer1==2){
-      rmindisk_=rmindiskl2overlapvm;
-      rmaxdisk_=rmaxdiskvm;
+      rmindisk_=settings_->rmindiskl2overlapvm();
+      rmaxdisk_=settings_->rmaxdiskvm();
     }
 
       
@@ -98,8 +98,8 @@ public:
     double z1=zminl1_+izbin*dz_;
     double z2=zminl1_+(izbin+1)*dz_;
 
-    if (std::abs(z1)<=z0cut) return -1;
-    if (std::abs(z2)<=z0cut) return -1;
+    if (std::abs(z1)<=settings_->z0cut()) return -1;
+    if (std::abs(z2)<=settings_->z0cut()) return -1;
 
     double rmaxd2=-2*settings->rmaxdisk();
     double rmind2=2*settings->rmaxdisk();
@@ -119,10 +119,10 @@ public:
     if (rmaxd2>rmaxdisk_) rmaxd2=rmaxdisk_;
     if (rmaxd2<rmindisk_) return -1;
 
-    int NBINS=NLONGVMBINS*NLONGVMBINS/2; //divide by two for + and - z
+    int NBINS=settings_->NLONGVMBINS()*settings_->NLONGVMBINS()/2; //divide by two for + and - z
     
-    int rbinmin=NBINS*(rmind2-rmindiskvm)/(rmaxdiskvm-rmindiskvm);
-    int rbinmax=NBINS*(rmaxd2-rmindiskvm)/(rmaxdiskvm-rmindiskvm);
+    int rbinmin=NBINS*(rmind2-settings_->rmindiskvm())/(settings_->rmaxdiskvm()-settings_->rmindiskvm());
+    int rbinmax=NBINS*(rmaxd2-settings_->rmindiskvm())/(settings_->rmaxdiskvm()-settings_->rmindiskvm());
 
     //cout << "zbinmin zminl2 "<<zbinmin<<" "<<zminl2<<endl;
     //cout << "zbinmax zmaxl2 "<<zbinmax<<" "<<zmaxl2<<endl;
@@ -131,12 +131,12 @@ public:
     if (rbinmax>=NBINS) rbinmax=NBINS-1;
 
     if (print) cout << "PRINT layer1 rmind2 rmaxd2 dr z2 r1 "<<layer1_<<" "
-		    <<rmind2<<" "<<rmaxd2<<" "<<" "<<(rmaxdiskvm-rmindiskvm)/NBINS<<z2<<" "<<r1<<endl;
+		    <<rmind2<<" "<<rmaxd2<<" "<<" "<<(settings_->rmaxdiskvm()-settings_->rmindiskvm())/NBINS<<z2<<" "<<r1<<endl;
 
     if (print) cout <<"PRINT rbminmin rbinmax "<<rbinmin<<" "<<rbinmax<<endl;
     
     assert(rbinmin<=rbinmax);
-    //assert(rbinmax-rbinmin<=(int)NLONGVMBINS);
+    //assert(rbinmax-rbinmin<=(int)settings_->NLONGVMBINS());
 
     int value=rbinmin/8;
     if (z1<0) value+=4;
@@ -161,14 +161,14 @@ public:
 
   void findr(double r, double z, double& rmind2, double& rmaxd2){
 
-    double rd2=rintercept(z0cut,r,z);
+    double rd2=rintercept(settings_->z0cut(),r,z);
 
     //cout << "rd2 : "<<r<<" "<<z<<" "<<rd2<<endl;
     
     if (rd2<rmind2) rmind2=rd2;
     if (rd2>rmaxd2) rmaxd2=rd2;
     
-    rd2=rintercept(-z0cut,r,z);
+    rd2=rintercept(-settings_->z0cut(),r,z);
 
     //cout << "rd2 : "<<rd2<<endl;
 

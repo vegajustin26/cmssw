@@ -12,9 +12,9 @@ using namespace std;
 
 class TETableInner : public TETableBase {
 public:
-  TETableInner() { nbits_ = 20; }
+  TETableInner(const Settings* settings) : TETableBase(settings) { nbits_ = 20; }
 
-  TETableInner(const Settings* settings, int layer1, int layer2, int layer3, int zbits, int rbits, bool thirdLayerIsDisk = false) {
+  TETableInner(const Settings* settings, int layer1, int layer2, int layer3, int zbits, int rbits, bool thirdLayerIsDisk = false) : TETableBase(settings) {
     nbits_ = 20;
     init(settings,layer1, layer2, layer3, zbits, rbits, thirdLayerIsDisk);
   }
@@ -48,13 +48,13 @@ public:
     dz_ = 2 * settings->zlength() / zbins_;
 
     if (layer1 == 1) {
-      rmindisk_ = rmindiskvm;
-      rmaxdisk_ = rmaxdiskl1overlapvm;
+      rmindisk_ = settings->rmindiskvm();
+      rmaxdisk_ = settings->rmaxdiskl1overlapvm();
     }
 
     if (layer1 == 2) {
-      rmindisk_ = rmindiskl2overlapvm;
-      rmaxdisk_ = (extended ? settings->rmaxdisk() : rmaxdiskvm);
+      rmindisk_ = settings->rmindiskl2overlapvm();
+      rmaxdisk_ = (extended ? settings->rmaxdisk() : settings->rmaxdiskvm());
     }
 
     rmeanl2_ = settings->rmean(layer2 - 1);
@@ -121,7 +121,7 @@ public:
     if (zmaxl3 < -settings->zlength() && layer3_ > 0 && !thirdLayerIsDisk_)
       return -1;
 
-    int NBINS = NLONGVMBINS * NLONGVMBINS;
+    int NBINS = settings->NLONGVMBINS() * settings->NLONGVMBINS();
 
     // first pack zbinmin and deltaz for second layer
 
@@ -134,7 +134,7 @@ public:
       zbinmax = NBINS - 1;
 
     assert(zbinmin <= zbinmax);
-    assert(zbinmax - zbinmin <= (int)NLONGVMBINS);
+    assert(zbinmax - zbinmin <= (int)settings->NLONGVMBINS());
 
     int valueL2 = zbinmin / 8;
     valueL2 *= 2;
@@ -165,7 +165,7 @@ public:
       zbinmax = NBINS - 1;
 
     assert(zbinmin <= zbinmax);
-    assert(zbinmax - zbinmin <= (int)NLONGVMBINS);
+    assert(zbinmax - zbinmin <= (int)settings->NLONGVMBINS());
 
     int valueL3 = zbinmin / 8;
     valueL3 *= 2;
@@ -183,9 +183,9 @@ public:
 
     int valueD3 = 0;
     if (layer3_ > 0 && thirdLayerIsDisk_) {
-      if (std::abs(z1) <= z0cut)
+      if (std::abs(z1) <= settings->z0cut())
         return -1;
-      if (std::abs(z2) <= z0cut)
+      if (std::abs(z2) <= settings->z0cut())
         return -1;
 
       double rmaxd3 = -2 * settings->rmaxdisk();
@@ -207,14 +207,14 @@ public:
       if (rmaxd3 < rmindisk_)
         return -1;
 
-      int NBINS = NLONGVMBINS * NLONGVMBINS / 2;  //divide by two for + and - z
+      int NBINS = settings->NLONGVMBINS() * settings->NLONGVMBINS() / 2;  //divide by two for + and - z
 
-      int rbinmin = NBINS * (rmind3 - rmindiskvm) / (settings->rmaxdisk() - rmindiskvm);
-      int rbinmax = NBINS * (rmaxd3 - rmindiskvm) / (settings->rmaxdisk() - rmindiskvm);
+      int rbinmin = NBINS * (rmind3 - settings->rmindiskvm()) / (settings->rmaxdisk() - settings->rmindiskvm());
+      int rbinmax = NBINS * (rmaxd3 - settings->rmindiskvm()) / (settings->rmaxdisk() - settings->rmindiskvm());
 
-      if (rmind3 < rmaxdiskvm)
+      if (rmind3 < settings->rmaxdiskvm())
         rbinmin = 0;
-      if (rmaxd3 < rmaxdiskvm)
+      if (rmaxd3 < settings->rmaxdiskvm())
         rbinmax = 0;
 
       if (rbinmin < 0)
@@ -258,14 +258,14 @@ public:
   }
 
   void findzL2(double z, double r, double& zminl2, double& zmaxl2) {
-    double zl2 = zinterceptL2(z0cut, z, r);
+    double zl2 = zinterceptL2(settings_->z0cut(), z, r);
 
     if (zl2 < zminl2)
       zminl2 = zl2;
     if (zl2 > zmaxl2)
       zmaxl2 = zl2;
 
-    zl2 = zinterceptL2(-z0cut, z, r);
+    zl2 = zinterceptL2(-settings_->z0cut(), z, r);
 
     if (zl2 < zminl2)
       zminl2 = zl2;
@@ -276,14 +276,14 @@ public:
   double zinterceptL2(double zcut, double z, double r) { return zcut + (z - zcut) * rmeanl2_ / r; }
 
   void findzL3(double z, double r, double& zminl3, double& zmaxl3) {
-    double zl3 = zinterceptL3(z0cut, z, r);
+    double zl3 = zinterceptL3(settings_->z0cut(), z, r);
 
     if (zl3 < zminl3)
       zminl3 = zl3;
     if (zl3 > zmaxl3)
       zmaxl3 = zl3;
 
-    zl3 = zinterceptL3(-z0cut, z, r);
+    zl3 = zinterceptL3(-settings_->z0cut(), z, r);
 
     if (zl3 < zminl3)
       zminl3 = zl3;
@@ -294,14 +294,14 @@ public:
   double zinterceptL3(double zcut, double z, double r) { return zcut + (z - zcut) * rmeanl3_ / r; }
 
   void findr(double r, double z, double& rmind2, double& rmaxd2) {
-    double rd2 = rintercept(z0cut, r, z);
+    double rd2 = rintercept(settings_->z0cut(), r, z);
 
     if (rd2 < rmind2)
       rmind2 = rd2;
     if (rd2 > rmaxd2)
       rmaxd2 = rd2;
 
-    rd2 = rintercept(-z0cut, r, z);
+    rd2 = rintercept(-settings_->z0cut(), r, z);
 
     if (rd2 < rmind2)
       rmind2 = rd2;

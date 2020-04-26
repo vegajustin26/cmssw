@@ -55,6 +55,8 @@ public:
     if (!overlap_ and extended_ and layer_==3) isinner_ = false;
     if ( overlap_ and extended_ and layer_==2) isinner_ = false;
     if ( overlap_ and extended_ and disk_==1)  isinner_ = false;
+
+    stubsbinnedvm_.resize(settings_->NLONGVMBINS());
     
   }
 
@@ -193,7 +195,7 @@ public:
 
   void clean() {
     stubsvm_.clear();
-    for (unsigned int i=0;i<NLONGVMBINS;i++){
+    for (unsigned int i=0;i<settings_->NLONGVMBINS();i++){
       stubsbinnedvm_[i].clear();
     }
   }
@@ -212,7 +214,7 @@ public:
       }     
     }
     else { // outer VM for TE purpose
-      for (unsigned int i=0;i<NLONGVMBINS;i++) {
+      for (unsigned int i=0;i<settings_->NLONGVMBINS();i++) {
 	for (unsigned int j=0;j<stubsbinnedvm_[i].size();j++){
 	  string stub=stubsbinnedvm_[i][j].str();
 	  out_ << hex << i << " " << j << dec << " "<<stub<<" "<<hexFormat(stub)<<endl;
@@ -313,7 +315,7 @@ private:
   std::vector<bool> vmbendtable_;
 
   std::vector<VMStubTE> stubsvm_;
-  std::vector<VMStubTE> stubsbinnedvm_[NLONGVMBINS];
+  std::vector<std::vector<VMStubTE> > stubsbinnedvm_;
   
 };
 

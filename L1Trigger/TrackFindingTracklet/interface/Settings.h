@@ -376,6 +376,7 @@ namespace Trklet{
 
     
     double bendcutte(unsigned int inner, unsigned int iSeed) const {return bendcutte_[inner][iSeed];}
+    double bendcutme(unsigned int layerdisk) const {return bendcutme_[layerdisk];}
     double nfinephi(unsigned int inner, unsigned int iSeed) const {return nfinephi_[inner][iSeed];}
     double nphireg(unsigned int inner, unsigned int iSeed) const {return nphireg_[inner][iSeed];}
     double zbitstab(unsigned int inner, unsigned int iSeed) const {return zbitstab_[inner][iSeed];}
@@ -494,6 +495,24 @@ namespace Trklet{
 
     double kd0() const { return  2*maxd0_/(1<<nbitsd0_); }
     
+    double rinvcutte() const { return 0.01*0.3*3.8/ptcutte_; } //0.01 to convert to cm-1
+
+    double rmindiskvm() const { return rmindiskvm_; }
+    double rmaxdiskvm() const { return rmaxdiskvm_; }
+	
+    double rmaxdiskl1overlapvm() const { return rmaxdiskl1overlapvm_; }
+    double rmindiskl2overlapvm() const { return rmindiskl2overlapvm_; }
+    double rmindiskl3overlapvm() const { return rmindiskl3overlapvm_; }
+
+    double z0cut() const { return z0cut_; }
+
+    // Obsolete - only used in TrackletCalculatorDisplaced (Ryd - 2020-01-16)
+    int iphicritminmc() const { return iphicritminmc_; }
+    int iphicritmaxmc() const { return iphicritmaxmc_; }
+
+    unsigned int NLONGVMBITS() const { return NLONGVMBITS_; } 
+    unsigned int NLONGVMBINS() const { return (1<<NLONGVMBITS_); }
+    
   private:
 
     bool geomTkTDR_;
@@ -527,7 +546,23 @@ namespace Trklet{
     std::array<std::array<unsigned int, 12>, 3> nbitsvmte_;
 
     std::array<std::array<double, 8>, 2> bendcutte_;
+    std::array<double, 11> bendcutme_{{2.0,2.0,2.0,2.0,2.0,2.0,1.5,1.5,1.5,1.5,1.5}};
 
+    double rmindiskvm_{22.5};
+    double rmaxdiskvm_{67.0};
+	
+    double rmaxdiskl1overlapvm_{45.0};
+    double rmindiskl2overlapvm_{40.0};
+    double rmindiskl3overlapvm_{50.0};
+    
+    double z0cut_{15.0};
+
+    // Obsolete - only used in TrackletCalculatorDisplaced (Ryd - 2020-01-16)
+    int iphicritminmc_{9253};
+    int iphicritmaxmc_{56269};
+
+    unsigned int NLONGVMBITS_{3}; 
+    
     double zlength_;
     double rmaxdisk_;
 
@@ -540,6 +575,8 @@ namespace Trklet{
     double maxd0_{10.0};
 
     unsigned int nbitsd0_{13};
+
+    double ptcutte_{1.8}; //Minimum pt in TE
     
     std::array<std::array<unsigned int, 12>, 3> nfinephi_;
     std::array<std::array<unsigned int, 12>, 3> nphireg_;

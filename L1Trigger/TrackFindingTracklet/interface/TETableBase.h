@@ -11,7 +11,7 @@ using namespace std;
 
 class TETableBase {
 public:
-  TETableBase() {}
+  TETableBase(const Settings* settings) : settings_(settings) {}
 
   virtual ~TETableBase() {}
 
@@ -46,6 +46,7 @@ public:
   }
 
 protected:
+  const Settings* settings_;
   vector<int> table_;
   int nbits_;
 };

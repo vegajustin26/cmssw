@@ -259,8 +259,8 @@ public:
 	  int start=(bin>>1);
 	  int last=start+(bin&1);
           if (firstvmstub.stub().first->disk().value() < 0){  //FIXME
-            start = NLONGVMBINS - last - 1;
-            last = NLONGVMBINS - start - 1;
+            start = settings_->NLONGVMBINS() - last - 1;
+            last = settings_->NLONGVMBINS() - start - 1;
           }
 
           for(int ibin=start;ibin<=last;ibin++) {

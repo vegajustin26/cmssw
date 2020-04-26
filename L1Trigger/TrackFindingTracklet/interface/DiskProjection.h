@@ -49,8 +49,8 @@ public:
     fpgarprojder_.set(irder, settings->nrbitsprojderdisk(), false, __LINE__, __FILE__);
 
     //FIXME the -3 and +3 should be evaluated and efficiency for matching hits checked.
-    int rbin1 = 8.0 * (irproj * krprojshiftdisk - 3 - rmindiskvm) / (settings->rmaxdisk() - rmindiskvm);
-    int rbin2 = 8.0 * (irproj * krprojshiftdisk + 3 - rmindiskvm) / (settings->rmaxdisk() - rmindiskvm);
+    int rbin1 = 8.0 * (irproj * krprojshiftdisk - 3 - settings->rmindiskvm()) / (settings->rmaxdisk() - settings->rmindiskvm());
+    int rbin2 = 8.0 * (irproj * krprojshiftdisk + 3 - settings->rmindiskvm()) / (settings->rmaxdisk() - settings->rmindiskvm());
 
     if (irproj * krprojshiftdisk < 20.0) {
       cout << " WARNING : irproj = " << irproj << " " << irproj * krprojshiftdisk << " " << projdisk_ << endl;
@@ -65,8 +65,8 @@ public:
     assert(rbin1 <= rbin2);
     assert(rbin2 - rbin1 <= 1);
 
-    int finer = 64 * ((irproj * krprojshiftdisk - rmindiskvm) - rbin1 * (settings->rmaxdisk() - rmindiskvm) / 8.0) /
-                (settings->rmaxdisk() - rmindiskvm);
+    int finer = 64 * ((irproj * krprojshiftdisk - settings->rmindiskvm()) - rbin1 * (settings->rmaxdisk() - settings->rmindiskvm()) / 8.0) /
+                (settings->rmaxdisk() - settings->rmindiskvm());
 
     if (finer < 0)
       finer = 0;

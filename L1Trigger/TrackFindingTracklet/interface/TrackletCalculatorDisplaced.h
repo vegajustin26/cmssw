@@ -1039,7 +1039,7 @@ public:
 	     <<rinvapprox<<"("<<irinv<<")\n";
       success = false;
     }
-    if (std::abs(z0approx)>1.8*z0cut) { 
+    if (std::abs(z0approx)>1.8*settings_->z0cut()) { 
       if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<" in layer "<<layer_<<endl;
       success = false;
     }
@@ -1053,7 +1053,7 @@ public:
     double phicrit=phi0approx-asin(0.5*settings_->rcrit()*rinvapprox);
     int phicritapprox=iphi0-2*irinv;
     bool keep=(phicrit>settings_->phicritminmc())&&(phicrit<settings_->phicritmaxmc()),
-         keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);
+         keepapprox=(phicritapprox>settings_->iphicritminmc())&&(phicritapprox<settings_->iphicritmaxmc());
     if (settings_->debugTracklet())
       if (keep && !keepapprox)
         cout << "TrackletCalculatorDisplaced::LLLSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
@@ -1320,7 +1320,7 @@ public:
 	     <<rinvapprox<<"("<<irinv<<")\n";
       success = false;
     }
-    if (std::abs(z0approx)>1.8*z0cut) {
+    if (std::abs(z0approx)>1.8*settings_->z0cut()) {
       if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<endl;
       success = false;
     }
@@ -1334,7 +1334,7 @@ public:
     double phicrit=phi0approx-asin(0.5*settings_->rcrit()*rinvapprox);
     int phicritapprox=iphi0-2*irinv;
     bool keep=(phicrit>settings_->phicritminmc())&&(phicrit<settings_->phicritmaxmc()),
-         keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);
+         keepapprox=(phicritapprox>settings_->iphicritminmc())&&(phicritapprox<settings_->iphicritmaxmc());
     if (settings_->debugTracklet())
       if (keep && !keepapprox)
         cout << "TrackletCalculatorDisplaced::DDLSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
@@ -1590,7 +1590,7 @@ public:
 	     <<rinvapprox<<"("<<irinv<<")\n";
       success = false;
     }
-    if (std::abs(z0approx)>1.8*z0cut) {
+    if (std::abs(z0approx)>1.8*settings_->z0cut()) {
       if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<endl;
       success = false;
     }
@@ -1604,7 +1604,7 @@ public:
     double phicrit=phi0approx-asin(0.5*settings_->rcrit()*rinvapprox);
     int phicritapprox=iphi0-2*irinv;
     bool keep=(phicrit>settings_->phicritminmc())&&(phicrit<settings_->phicritmaxmc()),
-         keepapprox=(phicritapprox>iphicritminmc)&&(phicritapprox<iphicritmaxmc);
+         keepapprox=(phicritapprox>settings_->iphicritminmc())&&(phicritapprox<settings_->iphicritmaxmc());
     if (settings_->debugTracklet())
       if (keep && !keepapprox)
         cout << "TrackletCalculatorDisplaced::LLDSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;

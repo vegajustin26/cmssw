@@ -12,9 +12,9 @@ using namespace std;
 
 class TETableOuter : public TETableBase {
 public:
-  TETableOuter() { nbits_ = 6; }
+  TETableOuter(const Settings* settings) : TETableBase(settings) { nbits_ = 6; }
 
-  TETableOuter(const Settings* settings, int layer, int zbits, int rbits) {
+  TETableOuter(const Settings* settings, int layer, int zbits, int rbits) : TETableBase(settings) {
     nbits_ = 6;
     init(settings, layer, zbits, rbits);
   }
@@ -58,7 +58,7 @@ public:
 
     double zproj = z * rmean_ / r;
 
-    int NBINS = NLONGVMBINS * NLONGVMBINS;
+    int NBINS = settings_->NLONGVMBINS() * settings_->NLONGVMBINS();
 
     int zbin = NBINS * (zproj + settings->zlength()) / (2 * settings->zlength());
 

@@ -189,8 +189,8 @@ public:
 	phiouter[1]=outerphimin+(iphiouterbin+1)*(outerphimax-outerphimin)/outerphibins;
 	for (int irouterbin=0;irouterbin<outerrbins;irouterbin++){
 	  if (iSeed_>=4) {
-	    router[0]=rmindiskvm+irouterbin*(rmaxdiskvm-rmindiskvm)/outerrbins;
-	    router[1]=rmindiskvm+(irouterbin+1)*(rmaxdiskvm-rmindiskvm)/outerrbins;
+	    router[0]=settings_->rmindiskvm()+irouterbin*(settings_->rmaxdiskvm()-settings_->rmindiskvm())/outerrbins;
+	    router[1]=settings_->rmindiskvm()+(irouterbin+1)*(settings_->rmaxdiskvm()-settings_->rmindiskvm())/outerrbins;
 	  } else {
 	    router[0]=settings_->rmean(layerdisk2_);
 	    router[1]=settings_->rmean(layerdisk2_);
@@ -224,7 +224,7 @@ public:
 	    }
 	  }
 
-	  bool passptcut=rinvmin<rinvcutte;
+	  bool passptcut=rinvmin<settings_->rinvcutte();
 	  
 	  for(int ibend=0;ibend<(1<<nbendbitsinner);ibend++) {
 	    double bend=Stub::benddecode(ibend,nbendbitsinner==3); 

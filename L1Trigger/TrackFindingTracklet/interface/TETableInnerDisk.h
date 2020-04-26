@@ -12,9 +12,9 @@ using namespace std;
 
 class TETableInnerDisk : public TETableBase {
 public:
-  TETableInnerDisk() { nbits_ = 19; }
+  TETableInnerDisk(const Settings* settings) : TETableBase(settings) { nbits_ = 19; }
 
-  TETableInnerDisk(const Settings* settings,int disk1, int disk2, int layer3, int zbits, int rbits) {
+  TETableInnerDisk(const Settings* settings,int disk1, int disk2, int layer3, int zbits, int rbits) : TETableBase(settings) {
     nbits_ = 19;
     init(settings, disk1, disk2, layer3, zbits, rbits);
   }
@@ -76,9 +76,9 @@ public:
 
     assert(rmind2 < rmaxd2);
 
-    if (rmind2 > rmaxdiskvm)
+    if (rmind2 > settings_->rmaxdiskvm())
       return -1;
-    if (rmaxd2 < rmindiskvm)
+    if (rmaxd2 < settings_->rmindiskvm())
       return -1;
 
     double zmaxl3 = -2 * settings->zlength();
@@ -96,7 +96,7 @@ public:
     if (zmaxl3 < -settings->zlength() && layer3_ > 0)
       return -1;
 
-    int NBINS = NLONGVMBINS * NLONGVMBINS / 2;  //divide by two for + and - z
+    int NBINS = settings_->NLONGVMBINS() * settings_->NLONGVMBINS() / 2;  //divide by two for + and - z
 
     // first pack rbinmin and deltar for second disk
 
@@ -110,8 +110,8 @@ public:
     //        and xxx is only 1,2, or 3
     //        should also reject xxx=0 as this means projection is outside range
 
-    int rbinmin = NBINS * (rmind2 - rmindiskvm) / (rmaxdiskvm - rmindiskvm);
-    int rbinmax = NBINS * (rmaxd2 - rmindiskvm) / (rmaxdiskvm - rmindiskvm);
+    int rbinmin = NBINS * (rmind2 - settings_->rmindiskvm()) / (settings_->rmaxdiskvm() - settings_->rmindiskvm());
+    int rbinmax = NBINS * (rmaxd2 - settings_->rmindiskvm()) / (settings_->rmaxdiskvm() - settings_->rmindiskvm());
 
     //cout << "zbinmin zminl2 "<<zbinmin<<" "<<zminl2<<endl;
     //cout << "zbinmax zmaxl2 "<<zbinmax<<" "<<zmaxl2<<endl;
@@ -124,7 +124,7 @@ public:
     //cout <<"rbminmin rbinmax "<<rbinmin<<" "<<rbinmax<<endl;
 
     assert(rbinmin <= rbinmax);
-    assert(rbinmax - rbinmin <= (int)NLONGVMBINS);
+    assert(rbinmax - rbinmin <= (int)settings_->NLONGVMBINS());
 
     int valueD2 = rbinmin / 8;
     valueD2 *= 2;
@@ -141,7 +141,7 @@ public:
 
     // then pack zbinmin and deltaz for third layer
 
-    NBINS = NLONGVMBINS * NLONGVMBINS;
+    NBINS = settings_->NLONGVMBINS() * settings_->NLONGVMBINS();
 
     int zbinmin = NBINS * (zminl3 + settings->zlength()) / (2 * settings->zlength());
     int zbinmax = NBINS * (zmaxl3 + settings->zlength()) / (2 * settings->zlength());
@@ -155,7 +155,7 @@ public:
       zbinmax = NBINS - 1;
 
     assert(zbinmin <= zbinmax);
-    assert(zbinmax - zbinmin <= (int)NLONGVMBINS);
+    assert(zbinmax - zbinmin <= (int)settings_->NLONGVMBINS());
 
     int valueL3 = zbinmin / 8;
     valueL3 *= 2;
@@ -185,7 +185,7 @@ public:
   }
 
   void findr(double r, double z, double& rmind2, double& rmaxd2) {
-    double rd2 = rintercept(z0cut, r, z);
+    double rd2 = rintercept(settings_->z0cut(), r, z);
 
     //cout << "rd2 : "<<r<<" "<<z<<" "<<rd2<<endl;
 
@@ -194,7 +194,7 @@ public:
     if (rd2 > rmaxd2)
       rmaxd2 = rd2;
 
-    rd2 = rintercept(-z0cut, r, z);
+    rd2 = rintercept(-settings_->z0cut(), r, z);
 
     //cout << "rd2 : "<<rd2<<endl;
 
@@ -207,14 +207,14 @@ public:
   double rintercept(double zcut, double r, double z) { return (zmeand2_ - zcut) * r / (z - zcut); }
 
   void findz(double z, double r, double& zminl3, double& zmaxl3) {
-    double zl3 = zintercept(z0cut, z, r);
+    double zl3 = zintercept(settings_->z0cut(), z, r);
 
     if (zl3 < zminl3)
       zminl3 = zl3;
     if (zl3 > zmaxl3)
       zmaxl3 = zl3;
 
-    zl3 = zintercept(-z0cut, z, r);
+    zl3 = zintercept(-settings_->z0cut(), z, r);
 
     if (zl3 < zminl3)
       zminl3 = zl3;

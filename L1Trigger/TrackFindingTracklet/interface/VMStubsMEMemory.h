@@ -77,7 +77,7 @@ public:
 
     out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
 
-    for (unsigned int i = 0; i < NLONGVMBINS; i++) {
+    for (unsigned int i = 0; i < settings_->NLONGVMBINS(); i++) {
       for (unsigned int j = 0; j < binnedstubs_[i].size(); j++) {
         string stub = binnedstubs_[i][j].stubindex().str();
         stub += "|" + binnedstubs_[i][j].bend().str();

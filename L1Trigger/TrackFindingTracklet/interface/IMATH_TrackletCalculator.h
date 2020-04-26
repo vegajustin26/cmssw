@@ -346,8 +346,8 @@ public:
   var_cut rinv_final_cut{&rinv_final, -settings_->rinvcut(), settings_->rinvcut()};
   // the following two are not associated with any variable yet; this is done
   // in the constructor of this class since it depends on the layer
-  var_cut z0_final_L1_cut{-z0cut, z0cut};
-  var_cut z0_final_cut{-1.5 * z0cut, 1.5 * z0cut};
+  var_cut z0_final_L1_cut{-settings_->z0cut(), settings_->z0cut()};
+  var_cut z0_final_cut{-1.5 * settings_->z0cut(), 1.5 * settings_->z0cut()};
 
   var_cut r1abs_cut{&r1abs, -settings_->rmax(5), settings_->rmax(5)};
   var_cut r2abs_cut{&r2abs, -settings_->rmax(5), settings_->rmax(5)};

@@ -111,7 +111,7 @@ public:
 	double projbend=bend(settings_->rmean(layer_-1),rinv);
 	for(unsigned int ibend=0;ibend<(unsigned int)(1<<nbits);ibend++){
 	  double stubbend=Stub::benddecode(ibend,layer_<=3);
-	  bool pass=std::abs(stubbend-projbend)<mecut;
+	  bool pass=std::abs(stubbend-projbend)<settings_->bendcutme(layer_-1);
 	  table_.push_back(pass);
 	}
       }
@@ -142,12 +142,12 @@ public:
 	double projbend=0.5*(iprojbend-15.0);
 	for(unsigned int ibend=0;ibend<8;ibend++){
 	  double stubbend=Stub::benddecode(ibend,true);
-	  bool pass=std::abs(stubbend-projbend)<mecutdisk;
+	  bool pass=std::abs(stubbend-projbend)<settings_->bendcutme(disk_+5);
 	  tablePS_.push_back(pass);
 	}
 	for(unsigned int ibend=0;ibend<16;ibend++){
 	  double stubbend=Stub::benddecode(ibend,false);
-	  bool pass=std::abs(stubbend-projbend)<mecutdisk;
+	  bool pass=std::abs(stubbend-projbend)<settings_->bendcutme(disk_+5);
 	  table2S_.push_back(pass);
 	}
       }

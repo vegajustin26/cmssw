@@ -12,7 +12,7 @@ using namespace std;
 
 class VMRouterPhiCorrTable : public TETableBase {
 public:
-  VMRouterPhiCorrTable() { nbits_ = 14; }
+  VMRouterPhiCorrTable() : TETableBase(0) { nbits_ = 14; }
 
   ~VMRouterPhiCorrTable() {}
 
@@ -74,8 +74,6 @@ public:
 
 private:
 
-  const Settings* settings_;
-  
   double rmean_;
 
   double rmin_;

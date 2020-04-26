@@ -12,9 +12,9 @@ using namespace std;
 
 class TETableOuterDisk : public TETableBase {
 public:
-  TETableOuterDisk() { nbits_ = 5; }
+  TETableOuterDisk(const Settings* settings) : TETableBase(settings) { nbits_ = 5; }
 
-  TETableOuterDisk(const Settings* settings, int disk, int zbits, int rbits) {
+  TETableOuterDisk(const Settings* settings, int disk, int zbits, int rbits) : TETableBase(settings) {
     nbits_ = 5;
     init(settings, disk, zbits, rbits);
   }
@@ -56,9 +56,9 @@ public:
 
     double rproj = r * zmean_ / z;
 
-    int NBINS = NLONGVMBINS * NLONGVMBINS / 2;  //divide by two for + vs - z disks
+    int NBINS = settings_->NLONGVMBINS() * settings_->NLONGVMBINS() / 2;  //divide by two for + vs - z disks
 
-    int rbin = NBINS * (rproj - rmindiskvm) / (rmaxdiskvm - rmindiskvm);
+    int rbin = NBINS * (rproj - settings_->rmindiskvm()) / (settings_->rmaxdiskvm() - settings_->rmindiskvm());
 
     if (rbin < 0)
       rbin = 0;

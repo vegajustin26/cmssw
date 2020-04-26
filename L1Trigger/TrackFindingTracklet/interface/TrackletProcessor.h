@@ -754,14 +754,14 @@ public:
 	      }
 	    }
 	    
-	    phitable_[phiindex].push_back(rinvmin<rinvcutte);
+	    phitable_[phiindex].push_back(rinvmin<settings_->rinvcutte());
 	    
 	    int nbins1=8;
 	    if (layer_>=4) nbins1=16;
 	    for(int ibend=0;ibend<nbins1;ibend++) {
 	      double bend=Stub::benddecode(ibend,layer_<=3); 
 	      
-	      bool passinner=bend-bendinnermin>-bendcut&&bend-bendinnermax<bendcut;	    
+	      bool passinner=bend-bendinnermin>-settings_->bendcutte(0,iSeed_)&&bend-bendinnermax<settings_->bendcutte(0,iSeed_);	    
 	      if (passinner) vmbendinner[ibend]=true;
 	      pttableinner_[phiindex].push_back(passinner);
 	      
@@ -772,7 +772,7 @@ public:
 	    for(int ibend=0;ibend<nbins2;ibend++) {
 	      double bend=Stub::benddecode(ibend,layer_<=2); 
 	      
-	      bool passouter=bend-bendoutermin>-bendcut&&bend-bendoutermax<bendcut;
+	      bool passouter=bend-bendoutermin>-settings_->bendcutte(1,iSeed_)&&bend-bendoutermax<settings_->bendcutte(1,iSeed_);
 	      if (passouter) vmbendouter[ibend]=true;
 	      pttableouter_[phiindex].push_back(passouter);
 	      
@@ -821,8 +821,8 @@ public:
 	
 
 	for (int irouterbin=0;irouterbin<outerrbins;irouterbin++){
-	  router[0]=rmindiskvm+irouterbin*(rmaxdiskvm-rmindiskvm)/outerrbins;
-	  router[1]=rmindiskvm+(irouterbin+1)*(rmaxdiskvm-rmindiskvm)/outerrbins;
+	  router[0]=settings_->rmindiskvm()+irouterbin*(settings_->rmaxdiskvm()-settings_->rmindiskvm())/outerrbins;
+	  router[1]=settings_->rmindiskvm()+(irouterbin+1)*(settings_->rmaxdiskvm()-settings_->rmindiskvm())/outerrbins;
 	  for (int iphiinnerbin=0;iphiinnerbin<innerphibins;iphiinnerbin++){
 	    phiinner[0]=innerphimin+iphiinnerbin*(innerphimax-innerphimin)/innerphibins;
 	    phiinner[1]=innerphimin+(iphiinnerbin+1)*(innerphimax-innerphimin)/innerphibins;
@@ -857,13 +857,13 @@ public:
 		}
 	      }
 	      
-	      phitable_[phiindex].push_back(rinvmin<rinvcutte);
+	      phitable_[phiindex].push_back(rinvmin<settings_->rinvcutte());
 
 
 	      for(int ibend=0;ibend<8;ibend++) {
 		double bend=Stub::benddecode(ibend,true); 
 		
-		bool passinner=bend-bendinnermin>-bendcutdisk&&bend-bendinnermax<bendcutdisk;	    
+		bool passinner=bend-bendinnermin>-settings_->bendcutte(0,iSeed_)&&bend-bendinnermax<settings_->bendcutte(0,iSeed_);	    
 		if (passinner) vmbendinner[ibend]=true;
 		pttableinner_[phiindex].push_back(passinner);
 		
@@ -872,7 +872,7 @@ public:
 	      for(int ibend=0;ibend<8;ibend++) {
 		double bend=Stub::benddecode(ibend,true); 
 		
-		bool passouter=bend-bendoutermin>-bendcutdisk&&bend-bendoutermax<bendcutdisk;
+		bool passouter=bend-bendoutermin>-settings_->bendcutte(1,iSeed_)&&bend-bendoutermax<settings_->bendcutte(1,iSeed_);
 		if (passouter) vmbendouter[ibend]=true;
 		pttableouter_[phiindex].push_back(passouter);
 		
@@ -915,7 +915,7 @@ public:
 	  vmbendouter.push_back(false);
 	}
 	
-	double dr=(rmaxdiskvm-rmindiskvm)/(1<<nrbits);
+	double dr=(settings_->rmaxdiskvm()-settings_->rmindiskvm())/(1<<nrbits);
 
 	for (int iphiinnerbin=0;iphiinnerbin<innerphibins;iphiinnerbin++){
 	  phiinner[0]=innerphimin+iphiinnerbin*(innerphimax-innerphimin)/innerphibins;
@@ -924,7 +924,7 @@ public:
 	    phiouter[0]=outerphimin+iphiouterbin*(outerphimax-outerphimin)/outerphibins;
 	    phiouter[1]=outerphimin+(iphiouterbin+1)*(outerphimax-outerphimin)/outerphibins;
 	    for (int irbin=0;irbin<(1<<nrbits);irbin++){
-	      router[0]=rmindiskvm+dr*irbin;
+	      router[0]=settings_->rmindiskvm()+dr*irbin;
 	      router[1]=router[0]+dr; 
 	      double bendinnermin=20.0;
 	      double bendinnermax=-20.0;
@@ -949,13 +949,13 @@ public:
 		}
 	      }
 	    
-	      phitable_[phiindex].push_back(rinvmin<rinvcutte);
+	      phitable_[phiindex].push_back(rinvmin<settings_->rinvcutte());
 	      
 	      
 	      for(int ibend=0;ibend<8;ibend++) {
 		double bend=Stub::benddecode(ibend,true); 
 		
-		bool passinner=bend-bendinnermin>-bendcut&&bend-bendinnermax<bendcut;	    
+		bool passinner=bend-bendinnermin>-settings_->bendcutte(0,iSeed_)&&bend-bendinnermax<settings_->bendcutte(0,iSeed_);	    
 		if (passinner) vmbendinner[ibend]=true;
 		pttableinner_[phiindex].push_back(passinner);
 		
@@ -964,7 +964,7 @@ public:
 	      for(int ibend=0;ibend<8;ibend++) {
 		double bend=Stub::benddecode(ibend,true); 
 		
-		bool passouter=bend-bendoutermin>-bendcut&&bend-bendoutermax<bendcut;
+		bool passouter=bend-bendoutermin>-settings_->bendcutte(1,iSeed_)&&bend-bendoutermax<settings_->bendcutte(1,iSeed_);
 		if (passouter) vmbendouter[ibend]=true;
 		pttableouter_[phiindex].push_back(passouter);
 		

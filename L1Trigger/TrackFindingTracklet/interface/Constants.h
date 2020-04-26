@@ -6,7 +6,6 @@ static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR"
 //Bits used to store track parameter in tracklet
 static const int nbitsrinv=14;
 static const int nbitsphi0=18;
-//static const int nbitsd0=13;
 static const int nbitst=14;
 static const int nbitsz0=10;
 
@@ -71,43 +70,6 @@ static const int rcorrbits=6;
 
 static const int chisqphifactbits=14;
 static const int chisqzfactbits=14;
-
-//
-//Geometry 
-//
-
-static const double rmindiskvm=22.5;
-static const double rmaxdiskvm=67.0;
-
-static const double rmaxdiskl1overlapvm=45.0;
-static const double rmindiskl2overlapvm=40.0;
-static const double rmindiskl3overlapvm=50.0;
-
-//static const double ptcut=1.91; //Minimum pt // ONLY USED IN IMATH STUFF 
-//static const double rinvcut=0.01*0.3*3.8/ptcut; //0.01 to convert to cm-1  // ONLY USED IN IMATH STUFF 
-
-static const double ptcutte=1.8; //Minimum pt in TE
-static const double rinvcutte=0.01*0.3*3.8/ptcutte; //0.01 to convert to cm-1 in TE
-static const double bendcut=1.25;  //Obsolete should be removed
-static const double bendcutdisk=1.25;   //Obsolete should be removed
-static const double z0cut=15.0;
-static const double mecut=2.0;
-static const double mecutdisk=1.5;
-
-// Obsolete - only used in TrackletCalculatorDisplaced (Ryd - 2020-01-16)
-static const int iphicritminmc=9253;
-static const int iphicritmaxmc=56269;
-
-static const unsigned int NLONGVMBITS=3; 
-
-static const unsigned int NLONGVMBINS=(1<<NLONGVMBITS);
-
-//Minimal ranges for track parameters
-//static const double maxrinv=0.006;
-//static const double maxd0=10.;
-
-//These are constants defining global coordinate system
-//static const double kd0 = 2*maxd0/(1<<nbitsd0);
 
 
 //constants derivative from the above
