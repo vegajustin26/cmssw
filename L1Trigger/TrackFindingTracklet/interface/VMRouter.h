@@ -281,7 +281,7 @@ public:
     } else {
       for(unsigned int i=0;i<nbins;i++) {
 
-	double rstub=kr*(i<<(settings_->nrbitsstub(layerdisk_)-nbitsfinebintable_));;
+	double rstub=settings_->kr()*(i<<(settings_->nrbitsstub(layerdisk_)-nbitsfinebintable_));;
 
 	//use tabulated values for the 2S modules
 	if (i<10) rstub=(layerdisk_<=7)?settings_->rDSSinner(i):settings_->rDSSouter(i);
@@ -353,7 +353,7 @@ public:
 
     if (iseed==10&&inner==2) {
       //return if radius to small (values <100 corresponds to the 2S modules)
-      if (r.value()>100&&r.value()<rmindiskl3overlapvm/kr) return FPGAWord(-1,2,false,__LINE__,__FILE__);
+      if (r.value()>100&&r.value()<rmindiskl3overlapvm/settings_->kr()) return FPGAWord(-1,2,false,__LINE__,__FILE__);
       int bin=0;
       if(!isPSmodule) {
 	bin = r.value(); // 0 to 9 //FIXME

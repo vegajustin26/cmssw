@@ -63,7 +63,7 @@ public:
 
     fpgapars_.rinv().set(irinv,nbitsrinv,false,__LINE__,__FILE__); 
     fpgapars_.phi0().set(iphi0,nbitsphi0,false,__LINE__,__FILE__); 
-    fpgapars_.d0().set(id0,nbitsd0,false,__LINE__,__FILE__); 
+    fpgapars_.d0().set(id0,settings_->nbitsd0(),false,__LINE__,__FILE__); 
     fpgapars_.z0().set(iz0,nbitsz0,false,__LINE__,__FILE__);
     fpgapars_.t().set(it,nbitst,false,__LINE__,__FILE__);       
 
@@ -238,7 +238,7 @@ public:
       oss << fpgapars_.rinv().value()*krinvpars<<" "
 	  << fpgapars_.phi0().value()*kphi0pars<<" "
 	  << fpgapars_.d0().value()*kd0pars<<" "
-	  << fpgapars_.z0().value()*kz<<" "
+	  << fpgapars_.z0().value()*settings_->kz()<<" "
 	  << fpgapars_.t().value()*ktpars;
     }
     
@@ -1194,7 +1194,7 @@ public:
 	  << (fpgafitpars_.phi0().value())*kphi0pars<<" "
 	  << (fpgafitpars_.d0().value())*kd0pars<<" "
 	  << (fpgafitpars_.t().value())*ktpars<<" "
-	  << (fpgafitpars_.z0().value())*kz<<" "
+	  << (fpgafitpars_.z0().value())*settings_->kz()<<" "
 	  << innerFPGAStub_->phiregionaddressstr()<<" ";
       if (middleFPGAStub_) {
 	oss << middleFPGAStub_->phiregionaddressstr()<<" ";

@@ -6,7 +6,7 @@ static const bool geomTkTDR=false; // false => newest T14 tracker, true => "TDR"
 //Bits used to store track parameter in tracklet
 static const int nbitsrinv=14;
 static const int nbitsphi0=18;
-static const int nbitsd0=13;
+//static const int nbitsd0=13;
 static const int nbitst=14;
 static const int nbitsz0=10;
 
@@ -103,14 +103,11 @@ static const unsigned int NLONGVMBITS=3;
 static const unsigned int NLONGVMBINS=(1<<NLONGVMBITS);
 
 //Minimal ranges for track parameters
-static const double maxrinv=0.006;
-static const double maxd0=10.;
+//static const double maxrinv=0.006;
+//static const double maxd0=10.;
 
 //These are constants defining global coordinate system
-
-static const double kz=2*120.0/(1<<12);   //zlength/ nbitszL123
-static const double kr=120.0/(1<<12);  //rmaxdisk nrbitsdisk
-static const double kd0 = 2*maxd0/(1<<nbitsd0);
+//static const double kd0 = 2*maxd0/(1<<nbitsd0);
 
 
 //constants derivative from the above

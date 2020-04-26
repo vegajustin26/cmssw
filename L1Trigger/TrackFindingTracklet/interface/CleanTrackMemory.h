@@ -52,10 +52,10 @@ public:
                << asinh(tracklet->tfitexact()) << " " << tracklet->z0fitexact() << "   "
                << (0.3 * 3.8 / 100.0) / (irinv * krinvpars) << " "
                << tracklet->iphi0fit().value() * kphi0pars + phioffset << " "
-               << asinh(tracklet->itfit().value() * ktpars) << " " << tracklet->iz0fit().value() * kz << "   "
+               << asinh(tracklet->itfit().value() * ktpars) << " " << tracklet->iz0fit().value() * settings_->kz() << "   "
                << (0.3 * 3.8 / 100.0) / (1e-20 + tracklet->fpgarinv().value() * krinvpars) << " "
                << tracklet->fpgaphi0().value() * kphi0pars + phioffset << " "
-               << asinh(tracklet->fpgat().value() * ktpars) << " " << tracklet->fpgaz0().value() * kz
+               << asinh(tracklet->fpgat().value() * ktpars) << " " << tracklet->fpgaz0().value() * settings_->kz()
                << "               " << (0.3 * 3.8 / 100.0) / (1e-20 + tracklet->rinvapprox()) << " "
                << tracklet->phi0approx() + phioffset << " " << asinh(tracklet->tapprox()) << " " << tracklet->z0approx()
                << endl;

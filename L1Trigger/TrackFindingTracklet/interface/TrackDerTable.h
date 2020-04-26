@@ -292,9 +292,9 @@ public:
           if (r[ii] > 60.0)
             continue;
           double tder = (MinvDtDelta[2][2 * ii + 1] - MinvDt[2][2 * ii + 1]) / delta;
-          int itder = (1 << (fittbitshift + rcorrbits)) * tder * kr * kzproj / ktpars;
+          int itder = (1 << (fittbitshift + rcorrbits)) * tder * settings_->kr() * kzproj / ktpars;
           double zder = (MinvDtDelta[3][2 * ii + 1] - MinvDt[3][2 * ii + 1]) / delta;
-          int izder = (1 << (fitz0bitshift + rcorrbits)) * zder * kr * kzproj / kzpars;
+          int izder = (1 << (fitz0bitshift + rcorrbits)) * zder * settings_->kr() * kzproj / kzpars;
           der.settdzcorr(i, ii, tder);
           der.setz0dzcorr(i, ii, zder);
           der.setitdzcorr(i, ii, itder);
@@ -946,12 +946,12 @@ public:
         D[2][j] = (2 / rinv) * asin(0.5 * ri * rinv) / sigmazpsbarrel;
         D[3][j] = 1.0 / sigmazpsbarrel;
         sigma[j] = sigmazpsbarrel;
-        kfactor[j] = kz;
+        kfactor[j] = settings->kz();
       } else {
         D[2][j] = (2 / rinv) * asin(0.5 * ri * rinv) / sigmaz2;
         D[3][j] = 1.0 / sigmaz2;
         sigma[j] = sigmaz2;
-        kfactor[j] = kz;
+        kfactor[j] = settings->kz();
       }
 
       j++;
@@ -1000,14 +1000,14 @@ public:
         D[2][j] = drdt / sigmazpsdisk;
         D[3][j] = drdz0 / sigmazpsdisk;
         sigma[j] = sigmazpsdisk;
-        kfactor[j] = kr;
+        kfactor[j] = settings->kr();
       } else {
         D[0][j] = drdrinv / sigmaz2sdisk;
         D[1][j] = drdphi0 / sigmaz2sdisk;
         D[2][j] = drdt / sigmaz2sdisk;
         D[3][j] = drdz0 / sigmaz2sdisk;
         sigma[j] = sigmaz2sdisk;
-        kfactor[j] = kr;
+        kfactor[j] = settings->kr();
       }
 
       j++;
@@ -1105,15 +1105,10 @@ public:
 
         assert(MinvDt[0][2 * i] == MinvDt[0][2 * i]);
 
-        //iMinvDt[0][2*i]=(1<<fitrinvbitshift)*MinvDt[0][2*i]*kphiprojdisk/krinvparsdisk;
-        //iMinvDt[1][2*i]=(1<<fitphi0bitshift)*MinvDt[1][2*i]*kphiprojdisk/kphi0parsdisk;
-        //iMinvDt[2][2*i]=(1<<fittbitshift)*MinvDt[2][2*i]*kphiprojdisk/ktparsdisk;
-        //iMinvDt[3][2*i]=(1<<fitz0bitshift)*MinvDt[3][2*i]*kphiprojdisk/kzdisk;
-
         iMinvDt[0][2 * i] = (1 << fitrinvbitshift) * MinvDt[0][2 * i] * kphiproj123 / krinvpars;
         iMinvDt[1][2 * i] = (1 << fitphi0bitshift) * MinvDt[1][2 * i] * kphiproj123 / kphi0pars;
         iMinvDt[2][2 * i] = (1 << fittbitshift) * MinvDt[2][2 * i] * kphiproj123 / ktpars;
-        iMinvDt[3][2 * i] = (1 << fitz0bitshift) * MinvDt[3][2 * i] * kphiproj123 / kz;
+        iMinvDt[3][2 * i] = (1 << fitz0bitshift) * MinvDt[3][2 * i] * kphiproj123 / settings->kz();
 
         if (std::abs(alpha[i - nlayers]) < 1e-10) {
           MinvDt[0][2 * i + 1] /= sigmazpsdisk;
@@ -1130,7 +1125,7 @@ public:
         iMinvDt[0][2 * i + 1] = (1 << fitrinvbitshift) * MinvDt[0][2 * i + 1] * krprojshiftdisk / krinvpars;
         iMinvDt[1][2 * i + 1] = (1 << fitphi0bitshift) * MinvDt[1][2 * i + 1] * krprojshiftdisk / kphi0pars;
         iMinvDt[2][2 * i + 1] = (1 << fittbitshift) * MinvDt[2][2 * i + 1] * krprojshiftdisk / ktpars;
-        iMinvDt[3][2 * i + 1] = (1 << fitz0bitshift) * MinvDt[3][2 * i + 1] * krprojshiftdisk / kz;
+        iMinvDt[3][2 * i + 1] = (1 << fitz0bitshift) * MinvDt[3][2 * i + 1] * krprojshiftdisk / settings->kz();
       }
     }
   }
@@ -1236,12 +1231,12 @@ public:
         D[2][j] = (2 / rinv) * asin(0.5 * ri * rinv);
         D[3][j] = 1.0;
         sigma[j] = sigmaz;
-        kfactor[j] = kz;
+        kfactor[j] = settings->kz();
       } else {
         D[2][j] = (2 / rinv) * asin(0.5 * ri * rinv);
         D[3][j] = 1.0;
         sigma[j] = sigmaz2;
-        kfactor[j] = kz;
+        kfactor[j] = settings->kz();
       }
 
       j++;
@@ -1286,14 +1281,14 @@ public:
         D[2][j] = drdt;
         D[3][j] = drdz0;
         sigma[j] = sigmaz;
-        kfactor[j] = kr;
+        kfactor[j] = settings->kr();
       } else {
         D[0][j] = drdrinv;
         D[1][j] = drdphi0;
         D[2][j] = drdt;
         D[3][j] = drdz0;
         sigma[j] = sigmaz2;
-        kfactor[j] = kr;
+        kfactor[j] = settings->kr();
       }
 
       j++;
@@ -1403,7 +1398,7 @@ public:
         iMinvDt[0][2 * i] = (1 << fitrinvbitshift) * MinvDt[0][2 * i] * kphiproj123 / krinvpars;
         iMinvDt[1][2 * i] = (1 << fitphi0bitshift) * MinvDt[1][2 * i] * kphiproj123 / kphi0pars;
         iMinvDt[2][2 * i] = (1 << fittbitshift) * MinvDt[2][2 * i] * kphiproj123 / ktpars;
-        iMinvDt[3][2 * i] = (1 << fitz0bitshift) * MinvDt[3][2 * i] * kphiproj123 / kz;
+        iMinvDt[3][2 * i] = (1 << fitz0bitshift) * MinvDt[3][2 * i] * kphiproj123 / settings->kz();
 
         /*
 	if (std::abs(alpha[i])<1e-10) {
@@ -1422,7 +1417,7 @@ public:
         iMinvDt[0][2 * i + 1] = (1 << fitrinvbitshift) * MinvDt[0][2 * i + 1] * krprojshiftdisk / krinvpars;
         iMinvDt[1][2 * i + 1] = (1 << fitphi0bitshift) * MinvDt[1][2 * i + 1] * krprojshiftdisk / kphi0pars;
         iMinvDt[2][2 * i + 1] = (1 << fittbitshift) * MinvDt[2][2 * i + 1] * krprojshiftdisk / ktpars;
-        iMinvDt[3][2 * i + 1] = (1 << fitz0bitshift) * MinvDt[3][2 * i + 1] * krprojshiftdisk / kz;
+        iMinvDt[3][2 * i + 1] = (1 << fitz0bitshift) * MinvDt[3][2 * i + 1] * krprojshiftdisk / settings->kz();
       }
     }
   }

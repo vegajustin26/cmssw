@@ -624,7 +624,7 @@ class FitTrack:public ProcessBase{
 	 int itder=derivatives->getitdzcorr(i,ii);
 	 int izder=derivatives->getiz0dzcorr(i,ii);
 	 
-	 int idr=dr/kr;
+	 int idr=dr/settings_->kr();
 	 
 	 iMinvDt[2][2*ii+1]+=((idr*itder)>>rcorrbits);
 	 iMinvDt[3][2*ii+1]+=((idr*izder)>>rcorrbits);
@@ -747,49 +747,6 @@ class FitTrack:public ProcessBase{
     idt+=((iMinvDt[2][j]*idelta[j]));
     idz0+=((iMinvDt[3][j]*idelta[j]));
 
-    /*
-
-       double drinvtmp=MinvDt[0][j]*delta[j];
-       double idrinvtmp=krinvpars*((iMinvDt[0][j]*idelta[j]+(1<<(fitrinvbitshift-1)))>>fitrinvbitshift);
-
-       if (std::abs(drinvtmp-idrinvtmp)>0.000001) {
-       cout << "WARNING large fp vs. int difference for drinv "<<tracklet->layer()<<" "<<tracklet->disk()<<" "
-       <<j<<" "<<drinvtmp<<" "
-       <<idrinvtmp<<" "<<drinvtmp-idrinvtmp<<"  "<<delta[j]<<" "<<idelta[j]*kphiproj123<<" "<<iMinvDt[0][j]<<" "<<idelta[j]<<endl;
-       }
-
-
-       double dz0tmp=MinvDt[3][j]*delta[j];
-       double idz0tmp=kz*((iMinvDt[3][j]*idelta[j])>>fitz0bitshift);
-
-       if (std::abs(dz0tmp-idz0tmp)>1.0) {
-       cout << "WARNING large fp vs. int difference for dz0 "<<tracklet->layer()<<" "<<tracklet->disk()<<" "
-       <<j<<" "<<dz0tmp<<" "
-       <<idz0tmp<<" "<<dz0tmp-idz0tmp<<"  "<<delta[j]<<" "<<idelta[j]*kz<<endl;
-       }
-
-*/
-
-    /*
-       if (j%2==0) {
-       cout << "j dt idt : "<<j<<" "<<MinvDt[2][j]*delta[j]<<" "<<((iMinvDt[2][j]*idelta[j])>>fittbitshift)*ktpars<<endl;
-       if (j/2>=nlayers) {
-       cout << "alpha : "<<alpha[j/2-nlayers]*rstub[j/2]*rstub[j/2]<<endl;
-       cout << "MinvDt iMinvDt : "<<MinvDt[2][j]<<" "<<iMinvDt[2][j]*ktparsdisk/(1<<fittbitshift)/kphiproj123<<endl;
-       cout << "delta idelta : "<<delta[j]<<" "<<idelta[j]*kphiproj123<<endl;
-       } else {
-       cout << "MinvDt iMinvDt : "<<MinvDt[2][j]<<" "<<iMinvDt[2][j]*ktpars/(1<<fittbitshift)/kphi1<<endl;
-       cout << "delta idelta : "<<delta[j]<<" "<<idelta[j]*kphi1<<endl;
-       }
-       }
-       */
-
-    //cout <<  "------------------------------------"<<endl;
-    //cout << "j delta idelta : "<<j<<" "<<delta[j]<<" "<<idelta[j]*kfactor[j]<<endl;
-    //cout << "j dt idt : "<<j<<" "<<MinvDt[2][j]*delta[j]<<" "<<((iMinvDt[2][j]*idelta[j])>>fittbitshift)*ktpars<<endl;
-    //cout << "kfactor kphiproj123 : "<<kfactor[j]<<" "<<kphiproj123<<endl;
-    //cout << "j Minv iMinv : "<<j<<" "<<MinvDt[2][j]<<" "<<iMinvDt[2][j]<<" "<<iMinvDt[2][j]*ktpars/kphiproj123/(1<<fittbitshift)<<" "
-    //   <<MinvDt[2][j]/(iMinvDt[2][j]*ktpars/kphiproj123/(1<<fittbitshift))<<endl;
 
     if (0&&j%2==0) {
 

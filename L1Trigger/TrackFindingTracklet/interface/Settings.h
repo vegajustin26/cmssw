@@ -485,6 +485,14 @@ namespace Trklet{
     double kphi() const { return dphisectorHG()/(1<<nphibitsstub(0)); } 
     double kphi1() const { return dphisectorHG()/(1<<nphibitsstub(5)); }
 
+    double kz() const { return 2*zlength_/(1<<nzbitsstub_[0]); }
+    double kr() const { return rmaxdisk_/(1<<nrbitsstub_[6]); }
+
+    double maxrinv() const { return maxrinv_; }  //FIXME maxrinv_ vs rinvmax_
+    double maxd0() const { return maxd0_; }
+    unsigned int nbitsd0() const { return nbitsd0_; }
+
+    double kd0() const { return  2*maxd0_/(1<<nbitsd0_); }
     
   private:
 
@@ -527,6 +535,11 @@ namespace Trklet{
     double dzmax_;
 
     double half2SmoduleWidth_;
+
+    double maxrinv_{0.006};
+    double maxd0_{10.0};
+
+    unsigned int nbitsd0_{13};
     
     std::array<std::array<unsigned int, 12>, 3> nfinephi_;
     std::array<std::array<unsigned int, 12>, 3> nphireg_;

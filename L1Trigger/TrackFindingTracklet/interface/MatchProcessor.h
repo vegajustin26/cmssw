@@ -62,11 +62,11 @@ public:
     for(unsigned int iSeed=0;iSeed<12;iSeed++) {
       if (layer_>0) {
 	phimatchcut_[iSeed]=settings_->rphimatchcut(iSeed,layer_-1)/(settings_->kphi1()*settings_->rmean(layer_-1));
-	zmatchcut_[iSeed]=settings_->zmatchcut(iSeed,layer_-1)/kz;
+	zmatchcut_[iSeed]=settings_->zmatchcut(iSeed,layer_-1)/settings_->kz();
       }
       if (disk_!=0) {
-	rphicutPS_[iSeed]=settings_->rphicutPS(iSeed,abs(disk_)-1)/(kphiproj123*kr);
-	rphicut2S_[iSeed]=settings_->rphicut2S(iSeed,abs(disk_)-1)/(kphiproj123*kr);
+	rphicutPS_[iSeed]=settings_->rphicutPS(iSeed,abs(disk_)-1)/(kphiproj123*settings_->kr());
+	rphicut2S_[iSeed]=settings_->rphicut2S(iSeed,abs(disk_)-1)/(kphiproj123*settings_->kr());
 	rcut2S_[iSeed]=settings_->rcut2S(iSeed,abs(disk_)-1)/krprojshiftdisk;
 	rcutPS_[iSeed]=settings_->rcutPS(iSeed,abs(disk_)-1)/krprojshiftdisk;
       }
@@ -457,7 +457,7 @@ public:
       hists->FillLayerResidual(layer_, seedindex,
 			       dphiapprox*settings_->rmean(layer_-1),
 			       ideltaphi*settings_->kphi1()*settings_->rmean(layer_-1),
-			       ideltaz*fact_*kz, dz,truthmatch);
+			       ideltaz*fact_*settings_->kz(), dz,truthmatch);
       
       
       
@@ -470,7 +470,7 @@ public:
 	out << layer_<<" "<<seedindex<<" "<<pt<<" "<<ideltaphi*settings_->kphi1()*settings_->rmean(layer_-1)
 	    <<" "<<dphiapprox*settings_->rmean(layer_-1)
 	    <<" "<<phimatchcut_[seedindex]*settings_->kphi1()*settings_->rmean(layer_-1)
-	    <<"   "<<ideltaz*fact_*kz<<" "<<dz<<" "<<zmatchcut_[seedindex]*kz<<endl;	  
+	    <<"   "<<ideltaz*fact_*settings_->kz()<<" "<<dz<<" "<<zmatchcut_[seedindex]*settings_->kz()<<endl;	  
       }
       
       
@@ -555,10 +555,10 @@ public:
 	assert(irstub<10);
 	if (disk_<=2) {
 	  ialphafact = ialphafactinner_[irstub];
-	  irstub = settings_->rDSSinner(irstub)/kr;
+	  irstub = settings_->rDSSinner(irstub)/settings_->kr();
 	} else {
 	  ialphafact = ialphafactouter_[irstub];
-	  irstub = settings_->rDSSouter(irstub)/kr;
+	  irstub = settings_->rDSSouter(irstub)/settings_->kr();
 	}
       }
       
@@ -641,7 +641,7 @@ public:
 	idrcut=rcut2S_[seedindex]; 
       }
       
-      double drphicut=idrphicut*kphiproj123*kr;
+      double drphicut=idrphicut*kphiproj123*settings_->kr();
       double drcut=idrcut*krprojshiftdisk;
       
       

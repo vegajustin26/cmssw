@@ -51,10 +51,10 @@ public:
     for(unsigned int iSeed=0;iSeed<12;iSeed++) {
       if (layerdisk_<6) {
 	phimatchcut_[iSeed]=settings_->rphimatchcut(iSeed,layerdisk_)/(settings_->kphi1()*settings_->rmean(layerdisk_));
-	zmatchcut_[iSeed]=settings_->zmatchcut(iSeed,layerdisk_)/kz;
+	zmatchcut_[iSeed]=settings_->zmatchcut(iSeed,layerdisk_)/settings_->kz();
       } else {
-	rphicutPS_[iSeed]=settings_->rphicutPS(iSeed,layerdisk_-6)/(kphiproj123*kr);
-	rphicut2S_[iSeed]=settings_->rphicut2S(iSeed,layerdisk_-6)/(kphiproj123*kr);
+	rphicutPS_[iSeed]=settings_->rphicutPS(iSeed,layerdisk_-6)/(kphiproj123*settings_->kr());
+	rphicut2S_[iSeed]=settings_->rphicut2S(iSeed,layerdisk_-6)/(kphiproj123*settings_->kr());
 	rcut2S_[iSeed]=settings_->rcut2S(iSeed,layerdisk_-6)/krprojshiftdisk;
 	rcutPS_[iSeed]=settings_->rcutPS(iSeed,layerdisk_-6)/krprojshiftdisk;
       }
@@ -260,7 +260,7 @@ public:
 	hists->FillLayerResidual(layerdisk_+1, seedindex,
 				 dphiapprox*settings_->rmean(layerdisk_),
 				 ideltaphi*settings_->kphi1()*settings_->rmean(layerdisk_),
-				 ideltaz*fact_*kz, dz,truthmatch);
+				 ideltaz*fact_*settings_->kz(), dz,truthmatch);
     
 
 	if (std::abs(dphi)>0.2 || std::abs(dphiapprox)>0.2 ) {
@@ -281,7 +281,7 @@ public:
 	  out << layerdisk_+1<<" "<<seedindex<<" "<<pt<<" "<<ideltaphi*settings_->kphi1()*settings_->rmean(layerdisk_)
 	      <<" "<<dphiapprox*settings_->rmean(layerdisk_)
 	      <<" "<<phimatchcut_[seedindex]*settings_->kphi1()*settings_->rmean(layerdisk_)
-	      <<"   "<<ideltaz*fact_*kz<<" "<<dz<<" "<<zmatchcut_[seedindex]*kz<<endl;	  
+	      <<"   "<<ideltaz*fact_*settings_->kz()<<" "<<dz<<" "<<zmatchcut_[seedindex]*settings_->kz()<<endl;	  
 	}
 
 	
@@ -353,10 +353,10 @@ public:
 	  assert(irstub<10);
 	  if (abs(disk)<=2) {
 	    ialphafact = ialphafactinner_[irstub];
-	    irstub = settings_->rDSSinner(irstub)/kr;
+	    irstub = settings_->rDSSinner(irstub)/settings_->kr();
 	  } else {
 	    ialphafact = ialphafactouter_[irstub];
-	    irstub = settings_->rDSSouter(irstub)/kr;
+	    irstub = settings_->rDSSouter(irstub)/settings_->kr();
 	  }
 	}
 
@@ -434,7 +434,7 @@ public:
 	  idrcut=rcut2S_[seedindex]; 
 	}
 
-	double drphicut=idrphicut*kphiproj123*kr;
+	double drphicut=idrphicut*kphiproj123*settings_->kr();
 	double drcut=idrcut*krprojshiftdisk;
 
 	

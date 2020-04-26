@@ -91,18 +91,18 @@ int main(const int argc, const char** argv)
   
   krinvpars = ITC_L1L2->rinv_final.get_K();
   kphi0pars = ITC_L1L2->phi0_final.get_K();
-  kd0pars   = kd0;
+  kd0pars   = settings.kd0();
   ktpars    = ITC_L1L2->t_final.get_K();
   kz0pars   = ITC_L1L2->z0_final.get_K();
 
-  krdisk = kr;
-  kzpars = kz;  
+  krdisk = settings.kr();
+  kzpars = settings.kz();  
   krprojshiftdisk = ITC_L1L2->rD_0_final.get_K();
 
   //those can be made more transparent...
   kphiproj123=kphi0pars*4;
   kphiproj456=kphi0pars/2;
-  kzproj=kz;
+  kzproj=settings.kz();
   kphider=krinvpars*(1<<phiderbitshift);
   kzder=ktpars*(1<<zderbitshift);
   kphiprojdisk=kphi0pars*4.0;
@@ -111,8 +111,8 @@ int main(const int argc, const char** argv)
 
   cout << "=========================================================" << endl;
   cout << "Conversion factors for global coordinates:"<<endl;
-  cout << "z    kz            = "<< kz <<endl;
-  cout << "r    kr            = "<< kr <<endl;
+  cout << "z    kz            = "<< settings.kz() <<endl;
+  cout << "r    kr            = "<< settings.kr() <<endl;
   cout << "phi  kphi1         = "<< settings.kphi1() <<endl;
   cout << "=========================================================" << endl;
   cout << "Conversion factors for track(let) parameters:"<<endl;
@@ -569,7 +569,7 @@ int main(const int argc, const char** argv)
 	double phisec=phi-2*M_PI;
 	while (phisec<0.0) phisec+=2*M_PI/settings.NSector();
 	outpars  <<tracks[l]->duplicate()<<" "<<asinh(tracks[l]->it()*ktpars)<<" "
-		 <<phi<<" "<<tracks[l]->iz0()*kz<<" "<<phisec/(2*M_PI/settings.NSector())<<" "
+		 <<phi<<" "<<tracks[l]->iz0()*settings.kz()<<" "<<phisec/(2*M_PI/settings.NSector())<<" "
 		 <<tracks[l]->irinv()*krinvpars<<endl;
       }   	
       if (!tracks[l]->duplicate()) {

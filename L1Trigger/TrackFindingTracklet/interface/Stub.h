@@ -323,9 +323,9 @@ public:
   double rapprox() const {
     if (disk_.value()==0){
       int lr=1<<(8-settings_->nrbitsstub(layer_.value()));
-      return r_.value()*kr*lr+settings_->rmean(layer_.value());
+      return r_.value()*settings_->kr()*lr+settings_->rmean(layer_.value());
     }
-    return r_.value()*kr;
+    return r_.value()*settings_->kr();
   }
 
   double zapprox() const {
@@ -334,14 +334,14 @@ public:
       if (layer_.value()>=3) {
 	lz=16;
       }
-      return z_.value()*kz*lz;
+      return z_.value()*settings_->kz()*lz;
     }
     int sign=1;
     if (disk_.value()<0) sign=-1;
     if (sign<0) {
-      return (z_.value()+1)*kz+sign*settings_->zmean(abs(disk_.value())-1);  //Not sure why this is needed to get agreement with integer calculations
+      return (z_.value()+1)*settings_->kz()+sign*settings_->zmean(abs(disk_.value())-1);  //Not sure why this is needed to get agreement with integer calculations
     } else {
-      return z_.value()*kz+sign*settings_->zmean(abs(disk_.value())-1);
+      return z_.value()*settings_->kz()+sign*settings_->zmean(abs(disk_.value())-1);
     }
   }
 

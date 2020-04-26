@@ -841,7 +841,7 @@ public:
     
     if (fpgaz.atExtreme()) return false;
 
-    if (std::abs(fpgaz.value()*kz)>settings_->zlength()) return false;
+    if (std::abs(fpgaz.value()*settings_->kz())>settings_->zlength()) return false;
     
     int iphivmRaw=fpgaphi.value()>>(fpgaphi.nbits()-5);
 
@@ -1008,18 +1008,18 @@ public:
     }
 
     //now binary
-    double krinv = settings_->kphi1()/kr*pow(2,rinv_shift),
+    double krinv = settings_->kphi1()/settings_->kr()*pow(2,rinv_shift),
            kphi0 = settings_->kphi1()*pow(2,phi0_shift),
-           kt = kz/kr*pow(2,t_shift),
-           kz0 = kz*pow(2,z0_shift),
+           kt = settings_->kz()/settings_->kr()*pow(2,t_shift),
+           kz0 = settings_->kz()*pow(2,z0_shift),
            kphiproj = settings_->kphi1()*pow(2,SS_phiL_shift),
-           kphider = settings_->kphi1()/kr*pow(2,SS_phiderL_shift),
-           kzproj = kz*pow(2,PS_zL_shift),
-           kzder = kz/kr*pow(2,PS_zderL_shift),
+           kphider = settings_->kphi1()/settings_->kr()*pow(2,SS_phiderL_shift),
+           kzproj = settings_->kz()*pow(2,PS_zL_shift),
+           kzder = settings_->kz()/settings_->kr()*pow(2,PS_zderL_shift),
            kphiprojdisk = settings_->kphi1()*pow(2,SS_phiD_shift),
-           kphiderdisk = settings_->kphi1()/kr*pow(2,SS_phiderD_shift),
-           krprojdisk = kr*pow(2,PS_rD_shift),
-           krderdisk = kr/kz*pow(2,PS_rderD_shift);
+           kphiderdisk = settings_->kphi1()/settings_->kr()*pow(2,SS_phiderD_shift),
+           krprojdisk = settings_->kr()*pow(2,PS_rD_shift),
+           krderdisk = settings_->kr()/settings_->kz()*pow(2,PS_rderD_shift);
     
     int irinv,iphi0,id0,it,iz0;
     int iphiproj[4],izproj[4],iphider[4],izder[4];
@@ -1028,7 +1028,7 @@ public:
     //store the binary results
     irinv = rinvapprox / krinv;
     iphi0 = phi0approx / kphi0;
-    id0 = d0approx / kd0;
+    id0 = d0approx / settings_->kd0();
     it    = tapprox / kt;
     iz0   = z0approx / kz0;
 
@@ -1043,7 +1043,7 @@ public:
       if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<" in layer "<<layer_<<endl;
       success = false;
     }
-    if (std::abs(d0approx)>maxd0) {
+    if (std::abs(d0approx)>settings_->maxd0()) {
       if (settings_->debugTracklet()) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
       success = false;
     }
@@ -1289,18 +1289,18 @@ public:
     }
 
     //now binary
-    double krinv = settings_->kphi1()/kr*pow(2,rinv_shift),
+    double krinv = settings_->kphi1()/settings_->kr()*pow(2,rinv_shift),
            kphi0 = settings_->kphi1()*pow(2,phi0_shift),
-           kt = kz/kr*pow(2,t_shift),
-           kz0 = kz*pow(2,z0_shift),
+           kt = settings_->kz()/settings_->kr()*pow(2,t_shift),
+           kz0 = settings_->kz()*pow(2,z0_shift),
            kphiproj = settings_->kphi1()*pow(2,SS_phiL_shift),
-           kphider = settings_->kphi1()/kr*pow(2,SS_phiderL_shift),
-           kzproj = kz*pow(2,PS_zL_shift),
-           kzder = kz/kr*pow(2,PS_zderL_shift),
+           kphider = settings_->kphi1()/settings_->kr()*pow(2,SS_phiderL_shift),
+           kzproj = settings_->kz()*pow(2,PS_zL_shift),
+           kzder = settings_->kz()/settings_->kr()*pow(2,PS_zderL_shift),
            kphiprojdisk = settings_->kphi1()*pow(2,SS_phiD_shift),
-           kphiderdisk = settings_->kphi1()/kr*pow(2,SS_phiderD_shift),
-           krprojdisk = kr*pow(2,PS_rD_shift),
-           krderdisk = kr/kz*pow(2,PS_rderD_shift);
+           kphiderdisk = settings_->kphi1()/settings_->kr()*pow(2,SS_phiderD_shift),
+           krprojdisk = settings_->kr()*pow(2,PS_rD_shift),
+           krderdisk = settings_->kr()/settings_->kz()*pow(2,PS_rderD_shift);
     
     int irinv,iphi0,id0,it,iz0;
     int iphiproj[4],izproj[4],iphider[4],izder[4];
@@ -1309,7 +1309,7 @@ public:
     //store the binary results
     irinv = rinvapprox / krinv;
     iphi0 = phi0approx / kphi0;
-    id0 = d0approx / kd0;
+    id0 = d0approx / settings_->kd0();
     it    = tapprox / kt;
     iz0   = z0approx / kz0;
 
@@ -1324,7 +1324,7 @@ public:
       if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<endl;
       success = false;
     }
-    if (std::abs(d0approx)>maxd0) {
+    if (std::abs(d0approx)>settings_->maxd0()) {
       if (settings_->debugTracklet()) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
       success = false;
     }
@@ -1559,18 +1559,18 @@ public:
     }
 
     //now binary
-    double krinv = settings_->kphi1()/kr*pow(2,rinv_shift),
+    double krinv = settings_->kphi1()/settings_->kr()*pow(2,rinv_shift),
            kphi0 = settings_->kphi1()*pow(2,phi0_shift),
-           kt = kz/kr*pow(2,t_shift),
-           kz0 = kz*pow(2,z0_shift),
+           kt = settings_->kz()/settings_->kr()*pow(2,t_shift),
+           kz0 = settings_->kz()*pow(2,z0_shift),
            kphiproj = settings_->kphi1()*pow(2,SS_phiL_shift),
-           kphider = settings_->kphi1()/kr*pow(2,SS_phiderL_shift),
-           kzproj = kz*pow(2,PS_zL_shift),
-           kzder = kz/kr*pow(2,PS_zderL_shift),
+           kphider = settings_->kphi1()/settings_->kr()*pow(2,SS_phiderL_shift),
+           kzproj = settings_->kz()*pow(2,PS_zL_shift),
+           kzder = settings_->kz()/settings_->kr()*pow(2,PS_zderL_shift),
            kphiprojdisk = settings_->kphi1()*pow(2,SS_phiD_shift),
-           kphiderdisk = settings_->kphi1()/kr*pow(2,SS_phiderD_shift),
-           krprojdisk = kr*pow(2,PS_rD_shift),
-           krderdisk = kr/kz*pow(2,PS_rderD_shift);
+           kphiderdisk = settings_->kphi1()/settings_->kr()*pow(2,SS_phiderD_shift),
+           krprojdisk = settings_->kr()*pow(2,PS_rD_shift),
+           krderdisk = settings_->kr()/settings_->kz()*pow(2,PS_rderD_shift);
     
     int irinv,iphi0,id0,it,iz0;
     int iphiproj[4],izproj[4],iphider[4],izder[4];
@@ -1579,7 +1579,7 @@ public:
     //store the binary results
     irinv = rinvapprox / krinv;
     iphi0 = phi0approx / kphi0;
-    id0 = d0approx / kd0;
+    id0 = d0approx / settings_->kd0();
     it    = tapprox / kt;
     iz0   = z0approx / kz0;
 
@@ -1594,7 +1594,7 @@ public:
       if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<endl;
       success = false;
     }
-    if (std::abs(d0approx)>maxd0) {
+    if (std::abs(d0approx)>settings_->maxd0()) {
       if (settings_->debugTracklet()) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
       success = false;
     }
