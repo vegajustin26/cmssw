@@ -25,6 +25,22 @@ process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 
+process.MessageLogger = cms.Service("MessageLogger",
+                                    destinations = cms.untracked.vstring('cout'),
+                                    categories   = cms.untracked.vstring('Tracklet'),
+                                    debugModules = cms.untracked.vstring('*'),
+                                    cout         = cms.untracked.PSet(
+                                        threshold = cms.untracked.string('DEBUG'),
+                                        INFO = cms.untracked.PSet(limit = cms.untracked.int32(0)),
+                                        DEBUG = cms.untracked.PSet(limit = cms.untracked.int32(0)),
+                                        Tracklet = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+                                    ),
+)
+#process.load("FWCore.MessageLogger.MessageLogger_cfi")
+#process.MessageLogger.cout.placeholder = cms.untracked.bool(False)
+#process.MessageLogger.cout.threshold = cms.untracked.string('INFO')
+#process.MessageLogger.debugModules = cms.untracked.vstring('*')
+
 if GEOMETRY == "D49": 
     print "using geometry " + GEOMETRY + " (tilted)"
     process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
@@ -43,7 +59,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
 # input and output
 ############################################################
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(10))
 
 # Get list of MC datasets from repo, or specify yourself.
 

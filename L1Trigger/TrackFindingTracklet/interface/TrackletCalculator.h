@@ -10,6 +10,7 @@
 #include "TrackletProjectionsMemory.h"
 #include "Util.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 
@@ -245,6 +246,9 @@ public:
   }
 
   void execute() {
+
+    edm::LogVerbatim("Tracklet") << " MEBUG TESTING 2" << endl;
+
 
     unsigned int countall=0;
     unsigned int countsel=0;
