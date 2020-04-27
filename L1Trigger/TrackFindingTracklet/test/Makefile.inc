@@ -31,6 +31,7 @@ $(shell echo "namespace edm {" >> FWCore/MessageLogger/interface/MessageLogger.h
 $(shell echo "  class LogVerbatim{" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "  public:" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "    LogVerbatim(std::string type) { cout << type;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    ~LogVerbatim() { cout << endl;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "    template <class T> LogVerbatim& operator<<(T const& t) {cout << t;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "    LogVerbatim& operator<<(std::ostream& (*f)(std::ostream&)) {cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "    LogVerbatim& operator<<(std::ios_base& (*f)(std::ios_base&)) {cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
