@@ -13,20 +13,19 @@
 #include "Settings.h"
 
 
-using namespace Trklet;
 using namespace std;
 
 class Stub{
 
 public:
 
- Stub(const Settings* const settings):
+ Stub(const Trklet::Settings* const settings):
   settings_(settings){
   
   }
   
 
- Stub(const L1TStub& stub,const Settings* const settings, double phiminsec, double phimaxsec):
+ Stub(const L1TStub& stub,const Trklet::Settings* const settings, double phiminsec, double phimaxsec):
   settings_(settings){
     
     double r=stub.r();
@@ -478,7 +477,7 @@ private:
   FPGAWord finer_;   //FIXME should not be member data
   FPGAWord finez_;   //FIXME should not be member data
   
-  const Settings* const settings_;
+  const Trklet::Settings* const settings_;
 
 };
 

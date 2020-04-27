@@ -1,9 +1,14 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_Settings_h
 #define L1Trigger_TrackFindingTracklet_interface_Settings_h
 
+#include <iostream>
+#include <string>
 #include <array>
 #include <set>
 #include <map>
+
+#include <cmath>
+
 
 namespace Trklet{
 

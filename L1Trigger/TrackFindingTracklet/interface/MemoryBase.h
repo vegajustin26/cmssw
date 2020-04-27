@@ -4,6 +4,9 @@
 
 #include "Settings.h"
 
+#include <fstream>
+#include <sstream>
+
 using namespace Trklet;
 using namespace std;
 
