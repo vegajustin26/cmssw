@@ -4,6 +4,8 @@
 
 #include "Settings.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 #include <fstream>
 #include <sstream>
 
@@ -94,8 +96,8 @@ public:
     if (subname=="D4") disk=4;
     if (subname=="D5") disk=5;
     if (layer==0&&disk==0) {
-      cout << "Memoryname = "<<name_<<" subname = "<<subname
-	   <<" layer "<<layer<<" disk "<<disk<<endl;
+      edm::LogPrint("Tracklet") << "Memoryname = "<<name_<<" subname = "<<subname
+				<<" layer "<<layer<<" disk "<<disk;
     }
     assert((layer!=0)||(disk!=0));
   }
