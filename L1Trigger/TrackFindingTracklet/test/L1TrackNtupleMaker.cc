@@ -518,13 +518,12 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
 
   if (!(MyProcess == 13 || MyProcess == 11 || MyProcess == 211 || MyProcess == 6 || MyProcess == 15 ||
         MyProcess == 1)) {
-    cout << "The specified MyProcess is invalid! Exiting..." << endl;
+    edm::LogVerbatim("Tracklet") << "The specified MyProcess is invalid! Exiting...";
     return;
   }
 
   if (!(L1Tk_nPar == 4 || L1Tk_nPar == 5)) {
-    cout << "Invalid number of track parameters, specified L1Tk_nPar == " << L1Tk_nPar
-         << " but only 4/5 are valid options! Exiting..." << endl;
+    edm::LogVerbatim("Tracklet") << "Invalid number of track parameters, specified L1Tk_nPar == " << L1Tk_nPar << " but only 4/5 are valid options! Exiting...";
     return;
   }
 
@@ -702,7 +701,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
           isBarrel = 0;
           layer = static_cast<int>(tTopo->layer(detid));
         } else {
-          cout << "WARNING -- neither TOB or TID stub, shouldn't happen..." << endl;
+          edm::LogVerbatim("Tracklet") << "WARNING -- neither TOB or TID stub, shouldn't happen...";
           layer = -1;
         }
 
@@ -781,13 +780,13 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
   if (TrackingInJets) {
     // gen jets
     if (DebugMode)
-      cout << "get genjets" << endl;
+      edm::LogVerbatim("Tracklet") << "get genjets";
     edm::Handle<std::vector<reco::GenJet> > GenJetHandle;
     iEvent.getByToken(GenJetToken_, GenJetHandle);
 
     if (GenJetHandle.isValid()) {
       if (DebugMode)
-        cout << "loop over genjets" << endl;
+        edm::LogVerbatim("Tracklet") << "loop over genjets";
       std::vector<reco::GenJet>::const_iterator iterGenJet;
       for (iterGenJet = GenJetHandle->begin(); iterGenJet != GenJetHandle->end(); ++iterGenJet) {
         reco::GenJet myJet = reco::GenJet(*iterGenJet);
@@ -798,7 +797,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
           continue;
 
         if (DebugMode)
-          cout << "genjet pt = " << myJet.pt() << ", eta = " << myJet.eta() << endl;
+          edm::LogVerbatim("Tracklet") << "genjet pt = " << myJet.pt() << ", eta = " << myJet.eta();
 
         bool ishighpt = false;
         bool isveryhighpt = false;
@@ -834,8 +833,8 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
 
   if (SaveAllTracks) {
     if (DebugMode) {
-      cout << endl << "Loop over L1 tracks!" << endl;
-      cout << endl << "Looking at " << L1Tk_nPar << "-parameter tracks!" << endl;
+      edm::LogVerbatim("Tracklet") << "\n Loop over L1 tracks!";
+      edm::LogVerbatim("Tracklet") << "\n Looking at " << L1Tk_nPar << "-parameter tracks!";
     }
 
     int this_l1track = 0;
@@ -873,18 +872,6 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
 
       unsigned int tmp_trk_phiSector = iterL1Track->phiSector();
 
-      /*
-      int tmp_trk_nPSstub = 0;
-      for (int is=0; is<tmp_trk_nstub; is++) {
-
-	DetId detIdStub = theTrackerGeom->idToDet( (stubRefs.at(is)->clusterRef(0))->getDetId() )->geographicalId();
-	DetId stackDetid = tTopo->stack(detIdStub);
-
-	bool isPS = (theTrackerGeom->getDetectorType(stackDetid)==TrackerGeometry::ModuleType::Ph2PSP);
-	if (isPS) tmp_trk_nPSstub++;
-      }
-      */
-
       // ----------------------------------------------------------------------------------------------
       // loop over stubs on tracks
 
@@ -910,12 +897,12 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
           if (detIdStub.subdetId() == StripSubdetector::TOB) {
             layer = static_cast<int>(tTopo->layer(detIdStub));
             if (DebugMode)
-              cout << "   stub in layer " << layer << " at position x y z = " << x << " " << y << " " << z << endl;
+              edm::LogVerbatim("Tracklet") << "   stub in layer " << layer << " at position x y z = " << x << " " << y << " " << z;
             tmp_trk_lhits += pow(10, layer - 1);
           } else if (detIdStub.subdetId() == StripSubdetector::TID) {
             layer = static_cast<int>(tTopo->layer(detIdStub));
             if (DebugMode)
-              cout << "   stub in disk " << layer << " at position x y z = " << x << " " << y << " " << z << endl;
+              edm::LogVerbatim("Tracklet") << "   stub in disk " << layer << " at position x y z = " << x << " " << y << " " << z;
             tmp_trk_dhits += pow(10, layer - 1);
           }
 
@@ -937,16 +924,16 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
         tmp_trk_combinatoric = 1;
 
       if (DebugMode) {
-        cout << "L1 track,"
-             << " pt: " << tmp_trk_pt << " eta: " << tmp_trk_eta << " phi: " << tmp_trk_phi << " z0: " << tmp_trk_z0
-             << " chi2: " << tmp_trk_chi2 << " chi2rphi: " << tmp_trk_chi2rphi << " chi2rz: " << tmp_trk_chi2rz
-             << " nstub: " << tmp_trk_nstub;
+        edm::LogVerbatim("Tracklet") << "L1 track,"
+				     << " pt: " << tmp_trk_pt << " eta: " << tmp_trk_eta << " phi: " << tmp_trk_phi << " z0: " << tmp_trk_z0
+				     << " chi2: " << tmp_trk_chi2 << " chi2rphi: " << tmp_trk_chi2rphi << " chi2rz: " << tmp_trk_chi2rz
+				     << " nstub: " << tmp_trk_nstub;
         if (tmp_trk_genuine)
-          cout << " (is genuine)" << endl;
+          edm::LogVerbatim("Tracklet") << "    (is genuine)";
         if (tmp_trk_unknown)
-          cout << " (is unknown)" << endl;
+          edm::LogVerbatim("Tracklet") << "    (is unknown)";
         if (tmp_trk_combinatoric)
-          cout << " (is combinatoric)" << endl;
+          edm::LogVerbatim("Tracklet") << "    (is combinatoric)";
       }
 
       m_trk_pt->push_back(tmp_trk_pt);
@@ -1008,9 +995,9 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
         myTP_dxy = sqrt(myTP_x0 * myTP_x0 + myTP_y0 * myTP_y0);
 
         if (DebugMode) {
-          cout << "TP matched to track has pt = " << my_tp->p4().pt() << " eta = " << my_tp->momentum().eta()
-               << " phi = " << my_tp->momentum().phi() << " z0 = " << my_tp->vertex().z()
-               << " pdgid = " << my_tp->pdgId() << " dxy = " << myTP_dxy << endl;
+          edm::LogVerbatim("Tracklet") << "TP matched to track has pt = " << my_tp->p4().pt() << " eta = " << my_tp->momentum().eta()
+				       << " phi = " << my_tp->momentum().phi() << " z0 = " << my_tp->vertex().z()
+				       << " pdgid = " << my_tp->pdgId() << " dxy = " << myTP_dxy;
         }
       }
 
@@ -1029,7 +1016,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
 
       if (TrackingInJets) {
         if (DebugMode)
-          cout << "doing tracking in jets now" << endl;
+          edm::LogVerbatim("Tracklet") << "doing tracking in jets now";
 
         int InJet = 0;
         int InJetHighpt = 0;
@@ -1068,7 +1055,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
   // ----------------------------------------------------------------------------------------------
 
   if (DebugMode)
-    cout << endl << "Loop over tracking particles!" << endl;
+    edm::LogVerbatim("Tracklet") << "\n Loop over tracking particles!";
 
   int this_tp = 0;
   std::vector<TrackingParticle>::const_iterator iterTP;
@@ -1143,19 +1130,19 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
       continue;
 
     if (DebugMode)
-      cout << "Tracking particle, pt: " << tmp_tp_pt << " eta: " << tmp_tp_eta << " phi: " << tmp_tp_phi
-           << " z0: " << tmp_tp_z0 << " d0: " << tmp_tp_d0 << " z_prod: " << tmp_tp_z0_prod
-           << " d_prod: " << tmp_tp_d0_prod << " pdgid: " << tmp_tp_pdgid << " eventID: " << iterTP->eventId().event()
-           << " ttclusters " << MCTruthTTClusterHandle->findTTClusterRefs(tp_ptr).size() << " ttstubs "
-           << MCTruthTTStubHandle->findTTStubRefs(tp_ptr).size() << " tttracks "
-           << MCTruthTTTrackHandle->findTTTrackPtrs(tp_ptr).size() << endl;
+      edm::LogVerbatim("Tracklet") << "Tracking particle, pt: " << tmp_tp_pt << " eta: " << tmp_tp_eta << " phi: " << tmp_tp_phi
+				   << " z0: " << tmp_tp_z0 << " d0: " << tmp_tp_d0 << " z_prod: " << tmp_tp_z0_prod
+				   << " d_prod: " << tmp_tp_d0_prod << " pdgid: " << tmp_tp_pdgid << " eventID: " << iterTP->eventId().event()
+				   << " ttclusters " << MCTruthTTClusterHandle->findTTClusterRefs(tp_ptr).size() << " ttstubs "
+				   << MCTruthTTStubHandle->findTTStubRefs(tp_ptr).size() << " tttracks "
+				   << MCTruthTTTrackHandle->findTTTrackPtrs(tp_ptr).size();
 
     // ----------------------------------------------------------------------------------------------
     // only consider TPs associated with >= 1 cluster, or >= X stubs, or have stubs in >= X layers (configurable options)
 
     if (MCTruthTTClusterHandle->findTTClusterRefs(tp_ptr).size() < 1) {
       if (DebugMode)
-        cout << "No matching TTClusters for TP, continuing..." << endl;
+        edm::LogVerbatim("Tracklet") << "No matching TTClusters for TP, continuing...";
       continue;
     }
 
@@ -1194,24 +1181,24 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
     }
 
     if (DebugMode)
-      cout << "TP is associated with " << nStubTP << " stubs, and has stubs in " << nStubLayerTP
-           << " different layers/disks, and has GENUINE stubs in " << nStubLayerTP_g << " layers " << endl;
+      edm::LogVerbatim("Tracklet") << "TP is associated with " << nStubTP << " stubs, and has stubs in " << nStubLayerTP
+				   << " different layers/disks, and has GENUINE stubs in " << nStubLayerTP_g << " layers ";
 
     if (TP_minNStub > 0) {
       if (DebugMode)
-        cout << "Only consider TPs with >= " << TP_minNStub << " stubs" << endl;
+        edm::LogVerbatim("Tracklet") << "Only consider TPs with >= " << TP_minNStub << " stubs";
       if (nStubTP < TP_minNStub) {
         if (DebugMode)
-          cout << "TP fails minimum nbr stubs requirement! Continuing..." << endl;
+          edm::LogVerbatim("Tracklet") << "TP fails minimum nbr stubs requirement! Continuing...";
         continue;
       }
     }
     if (TP_minNStubLayer > 0) {
       if (DebugMode)
-        cout << "Only consider TPs with stubs in >= " << TP_minNStubLayer << " layers/disks" << endl;
+        edm::LogVerbatim("Tracklet") << "Only consider TPs with stubs in >= " << TP_minNStubLayer << " layers/disks";
       if (nStubLayerTP < TP_minNStubLayer) {
         if (DebugMode)
-          cout << "TP fails stubs in minimum nbr of layers/disks requirement! Continuing..." << endl;
+          edm::LogVerbatim("Tracklet") << "TP fails stubs in minimum nbr of layers/disks requirement! Continuing...";
         continue;
       }
     }
@@ -1228,7 +1215,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
 
     if (matchedTracks.size() > 0) {
       if (DebugMode && (matchedTracks.size() > 1))
-        cout << "TrackingParticle has more than one matched L1 track!" << endl;
+        edm::LogVerbatim("Tracklet") << "TrackingParticle has more than one matched L1 track!";
 
       // ----------------------------------------------------------------------------------------------
       // loop over matched L1 tracks
@@ -1247,22 +1234,23 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
 
         if (DebugMode) {
           if (MCTruthTTTrackHandle->findTrackingParticlePtr(matchedTracks.at(it)).isNull()) {
-            cout << "track matched to TP is NOT uniquely matched to a TP" << endl;
-          } else {
-            edm::Ptr<TrackingParticle> my_tp = MCTruthTTTrackHandle->findTrackingParticlePtr(matchedTracks.at(it));
-            cout << "TP matched to track matched to TP ... tp pt = " << my_tp->p4().pt()
-                 << " eta = " << my_tp->momentum().eta() << " phi = " << my_tp->momentum().phi()
-                 << " z0 = " << my_tp->vertex().z() << endl;
+            edm::LogVerbatim("Tracklet") << "track matched to TP is NOT uniquely matched to a TP";
           }
-          cout << "   ... matched L1 track has pt = " << matchedTracks.at(it)->momentum().perp()
-               << " eta = " << matchedTracks.at(it)->momentum().eta()
-               << " phi = " << matchedTracks.at(it)->momentum().phi() << " chi2 = " << matchedTracks.at(it)->chi2()
-               << " consistency = " << matchedTracks.at(it)->stubPtConsistency()
-               << " z0 = " << matchedTracks.at(it)->z0() << " nstub = " << matchedTracks.at(it)->getStubRefs().size();
+	  else {
+            edm::Ptr<TrackingParticle> my_tp = MCTruthTTTrackHandle->findTrackingParticlePtr(matchedTracks.at(it));
+            edm::LogVerbatim("Tracklet") << "TP matched to track matched to TP ... tp pt = " << my_tp->p4().pt()
+                 << " eta = " << my_tp->momentum().eta() << " phi = " << my_tp->momentum().phi()
+                 << " z0 = " << my_tp->vertex().z();
+          }
+	  edm::LogVerbatim("Tracklet") << "   ... matched L1 track has pt = " << matchedTracks.at(it)->momentum().perp()
+				       << " eta = " << matchedTracks.at(it)->momentum().eta()
+				       << " phi = " << matchedTracks.at(it)->momentum().phi() << " chi2 = " << matchedTracks.at(it)->chi2()
+				       << " consistency = " << matchedTracks.at(it)->stubPtConsistency()
+				       << " z0 = " << matchedTracks.at(it)->z0() << " nstub = " << matchedTracks.at(it)->getStubRefs().size();
           if (tmp_trk_genuine)
-            cout << " (genuine!) " << endl;
+            edm::LogVerbatim("Tracklet") << "    (genuine!) ";
           if (tmp_trk_loosegenuine)
-            cout << " (loose genuine!) " << endl;
+            edm::LogVerbatim("Tracklet") << "    (loose genuine!) ";
         }
 
         // ----------------------------------------------------------------------------------------------
@@ -1331,7 +1319,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
     int tmp_matchtrk_hitpattern = -999;
 
     if (nMatch > 1 && DebugMode)
-      cout << "WARNING *** 2 or more matches to genuine L1 tracks ***" << endl;
+      edm::LogVerbatim("Tracklet") << "WARNING *** 2 or more matches to genuine L1 tracks ***";
 
     if (nMatch > 0) {
       tmp_matchtrk_pt = matchedTracks.at(i_track)->momentum().perp();
@@ -1420,7 +1408,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
 
     if (TrackingInJets) {
       if (DebugMode)
-        cout << "check if TP/matched track is within jet" << endl;
+        edm::LogVerbatim("Tracklet") << "check if TP/matched track is within jet";
 
       int tp_InJet = 0;
       int matchtrk_InJet = 0;
