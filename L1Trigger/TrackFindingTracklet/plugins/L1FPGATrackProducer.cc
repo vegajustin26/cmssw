@@ -189,7 +189,7 @@ private:
   Cabling cabling;
 
   // settings containing various constants for the tracklet processing
-  Trklet::Settings settings_;
+  Trklet::Settings settings;
   
   unsigned int nHelixPar_;
   bool extended_;
@@ -287,25 +287,25 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 
   extended_ = iConfig.getUntrackedParameter<bool>("Extended", false);
   nHelixPar_ = iConfig.getUntrackedParameter<unsigned int>("Hnpar", 4);
-  settings_.setExtended(extended_);
-  settings_.setNHelixPar(nHelixPar_);
+  settings.setExtended(extended_);
+  settings.setNHelixPar(nHelixPar_);
 
 
   // tracklet calculators 
-  ITC_L1L2_ = new IMATH_TrackletCalculator(&settings_,1,2);
-  ITC_L2L3_ = new IMATH_TrackletCalculator(&settings_,2,3);
-  ITC_L3L4_ = new IMATH_TrackletCalculator(&settings_,3,4);
-  ITC_L5L6_ = new IMATH_TrackletCalculator(&settings_,5,6);
+  ITC_L1L2_ = new IMATH_TrackletCalculator(&settings,1,2);
+  ITC_L2L3_ = new IMATH_TrackletCalculator(&settings,2,3);
+  ITC_L3L4_ = new IMATH_TrackletCalculator(&settings,3,4);
+  ITC_L5L6_ = new IMATH_TrackletCalculator(&settings,5,6);
   
-  ITC_F1F2_ = new IMATH_TrackletCalculatorDisk(&settings_,1,2);
-  ITC_F3F4_ = new IMATH_TrackletCalculatorDisk(&settings_,3,4);
-  ITC_B1B2_ = new IMATH_TrackletCalculatorDisk(&settings_,-1,-2);
-  ITC_B3B4_ = new IMATH_TrackletCalculatorDisk(&settings_,-3,-4);
+  ITC_F1F2_ = new IMATH_TrackletCalculatorDisk(&settings,1,2);
+  ITC_F3F4_ = new IMATH_TrackletCalculatorDisk(&settings,3,4);
+  ITC_B1B2_ = new IMATH_TrackletCalculatorDisk(&settings,-1,-2);
+  ITC_B3B4_ = new IMATH_TrackletCalculatorDisk(&settings,-3,-4);
   
-  ITC_L1F1_ = new IMATH_TrackletCalculatorOverlap(&settings_,1,1);
-  ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(&settings_,2,1);
-  ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(&settings_,1,-1);
-  ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(&settings_,2,-1);
+  ITC_L1F1_ = new IMATH_TrackletCalculatorOverlap(&settings,1,1);
+  ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(&settings,2,1);
+  ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(&settings,1,-1);
+  ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(&settings,2,-1);
 
   GlobalHistTruth::ITC_L1L2()=ITC_L1L2_;
   GlobalHistTruth::ITC_L2L3()=ITC_L2L3_;
@@ -322,19 +322,19 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   GlobalHistTruth::ITC_L1B1()=ITC_L1B1_;
   GlobalHistTruth::ITC_L2B1()=ITC_L2B1_;
 
-  settings_.krinvpars() = ITC_L1L2_->rinv_final.get_K();
-  settings_.kphi0pars() = ITC_L1L2_->phi0_final.get_K();
-  settings_.kd0pars()   = settings_.kd0();
-  settings_.ktpars()    = ITC_L1L2_->t_final.get_K();
-  settings_.kz0pars()   = ITC_L1L2_->z0_final.get_K();
-  settings_.kphiproj123() =ITC_L1L2_->phi0_final.get_K()*4;
-  settings_.kzproj()=settings_.kz();
-  settings_.kphider()=ITC_L1L2_->rinv_final.get_K()*(1<<settings_.phiderbitshift());
-  settings_.kzder()=ITC_L1L2_->t_final.get_K()*(1<<settings_.zderbitshift());
-  settings_.krprojshiftdisk() = ITC_L1L2_->rD_0_final.get_K();
-  settings_.kphiprojdisk()=ITC_L1L2_->phi0_final.get_K()*4.0;
-  settings_.krdisk() = settings_.kr();
-  settings_.kzpars() = settings_.kz();  
+  settings.krinvpars() = ITC_L1L2_->rinv_final.get_K();
+  settings.kphi0pars() = ITC_L1L2_->phi0_final.get_K();
+  settings.kd0pars()   = settings.kd0();
+  settings.ktpars()    = ITC_L1L2_->t_final.get_K();
+  settings.kz0pars()   = ITC_L1L2_->z0_final.get_K();
+  settings.kphiproj123() =ITC_L1L2_->phi0_final.get_K()*4;
+  settings.kzproj()=settings.kz();
+  settings.kphider()=ITC_L1L2_->rinv_final.get_K()*(1<<settings.phiderbitshift());
+  settings.kzder()=ITC_L1L2_->t_final.get_K()*(1<<settings.zderbitshift());
+  settings.krprojshiftdisk() = ITC_L1L2_->rD_0_final.get_K();
+  settings.kphiprojdisk()=ITC_L1L2_->phi0_final.get_K()*4.0;
+  settings.krdisk() = settings.kr();
+  settings.kzpars() = settings.kz();  
 
   eventnum = 0;
   if (asciiEventOutName_ != "") {
@@ -342,7 +342,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   }
 
   // adding capability of booking histograms internal to tracklet steps
-  if (settings_.bookHistos()) {
+  if (settings.bookHistos()) {
     histimp = new HistImp;
     TH1::AddDirectory(kTRUE);
     histimp->init();
@@ -354,9 +354,9 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     GlobalHistTruth::histograms() = histimp;
   }
 
-  sectors = new Sector*[settings_.NSector()];
+  sectors = new Sector*[settings.NSector()];
 
-  if (settings_.debugTracklet()) {
+  if (settings.debugTracklet()) {
     cout << "cabling DTC links :     " << DTCLinkFile.fullPath() << endl;
     cout << "module cabling :     " << moduleCablingFile.fullPath() << endl;
     cout << "DTC link layer disk :     " << DTCLinkLayerDiskFile.fullPath() << endl;
@@ -379,11 +379,11 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     in >> dtc;
   }
 
-  for (unsigned int i = 0; i < settings_.NSector(); i++) {
-    sectors[i] = new Sector(i, &settings_);
+  for (unsigned int i = 0; i < settings.NSector(); i++) {
+    sectors[i] = new Sector(i, &settings);
   }
 
-  if (settings_.debugTracklet()) {
+  if (settings.debugTracklet()) {
     cout << "fit pattern :     " << fitPatternFile.fullPath() << endl;
     cout << "process modules : " << processingModulesFile.fullPath() << endl;
     cout << "memory modules :  " << memoryModulesFile.fullPath() << endl;
@@ -392,7 +392,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 
   //fitpatternfile = fitPatternFile.fullPath();
 
-  if (settings_.debugTracklet())
+  if (settings.debugTracklet())
     cout << "Will read memory modules file" << endl;
 
   // Read list of memory modules (format: ModuleType: ModuleInstance)
@@ -404,15 +404,15 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     inmem >> memType >> memName >> size;
     if (!inmem.good())
       continue;
-    if (settings_.writetrace()) {
+    if (settings.writetrace()) {
       cout << "Read memory: " << memType << " " << memName << endl;
     }
-    for (unsigned int i = 0; i < settings_.NSector(); i++) {
+    for (unsigned int i = 0; i < settings.NSector(); i++) {
       sectors[i]->addMem(memType, memName);
     }
   }
 
-  if (settings_.debugTracklet())
+  if (settings.debugTracklet())
     cout << "Will read processing modules file" << endl;
 
   // Read list of processing modules (format: ModuleType: ModuleInstance)
@@ -424,15 +424,15 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     inproc >> procType >> procName;
     if (!inproc.good())
       continue;
-    if (settings_.writetrace()) {
+    if (settings.writetrace()) {
       cout << "Read process: " << procType << " " << procName << endl;
     }
-    for (unsigned int i = 0; i < settings_.NSector(); i++) {
+    for (unsigned int i = 0; i < settings.NSector(); i++) {
       sectors[i]->addProc(procType, procName);
     }
   }
 
-  if (settings_.debugTracklet())
+  if (settings.debugTracklet())
     cout << "Will read wiring information" << endl;
 
   // Reading wiring map (format: Mem  input=> ProcModuleWrite.pinX  output=>ProcModuleRead.pinY)
@@ -444,7 +444,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     getline(inwire, line);
     if (!inwire.good())
       continue;
-    if (settings_.writetrace()) {
+    if (settings.writetrace()) {
       cout << "Line : " << line << endl;
     }
     stringstream ss(line);
@@ -457,7 +457,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
       ss >> tmp2 >> procout;
     }
 
-    for (unsigned int i = 0; i < settings_.NSector(); i++) {
+    for (unsigned int i = 0; i < settings.NSector(); i++) {
       sectors[i]->addWire(mem, procin, procout);
     }
   }
@@ -470,7 +470,7 @@ L1FPGATrackProducer::~L1FPGATrackProducer() {
     asciiEventOut_.close();
   }
 
-  if (settings_.bookHistos()) {
+  if (settings.bookHistos()) {
     histimp->close();
   }
 
@@ -485,7 +485,7 @@ void L1FPGATrackProducer::endJob() {
 #ifdef USEHYBRID
 #ifdef USE_HLS
   TMTT::Settings settingsTMTT;
-  TMTT::KFParamsCombCallHLS fitterKF(&settingsTMTT, settings_.nHelixPar(), "KFfitterHLS");
+  TMTT::KFParamsCombCallHLS fitterKF(&settingsTMTT, settings.nHelixPar(), "KFfitterHLS");
   fitterKF.endJob();  // Check bits ranges of KF HLS.
 #endif
 #endif
@@ -867,7 +867,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   CPUTimer FTTimer;
   CPUTimer PDTimer;
 
-  if (settings_.writeMonitorData("Seeds")) {
+  if (settings.writeMonitorData("Seeds")) {
     ofstream fout("seeds.txt", ofstream::out);
     fout.close();
   }
@@ -880,11 +880,11 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
   ofstream outres;
-  if (settings_.writeMonitorData("ResEff"))
+  if (settings.writeMonitorData("ResEff"))
     outres.open("trackres.txt");
 
   ofstream outeff;
-  if (settings_.writeMonitorData("ResEff"))
+  if (settings.writeMonitorData("ResEff"))
     outeff.open("trackeff.txt");
 
   int nlayershit = 0;
@@ -902,17 +902,17 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     ntracks++;
 
     // this is where we create the TTTrack object
-    double tmp_rinv = track->rinv(&settings_);
-    double tmp_phi = track->phi0(&settings_);
-    double tmp_tanL = track->tanL(&settings_);
-    double tmp_z0 = track->z0(&settings_);
-    double tmp_d0 = track->d0(&settings_);
+    double tmp_rinv = track->rinv(&settings);
+    double tmp_phi = track->phi0(&settings);
+    double tmp_tanL = track->tanL(&settings);
+    double tmp_z0 = track->z0(&settings);
+    double tmp_d0 = track->d0(&settings);
     double tmp_chi2rphi = track->chisqrphi();
     double tmp_chi2rz = track->chisqrz();
     unsigned int tmp_hit = track->hitpattern();
     double tmp_Bfield = mMagneticFieldStrength;
 
-    TTTrack<Ref_Phase2TrackerDigi_> aTrack(tmp_rinv, tmp_phi, tmp_tanL, tmp_z0, tmp_d0, tmp_chi2rphi, tmp_chi2rz, 0, 0, 0, tmp_hit, settings_.nHelixPar(), tmp_Bfield);
+    TTTrack<Ref_Phase2TrackerDigi_> aTrack(tmp_rinv, tmp_phi, tmp_tanL, tmp_z0, tmp_d0, tmp_chi2rphi, tmp_chi2rz, 0, 0, 0, tmp_hit, settings.nHelixPar(), tmp_Bfield);
 
     unsigned int trksector = track->sector();
     unsigned int trkseed = (unsigned int)abs(track->seed());
@@ -938,7 +938,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     }
 
     // pt consistency
-    float ptconsistency = StubPtConsistency::getConsistency(aTrack, theTrackerGeom, tTopo, mMagneticFieldStrength, settings_.nHelixPar());
+    float ptconsistency = StubPtConsistency::getConsistency(aTrack, theTrackerGeom, tTopo, mMagneticFieldStrength, settings.nHelixPar());
     aTrack.setStubPtConsistency(ptconsistency);
 
     // set TTTrack word
@@ -952,7 +952,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   iEvent.put(std::move(L1TkTracksForOutput), "Level1TTTracks");
 
-  for (unsigned int k = 0; k < settings_.NSector(); k++) {
+  for (unsigned int k = 0; k < settings.NSector(); k++) {
     sectors[k]->clean();
   }
 
