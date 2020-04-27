@@ -357,9 +357,9 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   sectors = new Sector*[settings.NSector()];
 
   if (settings.debugTracklet()) {
-    cout << "cabling DTC links :     " << DTCLinkFile.fullPath() << endl;
-    cout << "module cabling :     " << moduleCablingFile.fullPath() << endl;
-    cout << "DTC link layer disk :     " << DTCLinkLayerDiskFile.fullPath() << endl;
+    edm::LogVerbatim("Tracklet") << "cabling DTC links :     " << DTCLinkFile.fullPath();
+    edm::LogVerbatim("Tracklet") << "module cabling :     " << moduleCablingFile.fullPath();
+    edm::LogVerbatim("Tracklet") << "DTC link layer disk :     " << DTCLinkLayerDiskFile.fullPath();
   }
 
   cabling.init(DTCLinkFile.fullPath().c_str(), moduleCablingFile.fullPath().c_str());
@@ -384,16 +384,14 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   }
 
   if (settings.debugTracklet()) {
-    cout << "fit pattern :     " << fitPatternFile.fullPath() << endl;
-    cout << "process modules : " << processingModulesFile.fullPath() << endl;
-    cout << "memory modules :  " << memoryModulesFile.fullPath() << endl;
-    cout << "wires          :  " << wiresFile.fullPath() << endl;
+    edm::LogVerbatim("Tracklet") << "fit pattern :     " << fitPatternFile.fullPath();
+    edm::LogVerbatim("Tracklet") << "process modules : " << processingModulesFile.fullPath();
+    edm::LogVerbatim("Tracklet") << "memory modules :  " << memoryModulesFile.fullPath();
+    edm::LogVerbatim("Tracklet") << "wires          :  " << wiresFile.fullPath();
   }
 
-  //fitpatternfile = fitPatternFile.fullPath();
-
   if (settings.debugTracklet())
-    cout << "Will read memory modules file" << endl;
+    edm::LogVerbatim("Tracklet") << "Will read memory modules file" ;
 
   // Read list of memory modules (format: ModuleType: ModuleInstance)
   ifstream inmem(memoryModulesFile.fullPath().c_str());
@@ -405,7 +403,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     if (!inmem.good())
       continue;
     if (settings.writetrace()) {
-      cout << "Read memory: " << memType << " " << memName << endl;
+      edm::LogVerbatim("Tracklet") << "Read memory: " << memType << " " << memName;
     }
     for (unsigned int i = 0; i < settings.NSector(); i++) {
       sectors[i]->addMem(memType, memName);
@@ -413,7 +411,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   }
 
   if (settings.debugTracklet())
-    cout << "Will read processing modules file" << endl;
+    edm::LogVerbatim("Tracklet") << "Will read processing modules file";
 
   // Read list of processing modules (format: ModuleType: ModuleInstance)
   ifstream inproc(processingModulesFile.fullPath().c_str());
@@ -425,7 +423,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     if (!inproc.good())
       continue;
     if (settings.writetrace()) {
-      cout << "Read process: " << procType << " " << procName << endl;
+      edm::LogVerbatim("Tracklet") << "Read process: " << procType << " " << procName;
     }
     for (unsigned int i = 0; i < settings.NSector(); i++) {
       sectors[i]->addProc(procType, procName);
@@ -433,7 +431,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   }
 
   if (settings.debugTracklet())
-    cout << "Will read wiring information" << endl;
+    edm::LogVerbatim("Tracklet") << "Will read wiring information";
 
   // Reading wiring map (format: Mem  input=> ProcModuleWrite.pinX  output=>ProcModuleRead.pinY)
   ifstream inwire(wiresFile.fullPath().c_str());
@@ -445,7 +443,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     if (!inwire.good())
       continue;
     if (settings.writetrace()) {
-      cout << "Line : " << line << endl;
+      edm::LogVerbatim("Tracklet") << "Line : " << line;
     }
     stringstream ss(line);
     string mem, tmp1, procin, tmp2, procout;

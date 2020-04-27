@@ -45,12 +45,11 @@
 
       L1TStub stub=ev.stub(j);
 
-      if (settings.debugTracklet()) cout << "Stub: layer="<<stub.layer()+1
+      if (settings.debugTracklet()) edm::LogVerbatim("Tracklet") << "Stub: layer="<<stub.layer()+1
                        <<" disk="<<stub.disk()  
 		       <<" phi="<<stub.phi()
 	               <<" r="<<stub.r()
-	               <<" z="<<stub.z()
-	               <<endl;
+	               <<" z="<<stub.z();
 
 
       double phi=stub.phi();
@@ -174,7 +173,7 @@
 	    if (tmp[i]==layerdisk) layerdiskcode=i;
           }
 	  if (layerdiskcode==-1) {
-	    cout << "dtcbase layerdisk layer disk : "<<dtcbase<<" "<<layerdisk<<" "<<stub.layer()+1<<" "<<stub.disk()<<endl;
+	    edm::LogVerbatim("Tracklet") << "dtcbase layerdisk layer disk : "<<dtcbase<<" "<<layerdisk<<" "<<stub.layer()+1<<" "<<stub.disk();
           }
 	  assert(layerdiskcode>=0);
 	  assert(layerdiskcode<4);
@@ -204,14 +203,14 @@
     }   
 
 //if (writeDTCLinks) {
-//  //cout << "Will write DTC links"<<endl;
+//  //edm::LogVerbatim("Tracklet") << "Will write DTC links";
 //  static ofstream out("dtclinks.txt");
 //  for (std::map<string,DTC>::iterator iter=dtcs.begin();iter!=dtcs.end();iter++) {
 //    for (unsigned int j=0;j<iter->second.nLinks();j++) {
 //      out << iter->first << " " << j << " " << iter->second.link(j).nStubs() << endl;    
 //    }	 
 //  }
-//  //cout << "Done write DTC links"<<endl;
+//  //edm::LogVerbatim("Tracklet") << "Done write DTC links";
 // }
 
 if (settings.writeMem()) {
