@@ -32,6 +32,8 @@
 #include "../interface/GlobalHistTruth.h"
 #include "../interface/HistImp.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 #ifdef IMATH_ROOT
 TFile* var_base::h_file_=0;
 bool   var_base::use_root = false;
@@ -103,30 +105,30 @@ int main(const int argc, const char** argv)
   settings.kzpars() = settings.kz();  
 
 
-  cout << "=========================================================" << endl;
-  cout << "Conversion factors for global coordinates:"<<endl;
-  cout << "z    kz            = "<< settings.kz() <<endl;
-  cout << "r    kr            = "<< settings.kr() <<endl;
-  cout << "phi  kphi1         = "<< settings.kphi1() <<endl;
-  cout << "=========================================================" << endl;
-  cout << "Conversion factors for track(let) parameters:"<<endl;
-  cout << "rinv krinvpars     = "<< settings.krinvpars() <<endl;
-  cout << "phi0 kphi0pars     = "<< settings.kphi0pars() <<endl;
-  cout << "d0   kd0pars       = "<< settings.kd0pars() <<endl;
-  cout << "t    ktpars        = "<< settings.ktpars() <<endl;
-  cout << "z0   kz0pars       = "<< settings.kzpars() <<endl;
-  cout << "=========================================================" << endl;
-  cout << "phi0bitshift = "<<settings.phi0bitshift()<<endl;
-  cout << "d0bitshift   = "<<"???"<<endl;
-  cout << endl;
-  cout << "=========================================================" << endl;
+  edm::LogVerbatim("Tracklet") << "=========================================================";
+  edm::LogVerbatim("Tracklet") << "Conversion factors for global coordinates:";
+  edm::LogVerbatim("Tracklet") << "z    kz            = "<< settings.kz() ;
+  edm::LogVerbatim("Tracklet") << "r    kr            = "<< settings.kr() ;
+  edm::LogVerbatim("Tracklet") << "phi  kphi1         = "<< settings.kphi1() ;
+  edm::LogVerbatim("Tracklet") << "=========================================================";
+  edm::LogVerbatim("Tracklet") << "Conversion factors for track(let) parameters:";
+  edm::LogVerbatim("Tracklet") << "rinv krinvpars     = "<< settings.krinvpars() ;
+  edm::LogVerbatim("Tracklet") << "phi0 kphi0pars     = "<< settings.kphi0pars() ;
+  edm::LogVerbatim("Tracklet") << "d0   kd0pars       = "<< settings.kd0pars() ;
+  edm::LogVerbatim("Tracklet") << "t    ktpars        = "<< settings.ktpars() ;
+  edm::LogVerbatim("Tracklet") << "z0   kz0pars       = "<< settings.kzpars() ;
+  edm::LogVerbatim("Tracklet") << "=========================================================";
+  edm::LogVerbatim("Tracklet") << "phi0bitshift = "<<settings.phi0bitshift();
+  edm::LogVerbatim("Tracklet") << "d0bitshift   = "<<"???";
+  edm::LogVerbatim("Tracklet");
+  edm::LogVerbatim("Tracklet") << "=========================================================";
 
 #include "../plugins/WriteInvTables.icc"
 #include "../plugins/WriteDesign.icc"
   
   using namespace std;
   if (argc<4)
-    cout << "Need to specify the input ascii file and the number of events to run on and if you want to filter on MC truth" << endl;
+    edm::LogVerbatim("Tracklet") << "Need to specify the input ascii file and the number of events to run on and if you want to filter on MC truth";
 
   HistImp* histimp=new HistImp;
   histimp->init();
@@ -187,7 +189,7 @@ int main(const int argc, const char** argv)
   }  
 
 
-  cout << "Will read memory modules file"<<endl;
+  edm::LogVerbatim("Tracklet") << "Will read memory modules file";
 
   string memfile="../data/memorymodules_"+settings.geomext()+".dat";
   ifstream inmem(memfile.c_str());
@@ -198,7 +200,7 @@ int main(const int argc, const char** argv)
     inmem >>memType>>memName>>size;
     if (!inmem.good()) continue;
     if (settings.writetrace()) {
-      cout << "Read memory: "<<memType<<" "<<memName<<endl;
+      edm::LogVerbatim("Tracklet") << "Read memory: "<<memType<<" "<<memName;
     }
     for (unsigned int i=0;i<settings.NSector();i++) {
       sectors[i]->addMem(memType,memName);
@@ -207,7 +209,7 @@ int main(const int argc, const char** argv)
   }
 
 
-  cout << "Will read processing modules file"<<endl;
+  edm::LogVerbatim("Tracklet") << "Will read processing modules file";
 
   string procfile="../data/processingmodules_"+settings.geomext()+".dat";
   ifstream inproc(procfile.c_str());
@@ -218,7 +220,7 @@ int main(const int argc, const char** argv)
     inproc >>procType>>procName;
     if (!inproc.good()) continue;
     if (settings.writetrace()) {
-      cout << "Read process: "<<procType<<" "<<procName<<endl;
+      edm::LogVerbatim("Tracklet") << "Read process: "<<procType<<" "<<procName;
     }
     for (unsigned int i=0;i<settings.NSector();i++) {
       sectors[i]->addProc(procType,procName);
@@ -227,7 +229,7 @@ int main(const int argc, const char** argv)
   }
 
 
-  cout << "Will read wiring information"<<endl;
+  edm::LogVerbatim("Tracklet") << "Will read wiring information";
 
   string wirefile="../data/wires_"+settings.geomext()+".dat";
   ifstream inwire(wirefile.c_str());
@@ -239,7 +241,7 @@ int main(const int argc, const char** argv)
     getline(inwire,line);
     if (!inwire.good()) continue;
     if (settings.writetrace()) {
-      cout << "Line : "<<line<<endl;
+      edm::LogVerbatim("Tracklet") << "Line : "<<line;
     }
     stringstream ss(line);
     string mem,tmp1,procin,tmp2,procout;
@@ -339,10 +341,10 @@ int main(const int argc, const char** argv)
       simtrk=ev.simtrack(0);
 
       if (settings.debugTracklet()) {
-	cout <<"nstub simtrkid pt phi eta t vz:"<<ev.nstubs()<<" "<<simtrk.trackid()<<" "<<simtrk.pt()<<" "<<simtrk.phi()<<" "
+	edm::LogVerbatim("Tracklet") <<"nstub simtrkid pt phi eta t vz:"<<ev.nstubs()<<" "<<simtrk.trackid()<<" "<<simtrk.pt()<<" "<<simtrk.phi()<<" "
 	     <<simtrk.eta()<<" "
 	     <<sinh(simtrk.eta())<<" "
-	     <<simtrk.vz()<<endl;
+	     <<simtrk.vz();
       }
       
       bool good=(fabs(simtrk.pt())>2.0
@@ -391,7 +393,7 @@ int main(const int argc, const char** argv)
               case 3: hitPattern.push_back("L4"); break;
               case 4: hitPattern.push_back("L5"); break;
               case 5: hitPattern.push_back("L6"); break;
-              default: cout << "Stub layer: " << stub.layer() << endl; assert(0);
+              default: edm::LogVerbatim("Tracklet") << "Stub layer: " << stub.layer(); assert(0);
             }
           }
           else {
@@ -402,7 +404,7 @@ int main(const int argc, const char** argv)
               case 3: hitPattern.push_back(d+"3"); break;
               case 4: hitPattern.push_back(d+"4"); break;
               case 5: hitPattern.push_back(d+"5"); break;
-              default: cout << "Stub disk: " << stub.disk() << endl; assert(0);
+              default: edm::LogVerbatim("Tracklet") << "Stub disk: " << stub.disk(); assert(0);
             }
           }
         }
@@ -429,7 +431,7 @@ int main(const int argc, const char** argv)
       StubVariance variance(ev);
     }
 
-    cout <<"Process event: "<<eventnum<<" with "<<ev.nstubs()<<" stubs and "<<ev.nsimtracks()<<" simtracks"<<endl;
+    edm::LogVerbatim("Tracklet") <<"Process event: "<<eventnum<<" with "<<ev.nstubs()<<" stubs and "<<ev.nsimtracks()<<" simtracks";
 
     std::vector<Track*> tracks;
 
@@ -474,7 +476,6 @@ int main(const int argc, const char** argv)
         int simeventid=simtrack.eventid();
         int simtrackid=simtrack.trackid();
         ev.layersHit(simtrackid,nlayers,ndisks);
-        //cout << "Simtrack id : "<<simtrackid<<" "<<nlayers<<" "<<ndisks<<endl;                                                
         if (nlayers+ndisks<4) continue;
 	nsim++;
 	for (int seed=-1;seed<8;seed++){
@@ -531,10 +532,7 @@ int main(const int argc, const char** argv)
 	    if (dphi<-M_PI) dphi+=2*M_PI;
 	    deta=tracks[itrackmatch]->eta(&settings)-simtrack.eta();
 	    dz0=tracks[itrackmatch]->z0(&settings)-simtrack.vz();
-	    //cout <<" z0 "<<tracks[itrackmatch]->z0()<<" "<<simtrack.vz()<<endl;
 	  }
-
-	  //cout << "dpt dphi deta dz0 "<<dpt<<" "<<dphi<<" "<<deta<<" "<<dz0<<endl;
 	
 	  out <<eventnum<<" "<<simeventid<<" "<<seed<<" "<<simtrackid<<" "<<simtrack.type()<<" "
 	      <<simtrack.pt()<<" "<<simtrack.eta()<<" "<<simtrack.phi()<<" "
@@ -548,12 +546,12 @@ int main(const int argc, const char** argv)
 
     
     
-// Clean up 
+    // Clean up 
 
-    //cout << "Duplicates : ";
+    //edm::LogVerbatim("Tracklet") << "Duplicates : ";
     int ntrack=0;
     for(unsigned int l=0;l<tracks.size();l++) {
-      //  cout <<tracks[l].duplicate()<<" ";
+      //  edm::LogVerbatim("Tracklet") <<tracks[l].duplicate()<<" ";
       if (settings.writeMonitorData("Pars")) {
 	double phi=tracks[l]->iphi0()*settings.kphi0pars()+tracks[l]->sector()*2*M_PI/settings.NSector();
 	if (phi>M_PI) phi-=2*M_PI;
@@ -561,22 +559,20 @@ int main(const int argc, const char** argv)
 	while (phisec<0.0) phisec+=2*M_PI/settings.NSector();
 	outpars  <<tracks[l]->duplicate()<<" "<<asinh(tracks[l]->it()*settings.ktpars())<<" "
 		 <<phi<<" "<<tracks[l]->iz0()*settings.kz()<<" "<<phisec/(2*M_PI/settings.NSector())<<" "
-		 <<tracks[l]->irinv()*settings.krinvpars()<<endl;
+		 <<tracks[l]->irinv()*settings.krinvpars();
       }   	
       if (!tracks[l]->duplicate()) {
-	//cout << "FPGA Track pt, eta, phi, z0, chi2 = " 
+	//edm::LogVerbatim("Tracklet") << "FPGA Track pt, eta, phi, z0, chi2 = " 
 	//   << tracks[l]->pt() << " " << tracks[l]->eta() << " " << tracks[l]->phi0() << " " << tracks[l]->z0() << " " << tracks[l]->chisq() 
-	//   << " seed " << tracks[l]->seed() << " duplicate " << tracks[l]->duplicate() << endl;
-	//cout << " ---------- not duplicate" << endl;
-	//cout << "tapprox "<<tracks[l].eta()<<endl;
+	//   << " seed " << tracks[l]->seed() << " duplicate " << tracks[l]->duplicate();
+	//edm::LogVerbatim("Tracklet") << " ---------- not duplicate";
+	//edm::LogVerbatim("Tracklet") << "tapprox "<<tracks[l].eta();
 	ntrack++;
-	//cout << "eta = "<<tracks[l].eta()<<endl;
+	//edm::LogVerbatim("Tracklet") << "eta = "<<tracks[l].eta();
       }
     }
-    //cout << endl;
     
-    cout << "Number layers/disks hit = "<<nlayershit<<" number of found tracks : "<<tracks.size()
-	 <<" unique "<<ntrack<<endl;
+    edm::LogVerbatim("Tracklet") << "Number layers/disks hit = "<<nlayershit<<" number of found tracks : "<<tracks.size()<<" unique "<<ntrack;
 
 
   // dump what was found   
@@ -605,67 +601,67 @@ int main(const int argc, const char** argv)
     cabling.writephirange();
   }
   
-  cout << "Process             Times called   Average time (ms)      Total time (s)"<<endl;
-  cout << "Reading               "
+  edm::LogVerbatim("Tracklet") << "Process             Times called   Average time (ms)      Total time (s)";
+  edm::LogVerbatim("Tracklet") << "Reading               "
        <<setw(10)<<readTimer.ntimes()
        <<setw(20)<<setprecision(3)<<readTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<readTimer.tottime()<<endl;
-  cout << "Cleaning              "
+       <<setw(20)<<setprecision(3)<<readTimer.tottime();
+  edm::LogVerbatim("Tracklet") << "Cleaning              "
        <<setw(10)<<cleanTimer.ntimes()
        <<setw(20)<<setprecision(3)<<cleanTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<cleanTimer.tottime()<<endl;
-  cout << "Add Stubs             "
+       <<setw(20)<<setprecision(3)<<cleanTimer.tottime();
+  edm::LogVerbatim("Tracklet") << "Add Stubs             "
        <<setw(10)<<addStubTimer.ntimes()
        <<setw(20)<<setprecision(3)<<addStubTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<addStubTimer.tottime()<<endl;
-  cout << "VMRouter              "
+       <<setw(20)<<setprecision(3)<<addStubTimer.tottime();
+  edm::LogVerbatim("Tracklet") << "VMRouter              "
        <<setw(10)<<VMRouterTimer.ntimes()
        <<setw(20)<<setprecision(3)<<VMRouterTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<VMRouterTimer.tottime()<<endl;
-  cout << "TrackletEngine        "
+       <<setw(20)<<setprecision(3)<<VMRouterTimer.tottime();
+  edm::LogVerbatim("Tracklet") << "TrackletEngine        "
        <<setw(10)<<TETimer.ntimes()
        <<setw(20)<<setprecision(3)<<TETimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<TETimer.tottime()<<endl;
-  cout << "TrackletEngineDisplaced"
+       <<setw(20)<<setprecision(3)<<TETimer.tottime();
+  edm::LogVerbatim("Tracklet") << "TrackletEngineDisplaced"
        <<setw(10)<<TEDTimer.ntimes()
        <<setw(20)<<setprecision(3)<<TEDTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<TEDTimer.tottime()<<endl;
-  cout << "TripletEngine         "
+       <<setw(20)<<setprecision(3)<<TEDTimer.tottime();
+  edm::LogVerbatim("Tracklet") << "TripletEngine         "
        <<setw(10)<<TRETimer.ntimes()
        <<setw(20)<<setprecision(3)<<TRETimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<TRETimer.tottime()<<endl;
-  cout << "TrackletCalculator    "
+       <<setw(20)<<setprecision(3)<<TRETimer.tottime();
+  edm::LogVerbatim("Tracklet") << "TrackletCalculator    "
        <<setw(10)<<TCTimer.ntimes()
        <<setw(20)<<setprecision(3)<<TCTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<TCTimer.tottime()<<endl;
-  cout << "TrackletCalculatorDisplaced"
+       <<setw(20)<<setprecision(3)<<TCTimer.tottime();
+  edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced"
        <<setw(10)<<TCDTimer.ntimes()
        <<setw(20)<<setprecision(3)<<TCDTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<TCDTimer.tottime()<<endl;
-  cout << "ProjectionRouter      "
+       <<setw(20)<<setprecision(3)<<TCDTimer.tottime();
+  edm::LogVerbatim("Tracklet") << "ProjectionRouter      "
        <<setw(10)<<PRTimer.ntimes()
        <<setw(20)<<setprecision(3)<<PRTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<PRTimer.tottime()<<endl;
-  cout << "MatchEngine           "
+       <<setw(20)<<setprecision(3)<<PRTimer.tottime();
+  edm::LogVerbatim("Tracklet") << "MatchEngine           "
        <<setw(10)<<METimer.ntimes()
        <<setw(20)<<setprecision(3)<<METimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<METimer.tottime()<<endl;
-  cout << "MatchCalculator       "
+       <<setw(20)<<setprecision(3)<<METimer.tottime();
+  edm::LogVerbatim("Tracklet") << "MatchCalculator       "
        <<setw(10)<<MCTimer.ntimes()
        <<setw(20)<<setprecision(3)<<MCTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<MCTimer.tottime()<<endl;
-  cout << "MatchProcessor        "
+       <<setw(20)<<setprecision(3)<<MCTimer.tottime();
+  edm::LogVerbatim("Tracklet") << "MatchProcessor        "
        <<setw(10)<<MPTimer.ntimes()
        <<setw(20)<<setprecision(3)<<MPTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<MPTimer.tottime()<<endl;
-  cout << "FitTrack              "
+       <<setw(20)<<setprecision(3)<<MPTimer.tottime();
+  edm::LogVerbatim("Tracklet") << "FitTrack              "
        <<setw(10)<<FTTimer.ntimes()
        <<setw(20)<<setprecision(3)<<FTTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<FTTimer.tottime()<<endl;
-  cout << "PurgeDuplicate        "
+       <<setw(20)<<setprecision(3)<<FTTimer.tottime();
+  edm::LogVerbatim("Tracklet") << "PurgeDuplicate        "
        <<setw(10)<<PDTimer.ntimes()
        <<setw(20)<<setprecision(3)<<PDTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<PDTimer.tottime()<<endl;
+       <<setw(20)<<setprecision(3)<<PDTimer.tottime();
 
 
   if (settings.skimfile()!="") skimout.close();
