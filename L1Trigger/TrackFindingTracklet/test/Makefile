@@ -1,11 +1,24 @@
 include Makefile.inc
 
-default: fpga
+SRC = ../src/AllStubsMemory.cc
 
-fpga: fpga.o imath.a
-	$(LD) -o $@ $^ $(LDFLAGS) $(LIBS)
+OBJ = $(SRC:../src/%.cc=lib/%.o)
 
-fpga.o: ../interface/Settings.h ../interface/slhcevent.h ../interface/L1TStub.h ../interface/Sector.h  ../interface/Stub.h ../interface/FPGAWord.h ../interface/MemoryBase.h ../interface/ProcessBase.h ../interface/VMStubsMEMemory.h ../interface/VMStubsTEMemory.h ../interface/VMStubTE.h ../interface/VMStubME.h ../interface/TrackletProjectionsMemory.h ../interface/InverseTable.h ../interface/TrackletCalculator.h ../interface/TrackletCalculatorBase.h ../interface/TrackletProcessor.h ../interface/TrackletCalculatorDisplaced.h ../interface/MatchCalculator.h ../interface/MatchProcessor.h ../interface/TrackletEngine.h ../interface/TrackletEngineDisplaced.h ../interface/TripletEngine.h ../interface/MatchEngine.h ../interface/FitTrack.h ../interface/ProjectionRouter.h ../interface/InputLinkMemory.h ../plugins/FPGA.icc ../interface/TrackFitMemory.h ../interface/Tracklet.h ../interface/TrackletParametersMemory.h ../interface/Track.h ../interface/AllStubsMemory.h ../interface/StubPairsMemory.h ../interface/StubTripletsMemory.h ../interface/TrackDerTable.h ../interface/FullMatchMemory.h ../interface/TrackDer.h ../interface/VMProjectionsMemory.h ../interface/LayerProjection.h ../interface/LayerResidual.h ../interface/DTC.h ../interface/DTCLink.h ../interface/Util.h ../interface/PurgeDuplicate.h ../interface/CleanTrackMemory.h ../interface/TETableOuter.h ../interface/TETableInner.h ../interface/TETableOuterDisk.h ../interface/TETableInnerDisk.h ../interface/TETableInnerOverlap.h ../interface/TETableBase.h ../interface/DiskProjection.h ../interface/DiskResidual.h ../interface/VMRouterPhiCorrTable.h ../interface/CandidateMatchMemory.h ../interface/IMATH_TrackletCalculator.h ../interface/IMATH_TrackletCalculatorDisk.h ../interface/IMATH_TrackletCalculatorOverlap.h ../interface/AllProjectionsMemory.h ../interface/Cabling.h ../interface/VMRouter.h ../interface/StubVariance.h ../interface/imath.h ../plugins/WriteDesign.icc ../plugins/WriteInvTables.icc ../interface/GlobalHistTruth.h ../interface/HistBase.h ../interface/HistImp.h ../interface/TrackPars.h ../interface/CircularBuffer.h ../interface/MatchEngineUnit.h ../interface/ProjectionTemp.h
+default: comp fpga
+
+fpga: fpga.o imath.a $(OBJ)
+	$(LD) -o $@ fpga.o $(OBJ) imath.a $(LDFLAGS) $(LIBS)
+
+fpga.o: ../interface/Settings.h ../interface/slhcevent.h ../interface/L1TStub.h ../interface/Sector.h  ../interface/Stub.h ../interface/FPGAWord.h ../interface/MemoryBase.h ../interface/ProcessBase.h ../interface/VMStubsMEMemory.h ../interface/VMStubsTEMemory.h ../interface/VMStubTE.h ../interface/VMStubME.h ../interface/TrackletProjectionsMemory.h ../interface/InverseTable.h ../interface/TrackletCalculator.h ../interface/TrackletCalculatorBase.h ../interface/TrackletProcessor.h ../interface/TrackletCalculatorDisplaced.h ../interface/MatchCalculator.h ../interface/MatchProcessor.h ../interface/TrackletEngine.h ../interface/TrackletEngineDisplaced.h ../interface/TripletEngine.h ../interface/MatchEngine.h ../interface/FitTrack.h ../interface/ProjectionRouter.h ../interface/InputLinkMemory.h ../plugins/FPGA.icc ../interface/TrackFitMemory.h ../interface/Tracklet.h ../interface/TrackletParametersMemory.h ../interface/Track.h ../interface/AllStubsMemory.h ../interface/StubPairsMemory.h ../interface/StubTripletsMemory.h ../interface/TrackDerTable.h ../interface/FullMatchMemory.h ../interface/TrackDer.h ../interface/VMProjectionsMemory.h ../interface/LayerProjection.h ../interface/LayerResidual.h ../interface/DTC.h ../interface/DTCLink.h ../interface/Util.h ../interface/PurgeDuplicate.h ../interface/CleanTrackMemory.h ../interface/TETableOuter.h ../interface/TETableInner.h ../interface/TETableOuterDisk.h ../interface/TETableInnerDisk.h ../interface/TETableInnerOverlap.h ../interface/TETableBase.h ../interface/DiskProjection.h ../interface/DiskResidual.h ../interface/VMRouterPhiCorrTable.h ../interface/CandidateMatchMemory.h ../interface/IMATH_TrackletCalculator.h ../interface/IMATH_TrackletCalculatorDisk.h ../interface/IMATH_TrackletCalculatorOverlap.h ../interface/AllProjectionsMemory.h ../interface/Cabling.h ../interface/VMRouter.h ../interface/StubVariance.h ../interface/imath.h ../plugins/WriteDesign.icc ../plugins/WriteInvTables.icc ../interface/GlobalHistTruth.h ../interface/HistBase.h ../interface/HistImp.h ../interface/TrackPars.h ../interface/CircularBuffer.h ../interface/MatchEngineUnit.h ../interface/ProjectionTemp.h fpga.cc
+	$(CXX) $(CXXFLAGS) -c fpga.cc -o $@
+
+comp:$(OBJ)
+
+fpgalib.a:$(OBJ)
+	$(CXX)  $(CXXFLAGS) -c $< -o $@
+
+lib/%.o: ../src/%.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 imath.a: imath.o imath_calculate.o imath_HLS.o imath_Verilog.o
 	$(AR) $(ARFLAGS) $@ $?

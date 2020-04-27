@@ -1,6 +1,6 @@
 #common definitions go in here
 CXX           = g++
-CXXFLAGS      = -O -Wall  -fPIC -g -ansi -Wextra -Wno-deprecated -std=c++11 -I.
+CXXFLAGS      = -O -Wall  -fPIC -g -ansi -Wextra -Wno-deprecated -std=c++11 -I. -I../../..
 LD            = g++
 LDFLAGS       = -O
 LIBDIR       = $(WORKDIR)
@@ -16,6 +16,10 @@ endif
 
 ifndef ROOTSYS
 $(error *** Please set up Root)
+endif
+
+ifeq ("$(wildcard lib)","")
+$(shell mkdir lib)
 endif
 
 ifeq ("$(wildcard FWCore)","")
