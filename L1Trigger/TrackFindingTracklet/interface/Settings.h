@@ -9,6 +9,7 @@
 
 #include <cmath>
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 namespace Trklet{
 
@@ -356,7 +357,7 @@ namespace Trklet{
 
     bool writeMonitorData(std::string module) const {
       if (writeMonitorData_.find(module)==writeMonitorData_.end()){
-	std::cout << "Settings::writeMonitorData module = "<<module<<" not known" << std::endl;
+	edm::LogPrint("Tracklet") << "Settings::writeMonitorData module = "<<module<<" not known";
 	assert(0);
       }
       return writeMonitorData_.at(module);
@@ -364,7 +365,7 @@ namespace Trklet{
 
     unsigned int maxStep(std::string module) const {
       if (maxstep_.find(module)==maxstep_.end()){
-	std::cout << "Settings::maxStep module = "<<module<<" not known" << std::endl;
+	edm::LogPrint("Tracklet") << "Settings::maxStep module = "<<module<<" not known";
 	assert(0);
       }
       return maxstep_.at(module)+maxstepoffset_;;

@@ -4,6 +4,7 @@
 #include "Tracklet.h"
 #include "MemoryBase.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 
@@ -63,7 +64,7 @@ public:
     if (subname == "B5")
       disk_ = -5;
     if (layer_ == 0 && disk_ == 0) {
-      cout << name << " subname = " << subname << " " << layer_ << " " << disk_ << endl;
+      edm::LogPrint("Tracklet") << name << " subname = " << subname << " " << layer_ << " " << disk_;
     }
     assert((layer_ != 0) || (disk_ != 0));
   }
