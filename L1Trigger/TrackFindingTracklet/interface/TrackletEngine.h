@@ -5,6 +5,7 @@
 #include "ProcessBase.h"
 #include "Util.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 
@@ -27,7 +28,7 @@ public:
 
   void addOutput(MemoryBase* memory,string output){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
     if (output=="stubpairout") {
       StubPairsMemory* tmp=dynamic_cast<StubPairsMemory*>(memory);
@@ -40,7 +41,7 @@ public:
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
     if (input=="innervmstubin") {
       VMStubsTEMemory* tmp=dynamic_cast<VMStubsTEMemory*>(memory);
@@ -56,7 +57,7 @@ public:
       setVMPhiBin();
       return;
     }
-    cout << "Could not find input : "<<input<<endl;
+    edm::LogVerbatim("Tracklet") << "Could not find input : "<<input;
     assert(0);
   }
 
@@ -119,16 +120,14 @@ public:
 	  
 	  if (!(pttableinner_[ptinnerindex]&&pttableouter_[ptouterindex])) {
 	    if (settings_->debugTracklet()) {
-	      cout << "Stub pair rejected because of stub pt cut bends : "
-		   <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())
-		   <<" "
-		   <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule())
-		   <<endl;
+	      edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
+					   <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())<<" "
+					   <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule());
 	    }		
 	    continue;
 	  }
 	  
-	  if (settings_->debugTracklet()) cout << "Adding stub pair in " <<getName()<<endl;
+	  if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding stub pair in " <<getName();
 
 	  stubpairs_->addStubPair(innervmstub,outervmstub);
 	  countpass++;

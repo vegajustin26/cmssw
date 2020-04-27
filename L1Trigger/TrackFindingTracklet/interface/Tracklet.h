@@ -18,6 +18,8 @@
 #include "DiskResidual.h"
 #include "Util.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class Tracklet{
@@ -263,7 +265,7 @@ public:
     std::ostringstream oss;
     FPGAWord index;
     if (allstubindex>=(1<<7)) {
-      cout << "Warning projection number too large!"<<endl;	
+      edm::LogPrint("Tracklet") << "Warning projection number too large!";	
       index.set((1<<7)-1,7,true,__LINE__,__FILE__);
     } else {
       index.set(allstubindex,7,true,__LINE__,__FILE__);
@@ -281,7 +283,7 @@ public:
     int irinvvm = 16+(tmp_irinv>>(nbits_irinv-5));
 
     if (settings_->extended() && (irinvvm>31)) { //FIXME - shoud not need this
-      cout << "Warning irinvvm too large:"<<irinvvm<<endl;
+      edm::LogPrint("Tracklet") << "Warning irinvvm too large:"<<irinvvm;
       irinvvm=31;
     }
     
@@ -302,7 +304,7 @@ public:
     std::ostringstream oss;
     FPGAWord index;
     if (allstubindex>=(1<<7)) {
-      cout << "Warning projection number too large!"<<endl;	
+      edm::LogPrint("Tracklet") << "Warning projection number too large!";	
       index.set((1<<7)-1,7,true,__LINE__,__FILE__);
     } else {
       index.set(allstubindex,7,true,__LINE__,__FILE__);
@@ -322,7 +324,7 @@ public:
     std::ostringstream oss;
     FPGAWord tmp;
     if (trackletIndex_<0||trackletIndex_>127) {
-      cout << "trackletIndex_ = "<<trackletIndex_<<endl;
+      edm::LogPrint("Tracklet") << "trackletIndex_ = "<<trackletIndex_;
       assert(0);
     }
     tmp.set(trackletIndex_,7,true,__LINE__,__FILE__);
@@ -349,7 +351,7 @@ public:
     std::ostringstream oss;
     FPGAWord tmp;
     if (trackletIndex_<0||trackletIndex_>127) {
-      cout << "trackletIndex_ = "<<trackletIndex_<<endl;
+      edm::LogPrint("Tracklet") << "trackletIndex_ = "<<trackletIndex_;
       assert(0);
     }
     tmp.set(trackletIndex_,7,true,__LINE__,__FILE__);
@@ -710,7 +712,7 @@ public:
 
     FPGAWord tmp;
     if (trackletIndex_<0||trackletIndex_>127) {
-      cout << "trackletIndex_ = "<<trackletIndex_<<endl;
+      edm::LogPrint("Tracklet") << "trackletIndex_ = "<<trackletIndex_;
       assert(0);
     }
     tmp.set(trackletIndex_,7,true,__LINE__,__FILE__);
@@ -736,7 +738,7 @@ public:
 
     FPGAWord tmp;
     if (trackletIndex_<0||trackletIndex_>127) {
-      cout << "trackletIndex_ = "<<trackletIndex_<<endl;
+      edm::LogPrint("Tracklet") << "trackletIndex_ = "<<trackletIndex_;
       assert(0);
     }
     tmp.set(trackletIndex_,7,true,__LINE__,__FILE__);
@@ -1375,7 +1377,7 @@ public:
     }
 
     if (seedindex<0) {
-      cout << "seedlayer abs(seeddisk) : "<<seedlayer<<" "<<abs(seeddisk)<<endl;
+      edm::LogPrint("Tracklet") << "seedlayer abs(seeddisk) : "<<seedlayer<<" "<<abs(seeddisk);
       assert(0);
     }
 

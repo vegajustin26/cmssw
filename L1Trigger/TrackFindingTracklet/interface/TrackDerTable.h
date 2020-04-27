@@ -8,6 +8,8 @@
 #include <vector>
 #include "TrackDer.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class TrackDerTable {
@@ -69,7 +71,7 @@ public:
 
     if (diskcode < 0 || layercode < 0) {
       if (settings_->warnNoDer()) {
-        cout << "layermask diskmask : " << layermask << " " << diskmask << endl;
+        edm::LogPrint("Tracklet") << "layermask diskmask : " << layermask << " " << diskmask;
       }
       return -1;
     }
@@ -88,7 +90,7 @@ public:
 
     if (address < 0) {
       if (settings_->warnNoDer()) {
-        cout << "layermask diskmask : " << layermask << " " << diskmask << endl;
+        edm::LogVerbatim("Tracklet") << "layermask diskmask : " << layermask << " " << diskmask;
       }
       return -1;
     }
@@ -130,7 +132,7 @@ public:
     int address = LayerDiskMem_[layerdiskaddress];
 
     if (address != -1) {
-      cout << "Duplicate entry:  layermask=" << layermask << " diskmaks=" << diskmask << endl;
+      edm::LogPrint("Tracklet") << "Duplicate entry:  layermask=" << layermask << " diskmaks=" << diskmask;
     }
 
     assert(address == -1);  //Should not already have this one!
@@ -152,9 +154,8 @@ public:
 
   void readPatternFile(std::string fileName) {
     ifstream in(fileName.c_str());
-    cout << "reading fit pattern file " << fileName << "\n";
-    cout << "  flags (good/eof/fail/bad): " << in.good() << " " << in.eof() << " " << in.fail() << " " << in.bad()
-         << "\n";
+    edm::LogVerbatim("Tracklet") << "reading fit pattern file " << fileName;
+    edm::LogVerbatim("Tracklet") << "  flags (good/eof/fail/bad): " << in.good() << " " << in.eof() << " " << in.fail() << " " << in.bad();
 
     while (in.good()) {
       std::string layerstr, diskstr;
@@ -210,7 +211,7 @@ public:
       bool print = false;
 
       if (print) {
-        cout << "PRINT i " << i << " " << layermask << " " << diskmask << " " << alphamask << " " << print << endl;
+        edm::LogVerbatim("Tracklet") << "PRINT i " << i << " " << layermask << " " << diskmask << " " << alphamask << " " << print;
       }
 
       int nlayers = 0;
@@ -241,7 +242,7 @@ public:
               alphamask = alphamask >> 3;
               alpha[ndisks] = 4.57 * (ialpha - 3.5) / 4.0 / r2;
               if (print)
-                cout << "PRINT 3 alpha ialpha : " << alpha[ndisks] << " " << ialpha << endl;
+                edm::LogVerbatim("Tracklet") << "PRINT 3 alpha ialpha : " << alpha[ndisks] << " " << ialpha;
             }
             if (alphaBits_ == 2) {
               int ialpha = alphamask & 3;
@@ -253,7 +254,7 @@ public:
               alphamask = alphamask >> 1;
               alpha[ndisks] = 4.57 * (ialpha - 0.5) / r2;
               if (print)
-                cout << "PRINT 1 alpha ialpha : " << alpha[ndisks] << " " << ialpha << endl;
+                edm::LogVerbatim("Tracklet") << "PRINT 1 alpha ialpha : " << alpha[ndisks] << " " << ialpha;
             }
           }
           ndisks++;
@@ -269,9 +270,9 @@ public:
       double kfactor[12];
 
       if (print) {
-        cout << "PRINT ndisks alpha[0] z[0] t: " << ndisks << " " << alpha[0] << " " << z[0] << " " << t << endl;
+        edm::LogVerbatim("Tracklet") << "PRINT ndisks alpha[0] z[0] t: " << ndisks << " " << alpha[0] << " " << z[0] << " " << t;
         for (int iii = 0; iii < nlayers; iii++) {
-          cout << "PRINT iii r: " << iii << " " << r[iii] << endl;
+          edm::LogVerbatim("Tracklet") << "PRINT iii r: " << iii << " " << r[iii];
         }
       }
 
@@ -305,8 +306,8 @@ public:
       }
 
       if (print) {
-        cout << "iMinvDt table build : " << iMinvDt[0][10] << " " << iMinvDt[1][10] << " " << iMinvDt[2][10] << " "
-             << iMinvDt[3][10] << " " << t << " " << nlayers << " " << ndisks << endl;
+        edm::LogVerbatim("Tracklet") << "iMinvDt table build : " << iMinvDt[0][10] << " " << iMinvDt[1][10] << " " << iMinvDt[2][10] << " "
+				     << iMinvDt[3][10] << " " << t << " " << nlayers << " " << ndisks;
         cout << "alpha :";
         for (int iii = 0; iii < ndisks; iii++)
           cout << " " << alpha[iii];
@@ -318,7 +319,7 @@ public:
       }
 
       if (print) {
-        cout << "PRINT nlayers ndisks : " << nlayers << " " << ndisks << endl;
+        edm::LogVerbatim("Tracklet") << "PRINT nlayers ndisks : " << nlayers << " " << ndisks;
       }
 
       for (int j = 0; j < nlayers + ndisks; j++) {
@@ -336,7 +337,7 @@ public:
         assert(std::abs(iMinvDt[3][2 * j + 1]) < (1 << 19));
 
         if (print) {
-          cout << "PRINT i " << i << " " << j << " " << iMinvDt[1][2 * j] << " " << std::abs(iMinvDt[1][2 * j]) << endl;
+          edm::LogVerbatim("Tracklet") << "PRINT i " << i << " " << j << " " << iMinvDt[1][2 * j] << " " << std::abs(iMinvDt[1][2 * j]);
         }
 
         der.setirinvdphi(j, iMinvDt[0][2 * j]);
@@ -367,7 +368,7 @@ public:
         int tmp1 = LayerMem_[i];
         if (tmp1 < 0)
           tmp1 = (1 << 6) - 1;
-        cout << "i LayerMem_ : " << i << " " << tmp1 << endl;
+        edm::LogVerbatim("Tracklet") << "i LayerMem_ : " << i << " " << tmp1;
         tmp.set(tmp1, 6, true, __LINE__, __FILE__);
         outL << tmp.str() << endl;
       }
@@ -396,7 +397,7 @@ public:
       outLD.close();
 
       unsigned int nderivatives = derivatives_.size();
-      cout << "nderivatives = " << nderivatives << endl;
+      edm::LogVerbatim("Tracklet") << "nderivatives = " << nderivatives;
 
       const string seedings[] = {"L1L2", "L3L4", "L5L6", "D1D2", "D3D4", "D1L1", "D1L2"};
       const string prefix = "FitDerTableNew_";
@@ -847,7 +848,7 @@ public:
     V.clear();
 
     if (layerdiskmap.find(layerdisk) == layerdiskmap.end()) {
-      cout << "Could not find an entry for layerdisk : " << layerdisk << endl;
+      edm::LogVerbatim("Tracklet") << "Could not find an entry for layerdisk : " << layerdisk;
       assert(0);
     }
 
@@ -864,12 +865,8 @@ public:
     for (unsigned int i = 0; i < 2 * N; i++) {
       for (unsigned int j = 0; j < 2 * N; j++) {
         if (i % 2 == 0 && j % 2 == 0) {
-          //if (i==j) cout << "i j index V : "<<i<<" "<<j<<" "<<index[j/2]
-          //		 <<" "<<Vfull[index[i/2]][index[j/2]][ptbin][mapindex]<<endl;
           int indexi = index[i / 2];
           int indexj = index[j / 2];
-          //if (indexi<6) indexi=5-indexi;
-          //if (indexj<6) indexj=5-indexj;
           V[i][j] = Vfull[indexi][indexj][ptbin][mapindex];
         }
         if (i % 2 == 1 && i == j) {
@@ -1172,27 +1169,26 @@ public:
       for (unsigned int j = 0; j < 5; j++) {
         if (std::abs(std::abs(z[i]) - settings->zmean(j)) < settings->dzmax()) {
           disk[j] = true;
-          cout << "z zmean ndisks" << z[i] << " " << settings->zmean(j) << " " << ndisks << " " << nlayers << endl;
+          edm::LogVerbatim("Tracklet") << "z zmean ndisks" << z[i] << " " << settings->zmean(j) << " " << ndisks << " " << nlayers;
         }
       }
     }
 
     std::vector<std::vector<double> > V;
 
-    cout << "layer : " << nlayers << " " << layer[0] << layer[1] << layer[2] << layer[3] << layer[4] << layer[5]
-         << endl;
-    cout << "disk  : " << ndisks << " " << disk[0] << disk[1] << disk[2] << disk[3] << disk[4] << endl;
+    edm::LogVerbatim("Tracklet") << "layer : " << nlayers << " " << layer[0] << layer[1] << layer[2] << layer[3] << layer[4] << layer[5];
+    edm::LogVerbatim("Tracklet") << "disk  : " << ndisks << " " << disk[0] << disk[1] << disk[2] << disk[3] << disk[4];
 
     getVarianceMatrix(layer, disk, ptbin, V);
 
-    cout << "V: " << ptbin << endl;
+    edm::LogVerbatim("Tracklet") << "V: " << ptbin;
     for (unsigned int ii = 0; ii < 2 * n; ii += 2) {
       for (unsigned int jj = 0; jj < 2 * n; jj += 2) {
         cout << V[ii][jj] << " ";
       }
       cout << endl;
     }
-    cout << "Vcorr:" << endl;
+    edm::LogVerbatim("Tracklet") << "Vcorr:";
     for (unsigned int ii = 0; ii < 2 * n; ii += 2) {
       for (unsigned int jj = 0; jj < 2 * n; jj += 2) {
         cout << V[ii][jj] / sqrt(V[ii][ii] * V[jj][jj]) << " ";
@@ -1202,7 +1198,7 @@ public:
 
     invert(V, 2 * n);
 
-    cout << "Vinv:" << endl;
+    edm::LogVerbatim("Tracklet") << "Vinv:";
     for (unsigned int ii = 0; ii < 2 * n; ii += 2) {
       for (unsigned int jj = 0; jj < 2 * n; jj += 2) {
         cout << V[ii][jj + 2 * n] << " ";

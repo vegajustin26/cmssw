@@ -6,6 +6,7 @@
 #include "Util.h"
 #include "GlobalHistTruth.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 
@@ -125,9 +126,6 @@ public:
 
     double phi1tmp=phi1-phimin_;    
 
-    
-    //cout << "phi1 phi2 phi1tmp : "<<phi1<<" "<<phi2<<" "<<phi1tmp<<endl;
-
     phi0=Util::phiRange(phi1tmp+asin(0.5*r1*rinv));
     
     double rhopsi1=2*asin(0.5*r1*rinv)/rinv;
@@ -214,7 +212,7 @@ public:
     FPGAWord fpgaphi=tracklet->fpgaphiproj(layer);
 
 
-    if(fpgaphi.atExtreme()) cout<<"at extreme! "<<fpgaphi.value()<<"\n";
+    if(fpgaphi.atExtreme()) edm::LogProblem("Tracklet")<<"at extreme! "<<fpgaphi.value();
 
     assert(!fpgaphi.atExtreme());
     
@@ -235,7 +233,7 @@ public:
   void addProjection(int layer,int iphi,TrackletProjectionsMemory* trackletprojs, Tracklet* tracklet){
     if (trackletprojs==0) {
       if (settings_->warnNoMem()) {
-	cout << "No projection memory exists in "<<getName()<<" for layer = "<<layer<<" iphi = "<<iphi+1<<endl;
+	edm::LogVerbatim("Tracklet") << "No projection memory exists in "<<getName()<<" for layer = "<<layer<<" iphi = "<<iphi+1;
       }
       return;
     }
@@ -248,7 +246,7 @@ public:
     if (trackletprojs==0) {
       if (layer_==3&&abs(disk)==3) return; //L3L4 projections to D3 are not used.
       if (settings_->warnNoMem()) {       
-	cout << "No projection memory exists in "<<getName()<<" for disk = "<<abs(disk)<<" iphi = "<<iphi+1<<endl;
+	edm::LogVerbatim("Tracklet") << "No projection memory exists in "<<getName()<<" for disk = "<<abs(disk)<<" iphi = "<<iphi+1;
       }
       return;
     }
@@ -262,13 +260,13 @@ public:
     bool success = true;
     if(!goodrinv){
       if (settings_->debugTracklet()) {
-	cout << getName()<<" TrackletCalculatorBase irinv too large"<<endl;
+	edm::LogVerbatim("Tracklet") << getName()<<" TrackletCalculatorBase irinv too large";
       }
       success = false;
     }
     if (!goodz0){
       if (settings_->debugTracklet()) {
-	cout << getName()<<" TrackletCalculatorBase z0 cut to large"<<endl;
+	edm::LogVerbatim("Tracklet") << getName()<<" TrackletCalculatorBase z0 cut to large";
       }
       success = false;
     }
@@ -290,7 +288,7 @@ public:
          keep=(iphicrit>iphicritmincut)&&(iphicrit<iphicritmaxcut);
     if (settings_->debugTracklet())
       if (keepapprox && !keep)
-        cout << getName() << " Tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
+        edm::LogVerbatim("Tracklet") << getName() << " Tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox;
     if (settings_->usephicritapprox()) {
       return keepapprox;
     } else {
@@ -307,8 +305,8 @@ public:
   bool barrelSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* outerFPGAStub, L1TStub* outerStub){
 	  
     if (settings_->debugTracklet()) {
-      cout << "TrackletCalculator "<<getName()<<" "<<layer_<<" trying stub pair in layer (inner outer): "
-	   <<innerFPGAStub->layer().value()<<" "<<outerFPGAStub->layer().value()<<endl;
+      edm::LogVerbatim("Tracklet") << "TrackletCalculator "<<getName()<<" "<<layer_<<" trying stub pair in layer (inner outer): "
+				   <<innerFPGAStub->layer().value()<<" "<<outerFPGAStub->layer().value();
     }
 	    
     assert(outerFPGAStub->isBarrel());
@@ -611,8 +609,7 @@ public:
 				    false);
     
     if (settings_->debugTracklet()) {
-      cout << "TrackletCalculator "<<getName()<<" Found tracklet in layer = "<<layer_<<" "
-	   <<iSector_<<" phi0 = "<<phi0<<endl;
+      edm::LogVerbatim("Tracklet") << "TrackletCalculator "<<getName()<<" Found tracklet in layer = "<<layer_<<" "<<iSector_<<" phi0 = "<<phi0;
     }
         
 
@@ -672,7 +669,7 @@ public:
 
 	    
     if (settings_->debugTracklet()) {
-      cout <<  "TrackletCalculator::execute calculate disk seeds" << endl;
+      edm::LogVerbatim("Tracklet") <<  "TrackletCalculator::execute calculate disk seeds";
     }
 	      
     int sign=1;
@@ -955,8 +952,7 @@ public:
 				    true);
     
     if (settings_->debugTracklet()) {
-      cout << "Found tracklet in disk = "<<disk_<<" "<<tracklet
-	   <<" "<<iSector_<<endl;
+      edm::LogVerbatim("Tracklet") << "Found tracklet in disk = "<<disk_<<" "<<tracklet<<" "<<iSector_;
     }
         
     tracklet->setTrackletIndex(trackletpars_->nTracklets());
@@ -998,7 +994,7 @@ public:
     int disk=innerFPGAStub->disk().value();
 
     if (settings_->debugTracklet()) {
-      cout << "trying to make overlap tracklet disk_ = "<<disk_<<" "<<getName()<<endl;
+      edm::LogVerbatim("Tracklet") << "trying to make overlap tracklet disk_ = "<<disk_<<" "<<getName();
     }
     
     double r1=innerStub->r();
@@ -1014,7 +1010,7 @@ public:
     //calculation and with overflows
     //in the integer calculation
     if (r1<r2+1.5) {
-      //cout << "in overlap tracklet: radii wrong"<<endl;
+      //edm::LogVerbatim("Tracklet") << "in overlap tracklet: radii wrong";
       return false;
     }
     
@@ -1286,8 +1282,7 @@ public:
 				    false,true);
     
     if (settings_->debugTracklet()) {
-      cout << "Found tracklet in overlap = "<<layer_<<" "<<disk_
-	   <<" "<<tracklet<<" "<<iSector_<<endl;
+      edm::LogVerbatim("Tracklet") << "Found tracklet in overlap = "<<layer_<<" "<<disk_<<" "<<tracklet<<" "<<iSector_;
     }
     
         

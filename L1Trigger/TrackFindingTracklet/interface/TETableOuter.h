@@ -67,8 +67,6 @@ public:
     if (zbin >= NBINS)
       zbin = NBINS - 1;
 
-    //cout << "izbin zbin z zproj "<<izbin<<" "<<zbin<<" "<<z<<" "<<zproj<<endl;
-
     return zbin;
   }
 

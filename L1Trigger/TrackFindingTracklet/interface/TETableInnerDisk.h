@@ -47,9 +47,7 @@ public:
 
     for (int irbin = 0; irbin < rbins_; irbin++) {
       for (int izbin = 0; izbin < zbins_; izbin++) {
-        //int ibin=irbin+izbin*rbins_;
         int value = getLookupValue(settings, irbin, izbin);
-        //cout << "table "<<table_.size()<<" "<<value<<" "<<rmeanl2_<<endl;
         table_.push_back(value);
       }
     }
@@ -113,15 +111,10 @@ public:
     int rbinmin = NBINS * (rmind2 - settings_->rmindiskvm()) / (settings_->rmaxdiskvm() - settings_->rmindiskvm());
     int rbinmax = NBINS * (rmaxd2 - settings_->rmindiskvm()) / (settings_->rmaxdiskvm() - settings_->rmindiskvm());
 
-    //cout << "zbinmin zminl2 "<<zbinmin<<" "<<zminl2<<endl;
-    //cout << "zbinmax zmaxl2 "<<zbinmax<<" "<<zmaxl2<<endl;
-
     if (rbinmin < 0)
       rbinmin = 0;
     if (rbinmax >= NBINS)
       rbinmax = NBINS - 1;
-
-    //cout <<"rbminmin rbinmax "<<rbinmin<<" "<<rbinmax<<endl;
 
     assert(rbinmin <= rbinmax);
     assert(rbinmax - rbinmin <= (int)settings_->NLONGVMBINS());
@@ -132,7 +125,6 @@ public:
       valueD2 += 1;
     valueD2 *= 8;
     valueD2 += (rbinmin & 7);
-    //cout << "zbinmax/8 zbinmin/8 valueD2 "<<zbinmax/8<<" "<<zbinmin/8<<" "<<valueD2<<endl;
     assert(valueD2 / 8 < 7);
     int deltar = rbinmax - rbinmin;
     assert(deltar < 8);
@@ -145,9 +137,6 @@ public:
 
     int zbinmin = NBINS * (zminl3 + settings->zlength()) / (2 * settings->zlength());
     int zbinmax = NBINS * (zmaxl3 + settings->zlength()) / (2 * settings->zlength());
-
-    //cout << "zbinmin zminl2 "<<zbinmin<<" "<<zminl2<<endl;
-    //cout << "zbinmax zmaxl2 "<<zbinmax<<" "<<zmaxl2<<endl;
 
     if (zbinmin < 0)
       zbinmin = 0;
@@ -163,11 +152,9 @@ public:
       valueL3 += 1;
     valueL3 *= 8;
     valueL3 += (zbinmin & 7);
-    //cout << "zbinmax/8 zbinmin/8 valueL3 "<<zbinmax/8<<" "<<zbinmin/8<<" "<<valueL3<<endl;
     assert(valueL3 / 8 < 15);
     int deltaz = zbinmax - zbinmin;
     if (deltaz > 7) {
-      //cout << "deltaz = "<<deltaz<<endl;
       deltaz = 7;
     }
     assert(deltaz < 8);
@@ -187,16 +174,12 @@ public:
   void findr(double r, double z, double& rmind2, double& rmaxd2) {
     double rd2 = rintercept(settings_->z0cut(), r, z);
 
-    //cout << "rd2 : "<<r<<" "<<z<<" "<<rd2<<endl;
-
     if (rd2 < rmind2)
       rmind2 = rd2;
     if (rd2 > rmaxd2)
       rmaxd2 = rd2;
 
     rd2 = rintercept(-settings_->z0cut(), r, z);
-
-    //cout << "rd2 : "<<rd2<<endl;
 
     if (rd2 < rmind2)
       rmind2 = rd2;
@@ -236,11 +219,8 @@ public:
 
     ofstream out(fname.c_str());
 
-    //cout << "writephi 2 phitableentries_ : "<<phitableentries_<<endl;
-
     for (int i=0;i<phitableentries_;i++){
       FPGAWord entry;
-      //cout << "phitablebits_ : "<<phitablebits_<<endl;
       entry.set(i,phitablebits_);
       //out << entry.str()<<" "<<tablephi_[i]<<endl;
       out <<tablephi_[i]<<endl;

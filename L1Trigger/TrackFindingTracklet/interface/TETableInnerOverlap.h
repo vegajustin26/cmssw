@@ -8,6 +8,7 @@
 #include <cmath>
 #include <vector>
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 
@@ -73,9 +74,7 @@ public:
 
     for (int izbin=0;izbin<zbins_;izbin++) {
       for (int irbin=0;irbin<rbins_;irbin++) {
-	//int ibin=irbin+izbin*rbins_;
 	int value=getLookupValue(settings,izbin,irbin);
-	//cout << "table "<<table_.size()<<" "<<value<<" "<<rmeanl2_<<endl;
 	table_.push_back(value);
       }
     }
@@ -90,7 +89,6 @@ public:
   int getLookupValue(const Settings* settings, int izbin, int irbin){
 
     bool print=false;
-    //print=(izbin==127)&&(irbin==2);
     
     double r1=rminl1_+irbin*dr_;
     double r2=rminl1_+(irbin+1)*dr_;
@@ -109,8 +107,8 @@ public:
     findr(r2,z1,rmind2,rmaxd2);
     findr(r2,z2,rmind2,rmaxd2);
 
-    if (print) cout << "PRINT layer1 rmind2 rmaxd2 z2 r1 "<<layer1_<<" "
-		    <<rmind2<<" "<<rmaxd2<<" "<<z2<<" "<<r1<<endl;
+    if (print) edm::LogVerbatim("Tracklet") << "PRINT layer1 rmind2 rmaxd2 z2 r1 "<<layer1_<<" "
+					    <<rmind2<<" "<<rmaxd2<<" "<<z2<<" "<<r1;
     
     assert(rmind2<rmaxd2);
 
@@ -123,17 +121,14 @@ public:
     
     int rbinmin=NBINS*(rmind2-settings_->rmindiskvm())/(settings_->rmaxdiskvm()-settings_->rmindiskvm());
     int rbinmax=NBINS*(rmaxd2-settings_->rmindiskvm())/(settings_->rmaxdiskvm()-settings_->rmindiskvm());
-
-    //cout << "zbinmin zminl2 "<<zbinmin<<" "<<zminl2<<endl;
-    //cout << "zbinmax zmaxl2 "<<zbinmax<<" "<<zmaxl2<<endl;
     
     if (rbinmin<0) rbinmin=0;
     if (rbinmax>=NBINS) rbinmax=NBINS-1;
 
-    if (print) cout << "PRINT layer1 rmind2 rmaxd2 dr z2 r1 "<<layer1_<<" "
-		    <<rmind2<<" "<<rmaxd2<<" "<<" "<<(settings_->rmaxdiskvm()-settings_->rmindiskvm())/NBINS<<z2<<" "<<r1<<endl;
+    if (print) edm::LogVerbatim("Tracklet") << "PRINT layer1 rmind2 rmaxd2 dr z2 r1 "<<layer1_<<" "
+					    <<rmind2<<" "<<rmaxd2<<" "<<" "<<(settings_->rmaxdiskvm()-settings_->rmindiskvm())/NBINS<<z2<<" "<<r1;
 
-    if (print) cout <<"PRINT rbminmin rbinmax "<<rbinmin<<" "<<rbinmax<<endl;
+    if (print) edm::LogVerbatim("Tracklet") <<"PRINT rbminmin rbinmax "<<rbinmin<<" "<<rbinmax;
     
     assert(rbinmin<=rbinmax);
     //assert(rbinmax-rbinmin<=(int)settings_->NLONGVMBINS());
@@ -144,11 +139,9 @@ public:
     if (rbinmax/8-rbinmin/8>0) value+=1;
     value*=8;
     value+=(rbinmin&7);
-    //cout << "zbinmax/8 zbinmin/8 value "<<zbinmax/8<<" "<<zbinmin/8<<" "<<value<<endl;
     assert(value/8<15);
     int deltar=rbinmax-rbinmin;
     if (deltar>7) {
-      //cout << "deltar = "<<deltar<<endl;
       deltar=7;
     }
     assert(deltar<8);
@@ -163,14 +156,10 @@ public:
 
     double rd2=rintercept(settings_->z0cut(),r,z);
 
-    //cout << "rd2 : "<<r<<" "<<z<<" "<<rd2<<endl;
-    
     if (rd2<rmind2) rmind2=rd2;
     if (rd2>rmaxd2) rmaxd2=rd2;
     
     rd2=rintercept(-settings_->z0cut(),r,z);
-
-    //cout << "rd2 : "<<rd2<<endl;
 
     if (rd2<rmind2) rmind2=rd2;
     if (rd2>rmaxd2) rmaxd2=rd2;
@@ -178,8 +167,6 @@ public:
   }
 
   double rintercept(double zcut, double r, double z) {
-
-    //cout << "zcut z "<<zcut<<" "<<z<<endl;
 
     double zmean=(z>0.0)?zmeand2_:-zmeand2_;
     
@@ -190,7 +177,6 @@ public:
   int lookup(int zbin, int rbin) {
 
     int index=zbin*rbins_+rbin;
-    //cout << "index zbin rbin value "<<index<<" "<<zbin<<" "<<rbin<<" "<<table_[index]<<endl;
     assert(index<(int)table_.size());
     return table_[index];
     
@@ -202,11 +188,8 @@ public:
 
     ofstream out(fname.c_str());
 
-    //cout << "writephi 2 phitableentries_ : "<<phitableentries_<<endl;
-
     for (int i=0;i<phitableentries_;i++){
       FPGAWord entry;
-      //cout << "phitablebits_ : "<<phitablebits_<<endl;
       entry.set(i,phitablebits_);
       //out << entry.str()<<" "<<tablephi_[i]<<endl;
       out <<tablephi_[i]<<endl;

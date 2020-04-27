@@ -10,6 +10,8 @@
 #include "TrackletProjectionsMemory.h"
 #include "StubTripletsMemory.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class TrackletCalculatorDisplaced:public ProcessBase{
@@ -241,7 +243,7 @@ public:
   
   void addOutput(MemoryBase* memory,string output){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
     if (output=="trackpar"){
       TrackletParametersMemory* tmp=dynamic_cast<TrackletParametersMemory*>(memory);
@@ -651,13 +653,13 @@ public:
     }    
     
 
-    cout << "Could not find output : "<<output<<endl;
+    edm::LogPrint("Tracklet") << "Could not find output : "<<output;
     assert(0);
   }
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
     if (input=="thirdallstubin"){
       AllStubsMemory* tmp=dynamic_cast<AllStubsMemory*>(memory);
@@ -695,7 +697,7 @@ public:
 
     for(unsigned int l=0;l<stubtriplets_.size();l++){
       if (trackletpars_->nTracklets()>=maxtracklet_) {
-	cout << "Will break on too many tracklets in "<<getName()<<endl;
+	edm::LogVerbatim("Tracklet") << "Will break on too many tracklets in "<<getName();
 	break;
       }
       for(unsigned int i=0;i<stubtriplets_[l]->nStubTriplets();i++){
@@ -712,7 +714,7 @@ public:
 	Stub* outerFPGAStub=stubtriplets_[l]->getFPGAStub3(i);
 
 	if (settings_->debugTracklet()) {
-	  cout << "TrackletCalculatorDisplaced execute "<<getName()<<"["<<iSector_<<"]"<<endl;
+	  edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced execute "<<getName()<<"["<<iSector_<<"]";
 	}
 	
         if (innerFPGAStub->isBarrel()&&middleFPGAStub->isBarrel()&&outerFPGAStub->isBarrel()){
@@ -743,21 +745,21 @@ public:
         }
 
 	if (trackletpars_->nTracklets()>=maxtracklet_) {
-	  cout << "Will break on number of tracklets in "<<getName()<<endl;
+	  edm::LogVerbatim("Tracklet") << "Will break on number of tracklets in "<<getName();
 	  break;
 	}
 	
 	if (countall>=settings_->maxStep("TC")) {
-	  if (settings_->debugTracklet()) cout << "Will break on MAXTC 1"<<endl;
+	  if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Will break on MAXTC 1";
 	  break;
 	}
 	if (settings_->debugTracklet()) {
-	  cout << "TrackletCalculatorDisplaced execute done"<<endl;
+	  edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced execute done";
 	}
 
       }
       if (countall>=settings_->maxStep("TC")) {
-	if (settings_->debugTracklet()) cout << "Will break on MAXTC 2"<<endl;
+	if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Will break on MAXTC 2";
 	break;
       }
     }
@@ -835,7 +837,7 @@ public:
     FPGAWord fpgaphi=tracklet->fpgaphiproj(layer);
 
 
-    if(fpgaphi.atExtreme()) cout<<"at extreme! "<<fpgaphi.value()<<"\n";
+    if(fpgaphi.atExtreme()) edm::LogPrint("Tracklet")<<"at extreme! "<<fpgaphi.value();
 
     assert(!fpgaphi.atExtreme());
     
@@ -902,7 +904,7 @@ public:
   void addProjection(int layer,int iphi,TrackletProjectionsMemory* trackletprojs, Tracklet* tracklet){
     if (trackletprojs==0) {
       if (settings_->warnNoMem()) {
-	cout << "No projection memory exists in "<<getName()<<" for layer = "<<layer<<" iphi = "<<iphi+1<<endl;
+	edm::LogVerbatim("Tracklet") << "No projection memory exists in "<<getName()<<" for layer = "<<layer<<" iphi = "<<iphi+1;
       }
       return;
     }
@@ -914,7 +916,7 @@ public:
     if (trackletprojs==0) {
       if (layer_==3&&abs(disk)==3) return; //L3L4 projections to D3 are not used.
       if (settings_->warnNoMem()) {       
-	cout << "No projection memory exists in "<<getName()<<" for disk = "<<abs(disk)<<" iphi = "<<iphi+1<<endl;
+	edm::LogVerbatim("Tracklet") << "No projection memory exists in "<<getName()<<" for disk = "<<abs(disk)<<" iphi = "<<iphi+1;
       }
       return;
     }
@@ -927,8 +929,8 @@ public:
   bool LLLSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* middleFPGAStub, L1TStub* middleStub, Stub* outerFPGAStub, L1TStub* outerStub){
 	  
     if (settings_->debugTracklet()) {
-      cout << "TrackletCalculatorDisplaced "<<getName()<<" "<<layer_<<" trying stub triplet in layer (L L L): "
-	   <<innerFPGAStub->layer().value()<<" "<<middleFPGAStub->layer().value()<<" "<<outerFPGAStub->layer().value()<<endl;
+      edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced "<<getName()<<" "<<layer_<<" trying stub triplet in layer (L L L): "
+				   <<innerFPGAStub->layer().value()<<" "<<middleFPGAStub->layer().value()<<" "<<outerFPGAStub->layer().value();
     }
 	    
     assert(outerFPGAStub->isBarrel());
@@ -1035,16 +1037,15 @@ public:
     bool success = true;
     if(std::abs(rinvapprox)>settings_->rinvcut()){
       if (settings_->debugTracklet()) 
-	cout << "TrackletCalculator::LLL Seeding irinv too large: "
-	     <<rinvapprox<<"("<<irinv<<")\n";
+	edm::LogVerbatim("Tracklet") << "TrackletCalculator::LLL Seeding irinv too large: "<<rinvapprox<<"("<<irinv<<")";
       success = false;
     }
     if (std::abs(z0approx)>1.8*settings_->z0cut()) { 
-      if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<" in layer "<<layer_<<endl;
+      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Failed tracklet z0 cut "<<z0approx<<" in layer "<<layer_;
       success = false;
     }
     if (std::abs(d0approx)>settings_->maxd0()) {
-      if (settings_->debugTracklet()) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
+      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Failed tracklet d0 cut "<<d0approx;
       success = false;
     }
     
@@ -1056,7 +1057,7 @@ public:
          keepapprox=(phicritapprox>settings_->iphicritminmc())&&(phicritapprox<settings_->iphicritmaxmc());
     if (settings_->debugTracklet())
       if (keep && !keepapprox)
-        cout << "TrackletCalculatorDisplaced::LLLSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
+        edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced::LLLSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox;
     if (settings_->usephicritapprox()) {
       if (!keep) return false;
     }
@@ -1165,8 +1166,7 @@ public:
 				    false);
     
     if (settings_->debugTracklet()) {
-      cout << "TrackletCalculatorDisplaced "<<getName()<<" Found LLL tracklet in sector = "
-	   <<iSector_<<" phi0 = "<<phi0<<endl;
+      edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced "<<getName()<<" Found LLL tracklet in sector = "<<iSector_<<" phi0 = "<<phi0;
     }
         
 
@@ -1185,7 +1185,7 @@ public:
     for(unsigned int j=0;j<toR_.size();j++){
       bool added=false;
       if(settings_->debugTracklet())
-	cout<<"adding layer projection "<<j<<"/"<<toR_.size()<<" "<<lproj_[j]<<"\n";
+	edm::LogVerbatim("Tracklet")<<"adding layer projection "<<j<<"/"<<toR_.size()<<" "<<lproj_[j];
       if (tracklet->validProj(lproj_[j])) {
 	added=addLayerProj(tracklet,lproj_[j]);
 	if (added&&lproj_[j]==5) addL5=true;
@@ -1201,7 +1201,7 @@ public:
       if (disk==1&&addL6) continue;
       if (it<0) disk=-disk;
       if(settings_->debugTracklet())
-	cout<<"adding disk projection "<<j<<"/"<<toZ_.size()<<" "<<disk<<"\n";
+	edm::LogVerbatim("Tracklet")<<"adding disk projection "<<j<<"/"<<toZ_.size()<<" "<<disk;
       if (tracklet->validProjDisk(abs(disk))) {
 	addDiskProj(tracklet,disk);
       }
@@ -1214,8 +1214,8 @@ public:
   bool DDLSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* middleFPGAStub, L1TStub* middleStub, Stub* outerFPGAStub, L1TStub* outerStub){
 	  
     if (settings_->debugTracklet()) {
-      cout << "TrackletCalculatorDisplaced "<<getName()<<" "<<layer_<<" trying stub triplet in  (L2 D1 D2): "
-	   <<innerFPGAStub->layer().value()<<" "<<middleFPGAStub->disk().value()<<" "<<outerFPGAStub->disk().value()<<endl;
+      edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced "<<getName()<<" "<<layer_<<" trying stub triplet in  (L2 D1 D2): "
+				   <<innerFPGAStub->layer().value()<<" "<<middleFPGAStub->disk().value()<<" "<<outerFPGAStub->disk().value();
     }
 	    
     int take3 = 1; //D1D2L2
@@ -1316,16 +1316,15 @@ public:
     bool success = true;
     if(std::abs(rinvapprox)>settings_->rinvcut()){
       if (settings_->debugTracklet()) 
-	cout << "TrackletCalculator::DDL Seeding irinv too large: "
-	     <<rinvapprox<<"("<<irinv<<")\n";
+	edm::LogVerbatim("Tracklet") << "TrackletCalculator::DDL Seeding irinv too large: "<<rinvapprox<<"("<<irinv<<")";
       success = false;
     }
     if (std::abs(z0approx)>1.8*settings_->z0cut()) {
-      if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<endl;
+      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Failed tracklet z0 cut "<<z0approx;
       success = false;
     }
     if (std::abs(d0approx)>settings_->maxd0()) {
-      if (settings_->debugTracklet()) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
+      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Failed tracklet d0 cut "<<d0approx;
       success = false;
     }
     
@@ -1337,7 +1336,7 @@ public:
          keepapprox=(phicritapprox>settings_->iphicritminmc())&&(phicritapprox<settings_->iphicritmaxmc());
     if (settings_->debugTracklet())
       if (keep && !keepapprox)
-        cout << "TrackletCalculatorDisplaced::DDLSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
+        edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced::DDLSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox;
     if (settings_->usephicritapprox()) {
       if (!keep) return false;
     }
@@ -1441,8 +1440,7 @@ public:
 				    false);
     
     if (settings_->debugTracklet()) {
-      cout << "TrackletCalculatorDisplaced "<<getName()<<" Found DDL tracklet in sector = "
-	   <<iSector_<<" phi0 = "<<phi0<<endl;
+      edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced "<<getName()<<" Found DDL tracklet in sector = "<<iSector_<<" phi0 = "<<phi0;
     }
         
 
@@ -1458,7 +1456,7 @@ public:
     
     for(unsigned int j=0;j<toR_.size();j++){
       if(settings_->debugTracklet())
-	cout<<"adding layer projection "<<j<<"/"<<toR_.size()<<" "<<lproj_[j]<<" "<<tracklet->validProj(lproj_[j])<<"\n";      
+	edm::LogVerbatim("Tracklet")<<"adding layer projection "<<j<<"/"<<toR_.size()<<" "<<lproj_[j]<<" "<<tracklet->validProj(lproj_[j]);      
       if (tracklet->validProj(lproj_[j])) {
 	addLayerProj(tracklet,lproj_[j]);
       }
@@ -1470,7 +1468,7 @@ public:
       if(disk == 0) continue;
       if (it<0) disk=-disk;
       if(settings_->debugTracklet())
-	cout<<"adding disk projection "<<j<<"/"<<toZ_.size()<<" "<<disk<<" "<<tracklet->validProjDisk(abs(disk))<<"\n";
+	edm::LogVerbatim("Tracklet")<<"adding disk projection "<<j<<"/"<<toZ_.size()<<" "<<disk<<" "<<tracklet->validProjDisk(abs(disk));
       if (tracklet->validProjDisk(abs(disk))) {
 	addDiskProj(tracklet,disk);
       }
@@ -1483,8 +1481,8 @@ public:
   bool LLDSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* middleFPGAStub, L1TStub* middleStub, Stub* outerFPGAStub, L1TStub* outerStub){
 	  
     if (settings_->debugTracklet()) {
-      cout << "TrackletCalculatorDisplaced "<<getName()<<" "<<layer_<<" trying stub triplet in  (L2L3D1): "
-	   <<middleFPGAStub->layer().value()<<" "<<outerFPGAStub->layer().value()<<" "<<innerFPGAStub->disk().value()<<endl;
+      edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced "<<getName()<<" "<<layer_<<" trying stub triplet in  (L2L3D1): "
+				   <<middleFPGAStub->layer().value()<<" "<<outerFPGAStub->layer().value()<<" "<<innerFPGAStub->disk().value();
     }
 	    
     int take3 = 0; //L2L3D1
@@ -1586,16 +1584,15 @@ public:
     bool success = true;
     if(std::abs(rinvapprox)>settings_->rinvcut()){
       if (settings_->debugTracklet()) 
-	cout << "TrackletCalculator:: LLD Seeding irinv too large: "
-	     <<rinvapprox<<"("<<irinv<<")\n";
+	edm::LogVerbatim("Tracklet") << "TrackletCalculator:: LLD Seeding irinv too large: "<<rinvapprox<<"("<<irinv<<")";
       success = false;
     }
     if (std::abs(z0approx)>1.8*settings_->z0cut()) {
-      if (settings_->debugTracklet()) cout << "Failed tracklet z0 cut "<<z0approx<<endl;
+      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Failed tracklet z0 cut "<<z0approx;
       success = false;
     }
     if (std::abs(d0approx)>settings_->maxd0()) {
-      if (settings_->debugTracklet()) cout << "Failed tracklet d0 cut "<<d0approx<<endl;
+      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Failed tracklet d0 cut "<<d0approx;
       success = false;
     }
     
@@ -1607,7 +1604,7 @@ public:
          keepapprox=(phicritapprox>settings_->iphicritminmc())&&(phicritapprox<settings_->iphicritmaxmc());
     if (settings_->debugTracklet())
       if (keep && !keepapprox)
-        cout << "TrackletCalculatorDisplaced::LLDSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox << endl;
+        edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced::LLDSeeding tracklet kept with exact phicrit cut but not approximate, phicritapprox: " << phicritapprox;
     if (settings_->usephicritapprox()) {
       if (!keep) return false;
     }
@@ -1713,8 +1710,7 @@ public:
 				    false);
     
     if (settings_->debugTracklet()) {
-      cout << "TrackletCalculatorDisplaced "<<getName()<<" Found LLD tracklet in sector = "
-	   <<iSector_<<" phi0 = "<<phi0<<endl;
+      edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced "<<getName()<<" Found LLD tracklet in sector = "<<iSector_<<" phi0 = "<<phi0;
     }
         
 
@@ -1730,7 +1726,7 @@ public:
     
     for(unsigned int j=0;j<toR_.size();j++){
       if(settings_->debugTracklet())
-	cout<<"adding layer projection "<<j<<"/"<<toR_.size()<<" "<<lproj_[j]<<"\n";
+	edm::LogVerbatim("Tracklet")<<"adding layer projection "<<j<<"/"<<toR_.size()<<" "<<lproj_[j];
       if (tracklet->validProj(lproj_[j])) {
 	addLayerProj(tracklet,lproj_[j]);
       }
@@ -1742,7 +1738,7 @@ public:
       if(disk == 0) continue;
       if (it<0) disk=-disk;
       if(settings_->debugTracklet())
-	cout<<"adding disk projection "<<j<<"/"<<toZ_.size()<<" "<<disk<<"\n";      
+	edm::LogVerbatim("Tracklet")<<"adding disk projection "<<j<<"/"<<toZ_.size()<<" "<<disk;
       if (tracklet->validProjDisk(abs(disk))) {
 	addDiskProj(tracklet,disk);
       }
@@ -1773,7 +1769,7 @@ void exactproj(double rproj,double rinv, double phi0, double d0,
   phider=-0.5*rinv/sqrt(1-pow(0.5*rproj*rinv,2))-d0/(rproj*rproj);
   zder=t/sqrt(1-pow(0.5*rproj*rinv,2));
 
-  if(settings_->debugTracklet()) cout <<"exact proj layer at "<<rproj<<" : "<< phiproj <<" "<<zproj<<"\n";
+  if(settings_->debugTracklet()) edm::LogVerbatim("Tracklet") <<"exact proj layer at "<<rproj<<" : "<< phiproj <<" "<<zproj;
 }
 
   
@@ -1802,7 +1798,7 @@ void exactproj(double rproj,double rinv, double phi0, double d0,
   phider = c / t / (x*x+y*y) * (rho + x0*cos(phiV+c*beta) + y0*sin(phiV+c*beta));
   rder   = c / t / rproj * ( y0*cos(phiV+c*beta) - x0*sin(phiV+c*beta));
 
-  if(settings_->debugTracklet()) cout <<"exact proj disk at"<<zproj<<" : "<< phiproj <<" "<<rproj<<"\n";
+  if(settings_->debugTracklet()) edm::LogVerbatim("Tracklet") <<"exact proj disk at"<<zproj<<" : "<< phiproj <<" "<<rproj;
 
 }
 
@@ -1843,7 +1839,7 @@ void exacttracklet(double r1, double z1, double phi1,
     double eps1 = std::abs(R1/R2-1);
     double eps2 = std::abs(R3/R2-1);
     if(eps1>1e-10 || eps2>1e-10)
-      cout<<"&&&&&&&&&&&& bad circle! "<<R1<<"\t"<<R2<<"\t"<<R3<<"\n";
+      edm::LogVerbatim("Tracklet")<<"&&&&&&&&&&&& bad circle! "<<R1<<"\t"<<R2<<"\t"<<R3;
 
     //results
     rinv = 1./R1;
@@ -1893,7 +1889,7 @@ void exacttracklet(double r1, double z1, double phi1,
     }
     
     if(settings_->debugTracklet())
-      cout<<"exact tracklet: "<<rinv<<" "<<phi0<<" "<<d0<<" "<<t<<" "<<z0<<"\n";
+      edm::LogVerbatim("Tracklet")<<"exact tracklet: "<<rinv<<" "<<phi0<<" "<<d0<<" "<<t<<" "<<z0;
 
     for (unsigned int i=0;i<toR_.size();i++) {
       exactproj(toR_[i],rinv,phi0,d0,t,z0,sqrt(x0*x0+y0*y0),
