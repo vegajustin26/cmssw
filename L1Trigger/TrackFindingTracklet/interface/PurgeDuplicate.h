@@ -11,6 +11,8 @@
 #include "L1Trigger/TrackFindingTracklet/interface/HybridFit.h"
 #endif
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class PurgeDuplicate:public ProcessBase{
@@ -23,7 +25,7 @@ public:
 
   void addOutput(MemoryBase* memory,string output){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
     if (output=="trackout"||
 	output=="trackout1"||
@@ -42,13 +44,13 @@ public:
     outputtracklets_.push_back(tmp);
     return;
     }
-    cout << "Did not find output : "<<output<<endl;
+    edm::LogPrint("Tracklet") << "Did not find output : "<<output;
     assert(0);
   }
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
     if (input=="trackin"||
 	input=="trackin1"||
@@ -67,7 +69,7 @@ public:
         inputtrackfits_.push_back(tmp);
         return;  
     }
-    cout << "Did not find input : "<<input<<endl;
+    edm::LogPrint("Tracklet") << "Did not find input : "<<input;
     assert(0);
   }
 
@@ -148,7 +150,7 @@ public:
           } else if (settings_->extended()) {
             seedRank.push_back(9);
           } else {
-            cout << "Error: Seed " << curSeed << " not found in list, and settings->extended() not set." << endl;
+            edm::LogProblem("Tracklet") << "Error: Seed " << curSeed << " not found in list, and settings->extended() not set.";
             assert(0);
           }
 
@@ -351,7 +353,7 @@ public:
 
       for(unsigned int itrk=0; itrk<numTrk; itrk++) {
 
-        if(inputtracks_[itrk]->duplicate()) cout << "WARNING: Track already tagged as duplicate!!" << endl;
+        if(inputtracks_[itrk]->duplicate()) edm::LogPrint("Tracklet") << "WARNING: Track already tagged as duplicate!!";
 
         double phiBin = (inputtracks_[itrk]->phi0(settings_)-2*M_PI/27*iSector_)/(2*M_PI/9/50) + 9;
         phiBin = std::max(phiBin,0.);
@@ -365,8 +367,8 @@ public:
         grid[(int)phiBin][(int)ptBin] = true;
 
         double phiTest = inputtracks_[itrk]->phi0(settings_)-2*M_PI/27*iSector_;
-        if(phiTest < -2*M_PI/27) cout << "track phi too small!" << endl;
-        if(phiTest > 2*2*M_PI/27) cout << "track phi too big!" << endl;
+        if(phiTest < -2*M_PI/27) edm::LogVerbatim("Tracklet") << "track phi too small!";
+        if(phiTest > 2*2*M_PI/27) edm::LogVerbatim("Tracklet") << "track phi too big!";
 
       }
     } // end grid removal
@@ -375,22 +377,12 @@ public:
     //////////////////////////
     // ichi + nstub removal //
     //////////////////////////
-    if(settings_->removalType()=="ichi" || settings_->removalType()=="nstub") {
-      //print tracks for debugging
-      for(unsigned int itrk=0; itrk<numTrk; itrk++) {
-        std::map<int, int> stubsTrk1 = inputtracks_[itrk]->stubID();
-        //Useful debug printout to see stubids
-        //cout << "Track [sec="<<iSector_<<" seed="<<inputtracks_[itrk]->seed()<<"]: ";
-        //for(std::map<int, int>::iterator  st=stubsTrk1.begin(); st!=stubsTrk1.end(); st++) {
-        //  cout << st->first << " ["<<st->second<<"] "; 
-        //}
-        //cout << endl;
-      }
+    if (settings_->removalType()=="ichi" || settings_->removalType()=="nstub") {
 
-      for(unsigned int itrk=0; itrk<numTrk-1; itrk++) { // numTrk-1 since last track has no other to compare to
+      for (unsigned int itrk=0; itrk<numTrk-1; itrk++) { // numTrk-1 since last track has no other to compare to
 	
         // If primary track is a duplicate, it cannot veto any...move on
-        if(inputtracks_[itrk]->duplicate()==1) continue;
+        if (inputtracks_[itrk]->duplicate()==1) continue;
 
         unsigned int nStubP = 0;
         vector<unsigned int> nStubS(numTrk);
@@ -429,7 +421,9 @@ public:
               else if((int)inputtracks_[itrk]->ichisq()/(2*inputtracks_[itrk]->stubID().size()-4) <= (int)inputtracks_[jtrk]->ichisq()/(2*inputtracks_[itrk]->stubID().size()-4)) {
                 inputtracks_[jtrk]->setDuplicate(true);
               }
-              else cout << "Error: Didn't tag either track in duplicate pair." << endl;
+              else {
+		edm::LogVerbatim("Tracklet") << "Error: Didn't tag either track in duplicate pair.";
+	      }
             }
           } // end ichi removal
 
@@ -441,7 +435,9 @@ public:
             else if((nStubS[jtrk]-nShare[jtrk] < settings_->minIndStubs()) && (nStubS[jtrk] <= nStubP)) {
               inputtracks_[jtrk]->setDuplicate(true);
             }
-            else cout << "Error: Didn't tag either track in duplicate pair." << endl;
+            else {
+	      edm::LogVerbatim("Tracklet") << "Error: Didn't tag either track in duplicate pair.";
+	    }
           } // end nstub removal
 
         } // end tag duplicates
@@ -506,8 +502,8 @@ private:
     } else if (Disk != 0) {
       phiproj = curTracklet->phiprojdisk(Disk);
     } else {
-      cout << "Layer: " << Layer << "  --  Disk: " << Disk << endl;
-      cout << "Stub is not layer or disk in getPhiRes" << endl;
+      edm::LogPrint("Tracklet") << "Layer: " << Layer << "  --  Disk: " << Disk;
+      edm::LogPrint("Tracklet") << "Stub is not layer or disk in getPhiRes";
       assert(0);
     }
     // Calculate residual

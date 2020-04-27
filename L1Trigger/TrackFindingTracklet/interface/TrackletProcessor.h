@@ -13,6 +13,7 @@
 #include "GlobalHistTruth.h"
 #include "Util.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 
@@ -173,7 +174,7 @@ public:
     if (settings_->usephicritapprox()) {
       double phicritFactor = 0.5 * settings_->rcrit() *GlobalHistTruth::ITC_L1L2()->rinv_final.get_K() /GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
       if (std::abs(phicritFactor - 2.) > 0.25)
-        cout << "TrackletProcessor::TrackletProcessor phicrit approximation may be invalid! Please check." << endl;
+        edm::LogPrint("Tracklet") << "TrackletProcessor::TrackletProcessor phicrit approximation may be invalid! Please check.";
     }
   }
   
@@ -184,7 +185,7 @@ public:
   
   void addOutput(MemoryBase* memory,string output){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
     if (output=="trackpar"){
       TrackletParametersMemory* tmp=dynamic_cast<TrackletParametersMemory*>(memory);
@@ -221,7 +222,7 @@ public:
 
     }
 
-    cout << "Could not find output : "<<output<<endl;
+    edm::LogPrint("Tracklet") << "Could not find output : "<<output;
     assert(0);
 
 
@@ -229,7 +230,7 @@ public:
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
 
     if (input=="innervmstubin"){
@@ -304,8 +305,9 @@ public:
 	  int last=start+(bin&1);
 	  
 	  for(int ibin=start;ibin<=last;ibin++) {
-	    if (settings_->debugTracklet()) cout << getName() << " looking for matching stub in bin "<<ibin
-			     <<" with "<<outervmstubs_[ivmmem]->nVMStubsBinned(ibin)<<" stubs"<<endl;
+	    if (settings_->debugTracklet()) {
+	      edm::LogVerbatim("Tracklet") << getName() << " looking for matching stub in bin "<<ibin<<" with "<<outervmstubs_[ivmmem]->nVMStubsBinned(ibin)<<" stubs";
+	    }
 	    for(unsigned int j=0;j<outervmstubs_[ivmmem]->nVMStubsBinned(ibin);j++){
 	      //if (countall>=settings_->maxStep("TE")) break;
 	      countall++;
@@ -316,8 +318,7 @@ public:
 	      if (start!=ibin) rbin+=8;
 	      if ((rbin<rbinfirst)||(rbin-rbinfirst>rdiffmax)) {
 		if (settings_->debugTracklet()) {
-		  cout << getName() << " layer-disk stub pair rejected because rbin cut : "
-		     <<rbin<<" "<<rbinfirst<<" "<<rdiffmax<<endl;
+		  edm::LogVerbatim("Tracklet") << getName() << " layer-disk stub pair rejected because rbin cut : "<<rbin<<" "<<rbinfirst<<" "<<rdiffmax;
 		}
 		continue;
 	      }
@@ -338,7 +339,7 @@ public:
 	      
 	      if (!phitable_[phiindex][index]) {
 		if (settings_->debugTracklet()) {
-		  cout << "Stub pair rejected because of tracklet pt cut"<<endl;
+		  edm::LogVerbatim("Tracklet") << "Stub pair rejected because of tracklet pt cut";
 		}
 		continue;
 	      }
@@ -351,17 +352,15 @@ public:
 	      
 	      if (!(pttableinner_[phiindex][ptinnerindex]&&pttableouter_[phiindex][ptouterindex])) {
 		if (settings_->debugTracklet()) {
-		  cout << "Stub pair rejected because of stub pt cut bends : "
-		       <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())
-		       <<" "
-		       <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule())
-		       <<endl;
-		}		
+		  edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
+					       <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())<<" "
+					       <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule());
+		}
 		continue;
 	      }
 
 	      
-	      if (settings_->debugTracklet()) cout << "Adding layer-disk pair in " <<getName()<<endl;
+	      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding layer-disk pair in " <<getName();
 	      if (settings_->writeMonitorData("Seeds")) {
 		ofstream fout("seeds.txt", ofstream::app);
 		fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
@@ -380,7 +379,7 @@ public:
 
 	for(unsigned int i=0;i<innervmstubs_[ivmmem]->nVMStubs();i++){
 	  if (settings_->debugTracklet()) {
-	    cout << "In "<<getName()<<" have inner stub"<<endl;
+	    edm::LogVerbatim("Tracklet") << "In "<<getName()<<" have inner stub";
 	  }
 
 	  
@@ -405,16 +404,16 @@ public:
 	    int last=start+(bin&1);
 	    
 	    if (print) {
-	      cout << "start last : "<<start<<" "<<last<<endl;
+	      edm::LogVerbatim("Tracklet") << "start last : "<<start<<" "<<last;
 	    }
 	    
 	    if (settings_->debugTracklet()) {
-	      cout << "Will look in zbins "<<start<<" to "<<last<<endl;
+	      edm::LogVerbatim("Tracklet") << "Will look in zbins "<<start<<" to "<<last;
 	    }
 	    for(int ibin=start;ibin<=last;ibin++) {
 	      for(unsigned int j=0;j<outervmstubs_[ivmmem]->nVMStubsBinned(ibin);j++){
 		if (settings_->debugTracklet()) {
-		  cout << "In "<<getName()<<" have outer stub"<<endl;
+		  edm::LogVerbatim("Tracklet") << "In "<<getName()<<" have outer stub";
 		}
 		
 		//if (countall>=settings_->maxStep("TE")) break;
@@ -429,13 +428,13 @@ public:
 		
 		if (zbin<zbinfirst||zbin-zbinfirst>zdiffmax) {
 		  if (settings_->debugTracklet()) {
-		    cout << "Stubpair rejected because of wrong fine z"<<endl;
+		    edm::LogVerbatim("Tracklet") << "Stubpair rejected because of wrong fine z";
 		  }
 		  continue;
 		}
 
 		if (print) {
-		  cout << "ibin j "<<ibin<<" "<<j<<endl;
+		  edm::LogVerbatim("Tracklet") << "ibin j "<<ibin<<" "<<j;
 		}
 	      
 		assert(innerphibits_!=-1);
@@ -451,7 +450,7 @@ public:
 		
 		if (!phitable_[phiindex][index]) {
 		  if (settings_->debugTracklet()) {
-		    cout << "Stub pair rejected because of tracklet pt cut"<<endl;
+		    edm::LogVerbatim("Tracklet") << "Stub pair rejected because of tracklet pt cut";
 		  }
 		  continue;
 		}
@@ -466,16 +465,14 @@ public:
 		
 		if (!(pttableinner_[phiindex][ptinnerindex]&&pttableouter_[phiindex][ptouterindex])) {
 		  if (settings_->debugTracklet()) {
-		    cout << "Stub pair rejected because of stub pt cut bends : "
-			 <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())
-			 <<" "
-			 <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule())
-			 <<endl;
+		    edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
+						 <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule()) <<" "
+						 <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule());
 		  }		
 		  continue;
 		}
 		
-		if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
+		if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " <<getName();
 		if (settings_->writeMonitorData("Seeds")) {
 		  ofstream fout("seeds.txt", ofstream::app);
 		  fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
@@ -490,7 +487,7 @@ public:
 	  } else if ((disk_==1 && layer_==0)||
 		     (disk_==3 && layer_==0)) {
 	    
-	    if (settings_->debugTracklet()) cout << getName()<<"["<<iSector_<<"] Disk-disk pair" <<endl;
+	    if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName()<<"["<<iSector_<<"] Disk-disk pair" ;
 
 	    VMStubTE innervmstub=innervmstubs_[ivmmem]->getVMStubTE(i);
 
@@ -507,8 +504,8 @@ public:
 	    if (negdisk) start+=4;
 	    int last=start+(bin&1);
 	    for(int ibin=start;ibin<=last;ibin++) {
-	      if (settings_->debugTracklet()) cout << getName() << " looking for matching stub in bin "<<ibin
-			       <<" with "<<outervmstubs_[ivmmem]->nVMStubsBinned(ibin)<<" stubs"<<endl;
+	      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName() << " looking for matching stub in bin "<<ibin
+									   <<" with "<<outervmstubs_[ivmmem]->nVMStubsBinned(ibin)<<" stubs";
 	      for(unsigned int j=0;j<outervmstubs_[ivmmem]->nVMStubsBinned(ibin);j++){
 		//if (countall>=settings_->maxStep("TE")) break;
 		countall++;
@@ -533,7 +530,7 @@ public:
 		assert(index<phitable_[phiindex].size());		
 		if (!phitable_[phiindex][index]) {
 		  if (settings_->debugTracklet()) {
-		    cout << "Stub pair rejected because of tracklet pt cut"<<endl;
+		    edm::LogVerbatim("Tracklet") << "Stub pair rejected because of tracklet pt cut";
 		  }
 		  continue;
 		}
@@ -549,17 +546,15 @@ public:
 	      
 		if (!(pttableinner_[phiindex][ptinnerindex]&&pttableouter_[phiindex][ptouterindex])) {
 		  if (settings_->debugTracklet()) {
-		    cout << "Stub pair rejected because of stub pt cut bends : "
-			 <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())
-			 <<" "
-			 <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule())
-			 <<" pass : "<<pttableinner_[phiindex][ptinnerindex]<<" "<<pttableouter_[phiindex][ptouterindex]
-			 <<endl;
+		    edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
+						 <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())<<" "
+						 <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule())
+						 <<" pass : "<<pttableinner_[phiindex][ptinnerindex]<<" "<<pttableouter_[phiindex][ptouterindex];
 		  }
 		  continue;
 		}
 
-		if (settings_->debugTracklet()) cout << "Adding disk-disk pair in " <<getName()<<endl;
+		if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding disk-disk pair in " <<getName();
 	      
 		if (settings_->writeMonitorData("Seeds")) {
 		  ofstream fout("seeds.txt", ofstream::app);
@@ -586,7 +581,7 @@ public:
     for(unsigned int i=0;i<stubpairs.nStubPairs();i++){
 
       if (trackletpars_->nTracklets()>=maxtracklet_) {
-	cout << "Will break on too many tracklets in "<<getName()<<endl;
+	edm::LogVerbatim("Tracklet") << "Will break on too many tracklets in "<<getName();
 	break;
       }
       countall++;
@@ -597,7 +592,7 @@ public:
       Stub* outerFPGAStub=stubpairs.getFPGAStub2(i);
       
       if (settings_->debugTracklet()) {
-	cout << "TrackletProcessor execute "<<getName()<<"["<<iSector_<<"]"<<endl;
+	edm::LogVerbatim("Tracklet") << "TrackletProcessor execute "<<getName()<<"["<<iSector_<<"]";
       }
 
       bool accept=false;
@@ -605,34 +600,24 @@ public:
       if (innerFPGAStub->isBarrel()&&(getName()!="TC_D1L2A"&&getName()!="TC_D1L2B")){
 	
 	if (outerFPGAStub->isDisk()) {
-	  
 	  //overlap seeding                                              
 	  accept = overlapSeeding(outerFPGAStub,outerStub,innerFPGAStub,innerStub);
-	  
 	} else {
-	  
 	  //barrel+barrel seeding	  
 	    accept = barrelSeeding(innerFPGAStub,innerStub,outerFPGAStub,outerStub);
 	}
-	
-      }  else {
-	
+      }
+      else {
 	if (outerFPGAStub->isDisk()) {
-	  
 	  //disk+disk seeding
-	  
 	  accept = diskSeeding(innerFPGAStub,innerStub,outerFPGAStub,outerStub);
-	  
-	} else if (innerFPGAStub->isDisk()) {
-	  
+	}
+	else if (innerFPGAStub->isDisk()) {
 	  //layer+disk seeding
-	  
 	  accept = overlapSeeding(innerFPGAStub,innerStub,outerFPGAStub,outerStub);
-	  
-	} else {
-	  
+	}
+	else {
 	  assert(0);
-	  
 	}
       }
 
@@ -644,21 +629,21 @@ public:
       }
 
       if (trackletpars_->nTracklets()>=maxtracklet_) {
-	cout << "Will break on number of tracklets in "<<getName()<<endl;
+	edm::LogVerbatim("Tracklet") << "Will break on number of tracklets in "<<getName();
 	break;
       }
       
       if (countall>=settings_->maxStep("TP")) {
-	if (settings_->debugTracklet()) cout << "Will break on MAXTC 1"<<endl;
+	if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Will break on MAXTC 1";
 	break;
       }
       if (settings_->debugTracklet()) {
-	cout << "TrackletProcessor execute done"<<endl;
+	edm::LogVerbatim("Tracklet") << "TrackletProcessor execute done";
       }
       
     }
     if (countall>=settings_->maxStep("TP")) {
-      if (settings_->debugTracklet()) cout << "Will break on MAXTC 2"<<endl;
+      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Will break on MAXTC 2";
       //break;
     }
       

@@ -6,6 +6,8 @@
 #include "StubTripletsMemory.h"
 #include "Util.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class TripletEngine:public ProcessBase{
@@ -89,7 +91,7 @@ public:
 
   void addOutput(MemoryBase* memory,string output){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
     if (output=="stubtripout") {
       StubTripletsMemory* tmp=dynamic_cast<StubTripletsMemory*>(memory);
@@ -102,7 +104,7 @@ public:
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
     if (input=="thirdvmstubin") {
       VMStubsTEMemory* tmp=dynamic_cast<VMStubsTEMemory*>(memory);
@@ -116,7 +118,7 @@ public:
       stubpairs_.push_back(tmp);
       return;
     }
-    cout << "Could not find input : "<<input<<endl;
+    edm::LogPrint("Tracklet") << "Could not find input : "<<input;
     assert(0);
   }
 
@@ -138,10 +140,9 @@ public:
 
     int hacksum = 0;
     if (print) {
-      cout << "In TripletEngine::execute : "<<getName()
-	   <<" "<<nThirdStubs<<":\n";
+      edm::LogVerbatim("Tracklet") << "In TripletEngine::execute : "<<getName() <<" "<<nThirdStubs<<":";
       for(unsigned int i=0; i<thirdvmstubs_.size(); ++i)
-	cout <<thirdvmstubs_.at(i)->getName()<<" "<<thirdvmstubs_.at(i)->nVMStubs()<<"\n";
+	edm::LogVerbatim("Tracklet") <<thirdvmstubs_.at(i)->getName()<<" "<<thirdvmstubs_.at(i)->nVMStubs();
       int s = 0;
       for(unsigned int i=0; i<stubpairs_.size(); ++i){
 	cout <<stubpairs_.at(i)->nStubPairs()<<" ";
@@ -150,7 +151,7 @@ public:
       hacksum += nThirdStubs*s;
       cout<<endl;
       for(unsigned int i=0; i<stubpairs_.size(); ++i){
-	cout <<"                                          "<<stubpairs_.at(i)->getName()<<"\n";
+	edm::LogVerbatim("Tracklet") <<"                                          "<<stubpairs_.at(i)->getName();
       }
     }
 
@@ -159,7 +160,7 @@ public:
     for(unsigned int i=0; i<stubpairs_.size(); ++i){
       for(unsigned int j=0; j<stubpairs_.at(i)->nStubPairs(); ++j){
 	if(print)
-	  cout<<"     *****    "<<stubpairs_.at(i)->getName()<<" "<<stubpairs_.at(i)->nStubPairs()<<"\n";
+	  edm::LogVerbatim("Tracklet")<<"     *****    "<<stubpairs_.at(i)->getName()<<" "<<stubpairs_.at(i)->nStubPairs();
 
         auto firstvmstub = stubpairs_.at(i)->getVMStub1(j);
         auto secondvmstub = stubpairs_.at(i)->getVMStub2(j);
@@ -182,7 +183,7 @@ public:
                 continue;
               for(unsigned int l=0;l<thirdvmstubs_.at(k)->nVMStubsBinned(ibin);l++){
                 if (settings_->debugTracklet()) {
-                  cout << "In "<<getName()<<" have third stub"<<endl;
+                  edm::LogVerbatim("Tracklet") << "In "<<getName()<<" have third stub";
                 }
 
                 if (countall>=settings_->maxStep("TRE")) break;
@@ -215,11 +216,9 @@ public:
                 
                 if (!table_[index]) {
                   if (settings_->debugTracklet()) {
-                    cout << "Stub pair rejected because of stub pt cut bends : "
-                         <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
-                         <<" "
-                         <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule())
-                         <<endl;
+                    edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
+						 <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())<<" "
+						 <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule());
                   }		
                   if (!settings_->writeTripletTables())
                     continue;
@@ -235,7 +234,7 @@ public:
                   tmpSPTable_.at(tedName).resize (spIndex + 1);
                 tmpSPTable_.at(tedName).at(spIndex).push_back (stubpairs_.at(i)->getName());
 
-                if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
+                if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " <<getName();
                 if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
@@ -295,11 +294,9 @@ public:
                 
                 if (!table_[index]) {
                   if (settings_->debugTracklet()) {
-                    cout << "Stub pair rejected because of stub pt cut bends : "
-                         <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
-                         <<" "
-                         <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule())
-                         <<endl;
+                    edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
+						 <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())<<" "
+						 <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule());
                   }		
                   if (!settings_->writeTripletTables())
                     continue;
@@ -315,7 +312,7 @@ public:
                   tmpSPTable_.at(tedName).resize (spIndex + 1);
                 tmpSPTable_.at(tedName).at(spIndex).push_back (stubpairs_.at(i)->getName());
 
-                if (settings_->debugTracklet()) cout << "Adding layer-disk pair in " <<getName()<<endl;
+                if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding layer-disk pair in " <<getName();
                 if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
@@ -379,11 +376,9 @@ public:
                 
                 if (!table_[index]) {
                   if (settings_->debugTracklet()) {
-                    cout << "Stub pair rejected because of stub pt cut bends : "
-                         <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
-                         <<" "
-                         <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule())
-                         <<endl;
+                    edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
+						 <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())<<" "
+						 <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule());
                   }		
                   if (!settings_->writeTripletTables())
                     continue;
@@ -399,7 +394,7 @@ public:
                   tmpSPTable_.at(tedName).resize (spIndex + 1);
                 tmpSPTable_.at(tedName).at(spIndex).push_back (stubpairs_.at(i)->getName());
 
-                if (settings_->debugTracklet()) cout << "Adding layer-disk pair in " <<getName()<<endl;
+                if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding layer-disk pair in " <<getName();
                 if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;

@@ -4,6 +4,8 @@
 
 #include "ProcessBase.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class ProjectionRouter:public ProcessBase{
@@ -23,7 +25,7 @@ public:
 
   void addOutput(MemoryBase* memory,string output){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
     if (output=="allprojout"){
       AllProjectionsMemory* tmp=dynamic_cast<AllProjectionsMemory*>(memory);
@@ -49,13 +51,13 @@ public:
       }
     }
     
-    cout << getName()<<" Did not find output : "<<output<<endl;
+    edm::LogPrint("Tracklet") << getName()<<" Did not find output : "<<output;
     assert(0);
   }
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
     if (input.substr(0,4)=="proj" && input.substr(input.size()-2,2)=="in"){
       TrackletProjectionsMemory* tmp=dynamic_cast<TrackletProjectionsMemory*>(memory);
@@ -63,7 +65,7 @@ public:
       inputproj_.push_back(tmp);
       return;
     }
-    cout << "Could not find input : "<<input<<" in "<<getName()<<endl;
+    edm::LogPrint("Tracklet") << "Could not find input : "<<input<<" in "<<getName();
     assert(0);
   }
 
@@ -113,7 +115,7 @@ public:
 	  
 	//This block of code just checks that the configuration is consistent
 	if (lastTCID>=tracklet->TCID()) {
-	  cout << "Wrong TCID ordering for projections in "<<getName()<<endl;
+	  edm::LogPrint("Tracklet") << "Wrong TCID ordering for projections in "<<getName();
 	} else {
 	  lastTCID=tracklet->TCID();
 	}

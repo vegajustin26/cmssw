@@ -14,6 +14,8 @@
 #include <sstream>
 #include <cctype>
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class InputLinkMemory:public MemoryBase{
@@ -77,7 +79,7 @@ public:
     if (half[0]=='A' && iphivmRaw>15) return false;
     
     if (settings_->debugTracklet()) {
-      cout << "Will add stub in "<<getName()<<" "<<"iphiwmRaw = "<<iphivmRaw<<" phi="<<al1stub.phi()<<" z="<<al1stub.z()<<" r="<<al1stub.r()<<endl;
+      edm::LogVerbatim("Tracklet") << "Will add stub in "<<getName()<<" "<<"iphiwmRaw = "<<iphivmRaw<<" phi="<<al1stub.phi()<<" z="<<al1stub.z()<<" r="<<al1stub.r();
     }
     if (stubs_.size()<settings_->maxStep("Link")) {
       L1TStub* l1stub=new L1TStub(al1stub);

@@ -5,6 +5,8 @@
 #include "MemoryBase.h"
 #include "Tracklet.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class TrackletProjectionsMemory : public MemoryBase {
@@ -64,8 +66,8 @@ public:
       disk_ = 5;
 
     if (layer_ == 0 && disk_ == 0) {
-      cout << name << " subname = " << subname << " " << layer_ << " " << disk_ << endl;
-      cout << "Please check that right *.dat files are included in TrackFindingTracklet/python/Tracklet_cfi.py" << endl;
+      edm::LogProblem("Tracklet") << name << " subname = " << subname << " " << layer_ << " " << disk_;
+      edm::LogProblem("Tracklet") << "Please check that right *.dat files are included in TrackFindingTracklet/python/Tracklet_cfi.py";
     }
     assert((layer_ != 0) || (disk_ != 0));
   }
@@ -80,7 +82,7 @@ public:
 
     for (unsigned int i = 0; i < tracklets_.size(); i++) {
       if (tracklets_[i] == tracklet) {
-        cout << "Adding same tracklet " << tracklet << " twice in " << getName() << endl;
+        edm::LogPrint("Tracklet") << "Adding same tracklet " << tracklet << " twice in " << getName();
       }
       assert(tracklets_[i] != tracklet);
     }

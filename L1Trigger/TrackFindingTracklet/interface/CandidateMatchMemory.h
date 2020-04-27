@@ -7,6 +7,8 @@
 #include "Stub.h"
 #include "L1TStub.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class CandidateMatchMemory : public MemoryBase {
@@ -43,7 +45,7 @@ public:
       disk_ = 5;
 
     if (layer_ == 0 && disk_ == 0) {
-      cout << name << " subname = " << subname << " " << layer_ << " " << disk_ << endl;
+      edm::LogPrint("Tracklet") << name << " subname = " << subname << " " << layer_ << " " << disk_;
     }
     assert((layer_ != 0) || (disk_ != 0));
   }
@@ -54,9 +56,9 @@ public:
     //Check for consistency
     for (unsigned int i = 0; i < matches_.size(); i++) {
       if (tracklet.first->TCID() < matches_[i].first.first->TCID()) {
-        cout << "In " << getName() << " adding tracklet " << tracklet.first
-             << " with lower TCID : " << tracklet.first->TCID() << " than earlier TCID "
-             << matches_[i].first.first->TCID() << endl;
+        edm::LogPrint("Tracklet") << "In " << getName() << " adding tracklet " << tracklet.first
+				  << " with lower TCID : " << tracklet.first->TCID() << " than earlier TCID "
+				  << matches_[i].first.first->TCID();
         assert(0);
       }
     }

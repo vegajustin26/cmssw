@@ -10,6 +10,8 @@
 
 #include "Util.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class StubVariance {
@@ -17,7 +19,7 @@ public:
   StubVariance(SLHCEvent& ev) { process(ev); }
 
   void process(SLHCEvent& ev) {
-    cout << "Process variance:" << ev.nsimtracks() << endl;
+    edm::LogVerbatim("Tracklet") << "Process variance:" << ev.nsimtracks();
     assert(ev.nsimtracks() == 1);
 
     L1SimTrack simtrk = ev.simtrack(0);
@@ -50,7 +52,7 @@ public:
         layer = -1;
       }
 
-      cout << "layer disk : " << layer << " " << disk << endl;
+      edm::LogVerbatim("Tracklet") << "layer disk : " << layer << " " << disk;
 
       assert(disk > 0 || layer > 0);
       assert(!((disk > 0) && (layer > 0)));

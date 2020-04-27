@@ -1,6 +1,8 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_DiskProjection_h
 #define L1Trigger_TrackFindingTracklet_interface_DiskProjection_h
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class DiskProjection {
@@ -24,9 +26,6 @@ public:
             double rprojderapprox) {
     assert(abs(projdisk) >= 1);
     assert(abs(projdisk) <= 5);
-
-    //if (debug1)
-    //cout << "Initiating projection to disk = " << projdisk << " at z = " << zproj << endl;
 
     valid_ = true;
 
@@ -53,7 +52,7 @@ public:
     int rbin2 = 8.0 * (irproj * settings->krprojshiftdisk() + 3 - settings->rmindiskvm()) / (settings->rmaxdisk() - settings->rmindiskvm());
 
     if (irproj * settings->krprojshiftdisk() < 20.0) {
-      cout << " WARNING : irproj = " << irproj << " " << irproj * settings->krprojshiftdisk() << " " << projdisk_ << endl;
+      edm::LogPrint("Tracklet") << " WARNING : irproj = " << irproj << " " << irproj * settings->krprojshiftdisk() << " " << projdisk_;
     }
 
     if (rbin1 < 0)

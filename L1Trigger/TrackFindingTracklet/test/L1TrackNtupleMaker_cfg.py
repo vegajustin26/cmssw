@@ -21,10 +21,10 @@ WRITE_DATA = False
 ############################################################
 
 process.load('Configuration.StandardSequences.Services_cff')
-process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 
+process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger = cms.Service("MessageLogger",
                                     destinations = cms.untracked.vstring('cout'),
                                     categories   = cms.untracked.vstring('Tracklet'),
@@ -36,10 +36,6 @@ process.MessageLogger = cms.Service("MessageLogger",
                                         Tracklet = cms.untracked.PSet(limit = cms.untracked.int32(-1))
                                     ),
 )
-#process.load("FWCore.MessageLogger.MessageLogger_cfi")
-#process.MessageLogger.cout.placeholder = cms.untracked.bool(False)
-#process.MessageLogger.cout.threshold = cms.untracked.string('INFO')
-#process.MessageLogger.debugModules = cms.untracked.vstring('*')
 
 if GEOMETRY == "D49": 
     print "using geometry " + GEOMETRY + " (tilted)"

@@ -166,7 +166,7 @@ public:
     if (settings_->usephicritapprox()) {
       double phicritFactor = 0.5 * settings_->rcrit() *GlobalHistTruth::ITC_L1L2()->rinv_final.get_K() /GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
       if (std::abs(phicritFactor - 2.) > 0.25)
-        cout << "TrackletCalculator::TrackletCalculator phicrit approximation may be invalid! Please check." << endl;
+        edm::LogPrint("Tracklet") << "TrackletCalculator::TrackletCalculator phicrit approximation may be invalid! Please check.";
     }
   }
   
@@ -177,7 +177,7 @@ public:
   
   void addOutput(MemoryBase* memory,string output){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
     if (output=="trackpar"){
       TrackletParametersMemory* tmp=dynamic_cast<TrackletParametersMemory*>(memory);
@@ -214,7 +214,7 @@ public:
 
     }
 
-    cout << "Could not find output : "<<output<<endl;
+    edm::LogProblem("Tracklet") << "Could not find output : "<<output;
     assert(0);
 
 
@@ -222,7 +222,7 @@ public:
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
     if (input=="innerallstubin"){
       AllStubsMemory* tmp=dynamic_cast<AllStubsMemory*>(memory);
@@ -252,7 +252,7 @@ public:
 
     for(unsigned int l=0;l<stubpairs_.size();l++){
       if (trackletpars_->nTracklets()>=maxtracklet_) {
-	cout << "Will break on too many tracklets in "<<getName()<<endl;
+	edm::LogVerbatim("Tracklet") << "Will break on too many tracklets in "<<getName();
 	break;
       }
       for(unsigned int i=0;i<stubpairs_[l]->nStubPairs();i++){
@@ -265,7 +265,7 @@ public:
 	Stub* outerFPGAStub=stubpairs_[l]->getFPGAStub2(i);
 
 	if (settings_->debugTracklet()) {
-	  cout << "TrackletCalculator execute "<<getName()<<"["<<iSector_<<"]"<<endl;
+	  edm::LogVerbatim("Tracklet") << "TrackletCalculator execute "<<getName()<<"["<<iSector_<<"]";
 	}
 	
 	if (innerFPGAStub->isBarrel()&&(getName()!="TC_D1L2A"&&getName()!="TC_D1L2B")){
@@ -315,21 +315,21 @@ public:
 	}
 
 	if (trackletpars_->nTracklets()>=maxtracklet_) {
-	  cout << "Will break on number of tracklets in "<<getName()<<endl;
+	  edm::LogVerbatim("Tracklet") << "Will break on number of tracklets in "<<getName();
 	  break;
 	}
 	
 	if (countall>=settings_->maxStep("TC")) {
-	  if (settings_->debugTracklet()) cout << "Will break on MAXTC 1"<<endl;
+	  if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Will break on MAXTC 1";
 	  break;
 	}
 	if (settings_->debugTracklet()) {
-	  cout << "TrackletCalculator execute done"<<endl;
+	  edm::LogVerbatim("Tracklet") << "TrackletCalculator execute done";
 	}
 
       }
       if (countall>=settings_->maxStep("TC")) {
-	if (settings_->debugTracklet()) cout << "Will break on MAXTC 2"<<endl;
+	if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Will break on MAXTC 2";
 	break;
       }
     }

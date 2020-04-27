@@ -5,6 +5,8 @@
 #include "ProcessBase.h"
 #include "TrackletCalculator.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class MatchEngine:public ProcessBase{
@@ -28,7 +30,7 @@ public:
     if (subname=="D4") disk_=4;
     if (subname=="D5") disk_=5;
     if (layer_==0&&disk_==0) {
-      cout << name<<" subname = "<<subname<<" "<<layer_<<" "<<disk_<<endl;
+      edm::LogPrint("Tracklet") << name<<" subname = "<<subname<<" "<<layer_<<" "<<disk_;
     }
     assert((layer_!=0)||(disk_!=0));
 
@@ -90,7 +92,7 @@ public:
 
   void addOutput(MemoryBase* memory,string output){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
     if (output=="matchout") {
       CandidateMatchMemory* tmp=dynamic_cast<CandidateMatchMemory*>(memory);
@@ -104,7 +106,7 @@ public:
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
     if (input=="vmstubin") {
       VMStubsMEMemory* tmp=dynamic_cast<VMStubsMEMemory*>(memory);
@@ -118,7 +120,7 @@ public:
       vmprojs_=tmp;
       return;
     }
-    cout << "Could not find input : "<<input<<endl;
+    edm::LogPrint("Tracklet") << "Could not find input : "<<input;
     assert(0);
   }
 
@@ -249,7 +251,7 @@ public:
 	  projrinv=barrel?(16+(((-2)*proj->fpgaphiprojder(layer_).value())>>(proj->fpgaphiprojder(layer_).nbits()-4))):proj->getBendIndex(disk_).value();
 	  assert(projrinv>=0);
 	  if (settings_->extended()&&projrinv==32){ //FIXME - should not need this
-	    cout << "Warning: projrinv:"<<projrinv<<endl;
+	    edm::LogPrint("Tracklet") << "Warning: projrinv:"<<projrinv;
 	    projrinv=31;
 	  }
 	  assert(projrinv<32);

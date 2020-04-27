@@ -32,17 +32,38 @@ ifeq ("$(wildcard FWCore/MessageLogger/interface/MessageLogger.h)","")
 $(shell echo "#ifndef L1Trigger_TrackFindingTracklet_interface_Logger_h" > FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "#define L1Trigger_TrackFindingTracklet_interface_Logger_h" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "namespace edm {" >> FWCore/MessageLogger/interface/MessageLogger.h)
+# INFO statement
 $(shell echo "  class LogVerbatim{" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "  public:" >> FWCore/MessageLogger/interface/MessageLogger.h)
-$(shell echo "    LogVerbatim(std::string type) { cout << type;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
-$(shell echo "    ~LogVerbatim() { cout << endl;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
-$(shell echo "    template <class T> LogVerbatim& operator<<(T const& t) {cout << t;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
-$(shell echo "    LogVerbatim& operator<<(std::ostream& (*f)(std::ostream&)) {cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
-$(shell echo "    LogVerbatim& operator<<(std::ios_base& (*f)(std::ios_base&)) {cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogVerbatim(std::string type) { std::cout << type;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    ~LogVerbatim() { std::cout << std::endl;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    template <class T> LogVerbatim& operator<<(T const& t) {std::cout << t;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogVerbatim& operator<<(std::ostream& (*f)(std::ostream&)) {std::cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogVerbatim& operator<<(std::ios_base& (*f)(std::ios_base&)) {std::cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "  };" >> FWCore/MessageLogger/interface/MessageLogger.h)
+# WARNING statement
+$(shell echo "  class LogPrint{" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "  public:" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogPrint(std::string type) { std::cout << type;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    ~LogPrint() { std::cout << std::endl;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    template <class T> LogPrint& operator<<(T const& t) {std::cout << t;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogPrint& operator<<(std::ostream& (*f)(std::ostream&)) {std::cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogPrint& operator<<(std::ios_base& (*f)(std::ios_base&)) {std::cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "  };" >> FWCore/MessageLogger/interface/MessageLogger.h)
+# ERROR statement
+$(shell echo "  class LogProblem{" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "  public:" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogProblem(std::string type) { std::cout << type;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    ~LogProblem() { std::cout << std::endl;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    template <class T> LogProblem& operator<<(T const& t) {std::cout << t;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogProblem& operator<<(std::ostream& (*f)(std::ostream&)) {std::cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogProblem& operator<<(std::ios_base& (*f)(std::ios_base&)) {std::cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "  };" >> FWCore/MessageLogger/interface/MessageLogger.h)
+#
 $(shell echo "};" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "#endif" >> FWCore/MessageLogger/interface/MessageLogger.h)
 endif
+
 
 
 #find out about the installed ROOT

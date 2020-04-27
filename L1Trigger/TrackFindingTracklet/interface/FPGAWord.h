@@ -8,6 +8,8 @@
 #include <cassert>
 #include <cmath>
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class FPGAWord {
@@ -26,33 +28,33 @@ public:
     nbits_ = nbits;
     positive_ = positive;
     if (positive) {
-      if (value < 0)
-        cout << "FPGAWord got negative value:" << value << " (" << file << ":" << line << ")" << endl;
+      if (value < 0) {
+        edm::LogProblem("Tracklet") << "FPGAWord got negative value:" << value << " (" << file << ":" << line << ")";
+      }
       assert(value >= 0);
     }
     if (nbits >= 22) {
-      cout << "FPGAWord got too many bits:" << nbits << " (" << file << ":" << line << ")" << endl;
+      edm::LogPrint("Tracklet") << "FPGAWord got too many bits:" << nbits << " (" << file << ":" << line << ")";
     }
     assert(nbits < 22);
     if (nbits <= 0) {
-      cout << "FPGAWord got too few bits:" << nbits << " (" << file << ":" << line << ")" << endl;
+      edm::LogPrint("Tracklet") << "FPGAWord got too few bits:" << nbits << " (" << file << ":" << line << ")";
     }
     assert(nbits > 0);
     if (positive) {
       if (value >= (1 << nbits)) {
         if (file != 0) {
-          cout << "value too large:" << value << " " << (1 << nbits) << " (" << file << ":" << line << ")" << endl;
+          edm::LogProblem("Tracklet") << "value too large:" << value << " " << (1 << nbits) << " (" << file << ":" << line << ")";
         }
       }
       assert(value < (1 << nbits));
     } else {
       if (value > (1 << (nbits - 1))) {
-        cout << "value too large:" << value << " " << (1 << (nbits - 1)) << " (" << file << ":" << line << ")" << endl;
+        edm::LogProblem("Tracklet") << "value too large:" << value << " " << (1 << (nbits - 1)) << " (" << file << ":" << line << ")";
       }
       assert(value <= (1 << (nbits - 1)));
       if (value < -(1 << (nbits - 1))) {
-        cout << "value too negative:" << value << " " << -(1 << (nbits - 1)) << " (" << file << ":" << line << ")"
-             << endl;
+        edm::LogProblem("Tracklet") << "value too negative:" << value << " " << -(1 << (nbits - 1)) << " (" << file << ":" << line << ")";
       }
       assert(value >= -(1 << (nbits - 1)));
     }
@@ -64,7 +66,7 @@ public:
     const int nbit = nbits_;
 
     if (!(nbit > 0 && nbit < 22))
-      cout << "nbit: " << nbit << "\n";
+      edm::LogVerbatim("Tracklet") << "nbit: " << nbit;
     if (nbit == -1)
       return "?";
     if (nbit == 0)

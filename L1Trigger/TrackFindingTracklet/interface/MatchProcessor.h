@@ -8,6 +8,8 @@
 #include "ProjectionTemp.h"
 #include "Util.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class MatchProcessor:public ProcessBase{
@@ -184,7 +186,7 @@ public:
 
   void addOutput(MemoryBase* memory,string output){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
     if (output.find("matchout")!=std::string::npos){
       FullMatchMemory* tmp=dynamic_cast<FullMatchMemory*>(memory);
@@ -195,13 +197,13 @@ public:
       fullmatches_[iSeed]=tmp;
       return;
     }
-    cout << "Could not find output = "<<output<<endl;
+    edm::LogPrint("Tracklet") << "Could not find output = "<<output;
     assert(0);
   }
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
     if (input=="allstubin"){
       AllStubsMemory* tmp=dynamic_cast<AllStubsMemory*>(memory);
@@ -221,7 +223,7 @@ public:
       inputprojs_.push_back(tmp);
       return;
     }
-    cout << "MatchProcessor input = "<<input<<endl;
+    edm::LogVerbatim("Tracklet") << "MatchProcessor input = "<<input;
     assert(0);
   }
 
@@ -478,14 +480,12 @@ public:
       bool imatch=(std::abs(ideltaphi)<=phifact_*phimatchcut_[seedindex])&&(std::abs(ideltaz*fact_)<=rzfact_*zmatchcut_[seedindex]);
       
       if (settings_->debugTracklet()) {
-	cout << getName()<<" imatch = "<<imatch<<" ideltaphi cut "<<ideltaphi
-	     <<" "<<phimatchcut_[seedindex]
-	     <<" ideltaz*fact cut "<<ideltaz*fact_<<" "<<zmatchcut_[seedindex]<<endl;
+	edm::LogVerbatim("Tracklet") << getName()<<" imatch = "<<imatch<<" ideltaphi cut "<<ideltaphi<<" "<<phimatchcut_[seedindex]
+				     <<" ideltaz*fact cut "<<ideltaz*fact_<<" "<<zmatchcut_[seedindex];
       }
 
       if (std::abs(dphi)>0.2 || std::abs(dphiapprox)>0.2 ) {
-	cout << "WARNING dphi and/or dphiapprox too large : "
-	<<dphi<<" "<<dphiapprox<<endl;
+	edm::LogPrint("Tracklet") << "WARNING dphi and/or dphiapprox too large : "<<dphi<<" "<<dphiapprox;
       }
       
       assert(std::abs(dphi)<0.2);
@@ -502,9 +502,7 @@ public:
 	
 
 	if (settings_->debugTracklet()) {
-	  cout << "Accepted full match in layer " <<getName()
-	       << " "<<tracklet
-	       << " "<<iSector_<<endl;	   
+	  edm::LogVerbatim("Tracklet") << "Accepted full match in layer " <<getName() << " "<<tracklet << " "<<iSector_;
 	}
 
 	int iSeed = tracklet->getISeed();
@@ -571,7 +569,6 @@ public:
       
       
       
-      
       //Perform floating point calculations here
       
       double phi=stub->phi();
@@ -592,34 +589,25 @@ public:
       
       double dz=z-sign*settings_->zmean(disk_-1);
       
-      if(std::abs(dz) > settings_->dzmax()){
-	cout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed() << endl;
-	cout << "stub "<<stub->z() <<" disk "<<disk<<" "<<dz<<endl;
+      if (std::abs(dz) > settings_->dzmax()){
+	edm::LogProblem("Tracklet") << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed();
+	edm::LogProblem("Tracklet") << "stub "<<stub->z() <<" disk "<<disk<<" "<<dz;
 	assert(std::abs(dz)<settings_->dzmax());
       }	
       
       
       double phiproj=tracklet->phiprojdisk(disk)+dz*tracklet->phiprojderdisk(disk);
-      
       double rproj=tracklet->rprojdisk(disk)+dz*tracklet->rprojderdisk(disk);
-      
       double deltar=r-rproj;
-      
-	
+      	
       double dr=stub->r()-rproj;
-      
+      double drapprox=stub->r()-(tracklet->rprojapproxdisk(disk)+dz*tracklet->rprojderapproxdisk(disk));
+
       double dphi=Util::phiRange(phi-phiproj);
-      
-      double dphiapprox=Util::phiRange(phi-(tracklet->phiprojapproxdisk(disk)+
-					    dz*tracklet->phiprojderapproxdisk(disk)));
-      
-      double drapprox=stub->r()-(tracklet->rprojapproxdisk(disk)+
-				 dz*tracklet->rprojderapproxdisk(disk));
-      
+      double dphiapprox=Util::phiRange(phi-(tracklet->phiprojapproxdisk(disk)+dz*tracklet->phiprojderapproxdisk(disk)));
+            
       double drphi=dphi*stub->r();
       double drphiapprox=dphiapprox*stub->r();
-      
-      
       
       if (!stub->isPSmodule()) {
 	double alphanew=stub->alphanew();
@@ -660,14 +648,12 @@ public:
       
       
       bool match=(std::abs(drphi)<drphicut)&&(std::abs(deltar)<drcut);
-	
       bool imatch=(std::abs(ideltaphi*irstub)<idrphicut)&&(std::abs(ideltar)<idrcut);
       
-      
       if (settings_->debugTracklet()) {
-	cout << "imatch match disk: "<<imatch<<" "<<match<<" "
-	     <<std::abs(ideltaphi)<<" "<<drphicut/(settings_->kphiproj123()*stub->r())<<" "
-	     <<std::abs(ideltar)<<" "<<drcut/settings_->krprojshiftdisk()<<" r = "<<stub->r()<<endl;
+	edm::LogVerbatim("Tracklet") << "imatch match disk: "<<imatch<<" "<<match<<" "
+				     <<std::abs(ideltaphi)<<" "<<drphicut/(settings_->kphiproj123()*stub->r())<<" "
+				     <<std::abs(ideltar)<<" "<<drcut/settings_->krprojshiftdisk()<<" r = "<<stub->r();
       }
       
       
@@ -676,13 +662,12 @@ public:
 	std::pair<Stub*,L1TStub*> tmp(fpgastub,stub);
 	
 	if (settings_->debugTracklet()) {
-	  cout << "MatchCalculator found match in disk "<<getName()<<endl;
+	  edm::LogVerbatim("Tracklet") << "MatchCalculator found match in disk "<<getName();
 	}
 	
-	if(std::abs(dphi)>=0.25){
-	  cout<<"dphi "<<dphi<<"\n";
-	  cout<<"ISeed "<<tracklet->getISeed()<<"\n";
-          }
+	if (std::abs(dphi)>=0.25) {
+	  edm::LogPrint("Tracklet")<<"dphi "<<dphi<< " ISeed "<<tracklet->getISeed();
+	}
 	assert(std::abs(dphi)<0.25);
 	assert(std::abs(dphiapprox)<0.25);
 
@@ -692,9 +677,7 @@ public:
 			       (fpgastub->phiregion().value()<<7)+fpgastub->stubindex().value(),
 			       stub->z(),tmp);
 	if (settings_->debugTracklet()) {
-	  cout << "Accepted full match in disk " <<getName()
-	       << " "<<tracklet
-	       << " "<<iSector_<<endl;	   
+	  edm::LogVerbatim("Tracklet") << "Accepted full match in disk " <<getName() << " "<<tracklet << " "<<iSector_;
 	}
 
 	int iSeed = tracklet->getISeed();

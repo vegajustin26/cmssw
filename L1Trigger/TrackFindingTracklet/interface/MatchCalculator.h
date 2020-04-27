@@ -6,6 +6,8 @@
 #include "GlobalHistTruth.h"
 #include "Util.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class MatchCalculator:public ProcessBase{
@@ -136,7 +138,7 @@ public:
 
   void addOutput(MemoryBase* memory,string output){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
     if (output.substr(0,8)=="matchout"){
       FullMatchMemory* tmp=dynamic_cast<FullMatchMemory*>(memory);
@@ -145,13 +147,13 @@ public:
       fullMatches_[iSeed]=tmp;
       return;
     }
-    cout << "Count not fined output = "<<output<<endl;
+    edm::LogPrint("Tracklet") << "Count not fined output = "<<output;
     assert(0);
   }
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
     if (input=="allstubin"){
       AllStubsMemory* tmp=dynamic_cast<AllStubsMemory*>(memory);
@@ -171,7 +173,7 @@ public:
       matches_.push_back(tmp);
       return;
     }
-    cout << getName()<<" Could not find input "<<input<<endl;
+    edm::LogVerbatim("Tracklet") << getName()<<" Could not find input "<<input;
     assert(0);
   }
 
@@ -187,7 +189,7 @@ public:
     for(unsigned int j=0;j<mergedMatches.size();j++){
 	
       if (settings_->debugTracklet()&&j==0) {
-        cout << getName() <<" has "<<mergedMatches.size()<<" candidate matches"<<endl;
+        edm::LogVerbatim("Tracklet") << getName() <<" has "<<mergedMatches.size()<<" candidate matches";
       }
       
       countall++;
@@ -265,13 +267,10 @@ public:
     
 
 	if (std::abs(dphi)>0.2 || std::abs(dphiapprox)>0.2 ) {
-	  cout << "WARNING dphi and/or dphiapprox too large : "
-	       <<dphi<<" "<<dphiapprox<<endl;
+	  edm::LogProblem("Tracklet") << "WARNING dphi and/or dphiapprox too large : "<<dphi<<" "<<dphiapprox<<endl;
 	}
-	
 	assert(std::abs(dphi)<0.2);
 	assert(std::abs(dphiapprox)<0.2);
-
 
 	
 	if (settings_->writeMonitorData("Residuals")) {
@@ -289,9 +288,8 @@ public:
 	bool imatch=(std::abs(ideltaphi)<=(int)phimatchcut_[seedindex])&&(std::abs(ideltaz*fact_)<=(int)zmatchcut_[seedindex]);
 
 	if (settings_->debugTracklet()) {
-	  cout << getName()<<" imatch = "<<imatch<<" ideltaphi cut "<<ideltaphi
-	       <<" "<<phimatchcut_[seedindex]
-	       <<" ideltaz*fact cut "<<ideltaz*fact_<<" "<<zmatchcut_[seedindex]<<endl;
+	  edm::LogVerbatim("Tracklet") << getName()<<" imatch = "<<imatch<<" ideltaphi cut "<<ideltaphi<<" "<<phimatchcut_[seedindex]
+				       <<" ideltaz*fact cut "<<ideltaz*fact_<<" "<<zmatchcut_[seedindex];
 	}
 
 	
@@ -306,9 +304,7 @@ public:
 	  
 
 	  if (settings_->debugTracklet()) {
-	    cout << "Accepted full match in layer " <<getName()
-		 << " "<<tracklet
-		 << " "<<iSector_<<endl;	   
+	    edm::LogVerbatim("Tracklet") << "Accepted full match in layer " <<getName() << " "<<tracklet << " "<<iSector_;
 	  }
 	  
 	  fullMatches_[seedindex]->addMatch(tracklet,mergedMatches[j].second);
@@ -390,8 +386,8 @@ public:
 	double dz=z-sign*settings_->zmean(layerdisk_-6);
 	
 	if(std::abs(dz) > settings_->dzmax()){
-	  cout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed() << endl;
-	  cout << "stub "<<stub->z() <<" disk "<<disk<<" "<<dz<<endl;
+	  edm::LogProblem("Tracklet") << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed();
+	  edm::LogProblem("Tracklet") << "stub "<<stub->z() <<" disk "<<disk<<" "<<dz;
 	  assert(std::abs(dz)<settings_->dzmax());
 	}	
 		  
@@ -461,9 +457,9 @@ public:
 
 
 	if (settings_->debugTracklet()) {
-	  cout << "imatch match disk: "<<imatch<<" "<<match<<" "
-	       <<std::abs(ideltaphi)<<" "<<drphicut/(settings_->kphiproj123()*stub->r())<<" "
-	       <<std::abs(ideltar)<<" "<<drcut/settings_->krprojshiftdisk()<<" r = "<<stub->r()<<endl;
+	  edm::LogVerbatim("Tracklet") << "imatch match disk: "<<imatch<<" "<<match<<" "
+				       <<std::abs(ideltaphi)<<" "<<drphicut/(settings_->kphiproj123()*stub->r())<<" "
+				       <<std::abs(ideltar)<<" "<<drcut/settings_->krprojshiftdisk()<<" r = "<<stub->r();
 	}
 		
 	  
@@ -474,12 +470,11 @@ public:
 	  countsel++;
 	  
 	  if (settings_->debugTracklet()) {
-	    cout << "MatchCalculator found match in disk "<<getName()<<endl;
+	    edm::LogVerbatim("Tracklet") << "MatchCalculator found match in disk "<<getName();
 	  }
 
           if(std::abs(dphi)>=0.25){
-            cout<<"dphi "<<dphi<<"\n";
-            cout<<"Seed / ISeed "<<tracklet->getISeed()<<"\n";
+            edm::LogVerbatim("Tracklet")<<"dphi "<<dphi<<" Seed / ISeed "<<tracklet->getISeed();
           }
           assert(std::abs(dphi)<0.25);
           assert(std::abs(dphiapprox)<0.25);
@@ -490,9 +485,7 @@ public:
 				 (fpgastub->phiregion().value()<<7)+fpgastub->stubindex().value(),
 				 stub->z(),tmp);
 	  if (settings_->debugTracklet()) {
-	    cout << "Accepted full match in disk " <<getName()
-		 << " "<<tracklet
-		 << " "<<iSector_<<endl;	   
+	    edm::LogVerbatim("Tracklet") << "Accepted full match in disk " <<getName() << " "<<tracklet << " "<<iSector_;
 	  }
 
 	  fullMatches_[seedindex]->addMatch(tracklet,mergedMatches[j].second);
@@ -564,7 +557,7 @@ public:
       //Allow equal TCIDs since we can have multiple candidate matches
       for(unsigned int i=1;i<tmp.size();i++){
 	if (lastTCID>tmp[i].first.first->TCID()) {
-	  cout << "Wrong TCID ordering for projections in "<<getName()<<" last "<<lastTCID<<" "<<tmp[i].first.first->TCID()<<endl;
+	  edm::LogProblem("Tracklet") << "Wrong TCID ordering for projections in "<<getName()<<" last "<<lastTCID<<" "<<tmp[i].first.first->TCID();
 	  error=true;
 	} else {
 	  lastTCID=tmp[i].first.first->TCID();
@@ -573,7 +566,7 @@ public:
       
       if (error) {
 	for(unsigned int i=1;i<tmp.size();i++){
-	  cout << "Wrong order for in "<<getName()<<" "<<i<<" "<<tmp[i].first.first<<" "<<tmp[i].first.first->TCID()<<endl;
+	  edm::LogProblem("Tracklet") << "Wrong order for in "<<getName()<<" "<<i<<" "<<tmp[i].first.first<<" "<<tmp[i].first.first->TCID();
 	}
       }
       

@@ -78,14 +78,12 @@ public:
     h_diskresid_phi_D1_L1L2_ = new TH1F("D1 phiresid L1L2", "D1 phiresid L1L2", 100, -0.5, 0.5);
     h_diskresid_phi_D1_L1L2_match_ = new TH1F("D1 phiresid L1L2 Match", "D1 phiresid L1L2 Match", 100, -0.5, 0.5);
     h_diskresid_phif_D1_L1L2_ = new TH1F("D1 phiresid float L1L2", "D1 phiresid float L1L2", 100, -0.5, 0.5);
-    h_diskresid_phif_D1_L1L2_match_ =
-        new TH1F("D1 phiresid float L1L2 Match", "D1 phiresid float L1L2 Match", 100, -0.5, 0.5);
+    h_diskresid_phif_D1_L1L2_match_ = new TH1F("D1 phiresid float L1L2 Match", "D1 phiresid float L1L2 Match", 100, -0.5, 0.5);
 
     h_diskresid_r_D1_L1L2_ = new TH1F("D1 rresid L1L2", "D1 rresid L1L2", 100, -5.0, 5.0);
     h_diskresid_r_D1_L1L2_match_ = new TH1F("D1 rresid L1L2 Match", "D1 rresid L1L2 Match", 100, -5.0, 5.0);
     h_diskresid_rf_D1_L1L2_ = new TH1F("D1 rresid float L1L2", "D1 rresid float L1L2", 100, -5.0, 5.0);
-    h_diskresid_rf_D1_L1L2_match_ =
-        new TH1F("D1 rresid float L1L2 Match", "D1 rresid float L1L2 Match", 100, -5.0, 5.0);
+    h_diskresid_rf_D1_L1L2_match_ = new TH1F("D1 rresid float L1L2 Match", "D1 rresid float L1L2 Match", 100, -5.0, 5.0);
   };
 
   void bookTrackletParams() {
@@ -96,10 +94,8 @@ public:
 
     h_rinv_L1L2_ = new TH1F("Tracklet rinv in L1L2", "Tracklet rinv in L1L2", 140, -0.007, 0.007);
     h_irinv_L1L2_ = new TH1F("Tracklet irinv in L1L2", "Tracklet irinv in L1L2", 140, -0.007, 0.007);
-    h_rinv_matched_L1L2_ =
-        new TH1F("Tracklet rinv in matched L1L2", "Tracklet rinv in matched L1L2", 140, -0.007, 0.007);
-    h_irinv_matched_L1L2_ =
-        new TH1F("Tracklet irinv in matched L1L2", "Tracklet irinv in matched L1L2", 140, -0.007, 0.007);
+    h_rinv_matched_L1L2_ = new TH1F("Tracklet rinv in matched L1L2", "Tracklet rinv in matched L1L2", 140, -0.007, 0.007);
+    h_irinv_matched_L1L2_ = new TH1F("Tracklet irinv in matched L1L2", "Tracklet irinv in matched L1L2", 140, -0.007, 0.007);
     h_rinvres_L1L2_ = new TH1F("Tracklet rinv res in L1L2", "Tracklet rinv res in L1L2", 100, -0.0005, 0.0005);
     h_irinvres_L1L2_ = new TH1F("Tracklet irinv res in L1L2", "Tracklet irinv res in L1L2", 100, -0.0005, 0.0005);
 
@@ -109,10 +105,8 @@ public:
     h_iphi0_matched_L1L2_ = new TH1F("Tracklet iphi0 in matched L1L2", "Tracklet iphi0 in matched L1L2", 100, 0.0, 1.0);
     h_phi0global_L1L2_ = new TH1F("Tracklet phi0 global in L1L2", "Tracklet phi0 global in L1L2", 99, -M_PI, M_PI);
     h_iphi0global_L1L2_ = new TH1F("Tracklet iphi0 global in L1L2", "Tracklet iphi0 global in L1L2", 99, -M_PI, M_PI);
-    h_phi0global_matched_L1L2_ =
-        new TH1F("Tracklet phi0 global in matched L1L2", "Tracklet phi0 global in matched L1L2", 99, -M_PI, M_PI);
-    h_iphi0global_matched_L1L2_ =
-        new TH1F("Tracklet iphi0 global in matched L1L2", "Tracklet iphi0 global in matched L1L2", 99, -M_PI, M_PI);
+    h_phi0global_matched_L1L2_ = new TH1F("Tracklet phi0 global in matched L1L2", "Tracklet phi0 global in matched L1L2", 99, -M_PI, M_PI);
+    h_iphi0global_matched_L1L2_ = new TH1F("Tracklet iphi0 global in matched L1L2", "Tracklet iphi0 global in matched L1L2", 99, -M_PI, M_PI);
     h_phi0res_L1L2_ = new TH1F("Tracklet phi0 res in L1L2", "Tracklet phi0 res in L1L2", 100, -0.5, 0.5);
     h_iphi0res_L1L2_ = new TH1F("Tracklet iphi0 res in L1L2", "Tracklet iphi0 res in L1L2", 100, -0.5, 0.5);
 

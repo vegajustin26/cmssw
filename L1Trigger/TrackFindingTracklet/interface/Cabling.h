@@ -8,6 +8,8 @@
 #include "DTC.h"
 #include "Util.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class Cabling {
@@ -89,7 +91,7 @@ public:
     assert(it2 != it1->second.end());
     std::map<int, string>::const_iterator it3 = it2->second.find(module);
     if (it3 == it2->second.end()) {
-      cout << "Could not add stub " << layer << " " << ladder << " " << module << endl;
+      edm::LogPrint("Tracklet") << "Could not add stub " << layer << " " << ladder << " " << module;
       assert(0);
     }
     string dtc = it3->second;
@@ -114,8 +116,6 @@ public:
     }
 
     double phisec = Util::phiRange(phi - isec * 2 * M_PI / 9.0);  //Nonant cabling hardcoded here
-
-    //cout << "dtc : "<<dtc<<" "<<layerdisk<<" "<<dtcbase<<" "<<isec<<" "<<phisec<<endl;
 
     assert(dtcranges.find(dtcbase) != dtcranges.end());
 

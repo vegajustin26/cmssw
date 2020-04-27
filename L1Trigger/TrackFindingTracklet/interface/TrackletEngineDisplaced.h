@@ -4,6 +4,7 @@
 
 #include "ProcessBase.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 
@@ -81,7 +82,7 @@ public:
 
   void addOutput(MemoryBase* memory,string output){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
     if (output=="stubpairout") {
       StubPairsMemory* tmp=dynamic_cast<StubPairsMemory*>(memory);
@@ -94,7 +95,7 @@ public:
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
     if (input=="firstvmstubin") {
       VMStubsTEMemory* tmp=dynamic_cast<VMStubsTEMemory*>(memory);
@@ -108,7 +109,7 @@ public:
       secondvmstubs_=tmp;
       return;
     }
-    cout << "Could not find input : "<<input<<endl;
+    edm::LogPrint("Tracklet") << "Could not find input : "<<input;
     assert(0);
   }
 
@@ -131,7 +132,7 @@ public:
       for(unsigned int i=0;i<firstvmstubs_.at(iInnerMem)->nVMStubs();i++){
 	VMStubTE firstvmstub=firstvmstubs_.at(iInnerMem)->getVMStubTE(i);
 	if (settings_->debugTracklet()) {
-	  cout << "In "<<getName()<<" have first stub"<<endl;
+	  edm::LogVerbatim("Tracklet") << "In "<<getName()<<" have first stub";
 	}
 	
 	if ((layer1_==3 && layer2_==4)||
@@ -147,12 +148,12 @@ public:
 	  int start=(bin>>1);
 	  int last=start+(bin&1);
 	  if (settings_->debugTracklet()) {
-	    cout << "Will look in zbins "<<start<<" to "<<last<<endl;
+	    edm::LogVerbatim("Tracklet") << "Will look in zbins "<<start<<" to "<<last;
 	  }
 	  for(int ibin=start;ibin<=last;ibin++) {
 	    for(unsigned int j=0;j<secondvmstubs_->nVMStubsBinned(ibin);j++){
 	      if (settings_->debugTracklet()) {
-		cout << "In "<<getName()<<" have second stub"<<endl;
+		edm::LogVerbatim("Tracklet") << "In "<<getName()<<" have second stub";
 	      }
 
 	      if (countall>=settings_->maxStep("TE")) break;
@@ -163,7 +164,7 @@ public:
 	      if (start!=ibin) zbin+=8;
 	      if (zbin<zbinfirst||zbin-zbinfirst>zdiffmax) {
 		if (settings_->debugTracklet()) {
-		  cout << "Stubpair rejected because of wrong zbin"<<endl;
+		  edm::LogVerbatim("Tracklet") << "Stubpair rejected because of wrong zbin";
 		}
 		continue;
 	      }
@@ -187,17 +188,15 @@ public:
 	      
 	      if (table_.at(index).empty()) {
 		if (settings_->debugTracklet()) {
-		  cout << "Stub pair rejected because of stub pt cut bends : "
-		       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())
-		       <<" "
-		       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
-		       <<endl;
+		  edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
+					       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())<<" "
+					       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule());
 		}		
                 if (!settings_->writeTripletTables())
                   continue;
 	      }
 	      		
-	      if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
+	      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " <<getName();
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
                 if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                   if (settings_->writeMonitorData("Seeds")) {
@@ -225,12 +224,12 @@ public:
 	  int start=(bin>>1);
 	  int last=start+(bin&1);
 	  if (settings_->debugTracklet()) {
-	    cout << "Will look in zbins "<<start<<" to "<<last<<endl;
+	    edm::LogVerbatim("Tracklet") << "Will look in zbins "<<start<<" to "<<last;
 	  }
 	  for(int ibin=start;ibin<=last;ibin++) {
 	    for(unsigned int j=0;j<secondvmstubs_->nVMStubsBinned(ibin);j++){
 	      if (settings_->debugTracklet()) {
-		cout << "In "<<getName()<<" have second stub"<<endl;
+		edm::LogVerbatim("Tracklet") << "In "<<getName()<<" have second stub";
 	      }
 
 	      if (countall>=settings_->maxStep("TE")) break;
@@ -242,7 +241,7 @@ public:
 	      if (start!=ibin) zbin+=8;
 	      if (zbin<zbinfirst||zbin-zbinfirst>zdiffmax) {
 		if (settings_->debugTracklet()) {
-		  cout << "Stubpair rejected because of wrong zbin"<<endl;
+		  edm::LogVerbatim("Tracklet") << "Stubpair rejected because of wrong zbin";
 		}
 		continue;
 	      }
@@ -268,17 +267,15 @@ public:
 	      
 	      if (table_.at(index).empty()) {
 		if (settings_->debugTracklet()) {
-		  cout << "Stub pair rejected because of stub pt cut bends : "
-		       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())
-		       <<" "
-		       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
-		       <<endl;
+		  edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
+					       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())<<" "
+					       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule());
 		}		
                 if (!settings_->writeTripletTables())
                   continue;
 	      }
 
-	      if (settings_->debugTracklet()) cout << "Adding layer-layer pair in " <<getName()<<endl;
+	      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " <<getName();
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
                 if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                   if (settings_->writeMonitorData("Seeds")) {
@@ -296,7 +293,7 @@ public:
 	
 	} else if (disk1_==1 && disk2_==2){
 	  
-	  if (settings_->debugTracklet()) cout << getName()<<"["<<iSector_<<"] Disk-disk pair" <<endl;
+	  if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName()<<"["<<iSector_<<"] Disk-disk pair";
 
 	  int lookupbits=firstvmstub.vmbits().value()&511;
 	  bool negdisk=firstvmstub.stub().first->disk().value()<0; //FIXME
@@ -310,8 +307,9 @@ public:
 	  if (negdisk) start+=4;
 	  int last=start+(bin&1);
 	  for(int ibin=start;ibin<=last;ibin++) {
-	    if (settings_->debugTracklet()) cout << getName() << " looking for matching stub in bin "<<ibin
-						 <<" with "<<secondvmstubs_->nVMStubsBinned(ibin)<<" stubs"<<endl;
+	    if (settings_->debugTracklet()) {
+	      edm::LogVerbatim("Tracklet") << getName() << " looking for matching stub in bin "<<ibin<<" with "<<secondvmstubs_->nVMStubsBinned(ibin)<<" stubs";
+	    }
 	    for(unsigned int j=0;j<secondvmstubs_->nVMStubsBinned(ibin);j++){
 	      if (countall>=settings_->maxStep("TE")) break;
 	      countall++;
@@ -343,17 +341,15 @@ public:
 	      
 	      if (table_.at(index).empty()) {
 		if (settings_->debugTracklet()) {
-		  cout << "Stub pair rejected because of stub pt cut bends : "
-		       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())
-		       <<" "
-		       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())
-		       <<endl;
+		  edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
+					       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())<<" "
+					       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule());
 		}
                 if (!settings_->writeTripletTables())
                   continue;
 	      }
 
-	      if (settings_->debugTracklet()) cout << "Adding disk-disk pair in " <<getName()<<endl;
+	      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding disk-disk pair in " <<getName();
 	      
               for(unsigned int isp=0; isp<stubpairs_.size(); ++isp){
                 if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
@@ -373,28 +369,27 @@ public:
       }
     }
     if (countall>5000) {
-      cout << "In TrackletEngineDisplaced::execute : "<<getName()
-	   <<" "<<nInnerStubs
-	   <<" "<<secondvmstubs_->nVMStubs()
-	   <<" "<<countall<<" "<<countpass
-	   <<endl;
+      edm::LogVerbatim("Tracklet") << "In TrackletEngineDisplaced::execute : "<<getName()
+				   <<" "<<nInnerStubs
+				   <<" "<<secondvmstubs_->nVMStubs()
+				   <<" "<<countall<<" "<<countpass;
       for(unsigned int iInnerMem=0;iInnerMem<firstvmstubs_.size();iInnerMem++){
         for(unsigned int i=0;i<firstvmstubs_.at(iInnerMem)->nVMStubs();i++){
           VMStubTE firstvmstub=firstvmstubs_.at(iInnerMem)->getVMStubTE(i);
-          cout << "In TrackletEngineDisplaced::execute first stub : "
-               << firstvmstub.stub().second->r()<<" "
-               << firstvmstub.stub().second->phi()<<" "
-               << firstvmstub.stub().second->r()*firstvmstub.stub().second->phi()<<" "
-               << firstvmstub.stub().second->z()<<endl;
+          edm::LogVerbatim("Tracklet") << "In TrackletEngineDisplaced::execute first stub : "
+				       << firstvmstub.stub().second->r()<<" "
+				       << firstvmstub.stub().second->phi()<<" "
+				       << firstvmstub.stub().second->r()*firstvmstub.stub().second->phi()<<" "
+				       << firstvmstub.stub().second->z();
         }
       }
       for(unsigned int i=0;i<secondvmstubs_->nVMStubs();i++){
 	VMStubTE secondvmstub=secondvmstubs_->getVMStubTE(i);
-	cout << "In TrackletEngineDisplaced::execute second stub : "
-	     << secondvmstub.stub().second->r()<<" "
-	     << secondvmstub.stub().second->phi()<<" "
-	     << secondvmstub.stub().second->r()*secondvmstub.stub().second->phi()<<" "
-	     << secondvmstub.stub().second->z()<<endl;
+	edm::LogVerbatim("Tracklet") << "In TrackletEngineDisplaced::execute second stub : "
+				     << secondvmstub.stub().second->r()<<" "
+				     << secondvmstub.stub().second->phi()<<" "
+				     << secondvmstub.stub().second->r()*secondvmstub.stub().second->phi()<<" "
+				     << secondvmstub.stub().second->z();
       }
       
     }

@@ -16,6 +16,8 @@
 #include "L1Trigger/TrackFindingTMTT/interface/KFTrackletTrack.h"
 #endif
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class HybridFit {
@@ -74,14 +76,12 @@ public:
       bool isBarrel = trackstublist[k].first->isBarrel();
       int kflayer;
 
-      // Barrel-specific
-      if (isBarrel) {
+      if (isBarrel) { // Barrel-specific
         kflayer = L1stubptr->layer() + 1;
         if (settings_->printDebugKF())
-          cout << "Will create layer stub with : ";
-
-        // Disk-specific
-      } else {
+          edm::LogVerbatim("L1track") << "Will create layer stub with : ";
+      }
+      else { // Disk-specific
         kflayer = abs(L1stubptr->disk());
         if (kfz > 0) {
           kflayer += 10;
@@ -89,12 +89,11 @@ public:
           kflayer += 20;
         }
         if (settings_->printDebugKF())
-          cout << "Will create disk stub with : ";
+          edm::LogVerbatim("L1track") << "Will create disk stub with : ";
       }
 
       if (settings_->printDebugKF())
-        cout << kfphi << " " << kfr << " " << kfz << " " << kfbend << " " << kflayer << " " << isBarrel << " "
-             << psmodule << " " << endl;
+        edm::LogVerbatim("L1track") << kfphi << " " << kfr << " " << kfz << " " << kfbend << " " << kflayer << " " << isBarrel << " " << psmodule;
       // For debugging, this should ideally be unique index in stub collection for nonant. But can't access that from here, so use this poor version instead.
       unsigned int uniqueIndex = 1000 * L1stubID + L1stubptr->allStubIndex();
       tmtt::Stub* TMTTstubptr = new tmtt::Stub(kfphi,
@@ -116,7 +115,7 @@ public:
     }
 
     if (settings_->printDebugKF())
-      cout << "Made TMTTstubs: trackstublist.size() = " << trackstublist.size() << endl;
+      edm::LogVerbatim("L1track") << "Made TMTTstubs: trackstublist.size() = " << trackstublist.size();
 
     double kfrinv = tracklet->rinvapprox();
     double kfphi0 = tracklet->phi0approx();
@@ -125,9 +124,9 @@ public:
     double kfd0 = tracklet->d0approx();
 
     if (settings_->printDebugKF()) {
-      std::cout << "tracklet phi0 = " << kfphi0 << std::endl;
-      std::cout << "iSector = " << iSector_ << std::endl;
-      std::cout << "dphisectorHG = " << settings_->dphisectorHG() << std::endl;
+      edm::LogVerbatim("L1track") << "tracklet phi0 = " << kfphi0 << "\n"
+				  << "iSector = " << iSector_ << "\n"
+				  << "dphisectorHG = " << settings_->dphisectorHG();
     }
 
     // KF wants global phi0, not phi0 measured with respect to lower edge of sector (Tracklet convention).
@@ -172,8 +171,9 @@ public:
 
     // Create Kalman track fitter.
     static bool firstPrint = true;
-    if (firstPrint)
-      cout << "Will make KFParamsComb for " << settings_->nHelixPar() << " param fit" << endl;
+    if (firstPrint) {
+      edm::LogVerbatim("L1track") << "Will make KFParamsComb for " << settings_->nHelixPar() << " param fit";
+    }
     static thread_local tmtt::KFParamsComb fitterKF(&TMTTsettings, settings_->nHelixPar(), "KFfitter");
     firstPrint = false;
 
@@ -184,9 +184,9 @@ public:
       tmtt::KFTrackletTrack trk = fittedTrk.returnKFTrackletTrack();
 
       if (settings_->printDebugKF())
-        cout << "Done with Kalman fit. Pars: pt = " << trk.pt() << ", 1/2R = " << 3.8 * 3 * trk.qOverPt() / 2000
-             << ", phi0 = " << trk.phi0() << ", eta = " << trk.eta() << ", z0 = " << trk.z0()
-             << ", chi2 = " << trk.chi2() << ", accepted = " << trk.accepted() << endl;
+        edm::LogVerbatim("L1track") << "Done with Kalman fit. Pars: pt = " << trk.pt() << ", 1/2R = " << 3.8 * 3 * trk.qOverPt() / 2000
+				    << ", phi0 = " << trk.phi0() << ", eta = " << trk.eta() << ", z0 = " << trk.z0()
+				    << ", chi2 = " << trk.chi2() << ", accepted = " << trk.accepted();
 
       // Tracklet wants phi0 with respect to lower edge of sector, not global phi0.
       double phi0fit = trk.phi0() - iSector_ * 2 * M_PI / settings_->NSector() + 0.5 * settings_->dphisectorHG();
@@ -214,9 +214,10 @@ public:
         l1stubsFromFit.push_back(l1s);
       }
 
-      if (settings_->printDebugKF())
-        cout << "#stubs before/after KF fit = " << TMTTstubs.size() << "/" << l1stubsFromFit.size() << endl;
-
+      if (settings_->printDebugKF()) {
+        edm::LogVerbatim("L1track") << "#stubs before/after KF fit = " << TMTTstubs.size() << "/" << l1stubsFromFit.size();
+      }
+	
       tracklet->setFitPars(rinvfit,
                            phi0fit,
                            trk.d0(),
@@ -241,8 +242,9 @@ public:
                            trk.hitPattern(),
                            l1stubsFromFit);
     } else {
-      if (settings_->printDebugKF())
-        cout << "FitTrack:KF rejected track" << endl;
+      if (settings_->printDebugKF()) {
+        edm::LogVerbatim("L1track") << "FitTrack:KF rejected track" ;
+      }
     }
 
     for (const tmtt::Stub* s : TMTTstubs) {

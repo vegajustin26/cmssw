@@ -33,6 +33,8 @@
 #include "Util.h"
 #include "Settings.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 using namespace Trklet;
 
@@ -159,7 +161,7 @@ public:
       Memories_[memName]=CT_.back();
       MemoriesV_.push_back(CT_.back());
     } else {
-      cout << "Don't know of memory type: "<<memType<<endl;
+      edm::LogPrint("Tracklet") << "Don't know of memory type: "<<memType;
       exit(0);
     }
     
@@ -209,7 +211,7 @@ public:
       PD_.push_back(new PurgeDuplicate(procName,settings_,isector_));
       Processes_[procName]=PD_.back();
     } else {
-      cout << "Don't know of processing type: "<<procType<<endl;
+      edm::LogPrint("Tracklet") << "Don't know of processing type: "<<procType;
       exit(0);      
     }
   }
@@ -218,10 +220,6 @@ public:
   //--- (args: memory instance & input/output proc modules it connects to in format procName.pinName)
 
   void addWire(string mem,string procinfull,string procoutfull){
-
-
-    //cout << "Mem : "<<mem<<" input from "<<procinfull
-    //	 << " output to "<<procoutfull<<endl;
 
     stringstream ss1(procinfull);
     string procin, output;
@@ -232,9 +230,6 @@ public:
     string procout, input;
     getline(ss2,procout,'.');
     getline(ss2,input);
-
-    //cout << "Procin  : "<<procin<<" "<<output<<endl;
-    //cout << "Procout : "<<procout<<" "<<input<<endl;
 
     MemoryBase* memory=getMem(mem);
 
@@ -259,7 +254,7 @@ public:
     if (it!=Processes_.end()) {
       return it->second;
     }
-    cout << "Could not find process with name : "<<procName<<endl;
+    edm::LogPrint("Tracklet") << "Could not find process with name : "<<procName;
     assert(0);
     return 0;
   }
@@ -271,7 +266,7 @@ public:
     if (it!=Memories_.end()) {
       return it->second;
     }
-    cout << "Could not find memory with name : "<<memName<<endl;
+    edm::LogPrint("Tracklet") << "Could not find memory with name : "<<memName;
     assert(0);
     return 0;
   }

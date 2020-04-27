@@ -12,6 +12,7 @@
 #include "Util.h"
 #include "Settings.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 
@@ -57,8 +58,9 @@ public:
       double rmin = settings_->rmean(layer-1) - settings_->drmax();
       double rmax = settings_->rmean(layer-1) + settings_->drmax();
 
-      if (r<rmin||r>rmax) cout << "Error r, rmin, rmeas,  rmax :"<<r
-			       <<" "<<rmin<<" "<<0.5*(rmin+rmax)<<" "<<rmax<<endl;
+      if (r<rmin||r>rmax) {
+	edm::LogProblem("Tracklet") << "Error r, rmin, rmeas,  rmax :"<<r<<" "<<rmin<<" "<<0.5*(rmin+rmax)<<" "<<rmax;
+      }
 
       int irbits=settings_->nrbitsstub(layer-1);
 
@@ -68,15 +70,17 @@ public:
       double zmin=-settings_->zlength();
       double zmax=settings_->zlength();
     
-      if (z<zmin||z>zmax) cout << "Error z, zmin, zmax :"<<z
-			     <<" "<<zmin<<" "<<zmax<<endl;
+      if (z<zmin||z>zmax) {
+	edm::LogProblem("Tracklet") << "Error z, zmin, zmax :"<<z<<" "<<zmin<<" "<<zmax;
+      }
     
       int izbits=settings_->nzbitsstub(layer-1);
       
       int iz=round_int((1<<izbits)*z/(zmax-zmin));
 
-      if (z<zmin||z>zmax) cout << "Error z, zmin, zmax :"<<z
-			       <<" "<<zmin<<" "<<zmax<<endl;
+      if (z<zmin||z>zmax) {
+	edm::LogProblem("Tracklet") << "Error z, zmin, zmax :"<<z<<" "<<zmin<<" "<<zmax;
+      }
       
       assert(phimaxsec-phiminsec>0.0);
 
@@ -112,7 +116,7 @@ public:
       double zmax = sign*(settings_->zmean(disk-1) + sign*settings_->dzmax());
 
       if ((z>zmax)||(z<zmin)) {
-	cout << "Error disk z, zmax, zmin: "<<z<<" "<<zmax<<" "<<zmin<<endl;
+	edm::LogProblem("Tracklet") << "Error disk z, zmax, zmin: "<<z<<" "<<zmax<<" "<<zmin;
       }
 
       int iz=(1<<settings->nzbitsdisk())*((z-sign*settings_->zmean(disk-1))/std::abs(zmax-zmin));
@@ -136,8 +140,9 @@ public:
       double rmin=0;
       double rmax=settings_->rmaxdisk();
     
-      if (r<rmin||r>rmax) cout << "Error disk r, rmin, rmax :"<<r
-			     <<" "<<rmin<<" "<<rmax<<endl;
+      if (r<rmin||r>rmax) {
+	edm::LogProblem("Tracklet") << "Error disk r, rmin, rmax :"<<r<<" "<<rmin<<" "<<rmax;
+      }
     
       int ir=(1<<settings_->nrbitsstub(disk+5))*(r-rmin)/(rmax-rmin);
 
@@ -157,7 +162,7 @@ public:
 	  }
 	}
 	if (irSS<0) {
-	  cout << "WARNING! didn't find rDSS value! r = " << r << endl;
+	  edm::LogProblem("Tracklet") << "WARNING! didn't find rDSS value! r = " << r << " Check that correct geometry is used!";
 	  assert(0);
 	}
       }
@@ -270,7 +275,7 @@ public:
  
   void setAllStubIndex(int nstub){
     if (nstub>=(1<<7)){
-      if (settings_->debugTracklet()) cout << "Warning too large stubindex!"<<endl;
+      if (settings_->debugTracklet()) edm::LogPrint("Tracklet") << "Warning too large stubindex!";
       nstub=(1<<7)-1;
     }
 
@@ -410,7 +415,7 @@ public:
     if (ibend==-13||ibend==-14) return 14;
     if (ibend<=-15) return 15;
 
-    cout << "bend ibend : "<<bend<<" "<<ibend<<endl;
+    edm::LogVerbatim("Tracklet") << "bend ibend : "<<bend<<" "<<ibend;
     
     assert(0);
     

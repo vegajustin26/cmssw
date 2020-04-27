@@ -5,6 +5,8 @@
 #include "ProcessBase.h"
 #include "TrackDerTable.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 #ifdef USEHYBRID
 #include "L1Trigger/TrackFindingTracklet/interface/HybridFit.h"
 #endif
@@ -22,7 +24,7 @@ class FitTrack:public ProcessBase{
 
   void addOutput(MemoryBase* memory,string output){
    if (settings_->writetrace()) {
-    cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+    edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
    }
    if (output=="trackout"){
     TrackFitMemory* tmp=dynamic_cast<TrackFitMemory*>(memory);
@@ -37,7 +39,7 @@ class FitTrack:public ProcessBase{
 
   void addInput(MemoryBase* memory,string input){
    if (settings_->writetrace()) {
-    cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+    edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
    }
    if (input=="tparin"||
        input=="tpar1in"||
@@ -150,7 +152,7 @@ class FitTrack:public ProcessBase{
     fullmatch4_.push_back(tmp);
     return;
    }
-   cout << "Did not find input : "<<input<<endl;
+   edm::LogPrint("Tracklet") << "Did not find input : "<<input;
    assert(0);
   }
 
@@ -231,7 +233,7 @@ class FitTrack:public ProcessBase{
    if (first) {
      derTable.readPatternFile(settings_->fitpatternfile());
     derTable.fillTable(settings_);
-    cout << "Number of entries in derivative table: " << derTable.getEntries() << endl;
+    edm::LogVerbatim("Tracklet") << "Number of entries in derivative table: " << derTable.getEntries();
     assert(derTable.getEntries()!=0);
 
     //testDer();
@@ -522,8 +524,8 @@ class FitTrack:public ProcessBase{
        FPGAWord tmpl,tmpd;
        tmpl.set(layermask,6);
        tmpd.set(diskmask,10);
-       cout << "No derivative for layermask, diskmask : "
-	    <<layermask<<" "<<tmpl.str()<<" "<<diskmask<<" "<<tmpd.str()<<" eta = "<<asinh(t)<<endl;
+       edm::LogVerbatim("Tracklet") << "No derivative for layermask, diskmask : "
+				    <<layermask<<" "<<tmpl.str()<<" "<<diskmask<<" "<<tmpd.str()<<" eta = "<<asinh(t);
      }
      return;
    }
@@ -533,7 +535,7 @@ class FitTrack:public ProcessBase{
    double ttab=ttabi;
 
    if (settings_->debugTracklet()) {
-    cout << "Doing trackfit in  "<<getName()<<endl;
+    edm::LogVerbatim("Tracklet") << "Doing trackfit in  "<<getName();
    }
 
    int sign=1;
@@ -674,8 +676,7 @@ class FitTrack:public ProcessBase{
     idelta[j]=iphiresid[i];
     delta[j]=phiresid[i];
     if (std::abs(phiresid[i])>0.2) {
-     cout << getName()<<" WARNING too large phiresid: "
-      <<phiresid[i]<<" "<<phiresidexact[i]<<endl;
+      edm::LogPrint("Tracklet") << getName() << " WARNING too large phiresid: " << phiresid[i] << " " << phiresidexact[i];
     }
     assert(std::abs(phiresid[i])<1.0);
     assert(std::abs(phiresidexact[i])<1.0);
@@ -750,20 +751,18 @@ class FitTrack:public ProcessBase{
 
     if (0&&j%2==0) {
 
-     cout << "DUMPFITLINNEW1"<<" "<<j
-      <<" "<<rinvseed
-      <<" + "<<MinvDt[0][j]*delta[j]
-      <<" "<<MinvDt[0][j]
-      <<" "<<delta[j]*rstub[j/2]*10000
-      <<endl;
+      edm::LogVerbatim("Tracklet") << "DUMPFITLINNEW1"<<" "<<j
+				   <<" "<<rinvseed
+				   <<" + "<<MinvDt[0][j]*delta[j]
+				   <<" "<<MinvDt[0][j]
+				   <<" "<<delta[j]*rstub[j/2]*10000;
 
-     cout << "DUMPFITLINNEW2"<<" "<<j
-      <<" "<<tracklet->fpgarinv().value()*settings_->krinvpars()
-      <<" + "<<((iMinvDt[0][j]*idelta[j]))*settings_->krinvpars()/1024.0
-      <<" "<<iMinvDt[0][j]*settings_->krinvpars()/settings_->kphiprojdisk()/1024.0
-      <<" "<<idelta[j]*settings_->kphiproj123()*rstub[j/2]*10000
-      <<" "<<idelta[j]
-      <<endl;
+      edm::LogVerbatim("Tracklet") << "DUMPFITLINNEW2"<<" "<<j
+				   <<" "<<tracklet->fpgarinv().value()*settings_->krinvpars()
+				   <<" + "<<((iMinvDt[0][j]*idelta[j]))*settings_->krinvpars()/1024.0
+				   <<" "<<iMinvDt[0][j]*settings_->krinvpars()/settings_->kphiprojdisk()/1024.0
+				   <<" "<<idelta[j]*settings_->kphiproj123()*rstub[j/2]*10000
+				   <<" "<<idelta[j];
 
     }
 
@@ -814,16 +813,16 @@ class FitTrack:public ProcessBase{
    double irzfactor;
    int k=0; // column index of D matrix
 
-   if(NewChisqDebug){
-    cout << "OG chisq:" << endl;
-    cout << "drinv/cov = " << drinv << "/" << drinv_cov << endl;
-    cout << "dphi0/cov = " << drinv << "/" << dphi0_cov << endl;
-    cout << "dt/cov = " << drinv << "/" << dt_cov << endl;
-    cout << "dz0/cov = " << drinv << "/" << dz0_cov << endl << endl;
-    cout << "D[0][k]= ";
-    for(unsigned int i=0;i<2*n;i++) {
-     cout << D[0][i] << ", ";
-    }
+   if (NewChisqDebug) {
+     edm::LogVerbatim("Tracklet") << "OG chisq: \n"
+				  << "drinv/cov = " << drinv << "/" << drinv_cov << " \n"
+				  << "dphi0/cov = " << drinv << "/" << dphi0_cov << " \n"
+				  << "dt/cov = " << drinv << "/" << dt_cov << " \n"
+				  << "dz0/cov = " << drinv << "/" << dz0_cov << "\n \n"
+				  << "D[0][k]= ";
+     for(unsigned int i=0;i<2*n;i++) {
+       cout << D[0][i] << ", ";
+     }
     cout << endl;
    }
 
@@ -831,17 +830,13 @@ class FitTrack:public ProcessBase{
 
    for(unsigned int i=0;i<n;i++) { // loop over stubs
 
-    phifactor=rstub[k/2]*delta[k]/sigma[k]
-     +D[0][k]*drinv+D[1][k]*dphi0+D[2][k]*dt+D[3][k]*dz0;
+    phifactor = rstub[k/2]*delta[k]/sigma[k] + D[0][k]*drinv + D[1][k]*dphi0 + D[2][k]*dt + D[3][k]*dz0;
+    iphifactor = kfactor[k]*rstub[k/2]*idelta[k]*(1<<settings_->chisqphifactbits())/sigma[k] - iD[0][k]*idrinv - iD[1][k]*idphi0 - iD[2][k]*idt - iD[3][k]*idz0;
 
-
-    iphifactor=kfactor[k]*rstub[k/2]*idelta[k]*(1<<settings_->chisqphifactbits())/sigma[k]
-     -iD[0][k]*idrinv-iD[1][k]*idphi0-iD[2][k]*idt-iD[3][k]*idz0;
-
-    if(NewChisqDebug){
-     cout << "delta[k]/sigma = " << delta[k]/sigma[k] << "  delta[k] = " << delta[k]  << endl;
-     cout << "sum = " << phifactor-delta[k]/sigma[k] << "    drinvterm = " << D[0][k]*drinv << "  dphi0term = " << D[1][k]*dphi0 << "  dtterm = " << D[2][k]*dt << "  dz0term = " << D[3][k]*dz0 << endl;
-     cout << "  phifactor = " << phifactor << endl;
+    if (NewChisqDebug) {
+      edm::LogVerbatim("Tracklet") << "delta[k]/sigma = " << delta[k]/sigma[k] << "  delta[k] = " << delta[k];
+      edm::LogVerbatim("Tracklet") << "sum = " << phifactor-delta[k]/sigma[k] << "    drinvterm = " << D[0][k]*drinv << "  dphi0term = " << D[1][k]*dphi0 << "  dtterm = " << D[2][k]*dt << "  dz0term = " << D[3][k]*dz0;
+      edm::LogVerbatim("Tracklet") << "  phifactor = " << phifactor;
     }
 
     chisqfit+=phifactor*phifactor;
@@ -850,33 +845,31 @@ class FitTrack:public ProcessBase{
     k++;
 
     rzfactor=delta[k]/sigma[k]+D[0][k]*drinv+D[1][k]*dphi0+D[2][k]*dt+D[3][k]*dz0;
-
     irzfactor=kfactor[k]*idelta[k]*(1<<settings_->chisqzfactbits())/sigma[k]-iD[0][k]*idrinv-iD[1][k]*idphi0-iD[2][k]*idt-iD[3][k]*idz0;
 
-    if(NewChisqDebug){
-     cout << "delta[k]/sigma = " << delta[k]/sigma[k] << "  delta[k] = " << delta[k]  << endl;
-     cout << "sum = " << rzfactor-delta[k]/sigma[k] << "    drinvterm = " << D[0][k]*drinv << "  dphi0term = " << D[1][k]*dphi0 << "  dtterm = " << D[2][k]*dt << "  dz0term = " << D[3][k]*dz0 << endl;
-     cout << "  rzfactor = " << rzfactor << endl;
+    if (NewChisqDebug) {
+      edm::LogVerbatim("Tracklet") << "delta[k]/sigma = " << delta[k]/sigma[k] << "  delta[k] = " << delta[k];
+      edm::LogVerbatim("Tracklet") << "sum = " << rzfactor-delta[k]/sigma[k] << "    drinvterm = " << D[0][k]*drinv << "  dphi0term = " << D[1][k]*dphi0 << "  dtterm = " << D[2][k]*dt << "  dz0term = " << D[3][k]*dz0;
+      edm::LogVerbatim("Tracklet") << "  rzfactor = " << rzfactor;
     }
 
     chisqfit+=rzfactor*rzfactor;
     ichisqfit+=irzfactor*irzfactor/(1<<(2*settings_->chisqzfactbits()-4));
 
-
     k++;
    }
-
 
    if (settings_->writeMonitorData("ChiSq")) {
     static ofstream out("chisq.txt");
     out << asinh(itfit*settings_->ktpars())<<" "<<chisqfit << " " << ichisqfit/16.0<<endl;
    }
 
-
    // Chisquare per DOF capped out at 11 bits, so 15 is an educated guess
    if(ichisqfit >= (1<<15)) {
-    //cout << "CHISQUARE (" << ichisqfit << ") LARGER THAN 11 BITS!!" << endl;
-    ichisqfit = (1<<15)-1;
+     if (NewChisqDebug) {
+       edm::LogVerbatim("Tracklet") << "CHISQUARE (" << ichisqfit << ") LARGER THAN 11 BITS!";
+     }
+     ichisqfit = (1<<15)-1;
    }
 
    // Eliminate lower bits to fit in 8 bits
@@ -927,8 +920,10 @@ class FitTrack:public ProcessBase{
      }
      
      
-    if(settings_->debugTracklet() && fullmatch[i]->nMatches()!=0) cout<<"orderedMatches: "<<fullmatch[i]->getName()<<" "<< fullmatch[i]->nMatches()<<"\n";
-
+     if (settings_->debugTracklet() && fullmatch[i]->nMatches()!=0) {
+       edm::LogVerbatim("Tracklet") << "orderedMatches: "<<fullmatch[i]->getName()<<" "<< fullmatch[i]->nMatches();
+     }
+     
     indexArray.push_back(0);
    }
 
@@ -952,18 +947,16 @@ class FitTrack:public ProcessBase{
      indexArray[bestIndex]++;
     }
    } while (bestIndex!=-1);
-
+   
    for (unsigned int i=0;i<tmp.size();i++) {
-    if (i>0) {
-     //This allows for equal TCIDs. This means that we can e.g. have a track seeded
-     //in L1L2 that projects to both L3 and D4. The algorithm will pick up the first hit and
-     //drop the second
-     if (tmp[i-1]->TCID()>tmp[i]->TCID()){
-      cout << "Wrong TCID ordering in "<<getName()<<" : "
-       << tmp[i-1]->TCID()<<" "<<tmp[i]->TCID()<<endl;
-      //assert(0);
+     if (i>0) {
+       //This allows for equal TCIDs. This means that we can e.g. have a track seeded in L1L2 that projects to both L3 and D4.
+       //The algorithm will pick up the first hit and drop the second.
+       if (tmp[i-1]->TCID()>tmp[i]->TCID()){
+	 edm::LogVerbatim("Tracklet") << "Wrong TCID ordering in "<<getName()<<" : "<< tmp[i-1]->TCID()<<" "<<tmp[i]->TCID();
+	 //assert(0);
+       }
      }
-    }
    }
 
    return tmp;
@@ -979,10 +972,9 @@ class FitTrack:public ProcessBase{
    
    if (settings_->debugTracklet()&&(matches1.size()+matches2.size()+matches3.size()+matches4.size())>0) {
     for (unsigned int i=0;i<fullmatch1_.size();i++) {
-     cout << fullmatch1_[i]->getName()<<" "<<fullmatch1_[i]->nMatches()<<endl;
+     edm::LogVerbatim("Tracklet") << fullmatch1_[i]->getName()<<" "<<fullmatch1_[i]->nMatches();
     }
-    cout << getName()<<"["<<iSector_<<"] matches : "<<matches1.size()<<" "<<matches2.size()<<" "
-     <<matches3.size()<<" "<<matches4.size()<<" "<<endl;
+    edm::LogVerbatim("Tracklet") << getName()<<"["<<iSector_<<"] matches : "<<matches1.size()<<" "<<matches2.size()<<" " <<matches3.size()<<" "<<matches4.size();
    }
 
    //New trackfit
@@ -1087,8 +1079,10 @@ class FitTrack:public ProcessBase{
 
     if (match) nMatchesUniq++;
 
-    if(settings_->debugTracklet()) cout<<getName()<<" : nMatches = "<<nMatches<<" "<<asinh(bestTracklet->t())<<"\n";
-
+    if (settings_->debugTracklet()) {
+      edm::LogVerbatim("Tracklet")<<getName()<<" : nMatches = "<<nMatches<<" "<<asinh(bestTracklet->t());
+    }
+    
     std::vector<std::pair<Stub*,L1TStub*>> trackstublist;
     std::vector<std::pair<int,int>> stubidslist;
     if ((bestTracklet->getISeed()>=8 && nMatchesUniq>=1)||nMatchesUniq>=2) { //For seeds index >=8 (triplet seeds), there are three stubs associated from start.

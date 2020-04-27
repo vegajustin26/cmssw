@@ -48,7 +48,6 @@ public:
     ofstream out(fname.c_str());
 
     for (int i = 0; i < entries_; i++) {
-      //cout << "i "<<i<<endl;
       unsigned int tt = table_[i];
       out << std::hex << tt << endl;
     }
@@ -57,8 +56,6 @@ public:
 
   int lookup(int drrel) const {
     assert(drrel >= 0);
-    //cout << "nbits = "<<nbits_<<endl;
-    //cout << "drrel = "<<drrel<<endl;
     assert(drrel < (1 << nbits_));
     return table_[drrel];
   }

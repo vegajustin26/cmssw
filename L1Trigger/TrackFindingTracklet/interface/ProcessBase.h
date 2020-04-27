@@ -4,6 +4,8 @@
 
 #include "Settings.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace Trklet;
 using namespace std;
 
@@ -37,7 +39,7 @@ public:
     if (power==16) return 4;
     if (power==32) return 5;
 
-    cout << "nbits: power = "<<power<<endl;
+    edm::LogVerbatim("Tracklet") << "nbits: power = "<<power;
     assert(0);
 
     return -1;
@@ -64,8 +66,7 @@ public:
     if (subname=="D4") disk=4;
     if (subname=="D5") disk=5;
     if (layer==0&&disk==0) {
-      cout << "Memoryname = "<<name_<<" subname = "<<subname
-	   <<" layer "<<layer<<" disk "<<disk<<endl;
+      edm::LogPrint("Tracklet") << "Memoryname = "<<name_<<" subname = "<<subname<<" layer "<<layer<<" disk "<<disk;
     }
     assert((layer!=0)||(disk!=0));
   }
@@ -166,7 +167,7 @@ public:
     if (name2=="L2L3D1") return 10;
     if (name2=="D1D2L2") return 11;
     
-    cout << getName()<<" name name1 name2 "<<name<<" - "<<name1<<" - "<<name2<<endl;
+    edm::LogPrint("Tracklet") << getName()<<" name name1 name2 "<<name<<" - "<<name1<<" - "<<name2;
     assert(0);
     return 0;
 
