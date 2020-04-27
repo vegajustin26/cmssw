@@ -150,7 +150,7 @@ public:
     int projfinerzadj=0;
 
     
-    int projindex;
+    int projindex=0;
     int projrinv=0;
     bool isPSseed=false;
     
