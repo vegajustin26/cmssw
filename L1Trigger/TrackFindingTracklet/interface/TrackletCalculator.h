@@ -253,7 +253,8 @@ public:
 
   void execute() {
 
-    edm::LogVerbatim("Tracklet") << " MEBUG TEST TrackletCalulator " << getName() << " stub pairs size = " << stubpairs_.size() << endl;
+    edm::LogVerbatim("Tracklet") << " MEBUG1 TEST TrackletCalulator " << getName() << " stub pairs size = " << stubpairs_.size() ;
+    edm::LogVerbatim("Tracklet") << " MEBUG2 TEST TrackletCalulator " << getName() << " stub pairs size = " << stubpairs_.size() ;
     
     unsigned int countall=0;
     unsigned int countsel=0;
