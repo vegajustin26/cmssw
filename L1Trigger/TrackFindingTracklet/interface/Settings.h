@@ -42,7 +42,7 @@ namespace Trklet{
       nbitszprojderL456_=7+2;
 
       
-      useseeding_={{0,1,2,3,4,5,6,7,8,9,10,11}};
+      useseeding_={0,1,2,3,4,5,6,7,8,9,10,11};
 
       nbitsvmte_[0]={{2,2,2,2,2,2,1,1,2,2,3,2}};
       nbitsvmte_[1]={{3,2,3,3,2,2,2,2,3,3,2,2}};

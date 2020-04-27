@@ -374,7 +374,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   while (in.good()) {
     vector<int> tmp;
     dtclayerdisk[dtc] = tmp;
-    int layerdisk; = new IMATH_TrackletCalculatorOverlap(&settings,2,-1);
+    int layerdisk; 
     in >> layerdisk;
     while (layerdisk > 0) {
       dtclayerdisk[dtc].push_back(layerdisk);
@@ -394,7 +394,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     cout << "wires          :  " << wiresFile.fullPath() << endl;
   }
 
-  fitpatternfile = fitPatternFile.fullPath();
+  //fitpatternfile = fitPatternFile.fullPath();
 
   if (settings.debugTracklet())
     cout << "Will read memory modules file" << endl;
@@ -871,7 +871,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   CPUTimer FTTimer;
   CPUTimer PDTimer;
 
-  if (settings_.writeSeeds()) {
+  if (settings_.writeMonitorData("Seeds")) {
     ofstream fout("seeds.txt", ofstream::out);
     fout.close();
   }
@@ -884,11 +884,11 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
   ofstream outres;
-  if (settings_.writeResEff())
+  if (settings_.writeMonitorData("ResEff"))
     outres.open("trackres.txt");
 
   ofstream outeff;
-  if (settings_.writeResEff())
+  if (settings_.writeMonitorData("ResEff"))
     outeff.open("trackeff.txt");
 
   int nlayershit = 0;
