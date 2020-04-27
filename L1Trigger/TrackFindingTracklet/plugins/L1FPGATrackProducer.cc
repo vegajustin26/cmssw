@@ -194,6 +194,25 @@ private:
   unsigned int nHelixPar_;
   bool extended_;
 
+  Trklet::Settings settings_;
+  // tracklet calculators 
+  IMATH_TrackletCalculator* ITC_L1L2_;
+  IMATH_TrackletCalculator* ITC_L2L3_;
+  IMATH_TrackletCalculator* ITC_L3L4_;
+  IMATH_TrackletCalculator* ITC_L5L6_;
+  
+  IMATH_TrackletCalculatorDisk* ITC_F1F2_;
+  IMATH_TrackletCalculatorDisk* ITC_F3F4_;
+  IMATH_TrackletCalculatorDisk* ITC_B1B2_;
+  IMATH_TrackletCalculatorDisk* ITC_B3B4_;
+  
+  IMATH_TrackletCalculatorOverlap* ITC_L1F1_;
+  IMATH_TrackletCalculatorOverlap* ITC_L2F1_;
+  IMATH_TrackletCalculatorOverlap* ITC_L1B1_;
+  IMATH_TrackletCalculatorOverlap* ITC_L2B1_;
+
+  
+  
   std::map<string, vector<int> > dtclayerdisk;
 
   edm::ESHandle<TrackerTopology> tTopoHandle;
@@ -269,28 +288,57 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 
   extended_ = iConfig.getUntrackedParameter<bool>("Extended", false);
   nHelixPar_ = iConfig.getUntrackedParameter<unsigned int>("Hnpar", 4);
-  settings.setExtended(extended_);
-  settings.setNHelixPar(nHelixPar_);
+  settings_.setExtended(extended_);
+  settings_.setNHelixPar(nHelixPar_);
 
-  krinvpars = TrackletCalculator::ITC_L1L2.rinv_final.get_K();
-  kphi0pars = TrackletCalculator::ITC_L1L2.phi0_final.get_K();
-  ktpars = TrackletCalculator::ITC_L1L2.t_final.get_K();
-  kz0pars = TrackletCalculator::ITC_L1L2.z0_final.get_K();
-  kd0pars = kd0;
 
-  krdisk = kr;
-  kzpars = kz;
-  krprojshiftdisk = TrackletCalculator::ITC_L1L2.rD_0_final.get_K();
+  // tracklet calculators 
+  ITC_L1L2_ = new IMATH_TrackletCalculator(&settings_,1,2);
+  ITC_L2L3_ = new IMATH_TrackletCalculator(&settings_,2,3);
+  ITC_L3L4_ = new IMATH_TrackletCalculator(&settings_,3,4);
+  ITC_L5L6_ = new IMATH_TrackletCalculator(&settings_,5,6);
+  
+  ITC_F1F2_ = new IMATH_TrackletCalculatorDisk(&settings_,1,2);
+  ITC_F3F4_ = new IMATH_TrackletCalculatorDisk(&settings_,3,4);
+  ITC_B1B2_ = new IMATH_TrackletCalculatorDisk(&settings_,-1,-2);
+  ITC_B3B4_ = new IMATH_TrackletCalculatorDisk(&settings_,-3,-4);
+  
+  ITC_L1F1_ = new IMATH_TrackletCalculatorOverlap(&settings_,1,1);
+  ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(&settings_,2,1);
+  ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(&settings_,1,-1);
+  ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(&settings_,2,-1);
 
-  //those can be made more transparent...
-  kphiproj123 = kphi0pars * 4;
-  kphiproj456 = kphi0pars / 2;
-  kzproj = kz;
-  kphider = krinvpars * (1 << phiderbitshift);
-  kzder = ktpars * (1 << zderbitshift);
-  kphiprojdisk = kphi0pars * 4.0;
-  krprojderdiskshift = krprojderdisk * (1 << rderdiskbitshift);
-  krprojderdisk = (1.0 / ktpars) / (1 << t2bits);
+  GlobalHistTruth::ITC_L1L2()=ITC_L1L2_;
+  GlobalHistTruth::ITC_L2L3()=ITC_L2L3_;
+  GlobalHistTruth::ITC_L3L4()=ITC_L3L4_;
+  GlobalHistTruth::ITC_L5L6()=ITC_L5L6_;
+
+  GlobalHistTruth::ITC_F1F2()=ITC_F1F2_;
+  GlobalHistTruth::ITC_F3F4()=ITC_F3F4_;
+  GlobalHistTruth::ITC_B1B2()=ITC_B1B2_;
+  GlobalHistTruth::ITC_B3B4()=ITC_B3B4_;
+
+  GlobalHistTruth::ITC_L1F1()=ITC_L1F1_;
+  GlobalHistTruth::ITC_L2F1()=ITC_L2F1_;
+  GlobalHistTruth::ITC_L1B1()=ITC_L1B1_;
+  GlobalHistTruth::ITC_L2B1()=ITC_L2B1_;
+
+  settings_.krinvpars() = ITC_L1L2_->rinv_final.get_K();
+  settings_.kphi0pars() = ITC_L1L2_->phi0_final.get_K();
+  settings_.kd0pars()   = settings_.kd0();
+  settings_.ktpars()    = ITC_L1L2_->t_final.get_K();
+  settings_.kz0pars()   = ITC_L1L2_->z0_final.get_K();
+  settings_.kphiproj123() =ITC_L1L2_->phi0_final.get_K()*4;
+  settings_.kzproj()=settings_.kz();
+  settings_.kphider()=ITC_L1L2_->rinv_final.get_K()*(1<<settings_.phiderbitshift());
+  settings_.kzder()=ITC_L1L2_->t_final.get_K()*(1<<settings_.zderbitshift());
+  settings_.krprojshiftdisk() = ITC_L1L2_->rD_0_final.get_K();
+  settings_.kphiprojdisk()=ITC_L1L2_->phi0_final.get_K()*4.0;
+  settings_.krdisk() = settings_.kr();
+  settings_.kzpars() = settings_.kz();  
+
+
+  
 
   eventnum = 0;
   if (asciiEventOutName_ != "") {
@@ -310,7 +358,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     GlobalHistTruth::histograms() = histimp;
   }
 
-  sectors = new Sector*[NSector];
+  sectors = new Sector*[settings_.NSector()];
 
   if (settings.debugTracklet()) {
     cout << "cabling DTC links :     " << DTCLinkFile.fullPath() << endl;
