@@ -13,10 +13,6 @@
 
 using namespace std;
 
-static double x_offset=0.199196*0.0;
-static double y_offset=0.299922*0.0;
-
-
 class L1SimTrack{
 
 public:
@@ -119,16 +115,16 @@ public:
     eventnum_=0;
   }
 
-  void setIPx(double x) { x_offset=x;}
-  void setIPy(double y) { y_offset=y;}
+  void setIPx(double x) { x_offset_=x;}
+  void setIPy(double y) { y_offset_=y;}
 
   void setEventNum(int eventnum) { eventnum_=eventnum; }
 
   void addL1SimTrack(int eventid,int trackid,int type,double pt,double eta,double phi,
 		     double vx,double vy,double vz){
 
-    vx-=x_offset;
-    vy-=y_offset;
+    vx-=x_offset_;
+    vy-=y_offset_;
     L1SimTrack simtrack(eventid,trackid,type,pt,eta,phi,vx,vy,vz);
     simtracks_.push_back(simtrack);
 
@@ -151,8 +147,8 @@ public:
     }
     
     layer--;   
-    x-=x_offset;
-    y-=y_offset;
+    x-=x_offset_;
+    y-=y_offset_;
 
     
     L1TStub stub(eventid,tps,-1,-1,layer, ladder, module, strip, 
@@ -233,8 +229,8 @@ public:
       vx = strtod(vx_str.c_str(), NULL);
       vy = strtod(vy_str.c_str(), NULL);
       vz = strtod(vz_str.c_str(), NULL);
-      vx-=x_offset;
-      vy-=y_offset;
+      vx-=x_offset_;
+      vy-=y_offset_;
       L1SimTrack simtrack(eventid,trackid,type,pt,eta,phi,vx,vy,vz);
       simtracks_.push_back(simtrack);
       in >> tmp;
@@ -306,8 +302,8 @@ public:
       }
 
       layer--;   
-      x-=x_offset;
-      y-=y_offset;
+      x-=x_offset_;
+      y-=y_offset_;
 
       if (layer < 10) nlayer[layer]++;
 
@@ -437,6 +433,8 @@ private:
   vector<L1SimTrack> simtracks_;
   vector<L1TStub> stubs_;
 
+  double x_offset_{0.0};
+  double y_offset_{0.0};
 
 };
 
