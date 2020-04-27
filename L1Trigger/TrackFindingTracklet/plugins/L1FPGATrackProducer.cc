@@ -374,7 +374,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   while (in.good()) {
     vector<int> tmp;
     dtclayerdisk[dtc] = tmp;
-    int layerdisk;
+    int layerdisk; = new IMATH_TrackletCalculatorOverlap(&settings,2,-1);
     in >> layerdisk;
     while (layerdisk > 0) {
       dtclayerdisk[dtc].push_back(layerdisk);
@@ -383,7 +383,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     in >> dtc;
   }
 
-  for (unsigned int i = 0; i < NSector; i++) {
+  for (unsigned int i = 0; i < settings_.NSector(); i++) {
     sectors[i] = new Sector(i, &settings);
   }
 
@@ -411,7 +411,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     if (settings.writetrace()) {
       cout << "Read memory: " << memType << " " << memName << endl;
     }
-    for (unsigned int i = 0; i < NSector; i++) {
+    for (unsigned int i = 0; i < settings_.NSector(); i++) {
       sectors[i]->addMem(memType, memName);
     }
   }
@@ -431,7 +431,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     if (settings.writetrace()) {
       cout << "Read process: " << procType << " " << procName << endl;
     }
-    for (unsigned int i = 0; i < NSector; i++) {
+    for (unsigned int i = 0; i < settings_.NSector(); i++) {
       sectors[i]->addProc(procType, procName);
     }
   }
@@ -461,7 +461,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
       ss >> tmp2 >> procout;
     }
 
-    for (unsigned int i = 0; i < NSector; i++) {
+    for (unsigned int i = 0; i < settings_.NSector(); i++) {
       sectors[i]->addWire(mem, procin, procout);
     }
   }
@@ -871,7 +871,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   CPUTimer FTTimer;
   CPUTimer PDTimer;
 
-  if (writeSeeds) {
+  if (settings_.writeSeeds()) {
     ofstream fout("seeds.txt", ofstream::out);
     fout.close();
   }
@@ -884,11 +884,11 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
   ofstream outres;
-  if (writeResEff)
+  if (settings_.writeResEff())
     outres.open("trackres.txt");
 
   ofstream outeff;
-  if (writeResEff)
+  if (settings_.writeResEff())
     outeff.open("trackeff.txt");
 
   int nlayershit = 0;
@@ -906,11 +906,11 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     ntracks++;
 
     // this is where we create the TTTrack object
-    double tmp_rinv = track->rinv();
-    double tmp_phi = track->phi0();
-    double tmp_tanL = track->tanL();
-    double tmp_z0 = track->z0();
-    double tmp_d0 = track->d0();
+    double tmp_rinv = track->rinv(&settings_);
+    double tmp_phi = track->phi0(&settings_);
+    double tmp_tanL = track->tanL(&settings_);
+    double tmp_z0 = track->z0(&settings_);
+    double tmp_d0 = track->d0(&settings_);
     double tmp_chi2rphi = track->chisqrphi();
     double tmp_chi2rz = track->chisqrz();
     unsigned int tmp_hit = track->hitpattern();
@@ -956,7 +956,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   iEvent.put(std::move(L1TkTracksForOutput), "Level1TTTracks");
 
-  for (unsigned int k = 0; k < NSector; k++) {
+  for (unsigned int k = 0; k < settings_.NSector(); k++) {
     sectors[k]->clean();
   }
 
