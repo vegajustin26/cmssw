@@ -7,6 +7,8 @@
 #include "VMStubTE.h"
 #include "MemoryBase.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class VMStubsTEMemory:public MemoryBase{
@@ -71,7 +73,7 @@ public:
     bool pass=passbend(vmstub.bend().value());
 
     if (!pass) {
-      if (settings_->debugTracklet()) cout << getName() << " Stub failed bend cut. bend = "<<Stub::benddecode(vmstub.bend().value(),vmstub.isPSmodule())<<endl;
+      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName() << " Stub failed bend cut. bend = "<<Stub::benddecode(vmstub.bend().value(),vmstub.isPSmodule());
       return false;
     }
     
@@ -82,7 +84,7 @@ public:
 	assert(bin<4);
 	if (negdisk) bin+=4;
 	stubsbinnedvm_[bin].push_back(vmstub);
-	if (settings_->debugTracklet()) cout << getName()<<" Stub in disk = "<<disk_<<"  in bin = "<<bin<<endl;
+	if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName()<<" Stub in disk = "<<disk_<<"  in bin = "<<bin;
       } else if (layer_==2) {
 	stubsbinnedvm_[bin].push_back(vmstub);
       }
@@ -102,7 +104,7 @@ public:
 	
       }
     }
-    if (settings_->debugTracklet()) cout << "Adding stubs to "<<getName()<<endl;
+    if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding stubs to "<<getName();
     stubsvm_.push_back(vmstub);
     return true;
     
@@ -121,7 +123,7 @@ public:
     bool pass=passbend(vmstub.bend().value());
 
     if (!pass) {
-      if (settings_->debugTracklet()) cout << getName() << " Stub failed bend cut. bend = "<<Stub::benddecode(vmstub.bend().value(),vmstub.isPSmodule())<<endl;
+      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName() << " Stub failed bend cut. bend = "<<Stub::benddecode(vmstub.bend().value(),vmstub.isPSmodule());
       return false;
     }
 
@@ -133,8 +135,8 @@ public:
 	  assert(bin<4);
 	  if (negdisk) bin+=4;
 	  stubsbinnedvm_[bin].push_back(vmstub);
-	  if (settings_->debugTracklet()) cout << getName()<<" Stub with lookup = "<<binlookup.value()
-					       <<" in disk = "<<disk_<<"  in bin = "<<bin<<endl;
+	  if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName()<<" Stub with lookup = "<<binlookup.value()
+								       <<" in disk = "<<disk_<<"  in bin = "<<bin;
 	}
       } else {
         if (vmstub.stub().first->isBarrel()){
@@ -179,7 +181,7 @@ public:
       }
     }
 
-    if (settings_->debugTracklet()) cout << "Adding stubs to "<<getName()<<endl;
+    if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Adding stubs to "<<getName();
     stubsvm_.push_back(vmstub);
     return true;
   }

@@ -11,6 +11,8 @@
 #include <cassert>
 #include "L1TStub.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class L1SimTrack{
@@ -186,13 +188,13 @@ public:
       in>>tmp;
     }
     if (tmp!="Event:") {
-      cout << "Expected to read 'Event:' but found:"<<tmp<<endl;
+      edm::LogVerbatim("Tracklet") << "Expected to read 'Event:' but found:"<<tmp;
       if (tmp=="") {
-	cout << "WARNING: fewer events to process than specified!" << endl;
+	edm::LogVerbatim("Tracklet") << "WARNING: fewer events to process than specified!";
 	return;
       }
       else {
-	cout << "ERROR, aborting reading file" << endl;
+	edm::LogVerbatim("Tracklet") << "ERROR, aborting reading file";
 	abort();
       }
     }
@@ -203,8 +205,7 @@ public:
     in >> tmp;
     while (tmp!="SimTrackEnd"){
       if (!(tmp=="SimTrack:"||tmp=="SimTrackEnd")) {
-	cout << "Expected to read 'SimTrack:' or 'SimTrackEnd' but found:"
-	     << tmp << endl;
+	edm::LogVerbatim("Tracklet") << "Expected to read 'SimTrack:' or 'SimTrackEnd' but found:" << tmp;
 	abort();
       }
       int eventid;
@@ -253,12 +254,11 @@ public:
     while (tmp!="StubEnd"){
 
       if (!in.good()) {
-	cout << "File not good"<<endl;
+	edm::LogVerbatim("Tracklet") << "File not good";
 	abort();
       };
       if (!(tmp=="Stub:"||tmp=="StubEnd")) {
-	cout << "Expected to read 'Stub:' or 'StubEnd' but found:"
-	     << tmp << endl;
+	edm::LogVerbatim("Tracklet") << "Expected to read 'Stub:' or 'StubEnd' but found:"<< tmp;
 	abort();
       }
       int layer;

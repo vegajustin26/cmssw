@@ -10,6 +10,8 @@
 #include "TETableInnerDisk.h"
 #include "TETableInnerOverlap.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class VMRouter:public ProcessBase{
@@ -32,7 +34,7 @@ public:
   void addOutput(MemoryBase* memory,string output){
 
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
     }
 
     if (output.substr(0,10)=="allstubout"){
@@ -111,13 +113,13 @@ public:
       return;
     }
     
-    cout << "Could not find : "<<output<<endl;
+    edm::LogPrint("Tracklet") << "Could not find : "<<output;
     assert(0);
   }
 
   void addInput(MemoryBase* memory,string input){
     if (settings_->writetrace()) {
-      cout << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input<<endl;
+      edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
     }
     if (input=="stubin"){
       InputLinkMemory* tmp1=dynamic_cast<InputLinkMemory*>(memory);
@@ -127,7 +129,7 @@ public:
       }
       return;
     }
-    cout << "Could not find input : "<<input<<endl;
+    edm::LogPrint("Tracklet") << "Could not find input : "<<input;
     assert(0);
   }
 
@@ -249,7 +251,7 @@ public:
 	  
 	  for (unsigned int l=0;l<nmem;l++){
 	    if (settings_->debugTracklet()) {
-	      cout << getName()<<" try adding stub to "<<vmstubsTEPHI_[i].second[ivmte][l]->getName()<<" inner="<<inner<<" bin="<<bin<<endl;
+	      edm::LogVerbatim("Tracklet") << getName()<<" try adding stub to "<<vmstubsTEPHI_[i].second[ivmte][l]->getName()<<" inner="<<inner<<" bin="<<bin;
 	    }
 	    if (inner==0) {
 	      vmstubsTEPHI_[i].second[ivmte][l]->addVMStub(tmpstub); 

@@ -5,6 +5,8 @@
 #include "Tracklet.h"
 #include "MemoryBase.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 using namespace std;
 
 class VMProjectionsMemory : public MemoryBase {
@@ -39,7 +41,7 @@ public:
     if (subname == "D5")
       disk_ = 5;
     if (layer_ == 0 && disk_ == 0) {
-      cout << name << " subname = " << subname << " " << layer_ << " " << disk_ << endl;
+      edm::LogPrint("Tracklet") << name << " subname = " << subname << " " << layer_ << " " << disk_;
     }
     assert((layer_ != 0) || (disk_ != 0));
   }
@@ -59,7 +61,6 @@ public:
   int getAllProjIndex(unsigned int i) const { return tracklets_[i].second; }
 
   void writeVMPROJ(bool first) {
-    //cout << "In writeTPROJ "<<tracklets_.size()<<"\t"<<name_<<" "<<layer_<<" "<<disk_<<endl;
 
     std::string fname = "../data/MemPrints/VMProjections/VMProjections_";
     fname += getName();
