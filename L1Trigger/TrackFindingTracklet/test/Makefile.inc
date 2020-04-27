@@ -1,6 +1,6 @@
 #common definitions go in here
 CXX           = g++
-CXXFLAGS      = -O -Wall  -fPIC -g -ansi -Wextra -Wno-deprecated -std=c++11
+CXXFLAGS      = -O -Wall  -fPIC -g -ansi -Wextra -Wno-deprecated -std=c++11 -I.
 LD            = g++
 LDFLAGS       = -O
 LIBDIR       = $(WORKDIR)
@@ -16,6 +16,27 @@ endif
 
 ifndef ROOTSYS
 $(error *** Please set up Root)
+endif
+
+ifeq ("$(wildcard FWCore)","")
+$(shell mkdir FWCore)
+$(shell mkdir FWCore/MessageLogger)
+$(shell mkdir FWCore/MessageLogger/interface)
+endif
+
+ifeq ("$(wildcard FWCore/MessageLogger/interface/MessageLogger.h)","")
+$(shell echo "#ifndef L1Trigger_TrackFindingTracklet_interface_Logger_h" > FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "#define L1Trigger_TrackFindingTracklet_interface_Logger_h" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "namespace edm {" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "  class LogVerbatim{" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "  public:" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogVerbatim(std::string type) { cout << type;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    template <class T> LogVerbatim& operator<<(T const& t) {cout << t;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogVerbatim& operator<<(std::ostream& (*f)(std::ostream&)) {cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogVerbatim& operator<<(std::ios_base& (*f)(std::ios_base&)) {cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "  };" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "};" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "#endif" >> FWCore/MessageLogger/interface/MessageLogger.h)
 endif
 
 

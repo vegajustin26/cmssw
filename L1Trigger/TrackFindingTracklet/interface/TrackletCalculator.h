@@ -10,13 +10,13 @@
 #include "TrackletProjectionsMemory.h"
 #include "Util.h"
 
-#ifdef CMSSW_GIT_HASH
+//#ifdef CMSSW_GIT_HASH
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
-using namespace edm;
-#endif
-#ifndef CMSSW_GIT_HASH
-#include "Logger.h"
-#endif
+//using namespace edm;
+//#endif
+//#ifndef CMSSW_GIT_HASH
+//#include "Logger.h"
+//#endif
 
 using namespace std;
 
@@ -253,7 +253,7 @@ public:
 
   void execute() {
 
-    LogVerbatim("Tracklet") << " MEBUG TEST TrackletCalulator " << getName() << " stub pairs size = " << stubpairs_.size() << endl;
+    edm::LogVerbatim("Tracklet") << " MEBUG TEST TrackletCalulator " << getName() << " stub pairs size = " << stubpairs_.size() << endl;
     
     unsigned int countall=0;
     unsigned int countsel=0;
