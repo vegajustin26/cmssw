@@ -24,40 +24,7 @@ namespace Trklet{
       //#define USEHYBRID
       //#endif
 
-      geomTkTDR_=false;
-      nzbitsdisk_=7;
-
-      NSector_=9;
-      rcrit_=55.0;
-
-      half2SmoduleWidth_=4.57;
-
       
-      dphicritmc_=0.005; //lose for MC
-
-      rinvmax_=0.01*0.3*3.8/2.0; //0.01 to convert to cm-1 -  FIXME should not have all these hardcoded numbers
-      
-      nzbitsstub_={{12,12,12,8,8,8,7,7,7,7,7}};
-      nphibitsstub_={{14,14,14,17,17,17,14,14,14,14,14}};
-      nrbitsstub_={{7,7,7,7,7,7,12,12,12,12,12}};
-
-      nrbitsprojderdisk_=9;
-      nbitsphiprojderL123_=8+2;
-      nbitsphiprojderL456_=8+2;
-      nbitszprojderL123_=8+2;
-      nbitszprojderL456_=7+2;
-
-      
-      useseeding_={0,1,2,3,4,5,6,7,8,9,10,11};
-
-      nbitsvmte_[0]={{2,2,2,2,2,2,1,1,2,2,3,2}};
-      nbitsvmte_[1]={{3,2,3,3,2,2,2,2,3,3,2,2}};
-      nbitsvmte_[2]={{0,0,0,0,0,0,0,0,0,0,2,1}};
-
-      nbitsvmme_={{2,3,3,3,3,3,3,2,2,2,2}};
-      
-      nbitsallstubs_={{3,2,2,2,2,2,2,2,2,2,2}}; 
-
       // geometry related 
       zlength_=120.0;
       rmaxdisk_=120.0;
@@ -587,35 +554,39 @@ namespace Trklet{
     
   private:
 
-    bool geomTkTDR_;
+    bool geomTkTDR_{false};
 
-    unsigned int NSector_;
+    unsigned int NSector_{9};
 
-    double rcrit_;
-    double rinvmax_;
+    double rcrit_{55.0};
+    double rinvmax_{0.01*0.3*3.8/2.0};
 
-    double dphicritmc_;
+    double dphicritmc_{0.005};
 
     std::array<double,6> rmean_;
     std::array<double,5> zmean_;
     
-    unsigned int nzbitsdisk_;
+    unsigned int nzbitsdisk_{7}; //FIXME should not be used
 
-    std::array<unsigned int,11> nzbitsstub_;
-    std::array<unsigned int,11> nphibitsstub_;
-    std::array<unsigned int,11> nrbitsstub_;
+    std::array<unsigned int,11> nzbitsstub_{{12,12,12,8,8,8,7,7,7,7,7}};
+    std::array<unsigned int,11> nphibitsstub_{{14,14,14,17,17,17,14,14,14,14,14}};
+    std::array<unsigned int,11> nrbitsstub_{{7,7,7,7,7,7,12,12,12,12,12}};
 
-    unsigned int nrbitsprojderdisk_;
-    unsigned int nbitsphiprojderL123_;
-    unsigned int nbitsphiprojderL456_;
-    unsigned int nbitszprojderL123_;
-    unsigned int nbitszprojderL456_;
+    unsigned int nrbitsprojderdisk_{9};
+    unsigned int nbitsphiprojderL123_{10};
+    unsigned int nbitsphiprojderL456_{10};
+    unsigned int nbitszprojderL123_{10};
+    unsigned int nbitszprojderL456_{9};
 
-    std::set<unsigned int> useseeding_;
+    std::set<unsigned int> useseeding_{0,1,2,3,4,5,6,7,8,9,10,11};
 
-    std::array<unsigned int,11> nbitsallstubs_;
-    std::array<unsigned int,11> nbitsvmme_;
-    std::array<std::array<unsigned int, 12>, 3> nbitsvmte_;
+    std::array<unsigned int,11> nbitsallstubs_{{3,2,2,2,2,2,2,2,2,2,2}};
+    std::array<unsigned int,11> nbitsvmme_{{2,3,3,3,3,3,3,2,2,2,2}};
+    std::array<std::array<unsigned int, 12>, 3> nbitsvmte_{{
+	{{2,2,2,2,2,2,1,1,2,2,3,2}},
+	{{3,2,3,3,2,2,2,2,3,3,2,2}},
+	{{0,0,0,0,0,0,0,0,0,0,2,1}}
+      }};
 
     std::array<std::array<double, 8>, 2> bendcutte_;
     std::array<double, 11> bendcutme_{{2.0,2.0,2.0,2.0,2.0,2.0,1.5,1.5,1.5,1.5,1.5}};
@@ -641,7 +612,7 @@ namespace Trklet{
     double drmax_;
     double dzmax_;
 
-    double half2SmoduleWidth_;
+    double half2SmoduleWidth_{4.57};
 
     double maxrinv_{0.006};
     double maxd0_{10.0};
