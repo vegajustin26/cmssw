@@ -226,22 +226,22 @@ class FitTrack:public ProcessBase{
    }
 #endif
 
-    static TrackDerTable derTable(settings_);
+    if (globals_->trackDerTable()==0) {
 
-   //test
-   static bool first=true;
-   if (first) {
-     derTable.readPatternFile(settings_->fitpatternfile());
-    derTable.fillTable(settings_);
-    edm::LogVerbatim("Tracklet") << "Number of entries in derivative table: " << derTable.getEntries();
-    assert(derTable.getEntries()!=0);
+      TrackDerTable* derTablePtr= new TrackDerTable(settings_);
 
-    //testDer();
-    first=false;
-   }
-
-   //First step is to build list of layers and disks.
-
+      derTablePtr->readPatternFile(settings_->fitpatternfile());
+      derTablePtr->fillTable(settings_);
+      edm::LogVerbatim("Tracklet") << "Number of entries in derivative table: " << derTablePtr->getEntries();
+      assert(derTablePtr->getEntries()!=0);
+      
+      globals_->trackDerTable()=derTablePtr;
+    }
+    
+    TrackDerTable& derTable=*globals_->trackDerTable(); //FIXME should be const
+    
+    //First step is to build list of layers and disks.
+    
    int layers[6];
    double r[6];
    unsigned int nlayers=0;
@@ -270,10 +270,6 @@ class FitTrack:public ProcessBase{
     iphiresid[i]=0;
     izresid[i]=0;
    }
-
-
-   static ofstream out2;
-   if (settings_->writeMonitorData("HitPattern")) out2.open("hitpattern.txt");
 
    char matches[8]="000000\0";
    char matches2[12]="0000000000\0";
@@ -351,7 +347,7 @@ class FitTrack:public ProcessBase{
 
     if (mult<=1<<(3*settings_->alphaBitsTable())) {
       if (settings_->writeMonitorData("HitPattern")) {
-      out2<<matches<<" "<<matches2<<" "<<mult<<endl;
+	globals_->ofstream("hitpattern.txt")<<matches<<" "<<matches2<<" "<<mult<<endl;
      }
     }
 

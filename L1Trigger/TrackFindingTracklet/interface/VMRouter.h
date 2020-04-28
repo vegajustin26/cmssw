@@ -315,6 +315,34 @@ public:
 
   FPGAWord lookup(unsigned int iseed, unsigned int inner,FPGAWord z, FPGAWord r, bool negdisk, bool isPSmodule){
 
+
+    if (globals_->teTable(0,0)==0) {
+      globals_->teTable(0,0)=new TETableInner(settings_,1,2,-1,settings_->zbitstab(0,0),settings_->rbitstab(0,0));
+      globals_->teTable(0,1)=new TETableInner(settings_,2,3,-1,settings_->zbitstab(0,1),settings_->rbitstab(0,1));
+      globals_->teTable(0,2)=new TETableInner(settings_,3,4,2,settings_->zbitstab(0,2),settings_->rbitstab(0,2));
+      globals_->teTable(0,3)=new TETableInner(settings_,5,6,4,settings_->zbitstab(0,3),settings_->rbitstab(0,3));
+      globals_->teTable(0,4)=new TETableInnerDisk(settings_,1,2,-1,settings_->zbitstab(0,4),settings_->rbitstab(0,4));
+      globals_->teTable(0,5)=new TETableInnerDisk(settings_,3,4,-1,settings_->zbitstab(0,5),settings_->rbitstab(0,5));
+      globals_->teTable(0,6)=new TETableInnerOverlap(settings_,1,1,settings_->zbitstab(0,6),settings_->rbitstab(0,6));
+      globals_->teTable(0,7)=new TETableInnerOverlap(settings_,2,1,settings_->zbitstab(0,7),settings_->rbitstab(0,7));
+      globals_->teTable(0,10)=new TETableInner(settings_,2,3,1,settings_->zbitstab(0,10),settings_->rbitstab(0,10),true);
+
+      
+      globals_->teTable(1,0)=new TETableOuter(settings_,2,settings_->zbitstab(1,0),settings_->rbitstab(1,0));
+      globals_->teTable(1,1)=new TETableOuter(settings_,3,settings_->zbitstab(1,1),settings_->rbitstab(1,1));
+      globals_->teTable(1,2)=new TETableOuter(settings_,4,settings_->zbitstab(1,2),settings_->rbitstab(1,2));
+      globals_->teTable(1,3)=new TETableOuter(settings_,6,settings_->zbitstab(1,3),settings_->rbitstab(1,3));
+      globals_->teTable(1,4)=new TETableOuterDisk(settings_,2,settings_->zbitstab(1,4),settings_->rbitstab(1,4));
+      globals_->teTable(1,5)=new TETableOuterDisk(settings_,4,settings_->zbitstab(1,5),settings_->rbitstab(1,5));
+      globals_->teTable(1,6)=new TETableOuterDisk(settings_,1,settings_->zbitstab(1,6),settings_->rbitstab(1,6));
+      globals_->teTable(1,7)=new TETableOuterDisk(settings_,1,settings_->zbitstab(1,7),settings_->rbitstab(1,7));
+      globals_->teTable(1,10)=new TETableOuter(settings_,3,settings_->zbitstab(1,10),settings_->rbitstab(1,10));
+
+      globals_->teTable(2,10)=new TETableOuterDisk(settings_,1,settings_->zbitstab(2,10),settings_->rbitstab(2,10));
+      globals_->teTable(2,11)=new TETableOuter(settings_,2,settings_->zbitstab(2,11),settings_->rbitstab(2,11));
+    }
+
+    /*
     static bool first=true;
     static TETableBase* LUTs[3][12];
     
@@ -352,6 +380,7 @@ public:
       LUTs[2][11]=new TETableOuter(settings_,2,settings_->zbitstab(2,11),settings_->rbitstab(2,11));
 
     }
+    */
 
     if (iseed==10&&inner==2) {
       //return if radius to small (values <100 corresponds to the 2S modules)
@@ -366,7 +395,7 @@ public:
       return FPGAWord(bin*8,settings_->lutwidthtabextended(inner,iseed),true,__LINE__,__FILE__);
     }
     
-    assert(LUTs[inner][iseed]!=0);
+    assert(globals_->teTable(inner,iseed)!=0);
 
     
     unsigned int zbits=settings_->zbitstab(inner,iseed);
@@ -386,7 +415,7 @@ public:
       rbin=r.value()>>(r.nbits()-rbits);
     } 
 
-    int lutvalue=LUTs[inner][iseed]->lookup(zbin,rbin);
+    int lutvalue=globals_->teTable(inner,iseed)->lookup(zbin,rbin);
 
     if (lutvalue<0) {
       return FPGAWord(lutvalue,2,false,__LINE__,__FILE__);

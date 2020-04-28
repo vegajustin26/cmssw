@@ -10,6 +10,7 @@
 #include "Stub.h"
 #include "MemoryBase.h"
 #include "VMRouterPhiCorrTable.h"
+#include "GlobalHistTruth.h"
 #include <cmath>
 #include <sstream>
 #include <cctype>
@@ -33,19 +34,17 @@ public:
     layerdisk_=initLayerDisk(3);
   }
 
-  bool addStub(const Settings* settings, L1TStub& al1stub, Stub& stub, string dtc="") {
-
-    static bool first=true;
-    static VMRouterPhiCorrTable phiCorrLayers[6];
-
-    if (first) {
-      for (int l=0;l<6;l++){
-	int nbits=3;
-	if (l>=3) nbits=4;
-        phiCorrLayers[l].init(settings,l+1,nbits,3);
-      }
-      first=false;
+  bool addStub(const Settings* settings, GlobalHistTruth* globals, L1TStub& al1stub, Stub& stub, string dtc="") {
+    
+    if (layerdisk_<6&&globals->phiCorr(layerdisk_)==0) {
+      globals->phiCorr(layerdisk_)=new VMRouterPhiCorrTable();
+      int nbits=3;
+      if (layerdisk_>=3) nbits=4;
+      globals->phiCorr(layerdisk_)->init(settings,layerdisk_+1,nbits,3);
     }
+
+
+
 
     int stublayerdisk=stub.layer().value();
     if (stublayerdisk==-1) stublayerdisk=5+abs(stub.disk().value());
@@ -56,8 +55,9 @@ public:
     if (layerdisk_<6) {
       FPGAWord r=stub.r();
       int bendbin=stub.bend().value();
-      int rbin=(r.value()+(1<<(r.nbits()-1)))>>(r.nbits()-3);      
-      int iphicorr=phiCorrLayers[layerdisk_].getphiCorrValue(bendbin,rbin);
+      int rbin=(r.value()+(1<<(r.nbits()-1)))>>(r.nbits()-3);
+      const VMRouterPhiCorrTable& phiCorrTable=*globals->phiCorr(layerdisk_);
+      int iphicorr=phiCorrTable.getphiCorrValue(bendbin,rbin);
       stub.setPhiCorr(iphicorr);
     }
     

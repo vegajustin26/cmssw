@@ -92,7 +92,7 @@ public:
       std::vector<int>& tmp=ILindex[dtc];
       assert(tmp.size()!=0);
       for (unsigned int i=0;i<tmp.size();i++){
-	if (IL_[tmp[i]]->addStub(settings_,stub,fpgastub,dtc)) add=true;
+	if (IL_[tmp[i]]->addStub(settings_,globals_,stub,fpgastub,dtc)) add=true;
       }
     }
     

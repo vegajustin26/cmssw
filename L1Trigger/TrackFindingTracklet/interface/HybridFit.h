@@ -58,7 +58,11 @@ public:
     std::map<unsigned int, L1TStub*> L1StubIndices;
     unsigned int L1stubID = 0;
 
-    static const tmtt::Settings TMTTsettings;
+    if (globals_->tmttSettings()==0) {
+      globals_->tmttSettings()=new tmtt::Settings();
+    }
+    
+    const tmtt::Settings& TMTTsettings=*globals_->tmttSettings();
 
     int kf_phi_sec = iSector_;
 
@@ -169,14 +173,14 @@ public:
     l1track3d.setSeedLayerType(seedType);
     l1track3d.setSeedPS(numPS);
 
-    // Create Kalman track fitter.
-    static bool firstPrint = true;
-    if (firstPrint) {
+    if (globals_->tmttKFParamsComb()==0) {
       edm::LogVerbatim("L1track") << "Will make KFParamsComb for " << settings_->nHelixPar() << " param fit";
+      globals_->tmttKFParamsComb()=new tmtt::KFParamsComb(&TMTTsettings, settings_->nHelixPar(), "KFfitter");
     }
-    static thread_local tmtt::KFParamsComb fitterKF(&TMTTsettings, settings_->nHelixPar(), "KFfitter");
-    firstPrint = false;
 
+    tmtt::KFParamsComb& fitterKF=*globals_->tmttKFParamsComb();
+
+    
     // Call Kalman fit
     tmtt::L1fittedTrack fittedTrk = fitterKF.fit(l1track3d);
 

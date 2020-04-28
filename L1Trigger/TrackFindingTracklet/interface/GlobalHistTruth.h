@@ -9,35 +9,51 @@
 
 using namespace std;
 
+namespace tmtt {
+  class Settings;
+  class KFParamsComb;
+}
+
+class TETableBase;
+class TrackDerTable;
+class VMRouterPhiCorrTable;
+
 class GlobalHistTruth {
 public:
 
   GlobalHistTruth(Trklet::Settings* settings){
-  // tracklet calculators 
-  ITC_L1L2_ = new IMATH_TrackletCalculator(settings,1,2);
-  ITC_L2L3_ = new IMATH_TrackletCalculator(settings,2,3);
-  ITC_L3L4_ = new IMATH_TrackletCalculator(settings,3,4);
-  ITC_L5L6_ = new IMATH_TrackletCalculator(settings,5,6);
-  
-  ITC_F1F2_ = new IMATH_TrackletCalculatorDisk(settings,1,2);
-  ITC_F3F4_ = new IMATH_TrackletCalculatorDisk(settings,3,4);
-  ITC_B1B2_ = new IMATH_TrackletCalculatorDisk(settings,-1,-2);
-  ITC_B3B4_ = new IMATH_TrackletCalculatorDisk(settings,-3,-4);
-  
-  ITC_L1F1_ = new IMATH_TrackletCalculatorOverlap(settings,1,1);
-  ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(settings,2,1);
-  ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(settings,1,-1);
-  ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(settings,2,-1);
-
-
-
-
+    // tracklet calculators 
+    ITC_L1L2_ = new IMATH_TrackletCalculator(settings,1,2);
+    ITC_L2L3_ = new IMATH_TrackletCalculator(settings,2,3);
+    ITC_L3L4_ = new IMATH_TrackletCalculator(settings,3,4);
+    ITC_L5L6_ = new IMATH_TrackletCalculator(settings,5,6);
+    
+    ITC_F1F2_ = new IMATH_TrackletCalculatorDisk(settings,1,2);
+    ITC_F3F4_ = new IMATH_TrackletCalculatorDisk(settings,3,4);
+    ITC_B1B2_ = new IMATH_TrackletCalculatorDisk(settings,-1,-2);
+    ITC_B3B4_ = new IMATH_TrackletCalculatorDisk(settings,-3,-4);
+    
+    ITC_L1F1_ = new IMATH_TrackletCalculatorOverlap(settings,1,1);
+    ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(settings,2,1);
+    ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(settings,1,-1);
+    ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(settings,2,-1);
   }
   
   SLHCEvent*& event() { return theEvent_; }
 
   HistBase*& histograms() { return theHistBase_; }
 
+  TrackDerTable*& trackDerTable() {return trackDerTable_; }
+
+  tmtt::Settings*& tmttSettings() {return tmttSettings_; }
+
+  tmtt::KFParamsComb*& tmttKFParamsComb() {return tmttKFParamsComb_;}
+
+  VMRouterPhiCorrTable*& phiCorr(unsigned int layer) { return thePhiCorr_[layer]; }
+
+  TETableBase*& teTable(unsigned int inner, unsigned int iSeed) { return theTETable_[inner][iSeed]; }
+
+  
   IMATH_TrackletCalculator* ITC_L1L2() { return ITC_L1L2_; }
 
   IMATH_TrackletCalculator* ITC_L2L3() { return ITC_L2L3_; }
@@ -95,6 +111,19 @@ private:
 
   HistBase* theHistBase_{0};
 
+  TrackDerTable* trackDerTable_{0};
+
+  tmtt::Settings* tmttSettings_{0};
+
+  tmtt::KFParamsComb* tmttKFParamsComb_{0};
+
+  std::array<VMRouterPhiCorrTable*,6> thePhiCorr_{{0,0,0,0,0,0}};
+
+  std::array<std::array<TETableBase*,12>,3> theTETable_{{
+      {{0,0,0,0,0,0,0,0,0,0,0,0}},
+      {{0,0,0,0,0,0,0,0,0,0,0,0}},
+      {{0,0,0,0,0,0,0,0,0,0,0,0}}
+    }};
   
 };
 

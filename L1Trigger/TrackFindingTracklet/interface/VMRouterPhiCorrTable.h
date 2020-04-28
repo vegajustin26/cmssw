@@ -46,7 +46,8 @@ public:
     }
   }
 
-  int getphiCorrValue(int ibend, int irbin) {
+  int getphiCorrValue(int ibend, int irbin) const {
+
     double bend = Stub::benddecode(ibend, layer_ <= 3);
 
     //for the rbin - calculate the distance to the nominal layer radius
