@@ -336,7 +336,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   }
 
   for (unsigned int i = 0; i < settings.NSector(); i++) {
-    sectors[i] = new Sector(i,&settings,&globals);
+    sectors[i] = new Sector(i,&settings,globals);
   }
 
   if (settings.debugTracklet()) {
