@@ -342,46 +342,6 @@ public:
       globals_->teTable(2,11)=new TETableOuter(settings_,2,settings_->zbitstab(2,11),settings_->rbitstab(2,11));
     }
 
-    /*
-    static bool first=true;
-    static TETableBase* LUTs[3][12];
-    
-    if (first) {
-      first=false;
-
-      for (unsigned int i=0;i<3;i++){
-	for (unsigned int iseed=0;iseed<12;iseed++) {
-	  LUTs[i][iseed]=0;
-	}
-      }
-
-      LUTs[0][0]=new TETableInner(settings_,1,2,-1,settings_->zbitstab(0,0),settings_->rbitstab(0,0));
-      LUTs[0][1]=new TETableInner(settings_,2,3,-1,settings_->zbitstab(0,1),settings_->rbitstab(0,1));
-      LUTs[0][2]=new TETableInner(settings_,3,4,2,settings_->zbitstab(0,2),settings_->rbitstab(0,2));
-      LUTs[0][3]=new TETableInner(settings_,5,6,4,settings_->zbitstab(0,3),settings_->rbitstab(0,3));
-      LUTs[0][4]=new TETableInnerDisk(settings_,1,2,-1,settings_->zbitstab(0,4),settings_->rbitstab(0,4));
-      LUTs[0][5]=new TETableInnerDisk(settings_,3,4,-1,settings_->zbitstab(0,5),settings_->rbitstab(0,5));
-      LUTs[0][6]=new TETableInnerOverlap(settings_,1,1,settings_->zbitstab(0,6),settings_->rbitstab(0,6));
-      LUTs[0][7]=new TETableInnerOverlap(settings_,2,1,settings_->zbitstab(0,7),settings_->rbitstab(0,7));
-      LUTs[0][10]=new TETableInner(settings_,2,3,1,settings_->zbitstab(0,10),settings_->rbitstab(0,10),true);
-
-      
-      LUTs[1][0]=new TETableOuter(settings_,2,settings_->zbitstab(1,0),settings_->rbitstab(1,0));
-      LUTs[1][1]=new TETableOuter(settings_,3,settings_->zbitstab(1,1),settings_->rbitstab(1,1));
-      LUTs[1][2]=new TETableOuter(settings_,4,settings_->zbitstab(1,2),settings_->rbitstab(1,2));
-      LUTs[1][3]=new TETableOuter(settings_,6,settings_->zbitstab(1,3),settings_->rbitstab(1,3));
-      LUTs[1][4]=new TETableOuterDisk(settings_,2,settings_->zbitstab(1,4),settings_->rbitstab(1,4));
-      LUTs[1][5]=new TETableOuterDisk(settings_,4,settings_->zbitstab(1,5),settings_->rbitstab(1,5));
-      LUTs[1][6]=new TETableOuterDisk(settings_,1,settings_->zbitstab(1,6),settings_->rbitstab(1,6));
-      LUTs[1][7]=new TETableOuterDisk(settings_,1,settings_->zbitstab(1,7),settings_->rbitstab(1,7));
-      LUTs[1][10]=new TETableOuter(settings_,3,settings_->zbitstab(1,10),settings_->rbitstab(1,10));
-
-      LUTs[2][10]=new TETableOuterDisk(settings_,1,settings_->zbitstab(2,10),settings_->rbitstab(2,10));
-      LUTs[2][11]=new TETableOuter(settings_,2,settings_->zbitstab(2,11),settings_->rbitstab(2,11));
-
-    }
-    */
-
     if (iseed==10&&inner==2) {
       //return if radius to small (values <100 corresponds to the 2S modules)
       if (r.value()>100&&r.value()<settings_->rmindiskl3overlapvm()/settings_->kr()) return FPGAWord(-1,2,false,__LINE__,__FILE__);
