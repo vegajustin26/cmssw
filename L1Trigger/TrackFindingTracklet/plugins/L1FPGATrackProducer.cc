@@ -192,7 +192,7 @@ private:
   Trklet::Settings settings;
 
   // global class for tracklet processing
-  GlobalHistTruth globals(&settings);
+  GlobalHistTruth* globals;
 
   unsigned int nHelixPar_;
   bool extended_;
@@ -267,6 +267,8 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 
   DTCLinkLayerDiskFile = iConfig.getParameter<edm::FileInPath>("DTCLinkLayerDiskFile");
 
+  globals = new GlobalHistTruth(&settings);
+  
   // --------------------------------------------------------------------------------
   // get all constants
   // --------------------------------------------------------------------------------
@@ -276,17 +278,17 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   settings.setExtended(extended_);
   settings.setNHelixPar(nHelixPar_);
 
-  settings.krinvpars() = globals.ITC_L1L2()->rinv_final.get_K();
-  settings.kphi0pars() = globals.ITC_L1L2()->phi0_final.get_K();
+  settings.krinvpars() = globals->ITC_L1L2()->rinv_final.get_K();
+  settings.kphi0pars() = globals->ITC_L1L2()->phi0_final.get_K();
   settings.kd0pars()   = settings.kd0();
-  settings.ktpars()    = globals.ITC_L1L2()->t_final.get_K();
-  settings.kz0pars()   = globals.ITC_L1L2()->z0_final.get_K();
-  settings.kphiproj123() =globals.ITC_L1L2()->phi0_final.get_K()*4;
+  settings.ktpars()    = globals->ITC_L1L2()->t_final.get_K();
+  settings.kz0pars()   = globals->ITC_L1L2()->z0_final.get_K();
+  settings.kphiproj123() =globals->ITC_L1L2()->phi0_final.get_K()*4;
   settings.kzproj()=settings.kz();
-  settings.kphider()=globals.ITC_L1L2()->rinv_final.get_K()*(1<<settings.phiderbitshift());
-  settings.kzder()=globals.ITC_L1L2()->t_final.get_K()*(1<<settings.zderbitshift());
-  settings.krprojshiftdisk() = globals.ITC_L1L2()->rD_0_final.get_K();
-  settings.kphiprojdisk()=globals.ITC_L1L2()->phi0_final.get_K()*4.0;
+  settings.kphider()=globals->ITC_L1L2()->rinv_final.get_K()*(1<<settings.phiderbitshift());
+  settings.kzder()=globals->ITC_L1L2()->t_final.get_K()*(1<<settings.zderbitshift());
+  settings.krprojshiftdisk() = globals->ITC_L1L2()->rD_0_final.get_K();
+  settings.kphiprojdisk()=globals->ITC_L1L2()->phi0_final.get_K()*4.0;
   settings.krdisk() = settings.kr();
   settings.kzpars() = settings.kz();  
 
