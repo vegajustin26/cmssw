@@ -91,7 +91,6 @@ int main(const int argc, const char** argv)
   edm::LogVerbatim("Tracklet") << "=========================================================";
   edm::LogVerbatim("Tracklet") << "phi0bitshift = "<<settings.phi0bitshift();
   edm::LogVerbatim("Tracklet") << "d0bitshift   = "<<"???";
-  edm::LogVerbatim("Tracklet");
   edm::LogVerbatim("Tracklet") << "=========================================================";
 
 #include "../plugins/WriteInvTables.icc"
@@ -546,21 +545,25 @@ int main(const int argc, const char** argv)
     edm::LogVerbatim("Tracklet") << "Number layers/disks hit = "<<nlayershit<<" number of found tracks : "<<tracks.size()<<" unique "<<ntrack;
 
 
-  // dump what was found   
-//	 printf("Track Parameters: \n");
-//	 for(std::vector<Track*>::iterator trk=tracks.begin(); trk!=tracks.end(); trk++){
-//	   printf("irinv = %i \n", (*trk)->irinv() );
-//		 printf("iphi0 = %i \n", (*trk)->iphi0() );
-//		 printf("iz0   = %i \n", (*trk)->iz0() );
-//		 printf("it    = %i \n", (*trk)->it() );
-//		 printf("stubID=");
-//		 std::map<int, int> stubs = (*trk)->stubID();
-//		 for(std::map<int, int>::iterator sb=stubs.begin(); sb!=stubs.end(); sb++) printf(" %i -- %i ",sb->first,sb->second);
-//		 printf("\n");
-//		 printf("dup   = %i\n \n", (*trk)->duplicate());
-//		 printf("chisq   = %f\n \n", (*trk)->chisq());
-//	 } 
-
+    // dump what was found   
+    /*
+    edm::LogVerbatim("Tracklet") << "Track Parameters:";
+    for (std::vector<Track*>::iterator trk=tracks.begin(); trk!=tracks.end(); trk++) {
+      edm::LogVerbatim("Tracklet") << "irinv = ", (*trk)->irinv();
+      edm::LogVerbatim("Tracklet") << "iphi0 = ", (*trk)->iphi0();
+      edm::LogVerbatim("Tracklet") << "iz0   = ", (*trk)->iz0();
+      edm::LogVerbatim("Tracklet") << "it    = ", (*trk)->it();
+      edm::LogVerbatim("Tracklet") << "stubID=";
+      std::map<int, int> stubs = (*trk)->stubID();
+      ostringstream oss;
+      for (std::map<int, int>::iterator sb=stubs.begin(); sb!=stubs.end(); sb++) {
+	oss << " " << sb->first << " -- " << sb->second << " ";
+      }
+      edm::LogVerbatim("Tracklet") << oss.str();
+      edm::LogVerbatim("Tracklet") << "dup   = " << (*trk)->duplicate() << "\n";
+      edm::LogVerbatim("Tracklet") << "chisq   = " << (*trk)->chisq() << "\n";
+    } 
+    */
 
 
 

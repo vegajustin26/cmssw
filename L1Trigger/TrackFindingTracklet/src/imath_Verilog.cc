@@ -419,7 +419,9 @@ void var_base::print_step(int step, std::ofstream& fs, Verilog) {
   }
   if (step == step_) {
     if (l1 < 0 || l2 < 0 || l3 < 0 || (l1 > 0 && l2 > 0 && l3 > 0)) {
-      printf("%s::print_step(%i): something wrong with latencies! %i %i %i\n", name_.c_str(), step, l1, l2, l3);
+      char slog[100];
+      sprintf(slog,"%s::print_step(%i): something wrong with latencies! %i %i %i\n", name_.c_str(), step, l1, l2, l3);
+      edm::LogVerbatim("Tracklet") << slog;
       dump_cout();
       assert(0);
     }

@@ -874,7 +874,6 @@ public:
       
       
       //get stubs making up tracklet
-      //printf(" inner %i  outer %i layers \n",innerFPGAStub_.layer().value(),outerFPGAStub_.layer().value());
       if (innerFPGAStub_) stubIDs[innerFPGAStub_->layer().value()+1] = ((innerFPGAStub_->phiregion().value())<<7)+innerFPGAStub_->stubindex().value()+(1<<10);
       if (middleFPGAStub_) stubIDs[middleFPGAStub_->layer().value()+1] = ((middleFPGAStub_->phiregion().value())<<7)+middleFPGAStub_->stubindex().value()+(1<<10);
       if (outerFPGAStub_) stubIDs[outerFPGAStub_->layer().value()+1] = ((outerFPGAStub_->phiregion().value())<<7)+outerFPGAStub_->stubindex().value()+(1<<10);
@@ -907,7 +906,6 @@ public:
       }
       
       //get stubs making up tracklet
-      //printf(" inner %i  outer %i disks \n",innerFPGAStub_.disk().value(),outerFPGAStub_.disk().value());
       if(innerFPGAStub_->disk().value() < 0) { //negative side runs 6-10
 	if (innerFPGAStub_) stubIDs[innerFPGAStub_->disk().value()-10] = ((innerFPGAStub_->phiregion().value())<<7)+innerFPGAStub_->stubindex().value()+(1<<10);
 	if (middleFPGAStub_) stubIDs[middleFPGAStub_->disk().value()-10] = ((middleFPGAStub_->phiregion().value())<<7)+middleFPGAStub_->stubindex().value()+(1<<10);

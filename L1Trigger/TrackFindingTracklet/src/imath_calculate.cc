@@ -1,5 +1,7 @@
 #include "../interface/imath.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 bool var_base::calculate(int debug_level) {
   bool ok1 = true;
   bool ok2 = true;
@@ -33,7 +35,7 @@ bool var_base::calculate(int debug_level) {
         h_ = new TH2F(
             hname.c_str(), name_.c_str(), h_nbins_, -get_range(), get_range(), h_nbins_, -h_precision_, h_precision_);
         if (debug_level == 3)
-          std::cout << " booking histogram " << hname << "\n";
+          edm::LogVerbatim("Tracklet") << " booking histogram " << hname;
       }
     }
     if (ival_ != ival_prev || op_ == "def" || op_ == "const")
@@ -49,7 +51,7 @@ bool var_base::calculate(int debug_level) {
   itest = itest >> ns;
   if (itest != ival_) {
     if (debug_level == 3 || (ival_ != ival_prev && all_ok)) {
-      std::cout << "imath: truncated value mismatch!! " << ival_ << " != " << itest << "\n";
+      edm::LogVerbatim("Tracklet") << "imath: truncated value mismatch!! " << ival_ << " != " << itest;
       todump = true;
     }
     all_ok = false;
@@ -62,16 +64,16 @@ bool var_base::calculate(int debug_level) {
     tolerance = 2 * K_;
   if (std::abs(ftest - fval_) > tolerance) {
     if (debug_level == 3 || (ival_ != ival_prev && (all_ok && (op_ != "inv" || debug_level >= 2)))) {
-      std::cout << "imath: **GROSS** value mismatch!! " << fval_ << " != " << ftest << "\n";
+      edm::LogVerbatim("Tracklet") << "imath: **GROSS** value mismatch!! " << fval_ << " != " << ftest;
       if (op_ == "inv")
-        std::cout << p1_->dump() << "\n-----------------------------------\n";
+        edm::LogVerbatim("Tracklet") << p1_->dump() << "\n-----------------------------------";
       todump = true;
     }
     all_ok = false;
   }
 
   if (todump)
-    std::cout << dump();
+    edm::LogVerbatim("Tracklet") << dump();
 
   return all_ok;
 }

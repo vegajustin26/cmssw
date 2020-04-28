@@ -124,6 +124,8 @@
 #include <cassert>
 #include <set>
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 #ifdef IMATH_ROOT
 #include "TH2F.h"
 #include "TFile.h"
@@ -174,7 +176,7 @@ public:
     h_precision_ = 0.02;
     if (h_file_ == 0) {
       h_file_ = new TFile("imath.root", "RECREATE");
-      printf("recreating file imath.root\n");
+      edm::LogVerbatim("Tracklet") << "recreating file imath.root";
     }
 #endif
   }
@@ -409,7 +411,9 @@ public:
       //defining a constant, K should be a power of two
       int l = log2(K);
       if (std::abs(pow(2, l) / K - 1) > 1e-5) {
-        printf("defining unitless constant, yet K is not a power of 2! %g, %g\n", K, pow(2, l));
+        char slog[100];
+	sprintf(slog,"defining unitless constant, yet K is not a power of 2! %g, %g", K, pow(2, l));
+	edm::LogVerbatim("Tracklet") << slog;
       }
       Kmap_["2"] = l;
     }
@@ -445,7 +449,9 @@ public:
       //defining a constant, K should be a power of two
       int l = log2(K);
       if (std::abs(pow(2, l) / K - 1) > 1e-5) {
-        printf("defining unitless constant, yet K is not a power of 2! %g, %g\n", K, pow(2, l));
+	char slog[100];
+	sprintf(slog,"defining unitless constant, yet K is not a power of 2! %g, %g", K, pow(2, l));
+	edm::LogVerbatim("Tracklet") << slog;
       }
       Kmap_["2"] = l;
     }
@@ -495,14 +501,17 @@ public:
         map1[it->first] = map1[it->first] - it->second;
     }
 
+    char slog[100];
+
     //assert if different
     for (it = map1.begin(); it != map1.end(); ++it) {
       if (it->second != 0) {
         if (it->first != "2") {
-          printf("var_add: bad units! %s^%i for variable %s\n", (it->first).c_str(), it->second, name_.c_str());
-          printf(" *********************************************************\n");
+          sprintf(slog,"var_add: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
+	  edm::LogVerbatim("Tracklet") << slog;
+	  edm::LogVerbatim("Tracklet") << " *********************************************************";
           p1->dump_cout();
-          printf(" *********************************************************\n");
+          edm::LogVerbatim("Tracklet") << " *********************************************************";
           p2->dump_cout();
           assert(0);
         }
@@ -513,10 +522,11 @@ public:
     double ki2 = p2->get_K() / pow(2, s2);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
-      printf("var_add: bad constants! %f %f for variable %s\n", ki1, ki2, name_.c_str());
-      printf(" *********************************************************\n");
+      sprintf(slog,"var_add: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
+      edm::LogVerbatim("Tracklet") << slog;
+      edm::LogVerbatim("Tracklet") << " *********************************************************";
       p1->dump_cout();
-      printf(" *********************************************************\n");
+      edm::LogVerbatim("Tracklet") << " *********************************************************";
       p2->dump_cout();
       assert(0);
     }
@@ -582,14 +592,17 @@ public:
         map1[it->first] = map1[it->first] - it->second;
     }
 
+    char slog[100];
+    
     //assert if different
     for (it = map1.begin(); it != map1.end(); ++it) {
       if (it->second != 0) {
         if (it->first != "2") {
-          printf("var_add: bad units! %s^%i for variable %s\n", (it->first).c_str(), it->second, name_.c_str());
-          printf(" *********************************************************\n");
+	  sprintf(slog,"var_add: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
+	  edm::LogVerbatim("Tracklet") << slog;
+	  edm::LogVerbatim("Tracklet") << " *********************************************************";
           p1->dump_cout();
-          printf(" *********************************************************\n");
+          edm::LogVerbatim("Tracklet") << " *********************************************************";
           p2->dump_cout();
           assert(0);
         }
@@ -600,10 +613,11 @@ public:
     double ki2 = p2->get_K() / pow(2, s2);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
-      printf("var_add: bad constants! %f %f for variable %s\n", ki1, ki2, name_.c_str());
-      printf(" *********************************************************\n");
+      sprintf(slog,"var_add: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
+      edm::LogVerbatim("Tracklet") << slog;
+      edm::LogVerbatim("Tracklet") << " *********************************************************";
       p1->dump_cout();
-      printf(" *********************************************************\n");
+      edm::LogVerbatim("Tracklet") << " *********************************************************";
       p2->dump_cout();
       assert(0);
     }
@@ -835,16 +849,19 @@ public:
         map1[it->first] = map1[it->first] - it->second;
     }
 
+    char slog[100];
+
     //assert if different
     for (it = map1.begin(); it != map1.end(); ++it) {
       if (it->second != 0) {
         if (it->first != "2") {
-          printf("var_DSP_postadd: bad units! %s^%i for variable %s\n", (it->first).c_str(), it->second, name_.c_str());
-          printf(" *********************************************************\n");
+          sprintf(slog,"var_DSP_postadd: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
+	  edm::LogVerbatim("Tracklet") << slog;
+	  edm::LogVerbatim("Tracklet") << " *********************************************************";
           p1->dump_cout();
-          printf(" *********************************************************\n");
+	  edm::LogVerbatim("Tracklet") << " *********************************************************";
           p2->dump_cout();
-          printf(" *********************************************************\n");
+	  edm::LogVerbatim("Tracklet") << " *********************************************************";
           p3->dump_cout();
           assert(0);
         }
@@ -855,12 +872,13 @@ public:
     double ki2 = p3->get_K() / pow(2, s3);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
-      printf("var_DSP_postadd: bad constants! %f %f for variable %s\n", ki1, ki2, name_.c_str());
-      printf(" *********************************************************\n");
+      sprintf(slog,"var_DSP_postadd: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
+      edm::LogVerbatim("Tracklet") << slog;
+      edm::LogVerbatim("Tracklet") << " *********************************************************";
       p1->dump_cout();
-      printf(" *********************************************************\n");
+      edm::LogVerbatim("Tracklet") << " *********************************************************";
       p2->dump_cout();
-      printf(" *********************************************************\n");
+      edm::LogVerbatim("Tracklet") << " *********************************************************";
       p3->dump_cout();
       assert(0);
     }
@@ -868,7 +886,8 @@ public:
 
     shift3_ = s3 - s0;
     if (shift3_ < 0) {
-      printf("var_DSP_postadd: loosing precision on C in A*B+C: %i\n", shift3_);
+      sprintf(slog,"var_DSP_postadd: loosing precision on C in A*B+C: %i", shift3_);
+      edm::LogVerbatim("Tracklet") << slog;
       assert(0);
     }
 

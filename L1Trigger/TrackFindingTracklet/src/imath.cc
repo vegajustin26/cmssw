@@ -7,6 +7,8 @@
 
 #include "../interface/imath.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 std::string var_base::itos(int i) {
   std::ostringstream os;
   os << i;
@@ -36,17 +38,22 @@ void var_base::analyze() {
 
   int iu = log2(get_range() / u);
   if (iu > 1) {
-    printf("analyzing %s: range %g is much larger then %g. suggest cutting by a factor of 2^%i\n",
-           name_.c_str(),
-           get_range(),
-           u,
-           iu);
+    char slog[100];
+    sprintf(slog,"analyzing %s: range %g is much larger then %g. suggest cutting by a factor of 2^%i",
+	    name_.c_str(),
+	    get_range(),
+	    u,
+	    iu);
+    edm::LogVerbatim("Tracklet") << slog;
+    
   }
 #ifdef IMATH_ROOT
+  char slog[100];
   if (h_) {
     double eff = h_->Integral() / h_->GetEntries();
     if (eff < 0.99) {
-      printf("analyzing %s: range is too small, contains %f\n", name_.c_str(), eff);
+      sprintf(slog,"analyzing %s: range is too small, contains %f", name_.c_str(), eff);
+      edm::LogVerbatim("Tracklet") << slog;
       h_->Print();
     }
     h_file_->cd();
@@ -55,8 +62,10 @@ void var_base::analyze() {
     h_->Draw("colz");
     h_->Write();
   } else {
-    if (use_root)
-      printf("analyzing %s: no histogram!\n", name_.c_str());
+    if (use_root) {
+      sprintf(slog,"analyzing %s: no histogram!\n", name_.c_str());
+      edm::LogVerbatim("Tracklet") << slog;
+    }
   }
 #endif
 
@@ -103,7 +112,7 @@ void var_base::dump_cout() {
           step_,
           latency_);
   std::string t(s);
-  std::cout << t;
+  edm::LogVerbatim("Tracklet") << t;
   if (p1_)
     p1_->dump_cout();
   if (p2_)
@@ -213,13 +222,13 @@ void var_base::get_inputs(std::vector<var_base *> *vd) {
 TTree *var_base::AddToTree(var_base *v, char *s) {
   if (h_file_ == 0) {
     h_file_ = new TFile("imath.root", "RECREATE");
-    printf("recreating file imath.root\n");
+    edm::LogVerbatim("Tracklet") << "recreating file imath.root";
   }
   h_file_->cd();
   TTree *tt = (TTree *)h_file_->Get("tt");
   if (tt == 0) {
     tt = new TTree("tt", "");
-    printf("creating TTree tt\n");
+    edm::LogVerbatim("Tracklet") << "creating TTree tt";
   }
   std::string si = v->get_name() + "_i";
   std::string sf = v->get_name() + "_f";
@@ -248,13 +257,13 @@ TTree *var_base::AddToTree(var_base *v, char *s) {
 TTree *var_base::AddToTree(double *v, char *s) {
   if (h_file_ == 0) {
     h_file_ = new TFile("imath.root", "RECREATE");
-    printf("recreating file imath.root\n");
+    edm::LogVerbatim("Tracklet") << "recreating file imath.root";
   }
   h_file_->cd();
   TTree *tt = (TTree *)h_file_->Get("tt");
   if (tt == 0) {
     tt = new TTree("tt", "");
-    printf("creating TTree tt\n");
+    edm::LogVerbatim("Tracklet") << "creating TTree tt";
   }
   tt->Branch(s, v);
   return tt;
@@ -262,13 +271,13 @@ TTree *var_base::AddToTree(double *v, char *s) {
 TTree *var_base::AddToTree(int *v, char *s) {
   if (h_file_ == 0) {
     h_file_ = new TFile("imath.root", "RECREATE");
-    printf("recreating file imath.root\n");
+    edm::LogVerbatim("Tracklet") << "recreating file imath.root";
   }
   h_file_->cd();
   TTree *tt = (TTree *)h_file_->Get("tt");
   if (tt == 0) {
     tt = new TTree("tt", "");
-    printf("creating TTree tt\n");
+    edm::LogVerbatim("Tracklet") << "creating TTree tt";
   }
   tt->Branch(s, v);
   return tt;
@@ -312,9 +321,10 @@ bool var_base::local_passes() const {
     const int lower_cut = cast_cut->get_lower_cut() / K_;
     const int upper_cut = cast_cut->get_upper_cut() / K_;
     passes = passes || (ival_ > lower_cut && ival_ < upper_cut);
-    printCutInfo_ &&std::cout << "  " << name_ << " " << ((ival_ > lower_cut && ival_ < upper_cut) ? "PASSES" : "FAILS")
-                              << " (required: " << lower_cut * K_ << " < " << ival_ * K_ << " < " << upper_cut * K_
-                              << ")" << std::endl;
+    if (printCutInfo_) {
+      edm::LogVerbatim("Tracklet") << "  " << name_ << " " << ((ival_ > lower_cut && ival_ < upper_cut) ? "PASSES" : "FAILS")
+				   << " (required: " << lower_cut * K_ << " < " << ival_ * K_ << " < " << upper_cut * K_ << ")";
+    }
   }
   return passes;
 }
@@ -336,10 +346,11 @@ void var_base::passes(std::map<const var_base *, std::vector<bool> > &passes,
       if (!passes.count(this))
         passes[this];
       passes.at(this).push_back(ival_ > lower_cut && ival_ < upper_cut);
-      printCutInfo_ &&std::cout << "  " << name_ << " "
-                                << ((ival_ > lower_cut && ival_ < upper_cut) ? "PASSES" : "FAILS")
-                                << " (required: " << lower_cut * K_ << " < " << ival_ * K_ << " < " << upper_cut * K_
-                                << ")" << std::endl;
+      if (printCutInfo_) {
+	edm::LogVerbatim("Tracklet") << "  " << name_ << " "
+				     << ((ival_ > lower_cut && ival_ < upper_cut) ? "PASSES" : "FAILS")
+				     << " (required: " << lower_cut * K_ << " < " << ival_ * K_ << " < " << upper_cut * K_ << ")";
+      }
     }
   }
 }
@@ -381,7 +392,11 @@ var_base *var_base::get_cut_var() {
 }
 
 bool var_flag::passes() {
-  printCutInfo_ &&std::cout << "Checking if " << name_ << " passes..." << std::endl;
+
+  if (printCutInfo_) {
+    edm::LogVerbatim("Tracklet") << "Checking if " << name_ << " passes...";
+  }
+
   std::map<const var_base *, std::vector<bool> > passes0, passes1;
   for (const auto &cut : cuts_) {
     if (cut->get_op() != "cut")
@@ -415,7 +430,10 @@ bool var_flag::passes() {
       local_passes = local_passes || pass;
     passes = passes && local_passes;
   }
-  printCutInfo_ &&std::cout << name_ << " " << (passes ? "PASSES" : "FAILS") << std::endl;
 
+  if (printCutInfo_) {
+    edm::LogVerbatim("Tracklet") << name_ << " " << (passes ? "PASSES" : "FAILS");
+  }
+  
   return passes;
 }

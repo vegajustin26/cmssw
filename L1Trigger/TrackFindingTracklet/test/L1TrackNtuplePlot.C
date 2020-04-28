@@ -130,7 +130,7 @@ void L1TrackNtuplePlot(TString type,
   tree->Add(type_dir + type + ".root");
 
   if (tree->GetEntries() == 0) {
-    cout << "File doesn't exist or is empty, returning..." << endl;
+    cout << "File doesn't exist or is empty, returning..." << endl; //cout's kept in this file as it is an example standalone plotting script, not running in central CMSSW
     return;
   }
 
