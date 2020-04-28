@@ -3,6 +3,7 @@
 #define L1Trigger_TrackFindingTracklet_interface_ProcessBase_h
 
 #include "Settings.h"
+#include "GlobalHistTruth.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -15,8 +16,8 @@ class ProcessBase{
 
 public:
 
- ProcessBase(string name, const Settings* const settings, unsigned int iSector):
-  settings_(settings){
+ ProcessBase(string name, const Settings* const settings, GlobalHistTruth* global, unsigned int iSector):
+  settings_(settings), globals_(global) {
     name_=name;
     iSector_=iSector;
   }
@@ -179,6 +180,7 @@ protected:
   unsigned int iSector_;
 
   const Settings* const settings_;
+  GlobalHistTruth* globals_;
   
 };
 

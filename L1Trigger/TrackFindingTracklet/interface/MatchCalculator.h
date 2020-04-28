@@ -14,8 +14,8 @@ class MatchCalculator:public ProcessBase{
 
 public:
 
- MatchCalculator(string name, const Settings* settings, unsigned int iSector):
-  ProcessBase(name,settings,iSector){
+ MatchCalculator(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+   ProcessBase(name,settings,global,iSector){
     
     double dphi=2*M_PI/settings_->NSector();
     double dphiHG=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();
@@ -274,11 +274,9 @@ public:
 
 	
 	if (settings_->writeMonitorData("Residuals")) {
-	  static ofstream out("layerresiduals.txt");
-	  
 	  double pt=0.003*3.8/std::abs(tracklet->rinv());
 	  
-	  out << layerdisk_+1<<" "<<seedindex<<" "<<pt<<" "<<ideltaphi*settings_->kphi1()*settings_->rmean(layerdisk_)
+	  globals_->ofstream("layerresiduals.txt")  << layerdisk_+1<<" "<<seedindex<<" "<<pt<<" "<<ideltaphi*settings_->kphi1()*settings_->rmean(layerdisk_)
 	      <<" "<<dphiapprox*settings_->rmean(layerdisk_)
 	      <<" "<<phimatchcut_[seedindex]*settings_->kphi1()*settings_->rmean(layerdisk_)
 	      <<"   "<<ideltaz*fact_*settings_->kz()<<" "<<dz<<" "<<zmatchcut_[seedindex]*settings_->kz()<<endl;	  
@@ -437,17 +435,15 @@ public:
 
 	
 	if (settings_->writeMonitorData("Residuals")) {
-	  static ofstream out("diskresiduals.txt");
-	  
 	  double pt=0.003*3.8/std::abs(tracklet->rinv());
 	  
-	  out << disk<<" "<<stub->isPSmodule()<<" "<<tracklet->layer()<<" "
-	      <<abs(tracklet->disk())<<" "<<pt<<" "
-	      <<ideltaphi*settings_->kphiproj123()*stub->r()<<" "<<drphiapprox<<" "
-	      <<drphicut<<" "
-	      <<ideltar*settings_->krprojshiftdisk()<<" "<<deltar<<" "
-	      <<drcut<<" "
-	      <<endl;	  
+	  globals_->ofstream("diskresiduals.txt")  << disk<<" "<<stub->isPSmodule()<<" "<<tracklet->layer()<<" "
+						  <<abs(tracklet->disk())<<" "<<pt<<" "
+						  <<ideltaphi*settings_->kphiproj123()*stub->r()<<" "<<drphiapprox<<" "
+						  <<drphicut<<" "
+						  <<ideltar*settings_->krprojshiftdisk()<<" "<<deltar<<" "
+						  <<drcut<<" "
+						  <<endl;	  
 	}
 
 	
@@ -496,8 +492,7 @@ public:
 
 
     if (settings_->writeMonitorData("MC")) {
-      static ofstream out("matchcalculator.txt");
-      out << getName()<<" "<<countall<<" "<<countsel<<endl;
+      globals_->ofstream("matchcalculator.txt")  << getName()<<" "<<countall<<" "<<countsel<<endl;
     }
 
     

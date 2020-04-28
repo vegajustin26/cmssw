@@ -14,8 +14,8 @@ class TripletEngine:public ProcessBase{
 
 public:
 
-  TripletEngine(string name, const Settings* settings, unsigned int iSector):
-  ProcessBase(name,settings,iSector){
+  TripletEngine(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+    ProcessBase(name,settings,global,iSector){
     double dphi=2*M_PI/settings_->NSector();
     phimin_=Util::phiRange(iSector*dphi);
     phimax_=Util::phiRange(phimin_+dphi);
@@ -429,8 +429,7 @@ public:
     }
       
     if (settings_->writeMonitorData("TRE")) {
-      static ofstream out("tripletengine.txt");
-      out << getName()<<" "<<countall<<" "<<countpass<<endl;
+      globals_->ofstream("tripletengine.txt")  << getName()<<" "<<countall<<" "<<countpass<<endl;
     }
 
   }

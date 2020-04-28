@@ -16,9 +16,9 @@ using namespace std;
 
 class StubVariance {
 public:
-  StubVariance(SLHCEvent& ev) { process(ev); }
+  StubVariance(SLHCEvent& ev, GlobalHistTruth* globals) { process(ev,globals); }
 
-  void process(SLHCEvent& ev) {
+  void process(SLHCEvent& ev, GlobalHistTruth* globals) {
     edm::LogVerbatim("Tracklet") << "Process variance:" << ev.nsimtracks();
     assert(ev.nsimtracks() == 1);
 
@@ -73,7 +73,7 @@ public:
       }
     }
 
-    static ofstream out("variance.txt");
+    ofstream& out=globals->ofstream("variance.txt");
 
     out << pt;
 

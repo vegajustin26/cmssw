@@ -12,8 +12,8 @@ class ProjectionRouter:public ProcessBase{
 
 public:
 
- ProjectionRouter(string name, const Settings* settings, unsigned int iSector):
-  ProcessBase(name,settings,iSector){
+ ProjectionRouter(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+   ProcessBase(name,settings,global,iSector){
 
     layerdisk_=initLayerDisk(3);
 
@@ -130,14 +130,13 @@ public:
     }
     
     
-    if (settings_->writeMonitorData("AP")) {
-      static ofstream out("allprojections.txt"); 
-      out << getName() << " " << allproj_->nTracklets() << endl;
+    if (settings_->writeMonitorData("AP")) { 
+      globals_->ofstream("allprojections.txt")  << getName() << " " << allproj_->nTracklets() << endl;
     } 
    
 
     if (settings_->writeMonitorData("VMP")) {
-      static ofstream out("vmprojections.txt");
+      ofstream& out=globals_->ofstream("chisq.txt"); 
       for (unsigned int i=0;i<8;i++) {
 	if (vmprojs_[i]!=0) {
 	  out << vmprojs_[i]->getName() << " " << vmprojs_[i]->nTracklets() << endl;
@@ -185,7 +184,7 @@ public:
 	      iphider=iphider<<(settings_->nbitsphiprojderL123()-nphiderbits_);
 	      
 	      double rproj=ir*settings_->krprojshiftdisk();
-	      double phider=iphider*GlobalHistTruth::ITC_L1L2()->der_phiD_final.get_K();
+	      double phider=iphider*globals_->ITC_L1L2()->der_phiD_final.get_K();
 	      double t=settings_->zmean(idisk)/rproj;
 	      
 	      if (isignbin) t=-t;

@@ -13,8 +13,8 @@ class TrackletEngine:public ProcessBase{
 
 public:
 
- TrackletEngine(string name, const Settings* const settings,unsigned int iSector):
-  ProcessBase(name,settings,iSector){
+ TrackletEngine(string name, const Settings* const settings, GlobalHistTruth* global,unsigned int iSector):
+   ProcessBase(name,settings,global,iSector){
 
     stubpairs_=0;
     innervmstubs_=0;
@@ -136,8 +136,7 @@ public:
     }
 	  
     if (settings_->writeMonitorData("TE")) {
-      static ofstream out("trackletengine.txt");
-      out << getName()<<" "<<countall<<" "<<countpass<<endl;
+      globals_->ofstream("trackletengine.txt") << getName()<<" "<<countall<<" "<<countpass<<endl;
     }
     
   }

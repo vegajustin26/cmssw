@@ -13,8 +13,8 @@ class MatchEngine:public ProcessBase{
 
 public:
 
- MatchEngine(string name, const Settings* settings, unsigned int iSector):
-  ProcessBase(name,settings,iSector){
+ MatchEngine(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+   ProcessBase(name,settings,global,iSector){
     layer_=0;
     disk_=0;
     string subname=name.substr(3,2);
@@ -331,8 +331,7 @@ public:
     }
 
     if (settings_->writeMonitorData("ME")) {
-      static ofstream out("matchengine.txt");
-      out << getName()<<" "<<countall<<" "<<countpass<<endl;
+      globals_->ofstream("matchengine.txt")  << getName()<<" "<<countall<<" "<<countpass<<endl;
     }
 
     

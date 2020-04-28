@@ -59,48 +59,19 @@ int main(const int argc, const char** argv)
 
   Trklet::Settings settings;
 
-  // tracklet calculators 
-  IMATH_TrackletCalculator* ITC_L1L2 = new IMATH_TrackletCalculator(&settings,1,2);
-  IMATH_TrackletCalculator* ITC_L2L3 = new IMATH_TrackletCalculator(&settings,2,3);
-  IMATH_TrackletCalculator* ITC_L3L4 = new IMATH_TrackletCalculator(&settings,3,4);
-  IMATH_TrackletCalculator* ITC_L5L6 = new IMATH_TrackletCalculator(&settings,5,6);
-  
-  IMATH_TrackletCalculatorDisk* ITC_F1F2 = new IMATH_TrackletCalculatorDisk(&settings,1,2);
-  IMATH_TrackletCalculatorDisk* ITC_F3F4 = new IMATH_TrackletCalculatorDisk(&settings,3,4);
-  IMATH_TrackletCalculatorDisk* ITC_B1B2 = new IMATH_TrackletCalculatorDisk(&settings,-1,-2);
-  IMATH_TrackletCalculatorDisk* ITC_B3B4 = new IMATH_TrackletCalculatorDisk(&settings,-3,-4);
-  
-  IMATH_TrackletCalculatorOverlap* ITC_L1F1 = new IMATH_TrackletCalculatorOverlap(&settings,1,1);
-  IMATH_TrackletCalculatorOverlap* ITC_L2F1 = new IMATH_TrackletCalculatorOverlap(&settings,2,1);
-  IMATH_TrackletCalculatorOverlap* ITC_L1B1 = new IMATH_TrackletCalculatorOverlap(&settings,1,-1);
-  IMATH_TrackletCalculatorOverlap* ITC_L2B1 = new IMATH_TrackletCalculatorOverlap(&settings,2,-1);
+  GlobalHistTruth globals(&settings);
 
-  GlobalHistTruth::ITC_L1L2()=ITC_L1L2;
-  GlobalHistTruth::ITC_L2L3()=ITC_L2L3;
-  GlobalHistTruth::ITC_L3L4()=ITC_L3L4;
-  GlobalHistTruth::ITC_L5L6()=ITC_L5L6;
-
-  GlobalHistTruth::ITC_F1F2()=ITC_F1F2;
-  GlobalHistTruth::ITC_F3F4()=ITC_F3F4;
-  GlobalHistTruth::ITC_B1B2()=ITC_B1B2;
-  GlobalHistTruth::ITC_B3B4()=ITC_B3B4;
-
-  GlobalHistTruth::ITC_L1F1()=ITC_L1F1;
-  GlobalHistTruth::ITC_L2F1()=ITC_L2F1;
-  GlobalHistTruth::ITC_L1B1()=ITC_L1B1;
-  GlobalHistTruth::ITC_L2B1()=ITC_L2B1;
-
-  settings.krinvpars() = ITC_L1L2->rinv_final.get_K();
-  settings.kphi0pars() = ITC_L1L2->phi0_final.get_K();
+  settings.krinvpars() = globals.ITC_L1L2()->rinv_final.get_K();
+  settings.kphi0pars() = globals.ITC_L1L2()->phi0_final.get_K();
   settings.kd0pars()   = settings.kd0();
-  settings.ktpars()    = ITC_L1L2->t_final.get_K();
-  settings.kz0pars()   = ITC_L1L2->z0_final.get_K();
-  settings.kphiproj123() =ITC_L1L2->phi0_final.get_K()*4;
+  settings.ktpars()    = globals.ITC_L1L2()->t_final.get_K();
+  settings.kz0pars()   = globals.ITC_L1L2()->z0_final.get_K();
+  settings.kphiproj123() =globals.ITC_L1L2()->phi0_final.get_K()*4;
   settings.kzproj()=settings.kz();
-  settings.kphider()=ITC_L1L2->rinv_final.get_K()*(1<<settings.phiderbitshift());
-  settings.kzder()=ITC_L1L2->t_final.get_K()*(1<<settings.zderbitshift());
-  settings.krprojshiftdisk() = ITC_L1L2->rD_0_final.get_K();
-  settings.kphiprojdisk()=ITC_L1L2->phi0_final.get_K()*4.0;
+  settings.kphider()=globals.ITC_L1L2()->rinv_final.get_K()*(1<<settings.phiderbitshift());
+  settings.kzder()=globals.ITC_L1L2()->t_final.get_K()*(1<<settings.zderbitshift());
+  settings.krprojshiftdisk() = globals.ITC_L1L2()->rD_0_final.get_K();
+  settings.kphiprojdisk()=globals.ITC_L1L2()->phi0_final.get_K()*4.0;
   settings.krdisk() = settings.kr();
   settings.kzpars() = settings.kz();  
 
@@ -185,7 +156,7 @@ int main(const int argc, const char** argv)
 
   
   for (unsigned int i=0;i<settings.NSector();i++) {
-    sectors[i]=new Sector(i,&settings);
+    sectors[i]=new Sector(i,&settings,&globals);
   }  
 
 
@@ -428,7 +399,7 @@ int main(const int argc, const char** argv)
     }
 
     if (settings.writeMonitorData("Variance")) {
-      StubVariance variance(ev);
+      StubVariance variance(ev,&globals);
     }
 
     edm::LogVerbatim("Tracklet") <<"Process event: "<<eventnum<<" with "<<ev.nstubs()<<" stubs and "<<ev.nsimtracks()<<" simtracks";

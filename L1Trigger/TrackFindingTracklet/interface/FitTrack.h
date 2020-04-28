@@ -17,8 +17,8 @@ class FitTrack:public ProcessBase{
 
  public:
 
- FitTrack(string name, const Settings* settings, unsigned int iSector):
-  ProcessBase(name,settings,iSector){
+ FitTrack(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+   ProcessBase(name,settings,global,iSector){
     trackfit_=0;
    }
 
@@ -860,8 +860,7 @@ class FitTrack:public ProcessBase{
    }
 
    if (settings_->writeMonitorData("ChiSq")) {
-    static ofstream out("chisq.txt");
-    out << asinh(itfit*settings_->ktpars())<<" "<<chisqfit << " " << ichisqfit/16.0<<endl;
+    globals_->ofstream("chisq.txt") << asinh(itfit*settings_->ktpars())<<" "<<chisqfit << " " << ichisqfit/16.0<<endl;
    }
 
    // Chisquare per DOF capped out at 11 bits, so 15 is an educated guess
@@ -1115,8 +1114,7 @@ class FitTrack:public ProcessBase{
    } while (bestTracklet!=0);
    
    if (settings_->writeMonitorData("FT")) {
-     static ofstream out("fittrack.txt");
-     out<<getName()<<" "<<countAll<<" "<<countFit<<endl;
+     globals_->ofstream("fittrack.txt") <<getName()<<" "<<countAll<<" "<<countFit<<endl;
    }
 
   }

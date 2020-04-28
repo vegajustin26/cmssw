@@ -16,8 +16,8 @@ class MatchProcessor:public ProcessBase{
 
 public:
 
- MatchProcessor(string name, const Settings* settings, unsigned int iSector):
-  ProcessBase(name,settings,iSector), fullmatches_(12), inputProjBuffer_(3){
+ MatchProcessor(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+   ProcessBase(name,settings,global,iSector), fullmatches_(12), inputProjBuffer_(3){
     
     double dphi=2*M_PI/settings_->NSector();
     double dphiHG=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();
@@ -390,8 +390,7 @@ public:
     }
     
     if (settings_->writeMonitorData("MC")) {
-      static ofstream out("matchcalculator.txt");
-      out << getName()<<" "<<countall<<" "<<countsel<<endl;
+      globals_->ofstream("matchcalculator.txt")  << getName()<<" "<<countall<<" "<<countsel<<endl;
     }
 
     
@@ -465,15 +464,13 @@ public:
       
       
       
-      if (settings_->writeMonitorData("Residuals")) {
-	static ofstream out("layerresiduals.txt");
-	
+      if (settings_->writeMonitorData("Residuals")) {	
 	double pt=0.003*3.8/std::abs(tracklet->rinv());
 	  
-	out << layer_<<" "<<seedindex<<" "<<pt<<" "<<ideltaphi*settings_->kphi1()*settings_->rmean(layer_-1)
-	    <<" "<<dphiapprox*settings_->rmean(layer_-1)
-	    <<" "<<phimatchcut_[seedindex]*settings_->kphi1()*settings_->rmean(layer_-1)
-	    <<"   "<<ideltaz*fact_*settings_->kz()<<" "<<dz<<" "<<zmatchcut_[seedindex]*settings_->kz()<<endl;	  
+	globals_->ofstream("layerresiduals.txt")  << layer_<<" "<<seedindex<<" "<<pt<<" "<<ideltaphi*settings_->kphi1()*settings_->rmean(layer_-1)
+						<<" "<<dphiapprox*settings_->rmean(layer_-1)
+						<<" "<<phimatchcut_[seedindex]*settings_->kphi1()*settings_->rmean(layer_-1)
+						<<"   "<<ideltaz*fact_*settings_->kz()<<" "<<dz<<" "<<zmatchcut_[seedindex]*settings_->kz()<<endl;	  
       }
       
       
@@ -633,17 +630,15 @@ public:
       
       
       if (settings_->writeMonitorData("Residuals")) {
-	static ofstream out("diskresiduals.txt");
-	
 	double pt=0.003*3.8/std::abs(tracklet->rinv());
 	  
-	out << disk_<<" "<<stub->isPSmodule()<<" "<<tracklet->layer()<<" "
-	    <<abs(tracklet->disk())<<" "<<pt<<" "
-	    <<ideltaphi*settings_->kphiproj123()*stub->r()<<" "<<drphiapprox<<" "
-	    <<drphicut<<" "
-	    <<ideltar*settings_->krprojshiftdisk()<<" "<<deltar<<" "
-	    <<drcut<<" "
-	    <<endl;	  
+	globals_->ofstream("diskresiduals.txt")  << disk_<<" "<<stub->isPSmodule()<<" "<<tracklet->layer()<<" "
+						<<abs(tracklet->disk())<<" "<<pt<<" "
+						<<ideltaphi*settings_->kphiproj123()*stub->r()<<" "<<drphiapprox<<" "
+						<<drphicut<<" "
+						<<ideltar*settings_->krprojshiftdisk()<<" "<<deltar<<" "
+						<<drcut<<" "
+						<<endl;	  
       }
       
       
@@ -732,7 +727,7 @@ public:
 	      iphider=iphider<<(settings_->nbitsphiprojderL123()-nphiderbits_);
 	      
 	      double rproj=ir*settings_->krprojshiftdisk();
-	      double phider=iphider*GlobalHistTruth::ITC_L1L2()->der_phiD_final.get_K();
+	      double phider=iphider*globals_->ITC_L1L2()->der_phiD_final.get_K();
 	      double t=settings_->zmean(idisk)/rproj;
 	      
 	      if (isignbin) t=-t;

@@ -12,8 +12,8 @@ class TrackletEngineDisplaced:public ProcessBase{
 
 public:
 
- TrackletEngineDisplaced(string name, const Settings* settings, unsigned int iSector):
-  ProcessBase(name,settings,iSector){
+ TrackletEngineDisplaced(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+   ProcessBase(name,settings,global,iSector){
     double dphi=2*M_PI/settings_->NSector();
     phimin_=iSector*dphi;
     phimax_=phimin_+dphi;
@@ -395,8 +395,7 @@ public:
     }
       
     if (settings_->writeMonitorData("TED")) {
-      static ofstream out("trackletenginedisplaced.txt");
-      out << getName()<<" "<<countall<<" "<<countpass<<endl;
+      globals_->ofstream("trackletenginedisplaces.txt")  << getName()<<" "<<countall<<" "<<countpass<<endl;
     }
 
     

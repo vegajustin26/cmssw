@@ -18,8 +18,8 @@ class TrackletCalculator:public TrackletCalculatorBase{
 
 public:
 
- TrackletCalculator(string name, const Settings* const settings, unsigned int iSector):
-  TrackletCalculatorBase(name, settings, iSector){
+  TrackletCalculator(string name, const Settings* const settings, GlobalHistTruth* globals, unsigned int iSector):
+    TrackletCalculatorBase(name, settings, globals, iSector){
       double dphi=2*M_PI/settings_->NSector();
       double dphiHG=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();
       phimin_=iSector_*dphi-dphiHG;
@@ -164,7 +164,7 @@ public:
     }
     
     if (settings_->usephicritapprox()) {
-      double phicritFactor = 0.5 * settings_->rcrit() *GlobalHistTruth::ITC_L1L2()->rinv_final.get_K() /GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
+      double phicritFactor = 0.5 * settings_->rcrit() *globals_->ITC_L1L2()->rinv_final.get_K() /globals_->ITC_L1L2()->phi0_final.get_K();
       if (std::abs(phicritFactor - 2.) > 0.25)
         edm::LogPrint("Tracklet") << "TrackletCalculator::TrackletCalculator phicrit approximation may be invalid! Please check.";
     }
@@ -335,8 +335,7 @@ public:
     }
 
     if (settings_->writeMonitorData("TC")) {
-      static ofstream out("trackletcalculator.txt");
-      out << getName()<<" "<<countall<<" "<<countsel<<endl;
+      globals_->ofstream("trackletcalculator.txt")  << getName()<<" "<<countall<<" "<<countsel<<endl;
     }
 
   }

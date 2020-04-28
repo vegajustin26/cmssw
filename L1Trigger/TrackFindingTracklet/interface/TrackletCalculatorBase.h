@@ -14,8 +14,8 @@ class TrackletCalculatorBase:public ProcessBase{
 
 public:
 
- TrackletCalculatorBase(string name, const Settings* const settings, unsigned int iSector):
-  ProcessBase(name,settings,iSector) {
+ TrackletCalculatorBase(string name, const Settings* const settings, GlobalHistTruth* global, unsigned int iSector):
+   ProcessBase(name,settings,global,iSector) {
   }
   
 
@@ -281,8 +281,8 @@ public:
     int ifactor=0.5*settings_->rcrit()*settings_->krinvpars()/settings_->kphi0pars()*(1<<8);
     int iphicrit=iphi0-(irinv>>8)*ifactor;
   
-    int iphicritmincut=settings_->phicritminmc()/GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
-    int iphicritmaxcut=settings_->phicritmaxmc()/GlobalHistTruth::ITC_L1L2()->phi0_final.get_K(); 
+    int iphicritmincut=settings_->phicritminmc()/globals_->ITC_L1L2()->phi0_final.get_K();
+    int iphicritmaxcut=settings_->phicritmaxmc()/globals_->ITC_L1L2()->phi0_final.get_K(); 
 
     bool keepapprox=(phicritapprox>settings_->phicritminmc())&&(phicritapprox<settings_->phicritmaxmc()),
          keep=(iphicrit>iphicritmincut)&&(iphicrit<iphicritmaxcut);
@@ -350,10 +350,10 @@ public:
     double phiprojdiskapprox[5],rprojdiskapprox[5];
     
     IMATH_TrackletCalculator *ITC;
-    if(layer_==1)      ITC = GlobalHistTruth::ITC_L1L2();
-    else if(layer_==2) ITC = GlobalHistTruth::ITC_L2L3();
-    else if(layer_==3) ITC = GlobalHistTruth::ITC_L3L4();
-    else               ITC = GlobalHistTruth::ITC_L5L6();
+    if(layer_==1)      ITC = globals_->ITC_L1L2();
+    else if(layer_==2) ITC = globals_->ITC_L2L3();
+    else if(layer_==3) ITC = globals_->ITC_L3L4();
+    else               ITC = globals_->ITC_L5L6();
     
     ITC->r1.set_fval(r1-settings_->rmean(layer_-1));
     ITC->r2.set_fval(r2-settings_->rmean(layer_));
@@ -589,13 +589,12 @@ public:
  
     
     if (settings_->writeMonitorData("TPars")) {
-      static ofstream out("trackletpars.txt");
-      out <<"Trackpars "<<layer_
-	  <<"   "<<rinv<<" "<<rinvapprox<<" "<<ITC->rinv_final.get_fval()
-	  <<"   "<<phi0<<" "<<phi0approx<<" "<<ITC->phi0_final.get_fval()
-	  <<"   "<<t<<" "<<tapprox<<" "<<ITC->t_final.get_fval()
-	  <<"   "<<z0<<" "<<z0approx<<" "<<ITC->z0_final.get_fval()
-	  <<endl;
+      globals_->ofstream("trackletpars.txt")  <<"Trackpars "<<layer_
+					     <<"   "<<rinv<<" "<<rinvapprox<<" "<<ITC->rinv_final.get_fval()
+					     <<"   "<<phi0<<" "<<phi0approx<<" "<<ITC->phi0_final.get_fval()
+					     <<"   "<<t<<" "<<tapprox<<" "<<ITC->t_final.get_fval()
+					     <<"   "<<z0<<" "<<z0approx<<" "<<ITC->z0_final.get_fval()
+					     <<endl;
     }	        
         
     Tracklet* tracklet=new Tracklet(settings_,innerStub,NULL,outerStub,
@@ -726,10 +725,10 @@ public:
     double phiprojdiskapprox[3],rprojdiskapprox[3];
 	    
     IMATH_TrackletCalculatorDisk *ITC;
-    if(disk==1)       ITC = GlobalHistTruth::ITC_F1F2();
-    else if(disk==3)  ITC = GlobalHistTruth::ITC_F3F4();
-    else if(disk==-1) ITC = GlobalHistTruth::ITC_B1B2();
-    else               ITC = GlobalHistTruth::ITC_B3B4();
+    if(disk==1)       ITC = globals_->ITC_F1F2();
+    else if(disk==3)  ITC = globals_->ITC_F3F4();
+    else if(disk==-1) ITC = globals_->ITC_B1B2();
+    else               ITC = globals_->ITC_B3B4();
     
     ITC->r1.set_fval(r1);
     ITC->r2.set_fval(r2);
@@ -932,13 +931,12 @@ public:
 
     
     if (settings_->writeMonitorData("TPars")) {
-      static ofstream out("trackletparsdisk.txt");
-      out <<"Trackpars         "<<disk_
-	  <<"   "<<rinv<<" "<<rinvapprox<<" "<<ITC->rinv_final.get_fval()
-	  <<"   "<<phi0<<" "<<phi0approx<<" "<<ITC->phi0_final.get_fval()
-	  <<"   "<<t<<" "<<tapprox<<" "<<ITC->t_final.get_fval()
-	  <<"   "<<z0<<" "<<z0approx<<" "<<ITC->z0_final.get_fval()
-	  <<endl;
+      globals_->ofstream("trackletparsdisk.txt")  <<"Trackpars         "<<disk_
+				      <<"   "<<rinv<<" "<<rinvapprox<<" "<<ITC->rinv_final.get_fval()
+				      <<"   "<<phi0<<" "<<phi0approx<<" "<<ITC->phi0_final.get_fval()
+				      <<"   "<<t<<" "<<tapprox<<" "<<ITC->t_final.get_fval()
+				      <<"   "<<z0<<" "<<z0approx<<" "<<ITC->z0_final.get_fval()
+				      <<endl;
     }
 	    
     Tracklet* tracklet=new Tracklet(settings_,innerStub,NULL,outerStub,
@@ -1044,10 +1042,10 @@ public:
 
     IMATH_TrackletCalculatorOverlap *ITC;
     int ll = outerFPGAStub->layer().value()+1;
-    if     (ll==1 && disk==1)  ITC = GlobalHistTruth::ITC_L1F1();
-    else if(ll==2 && disk==1)  ITC = GlobalHistTruth::ITC_L2F1();
-    else if(ll==1 && disk==-1) ITC = GlobalHistTruth::ITC_L1B1();
-    else if(ll==2 && disk==-1) ITC = GlobalHistTruth::ITC_L2B1();
+    if     (ll==1 && disk==1)  ITC = globals_->ITC_L1F1();
+    else if(ll==2 && disk==1)  ITC = globals_->ITC_L2F1();
+    else if(ll==1 && disk==-1) ITC = globals_->ITC_L1B1();
+    else if(ll==2 && disk==-1) ITC = globals_->ITC_L2B1();
     else assert(0);
     
     ITC->r1.set_fval(r2-settings_->rmean(ll-1));
@@ -1262,8 +1260,7 @@ public:
 
        
     if (settings_->writeMonitorData("TPars")) {
-      static ofstream out("trackletparsoverlap.txt");
-      out <<"Trackpars "<<disk_
+      globals_->ofstream("trackletparsoverlap.txt")  <<"Trackpars "<<disk_
 	  <<"   "<<rinv<<" "<<irinv<<" "<<ITC->rinv_final.get_fval()
 	  <<"   "<<phi0<<" "<<iphi0<<" "<<ITC->phi0_final.get_fval()
 	  <<"   "<<t<<" "<<it<<" "<<ITC->t_final.get_fval()

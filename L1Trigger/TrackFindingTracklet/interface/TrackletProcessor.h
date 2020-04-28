@@ -21,8 +21,8 @@ class TrackletProcessor:public TrackletCalculatorBase{
 
 public:
 
- TrackletProcessor(string name, const Settings* const settings, unsigned int iSector):
-  TrackletCalculatorBase(name,settings,iSector){
+  TrackletProcessor(string name, const Settings* const settings,GlobalHistTruth* globals, unsigned int iSector):
+   TrackletCalculatorBase(name,settings,globals,iSector){
     double dphi=2*M_PI/settings_->NSector();
     double dphiHG=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();
     phimin_=iSector_*dphi-dphiHG;
@@ -172,7 +172,7 @@ public:
     }
     
     if (settings_->usephicritapprox()) {
-      double phicritFactor = 0.5 * settings_->rcrit() *GlobalHistTruth::ITC_L1L2()->rinv_final.get_K() /GlobalHistTruth::ITC_L1L2()->phi0_final.get_K();
+      double phicritFactor = 0.5 * settings_->rcrit() *globals_->ITC_L1L2()->rinv_final.get_K() /globals_->ITC_L1L2()->phi0_final.get_K();
       if (std::abs(phicritFactor - 2.) > 0.25)
         edm::LogPrint("Tracklet") << "TrackletProcessor::TrackletProcessor phicrit approximation may be invalid! Please check.";
     }
@@ -574,8 +574,7 @@ public:
     }
 
     if (settings_->writeMonitorData("TE")) {
-      static ofstream out("trackletprocessor.txt");
-      out << getName()<<" "<<countteall<<" "<<counttepass<<endl;
+      globals_->ofstream("trackletprocessor.txt") << getName()<<" "<<countteall<<" "<<counttepass<<endl;
     }
 
     for(unsigned int i=0;i<stubpairs.nStubPairs();i++){
@@ -624,8 +623,7 @@ public:
       if (accept) countsel++;
       
       if (settings_->writeMonitorData("TP")) {
-	static ofstream out("tc_seedpairs.txt");
-	out << stubpairs.getTEDName(i)<<" "<<accept<<endl;
+	globals_->ofstream("tc_seedpairs.txt") << stubpairs.getTEDName(i)<<" "<<accept<<endl;
       }
 
       if (trackletpars_->nTracklets()>=maxtracklet_) {
@@ -649,8 +647,7 @@ public:
       
     
     if (settings_->writeMonitorData("TP")) {
-      static ofstream out("trackletcalculator.txt");
-      out << getName()<<" "<<countall<<" "<<countsel<<endl;
+      globals_->ofstream("trackletcalculator.txt") << getName()<<" "<<countall<<" "<<countsel<<endl;
     }
         
   }

@@ -18,8 +18,8 @@ class TrackletCalculatorDisplaced:public ProcessBase{
 
 public:
 
- TrackletCalculatorDisplaced(string name, const Settings* settings, unsigned int iSector):
-  ProcessBase(name,settings,iSector){
+ TrackletCalculatorDisplaced(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+   ProcessBase(name,settings,global,iSector){
     double dphi=2*M_PI/settings_->NSector();
     double dphiHG=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();
     phimin_=iSector_*dphi-dphiHG;
@@ -765,8 +765,7 @@ public:
     }
 
     if (settings_->writeMonitorData("TPD")) {
-      static ofstream out("trackletcalculatordisplaced.txt");
-      out << getName()<<" "<<countall<<" "<<countsel<<endl;
+      globals_->ofstream("trackletcalculatordisplaced.txt")  << getName()<<" "<<countall<<" "<<countsel<<endl;
     }
 
 
@@ -1146,13 +1145,12 @@ public:
 
     
     if (settings_->writeMonitorData("TrackletPars")) {
-      static ofstream out("trackletpars.txt");
-      out <<"Trackpars "<<layer_
-	  <<"   "<<rinv<<" "<<rinvapprox<<" "<<rinvapprox
-	  <<"   "<<phi0<<" "<<phi0approx<<" "<<phi0approx
-	  <<"   "<<t<<" "<<tapprox<<" "<<tapprox
-	  <<"   "<<z0<<" "<<z0approx<<" "<<z0approx
-	  <<endl;
+      globals_->ofstream("trackletpars.txt")  <<"Trackpars "<<layer_
+					     <<"   "<<rinv<<" "<<rinvapprox<<" "<<rinvapprox
+					     <<"   "<<phi0<<" "<<phi0approx<<" "<<phi0approx
+					     <<"   "<<t<<" "<<tapprox<<" "<<tapprox
+					     <<"   "<<z0<<" "<<z0approx<<" "<<z0approx
+					     <<endl;
     }	        
         
     Tracklet* tracklet=new Tracklet(settings_,innerStub,middleStub,outerStub,
@@ -1420,13 +1418,12 @@ public:
 
     
     if (settings_->writeMonitorData("TrackletPars")) {
-      static ofstream out("trackletpars.txt");
-      out <<"Trackpars "<<layer_
-	  <<"   "<<rinv<<" "<<rinvapprox<<" "<<rinvapprox
-	  <<"   "<<phi0<<" "<<phi0approx<<" "<<phi0approx
-	  <<"   "<<t<<" "<<tapprox<<" "<<tapprox
-	  <<"   "<<z0<<" "<<z0approx<<" "<<z0approx
-	  <<endl;
+      globals_->ofstream("trackletpars.txt")  <<"Trackpars "<<layer_
+					     <<"   "<<rinv<<" "<<rinvapprox<<" "<<rinvapprox
+					     <<"   "<<phi0<<" "<<phi0approx<<" "<<phi0approx
+					     <<"   "<<t<<" "<<tapprox<<" "<<tapprox
+					     <<"   "<<z0<<" "<<z0approx<<" "<<z0approx
+					     <<endl;
     }	        
         
     Tracklet* tracklet=new Tracklet(settings_,innerStub,middleStub,outerStub,
@@ -1690,13 +1687,12 @@ public:
 
     
     if (settings_->writeMonitorData("TrackletPars")) {
-      static ofstream out("trackletpars.txt");
-      out <<"Trackpars "<<layer_
-	  <<"   "<<rinv<<" "<<rinvapprox<<" "<<rinvapprox
-	  <<"   "<<phi0<<" "<<phi0approx<<" "<<phi0approx
-	  <<"   "<<t<<" "<<tapprox<<" "<<tapprox
-	  <<"   "<<z0<<" "<<z0approx<<" "<<z0approx
-	  <<endl;
+      globals_->ofstream("trackletpars.txt")  <<"Trackpars "<<layer_
+					     <<"   "<<rinv<<" "<<rinvapprox<<" "<<rinvapprox
+					     <<"   "<<phi0<<" "<<phi0approx<<" "<<phi0approx
+					     <<"   "<<t<<" "<<tapprox<<" "<<tapprox
+					     <<"   "<<z0<<" "<<z0approx<<" "<<z0approx
+					     <<endl;
     }	        
         
     Tracklet* tracklet=new Tracklet(settings_,innerStub,middleStub,outerStub,

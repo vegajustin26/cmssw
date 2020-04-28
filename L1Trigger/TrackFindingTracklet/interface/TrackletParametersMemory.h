@@ -5,6 +5,7 @@
 
 #include "Tracklet.h"
 #include "MemoryBase.h"
+#include "GlobalHistTruth.h"
 
 using namespace std;
 
@@ -24,8 +25,8 @@ public:
 
   Tracklet *getFPGATracklet(unsigned int i) const { return tracklets_[i]; }
 
-  void writeMatches(int &matchesL1, int &matchesL3, int &matchesL5) {
-    static ofstream out("nmatches.txt");
+  void writeMatches(GlobalHistTruth* globals, int &matchesL1, int &matchesL3, int &matchesL5) {
+    ofstream& out=globals->ofstream("nmatches.txt");
     for (unsigned int i = 0; i < tracklets_.size(); i++) {
       if ((tracklets_[i]->nMatches() + tracklets_[i]->nMatchesDisk()) > 0) {
         if (tracklets_[i]->layer() == 1)
