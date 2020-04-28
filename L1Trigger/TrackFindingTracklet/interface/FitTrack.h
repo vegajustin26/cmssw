@@ -818,12 +818,13 @@ class FitTrack:public ProcessBase{
 				  << "drinv/cov = " << drinv << "/" << drinv_cov << " \n"
 				  << "dphi0/cov = " << drinv << "/" << dphi0_cov << " \n"
 				  << "dt/cov = " << drinv << "/" << dt_cov << " \n"
-				  << "dz0/cov = " << drinv << "/" << dz0_cov << "\n \n"
-				  << "D[0][k]= ";
+				  << "dz0/cov = " << drinv << "/" << dz0_cov << "\n";
+     ostringstream oss;
+     oss << "D[0][k]= ";
      for(unsigned int i=0;i<2*n;i++) {
-       cout << D[0][i] << ", ";
+       oss << D[0][i] << ", ";
      }
-    cout << endl;
+     edm::LogVerbatim("Tracklet") << oss.str();
    }
 
 

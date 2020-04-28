@@ -308,14 +308,17 @@ public:
       if (print) {
         edm::LogVerbatim("Tracklet") << "iMinvDt table build : " << iMinvDt[0][10] << " " << iMinvDt[1][10] << " " << iMinvDt[2][10] << " "
 				     << iMinvDt[3][10] << " " << t << " " << nlayers << " " << ndisks;
-        cout << "alpha :";
+
+	ostringstream oss;
+        oss << "alpha :";
         for (int iii = 0; iii < ndisks; iii++)
-          cout << " " << alpha[iii];
-        cout << endl;
-        cout << "z :";
+          oss << " " << alpha[iii];
+        edm::LogVerbatim("Tracklet") << oss.str();
+	oss.str("");
+        oss << "z :";
         for (int iii = 0; iii < ndisks; iii++)
-          cout << " " << z[iii];
-        cout << endl;
+          oss << " " << z[iii];
+        edm::LogVerbatim("Tracklet") << oss.str();
       }
 
       if (print) {
@@ -1183,27 +1186,30 @@ public:
 
     edm::LogVerbatim("Tracklet") << "V: " << ptbin;
     for (unsigned int ii = 0; ii < 2 * n; ii += 2) {
+      ostringstream oss;
       for (unsigned int jj = 0; jj < 2 * n; jj += 2) {
-        cout << V[ii][jj] << " ";
+        oss << V[ii][jj] << " ";
       }
-      cout << endl;
+      edm::LogVerbatim("Tracklet") << oss.str();
     }
     edm::LogVerbatim("Tracklet") << "Vcorr:";
     for (unsigned int ii = 0; ii < 2 * n; ii += 2) {
+      ostringstream oss;
       for (unsigned int jj = 0; jj < 2 * n; jj += 2) {
-        cout << V[ii][jj] / sqrt(V[ii][ii] * V[jj][jj]) << " ";
+        oss << V[ii][jj] / sqrt(V[ii][ii] * V[jj][jj]) << " ";
       }
-      cout << endl;
+      edm::LogVerbatim("Tracklet") << oss.str();
     }
 
     invert(V, 2 * n);
 
     edm::LogVerbatim("Tracklet") << "Vinv:";
     for (unsigned int ii = 0; ii < 2 * n; ii += 2) {
+      ostringstream oss;
       for (unsigned int jj = 0; jj < 2 * n; jj += 2) {
-        cout << V[ii][jj + 2 * n] << " ";
+        oss << V[ii][jj + 2 * n] << " ";
       }
-      cout << endl;
+      edm::LogVerbatim("Tracklet") << oss.str();
     }
 
     //here we handle a barrel hit

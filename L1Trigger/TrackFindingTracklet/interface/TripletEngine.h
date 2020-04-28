@@ -141,16 +141,18 @@ public:
     int hacksum = 0;
     if (print) {
       edm::LogVerbatim("Tracklet") << "In TripletEngine::execute : "<<getName() <<" "<<nThirdStubs<<":";
-      for(unsigned int i=0; i<thirdvmstubs_.size(); ++i)
+      for (unsigned int i=0; i<thirdvmstubs_.size(); ++i) {
 	edm::LogVerbatim("Tracklet") <<thirdvmstubs_.at(i)->getName()<<" "<<thirdvmstubs_.at(i)->nVMStubs();
+      }
       int s = 0;
-      for(unsigned int i=0; i<stubpairs_.size(); ++i){
-	cout <<stubpairs_.at(i)->nStubPairs()<<" ";
+      ostringstream oss;
+      for (unsigned int i=0; i<stubpairs_.size(); ++i) {
+	oss << stubpairs_.at(i)->nStubPairs() << " ";
 	s += stubpairs_.at(i)->nStubPairs();
       }
       hacksum += nThirdStubs*s;
-      cout<<endl;
-      for(unsigned int i=0; i<stubpairs_.size(); ++i){
+      edm::LogVerbatim("Tracklet") << oss.str();
+      for (unsigned int i=0; i<stubpairs_.size(); ++i) {
 	edm::LogVerbatim("Tracklet") <<"                                          "<<stubpairs_.at(i)->getName();
       }
     }
