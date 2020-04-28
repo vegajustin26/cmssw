@@ -1,6 +1,8 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_HistBase_h
 #define L1Trigger_TrackFindingTracklet_interface_HistBase_h
 
+
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -9,6 +11,8 @@
 #include <cmath>
 
 using namespace std;
+
+class GlobalHistTruth;
 
 class HistBase {
 public:
@@ -32,7 +36,7 @@ public:
   // double ieta, eta
   // double iz0, z0
   // int tp
-  virtual void fillTrackletParams(const Settings*, int, int, double, double, double, double, double, double, double, double, int) {
+  virtual void fillTrackletParams(const Settings*, GlobalHistTruth*, int, int, double, double, double, double, double, double, double, double, int) {
     return;  //default implementation does nothing
   }
 

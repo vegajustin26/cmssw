@@ -133,6 +133,7 @@ public:
   // double iz0, z0
   // int tp
   virtual void fillTrackletParams(const Settings* settings,
+				  GlobalHistTruth* globals,
 				  int seedIndex,
                                   int iSector,
                                   double rinv,
@@ -176,7 +177,7 @@ public:
         h_ieta_matched_L1L2_->Fill(ieta);
         h_z0_matched_L1L2_->Fill(z0);
         h_iz0_matched_L1L2_->Fill(iz0);
-        L1SimTrack simtrk = GlobalHistTruth::event()->simtrack(tp - 1);
+        L1SimTrack simtrk = globals->event()->simtrack(tp - 1);
         h_rinvres_L1L2_->Fill(rinv - simtrk.rinv());
         h_irinvres_L1L2_->Fill(irinv - simtrk.rinv());
         double simtrkphi0 = simtrk.phi();

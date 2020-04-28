@@ -259,7 +259,7 @@ public:
 
 	bool truthmatch=tracklet->stubtruthmatch(stub);
 
-	HistBase* hists=GlobalHistTruth::histograms();
+	HistBase* hists=globals_->histograms();
 	hists->FillLayerResidual(layerdisk_+1, seedindex,
 				 dphiapprox*settings_->rmean(layerdisk_),
 				 ideltaphi*settings_->kphi1()*settings_->rmean(layerdisk_),

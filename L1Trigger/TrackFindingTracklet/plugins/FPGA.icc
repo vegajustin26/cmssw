@@ -321,9 +321,9 @@ if (settings.writeMem()) {
     }
     TCTimer.stop();
 
-    int nTP=GlobalHistTruth::event()->nsimtracks();
+    int nTP=globals.event()->nsimtracks();
     for (int iTP=0;iTP<nTP;iTP++){
-      L1SimTrack simtrk=GlobalHistTruth::event()->simtrack(iTP);
+      L1SimTrack simtrk=globals.event()->simtrack(iTP);
       if (simtrk.pt()<2.0) continue;
       if (std::abs(simtrk.vz())>15.0) continue;
       if (hypot(simtrk.vx(),simtrk.vy())>0.1) continue;
@@ -358,7 +358,7 @@ if (settings.writeMem()) {
       }
       for(int iseed=0;iseed<8;iseed++){
 	bool eff=matchseed.find(iseed)!=matchseed.end();
-	GlobalHistTruth::histograms()->fillSeedEff(iseed,simtrk.eta(),eff);
+	globals.histograms()->fillSeedEff(iseed,simtrk.eta(),eff);
       }
     } 
 

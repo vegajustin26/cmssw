@@ -455,7 +455,7 @@ public:
       
       bool truthmatch=tracklet->stubtruthmatch(stub);
       
-      HistBase* hists=GlobalHistTruth::histograms();
+      HistBase* hists=globals_->histograms();
       hists->FillLayerResidual(layer_, seedindex,
 			       dphiapprox*settings_->rmean(layer_-1),
 			       ideltaphi*settings_->kphi1()*settings_->rmean(layer_-1),

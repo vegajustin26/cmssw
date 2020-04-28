@@ -34,16 +34,9 @@ public:
 
   }
   
-  static SLHCEvent*& event() {
-    static SLHCEvent* theEvent = 0;
-    return theEvent;
-  }
+  SLHCEvent*& event() { return theEvent_; }
 
-  static HistBase*& histograms() {
-    static HistBase dummy;
-    static HistBase* theHistBase = &dummy;
-    return theHistBase;
-  }
+  HistBase*& histograms() { return theHistBase_; }
 
   IMATH_TrackletCalculator* ITC_L1L2() { return ITC_L1L2_; }
 
@@ -97,7 +90,10 @@ private:
   IMATH_TrackletCalculatorOverlap* ITC_L2F1_{0};
   IMATH_TrackletCalculatorOverlap* ITC_L1B1_{0};
   IMATH_TrackletCalculatorOverlap* ITC_L2B1_{0};
+  
+  SLHCEvent* theEvent_{0}; 
 
+  HistBase* theHistBase_{0};
 
   
 };

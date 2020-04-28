@@ -107,7 +107,7 @@ int main(const int argc, const char** argv)
   histimp->bookTrackletParams();
   histimp->bookSeedEff();
   
-  GlobalHistTruth::histograms()=histimp;
+  globals.histograms()=histimp;
   
   int nevents = atoi(argv[2]);
 
@@ -280,11 +280,9 @@ int main(const int argc, const char** argv)
     SLHCEvent ev(*in);
     readTimer.stop();
 
-    GlobalHistTruth::event()=&ev;
+    globals.event()=&ev;
 
-    
     L1SimTrack simtrk;
-
 
 // setup ROOT Tree and Add Monte Carlo tracks to the ROOT-Tree Event
 // -----------------------------------------------------------------

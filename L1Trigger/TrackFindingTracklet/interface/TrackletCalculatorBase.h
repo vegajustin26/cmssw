@@ -622,9 +622,9 @@ public:
     }
     trackletpars_->addTracklet(tracklet);
 
-    HistBase* hists=GlobalHistTruth::histograms();
+    HistBase* hists=globals_->histograms();
     int tp=tracklet->tpseed();
-    hists->fillTrackletParams(settings_,iSeed_,iSector_,
+    hists->fillTrackletParams(settings_,globals_,iSeed_,iSector_,
 			      rinvapprox,irinv*ITC->rinv_final.get_K(),
 			      phi0approx,iphi0*ITC->phi0_final.get_K(),
 			      asinh(tapprox),asinh(it*ITC->t_final.get_K()),
