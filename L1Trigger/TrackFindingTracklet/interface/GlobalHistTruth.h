@@ -3,6 +3,10 @@
 
 #include "HistBase.h"
 
+#include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
+#include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculatorDisk.h"
+#include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculatorOverlap.h"
+
 using namespace std;
 
 class GlobalHistTruth {

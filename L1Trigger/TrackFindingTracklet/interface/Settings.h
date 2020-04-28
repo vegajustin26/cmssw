@@ -6,7 +6,7 @@
 #include <array>
 #include <set>
 #include <map>
-
+#include <cassert>
 #include <cmath>
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"

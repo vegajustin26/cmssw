@@ -190,27 +190,13 @@ private:
 
   // settings containing various constants for the tracklet processing
   Trklet::Settings settings;
-  
+
+  // global class for tracklet processing
+  GlobalHistTruth globals(&settings);
+
   unsigned int nHelixPar_;
   bool extended_;
 
-  // tracklet calculators 
-  IMATH_TrackletCalculator* ITC_L1L2_;
-  IMATH_TrackletCalculator* ITC_L2L3_;
-  IMATH_TrackletCalculator* ITC_L3L4_;
-  IMATH_TrackletCalculator* ITC_L5L6_;
-  
-  IMATH_TrackletCalculatorDisk* ITC_F1F2_;
-  IMATH_TrackletCalculatorDisk* ITC_F3F4_;
-  IMATH_TrackletCalculatorDisk* ITC_B1B2_;
-  IMATH_TrackletCalculatorDisk* ITC_B3B4_;
-  
-  IMATH_TrackletCalculatorOverlap* ITC_L1F1_;
-  IMATH_TrackletCalculatorOverlap* ITC_L2F1_;
-  IMATH_TrackletCalculatorOverlap* ITC_L1B1_;
-  IMATH_TrackletCalculatorOverlap* ITC_L2B1_;
-
-  
   
   std::map<string, vector<int> > dtclayerdisk;
 
@@ -290,49 +276,17 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   settings.setExtended(extended_);
   settings.setNHelixPar(nHelixPar_);
 
-
-  // tracklet calculators 
-  ITC_L1L2_ = new IMATH_TrackletCalculator(&settings,1,2);
-  ITC_L2L3_ = new IMATH_TrackletCalculator(&settings,2,3);
-  ITC_L3L4_ = new IMATH_TrackletCalculator(&settings,3,4);
-  ITC_L5L6_ = new IMATH_TrackletCalculator(&settings,5,6);
-  
-  ITC_F1F2_ = new IMATH_TrackletCalculatorDisk(&settings,1,2);
-  ITC_F3F4_ = new IMATH_TrackletCalculatorDisk(&settings,3,4);
-  ITC_B1B2_ = new IMATH_TrackletCalculatorDisk(&settings,-1,-2);
-  ITC_B3B4_ = new IMATH_TrackletCalculatorDisk(&settings,-3,-4);
-  
-  ITC_L1F1_ = new IMATH_TrackletCalculatorOverlap(&settings,1,1);
-  ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(&settings,2,1);
-  ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(&settings,1,-1);
-  ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(&settings,2,-1);
-
-  GlobalHistTruth::ITC_L1L2()=ITC_L1L2_;
-  GlobalHistTruth::ITC_L2L3()=ITC_L2L3_;
-  GlobalHistTruth::ITC_L3L4()=ITC_L3L4_;
-  GlobalHistTruth::ITC_L5L6()=ITC_L5L6_;
-
-  GlobalHistTruth::ITC_F1F2()=ITC_F1F2_;
-  GlobalHistTruth::ITC_F3F4()=ITC_F3F4_;
-  GlobalHistTruth::ITC_B1B2()=ITC_B1B2_;
-  GlobalHistTruth::ITC_B3B4()=ITC_B3B4_;
-
-  GlobalHistTruth::ITC_L1F1()=ITC_L1F1_;
-  GlobalHistTruth::ITC_L2F1()=ITC_L2F1_;
-  GlobalHistTruth::ITC_L1B1()=ITC_L1B1_;
-  GlobalHistTruth::ITC_L2B1()=ITC_L2B1_;
-
-  settings.krinvpars() = ITC_L1L2_->rinv_final.get_K();
-  settings.kphi0pars() = ITC_L1L2_->phi0_final.get_K();
+  settings.krinvpars() = globals.ITC_L1L2()->rinv_final.get_K();
+  settings.kphi0pars() = globals.ITC_L1L2()->phi0_final.get_K();
   settings.kd0pars()   = settings.kd0();
-  settings.ktpars()    = ITC_L1L2_->t_final.get_K();
-  settings.kz0pars()   = ITC_L1L2_->z0_final.get_K();
-  settings.kphiproj123() =ITC_L1L2_->phi0_final.get_K()*4;
+  settings.ktpars()    = globals.ITC_L1L2()->t_final.get_K();
+  settings.kz0pars()   = globals.ITC_L1L2()->z0_final.get_K();
+  settings.kphiproj123() =globals.ITC_L1L2()->phi0_final.get_K()*4;
   settings.kzproj()=settings.kz();
-  settings.kphider()=ITC_L1L2_->rinv_final.get_K()*(1<<settings.phiderbitshift());
-  settings.kzder()=ITC_L1L2_->t_final.get_K()*(1<<settings.zderbitshift());
-  settings.krprojshiftdisk() = ITC_L1L2_->rD_0_final.get_K();
-  settings.kphiprojdisk()=ITC_L1L2_->phi0_final.get_K()*4.0;
+  settings.kphider()=globals.ITC_L1L2()->rinv_final.get_K()*(1<<settings.phiderbitshift());
+  settings.kzder()=globals.ITC_L1L2()->t_final.get_K()*(1<<settings.zderbitshift());
+  settings.krprojshiftdisk() = globals.ITC_L1L2()->rD_0_final.get_K();
+  settings.kphiprojdisk()=globals.ITC_L1L2()->phi0_final.get_K()*4.0;
   settings.krdisk() = settings.kr();
   settings.kzpars() = settings.kz();  
 
@@ -380,7 +334,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   }
 
   for (unsigned int i = 0; i < settings.NSector(); i++) {
-    sectors[i] = new Sector(i, &settings);
+    sectors[i] = new Sector(i,&settings,&globals);
   }
 
   if (settings.debugTracklet()) {

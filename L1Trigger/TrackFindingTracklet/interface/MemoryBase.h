@@ -8,6 +8,8 @@
 
 #include <fstream>
 #include <sstream>
+#include <cassert>
+#include <bitset>
 
 using namespace Trklet;
 using namespace std;

@@ -38,7 +38,7 @@ void var_base::analyze() {
 
   int iu = log2(get_range() / u);
   if (iu > 1) {
-    char slog[100];
+    char slog[1024];
     sprintf(slog,"analyzing %s: range %g is much larger then %g. suggest cutting by a factor of 2^%i",
 	    name_.c_str(),
 	    get_range(),
