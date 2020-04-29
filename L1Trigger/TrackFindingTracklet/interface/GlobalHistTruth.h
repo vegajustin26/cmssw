@@ -18,6 +18,7 @@ class TETableBase;
 class TrackDerTable;
 class VMRouterPhiCorrTable;
 class ProjectionRouterBendTable;
+class SLHCEvent;
 
 class GlobalHistTruth {
 public:
