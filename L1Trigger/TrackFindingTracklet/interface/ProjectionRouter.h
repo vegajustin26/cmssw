@@ -3,6 +3,7 @@
 #define L1Trigger_TrackFindingTracklet_interface_ProjectionRouter_h
 
 #include "ProcessBase.h"
+#include "ProjectionRouterBendTable.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -72,6 +73,12 @@ public:
   void execute() {
 
 
+    if (globals_->projectionRouterBendTable()==0){
+      ProjectionRouterBendTable* bendTablePtr=new ProjectionRouterBendTable();
+      bendTablePtr->init(settings_,globals_, nrbits_, nphiderbits_);
+      globals_->projectionRouterBendTable()=bendTablePtr;
+    }
+
     unsigned int allprojcount=0;
 
     //These are just here to test that the order is correct. Does not affect
@@ -106,7 +113,7 @@ public:
 	  
 	  int bendindex=(signindex<<(nphiderbits_+nrbits_))+(rindex<<(nphiderbits_))+phiderindex;
 	  
-	  int ibendproj=bendTable(disk-1,bendindex);
+	  int ibendproj=globals_->projectionRouterBendTable()->bendLoookup(disk-1,bendindex);
 
 	  tracklet->setBendIndex(ibendproj,disk);
 	}
@@ -143,70 +150,6 @@ public:
 	}
       }
     }
-  }
-
-  double bend(double r, double rinv) {
-    
-    double dr=0.18;
-    
-    double delta=r*dr*0.5*rinv;
-    
-    double bend=-delta/0.009;
-    if (r<55.0) bend=-delta/0.01;
-    
-    return bend;
-    
-  }
-  
-  int bendTable(int diskindex,int bendindex) {
-
-    static vector<int> bendtable[5];
-
-    static bool first=true;
-
-    if (first) {
-      first=false;
-    
-      for (unsigned int idisk=0;idisk<5;idisk++) {
-
-	unsigned int nsignbins=2;
-	unsigned int nrbins=1<<(nrbits_);
-	unsigned int nphiderbins=1<<(nphiderbits_);
-      
-	for(unsigned int isignbin=0;isignbin<nsignbins;isignbin++) {
-	  for(unsigned int irbin=0;irbin<nrbins;irbin++) {
-	    int ir=irbin;
-	    if (ir>(1<<(nrbits_-1))) ir-=(1<<nrbits_);
-	    ir=ir<<(settings_->nrbitsstub(6)-nrbits_);
-	    for(unsigned int iphiderbin=0;iphiderbin<nphiderbins;iphiderbin++) {
-	      int iphider=iphiderbin;
-	      if (iphider>(1<<(nphiderbits_-1))) iphider-=(1<<nphiderbits_);
-	      iphider=iphider<<(settings_->nbitsphiprojderL123()-nphiderbits_);
-	      
-	      double rproj=ir*settings_->krprojshiftdisk();
-	      double phider=iphider*globals_->ITC_L1L2()->der_phiD_final.get_K();
-	      double t=settings_->zmean(idisk)/rproj;
-	      
-	      if (isignbin) t=-t;
-	  
-	      double rinv=-phider*(2.0*t);
-
-	      double bendproj=0.5*bend(rproj,rinv);
-
-	    
-	      int ibendproj=2.0*bendproj+15.5;
-	      if (ibendproj<0) ibendproj=0;
-	      if (ibendproj>31) ibendproj=31;
-	      
-	      bendtable[idisk].push_back(ibendproj);
-
-	    }
-	  }
-	}
-      }
-    }
-
-    return bendtable[diskindex][bendindex];
   }
 
   

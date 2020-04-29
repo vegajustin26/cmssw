@@ -17,6 +17,7 @@ namespace tmtt {
 class TETableBase;
 class TrackDerTable;
 class VMRouterPhiCorrTable;
+class ProjectionRouterBendTable;
 
 class GlobalHistTruth {
 public:
@@ -52,6 +53,8 @@ public:
   VMRouterPhiCorrTable*& phiCorr(unsigned int layer) { return thePhiCorr_[layer]; }
 
   TETableBase*& teTable(unsigned int inner, unsigned int iSeed) { return theTETable_[inner][iSeed]; }
+
+  ProjectionRouterBendTable*& projectionRouterBendTable() {return projectionRouterBendTable_; }
 
   
   IMATH_TrackletCalculator* ITC_L1L2() { return ITC_L1L2_; }
@@ -112,6 +115,8 @@ private:
   HistBase* theHistBase_{0};
 
   TrackDerTable* trackDerTable_{0};
+
+  ProjectionRouterBendTable* projectionRouterBendTable_{0};
 
   tmtt::Settings* tmttSettings_{0};
 
