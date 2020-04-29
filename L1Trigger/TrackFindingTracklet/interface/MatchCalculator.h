@@ -257,14 +257,15 @@ public:
 	assert(phimatchcut_[seedindex]>0);
 	assert(zmatchcut_[seedindex]>0);
 
-	bool truthmatch=tracklet->stubtruthmatch(stub);
+	if (settings_->bookHistos()) {
+	  bool truthmatch=tracklet->stubtruthmatch(stub);
 
-	HistBase* hists=globals_->histograms();
-	hists->FillLayerResidual(layerdisk_+1, seedindex,
-				 dphiapprox*settings_->rmean(layerdisk_),
-				 ideltaphi*settings_->kphi1()*settings_->rmean(layerdisk_),
-				 ideltaz*fact_*settings_->kz(), dz,truthmatch);
-    
+	  HistBase* hists=globals_->histograms();
+	  hists->FillLayerResidual(layerdisk_+1, seedindex,
+				   dphiapprox*settings_->rmean(layerdisk_),
+				   ideltaphi*settings_->kphi1()*settings_->rmean(layerdisk_),
+				   ideltaz*fact_*settings_->kz(), dz,truthmatch);
+	}
 
 	if (std::abs(dphi)>0.2 || std::abs(dphiapprox)>0.2 ) {
 	  edm::LogProblem("Tracklet") << "WARNING dphi and/or dphiapprox too large : "<<dphi<<" "<<dphiapprox<<endl;

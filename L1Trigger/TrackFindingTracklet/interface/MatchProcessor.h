@@ -458,16 +458,17 @@ public:
       
       assert(phimatchcut_[seedindex]>0);
       assert(zmatchcut_[seedindex]>0);
-      
-      bool truthmatch=tracklet->stubtruthmatch(stub);
-      
-      HistBase* hists=globals_->histograms();
-      hists->FillLayerResidual(layer_, seedindex,
-			       dphiapprox*settings_->rmean(layer_-1),
-			       ideltaphi*settings_->kphi1()*settings_->rmean(layer_-1),
-			       ideltaz*fact_*settings_->kz(), dz,truthmatch);
-      
-      
+
+      if (settings_->bookHistos()) {
+	
+	bool truthmatch=tracklet->stubtruthmatch(stub);
+	
+	HistBase* hists=globals_->histograms();
+	hists->FillLayerResidual(layer_, seedindex,
+				 dphiapprox*settings_->rmean(layer_-1),
+				 ideltaphi*settings_->kphi1()*settings_->rmean(layer_-1),
+				 ideltaz*fact_*settings_->kz(), dz,truthmatch);
+      }
       
       
       if (settings_->writeMonitorData("Residuals")) {	

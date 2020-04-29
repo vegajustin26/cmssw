@@ -307,7 +307,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     histimp->bookTrackletParams();
     histimp->bookSeedEff();
 
-    GlobalHistTruth::histograms() = histimp;
+    globals->histograms()=histimp;
   }
 
   sectors = new Sector*[settings.NSector()];
@@ -493,7 +493,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   ev.setIPx(bsPosition.x());
   ev.setIPy(bsPosition.y());
 
-  GlobalHistTruth::event() = &ev;
+  globals->event()=&ev;
 
   // tracking particles
   edm::Handle<std::vector<TrackingParticle> > TrackingParticleHandle;

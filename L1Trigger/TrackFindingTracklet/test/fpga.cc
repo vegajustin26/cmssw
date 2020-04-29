@@ -59,19 +59,19 @@ int main(const int argc, const char** argv)
 
   Trklet::Settings settings;
 
-  GlobalHistTruth globals(&settings);
+  GlobalHistTruth* globals = new GlobalHistTruth(&settings);
 
-  settings.krinvpars() = globals.ITC_L1L2()->rinv_final.get_K();
-  settings.kphi0pars() = globals.ITC_L1L2()->phi0_final.get_K();
+  settings.krinvpars() = globals->ITC_L1L2()->rinv_final.get_K();
+  settings.kphi0pars() = globals->ITC_L1L2()->phi0_final.get_K();
   settings.kd0pars()   = settings.kd0();
-  settings.ktpars()    = globals.ITC_L1L2()->t_final.get_K();
-  settings.kz0pars()   = globals.ITC_L1L2()->z0_final.get_K();
-  settings.kphiproj123() =globals.ITC_L1L2()->phi0_final.get_K()*4;
+  settings.ktpars()    = globals->ITC_L1L2()->t_final.get_K();
+  settings.kz0pars()   = globals->ITC_L1L2()->z0_final.get_K();
+  settings.kphiproj123() =globals->ITC_L1L2()->phi0_final.get_K()*4;
   settings.kzproj()=settings.kz();
-  settings.kphider()=globals.ITC_L1L2()->rinv_final.get_K()*(1<<settings.phiderbitshift());
-  settings.kzder()=globals.ITC_L1L2()->t_final.get_K()*(1<<settings.zderbitshift());
-  settings.krprojshiftdisk() = globals.ITC_L1L2()->rD_0_final.get_K();
-  settings.kphiprojdisk()=globals.ITC_L1L2()->phi0_final.get_K()*4.0;
+  settings.kphider()=globals->ITC_L1L2()->rinv_final.get_K()*(1<<settings.phiderbitshift());
+  settings.kzder()=globals->ITC_L1L2()->t_final.get_K()*(1<<settings.zderbitshift());
+  settings.krprojshiftdisk() = globals->ITC_L1L2()->rD_0_final.get_K();
+  settings.kphiprojdisk()=globals->ITC_L1L2()->phi0_final.get_K()*4.0;
   settings.krdisk() = settings.kr();
   settings.kzpars() = settings.kz();  
 
@@ -100,14 +100,17 @@ int main(const int argc, const char** argv)
   if (argc<4)
     edm::LogVerbatim("Tracklet") << "Need to specify the input ascii file and the number of events to run on and if you want to filter on MC truth";
 
-  HistImp* histimp=new HistImp;
-  histimp->init();
-  histimp->bookLayerResidual();
-  histimp->bookDiskResidual();
-  histimp->bookTrackletParams();
-  histimp->bookSeedEff();
+  HistImp* histimp;
+  if (settings.bookHistos()) {
+    histimp = new HistImp;
+    histimp->init();
+    histimp->bookLayerResidual();
+    histimp->bookDiskResidual();
+    histimp->bookTrackletParams();
+    histimp->bookSeedEff();
   
-  globals.histograms()=histimp;
+    globals->histograms()=histimp;
+  }
   
   int nevents = atoi(argv[2]);
 
@@ -155,7 +158,7 @@ int main(const int argc, const char** argv)
 
   
   for (unsigned int i=0;i<settings.NSector();i++) {
-    sectors[i]=new Sector(i,&settings,&globals);
+    sectors[i]=new Sector(i,&settings,globals);
   }  
 
 
@@ -280,7 +283,7 @@ int main(const int argc, const char** argv)
     SLHCEvent ev(*in);
     readTimer.stop();
 
-    globals.event()=&ev;
+    globals->event()=&ev;
 
     L1SimTrack simtrk;
 
@@ -396,7 +399,7 @@ int main(const int argc, const char** argv)
     }
 
     if (settings.writeMonitorData("Variance")) {
-      StubVariance variance(ev,&globals);
+      StubVariance variance(ev,globals);
     }
 
     edm::LogVerbatim("Tracklet") <<"Process event: "<<eventnum<<" with "<<ev.nstubs()<<" stubs and "<<ev.nsimtracks()<<" simtracks";
@@ -638,7 +641,9 @@ int main(const int argc, const char** argv)
 
   if (settings.skimfile()!="") skimout.close();
 
-  histimp->close();
+  if (settings.bookHistos()) {
+    histimp->close();
+  }
   
 // Write and Close ROOT-Tree  
 // -------------------------

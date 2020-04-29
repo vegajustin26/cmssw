@@ -321,9 +321,9 @@ if (settings.writeMem()) {
     }
     TCTimer.stop();
 
-    int nTP=globals.event()->nsimtracks();
+    int nTP=globals->event()->nsimtracks();
     for (int iTP=0;iTP<nTP;iTP++){
-      L1SimTrack simtrk=globals.event()->simtrack(iTP);
+      L1SimTrack simtrk=globals->event()->simtrack(iTP);
       if (simtrk.pt()<2.0) continue;
       if (std::abs(simtrk.vz())>15.0) continue;
       if (hypot(simtrk.vx(),simtrk.vy())>0.1) continue;
@@ -348,7 +348,7 @@ if (settings.writeMem()) {
 	       << (hitmask&64) << " " << (hitmask&128)<<" "
 	       << (hitmask&256) << " " << (hitmask&512)<<" "
 	       << (hitmask&1024) << endl;
-    }
+      }
 
 
       std::set<int> matchseed;
@@ -356,9 +356,11 @@ if (settings.writeMem()) {
 	std::set<int> matchseedtmp=sectors[k]->seedMatch(iTP);
 	matchseed.insert(matchseedtmp.begin(),matchseedtmp.end());
       }
+      if (settings.bookHistos()) {
       for(int iseed=0;iseed<8;iseed++){
 	bool eff=matchseed.find(iseed)!=matchseed.end();
-	globals.histograms()->fillSeedEff(iseed,simtrk.eta(),eff);
+	globals->histograms()->fillSeedEff(iseed,simtrk.eta(),eff);
+      }
       }
     } 
 

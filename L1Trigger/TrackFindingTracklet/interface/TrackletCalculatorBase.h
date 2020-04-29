@@ -622,15 +622,17 @@ public:
     }
     trackletpars_->addTracklet(tracklet);
 
-    HistBase* hists=globals_->histograms();
-    int tp=tracklet->tpseed();
-    hists->fillTrackletParams(settings_,globals_,iSeed_,iSector_,
-			      rinvapprox,irinv*ITC->rinv_final.get_K(),
-			      phi0approx,iphi0*ITC->phi0_final.get_K(),
-			      asinh(tapprox),asinh(it*ITC->t_final.get_K()),
-			      z0approx,iz0*ITC->z0_final.get_K(),
-			      tp);
-
+    
+    if (settings_->bookHistos()) {
+      HistBase* hists=globals_->histograms();
+      int tp=tracklet->tpseed();
+      hists->fillTrackletParams(settings_,globals_,iSeed_,iSector_,
+				rinvapprox,irinv*ITC->rinv_final.get_K(),
+				phi0approx,iphi0*ITC->phi0_final.get_K(),
+				asinh(tapprox),asinh(it*ITC->t_final.get_K()),
+				z0approx,iz0*ITC->z0_final.get_K(),
+				tp);
+    }
     
     bool addL3=false;
     bool addL4=false;
