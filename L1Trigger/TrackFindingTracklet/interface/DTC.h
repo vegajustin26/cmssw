@@ -37,7 +37,7 @@ public:
   }
 
   int addStub(std::pair<Stub*, L1TStub*> stub) {
-    double phi = Util::phiRange(stub.second->phi());
+    double phi = Trklet::phiRange(stub.second->phi());
     bool overlaplayer = ((stub.second->layer() + 1) % 2 == 0);
     int added = 0;
     for (unsigned int i = 0; i < links_.size(); i++) {

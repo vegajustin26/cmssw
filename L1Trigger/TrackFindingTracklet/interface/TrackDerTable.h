@@ -762,24 +762,20 @@ public:
     }
   }
 
-  static void getVarianceMatrix(bool layer[6], bool disk[5], int ptbin, std::vector<std::vector<double> >& V) {
-    static bool first = true;
-
-    static std::map<string, int> layerdiskmap;
-
-    static double Vfull[11][11][4][1000];
-
+  static void getVarianceMatrix(GlobalHistTruth* globals, bool layer[6], bool disk[5], int ptbin, std::vector<std::vector<double> >& V) {
+    
     double sigmaz = 0.15 / sqrt(12.0);
     double sigmaz2 = 5.0 / sqrt(12.0);
 
-    if (first) {
-      first = false;
+    std::map<string, int> layerdiskmap=globals->layerdiskmap();
+    
+    if (layerdiskmap.size()==0) {
 
       for (unsigned int i = 0; i < 11; i++) {
         for (unsigned int j = 0; j < 11; j++) {
           for (unsigned int k = 0; k < 4; k++) {
             for (unsigned int l = 0; l < 1000; l++) {
-              Vfull[i][j][k][l] = 0.0;
+              globals->Vfull(i,j,k,l) = 0.0;
             }
           }
         }
@@ -822,8 +818,8 @@ public:
           assert(ptbin < 4);
           assert(i < 11);
           assert(j < 11);
-          Vfull[i][j][ptbin][index] = vij;
-          Vfull[j][i][ptbin][index] = vij;
+          globals->Vfull(i,j,ptbin,index) = vij;
+          globals->Vfull(j,i,ptbin,index) = vij;
         }
 
         in >> type;
@@ -870,7 +866,7 @@ public:
         if (i % 2 == 0 && j % 2 == 0) {
           int indexi = index[i / 2];
           int indexj = index[j / 2];
-          V[i][j] = Vfull[indexi][indexj][ptbin][mapindex];
+          V[i][j] = globals->Vfull(indexi,indexj,ptbin,mapindex);
         }
         if (i % 2 == 1 && i == j) {
           if (index[i / 2] < 3) {
@@ -1131,6 +1127,7 @@ public:
   }
 
   static void calculateDerivativesMS(const Settings* settings,
+				     GlobalHistTruth* globals,
 				     unsigned int nlayers,
                                      double r[6],
                                      unsigned int ndisks,
@@ -1182,7 +1179,7 @@ public:
     edm::LogVerbatim("Tracklet") << "layer : " << nlayers << " " << layer[0] << layer[1] << layer[2] << layer[3] << layer[4] << layer[5];
     edm::LogVerbatim("Tracklet") << "disk  : " << ndisks << " " << disk[0] << disk[1] << disk[2] << disk[3] << disk[4];
 
-    getVarianceMatrix(layer, disk, ptbin, V);
+    getVarianceMatrix(globals, layer, disk, ptbin, V);
 
     edm::LogVerbatim("Tracklet") << "V: " << ptbin;
     for (unsigned int ii = 0; ii < 2 * n; ii += 2) {

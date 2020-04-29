@@ -115,7 +115,7 @@ public:
       isec = dtc[4] - '0';
     }
 
-    double phisec = Util::phiRange(phi - isec * 2 * M_PI / 9.0);  //Nonant cabling hardcoded here
+    double phisec = Trklet::phiRange(phi - isec * 2 * M_PI / 9.0);  //Nonant cabling hardcoded here
 
     assert(dtcranges.find(dtcbase) != dtcranges.end());
 

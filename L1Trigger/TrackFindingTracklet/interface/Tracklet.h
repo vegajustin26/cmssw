@@ -1299,7 +1299,7 @@ public:
   bool foundTrack(L1SimTrack simtrk,double phioffset){
 
     double deta=simtrk.eta()-asinh(itfit().value()*settings_->ktpars());
-    double dphi=Util::phiRange(simtrk.phi()-(iphi0fit().value()*settings_->kphi0pars()+phioffset));
+    double dphi=Trklet::phiRange(simtrk.phi()-(iphi0fit().value()*settings_->kphi0pars()+phioffset));
     
     bool found=(std::abs(deta)<0.06)&&(std::abs(dphi)<0.01);
     

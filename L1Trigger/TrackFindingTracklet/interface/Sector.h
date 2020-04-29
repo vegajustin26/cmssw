@@ -52,8 +52,8 @@ public:
     phimax_=phimin_+dphi+2*dphiHG;
     phimin_-=M_PI/settings_->NSector();
     phimax_-=M_PI/settings_->NSector();
-    phimin_=Util::phiRange(phimin_);
-    phimax_=Util::phiRange(phimax_);
+    phimin_=Trklet::phiRange(phimin_);
+    phimax_=Trklet::phiRange(phimax_);
     if (phimin_>phimax_)  phimin_-=2*M_PI;
   }
 
@@ -76,7 +76,7 @@ public:
     double phi=stub.phi();
     double dphi=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();
     
-    static std::map<string,std::vector<int> > ILindex;
+    std::map<string,std::vector<int> >& ILindex=globals_->ILindex();
     std::vector<int>& tmp=ILindex[dtc];
     if (tmp.size()==0){
       for (unsigned int i=0;i<IL_.size();i++){

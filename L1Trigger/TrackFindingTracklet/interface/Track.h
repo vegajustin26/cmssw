@@ -86,8 +86,8 @@ public:
     double phimax = phimin + dphi + 2 * dphiHG;
     phimin -= M_PI / settings->NSector();
     phimax -= M_PI / settings->NSector();
-    phimin = Util::phiRange(phimin);
-    phimax = Util::phiRange(phimax);
+    phimin = Trklet::phiRange(phimin);
+    phimax = Trklet::phiRange(phimax);
     if (phimin > phimax)
       phimin -= 2 * M_PI;
     double phioffset = phimin;

@@ -91,7 +91,7 @@ public:
 
       int iphibits=settings_->nphibitsstub(layer-1);
 
-      double deltaphi=Util::phiRange(stubphi-phiminsec);
+      double deltaphi=Trklet::phiRange(stubphi-phiminsec);
       
       int iphi=(1<<iphibits)*deltaphi/(phimaxsec-phiminsec);
 
@@ -133,7 +133,7 @@ public:
 
       int iphibits=settings_->nphibitsstub(disk+5);
 
-      double deltaphi=Util::phiRange(stubphi-phiminsec);
+      double deltaphi=Trklet::phiRange(stubphi-phiminsec);
       
       int iphi=(1<<iphibits)*deltaphi/(phimaxsec-phiminsec);
       
@@ -354,7 +354,7 @@ public:
     if (layer_.value()>=3) {
       lphi=8;
     }
-    return Util::phiRange(phimin+phi_.value()*settings_->kphi()/lphi);
+    return Trklet::phiRange(phimin+phi_.value()*settings_->kphi()/lphi);
   }
 
   void setfiner(int finer) {

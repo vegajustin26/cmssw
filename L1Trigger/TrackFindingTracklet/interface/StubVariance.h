@@ -61,14 +61,14 @@ public:
         double zproj = stub.z();
         double tmp = rinv * (zproj - z0) / (2.0 * t);
         double phiproj = phi0 - tmp;
-        double dphi = Util::phiRange(phiproj - stub.phi());
+        double dphi = Trklet::phiRange(phiproj - stub.phi());
         diskresidphi[disk - 1] = dphi * stub.r();
       }
 
       if (layer > 0) {
         double rproj = stub.r();
         double phiproj = phi0 - asin(0.5 * rproj * rinv);
-        double dphi = Util::phiRange(phiproj - stub.phi());
+        double dphi = Trklet::phiRange(phiproj - stub.phi());
         layerresidphi[layer - 1] = dphi * stub.r();
       }
     }

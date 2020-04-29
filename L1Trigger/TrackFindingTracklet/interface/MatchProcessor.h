@@ -431,7 +431,7 @@ public:
       
       
       if (settings_->useapprox()) {
-	double dphi=Util::phiRange(phi-fpgastub->phiapprox(phimin_,phimax_));
+	double dphi=Trklet::phiRange(phi-fpgastub->phiapprox(phimin_,phimax_));
 	assert(std::abs(dphi)<0.001);
 	phi=fpgastub->phiapprox(phimin_,phimax_);
 	z=fpgastub->zapprox();
@@ -444,11 +444,11 @@ public:
       double dr=r-tracklet->rproj(layer_);
       assert(std::abs(dr)<settings_->drmax());
       
-      double dphi=Util::phiRange(phi-(tracklet->phiproj(layer_)+dr*tracklet->phiprojder(layer_)));
+      double dphi=Trklet::phiRange(phi-(tracklet->phiproj(layer_)+dr*tracklet->phiprojder(layer_)));
       
       double dz=z-(tracklet->zproj(layer_)+dr*tracklet->zprojder(layer_));
 	
-      double dphiapprox=Util::phiRange(phi-(tracklet->phiprojapprox(layer_)+
+      double dphiapprox=Trklet::phiRange(phi-(tracklet->phiprojapprox(layer_)+
 					    dr*tracklet->phiprojderapprox(layer_)));
       
       double dzapprox=z-(tracklet->zprojapprox(layer_)+
@@ -580,7 +580,7 @@ public:
       
       
       if (settings_->useapprox()) {
-	double dphi=Util::phiRange(phi-fpgastub->phiapprox(phimin_,phimax_));
+	double dphi=Trklet::phiRange(phi-fpgastub->phiapprox(phimin_,phimax_));
 	assert(std::abs(dphi)<0.001);
 	phi=fpgastub->phiapprox(phimin_,phimax_);
 	z=fpgastub->zapprox();
@@ -606,8 +606,8 @@ public:
       double dr=stub->r()-rproj;
       double drapprox=stub->r()-(tracklet->rprojapproxdisk(disk)+dz*tracklet->rprojderapproxdisk(disk));
 
-      double dphi=Util::phiRange(phi-phiproj);
-      double dphiapprox=Util::phiRange(phi-(tracklet->phiprojapproxdisk(disk)+dz*tracklet->phiprojderapproxdisk(disk)));
+      double dphi=Trklet::phiRange(phi-phiproj);
+      double dphiapprox=Trklet::phiRange(phi-(tracklet->phiprojapproxdisk(disk)+dz*tracklet->phiprojderapproxdisk(disk)));
             
       double drphi=dphi*stub->r();
       double drphiapprox=dphiapprox*stub->r();

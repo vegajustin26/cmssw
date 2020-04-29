@@ -56,6 +56,11 @@ public:
 
   ProjectionRouterBendTable*& projectionRouterBendTable() {return projectionRouterBendTable_; }
 
+  std::map<string,std::vector<int> >& ILindex() {return ILindex_; }
+
+  std::map<string, int>& layerdiskmap() {return layerdiskmap_; }
+    
+  double& Vfull(int i,int j,int ptbin,int index) {return Vfull_[i][j][ptbin][index]; }
   
   IMATH_TrackletCalculator* ITC_L1L2() { return ITC_L1L2_; }
 
@@ -129,6 +134,13 @@ private:
       {{0,0,0,0,0,0,0,0,0,0,0,0}},
       {{0,0,0,0,0,0,0,0,0,0,0,0}}
     }};
+
+  std::map<string,std::vector<int> > ILindex_;
+
+  std::map<string, int> layerdiskmap_;
+    
+  double Vfull_[11][11][4][1000];
+
   
 };
 

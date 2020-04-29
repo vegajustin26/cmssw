@@ -28,7 +28,7 @@ public:
 		     double phiprojdisk[5], double rprojdisk[5], 
 		     double phiderdisk[5], double rderdisk[5]) {
 
-    double deltaphi=Util::phiRange(phi1-phi2);
+    double deltaphi=Trklet::phiRange(phi1-phi2);
     
     double dist=sqrt(r2*r2+r1*r1-2*r1*r2*cos(deltaphi));
     
@@ -36,7 +36,7 @@ public:
 
     double phi1tmp=phi1-phimin_;    
      
-    phi0=Util::phiRange(phi1tmp+asin(0.5*r1*rinv));
+    phi0=Trklet::phiRange(phi1tmp+asin(0.5*r1*rinv));
     
     double rhopsi1=2*asin(0.5*r1*rinv)/rinv;
 	    
@@ -72,7 +72,7 @@ public:
 			 double phiproj[3], double rproj[3], 
 			 double phider[3], double rder[3]) {
 
-    double deltaphi=Util::phiRange(phi1-phi2);
+    double deltaphi=Trklet::phiRange(phi1-phi2);
 
     double dist=sqrt(r2*r2+r1*r1-2*r1*r2*cos(deltaphi));
     
@@ -80,7 +80,7 @@ public:
 
     double phi1tmp=phi1-phimin_;    
 
-    phi0=Util::phiRange(phi1tmp+asin(0.5*r1*rinv));
+    phi0=Trklet::phiRange(phi1tmp+asin(0.5*r1*rinv));
     
     double rhopsi1=2*asin(0.5*r1*rinv)/rinv;
 	    
@@ -116,7 +116,7 @@ public:
 			    double phiproj[3], double rproj[3], 
 			    double phider[3], double rder[3]) {
 
-    double deltaphi=Util::phiRange(phi1-phi2);
+    double deltaphi=Trklet::phiRange(phi1-phi2);
 
     double dist=sqrt(r2*r2+r1*r1-2*r1*r2*cos(deltaphi));
     
@@ -126,7 +126,7 @@ public:
 
     double phi1tmp=phi1-phimin_;    
 
-    phi0=Util::phiRange(phi1tmp+asin(0.5*r1*rinv));
+    phi0=Trklet::phiRange(phi1tmp+asin(0.5*r1*rinv));
     
     double rhopsi1=2*asin(0.5*r1*rinv)/rinv;
 	    

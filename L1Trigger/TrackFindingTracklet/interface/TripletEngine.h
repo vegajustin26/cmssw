@@ -17,8 +17,8 @@ public:
   TripletEngine(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
     ProcessBase(name,settings,global,iSector){
     double dphi=2*M_PI/settings_->NSector();
-    phimin_=Util::phiRange(iSector*dphi);
-    phimax_=Util::phiRange(phimin_+dphi);
+    phimin_=Trklet::phiRange(iSector*dphi);
+    phimax_=Trklet::phiRange(phimin_+dphi);
     if (phimin_>phimax_)  phimin_-=2*M_PI;
     assert(phimax_>phimin_);
     stubpairs_.clear();

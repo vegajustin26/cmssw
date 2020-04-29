@@ -29,8 +29,8 @@ public:
     phimax_=phimin_+dphi+2*dphiHG;
     phimin_-=M_PI/settings_->NSector();
     phimax_-=M_PI/settings_->NSector();
-    phimin_=Util::phiRange(phimin_);
-    phimax_=Util::phiRange(phimax_);
+    phimin_=Trklet::phiRange(phimin_);
+    phimax_=Trklet::phiRange(phimax_);
     if (phimin_>phimax_)  phimin_-=2*M_PI;
     phioffset_=phimin_;
     
