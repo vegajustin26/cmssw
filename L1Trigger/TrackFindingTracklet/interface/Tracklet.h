@@ -18,6 +18,8 @@
 #include "DiskResidual.h"
 #include "Util.h"
 
+#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
+
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;

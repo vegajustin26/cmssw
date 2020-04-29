@@ -2,7 +2,6 @@
 #define L1Trigger_TrackFindingTracklet_interface_AllProjectionsMemory_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
-#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 #include <vector>
