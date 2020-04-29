@@ -73,7 +73,7 @@ public:
       if (j < 16)
         out_ << "0";
       out_ << hex << j << dec;
-      out_ << " " << tpar << " " << hexFormat(tpar) << endl;
+      out_ << " " << tpar << " " << Trklet::hexFormat(tpar) << endl;
     }
     out_.close();
 

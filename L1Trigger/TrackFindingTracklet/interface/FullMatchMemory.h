@@ -137,7 +137,7 @@ public:
       if (j < 16)
         out_ << "0";
       out_ << hex << j << dec;
-      out_ << " " << match << " " << hexFormat(match) << endl;
+      out_ << " " << match << " " << Trklet::hexFormat(match) << endl;
     }
     out_.close();
 

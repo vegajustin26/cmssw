@@ -84,7 +84,7 @@ public:
 
         FPGAWord finepos = binnedstubs_[i][j].finerz();
         stub += "|" + finepos.str();
-        out_ << hex << i << " " << j << dec << " " << stub << " " << hexFormat(stub) << endl;
+        out_ << hex << i << " " << j << dec << " " << stub << " " << Trklet::hexFormat(stub) << endl;
       }
     }
     out_.close();

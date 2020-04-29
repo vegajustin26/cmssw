@@ -363,7 +363,6 @@ public:
       for(unsigned int i=0;i<TPAR_.size();i++) {
 	TPAR_[i]->writeMatches(globals_,matchesL1,matchesL3,matchesL5);
       }
-      static ofstream out("nmatchessector.txt");
       globals_->ofstream("nmatchessector.txt") <<matchesL1<<" "<<matchesL3<<" "<<matchesL5<<endl;
     }
     

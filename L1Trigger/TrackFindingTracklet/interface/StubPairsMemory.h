@@ -75,7 +75,7 @@ public:
       if (j < 16)
         out_ << "0";
       out_ << hex << j << dec;
-      out_ << " " << stub1index << "|" << stub2index << " " << hexFormat(stub1index + stub2index) << endl;
+      out_ << " " << stub1index << "|" << stub2index << " " << Trklet::hexFormat(stub1index + stub2index) << endl;
     }
     out_.close();
 

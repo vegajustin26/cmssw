@@ -103,7 +103,7 @@ public:
       string stub = stubs_[j].first->str();
       if (j<16) out_ <<"0";
       out_ << hex << j << dec;
-      out_ << " " << stub <<" "<<hexFormat(stub)<< endl;
+      out_ << " " << stub <<" "<<Trklet::hexFormat(stub)<< endl;
     }
     out_.close();
 

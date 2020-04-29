@@ -92,7 +92,7 @@ public:
       if (j < 16)
         out_ << "0";
       out_ << hex << j << dec;
-      out_ << " " << vmproj << " " << hexFormat(vmproj) << endl;
+      out_ << " " << vmproj << " " << Trklet::hexFormat(vmproj) << endl;
     }
     out_.close();
 

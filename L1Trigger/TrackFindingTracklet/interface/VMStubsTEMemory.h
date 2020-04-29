@@ -212,14 +212,14 @@ public:
 	if (j<16) out_ <<"0";
 	out_ << hex << j << dec ;
 	string stub=stubsvm_[j].str();
-	out_ <<" "<<stub<<" "<<hexFormat(stub)<<endl;
+	out_ <<" "<<stub<<" "<<Trklet::hexFormat(stub)<<endl;
       }     
     }
     else { // outer VM for TE purpose
       for (unsigned int i=0;i<settings_->NLONGVMBINS();i++) {
 	for (unsigned int j=0;j<stubsbinnedvm_[i].size();j++){
 	  string stub=stubsbinnedvm_[i][j].str();
-	  out_ << hex << i << " " << j << dec << " "<<stub<<" "<<hexFormat(stub)<<endl;
+	  out_ << hex << i << " " << j << dec << " "<<stub<<" "<<Trklet::hexFormat(stub)<<endl;
 	}
       }
     }

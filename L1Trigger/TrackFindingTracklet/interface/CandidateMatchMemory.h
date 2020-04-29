@@ -107,7 +107,7 @@ public:
       if (j < 16)
         out_ << "0";
       out_ << hex << j << dec;
-      out_ << " " << tmp.str() << "|" << stubid << " " << hexFormat(tmp.str() + stubid) << endl;
+      out_ << " " << tmp.str() << "|" << stubid << " " << Trklet::hexFormat(tmp.str() + stubid) << endl;
     }
     out_.close();
 

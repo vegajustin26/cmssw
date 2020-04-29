@@ -97,7 +97,7 @@ public:
       if (j < 16)
         out_ << "0";
       out_ << hex << j << dec << " ";
-      out_ << tracks_[j]->trackfitstr() << " " << hexFormat(tracks_[j]->trackfitstr());
+      out_ << tracks_[j]->trackfitstr() << " " << Trklet::hexFormat(tracks_[j]->trackfitstr());
       out_ << "\n";
     }
     out_.close();
