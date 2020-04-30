@@ -42,7 +42,7 @@ class Sector{
 
 public:
 
- Sector(unsigned int i, Settings* settings, GlobalHistTruth* globals):
+ Sector(unsigned int i, const Settings* settings, GlobalHistTruth* globals):
   settings_(settings), globals_(globals)  
   {
     isector_=i;

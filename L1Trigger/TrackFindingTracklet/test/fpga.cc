@@ -28,9 +28,8 @@
 #include "../interface/CPUTimer.h"
 #include "../interface/StubVariance.h"
 #include "../interface/Settings.h"
+#include "../interface/TrackletEventProcessor.h"
 
-#include "../interface/GlobalHistTruth.h"
-#include "../interface/HistImp.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -59,59 +58,13 @@ int main(const int argc, const char** argv)
 
   Trklet::Settings settings;
 
-  GlobalHistTruth* globals = new GlobalHistTruth(&settings);
+  TrackletEventProcessor eventProcessor;
 
-  settings.krinvpars() = globals->ITC_L1L2()->rinv_final.get_K();
-  settings.kphi0pars() = globals->ITC_L1L2()->phi0_final.get_K();
-  settings.kd0pars()   = settings.kd0();
-  settings.ktpars()    = globals->ITC_L1L2()->t_final.get_K();
-  settings.kz0pars()   = globals->ITC_L1L2()->z0_final.get_K();
-  settings.kphiproj123() =globals->ITC_L1L2()->phi0_final.get_K()*4;
-  settings.kzproj()=settings.kz();
-  settings.kphider()=globals->ITC_L1L2()->rinv_final.get_K()*(1<<settings.phiderbitshift());
-  settings.kzder()=globals->ITC_L1L2()->t_final.get_K()*(1<<settings.zderbitshift());
-  settings.krprojshiftdisk() = globals->ITC_L1L2()->rD_0_final.get_K();
-  settings.kphiprojdisk()=globals->ITC_L1L2()->phi0_final.get_K()*4.0;
-  settings.krdisk() = settings.kr();
-  settings.kzpars() = settings.kz();  
-
-
-  edm::LogVerbatim("Tracklet") << "=========================================================";
-  edm::LogVerbatim("Tracklet") << "Conversion factors for global coordinates:";
-  edm::LogVerbatim("Tracklet") << "z    kz            = "<< settings.kz() ;
-  edm::LogVerbatim("Tracklet") << "r    kr            = "<< settings.kr() ;
-  edm::LogVerbatim("Tracklet") << "phi  kphi1         = "<< settings.kphi1() ;
-  edm::LogVerbatim("Tracklet") << "=========================================================";
-  edm::LogVerbatim("Tracklet") << "Conversion factors for track(let) parameters:";
-  edm::LogVerbatim("Tracklet") << "rinv krinvpars     = "<< settings.krinvpars() ;
-  edm::LogVerbatim("Tracklet") << "phi0 kphi0pars     = "<< settings.kphi0pars() ;
-  edm::LogVerbatim("Tracklet") << "d0   kd0pars       = "<< settings.kd0pars() ;
-  edm::LogVerbatim("Tracklet") << "t    ktpars        = "<< settings.ktpars() ;
-  edm::LogVerbatim("Tracklet") << "z0   kz0pars       = "<< settings.kzpars() ;
-  edm::LogVerbatim("Tracklet") << "=========================================================";
-  edm::LogVerbatim("Tracklet") << "phi0bitshift = "<<settings.phi0bitshift();
-  edm::LogVerbatim("Tracklet") << "d0bitshift   = "<<"???";
-  edm::LogVerbatim("Tracklet") << "=========================================================";
-
-#include "../plugins/WriteInvTables.icc"
-#include "../plugins/WriteDesign.icc"
+  eventProcessor.init(&settings);
   
-  using namespace std;
   if (argc<4)
     edm::LogVerbatim("Tracklet") << "Need to specify the input ascii file and the number of events to run on and if you want to filter on MC truth";
 
-  HistImp* histimp;
-  if (settings.bookHistos()) {
-    histimp = new HistImp;
-    histimp->init();
-    histimp->bookLayerResidual();
-    histimp->bookDiskResidual();
-    histimp->bookTrackletParams();
-    histimp->bookSeedEff();
-  
-    globals->histograms()=histimp;
-  }
-  
   int nevents = atoi(argv[2]);
 
   int selectmu = atoi(argv[3]);
@@ -149,141 +102,17 @@ int main(const int argc, const char** argv)
 
 
 // Define Sectors (boards)	 
-  Sector** sectors=new Sector*[settings.NSector()];
-
-  Cabling cabling;
-
-  cabling.init("../data/calcNumDTCLinks.txt","../data/modules_T5v3_27SP_nonant_tracklet.dat");
-
-
-  
-  for (unsigned int i=0;i<settings.NSector();i++) {
-    sectors[i]=new Sector(i,&settings,globals);
-  }  
-
-
-  edm::LogVerbatim("Tracklet") << "Will read memory modules file";
-
-  string memfile="../data/memorymodules_"+settings.geomext()+".dat";
-  ifstream inmem(memfile.c_str());
-  assert(inmem.good());
-
-  while (inmem.good()){
-    string memType, memName, size;
-    inmem >>memType>>memName>>size;
-    if (!inmem.good()) continue;
-    if (settings.writetrace()) {
-      edm::LogVerbatim("Tracklet") << "Read memory: "<<memType<<" "<<memName;
-    }
-    for (unsigned int i=0;i<settings.NSector();i++) {
-      sectors[i]->addMem(memType,memName);
-    }
-    
-  }
-
-
-  edm::LogVerbatim("Tracklet") << "Will read processing modules file";
-
-  string procfile="../data/processingmodules_"+settings.geomext()+".dat";
-  ifstream inproc(procfile.c_str());
-  assert(inproc.good());
-
-  while (inproc.good()){
-    string procType, procName;
-    inproc >>procType>>procName;
-    if (!inproc.good()) continue;
-    if (settings.writetrace()) {
-      edm::LogVerbatim("Tracklet") << "Read process: "<<procType<<" "<<procName;
-    }
-    for (unsigned int i=0;i<settings.NSector();i++) {
-      sectors[i]->addProc(procType,procName);
-    }
-    
-  }
-
-
-  edm::LogVerbatim("Tracklet") << "Will read wiring information";
-
-  string wirefile="../data/wires_"+settings.geomext()+".dat";
-  ifstream inwire(wirefile.c_str());
-  assert(inwire.good());
-
-
-  while (inwire.good()){
-    string line;
-    getline(inwire,line);
-    if (!inwire.good()) continue;
-    if (settings.writetrace()) {
-      edm::LogVerbatim("Tracklet") << "Line : "<<line;
-    }
-    stringstream ss(line);
-    string mem,tmp1,procin,tmp2,procout;
-    ss>>mem>>tmp1>>procin;
-    if (procin=="output=>") {
-      procin="";
-      ss>>procout;
-    }
-    else{
-      ss>>tmp2>>procout;
-    }
-
-    for (unsigned int i=0;i<settings.NSector();i++) {
-      sectors[i]->addWire(mem,procin,procout);
-    }
-  
-  }
-
-  std::map<string,vector<int> > dtclayerdisk;
-
-  ifstream indtc("../data/dtclinklayerdisk.dat");
-  assert(indtc.good());
-  string dtc;
-  indtc >> dtc;
-  while (indtc.good()){
-    vector<int> tmp;
-    dtclayerdisk[dtc]=tmp;
-    int layerdisk;
-    indtc >> layerdisk;
-    while (layerdisk>0) {
-      dtclayerdisk[dtc].push_back(layerdisk);
-      indtc >> layerdisk;
-    }
-    indtc >> dtc;
-  }
-  
-  ofstream skimout;
-  if (settings.skimfile() != "") skimout.open(settings.skimfile().c_str());
-
-  CPUTimer readTimer;
-  CPUTimer cleanTimer;
-  CPUTimer addStubTimer;
-  CPUTimer VMRouterTimer;  
-  CPUTimer TETimer;
-  CPUTimer TEDTimer;
-  CPUTimer TRETimer;
-  CPUTimer TCTimer;
-  CPUTimer TCDTimer;
-  CPUTimer PRTimer;
-  CPUTimer METimer;
-  CPUTimer MCTimer;
-  CPUTimer MPTimer;
-  CPUTimer FTTimer;
-  CPUTimer PDTimer;
 
   if (settings.writeMonitorData("Seeds")) {
     ofstream fout("seeds.txt", ofstream::out);
     fout.close();
   }
 
-  bool first=true;
-
   for (int eventnum=0;eventnum<nevents&&!in->eof();eventnum++){
     
-    readTimer.start();
+    //readTimer.start();
     SLHCEvent ev(*in);
-    readTimer.stop();
-
-    globals->event()=&ev;
+    //readTimer.stop();
 
     L1SimTrack simtrk;
 
@@ -301,48 +130,6 @@ int main(const int argc, const char** argv)
 // ------------------------------------------------------------------	 
 
     
-    if (selectmu==1) {
-
-      if (ev.nsimtracks()==0) {
-      	eventnum--;
-	continue;
-      }
-
-      
-      simtrk=ev.simtrack(0);
-
-      if (settings.debugTracklet()) {
-	edm::LogVerbatim("Tracklet") <<"nstub simtrkid pt phi eta t vz:"<<ev.nstubs()<<" "<<simtrk.trackid()<<" "<<simtrk.pt()<<" "<<simtrk.phi()<<" "
-	     <<simtrk.eta()<<" "
-	     <<sinh(simtrk.eta())<<" "
-	     <<simtrk.vz();
-      }
-      
-      bool good=(fabs(simtrk.pt())>2.0
-		 //&&fabs(simtrk.pt())<3.0
-                 &&fabs(simtrk.vz())<15.0
-		 //&&simtrk.eta()>0.0
-		 //&&fabs(fabs(simtrk.eta())-0.0)>1.6
-		 //&&fabs(fabs(simtrk.eta())-0.0)<1.9
-		 &&fabs(fabs(simtrk.eta())-0.0)<2.4
-		 //&&fabs(fabs(simtrk.eta())-0.0)>1.8
-		 //&&fabs(fabs(simtrk.phi())-0.05)<0.05
-		 //&&fabs(simtrk.eta()-0.0)>1.6
-		 //&&fabs(simtrk.eta()-1.5)<0.2
-		 //&&fabs(phisector-0.61)<0.03
-		 //&&fabs(fabs(simtrk.eta())-1.4)<0.1
-                 //&&fabs(simtrk.d0())<1.0
-		 );
-
-
-      if (!good) {
-	eventnum--;
-	continue;
-      }
-
-      if (settings.skimfile() != "") ev.write(skimout);
- 
-    } 
 
     if (settings.writeMonitorData("Seeds")) {
       ofstream fout("seeds.txt", ofstream::app);
@@ -398,20 +185,11 @@ int main(const int argc, const char** argv)
       fout.close();
     }
 
-    if (settings.writeMonitorData("Variance")) {
-      StubVariance variance(ev,globals);
-    }
-
     edm::LogVerbatim("Tracklet") <<"Process event: "<<eventnum<<" with "<<ev.nstubs()<<" stubs and "<<ev.nsimtracks()<<" simtracks";
-
-    std::vector<Track*> tracks;
-
-    int nlayershit=0;
-
-
     
-// Processesing done in FPGA.icc
-#include "../plugins/FPGA.icc"
+    eventProcessor.event(ev);
+
+    std::vector<Track*>& tracks=eventProcessor.tracks();
 
 // Block for producing ROOT-Tree
 // ------------------------------
@@ -420,12 +198,6 @@ int main(const int argc, const char** argv)
 #endif
 // ------------------------------
 
-    if (settings.writeMonitorData("ResEff")) {
-      outeff << simtrk.pt()*simtrk.trackid()/fabs(simtrk.trackid())<<" "<<simtrk.eta()
-	     <<" "<<simtrk.phi();
-      if (match) outeff << " 1"<<endl;
-       else outeff << " 0"<<endl;
-    }
 
     if (settings.writeMonitorData("MatchEff")) { 
       static ofstream out("matcheff.txt");
@@ -463,16 +235,9 @@ int main(const int argc, const char** argv)
 	    }
 	  
 	    unsigned int nmatch=0;
-	    //layerdisk=0;
 	    for(unsigned int istub=0;istub<stubs.size();istub++){
 	      if (stubs[istub]->tpmatch(simtrackid)) {
 		nmatch++;
-	      } else {
-		if (stubs[istub]->layer()<999) {
-		  //layerdisk=stubs[istub]->layer()+1;
-		} else {
-		  //layerdisk=-abs(stubs[istub]->disk());
-		}
 	      }
 	    }
 
@@ -514,15 +279,9 @@ int main(const int argc, const char** argv)
 	}
       }
     }
-
     
-    
-    // Clean up 
-
-    //edm::LogVerbatim("Tracklet") << "Duplicates : ";
     int ntrack=0;
     for(unsigned int l=0;l<tracks.size();l++) {
-      //  edm::LogVerbatim("Tracklet") <<tracks[l].duplicate()<<" ";
       if (settings.writeMonitorData("Pars")) {
 	double phi=tracks[l]->iphi0()*settings.kphi0pars()+tracks[l]->sector()*2*M_PI/settings.NSector();
 	if (phi>M_PI) phi-=2*M_PI;
@@ -533,127 +292,24 @@ int main(const int argc, const char** argv)
 		 <<tracks[l]->irinv()*settings.krinvpars();
       }   	
       if (!tracks[l]->duplicate()) {
-	//edm::LogVerbatim("Tracklet") << "FPGA Track pt, eta, phi, z0, chi2 = " 
-	//   << tracks[l]->pt() << " " << tracks[l]->eta() << " " << tracks[l]->phi0() << " " << tracks[l]->z0() << " " << tracks[l]->chisq() 
-	//   << " seed " << tracks[l]->seed() << " duplicate " << tracks[l]->duplicate();
-	//edm::LogVerbatim("Tracklet") << " ---------- not duplicate";
-	//edm::LogVerbatim("Tracklet") << "tapprox "<<tracks[l].eta();
 	ntrack++;
-	//edm::LogVerbatim("Tracklet") << "eta = "<<tracks[l].eta();
       }
     }
     
-    edm::LogVerbatim("Tracklet") << "Number layers/disks hit = "<<nlayershit<<" number of found tracks : "<<tracks.size()<<" unique "<<ntrack;
-
-
-    // dump what was found   
-    /*
-    edm::LogVerbatim("Tracklet") << "Track Parameters:";
-    for (std::vector<Track*>::iterator trk=tracks.begin(); trk!=tracks.end(); trk++) {
-      edm::LogVerbatim("Tracklet") << "irinv = ", (*trk)->irinv();
-      edm::LogVerbatim("Tracklet") << "iphi0 = ", (*trk)->iphi0();
-      edm::LogVerbatim("Tracklet") << "iz0   = ", (*trk)->iz0();
-      edm::LogVerbatim("Tracklet") << "it    = ", (*trk)->it();
-      edm::LogVerbatim("Tracklet") << "stubID=";
-      std::map<int, int> stubs = (*trk)->stubID();
-      ostringstream oss;
-      for (std::map<int, int>::iterator sb=stubs.begin(); sb!=stubs.end(); sb++) {
-	oss << " " << sb->first << " -- " << sb->second << " ";
-      }
-      edm::LogVerbatim("Tracklet") << oss.str();
-      edm::LogVerbatim("Tracklet") << "dup   = " << (*trk)->duplicate() << "\n";
-      edm::LogVerbatim("Tracklet") << "chisq   = " << (*trk)->chisq() << "\n";
-    } 
-    */
-
-
-
-    first=false;
+    edm::LogVerbatim("Tracklet") << "Number of found tracks : "<<tracks.size()<<" unique "<<ntrack;
 
   }
 
-  if (settings.writeMonitorData("Cabling")) {
-    cabling.writephirange();
-  }
-  
+
+  /*
   edm::LogVerbatim("Tracklet") << "Process             Times called   Average time (ms)      Total time (s)";
   edm::LogVerbatim("Tracklet") << "Reading               "
        <<setw(10)<<readTimer.ntimes()
        <<setw(20)<<setprecision(3)<<readTimer.avgtime()*1000.0
        <<setw(20)<<setprecision(3)<<readTimer.tottime();
-  edm::LogVerbatim("Tracklet") << "Cleaning              "
-       <<setw(10)<<cleanTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<cleanTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<cleanTimer.tottime();
-  edm::LogVerbatim("Tracklet") << "Add Stubs             "
-       <<setw(10)<<addStubTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<addStubTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<addStubTimer.tottime();
-  edm::LogVerbatim("Tracklet") << "VMRouter              "
-       <<setw(10)<<VMRouterTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<VMRouterTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<VMRouterTimer.tottime();
-  edm::LogVerbatim("Tracklet") << "TrackletEngine        "
-       <<setw(10)<<TETimer.ntimes()
-       <<setw(20)<<setprecision(3)<<TETimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<TETimer.tottime();
-  edm::LogVerbatim("Tracklet") << "TrackletEngineDisplaced"
-       <<setw(10)<<TEDTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<TEDTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<TEDTimer.tottime();
-  edm::LogVerbatim("Tracklet") << "TripletEngine         "
-       <<setw(10)<<TRETimer.ntimes()
-       <<setw(20)<<setprecision(3)<<TRETimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<TRETimer.tottime();
-  edm::LogVerbatim("Tracklet") << "TrackletCalculator    "
-       <<setw(10)<<TCTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<TCTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<TCTimer.tottime();
-  edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced"
-       <<setw(10)<<TCDTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<TCDTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<TCDTimer.tottime();
-  edm::LogVerbatim("Tracklet") << "ProjectionRouter      "
-       <<setw(10)<<PRTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<PRTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<PRTimer.tottime();
-  edm::LogVerbatim("Tracklet") << "MatchEngine           "
-       <<setw(10)<<METimer.ntimes()
-       <<setw(20)<<setprecision(3)<<METimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<METimer.tottime();
-  edm::LogVerbatim("Tracklet") << "MatchCalculator       "
-       <<setw(10)<<MCTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<MCTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<MCTimer.tottime();
-  edm::LogVerbatim("Tracklet") << "MatchProcessor        "
-       <<setw(10)<<MPTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<MPTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<MPTimer.tottime();
-  edm::LogVerbatim("Tracklet") << "FitTrack              "
-       <<setw(10)<<FTTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<FTTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<FTTimer.tottime();
-  edm::LogVerbatim("Tracklet") << "PurgeDuplicate        "
-       <<setw(10)<<PDTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<PDTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<PDTimer.tottime();
+  */
 
+  eventProcessor.printSummary();
 
-  if (settings.skimfile()!="") skimout.close();
-
-  if (settings.bookHistos()) {
-    histimp->close();
-  }
-  
-// Write and Close ROOT-Tree  
-// -------------------------
-#ifdef USEROOT
-   hfile->Write();
-   hfile->Close();
-#endif
-// --------------------------  
-
-  for (unsigned int i=0;i<settings.NSector();i++)
-    delete sectors[i];
 
 } 

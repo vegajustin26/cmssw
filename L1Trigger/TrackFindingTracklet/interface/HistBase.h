@@ -20,6 +20,8 @@ public:
 
   virtual ~HistBase() {}
 
+  virtual void close() {}
+
   virtual void FillLayerResidual(int, int, double, double, double, double, bool) {
     return;  //default implementation does nothing
   }

@@ -23,7 +23,7 @@ class SLHCEvent;
 class GlobalHistTruth {
 public:
 
-  GlobalHistTruth(Trklet::Settings* settings){
+  GlobalHistTruth(const Trklet::Settings* settings){
     // tracklet calculators 
     ITC_L1L2_ = new IMATH_TrackletCalculator(settings,1,2);
     ITC_L2L3_ = new IMATH_TrackletCalculator(settings,2,3);
