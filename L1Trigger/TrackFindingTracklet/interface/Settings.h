@@ -41,7 +41,7 @@ namespace Trklet{
     }
 
     bool geomTkTDR() const {return geomTkTDR_;}
-    unsigned int nzbitsdisk() const {return nzbitsdisk_;}
+
     unsigned int nzbitsstub(unsigned int layerdisk) const {return nzbitsstub_[layerdisk];}
     unsigned int nphibitsstub(unsigned int layerdisk) const {return nphibitsstub_[layerdisk];}
     unsigned int nrbitsstub(unsigned int layerdisk) const {return nrbitsstub_[layerdisk];}
@@ -141,15 +141,17 @@ namespace Trklet{
     bool bookHistos() const {return bookHistos_;}
     
     double ptcut() const {return ptcut_;}
-    double rinvcut() const {return rinvcut_;}
-
+    double rinvcut() const {return 0.01*c_*bfield_/ptcut_;} //0.01 to convert to cm-1
+    
+    double rinvmax() const { return 0.01*c_*bfield_/ptmin_;}
+    
     int alphashift() const {return alphashift_;}
     int nbitsalpha() const {return nbitsalpha_;}
     int alphaBitsTable() const {return alphaBitsTable_;}
     int nrinvBitsTable() const {return nrinvBitsTable_;}
       
     unsigned int MEBinsBits() const {return MEBinsBits_;}
-    unsigned int MEBins() const {return MEBins_;}
+    unsigned int MEBins() const {return 1u<<MEBinsBits_;}
     unsigned int MEBinsDisks() const {return MEBinsDisks_;}
 
     std::string geomext() const {return extended_?"hourglassExtended":"hourglass";}  
@@ -180,11 +182,10 @@ namespace Trklet{
     std::string skimfile() const {return skimfile_;}
     void setSkimfile(std::string skimfile) {skimfile_ = skimfile;}
 
-    double dphisectorHG() const { return 2*M_PI/NSector_+2*fmax(std::abs(asin(0.5*rinvmax_*rmean(0))-asin(0.5*rinvmax_*rcrit_)),
-								std::abs(asin(0.5*rinvmax_*rmean(5))-asin(0.5*rinvmax_*rcrit_)));}
+    double dphisectorHG() const { return 2*M_PI/NSector_+2*fmax(std::abs(asin(0.5*rinvmax()*rmean(0))-asin(0.5*rinvmax()*rcrit_)),
+								std::abs(asin(0.5*rinvmax()*rmean(5))-asin(0.5*rinvmax()*rcrit_)));}
 
     double rcrit() const { return rcrit_; }
-    //double rinvmax() const { return rinvmax_; }
 
     double dphisector() const { return 2*M_PI/NSector_; }
     
@@ -208,7 +209,7 @@ namespace Trklet{
 
     double kd0() const { return  2*maxd0_/(1<<nbitsd0_); }
     
-    double rinvcutte() const { return 0.01*0.3*3.8/ptcutte_; } //0.01 to convert to cm-1
+    double rinvcutte() const { return 0.01*c_*bfield_/ptcutte_; } //0.01 to convert to cm-1
 
     double rmindiskvm() const { return rmindiskvm_; }
     double rmaxdiskvm() const { return rmaxdiskvm_; }
@@ -299,15 +300,12 @@ namespace Trklet{
     unsigned int NSector_{9};
 
     double rcrit_{55.0};
-    double rinvmax_{0.01*0.3*3.8/2.0};
 
     double dphicritmc_{0.005};
     
-    std::array<double,6> rmean_{120.0};
-    std::array<double,5> zmean_{120.0};
+    std::array<double,6> rmean_;
+    std::array<double,5> zmean_;
     
-    unsigned int nzbitsdisk_{7}; //FIXME should not be used
-
     std::array<unsigned int,11> nzbitsstub_{{12,12,12,8,8,8,7,7,7,7,7}};
     std::array<unsigned int,11> nphibitsstub_{{14,14,14,17,17,17,14,14,14,14,14}};
     std::array<unsigned int,11> nrbitsstub_{{7,7,7,7,7,7,12,12,12,12,12}};
@@ -359,6 +357,8 @@ namespace Trklet{
 
     unsigned int nbitsd0_{13};
 
+    double ptmin_{2.0}; //minumim pt for tracks
+    
     double ptcutte_{1.8}; //Minimum pt in TE
 
     //Bits used to store track parameter in tracklet
@@ -634,8 +634,7 @@ namespace Trklet{
     bool bookHistos_{false}; //set to true/false to turn on/off histogram booking internal to the tracking (class "HistImp")
     
     // pt constants
-    double ptcut_{1.91};    //Minimum pt
-    double rinvcut_{0.01*0.3*3.8/ptcut_};  //0.01 to convert to cm-1
+    double ptcut_{1.91};    //Minimum pt cut
     
     // Parameters for bit sizes
     int alphashift_{12}; 
@@ -644,7 +643,6 @@ namespace Trklet{
     int nrinvBitsTable_{3};  //number of bits for tabulating rinv dependence
     
     unsigned int MEBinsBits_{3};
-    unsigned int MEBins_{1u<<MEBinsBits_};
     unsigned int MEBinsDisks_{8}; //on each side
     
     // Options for chisq fit
@@ -686,6 +684,9 @@ namespace Trklet{
     
     //constants derivative from the above - FIXME should be calculated in Settings.h, not set externally
     //then we can remove the mutable
+
+    double bfield_{3.8}; //B-field in T
+    double c_{0.3}; //speed of light m/ns
     
     mutable double krinvpars_;
     mutable double kphi0pars_;

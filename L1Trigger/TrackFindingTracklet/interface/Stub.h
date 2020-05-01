@@ -119,7 +119,7 @@ public:
 	edm::LogProblem("Tracklet") << "Error disk z, zmax, zmin: "<<z<<" "<<zmax<<" "<<zmin;
       }
 
-      int iz=(1<<settings->nzbitsdisk())*((z-sign*settings_->zmean(disk-1))/std::abs(zmax-zmin));
+      int iz=(1<<settings->nzbitsstub(disk+5))*((z-sign*settings_->zmean(disk-1))/std::abs(zmax-zmin));
 
       assert(phimaxsec-phiminsec>0.0);
       if (stubphi<phiminsec-(phimaxsec-phiminsec)/6.0) {
@@ -175,7 +175,7 @@ public:
 	r_.set(irSS,4,true,__LINE__,__FILE__);  // in case of SS modules, store index, not r itself
       }
 
-      z_.set(iz,settings->nzbitsdisk(),false,__LINE__,__FILE__);
+      z_.set(iz,settings->nzbitsstub(disk+5),false,__LINE__,__FILE__);
       phi_.set(iphi,iphibits,true,__LINE__,__FILE__);
       phicorr_.set(iphi,iphibits,true,__LINE__,__FILE__);
       
