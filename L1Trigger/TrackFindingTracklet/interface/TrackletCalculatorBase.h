@@ -8,13 +8,13 @@
 #include <vector>
 
 class GlobalHistTruth;
-class Tracklet;
 class L1TStub;
 
 namespace Trklet {
 
   class Settings;
   class Stub;
+  class Tracklet;
   
   class TrackletCalculatorBase : public ProcessBase{
 

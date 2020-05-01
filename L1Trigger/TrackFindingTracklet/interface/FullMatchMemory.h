@@ -5,13 +5,13 @@
 
 #include <vector>
 
-class Tracklet;
 class L1TStub;
 
 namespace Trklet {
 
   class Settings;
   class Stub;
+  class Tracklet;
   
   class FullMatchMemory : public MemoryBase {
   public:

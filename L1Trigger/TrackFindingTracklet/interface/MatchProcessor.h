@@ -14,13 +14,13 @@
 
 class GlobalHistTruth;
 class MemoryBase;
-class Tracklet;
 class L1TStub;
 
 namespace Trklet {
 
   class Settings;
   class Stub;
+  class Tracklet;
 
   class MatchProcessor:public ProcessBase{
     

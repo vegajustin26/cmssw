@@ -1,7 +1,6 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_PurgeDuplicate_h
 #define L1Trigger_TrackFindingTracklet_interface_PurgeDuplicate_h
 
-//#include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackFitMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/CleanTrackMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
@@ -10,7 +9,6 @@
 
 class GlobalHistTruth;
 class MemoryBase;
-class Tracklet;
 class L1TStub;
 
 namespace Trklet {
@@ -18,6 +16,7 @@ namespace Trklet {
   class Settings;
   class Stub;
   class Track;
+  class Tracklet;
 
   class PurgeDuplicate:public ProcessBase{
     

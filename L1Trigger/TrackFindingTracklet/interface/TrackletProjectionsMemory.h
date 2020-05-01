@@ -5,11 +5,11 @@
 
 #include <vector>
 
-class Tracklet;
 
 namespace Trklet {
 
   class Settings;
+  class Tracklet;
 
   
   class TrackletProjectionsMemory : public MemoryBase {

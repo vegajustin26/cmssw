@@ -5,6 +5,7 @@
 #include "Tracklet.h"
 
 using namespace std;
+using namespace Trklet;
 
 class ProjectionTemp {
 public:

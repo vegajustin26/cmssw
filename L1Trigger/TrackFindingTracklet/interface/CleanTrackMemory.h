@@ -5,12 +5,12 @@
 
 #include <vector>
 
-class Tracklet;
 class L1SimTrack;
 
 namespace Trklet {
 
   class Settings;
+  class Tracklet;
 
   class CleanTrackMemory : public MemoryBase {
   public:
