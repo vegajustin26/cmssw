@@ -8,18 +8,19 @@
 #include <vector>
 
 class L1TStub;
-class GlobalHistTruth;
+
 
 namespace Trklet {
   
   class Settings;
+  class Globals;
   class Stub;
   
   class TrackletEngine:public ProcessBase{
     
   public:
     
-    TrackletEngine(string name, const Settings* const settings, GlobalHistTruth* global, unsigned int iSector);
+    TrackletEngine(string name, const Settings* const settings, Globals* global, unsigned int iSector);
     
     void addOutput(MemoryBase* memory, std::string output); 
     

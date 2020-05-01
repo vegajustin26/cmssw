@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_TrackletEventProcessor_h
 #define L1Trigger_TrackFindingTracklet_interface_TrackletEventProcessor_h
 
-#include "L1Trigger/TrackFindingTracklet/interface/GlobalHistTruth.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/CPUTimer.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Cabling.h"
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
@@ -30,7 +30,7 @@ namespace Trklet {
     
     const Settings* settings_{0};
     
-    GlobalHistTruth* globals_{};
+    Globals* globals_{};
     
     Sector** sectors_{};
     

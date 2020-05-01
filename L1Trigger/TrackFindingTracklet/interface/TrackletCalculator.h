@@ -8,17 +8,16 @@
 
 #include <vector>
 
-class GlobalHistTruth;
-
 namespace Trklet {
 
   class Settings;
+  class Globals;
   
   class TrackletCalculator:public TrackletCalculatorBase{
     
   public:
     
-    TrackletCalculator(string name, const Settings* const settings, GlobalHistTruth* globals, unsigned int iSector);
+    TrackletCalculator(string name, const Settings* const settings, Globals* globals, unsigned int iSector);
     
     void addOutputProjection(TrackletProjectionsMemory* &outputProj, MemoryBase* memory);
     

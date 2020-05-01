@@ -4,7 +4,7 @@
 
 using namespace std;
 
-TrackletEngine::TrackletEngine(string name, const Settings* const settings, GlobalHistTruth* global,unsigned int iSector):
+TrackletEngine::TrackletEngine(string name, const Settings* const settings, Globals* global,unsigned int iSector):
   ProcessBase(name,settings,global,iSector){
   
   stubpairs_=0;

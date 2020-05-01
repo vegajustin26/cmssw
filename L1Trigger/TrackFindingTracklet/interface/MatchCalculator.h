@@ -9,14 +9,14 @@
 #include "L1Trigger/TrackFindingTracklet/interface/AllProjectionsMemory.h"
 
 
-class GlobalHistTruth;
 class L1TStub;
 
 #include <vector>
 
 namespace Trklet {
 
-  class Settings;
+  class Settings; 
+  class Globals;
   class Stub;
   class Tracklet;
 
@@ -24,7 +24,7 @@ namespace Trklet {
     
   public:
     
-    MatchCalculator(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector);
+    MatchCalculator(string name, const Settings* settings, Globals* global, unsigned int iSector);
     
     void addOutput(MemoryBase* memory,string output);
 

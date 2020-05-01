@@ -762,7 +762,7 @@ public:
     }
   }
 
-  static void getVarianceMatrix(GlobalHistTruth* globals, bool layer[6], bool disk[5], int ptbin, std::vector<std::vector<double> >& V) {
+  static void getVarianceMatrix(Globals* globals, bool layer[6], bool disk[5], int ptbin, std::vector<std::vector<double> >& V) {
     
     double sigmaz = 0.15 / sqrt(12.0);
     double sigmaz2 = 5.0 / sqrt(12.0);
@@ -1127,7 +1127,7 @@ public:
   }
 
   static void calculateDerivativesMS(const Settings* settings,
-				     GlobalHistTruth* globals,
+				     Globals* globals,
 				     unsigned int nlayers,
                                      double r[6],
                                      unsigned int ndisks,

@@ -9,7 +9,7 @@
 
 using namespace std;
 
-FitTrack::FitTrack(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+FitTrack::FitTrack(string name, const Settings* settings, Globals* global, unsigned int iSector):
   ProcessBase(name,settings,global,iSector){
   trackfit_=0;
 }

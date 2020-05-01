@@ -5,7 +5,7 @@
 
 using namespace std;
 
-MatchCalculator::MatchCalculator(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals* global, unsigned int iSector):
   ProcessBase(name,settings,global,iSector){
   
     double dphi=2*M_PI/settings_->NSector();

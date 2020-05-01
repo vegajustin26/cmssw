@@ -9,11 +9,11 @@
 
 #include <vector>
 
-class GlobalHistTruth;
 
 namespace Trklet {
 
   class Settings;
+  class Globals;
 
   
   class TrackletParametersMemory : public MemoryBase {
@@ -33,7 +33,7 @@ namespace Trklet {
       tracklets_.clear();
     }
     
-    void writeMatches(GlobalHistTruth* globals, int &matchesL1, int &matchesL3, int &matchesL5);
+    void writeMatches(Globals* globals, int &matchesL1, int &matchesL3, int &matchesL5);
 
     void writeTPAR(bool first);
     

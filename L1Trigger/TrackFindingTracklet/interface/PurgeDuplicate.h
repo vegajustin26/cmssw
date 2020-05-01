@@ -7,13 +7,13 @@
 
 #include <vector>
 
-class GlobalHistTruth;
 class MemoryBase;
 class L1TStub;
 
 namespace Trklet {
 
   class Settings;
+  class Globals;
   class Stub;
   class Track;
   class Tracklet;
@@ -22,7 +22,7 @@ namespace Trklet {
     
   public:
     
-    PurgeDuplicate(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector);
+    PurgeDuplicate(string name, const Settings* settings, Globals* global, unsigned int iSector);
 
     void addOutput(MemoryBase* memory,string output);
 

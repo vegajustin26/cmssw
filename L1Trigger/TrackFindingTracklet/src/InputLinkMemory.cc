@@ -2,7 +2,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMRouterPhiCorrTable.h"
-#include "L1Trigger/TrackFindingTracklet/interface/GlobalHistTruth.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
 #include <cmath>
 #include <sstream>
@@ -23,7 +23,7 @@ InputLinkMemory::InputLinkMemory(string name, const Settings* const settings, un
   layerdisk_=initLayerDisk(3);
 }
 
-bool InputLinkMemory::addStub(const Settings* settings, GlobalHistTruth* globals, L1TStub& al1stub, Stub& stub, string dtc="") {
+bool InputLinkMemory::addStub(const Settings* settings, Globals* globals, L1TStub& al1stub, Stub& stub, string dtc="") {
     
   if (layerdisk_<6&&globals->phiCorr(layerdisk_)==0) {
     globals->phiCorr(layerdisk_)=new VMRouterPhiCorrTable();

@@ -7,12 +7,12 @@
 
 #include <vector>
 
-class GlobalHistTruth;
 class L1TStub;
 
 namespace Trklet {
 
   class Settings;
+  class Globals;
   class Stub;
   class Tracklet;
   
@@ -20,7 +20,7 @@ namespace Trklet {
 
   public:
     
-    TrackletCalculatorBase(string name, const Settings* const settings, GlobalHistTruth* global, unsigned int iSector);
+    TrackletCalculatorBase(string name, const Settings* const settings, Globals* global, unsigned int iSector);
   
     void exacttracklet(double r1, double z1, double phi1,
 		       double r2, double z2, double phi2, double,

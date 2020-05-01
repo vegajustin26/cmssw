@@ -8,20 +8,20 @@
 #include "L1Trigger/TrackFindingTracklet/interface/StubVariance.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
-#include "L1Trigger/TrackFindingTracklet/interface/GlobalHistTruth.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 using namespace Trklet;
 
-StubVariance::StubVariance(SLHCEvent& ev, GlobalHistTruth* globals) {
+StubVariance::StubVariance(SLHCEvent& ev, Globals* globals) {
 
   process(ev,globals);
 
 }
 
-void StubVariance::process(SLHCEvent& ev, GlobalHistTruth* globals) {
+void StubVariance::process(SLHCEvent& ev, Globals* globals) {
 
   edm::LogVerbatim("Tracklet") << "Process variance:" << ev.nsimtracks();
   assert(ev.nsimtracks() == 1);

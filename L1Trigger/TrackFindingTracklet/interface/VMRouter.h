@@ -18,7 +18,7 @@ class VMRouter:public ProcessBase{
 
 public:
 
- VMRouter(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+ VMRouter(string name, const Settings* settings, Globals* global, unsigned int iSector):
   ProcessBase(name, settings, global, iSector){
       
     layerdisk_=initLayerDisk(4);

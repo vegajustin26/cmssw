@@ -5,7 +5,7 @@
 using namespace std;
 using namespace Trklet;
 
-TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name, const Settings* settings, Globals* global, unsigned int iSector):
   ProcessBase(name,settings,global,iSector){
    double dphi=2*M_PI/settings_->NSector();
    double dphiHG=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();

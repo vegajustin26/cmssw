@@ -6,7 +6,7 @@
 
 using namespace std;
 
-MatchProcessor::MatchProcessor(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+MatchProcessor::MatchProcessor(string name, const Settings* settings, Globals* global, unsigned int iSector):
    ProcessBase(name,settings,global,iSector), fullmatches_(12), inputProjBuffer_(3){
     
     double dphi=2*M_PI/settings_->NSector();

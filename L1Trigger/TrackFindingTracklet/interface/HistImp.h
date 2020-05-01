@@ -133,7 +133,7 @@ public:
   // double iz0, z0
   // int tp
   virtual void fillTrackletParams(const Trklet::Settings* settings,
-				  GlobalHistTruth* globals,
+				  Globals* globals,
 				  int seedIndex,
                                   int iSector,
                                   double rinv,

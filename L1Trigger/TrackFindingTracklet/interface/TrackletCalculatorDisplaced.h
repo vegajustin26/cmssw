@@ -9,20 +9,20 @@
 
 #include <vector>
 
-class GlobalHistTruth;
 class MemoryBase;
 class L1TStub;
 
 namespace Trklet {
 
   class Settings;
+  class Globals;
   class Stub;
   
   class TrackletCalculatorDisplaced:public ProcessBase{
     
   public:
     
-    TrackletCalculatorDisplaced(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector);
+    TrackletCalculatorDisplaced(string name, const Settings* settings, Globals* global, unsigned int iSector);
     
     void addOutputProjection(TrackletProjectionsMemory* &outputProj, MemoryBase* memory);
 

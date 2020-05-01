@@ -12,13 +12,13 @@
 
 #include <vector>
 
-class GlobalHistTruth;
 class MemoryBase;
 class L1TStub;
 
 namespace Trklet {
 
   class Settings;
+  class Globals;
   class Stub;
   class Tracklet;
 
@@ -26,7 +26,7 @@ namespace Trklet {
     
   public:
     
-    MatchProcessor(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector);
+    MatchProcessor(string name, const Settings* settings, Globals* global, unsigned int iSector);
 
     void addOutput(MemoryBase* memory,string output);
 

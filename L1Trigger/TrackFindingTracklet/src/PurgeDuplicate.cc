@@ -1,6 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/PurgeDuplicate.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
-#include "L1Trigger/TrackFindingTracklet/interface/GlobalHistTruth.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/CleanTrackMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
@@ -15,7 +15,7 @@
 
 using namespace std;
 
-PurgeDuplicate::PurgeDuplicate(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+PurgeDuplicate::PurgeDuplicate(string name, const Settings* settings, Globals* global, unsigned int iSector):
   ProcessBase(name,settings,global,iSector){
 }
 

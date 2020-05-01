@@ -4,7 +4,7 @@
 
 using namespace std;
 
-TripletEngine::TripletEngine(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+TripletEngine::TripletEngine(string name, const Settings* settings, Globals* global, unsigned int iSector):
     ProcessBase(name,settings,global,iSector){
     double dphi=2*M_PI/settings_->NSector();
     phimin_=Trklet::phiRange(iSector*dphi);

@@ -13,7 +13,7 @@ class ProjectionRouter:public ProcessBase{
 
 public:
 
- ProjectionRouter(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+ ProjectionRouter(string name, const Settings* settings, Globals* global, unsigned int iSector):
    ProcessBase(name,settings,global,iSector){
 
     layerdisk_=initLayerDisk(3);

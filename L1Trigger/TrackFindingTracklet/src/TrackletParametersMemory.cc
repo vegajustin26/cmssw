@@ -1,5 +1,5 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletParametersMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/GlobalHistTruth.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
 using namespace std;
 using namespace Trklet;
@@ -10,7 +10,7 @@ TrackletParametersMemory::TrackletParametersMemory(string name, const Settings* 
   phimax_ = phimax;
 }
 
-void TrackletParametersMemory::writeMatches(GlobalHistTruth* globals, int &matchesL1, int &matchesL3, int &matchesL5) {
+void TrackletParametersMemory::writeMatches(Globals* globals, int &matchesL1, int &matchesL3, int &matchesL5) {
   ofstream& out=globals->ofstream("nmatches.txt");
   for (unsigned int i = 0; i < tracklets_.size(); i++) {
     if ((tracklets_[i]->nMatches() + tracklets_[i]->nMatchesDisk()) > 0) {

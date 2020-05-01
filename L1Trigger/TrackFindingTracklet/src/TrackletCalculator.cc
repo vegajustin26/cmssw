@@ -4,7 +4,7 @@
 
 using namespace std;
 
-TrackletCalculator::TrackletCalculator(string name, const Settings* const settings, GlobalHistTruth* globals, unsigned int iSector):
+TrackletCalculator::TrackletCalculator(string name, const Settings* const settings, Globals* globals, unsigned int iSector):
   TrackletCalculatorBase(name, settings, globals, iSector){
       double dphi=2*M_PI/settings_->NSector();
       double dphiHG=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();

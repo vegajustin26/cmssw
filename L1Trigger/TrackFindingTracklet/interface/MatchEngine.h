@@ -9,18 +9,18 @@
 
 #include <vector>
 
-class GlobalHistTruth;
 class MemoryBase;
 
 namespace Trklet {
   
   class Settings;
-  
+  class Globals;
+
   class MatchEngine:public ProcessBase{
     
   public:
     
-    MatchEngine(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector);
+    MatchEngine(string name, const Settings* settings, Globals* global, unsigned int iSector);
     
     void addOutput(MemoryBase* memory,string output);
 

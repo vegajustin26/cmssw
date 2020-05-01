@@ -4,7 +4,7 @@
 
 using namespace std;
 
-MatchEngine::MatchEngine(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector):
+MatchEngine::MatchEngine(string name, const Settings* settings, Globals* global, unsigned int iSector):
   ProcessBase(name,settings,global,iSector){
     layer_=0;
     disk_=0;

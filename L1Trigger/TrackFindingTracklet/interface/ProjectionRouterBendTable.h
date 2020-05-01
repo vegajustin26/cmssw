@@ -14,7 +14,7 @@ public:
 
   ~ProjectionRouterBendTable() {}
 
-  void init(const Settings* settings, GlobalHistTruth* globals, unsigned int nrbits, unsigned int nphiderbits) {
+  void init(const Settings* settings, Globals* globals, unsigned int nrbits, unsigned int nphiderbits) {
 
     for (unsigned int idisk=0;idisk<5;idisk++) {
 

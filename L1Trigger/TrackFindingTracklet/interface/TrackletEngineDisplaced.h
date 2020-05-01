@@ -7,18 +7,18 @@
 
 #include <vector>
 
-class GlobalHistTruth;
 class MemoryBase;
 
 namespace Trklet {
 
   class Settings;
+  class Globals;
 
   class TrackletEngineDisplaced:public ProcessBase{
     
   public:
     
-    TrackletEngineDisplaced(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector);
+    TrackletEngineDisplaced(string name, const Settings* settings, Globals* global, unsigned int iSector);
 
     ~TrackletEngineDisplaced();
     

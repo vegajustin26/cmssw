@@ -17,7 +17,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
 
   settings_ = theSettings;
   
-  globals_ = new GlobalHistTruth(settings_);
+  globals_ = new Globals(settings_);
   
   settings_->krinvpars() = globals_->ITC_L1L2()->rinv_final.get_K();
   settings_->kphi0pars() = globals_->ITC_L1L2()->phi0_final.get_K();
@@ -51,7 +51,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   edm::LogVerbatim("Tracklet") << "=========================================================";
   
   const Settings& settings=*settings_;
-  GlobalHistTruth* globals=globals_;
+  Globals* globals=globals_;
 
 #include "../plugins/WriteInvTables.icc"
 #include "../plugins/WriteDesign.icc"

@@ -1,13 +1,13 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculatorBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
-#include "L1Trigger/TrackFindingTracklet/interface/GlobalHistTruth.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 
-TrackletCalculatorBase::TrackletCalculatorBase(string name, const Settings* const settings, GlobalHistTruth* global, unsigned int iSector):
+TrackletCalculatorBase::TrackletCalculatorBase(string name, const Settings* const settings, Globals* global, unsigned int iSector):
   ProcessBase(name,settings,global,iSector) {
 }
 

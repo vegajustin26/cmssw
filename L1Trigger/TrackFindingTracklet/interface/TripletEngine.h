@@ -9,17 +9,16 @@
 
 #include <vector>
 
-class GlobalHistTruth;
-
 namespace Trklet {
 
   class Settings;
+  class Globals;
 
   class TripletEngine:public ProcessBase{
     
   public:
     
-    TripletEngine(string name, const Settings* settings, GlobalHistTruth* global, unsigned int iSector);
+    TripletEngine(string name, const Settings* settings, Globals* global, unsigned int iSector);
 
     ~TripletEngine();
 

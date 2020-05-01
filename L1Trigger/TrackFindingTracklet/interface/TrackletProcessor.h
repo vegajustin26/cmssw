@@ -9,18 +9,18 @@
 
 #include <vector>
 
-class GlobalHistTruth;
 class MemoryBase;
 
 namespace Trklet {
 
   class Settings;
+  class Globals;
 
   class TrackletProcessor:public TrackletCalculatorBase{
     
   public:
     
-    TrackletProcessor(string name, const Settings* const settings,GlobalHistTruth* globals, unsigned int iSector);
+    TrackletProcessor(string name, const Settings* const settings,Globals* globals, unsigned int iSector);
     
     void addOutputProjection(TrackletProjectionsMemory* &outputProj, MemoryBase* memory);
   

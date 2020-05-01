@@ -9,18 +9,18 @@
 
 class L1TStub;
 class VMRouterPhiCorrTable;
-class GlobalHistTruth;
 
 namespace Trklet {
 
   class Settings;
+  class Globals;
   class Stub;
 
   class InputLinkMemory:public MemoryBase{
   public:
     InputLinkMemory(string name, const Settings* const settings, unsigned int iSector, double, double);
 
-    bool addStub(const Settings* settings, GlobalHistTruth* globals, L1TStub& al1stub, Stub& stub, string dtc);
+    bool addStub(const Settings* settings, Globals* globals, L1TStub& al1stub, Stub& stub, string dtc);
     
     unsigned int nStubs() const {return stubs_.size();}
     
