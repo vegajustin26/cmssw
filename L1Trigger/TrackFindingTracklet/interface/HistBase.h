@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_HistBase_h
 #define L1Trigger_TrackFindingTracklet_interface_HistBase_h
 
-
+#include "Settings.h"
 
 #include <iostream>
 #include <fstream>
