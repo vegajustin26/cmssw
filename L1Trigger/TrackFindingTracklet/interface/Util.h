@@ -1,6 +1,8 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_Util_h
 #define L1Trigger_TrackFindingTracklet_interface_Util_h
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 namespace Trklet{
 
   //method return phi in the -pi to +pi range
@@ -59,8 +61,90 @@ namespace Trklet{
      
   }
 
-
+  //Should be optimized by layer - now first implementation to make sure it works OK
+  inline int bendencode(double bend, bool isPS) {
   
+    int ibend=2.0*bend;
+  
+    assert(std::abs(ibend-2.0*bend)<0.1);
+  
+    if (isPS) {
+ 
+      if (ibend==0||ibend==1) return 0;
+      if (ibend==2||ibend==3) return 1;
+      if (ibend==4||ibend==5) return 2;
+      if (ibend>=6) return 3;
+      if (ibend==-1||ibend==-2) return 4;
+      if (ibend==-3||ibend==-4) return 5;
+      if (ibend==-5||ibend==-6) return 6;
+      if (ibend<=-7) return 7;
+    
+      assert(0);
+    
+    }
+  
+  
+    if (ibend==0||ibend==1) return 0;
+    if (ibend==2||ibend==3) return 1;
+    if (ibend==4||ibend==5) return 2;
+    if (ibend==6||ibend==7) return 3;
+    if (ibend==8||ibend==9) return 4;
+    if (ibend==10||ibend==11) return 5;
+    if (ibend==12||ibend==13) return 6;
+    if (ibend>=14) return 7;
+    if (ibend==-1||ibend==-2) return 8;
+    if (ibend==-3||ibend==-4) return 9;
+    if (ibend==-5||ibend==-6) return 10;
+    if (ibend==-7||ibend==-8) return 11;
+    if (ibend==-9||ibend==-10) return 12;
+    if (ibend==-11||ibend==-12) return 13;
+    if (ibend==-13||ibend==-14) return 14;
+    if (ibend<=-15) return 15;
+  
+    edm::LogVerbatim("Tracklet") << "bend ibend : "<<bend<<" "<<ibend;
+  
+    assert(0);
+  
+  }
+      
+  //Should be optimized by layer - now first implementation to make sure it works OK
+  inline double benddecode(int ibend, bool isPS) {
+  
+    if (isPS) {
+    
+      if (ibend==0) return 0.25;
+      if (ibend==1) return 1.25;
+      if (ibend==2) return 2.25;
+      if (ibend==3) return 3.25;
+      if (ibend==4) return -0.75;
+      if (ibend==5) return -1.75;
+      if (ibend==6) return -2.75;
+      if (ibend==7) return -3.75;
+      
+      assert(0);
+    }
+    
+    if (ibend==0) return 0.25;
+    if (ibend==1) return 1.25;
+    if (ibend==2) return 2.25;
+    if (ibend==3) return 3.25;
+    if (ibend==4) return 4.25;
+    if (ibend==5) return 5.25;
+    if (ibend==6) return 6.25;
+    if (ibend==7) return 7.25;
+    if (ibend==8) return -0.75;
+    if (ibend==9) return -1.75;
+    if (ibend==10) return -2.75;
+    if (ibend==11) return -3.75;
+    if (ibend==12) return -4.75;
+    if (ibend==13) return -5.75;
+    if (ibend==14) return -6.75;
+    if (ibend==15) return -7.75;
+    
+    assert(0);
+    
+  }
+   
 };
 
 #endif

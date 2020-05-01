@@ -167,8 +167,8 @@ void TrackletEngineDisplaced::execute() {
 	      if (table_.at(index).empty()) {
 		if (settings_->debugTracklet()) {
 		  edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-					       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())<<" "
-					       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule());
+					       <<benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())<<" "
+					       <<benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule());
 		}		
                 if (!settings_->writeTripletTables())
                   continue;
@@ -246,8 +246,8 @@ void TrackletEngineDisplaced::execute() {
 	      if (table_.at(index).empty()) {
 		if (settings_->debugTracklet()) {
 		  edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-					       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())<<" "
-					       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule());
+					       <<benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())<<" "
+					       <<benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule());
 		}		
                 if (!settings_->writeTripletTables())
                   continue;
@@ -320,8 +320,8 @@ void TrackletEngineDisplaced::execute() {
 	      if (table_.at(index).empty()) {
 		if (settings_->debugTracklet()) {
 		  edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-					       <<Stub::benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())<<" "
-					       <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule());
+					       <<benddecode(firstvmstub.bend().value(),firstvmstub.isPSmodule())<<" "
+					       <<benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule());
 		}
                 if (!settings_->writeTripletTables())
                   continue;

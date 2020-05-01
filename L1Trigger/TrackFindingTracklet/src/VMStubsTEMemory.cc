@@ -57,7 +57,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub, int bin) {
   bool pass=passbend(vmstub.bend().value());
   
   if (!pass) {
-    if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName() << " Stub failed bend cut. bend = "<<Stub::benddecode(vmstub.bend().value(),vmstub.isPSmodule());
+    if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName() << " Stub failed bend cut. bend = "<<benddecode(vmstub.bend().value(),vmstub.isPSmodule());
     return false;
   }
   
@@ -106,7 +106,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub) {
   bool pass=passbend(vmstub.bend().value());
   
   if (!pass) {
-    if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName() << " Stub failed bend cut. bend = "<<Stub::benddecode(vmstub.bend().value(),vmstub.isPSmodule());
+    if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName() << " Stub failed bend cut. bend = "<<benddecode(vmstub.bend().value(),vmstub.isPSmodule());
     return false;
   }
   

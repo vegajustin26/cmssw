@@ -1,8 +1,10 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletProcessor.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-using namespace std;
+using namespace std; 
+using namespace Trklet; 
 
 TrackletProcessor::TrackletProcessor(string name, const Settings* const settings,Globals* globals, unsigned int iSector):
    TrackletCalculatorBase(name,settings,globals,iSector){
@@ -336,8 +338,8 @@ void TrackletProcessor::execute() {
 	      if (!(pttableinner_[phiindex][ptinnerindex]&&pttableouter_[phiindex][ptouterindex])) {
 		if (settings_->debugTracklet()) {
 		  edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-					       <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())<<" "
-					       <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule());
+					       <<benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())<<" "
+					       <<benddecode(outervmstub.bend().value(),outervmstub.isPSmodule());
 		}
 		continue;
 	      }
@@ -440,8 +442,8 @@ void TrackletProcessor::execute() {
 		if (!(pttableinner_[phiindex][ptinnerindex]&&pttableouter_[phiindex][ptouterindex])) {
 		  if (settings_->debugTracklet()) {
 		    edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-						 <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule()) <<" "
-						 <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule());
+						 <<benddecode(innervmstub.bend().value(),innervmstub.isPSmodule()) <<" "
+						 <<benddecode(outervmstub.bend().value(),outervmstub.isPSmodule());
 		  }		
 		  continue;
 		}
@@ -521,8 +523,8 @@ void TrackletProcessor::execute() {
 		if (!(pttableinner_[phiindex][ptinnerindex]&&pttableouter_[phiindex][ptouterindex])) {
 		  if (settings_->debugTracklet()) {
 		    edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-						 <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())<<" "
-						 <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule())
+						 <<benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())<<" "
+						 <<benddecode(outervmstub.bend().value(),outervmstub.isPSmodule())
 						 <<" pass : "<<pttableinner_[phiindex][ptinnerindex]<<" "<<pttableouter_[phiindex][ptouterindex];
 		  }
 		  continue;
@@ -714,7 +716,7 @@ void TrackletProcessor::setVMPhiBin() {
 	    int nbins1=8;
 	    if (layer_>=4) nbins1=16;
 	    for(int ibend=0;ibend<nbins1;ibend++) {
-	      double bend=Stub::benddecode(ibend,layer_<=3); 
+	      double bend=benddecode(ibend,layer_<=3); 
 	      
 	      bool passinner=bend-bendinnermin>-settings_->bendcutte(0,iSeed_)&&bend-bendinnermax<settings_->bendcutte(0,iSeed_);	    
 	      if (passinner) vmbendinner[ibend]=true;
@@ -725,7 +727,7 @@ void TrackletProcessor::setVMPhiBin() {
 	    int nbins2=8;
 	    if (layer_>=3) nbins2=16;
 	    for(int ibend=0;ibend<nbins2;ibend++) {
-	      double bend=Stub::benddecode(ibend,layer_<=2); 
+	      double bend=benddecode(ibend,layer_<=2); 
 	      
 	      bool passouter=bend-bendoutermin>-settings_->bendcutte(1,iSeed_)&&bend-bendoutermax<settings_->bendcutte(1,iSeed_);
 	      if (passouter) vmbendouter[ibend]=true;
@@ -816,7 +818,7 @@ void TrackletProcessor::setVMPhiBin() {
 
 
 	      for(int ibend=0;ibend<8;ibend++) {
-		double bend=Stub::benddecode(ibend,true); 
+		double bend=benddecode(ibend,true); 
 		
 		bool passinner=bend-bendinnermin>-settings_->bendcutte(0,iSeed_)&&bend-bendinnermax<settings_->bendcutte(0,iSeed_);	    
 		if (passinner) vmbendinner[ibend]=true;
@@ -825,7 +827,7 @@ void TrackletProcessor::setVMPhiBin() {
 	      }
 	      
 	      for(int ibend=0;ibend<8;ibend++) {
-		double bend=Stub::benddecode(ibend,true); 
+		double bend=benddecode(ibend,true); 
 		
 		bool passouter=bend-bendoutermin>-settings_->bendcutte(1,iSeed_)&&bend-bendoutermax<settings_->bendcutte(1,iSeed_);
 		if (passouter) vmbendouter[ibend]=true;
@@ -908,7 +910,7 @@ void TrackletProcessor::setVMPhiBin() {
 	      
 	      
 	      for(int ibend=0;ibend<8;ibend++) {
-		double bend=Stub::benddecode(ibend,true); 
+		double bend=benddecode(ibend,true); 
 		
 		bool passinner=bend-bendinnermin>-settings_->bendcutte(0,iSeed_)&&bend-bendinnermax<settings_->bendcutte(0,iSeed_);	    
 		if (passinner) vmbendinner[ibend]=true;
@@ -917,7 +919,7 @@ void TrackletProcessor::setVMPhiBin() {
 	      }
 	      
 	      for(int ibend=0;ibend<8;ibend++) {
-		double bend=Stub::benddecode(ibend,true); 
+		double bend=benddecode(ibend,true); 
 		
 		bool passouter=bend-bendoutermin>-settings_->bendcutte(1,iSeed_)&&bend-bendoutermax<settings_->bendcutte(1,iSeed_);
 		if (passouter) vmbendouter[ibend]=true;

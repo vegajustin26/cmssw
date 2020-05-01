@@ -210,8 +210,8 @@ void TripletEngine::execute() {
                 if (!table_[index]) {
                   if (settings_->debugTracklet()) {
                     edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-						 <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())<<" "
-						 <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule());
+						 <<benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())<<" "
+						 <<benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule());
                   }		
                   if (!settings_->writeTripletTables())
                     continue;
@@ -288,8 +288,8 @@ void TripletEngine::execute() {
                 if (!table_[index]) {
                   if (settings_->debugTracklet()) {
                     edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-						 <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())<<" "
-						 <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule());
+						 <<benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())<<" "
+						 <<benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule());
                   }		
                   if (!settings_->writeTripletTables())
                     continue;
@@ -370,8 +370,8 @@ void TripletEngine::execute() {
                 if (!table_[index]) {
                   if (settings_->debugTracklet()) {
                     edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-						 <<Stub::benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())<<" "
-						 <<Stub::benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule());
+						 <<benddecode(secondvmstub.bend().value(),secondvmstub.isPSmodule())<<" "
+						 <<benddecode(thirdvmstub.bend().value(),thirdvmstub.isPSmodule());
                   }		
                   if (!settings_->writeTripletTables())
                     continue;

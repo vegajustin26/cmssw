@@ -1,8 +1,10 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEngine.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-using namespace std;
+using namespace Trklet; 
+using namespace std; 
 
 TrackletEngine::TrackletEngine(string name, const Settings* const settings, Globals* global,unsigned int iSector):
   ProcessBase(name,settings,global,iSector){
@@ -112,8 +114,8 @@ void TrackletEngine::execute() {
 	if (!(pttableinner_[ptinnerindex]&&pttableouter_[ptouterindex])) {
 	  if (settings_->debugTracklet()) {
 	    edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-					 <<Stub::benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())<<" "
-					 <<Stub::benddecode(outervmstub.bend().value(),outervmstub.isPSmodule());
+					 <<benddecode(innervmstub.bend().value(),innervmstub.isPSmodule())<<" "
+					 <<benddecode(outervmstub.bend().value(),outervmstub.isPSmodule());
 	  }		
 	  continue;
 	}
@@ -216,7 +218,7 @@ void TrackletEngine::setVMPhiBin() {
 	bool passptcut=rinvmin<settings_->rinvcutte();
 	
 	for(int ibend=0;ibend<(1<<nbendbitsinner);ibend++) {
-	  double bend=Stub::benddecode(ibend,nbendbitsinner==3); 
+	  double bend=benddecode(ibend,nbendbitsinner==3); 
 	  
 	  bool passinner=bend-bendinnermin>-settings_->bendcutte(0,iSeed_)&&bend-bendinnermax<settings_->bendcutte(0,iSeed_); 
 	  if (passinner) vmbendinner[ibend]=true;
@@ -225,7 +227,7 @@ void TrackletEngine::setVMPhiBin() {
 	}
 	
 	for(int ibend=0;ibend<(1<<nbendbitsouter);ibend++) {
-	  double bend=Stub::benddecode(ibend,nbendbitsouter==3); 
+	  double bend=benddecode(ibend,nbendbitsouter==3); 
 	  
 	  bool passouter=bend-bendoutermin>-settings_->bendcutte(1,iSeed_)&&bend-bendoutermax<settings_->bendcutte(1,iSeed_); 
 	  if (passouter) vmbendouter[ibend]=true;

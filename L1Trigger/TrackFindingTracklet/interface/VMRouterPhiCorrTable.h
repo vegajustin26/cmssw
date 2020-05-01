@@ -1,6 +1,8 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_VMRouterPhiCorrTable_h
 #define L1Trigger_TrackFindingTracklet_interface_VMRouterPhiCorrTable_h
 
+#include "L1Trigger/TrackFindingTracklet/interface/Util.h"
+
 #include "TETableBase.h"
 #include <iostream>
 #include <fstream>
@@ -48,7 +50,7 @@ public:
 
   int getphiCorrValue(int ibend, int irbin) const {
 
-    double bend = Stub::benddecode(ibend, layer_ <= 3);
+    double bend = Trklet::benddecode(ibend, layer_ <= 3);
 
     //for the rbin - calculate the distance to the nominal layer radius
     double Delta = (irbin + 0.5) * dr_ - settings_->drmax();
