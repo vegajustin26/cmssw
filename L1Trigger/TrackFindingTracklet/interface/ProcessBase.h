@@ -4,6 +4,7 @@
 
 #include "Settings.h"
 #include "GlobalHistTruth.h"
+#include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 

@@ -38,7 +38,7 @@ public:
   // double ieta, eta
   // double iz0, z0
   // int tp
-  virtual void fillTrackletParams(const Settings*, GlobalHistTruth*, int, int, double, double, double, double, double, double, double, double, int) {
+  virtual void fillTrackletParams(const Trklet::Settings*, GlobalHistTruth*, int, int, double, double, double, double, double, double, double, double, int) {
     return;  //default implementation does nothing
   }
 

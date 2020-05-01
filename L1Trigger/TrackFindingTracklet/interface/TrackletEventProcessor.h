@@ -4,6 +4,8 @@
 #include "../interface/GlobalHistTruth.h"
 #include "../interface/HistImp.h"
 
+#include <iomanip>
+
 namespace Trklet {
   class TrackletEventProcessor {
 
