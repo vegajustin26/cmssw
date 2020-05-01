@@ -9,7 +9,7 @@ class DiskProjection {
 public:
   DiskProjection() { valid_ = false; }
 
-  void init(const Settings* settings,
+  void init(const Trklet::Settings* settings,
 	    int projdisk,
             double zproj,
             int iphiproj,

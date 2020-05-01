@@ -7,7 +7,7 @@ class LayerProjection {
 public:
   LayerProjection() { valid_ = false; }
 
-  void init(const Settings* settings,
+  void init(const Trklet::Settings* settings,
 	    int projlayer,
             double rproj,
             int iphiproj,
@@ -229,7 +229,7 @@ protected:
   double phiprojderapprox_;
   double zprojderapprox_;
   
-  const Settings* settings_;
+  const Trklet::Settings* settings_;
 
 };
 

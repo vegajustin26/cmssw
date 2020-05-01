@@ -8,7 +8,7 @@ class LayerResidual {
 public:
   LayerResidual() { valid_ = false; }
 
-  void init(const Settings* settings,
+  void init(const Trklet::Settings* settings,
 	    int layer,
             int iphiresid,
             int izresid,

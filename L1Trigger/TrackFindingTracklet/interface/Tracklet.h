@@ -18,6 +18,8 @@
 #include "DiskResidual.h"
 #include "Util.h"
 
+#include "Settings.h"
+
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -28,7 +30,7 @@ class Tracklet{
 
 public:
 
-  Tracklet(const Settings* settings, L1TStub* innerStub, L1TStub* middleStub, L1TStub* outerStub,
+  Tracklet(const Trklet::Settings* settings, L1TStub* innerStub, L1TStub* middleStub, L1TStub* outerStub,
 	   Stub* innerFPGAStub, Stub* middleFPGAStub, Stub* outerFPGAStub,
 	   double rinv, double phi0, double d0, double z0, double t,
 	   double rinvapprox, double phi0approx, double d0approx,
@@ -1442,7 +1444,7 @@ private:
   LayerResidual layerresid_[6];
   DiskResidual diskresid_[5];
 
-  const Settings* settings_;
+  const Trklet::Settings* settings_;
   
 };
 

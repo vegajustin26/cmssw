@@ -7,7 +7,7 @@ class DiskResidual {
 public:
   DiskResidual() { valid_ = false; }
 
-  void init(const Settings* settings,
+  void init(const Trklet::Settings* settings,
 	    int disk,
             int iphiresid,
             int irresid,

@@ -9,6 +9,7 @@
 #include <map>
 
 #include "Util.h"
+#include "Settings.h"
 
 using namespace std;
 
@@ -78,8 +79,8 @@ public:
   int duplicate() const { return duplicate_; }
   int sector() const { return sector_; }
 
-  double pt(const Settings* settings, double bfield = 3.811202) const { return (0.3 * bfield / 100.0) / (irinv_ * settings->krinvpars()); }
-  double phi0(const Settings* settings) const {
+  double pt(const Trklet::Settings* settings, double bfield = 3.811202) const { return (0.3 * bfield / 100.0) / (irinv_ * settings->krinvpars()); }
+  double phi0(const Trklet::Settings* settings) const {
     double dphi = 2 * M_PI / settings->NSector();
     double dphiHG = 0.5 * settings->dphisectorHG() - M_PI / settings->NSector();
     double phimin = sector_ * dphi - dphiHG;
@@ -94,11 +95,11 @@ public:
 
     return iphi0_ * settings->kphi0pars() + phioffset;
   }
-  double eta(const Settings* settings) const { return asinh(it_ * settings->ktpars()); }
-  double tanL(const Settings* settings) const { return it_ * settings->ktpars(); }
-  double z0(const Settings* settings) const { return iz0_ * settings->kz0pars(); }
-  double rinv(const Settings* settings) const { return irinv_ * settings->krinvpars(); }
-  double d0(const Settings* settings) const { return id0_ * settings->kd0pars(); }  //Fix when fit for 5 pars
+  double eta(const Trklet::Settings* settings) const { return asinh(it_ * settings->ktpars()); }
+  double tanL(const Trklet::Settings* settings) const { return it_ * settings->ktpars(); }
+  double z0(const Trklet::Settings* settings) const { return iz0_ * settings->kz0pars(); }
+  double rinv(const Trklet::Settings* settings) const { return irinv_ * settings->krinvpars(); }
+  double d0(const Trklet::Settings* settings) const { return id0_ * settings->kd0pars(); }  //Fix when fit for 5 pars
   double chisq() const { return chisqrphi_ + chisqrz_; }
 
   double chisqrphi() const { return chisqrphi_; }
