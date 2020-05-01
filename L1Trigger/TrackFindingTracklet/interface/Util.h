@@ -15,9 +15,9 @@ namespace Trklet{
   }
 
   //Converts string in binary to hex (used in writing out memory content)
-  inline string hexFormat(string binary){
+  inline std::string hexFormat(std::string binary){
 
-    string tmp="";
+    std::string tmp="";
   
     unsigned int value=0;
     unsigned int bits=0;
@@ -50,7 +50,7 @@ namespace Trklet{
       }
     }
 
-    string hexstring="0x";
+    std::string hexstring="0x";
     for (unsigned int i=0;i<tmp.size();i++){
       hexstring+=tmp[tmp.size()-i-1];
     }
