@@ -11,13 +11,13 @@
 class GlobalHistTruth;
 class MemoryBase;
 class Tracklet;
-class Track;
 class L1TStub;
 
 namespace Trklet {
 
   class Settings;
   class Stub;
+  class Track;
 
   class PurgeDuplicate:public ProcessBase{
     
