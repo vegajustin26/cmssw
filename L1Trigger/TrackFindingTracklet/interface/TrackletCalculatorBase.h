@@ -9,12 +9,12 @@
 
 class GlobalHistTruth;
 class Tracklet;
-class Stub;
 class L1TStub;
 
 namespace Trklet {
 
   class Settings;
+  class Stub;
   
   class TrackletCalculatorBase : public ProcessBase{
 

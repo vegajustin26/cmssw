@@ -7,12 +7,11 @@
 
 class Tracklet;
 class L1TStub;
-class Stub;
 
 namespace Trklet {
 
   class Settings;
-
+  class Stub;
   
   class FullMatchMemory : public MemoryBase {
   public:

@@ -10,7 +10,6 @@ namespace Trklet {
 
   class Settings;
 
-  
   class VMProjectionsMemory : public MemoryBase {
   public:
     VMProjectionsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);

@@ -9,13 +9,13 @@
 #include <vector>
 
 class L1TStub;
-class Stub;
 class GlobalHistTruth;
 
 
 namespace Trklet {
 
   class Settings;
+  class Stub;
   
   class FitTrack:public ProcessBase{
     

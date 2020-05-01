@@ -2,11 +2,12 @@
 #define L1Trigger_TrackFindingTracklet_interface_AllStubsMemory_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 
 #include <vector>
 
-class L1TStub;
-class Stub;
+//class L1TStub;
 
 namespace Trklet {
 

@@ -11,7 +11,6 @@
 
 class GlobalHistTruth;
 class L1TStub;
-class Stub;
 class Tracklet;
 
 #include <vector>
@@ -19,6 +18,7 @@ class Tracklet;
 namespace Trklet {
 
   class Settings;
+  class Stub;
 
   class MatchCalculator:public ProcessBase{
     

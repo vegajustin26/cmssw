@@ -7,12 +7,11 @@
 #include <vector>
 
 class L1TStub;
-class Stub;
 
 namespace Trklet {
 
   class Settings;
-
+  class Stub;
   
   class VMStubsMEMemory : public MemoryBase {
   public:

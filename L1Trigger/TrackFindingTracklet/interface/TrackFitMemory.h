@@ -6,13 +6,13 @@
 #include <vector>
 
 class L1TStub;
-class Stub;
 class Tracklet;
 class L1SimTrack;
 
 namespace Trklet {
   
   class Settings;
+  class Stub;
 
   
   class TrackFitMemory : public MemoryBase {

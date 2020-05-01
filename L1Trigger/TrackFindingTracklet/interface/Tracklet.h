@@ -31,7 +31,7 @@ class Tracklet{
 public:
 
   Tracklet(const Trklet::Settings* settings, L1TStub* innerStub, L1TStub* middleStub, L1TStub* outerStub,
-	   Stub* innerFPGAStub, Stub* middleFPGAStub, Stub* outerFPGAStub,
+	   Trklet::Stub* innerFPGAStub, Trklet::Stub* middleFPGAStub, Trklet::Stub* outerFPGAStub,
 	   double rinv, double phi0, double d0, double z0, double t,
 	   double rinvapprox, double phi0approx, double d0approx,
 	   double z0approx, double tapprox,
@@ -216,13 +216,13 @@ public:
   }
 
   L1TStub* innerStub() {return innerStub_;}
-  Stub* innerFPGAStub() {return innerFPGAStub_;}
+  Trklet::Stub* innerFPGAStub() {return innerFPGAStub_;}
 
   L1TStub* middleStub() {return middleStub_;}
-  Stub* middleFPGAStub() {return middleFPGAStub_;}
+  Trklet::Stub* middleFPGAStub() {return middleFPGAStub_;}
 
   L1TStub* outerStub() {return outerStub_;}
-  Stub* outerFPGAStub() {return outerFPGAStub_;}
+  Trklet::Stub* outerFPGAStub() {return outerFPGAStub_;}
 
   std::string addressstr() {
     std::ostringstream oss;
@@ -653,7 +653,7 @@ public:
 		double dphi, double dz, 
 		double dphiapprox, double dzapprox, 
 		int stubid,double rstub,
-		std::pair<Stub*,L1TStub*> stubptrs){
+		std::pair<Trklet::Stub*,L1TStub*> stubptrs){
     
     assert(layer>=1&&layer<=6);
     
@@ -667,7 +667,7 @@ public:
 		    double dphi, double dr, 
 		    double dphiapprox, double drapprox, double alpha,
 		    int stubid,double zstub,
-		    std::pair<Stub*,L1TStub*> stubptrs){
+		    std::pair<Trklet::Stub*,L1TStub*> stubptrs){
     
     assert(abs(disk)>=1&&abs(disk)<=5);
     
@@ -769,7 +769,7 @@ public:
   }
 
   
-  std::pair<Stub*,L1TStub*> stubptrs(int layer) const {
+  std::pair<Trklet::Stub*,L1TStub*> stubptrs(int layer) const {
     assert(layer>=1&&layer<=6);
     return layerresid_[layer-1].stubptrs();
   }
@@ -1396,9 +1396,9 @@ private:
   bool overlap_;
   bool triplet_;
 
-  Stub* innerFPGAStub_;
-  Stub* middleFPGAStub_;
-  Stub* outerFPGAStub_;
+  Trklet::Stub* innerFPGAStub_;
+  Trklet::Stub* middleFPGAStub_;
+  Trklet::Stub* outerFPGAStub_;
 
 
   L1TStub* innerStub_;

@@ -8,14 +8,14 @@
 #include <vector>
 
 class L1TStub;
-class Stub;
 class VMRouterPhiCorrTable;
 class GlobalHistTruth;
 
 namespace Trklet {
 
   class Settings;
-  
+  class Stub;
+
   class InputLinkMemory:public MemoryBase{
   public:
     InputLinkMemory(string name, const Settings* const settings, unsigned int iSector, double, double);
