@@ -24,23 +24,7 @@ namespace Trklet{
       //#define USEHYBRID
       //#endif
 
-      
-      rmean_={{geomTkTDR_?(rmaxdisk_*858)/4096:(rmaxdisk_*851)/4096,  //FIXME - can not depend on geomTkTDR
-	      geomTkTDR_?(rmaxdisk_*1279)/4096:(rmaxdisk_*1269)/4096,
-	      geomTkTDR_?(rmaxdisk_*1795)/4096:(rmaxdisk_*1784)/4096,
-	      geomTkTDR_?(rmaxdisk_*2347)/4096:(rmaxdisk_*2347)/4096,
-	      geomTkTDR_?(rmaxdisk_*2937)/4096:(rmaxdisk_*2936)/4096,
-	      geomTkTDR_?(rmaxdisk_*3783)/4096:(rmaxdisk_*3697)/4096}};
-
-      zmean_={{(zlength_*2239)/2048,
-	      (zlength_*2645)/2048,
-	      (zlength_*3163)/2048,
-	      (zlength_*3782)/2048,
-	      (zlength_*4523)/2048}};
-      
     }
-
-    bool geomTkTDR() const {return geomTkTDR_;}
 
     unsigned int nzbitsstub(unsigned int layerdisk) const {return nzbitsstub_[layerdisk];}
     unsigned int nphibitsstub(unsigned int layerdisk) const {return nphibitsstub_[layerdisk];}
@@ -106,17 +90,16 @@ namespace Trklet{
     double rphicut2S(unsigned int iSeed, unsigned int idisk) const {return rphicut2S_[idisk][iSeed];}
     double rcut2S(unsigned int iSeed, unsigned int idisk) const {return rcut2S_[idisk][iSeed];}
 
-    double rmean(unsigned int iLayer) const {return rmean_[iLayer];}
-    double rmax(unsigned int iLayer) const {return rmean_[iLayer]+drmax();}
-    double rmin(unsigned int iLayer) const {return rmean_[iLayer]-drmax();}
-    double zmean(unsigned int iDisk) const {return zmean_[iDisk];}
-    double zmax(unsigned int iDisk) const {return zmean_[iDisk]+dzmax();}
-    double zmin(unsigned int iDisk) const {return zmean_[iDisk]-dzmax();}
+    double rmean(unsigned int iLayer) const {return irmean_[iLayer]*rmaxdisk_/4096;}
+    double rmax(unsigned int iLayer) const {return rmean(iLayer)+drmax();}
+    double rmin(unsigned int iLayer) const {return rmean(iLayer)-drmax();}
+    double zmean(unsigned int iDisk) const {return izmean_[iDisk]*zlength_/2048;}
+    double zmax(unsigned int iDisk) const {return zmean(iDisk)+dzmax();}
+    double zmin(unsigned int iDisk) const {return zmean(iDisk)-dzmax();}
 
-    double rDSSinner(unsigned int iBin) const {return rDSSinner_[iBin];} 
-    double rDSSouter(unsigned int iBin) const {return rDSSouter_[iBin];} 
+    double rDSSinner(unsigned int iBin) const {return rDSSinner_mod_[iBin/2]+halfstrip_*((iBin%2==0)?-1:1);} 
+    double rDSSouter(unsigned int iBin) const {return rDSSouter_mod_[iBin/2]+halfstrip_*((iBin%2==0)?-1:1);} 
 
-    
     bool printDebugKF() const {return printDebugKF_;}
     bool debugTracklet() const {return debugTracklet_;}
     bool writetrace() const {return writetrace_;}
@@ -295,16 +278,14 @@ namespace Trklet{
     
   private:
 
-    bool geomTkTDR_{false};
-
     unsigned int NSector_{9};
 
     double rcrit_{55.0};
 
     double dphicritmc_{0.005};
-    
-    std::array<double,6> rmean_;
-    std::array<double,5> zmean_;
+
+    std::array<unsigned int, 6> irmean_{{851,1269,1784,2347,2936,3697}};
+    std::array<unsigned int, 5> izmean_{{2239,2645,3163,3782,4523}};
     
     std::array<unsigned int,11> nzbitsstub_{{12,12,12,8,8,8,7,7,7,7,7}};
     std::array<unsigned int,11> nphibitsstub_{{14,14,14,17,17,17,14,14,14,14,14}};
@@ -523,9 +504,7 @@ namespace Trklet{
 	{{3.6, 3.8, 0.0, 0.0, 3.6, 0.0, 3.6, 3.8, 0.0, 0.0, 3.8, 3.0}},  //disk 3
 	{{3.6, 3.8, 0.0, 0.0, 3.6, 0.0, 3.5, 3.8, 0.0, 0.0, 3.0, 3.0}},   //disk 4
 	{{0.0, 0.0, 0.0, 0.0, 3.6, 3.4, 3.7, 0.0, 0.0, 0.0, 0.0, 3.0}} }};   //disk 5
-
- 
-    
+   
     unsigned int maxstepoffset_{10000};
     
     std::map<std::string,unsigned int> maxstep_{
@@ -574,36 +553,11 @@ namespace Trklet{
       {"IFit",false},
       {"AS",false}};
 
-
-
-
-    double rDSSinner_mod1{geomTkTDR_?69.2345:68.9391};
-    double rDSSinner_mod2{geomTkTDR_?80.0056:78.7750};
-    double rDSSinner_mod3{geomTkTDR_?87.3444:85.4550};
-    double rDSSinner_mod4{geomTkTDR_?98.2515:96.3150};
-    double rDSSinner_mod5{geomTkTDR_?104.9750:102.3160};
+    std::array<double,5> rDSSinner_mod_{{68.9391,78.7750,85.4550,96.3150,102.3160}};
     
-    double rDSSouter_mod1{geomTkTDR_?67.6317:66.4903};
-    double rDSSouter_mod2{geomTkTDR_?78.1300:76.7750};
-    double rDSSouter_mod3{geomTkTDR_?86.4293:84.4562};
-    double rDSSouter_mod4{geomTkTDR_?97.1316:94.9920};
-    double rDSSouter_mod5{geomTkTDR_?104.9750:102.3160};
+    std::array<double,5> rDSSouter_mod_{{66.4903,76.7750,84.4562,94.9920,102.3160}};
 
     double halfstrip_{2.5}; //we want the center of the two strip positions in a module, not just the center of a module 
-
-    std::array<double,10> rDSSinner_{{
-	rDSSinner_mod1-halfstrip_, rDSSinner_mod1+halfstrip_, 
-	rDSSinner_mod2-halfstrip_, rDSSinner_mod2+halfstrip_,
-	rDSSinner_mod3-halfstrip_, rDSSinner_mod3+halfstrip_,
-	rDSSinner_mod4-halfstrip_, rDSSinner_mod4+halfstrip_,
-        rDSSinner_mod5-halfstrip_, rDSSinner_mod5+halfstrip_}};
- 
-    std::array<double,10> rDSSouter_{{
-	rDSSouter_mod1-halfstrip_, rDSSouter_mod1+halfstrip_,
-	rDSSouter_mod2-halfstrip_, rDSSouter_mod2+halfstrip_,
-	rDSSouter_mod3-halfstrip_, rDSSouter_mod3+halfstrip_, 
-	rDSSouter_mod4-halfstrip_, rDSSouter_mod4+halfstrip_,
-	rDSSouter_mod5-halfstrip_, rDSSouter_mod5+halfstrip_}};
 
     // various printouts for debugging and warnings 
     bool printDebugKF_{false};  // if true print lots of debugging statements related to the KF fit
