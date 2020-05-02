@@ -26,8 +26,6 @@ namespace Trklet {
     void addInput(MemoryBase* memory,std::string input);
     
     void execute();
-
-    double bend(double r, double rinv);
   
   private:
     

@@ -698,8 +698,8 @@ void TrackletProcessor::setVMPhiBin() {
 	    for(int i1=0;i1<2;i1++) {
 	      for(int i2=0;i2<2;i2++) {
 		double rinv1=rinv(phiinner[i1],phiouter[i2],rinner,router);
-		double abendinner=bend(rinner,rinv1); 
-		double abendouter=bend(router,rinv1);
+		double abendinner=-bend(rinner,rinv1); 
+		double abendouter=-bend(router,rinv1);
 		if (abendinner<bendinnermin) bendinnermin=abendinner;
 		if (abendinner>bendinnermax) bendinnermax=abendinner;
 		if (abendouter<bendoutermin) bendoutermin=abendouter;
@@ -953,19 +953,6 @@ double TrackletProcessor::rinv(double phi1, double phi2,double r1, double r2){
   double dr=r2-r1;
   
   return 2.0*sin(dphi)/dr/sqrt(1.0+2*r1*r2*(1.0-cos(dphi))/(dr*dr));
-  
-}
-
-double TrackletProcessor::bend(double r, double rinv) {
-  
-  double dr=0.18;
-  
-  double delta=r*dr*0.5*rinv;
-  
-  double bend=delta/0.009;
-  if (r<55.0) bend=delta/0.01;
-  
-  return bend;
   
 }
 

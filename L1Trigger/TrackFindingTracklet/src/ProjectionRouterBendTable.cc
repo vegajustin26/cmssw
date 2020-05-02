@@ -1,6 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/ProjectionRouterBendTable.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
 using namespace Trklet;
 
@@ -49,13 +50,3 @@ int ProjectionRouterBendTable::bendLoookup(int diskindex,int bendindex) {
   return bendtable_[diskindex][bendindex];
 }
 
-double ProjectionRouterBendTable::bend(double r, double rinv) {
-  
-  double dr=0.18;
-  double delta=r*dr*0.5*rinv;
-  
-  double bend=-delta/0.009;
-  if (r<55.0) bend=-delta/0.01;
-  
-  return bend;
-}
