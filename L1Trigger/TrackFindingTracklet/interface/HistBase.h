@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_HistBase_h
 #define L1Trigger_TrackFindingTracklet_interface_HistBase_h
 
-#include "Settings.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 #include <iostream>
 #include <fstream>
@@ -10,48 +10,46 @@
 #include <cassert>
 #include <cmath>
 
-using namespace std;
-
 namespace Trklet{
   class Globals;
+
+  class HistBase {
+  public:
+    HistBase() {}
+    
+    virtual ~HistBase() {}
+    
+    virtual void close() {}
+    
+    virtual void FillLayerResidual(int, int, double, double, double, double, bool) {
+      return;  //default implementation does nothing
+    }
+    
+    virtual void FillDiskResidual(int, int, double, double, double, double, bool) {
+      return;  //default implementation does nothing
+    }
+    
+    //arguments are
+    // int seedIndex
+    // int iSector
+    // double irinv, rinv
+    // double iphi0, phi0
+    // double ieta, eta
+    // double iz0, z0
+    // int tp
+    virtual void fillTrackletParams(const Settings*, Globals*, int, int, double, double, double, double, double, double, double, double, int) {
+      return;  //default implementation does nothing
+    }
+    
+    //int seedIndex
+    //double etaTP
+    //bool eff
+    virtual void fillSeedEff(int, double, bool) {
+      return;  //default implementation does nothing
+    }
+    
+  private:
+  };
+
 };
-
-class HistBase {
-public:
-  HistBase() {}
-
-  virtual ~HistBase() {}
-
-  virtual void close() {}
-
-  virtual void FillLayerResidual(int, int, double, double, double, double, bool) {
-    return;  //default implementation does nothing
-  }
-
-  virtual void FillDiskResidual(int, int, double, double, double, double, bool) {
-    return;  //default implementation does nothing
-  }
-
-  //arguments are
-  // int seedIndex
-  // int iSector
-  // double irinv, rinv
-  // double iphi0, phi0
-  // double ieta, eta
-  // double iz0, z0
-  // int tp
-  virtual void fillTrackletParams(const Trklet::Settings*, Trklet::Globals*, int, int, double, double, double, double, double, double, double, double, int) {
-    return;  //default implementation does nothing
-  }
-
-  //int seedIndex
-  //double etaTP
-  //bool eff
-  virtual void fillSeedEff(int, double, bool) {
-    return;  //default implementation does nothing
-  }
-
-private:
-};
-
 #endif
