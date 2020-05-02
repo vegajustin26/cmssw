@@ -10,7 +10,7 @@
 
 #include "Util.h"
 
-using namespace std;
+namespace Trklet {
 
 template <class T>
 class TrackPars {
@@ -55,4 +55,5 @@ private:
   T z0_;
 };
 
+};
 #endif

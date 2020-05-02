@@ -8,6 +8,7 @@
 #endif
 
 using namespace std;
+using namespace Trklet;
 
 FitTrack::FitTrack(string name, const Settings* settings, Globals* global, unsigned int iSector):
   ProcessBase(name,settings,global,iSector){

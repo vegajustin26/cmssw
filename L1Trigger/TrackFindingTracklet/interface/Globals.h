@@ -13,13 +13,15 @@ namespace tmtt {
 }
 
 class TETableBase;
-class TrackDerTable;
 class VMRouterPhiCorrTable;
 class ProjectionRouterBendTable;
 class SLHCEvent;
 
 
 namespace Trklet{
+
+  class TrackDerTable;
+
   class Globals {
   public:
     
