@@ -6,12 +6,13 @@
 #include <cassert>
 #include <cmath>
 #include <vector>
+#include <string>
 
 #include "L1Trigger/TrackFindingTracklet/interface/TrackDer.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 namespace Trklet {
 
+  class Settings;
   class Globals;
 
   class TrackDerTable {
@@ -80,6 +81,9 @@ namespace Trklet {
 
     
   private:
+
+    const Settings* settings_;
+    
     std::vector<int> LayerMem_;
     std::vector<int> DiskMem_;    
     std::vector<int> LayerDiskMem_;
@@ -98,8 +102,6 @@ namespace Trklet {
     int nextDiskValue_;
     int nextLayerDiskValue_;
     int lastMultiplicity_;
-    
-    const Settings* settings_;
     
   };
 
