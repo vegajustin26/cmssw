@@ -32,8 +32,7 @@ bool InputLinkMemory::addStub(const Settings* settings, Globals* globals, L1TStu
     globals->phiCorr(layerdisk_)->init(settings,layerdisk_+1,nbits,3);
   }
   
-  int stublayerdisk=stub.layer().value();
-  if (stublayerdisk==-1) stublayerdisk=5+abs(stub.disk().value());
+  unsigned int stublayerdisk=stub.layerdisk();
   assert(stublayerdisk>=0&&stublayerdisk<11);
   
   if (stublayerdisk!=layerdisk_) return false;
@@ -46,9 +45,15 @@ bool InputLinkMemory::addStub(const Settings* settings, Globals* globals, L1TStu
     int iphicorr=phiCorrTable.getphiCorrValue(bendbin,rbin);
     stub.setPhiCorr(iphicorr);
   }
-  
-  int iphivmRaw=stub.iphivmRaw();
-  int phibin=iphivmRaw/(32/settings_->nallstubs(layerdisk_));
+
+
+  FPGAWord iphi=stub.phicorr();
+  unsigned int nallbits=settings_->nbitsallstubs(layerdisk_);
+  int phibin=iphi.bits(iphi.nbits()-nallbits,nallbits);
+  int iphivmRaw=iphi.bits(iphi.nbits()-5,5);
+
+  //int iphivmRaw=stub.iphivmRaw();
+  //int phibin=iphivmRaw/(32/settings_->nallstubs(layerdisk_));
   
   if (phibin!=phiregion_) return false;
   

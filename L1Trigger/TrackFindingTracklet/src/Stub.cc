@@ -176,43 +176,23 @@ Stub::Stub(const L1TStub& stub,const Trklet::Settings* const settings, double ph
   }  
 }
 
-unsigned int Stub::iphivmRaw() const {
-  unsigned int iphivm=(phicorr_.value()>>(phicorr_.nbits()-5));
-  assert(iphivm<32);
-  return iphivm;
-}
-
-
 FPGAWord Stub::iphivmFineBins(int VMbits, int finebits) const {
-  
   unsigned int finephi=(phicorr_.value()>>(phicorr_.nbits()-VMbits-finebits))&((1<<finebits)-1);
-  return FPGAWord(finephi,finebits,true,__LINE__,__FILE__);
-  
+  return FPGAWord(finephi,finebits,true,__LINE__,__FILE__); 
 }
 
-std::string Stub::phiregionaddressstr() {
+std::string Stub::phiregionaddressstr() const {
   assert(phiregion().value()>-1);
   return phiregion().str()+stubindex_.str();	
 }
 
+
 FPGAWord Stub::phiregion() const {
   // 3 bits
-  if (layer_.value()>=0) {
-    unsigned int nallstubs=settings_->nallstubs(layer_.value());
-    int iphiregion=iphivmRaw()/(32/nallstubs);
-    FPGAWord phi;
-    phi.set(iphiregion,3);
-    return phi;
-  }
-  if (abs(disk_.value())>=1) {
-    unsigned int nallstubs=settings_->nallstubs(abs(disk_.value())+5);
-    int iphiregion=iphivmRaw()/(32/nallstubs);
-    FPGAWord phi;
-    phi.set(iphiregion,3);
-    return phi;
-  }
-  assert(0);     
+  int iphi=(phicorr_.value()>>(phicorr_.nbits()-settings_->nbitsallstubs(layerdisk())));
+  return FPGAWord(iphi,3,true,__LINE__,__FILE__);
 }
+
 
 
 void Stub::setAllStubIndex(int nstub){
@@ -268,5 +248,13 @@ double Stub::phiapprox(double phimin, double) const {
   }
   return Trklet::phiRange(phimin+phi_.value()*settings_->kphi()/lphi);
 }
+
+unsigned int Stub::layerdisk() const {
+  
+  if (layer_.value()==-1) return 5+abs(disk_.value());
+  return layer_.value();
+
+}
+
 
   

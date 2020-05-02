@@ -1,6 +1,4 @@
 #include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubTE.h"
 
 using namespace std;
@@ -32,9 +30,9 @@ void StubPairsMemory::writeSP(bool first) {
   
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
   
-  for (unsigned int j = 0; j < stubs1_.size(); j++) {
-    string stub1index = stubs1_[j].stub().first->stubindex().str();
-    string stub2index = stubs2_[j].stub().first->stubindex().str();
+  for (unsigned int j = 0; j < stubs_.size(); j++) {
+    string stub1index = stubs_[j].first.stub().first->stubindex().str();
+    string stub2index = stubs_[j].second.stub().first->stubindex().str();
     out_ << "0x";
     if (j < 16)
       out_ << "0";

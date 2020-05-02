@@ -26,7 +26,7 @@ namespace Trklet {
     ~Stub() {  }
 
     //Returns a number from 0 to 31 //FIXME should not be used
-    unsigned int iphivmRaw() const;
+    //unsigned int iphivmRaw() const;
 
     FPGAWord iphivmFineBins(int VMbits, int finebits) const;
 
@@ -48,11 +48,11 @@ namespace Trklet {
       return bend_.str()+r_.str()+z_.str()+phi_.str();
     }
     
-    std::string phiregionaddressstr();
+    std::string phiregionaddressstr() const; //TODO - should migrate away from suing this method
     
-    FPGAWord phiregion() const;
+    FPGAWord phiregion() const; //TODO - should migrate away from using this method
 
-    void setAllStubIndex(int nstub);
+    void setAllStubIndex(int nstub);  //TODO - should migrate away from using this method
     
     void setPhiCorr(int phiCorr);
 
@@ -73,6 +73,7 @@ namespace Trklet {
     FPGAWord stubindex() const {return stubindex_;}
     FPGAWord layer() const {return layer_;}
     FPGAWord disk() const {return disk_;}
+    unsigned int layerdisk() const;
     
     bool isBarrel() const {return layer_.value()!=-1;}
     bool isDisk() const {return disk_.value()!=0;}
@@ -103,7 +104,7 @@ namespace Trklet {
     
   private:
     
-    bool isPSmodule_;  //FIXME can be removed
+    bool isPSmodule_;  //TODO should not be used can be removed
     FPGAWord layer_;  
     FPGAWord disk_;  
     FPGAWord r_;
@@ -117,8 +118,8 @@ namespace Trklet {
     
     FPGAWord stubindex_;
     
-    FPGAWord finer_;   //FIXME should not be member data
-    FPGAWord finez_;   //FIXME should not be member data
+    FPGAWord finer_;   //TODO should not be member data
+    FPGAWord finez_;   //TODO should not be member data
     
     const Settings* const settings_;
     

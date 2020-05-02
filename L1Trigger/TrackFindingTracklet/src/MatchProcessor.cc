@@ -25,6 +25,8 @@ MatchProcessor::MatchProcessor(string name, const Settings* settings, Globals* g
 
     phioffset_=phimin_;
 
+    phiregion_=0; //TODO set properly
+
     initLayerDisk(3,layer_,disk_);
 
     //FIXME should sort out constants here

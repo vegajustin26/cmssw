@@ -41,6 +41,8 @@ namespace Trklet {
     int disk_;
     bool barrel_;
 
+    unsigned int phiregion_;
+    
     int nvm_;  //VMs in sector
     int nvmbits_; //# of bits for VMs in sector
     int nvmbins_; //VMs in in phi region
@@ -75,7 +77,7 @@ namespace Trklet {
     int ialphafactinner_[10];
     int ialphafactouter_[10];
     
-    //FIXME should index by iSeed
+    //Memory for the full matches
     std::vector<FullMatchMemory*> fullmatches_;
     
     //used in the layers

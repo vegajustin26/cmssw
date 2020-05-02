@@ -186,7 +186,7 @@ namespace Trklet{
     double kz() const { return 2*zlength_/(1<<nzbitsstub_[0]); }
     double kr() const { return rmaxdisk_/(1<<nrbitsstub_[6]); }
 
-    double maxrinv() const { return maxrinv_; }  //FIXME maxrinv_ vs rinvmax_
+    double maxrinv() const { return maxrinv_; }
     double maxd0() const { return maxd0_; }
     unsigned int nbitsd0() const { return nbitsd0_; }
 
@@ -636,7 +636,7 @@ namespace Trklet{
 
     std::string skimfile_{""}; //if not empty events will be written out in ascii format to this file
     
-    //constants derivative from the above - FIXME should be calculated in Settings.h, not set externally
+    //constants derivative from the above - TODO should be calculated in Settings.h, not set externally
     //then we can remove the mutable
 
     double bfield_{3.8}; //B-field in T

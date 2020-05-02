@@ -32,7 +32,7 @@ namespace Trklet {
   private:
     std::vector<std::pair<Stub*,L1TStub*> > stubs_;
     int phiregion_;
-    int layerdisk_; //FIXME should be unsigned 
+    unsigned int layerdisk_;
   };
 
 };

@@ -35,6 +35,7 @@ namespace Trklet {
   private:
     
     unsigned int layerdisk_;
+    unsigned int phiregion_;
     
     int fact_;
     int icorrshift_;

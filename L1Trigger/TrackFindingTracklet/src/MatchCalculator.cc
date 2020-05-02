@@ -22,6 +22,7 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
     }
     phioffset_=phimin_;
 
+    phiregion_=0; //TODO set correctly
     layerdisk_=initLayerDisk(3);
 
     fullMatches_.resize(12,0);

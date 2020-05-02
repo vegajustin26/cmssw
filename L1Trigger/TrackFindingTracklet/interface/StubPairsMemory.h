@@ -20,30 +20,28 @@ namespace Trklet {
 		     const VMStubTE& stub2,
 		     const unsigned index = 0,
 		     const std::string& tedName = "") {
-      stubs1_.push_back(stub1);
-      stubs2_.push_back(stub2);
+      stubs_.push_back(std::pair<VMStubTE,VMStubTE>(stub1,stub2));
       indices_.push_back(index);
       tedNames_.push_back(tedName);
     }
 
-    unsigned int nStubPairs() const { return stubs1_.size(); }
+    unsigned int nStubPairs() const { return stubs_.size(); }
     
-    VMStubTE getVMStub1(unsigned int i) const { return stubs1_[i]; }
-    Stub* getFPGAStub1(unsigned int i) const { return stubs1_[i].stub().first; }
-    L1TStub* getL1TStub1(unsigned int i) const { return stubs1_[i].stub().second; }
-    std::pair<Stub*, L1TStub*> getStub1(unsigned int i) const { return stubs1_[i].stub(); }
+    VMStubTE getVMStub1(unsigned int i) const { return stubs_[i].first; }
+    Stub* getFPGAStub1(unsigned int i) const { return stubs_[i].first.stub().first; }
+    L1TStub* getL1TStub1(unsigned int i) const { return stubs_[i].first.stub().second; }
+    std::pair<Stub*, L1TStub*> getStub1(unsigned int i) const { return stubs_[i].first.stub(); }
     
-    VMStubTE getVMStub2(unsigned int i) const { return stubs2_[i]; }
-    Stub* getFPGAStub2(unsigned int i) const { return stubs2_[i].stub().first; }
-    L1TStub* getL1TStub2(unsigned int i) const { return stubs2_[i].stub().second; }
-    std::pair<Stub*, L1TStub*> getStub2(unsigned int i) const { return stubs2_[i].stub(); }
+    VMStubTE getVMStub2(unsigned int i) const { return stubs_[i].second; }
+    Stub* getFPGAStub2(unsigned int i) const { return stubs_[i].second.stub().first; }
+    L1TStub* getL1TStub2(unsigned int i) const { return stubs_[i].second.stub().second; }
+    std::pair<Stub*, L1TStub*> getStub2(unsigned int i) const { return stubs_[i].second.stub(); }
     
     unsigned getIndex(const unsigned i) const { return indices_.at(i); }
     const std::string& getTEDName(const unsigned i) const { return tedNames_.at(i); }
     
     void clean() {
-      stubs1_.clear();
-      stubs2_.clear();
+      stubs_.clear();
       indices_.clear();
       tedNames_.clear();
     }
@@ -54,10 +52,9 @@ namespace Trklet {
   private:
     double phimin_;
     double phimax_;
-    //FIXME should not be two vectors
-    std::vector<VMStubTE> stubs1_;
-    std::vector<VMStubTE> stubs2_;
-    
+
+    std::vector<std::pair<VMStubTE,VMStubTE> > stubs_;
+
     std::vector<unsigned> indices_;
     std::vector<std::string> tedNames_;
   };
