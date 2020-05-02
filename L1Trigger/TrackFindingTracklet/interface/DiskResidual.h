@@ -3,6 +3,8 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 
+#include <cassert>
+
 namespace Trklet {
 
   class Settings;
