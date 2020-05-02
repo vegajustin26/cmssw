@@ -4,6 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
 
 #include <vector>
+#include <string>
 
 namespace Trklet {
   
