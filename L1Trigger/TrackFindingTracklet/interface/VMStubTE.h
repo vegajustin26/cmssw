@@ -7,87 +7,48 @@
 #include <cmath>
 #include <vector>
 
-#include "FPGAWord.h"
-#include "Util.h"
-#include "Stub.h"
-#include "L1TStub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 
-using namespace std;
-
-class VMStubTE{
-
-public:
-
-  VMStubTE() {}
+namespace Trklet {
   
-
-  VMStubTE(std::pair<Stub*, L1TStub*> stub, FPGAWord finephi, FPGAWord bend, FPGAWord vmbits, FPGAWord allstubindex) {
-    stub_=stub;
-    finephi_=finephi;
-    bend_=bend;
-    vmbits_=vmbits;
-    allStubIndex_=allstubindex;
-  }
-
- 
-  ~VMStubTE() {
-
-  }
-
-  FPGAWord finephi() const {
-    return finephi_;
-  }
-  
-  FPGAWord bend() const {
-    return bend_;
-  }
-  
-  FPGAWord vmbits() const {
-    return vmbits_;
-  }
-
-  std::pair<Stub*, L1TStub*> stub() const {
-    return stub_;
-  }
-
-  bool isPSmodule() const {
-    return stub_.first->isPSmodule();
-  }
-
-  FPGAWord stubindex() const {
-    return allStubIndex_;
-  }
-
-
-  //return binary string for memory printout
-  std::string str() const {
+  class VMStubTE{
     
-    string stub=allStubIndex_.str();
-    stub+="|";
-    stub+=bend_.str();
-    stub+="|";
-    stub+=finephi_.str();
-    stub+="|";
-    stub+=vmbits_.str();
+  public:
     
-    return stub;
+    VMStubTE() {}
     
-  }
+    VMStubTE(std::pair<Stub*, L1TStub*> stub, FPGAWord finephi, FPGAWord bend, FPGAWord vmbits, FPGAWord allstubindex);
+    
+    ~VMStubTE() {}
 
+    FPGAWord finephi() const { return finephi_; }
+    
+    FPGAWord bend() const { return bend_; }
+    
+    FPGAWord vmbits() const { return vmbits_; }
+
+    std::pair<Stub*, L1TStub*> stub() const { return stub_; }
+
+    bool isPSmodule() const { return stub_.first->isPSmodule(); }
+
+    FPGAWord stubindex() const { return allStubIndex_; }
+    
+    //return binary string for memory printout
+    std::string str() const;
   
-private:
-
-  FPGAWord finephi_;
-  FPGAWord finerz_;
-  FPGAWord bend_;
-  FPGAWord vmbits_;
-  FPGAWord allStubIndex_;
-  std::pair<Stub*, L1TStub*> stub_;
-
+  private:
+    
+    FPGAWord finephi_;
+    FPGAWord finerz_;
+    FPGAWord bend_;
+    FPGAWord vmbits_;
+    FPGAWord allStubIndex_;
+    std::pair<Stub*, L1TStub*> stub_;
+    
+  };
 };
-
-
-
 #endif
 
 
