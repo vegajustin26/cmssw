@@ -1,4 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculatorDisplaced.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 

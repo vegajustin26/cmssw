@@ -1,4 +1,5 @@
 #include "L1Trigger/TrackFindingTracklet/interface/FitTrack.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackDerTable.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"

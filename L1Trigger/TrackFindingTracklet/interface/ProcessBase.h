@@ -1,12 +1,14 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_ProcessBase_h
 #define L1Trigger_TrackFindingTracklet_interface_ProcessBase_h
 
-#include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
+#include<string>
 
 namespace Trklet {
 
+  class MemoryBase;
+  class Settings;
+  class Globals;
+  
   class ProcessBase{
     
   public:

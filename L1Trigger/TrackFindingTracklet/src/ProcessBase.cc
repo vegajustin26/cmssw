@@ -1,4 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
+#include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 

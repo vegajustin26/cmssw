@@ -2,8 +2,6 @@
 #define L1Trigger_TrackFindingTracklet_interface_TrackletEngine_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
-#include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
 
 #include <vector>
 
@@ -11,8 +9,9 @@ namespace Trklet {
   
   class Settings;
   class Globals;
-  class Stub;
-  class L1TStub;
+  class MemoryBase;
+  class VMStubsTEMemory;
+  class StubPairsMemory;
   
   class TrackletEngine : public ProcessBase {
     

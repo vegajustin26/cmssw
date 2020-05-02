@@ -1,4 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMRouter.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TETableOuter.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TETableInner.h"

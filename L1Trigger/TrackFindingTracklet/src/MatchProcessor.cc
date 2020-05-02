@@ -1,4 +1,5 @@
 #include "L1Trigger/TrackFindingTracklet/interface/MatchProcessor.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include "L1Trigger/TrackFindingTracklet/interface/ProjectionRouterBendTable.h"
 
