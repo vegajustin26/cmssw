@@ -458,8 +458,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   ev.setIPx(bsPosition.x());
   ev.setIPy(bsPosition.y());
 
-  eventProcessor.event(ev);
-
   //globals->event()=&ev;
 
   // tracking particles
@@ -769,27 +767,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   if (asciiEventOutName_ != "") {
     ev.write(asciiEventOut_);
   }
-
-  /*
-  CPUTimer readTimer;
-  CPUTimer cleanTimer;
-  CPUTimer addStubTimer;
-  CPUTimer VMRouterTimer;
-  CPUTimer TETimer;
-  CPUTimer TEDTimer;
-  CPUTimer TRETimer;
-  CPUTimer TCTimer;
-  CPUTimer TCDTimer;
-  CPUTimer PTTimer;
-  CPUTimer PRTimer;
-  CPUTimer METimer;
-  CPUTimer MCTimer;
-  CPUTimer MPTimer;
-  CPUTimer MTTimer;
-  CPUTimer FTTimer;
-  CPUTimer PDTimer;
-  */
-  
+    
   if (settings.writeMonitorData("Seeds")) {
     ofstream fout("seeds.txt", ofstream::out);
     fout.close();
@@ -814,7 +792,9 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   int nlayershit = 0;
 
   //#include "FPGA.icc"
+  eventProcessor.event(ev);
 
+  
   int ntracks = 0;
   
 
@@ -877,9 +857,9 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   iEvent.put(std::move(L1TkTracksForOutput), "Level1TTTracks");
 
-  for (unsigned int k = 0; k < settings.NSector(); k++) {
-    sectors[k]->clean();
-  }
+  //for (unsigned int k = 0; k < settings.NSector(); k++) {
+  //sectors[k]->clean();
+  //}
 
 }  /// End of produce()
 
