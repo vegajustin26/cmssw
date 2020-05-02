@@ -5,10 +5,7 @@
 using namespace std;
 using namespace Trklet;
 
-FPGAWord::FPGAWord() {
-  value_ = -1;
-  nbits_ = -1;
-}
+FPGAWord::FPGAWord() {}
 
 FPGAWord::FPGAWord(int value, int nbits, bool positive, int line, const char* file) {
   set(value, nbits, positive, line, file);
@@ -61,55 +58,14 @@ std::string FPGAWord::str() const {
     if (nbit == 0)
       return "~";
 
-    assert(nbit > 0 && nbit < 22);
+    int valtmp=value_;
+    string str="";
+    for(int i=0;i<nbit;i++) {
+      str=((valtmp&1)?"1":"0")+str;
+      valtmp>>=1;
+    }
 
-    std::ostringstream oss;
-    if (nbit == 1)
-      oss << (bitset<1>)value_;
-    if (nbit == 2)
-      oss << (bitset<2>)value_;
-    if (nbit == 3)
-      oss << (bitset<3>)value_;
-    if (nbit == 4)
-      oss << (bitset<4>)value_;
-    if (nbit == 5)
-      oss << (bitset<5>)value_;
-    if (nbit == 6)
-      oss << (bitset<6>)value_;
-    if (nbit == 7)
-      oss << (bitset<7>)value_;
-    if (nbit == 8)
-      oss << (bitset<8>)value_;
-    if (nbit == 9)
-      oss << (bitset<9>)value_;
-    if (nbit == 10)
-      oss << (bitset<10>)value_;
-    if (nbit == 11)
-      oss << (bitset<11>)value_;
-    if (nbit == 12)
-      oss << (bitset<12>)value_;
-    if (nbit == 13)
-      oss << (bitset<13>)value_;
-    if (nbit == 14)
-      oss << (bitset<14>)value_;
-    if (nbit == 15)
-      oss << (bitset<15>)value_;
-    if (nbit == 16)
-      oss << (bitset<16>)value_;
-    if (nbit == 17)
-      oss << (bitset<17>)value_;
-    if (nbit == 18)
-      oss << (bitset<18>)value_;
-    if (nbit == 19)
-      oss << (bitset<19>)value_;
-    if (nbit == 20)
-      oss << (bitset<20>)value_;
-    if (nbit == 21)
-      oss << (bitset<21>)value_;
-    if (nbit == 22)
-      oss << (bitset<22>)value_;
-
-    return oss.str();
+    return str;
 }
 
 unsigned int FPGAWord::bits(unsigned int lsb, unsigned int nbit) {

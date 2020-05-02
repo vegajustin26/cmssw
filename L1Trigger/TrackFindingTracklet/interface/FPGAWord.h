@@ -1,12 +1,7 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_FPGAWord_h
 #define L1Trigger_TrackFindingTracklet_interface_FPGAWord_h
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <bitset>
-#include <cassert>
-#include <cmath>
+#include <string>
 
 namespace Trklet {
 
@@ -27,16 +22,16 @@ namespace Trklet {
     unsigned int bits(unsigned int lsb, unsigned int nbit);
     
     int value() const { return value_; }
-    int nbits() const { return nbits_; }  //FEXME should be unsigned
+    int nbits() const { return nbits_; }
 
     bool atExtreme() const;
 
     bool operator==(const FPGAWord& other) const;
     
   private:
-    int value_;
-    int nbits_;  //FIXME should be unsigned
-    bool positive_;
+    int value_{-1};
+    int nbits_{-1};
+    bool positive_{true};
   };
 };
 #endif

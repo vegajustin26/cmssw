@@ -3,6 +3,8 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
+#include <cassert>
+
 using namespace std;
 using namespace Trklet;
 

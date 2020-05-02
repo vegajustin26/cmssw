@@ -78,6 +78,7 @@ endif
 ifeq ("$(wildcard FWCore/MessageLogger/interface/MessageLogger.h)","")
 $(shell echo "#ifndef L1Trigger_TrackFindingTracklet_interface_Logger_h" > FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "#define L1Trigger_TrackFindingTracklet_interface_Logger_h" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "#include<iostream>" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "namespace edm {" >> FWCore/MessageLogger/interface/MessageLogger.h)
 # INFO statement
 $(shell echo "  class LogVerbatim{" >> FWCore/MessageLogger/interface/MessageLogger.h)

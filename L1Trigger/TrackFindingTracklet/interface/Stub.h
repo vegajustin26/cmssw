@@ -31,25 +31,21 @@ namespace Trklet {
     FPGAWord iphivmFineBins(int VMbits, int finebits) const;
 
     std::string str() const {
-      std::ostringstream oss;
       if (layer_.value()!=-1) {
-	oss << r_.str()<<"|"<< z_.str()<<"|"<< phi_.str()<<"|"<<bend_.str();
+	return r_.str()+"|"+z_.str()+"|"+phi_.str()+"|"+bend_.str();
       }
       else {
 	if (isPSmodule()) {
-	  oss <<r_.str()<<"|"<< z_.str()<<"|"<< phi_.str()<<"|"<<bend_.str();
+	  return r_.str()+"|"+z_.str()+"|"+phi_.str()+"|"+bend_.str();
 	}
 	else {
-	  oss << "000"<<r_.str()<<"|"<< z_.str()<<"|"<< phi_.str()<<"|"<<alphanew_.str()<<"|"<<bend_.str();
+	  return "000"+r_.str()+"|"+z_.str()+"|"+phi_.str()+"|"+alphanew_.str()+"|"+bend_.str();
 	}
       }
-      return oss.str(); 
     }
     
     std::string strbare() const {
-      std::ostringstream oss;
-      oss << bend_.str()<<r_.str()<< z_.str()<< phi_.str();
-      return oss.str();
+      return bend_.str()+r_.str()+z_.str()+phi_.str();
     }
     
     std::string phiregionaddressstr();

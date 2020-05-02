@@ -3,6 +3,8 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
+#include<sstream>
+
 using namespace std;
 using namespace Trklet;
 
@@ -178,42 +180,40 @@ bool Tracklet::stubtruthmatch(L1TStub* stub) {
 }
 
 std::string Tracklet::addressstr() {
-  std::ostringstream oss;
-  oss << innerFPGAStub_->phiregionaddressstr()<<"|";
+  std::string str;
+  str=innerFPGAStub_->phiregionaddressstr()+"|";
   if (middleFPGAStub_) {
-      oss << middleFPGAStub_->phiregionaddressstr()<<"|";
+      str+=middleFPGAStub_->phiregionaddressstr()+"|";
   }
-  oss << outerFPGAStub_->phiregionaddressstr();
+  str+=outerFPGAStub_->phiregionaddressstr();
     
-  return oss.str();
+  return str;
 }
   
 
 std::string Tracklet::trackletparstr() {
-  std::ostringstream oss;
+
   if(settings_->writeoutReal()){
+    std::ostringstream oss;
     oss << fpgapars_.rinv().value()*settings_->krinvpars()<<" "
 	<< fpgapars_.phi0().value()*settings_->kphi0pars()<<" "
-	  << fpgapars_.d0().value()*settings_->kd0pars()<<" "
+	<< fpgapars_.d0().value()*settings_->kd0pars()<<" "
 	<< fpgapars_.z0().value()*settings_->kz()<<" "
 	<< fpgapars_.t().value()*settings_->ktpars();
-  }
-  
-  //Binary Print out
-  if(!settings_->writeoutReal()){
-    oss << innerFPGAStub_->stubindex().str()<<"|";
+    return oss.str();
+  } else {
+    std::string str=innerFPGAStub_->stubindex().str()+"|";
     if (middleFPGAStub_) {
-      oss << middleFPGAStub_->stubindex().str()<<"|";
+      str+=middleFPGAStub_->stubindex().str()+"|";
     }
-    oss << outerFPGAStub_->stubindex().str()<<"|"
-	<< fpgapars_.rinv().str()<<"|"
-	<< fpgapars_.phi0().str()<<"|"
-	<< fpgapars_.d0().str()<<"|"
-	<< fpgapars_.z0().str()<<"|"
-	<< fpgapars_.t().str();
+    str+=outerFPGAStub_->stubindex().str()+"|"+
+      fpgapars_.rinv().str()+"|"+
+      fpgapars_.phi0().str()+"|"+
+      fpgapars_.d0().str()+"|"+
+      fpgapars_.z0().str()+"|"+
+      fpgapars_.t().str();
+    return str;
   }
-  
-  return oss.str();
 }
   
 std::string Tracklet::vmstrlayer(int layer, unsigned int allstubindex) {
