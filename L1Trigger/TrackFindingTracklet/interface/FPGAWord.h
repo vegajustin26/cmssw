@@ -2,6 +2,7 @@
 #define L1Trigger_TrackFindingTracklet_interface_FPGAWord_h
 
 #include <string>
+#include <cassert>
 
 namespace Trklet {
 
