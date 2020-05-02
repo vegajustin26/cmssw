@@ -3,6 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 
 using namespace std;
+using namespace Trklet;
 
 CleanTrackMemory::CleanTrackMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
   MemoryBase(name, settings, iSector) {

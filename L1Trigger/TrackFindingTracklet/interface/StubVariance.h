@@ -1,11 +1,10 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_StubVariance_h
 #define L1Trigger_TrackFindingTracklet_interface_StubVariance_h
 
-class SLHCEvent;
-
 namespace Trklet {
 
   class Globals;
+  class SLHCEvent;
   
   class StubVariance {
   public:
