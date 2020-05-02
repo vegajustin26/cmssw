@@ -83,15 +83,8 @@
 // FPGA emulation
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
-#include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
-#include "L1Trigger/TrackFindingTracklet/interface/CPUTimer.h"
-#include "L1Trigger/TrackFindingTracklet/interface/StubVariance.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculator.h"
-#include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Cabling.h"
-
-#include "L1Trigger/TrackFindingTracklet/interface/GlobalHistTruth.h"
-#include "L1Trigger/TrackFindingTracklet/interface/HistImp.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletEventProcessor.h"
 
 ////////////////
 // PHYSICS TOOLS
@@ -181,22 +174,18 @@ private:
   string asciiEventOutName_;
   std::ofstream asciiEventOut_;
 
-  HistImp* histimp;
-
   string geometryType_;
 
-  Sector** sectors;
-  Cabling cabling;
+  Trklet::Sector** sectors;
 
   // settings containing various constants for the tracklet processing
   Trklet::Settings settings;
 
-  // global class for tracklet processing
-  GlobalHistTruth* globals;
-
+  // event processor for the tracklet track finding 
+  Trklet::TrackletEventProcessor eventProcessor;
+  
   unsigned int nHelixPar_;
   bool extended_;
-
   
   std::map<string, vector<int> > dtclayerdisk;
 
@@ -267,7 +256,6 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 
   DTCLinkLayerDiskFile = iConfig.getParameter<edm::FileInPath>("DTCLinkLayerDiskFile");
 
-  globals = new GlobalHistTruth(&settings);
   
   // --------------------------------------------------------------------------------
   // get all constants
@@ -278,40 +266,14 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   settings.setExtended(extended_);
   settings.setNHelixPar(nHelixPar_);
 
-  settings.krinvpars() = globals->ITC_L1L2()->rinv_final.get_K();
-  settings.kphi0pars() = globals->ITC_L1L2()->phi0_final.get_K();
-  settings.kd0pars()   = settings.kd0();
-  settings.ktpars()    = globals->ITC_L1L2()->t_final.get_K();
-  settings.kz0pars()   = globals->ITC_L1L2()->z0_final.get_K();
-  settings.kphiproj123() =globals->ITC_L1L2()->phi0_final.get_K()*4;
-  settings.kzproj()=settings.kz();
-  settings.kphider()=globals->ITC_L1L2()->rinv_final.get_K()*(1<<settings.phiderbitshift());
-  settings.kzder()=globals->ITC_L1L2()->t_final.get_K()*(1<<settings.zderbitshift());
-  settings.krprojshiftdisk() = globals->ITC_L1L2()->rD_0_final.get_K();
-  settings.kphiprojdisk()=globals->ITC_L1L2()->phi0_final.get_K()*4.0;
-  settings.krdisk() = settings.kr();
-  settings.kzpars() = settings.kz();  
+  eventProcessor.init(&settings);
 
   eventnum = 0;
   if (asciiEventOutName_ != "") {
     asciiEventOut_.open(asciiEventOutName_.c_str());
   }
 
-  // adding capability of booking histograms internal to tracklet steps
-  if (settings.bookHistos()) {
-    histimp = new HistImp;
-    TH1::AddDirectory(kTRUE);
-    histimp->init();
-    histimp->bookLayerResidual();
-    histimp->bookDiskResidual();
-    histimp->bookTrackletParams();
-    histimp->bookSeedEff();
-
-    globals->histograms()=histimp;
-  }
-
-  sectors = new Sector*[settings.NSector()];
-
+  /*
   if (settings.debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "cabling DTC links :     " << DTCLinkFile.fullPath();
     edm::LogVerbatim("Tracklet") << "module cabling :     " << moduleCablingFile.fullPath();
@@ -334,7 +296,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     }
     in >> dtc;
   }
-
+  
   for (unsigned int i = 0; i < settings.NSector(); i++) {
     sectors[i] = new Sector(i,&settings,globals);
   }
@@ -415,6 +377,8 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
       sectors[i]->addWire(mem, procin, procout);
     }
   }
+  */
+
 }
 
 /////////////
@@ -423,12 +387,13 @@ L1FPGATrackProducer::~L1FPGATrackProducer() {
   if (asciiEventOutName_ != "") {
     asciiEventOut_.close();
   }
-
+  /*
   if (settings.bookHistos()) {
     histimp->close();
   }
 
   delete[] sectors;
+  */
 }
 
 //////////
@@ -488,12 +453,14 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   iSetup.get<TrackerDigiGeometryRecord>().get(tGeomHandle);
 
   eventnum++;
-  SLHCEvent ev;
+  Trklet::SLHCEvent ev;
   ev.setEventNum(eventnum);
   ev.setIPx(bsPosition.x());
   ev.setIPy(bsPosition.y());
 
-  globals->event()=&ev;
+  eventProcessor.event(ev);
+
+  //globals->event()=&ev;
 
   // tracking particles
   edm::Handle<std::vector<TrackingParticle> > TrackingParticleHandle;
@@ -803,6 +770,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     ev.write(asciiEventOut_);
   }
 
+  /*
   CPUTimer readTimer;
   CPUTimer cleanTimer;
   CPUTimer addStubTimer;
@@ -820,18 +788,20 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   CPUTimer MTTimer;
   CPUTimer FTTimer;
   CPUTimer PDTimer;
-
+  */
+  
   if (settings.writeMonitorData("Seeds")) {
     ofstream fout("seeds.txt", ofstream::out);
     fout.close();
   }
 
-  bool first = true;
+  //  bool first = true;
 
-  std::vector<Track*> tracks;
+  //std::vector<Track*> tracks;
+  std::vector<Trklet::Track*>& tracks=eventProcessor.tracks();
 
   int selectmu = 0;
-  L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+  Trklet::L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
   ofstream outres;
   if (settings.writeMonitorData("ResEff"))
@@ -843,12 +813,13 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   int nlayershit = 0;
 
-#include "FPGA.icc"
+  //#include "FPGA.icc"
 
   int ntracks = 0;
+  
 
   for (unsigned itrack = 0; itrack < tracks.size(); itrack++) {
-    Track* track = tracks[itrack];
+    Trklet::Track* track = tracks[itrack];
 
     if (track->duplicate())
       continue;
@@ -874,15 +845,15 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     aTrack.setPhiSector(trksector);    //tracklet phi sector
     aTrack.setTrackSeedType(trkseed);  //tracklet seed
 
-    vector<L1TStub*> stubptrs = track->stubs();
-    vector<L1TStub> stubs;
+    vector<Trklet::L1TStub*> stubptrs = track->stubs();
+    vector<Trklet::L1TStub> stubs;
 
     for (unsigned int i = 0; i < stubptrs.size(); i++) {
       stubs.push_back(*(stubptrs[i]));
     }
 
     stubMapType::const_iterator it;
-    for (vector<L1TStub>::const_iterator itstubs = stubs.begin(); itstubs != stubs.end(); itstubs++) {
+    for (vector<Trklet::L1TStub>::const_iterator itstubs = stubs.begin(); itstubs != stubs.end(); itstubs++) {
       it = stubMap.find(*itstubs);
       if (it != stubMap.end()) {
         aTrack.addStubRef(it->second);
