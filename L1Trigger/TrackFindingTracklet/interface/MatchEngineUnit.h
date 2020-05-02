@@ -4,18 +4,16 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/CircularBuffer.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
-
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
 
 #include <cassert>
 #include <vector>
 
-class L1TStub;
-
 namespace Trklet {
 
   class Settings;
   class Stub;
+  class L1TStub;
 
   class MatchEngineUnit {
   public:

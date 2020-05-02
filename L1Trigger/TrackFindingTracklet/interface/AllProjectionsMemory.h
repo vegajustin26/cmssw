@@ -13,7 +13,7 @@ namespace Trklet {
   
   class AllProjectionsMemory : public MemoryBase {
   public:
-    AllProjectionsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    AllProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
     
     void addTracklet(Tracklet* tracklet) { tracklets_.push_back(tracklet); }
     

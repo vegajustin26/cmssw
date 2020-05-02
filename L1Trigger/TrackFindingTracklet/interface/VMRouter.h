@@ -19,7 +19,7 @@ namespace Trklet {
     
   public:
 
-    VMRouter(string name, const Settings* settings, Globals* global, unsigned int iSector);
+    VMRouter(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
    
     void addOutput(MemoryBase* memory,std::string output);
     

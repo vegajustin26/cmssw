@@ -9,26 +9,25 @@
 
 #include <vector>
 
-class L1TStub;
-
 namespace Trklet {
 
   class Settings;
   class Globals;
   class MemoryBase;
   class Stub;
+  class L1TStub;
   
-  class TrackletCalculatorDisplaced:public ProcessBase{
+  class TrackletCalculatorDisplaced : public ProcessBase {
     
   public:
     
-    TrackletCalculatorDisplaced(string name, const Settings* settings, Globals* global, unsigned int iSector);
+    TrackletCalculatorDisplaced(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
     
     void addOutputProjection(TrackletProjectionsMemory* &outputProj, MemoryBase* memory);
 
-    void addOutput(MemoryBase* memory,string output);
+    void addOutput(MemoryBase* memory,std::string output);
     
-    void addInput(MemoryBase* memory,string input);
+    void addInput(MemoryBase* memory,std::string input);
 
     void execute(); 
 
@@ -85,15 +84,15 @@ namespace Trklet {
     double zproj_[3];
     int dproj_[3];
     
-    vector<double> toR_;
-    vector<double> toZ_;
+    std::vector<double> toR_;
+    std::vector<double> toZ_;
     
     unsigned int maxtracklet_; //maximum numbor of tracklets that be stored
     
-    vector<AllStubsMemory*> innerallstubs_;
-    vector<AllStubsMemory*> middleallstubs_;
-    vector<AllStubsMemory*> outerallstubs_;
-    vector<StubTripletsMemory*> stubtriplets_;
+    std::vector<AllStubsMemory*> innerallstubs_;
+    std::vector<AllStubsMemory*> middleallstubs_;
+    std::vector<AllStubsMemory*> outerallstubs_;
+    std::vector<StubTripletsMemory*> stubtriplets_;
     
     TrackletParametersMemory* trackletpars_;
     

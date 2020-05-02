@@ -8,24 +8,22 @@
 
 #include <vector>
 
-class L1TStub;
-
-
 namespace Trklet {
 
   class Settings;
-  class Stub;
   class Globals; 
+  class Stub;
+  class L1TStub;
   
-  class FitTrack:public ProcessBase{
+  class FitTrack : public ProcessBase {
     
   public:
     
-    FitTrack(string name, const Settings* settings, Globals* global, unsigned int iSector);
+    FitTrack(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
     
-    void addOutput(MemoryBase* memory,string output);
+    void addOutput(MemoryBase* memory, std::string output);
 
-    void addInput(MemoryBase* memory,string input);
+    void addInput(MemoryBase* memory, std::string input);
     
     // used if USEHYBRID is not defined
     void trackFitChisq(Tracklet* tracklet, std::vector<std::pair<Stub*,L1TStub*>> &, std::vector<std::pair<int,int>> &);
@@ -36,7 +34,7 @@ namespace Trklet {
     // used for propagating tracklet without fitting
     void trackFitFake(Tracklet* tracklet, std::vector<std::pair<Stub*,L1TStub*>> &, std::vector<std::pair<int,int>> &);
     
-    std::vector<Tracklet*> orderedMatches(vector<FullMatchMemory*>& fullmatch);
+    std::vector<Tracklet*> orderedMatches(std::vector<FullMatchMemory*>& fullmatch);
 
     void execute();
 

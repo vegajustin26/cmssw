@@ -8,9 +8,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllProjectionsMemory.h"
 
-
-class L1TStub;
-
 #include <vector>
 
 namespace Trklet {
@@ -18,17 +15,18 @@ namespace Trklet {
   class Settings; 
   class Globals;
   class Stub;
+  class L1TStub;
   class Tracklet;
 
-  class MatchCalculator:public ProcessBase{
+  class MatchCalculator : public ProcessBase {
     
   public:
     
-    MatchCalculator(string name, const Settings* settings, Globals* global, unsigned int iSector);
+    MatchCalculator(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
     
-    void addOutput(MemoryBase* memory,string output);
+    void addOutput(MemoryBase* memory, std::string output);
 
-    void addInput(MemoryBase* memory,string input);
+    void addInput(MemoryBase* memory, std::string input);
 
     void execute();
 

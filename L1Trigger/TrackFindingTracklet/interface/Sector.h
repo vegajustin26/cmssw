@@ -42,20 +42,20 @@ namespace Trklet {
     Sector(unsigned int i, const Settings* settings, Globals* globals);
     ~Sector();
     
-    bool addStub(L1TStub stub, string dtc);
+    bool addStub(L1TStub stub, std::string dtc);
 
     // Creates all required memory modules based on wiring map (args: module type, module instance)
-    void addMem(string memType,string memName);
+    void addMem(std::string memType,std::string memName);
 
     // Creates all required processing modules based on wiring map (args: module type, module instance)
-    void addProc(string procType,string procName);
+    void addProc(std::string procType,std::string procName);
 
     //--- Create all required proc -> mem module connections, based on wiring map
     //--- (args: memory instance & input/output proc modules it connects to in format procName.pinName)
-    void addWire(string mem,string procinfull,string procoutfull);
+    void addWire(std::string mem,std::string procinfull,std::string procoutfull);
 
-    ProcessBase* getProc(string procName);
-    MemoryBase* getMem(string memName);
+    ProcessBase* getProc(std::string procName);
+    MemoryBase* getMem(std::string memName);
 
     void writeInputStubs(bool first);
     void writeVMSTE(bool first);
@@ -107,7 +107,7 @@ namespace Trklet {
     double phimin_;
     double phimax_;
     
-    std::map<string, MemoryBase*> Memories_;
+    std::map<std::string, MemoryBase*> Memories_;
     std::vector<MemoryBase*> MemoriesV_;
     std::vector<InputLinkMemory*> IL_;
     std::vector<AllStubsMemory*> AS_;
@@ -124,7 +124,7 @@ namespace Trklet {
     std::vector<TrackFitMemory*> TF_;
     std::vector<CleanTrackMemory*> CT_;
     
-    std::map<string, ProcessBase*> Processes_;
+    std::map<std::string, ProcessBase*> Processes_;
     std::vector<VMRouter*> VMR_;
     std::vector<TrackletEngine*> TE_;
     std::vector<TrackletEngineDisplaced*> TED_;

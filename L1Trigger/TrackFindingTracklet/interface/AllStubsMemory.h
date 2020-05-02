@@ -7,16 +7,13 @@
 
 #include <vector>
 
-//class L1TStub;
-
 namespace Trklet {
 
   class Settings;
-
   
   class AllStubsMemory : public MemoryBase {
   public:
-    AllStubsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    AllStubsMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
 
     void addStub(std::pair<Stub*, L1TStub*> stub) { stubs_.push_back(stub); }
 

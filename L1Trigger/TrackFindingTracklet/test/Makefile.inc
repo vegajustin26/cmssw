@@ -61,6 +61,7 @@ $(shell touch dummyIncl/set)
 $(shell touch dummyIncl/sstream)
 $(shell touch dummyIncl/string)
 $(shell touch dummyIncl/vector)
+$(shell touch dummyIncl/algorithm)
 $(shell touch dummyIncl/ext/hash_set)
 $(shell touch dummyIncl/sys/time.h)
 endif

@@ -12,25 +12,24 @@
 
 #include <vector>
 
-class L1TStub;
-
 namespace Trklet {
 
   class Settings;
   class Globals;
   class MemoryBase;
   class Stub;
+  class L1TStub;
   class Tracklet;
 
-  class MatchProcessor:public ProcessBase {
+  class MatchProcessor : public ProcessBase {
     
   public:
     
-    MatchProcessor(string name, const Settings* settings, Globals* global, unsigned int iSector);
+    MatchProcessor(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    void addOutput(MemoryBase* memory,string output);
+    void addOutput(MemoryBase* memory,std::string output);
 
-    void addInput(MemoryBase* memory,string input);
+    void addInput(MemoryBase* memory,std::string input);
 
     void execute();
     

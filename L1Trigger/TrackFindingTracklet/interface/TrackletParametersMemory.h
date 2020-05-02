@@ -18,7 +18,7 @@ namespace Trklet {
   
   class TrackletParametersMemory : public MemoryBase {
   public:
-    TrackletParametersMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    TrackletParametersMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
     
     void addTracklet(Tracklet *tracklet) { tracklets_.push_back(tracklet); }
     

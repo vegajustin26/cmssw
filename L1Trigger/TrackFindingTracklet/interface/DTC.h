@@ -3,11 +3,10 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/DTCLink.h"
 
-class L1TStub;
-
 namespace Trklet {
 
   class Stub;
+  class L1TStub;
   
   class DTC {
   public:

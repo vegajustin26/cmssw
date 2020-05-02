@@ -6,17 +6,15 @@
 
 #include <vector>
 
-class L1TStub;
-
 namespace Trklet {
 
   class Settings;
   class Stub;
-
+  class L1TStub;
   
   class CandidateMatchMemory : public MemoryBase {
   public:
-    CandidateMatchMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    CandidateMatchMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
     
     void addMatch(std::pair<Tracklet*, int> tracklet, std::pair<Stub*, L1TStub*> stub) {
       std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > tmp(tracklet, stub);

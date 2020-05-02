@@ -6,16 +6,15 @@
 
 #include <vector>
 
-class L1TStub;
-
 namespace Trklet {
 
   class Settings;
   class Stub;
+  class L1TStub;
   
   class VMStubsMEMemory : public MemoryBase {
   public:
-    VMStubsMEMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    VMStubsMEMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
 
     void addStub(VMStubME stub, unsigned int bin) {
       stubs_.push_back(stub);

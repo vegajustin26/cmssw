@@ -19,11 +19,11 @@ namespace Trklet {
     
   public:
     
-    MatchEngine(string name, const Settings* settings, Globals* global, unsigned int iSector);
+    MatchEngine(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
     
-    void addOutput(MemoryBase* memory,string output);
+    void addOutput(MemoryBase* memory,std::string output);
 
-    void addInput(MemoryBase* memory,string input);
+    void addInput(MemoryBase* memory,std::string input);
     
     void execute();
 
@@ -40,11 +40,11 @@ namespace Trklet {
     int disk_;
     
     //used in the layers
-    vector<bool> table_;
+    std::vector<bool> table_;
     
     //used in the disks
-    vector<bool> tablePS_;
-    vector<bool> table2S_;
+    std::vector<bool> tablePS_;
+    std::vector<bool> table2S_;
   };
   
 };

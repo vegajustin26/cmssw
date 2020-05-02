@@ -444,12 +444,12 @@ namespace Trklet {
 		    int irinvfit, int iphi0fit, int id0fit, int itfit,
 		    int iz0fit, int ichisqrphifit, int ichisqrzfit,
 		    int hitpattern,
-		    const vector<L1TStub*>& l1stubs = vector<L1TStub*>());
+		    const std::vector<L1TStub*>& l1stubs = std::vector<L1TStub*>());
 
     std::string trackfitstr();
 
     
-    Track makeTrack(vector<L1TStub*> l1stubs);
+    Track makeTrack(std::vector<L1TStub*> l1stubs);
 
     Track* getTrack() {
       assert(fpgatrack_!=0);

@@ -7,20 +7,18 @@
 
 #include <vector>
 
-class L1TStub;
-
-
 namespace Trklet {
   
   class Settings;
   class Globals;
   class Stub;
+  class L1TStub;
   
-  class TrackletEngine:public ProcessBase{
+  class TrackletEngine : public ProcessBase {
     
   public:
     
-    TrackletEngine(string name, const Settings* const settings, Globals* global, unsigned int iSector);
+    TrackletEngine(std::string name, const Settings* const settings, Globals* global, unsigned int iSector);
     
     void addOutput(MemoryBase* memory, std::string output); 
     

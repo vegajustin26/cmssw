@@ -7,20 +7,19 @@
 
 #include <vector>
 
-class L1TStub;
-
 namespace Trklet {
 
   class Settings;
   class Globals;
   class Stub;
+  class L1TStub;
   class Tracklet;
   
   class TrackletCalculatorBase : public ProcessBase{
 
   public:
     
-    TrackletCalculatorBase(string name, const Settings* const settings, Globals* global, unsigned int iSector);
+    TrackletCalculatorBase(std::string name, const Settings* const settings, Globals* global, unsigned int iSector);
   
     void exacttracklet(double r1, double z1, double phi1,
 		       double r2, double z2, double phi2, double,

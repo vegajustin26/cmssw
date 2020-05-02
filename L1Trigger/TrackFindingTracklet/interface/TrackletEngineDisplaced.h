@@ -17,13 +17,13 @@ namespace Trklet {
     
   public:
     
-    TrackletEngineDisplaced(string name, const Settings* settings, Globals* global, unsigned int iSector);
+    TrackletEngineDisplaced(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
     ~TrackletEngineDisplaced();
     
-    void addOutput(MemoryBase* memory,string output);
+    void addOutput(MemoryBase* memory,std::string output);
     
-    void addInput(MemoryBase* memory,string input);
+    void addInput(MemoryBase* memory,std::string input);
     
     void execute();
     
@@ -39,12 +39,12 @@ namespace Trklet {
     int disk1_;
     int disk2_;
     
-    vector<VMStubsTEMemory*> firstvmstubs_;
+    std::vector<VMStubsTEMemory*> firstvmstubs_;
     VMStubsTEMemory* secondvmstubs_;
     
     std::vector<StubPairsMemory*> stubpairs_;
     
-    std::vector<set<string> > table_;
+    std::vector<std::set<std::string> > table_;
     
     int firstphibits_;
     int secondphibits_;

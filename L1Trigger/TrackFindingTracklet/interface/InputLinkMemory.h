@@ -7,16 +7,15 @@
 
 #include <vector>
 
-class L1TStub;
-
 namespace Trklet {
 
   class Settings;
   class Globals;
   class Stub;
+  class L1TStub;
   class VMRouterPhiCorrTable;
 
-  class InputLinkMemory:public MemoryBase{
+  class InputLinkMemory : public MemoryBase {
   public:
     InputLinkMemory(std::string name, const Settings* const settings, unsigned int iSector, double, double);
 

@@ -1135,6 +1135,7 @@ clean:
 ../src/TripletEngine.o: ../../../L1Trigger/TrackFindingTracklet/interface/HistBase.h
 ../src/TripletEngine.o: dummyIncl/./fstream dummyIncl/./sstream
 ../src/TripletEngine.o: dummyIncl/./bitset
+../src/TripletEngine.o: dummyIncl/./algorithm
 ../src/TripletEngine.o: ../../../L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h
 ../src/TripletEngine.o: ../../../L1Trigger/TrackFindingTracklet/interface/imath.h
 ../src/TripletEngine.o: dummyIncl/./limits dummyIncl/./vector

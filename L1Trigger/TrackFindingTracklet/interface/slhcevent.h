@@ -21,8 +21,8 @@ namespace Trklet {
     L1SimTrack();
     L1SimTrack(int eventid, int trackid, int type, double pt, double eta, double phi, double vx, double vy, double vz);
     
-    void write(ofstream& out);
-    void write(ostream& out);
+    void write(std::ofstream& out);
+    void write(std::ostream& out);
   
     int eventid() const { return eventid_; }
     int trackid() const { return trackid_; }
@@ -67,7 +67,7 @@ namespace Trklet {
       //empty constructor to be used with 'filler' functions
       eventnum_=0;
     }
-    SLHCEvent(istream& in);
+    SLHCEvent(std::istream& in);
     
     void setIPx(double x) { x_offset_=x;}
     void setIPy(double y) { y_offset_=y;}
@@ -76,21 +76,21 @@ namespace Trklet {
     
     void addL1SimTrack(int eventid,int trackid,int type,double pt,double eta,double phi,double vx,double vy,double vz);
     
-    bool addStub(int layer,int ladder,int module, int strip, int eventid, vector<int> tps, 
+    bool addStub(int layer,int ladder,int module, int strip, int eventid, std::vector<int> tps, 
 		 double pt,double bend,
 		 double x,double y,double z,
-		 vector<bool> innerStack,
-		 vector<int> irphi,
-		 vector<int> iz,
-		 vector<int> iladder,
-		 vector<int> imodule,
+		 std::vector<bool> innerStack,
+		 std::vector<int> irphi,
+		 std::vector<int> iz,
+		 std::vector<int> iladder,
+		 std::vector<int> imodule,
 		 int isPSmodule,
 		 int isFlipped);
     
     L1TStub lastStub() { return stubs_.back(); }
 
-    void write(ofstream& out);
-    void write(ostream& out);
+    void write(std::ofstream& out);
+    void write(std::ostream& out);
     
     unsigned int layersHit(int tpid, int &nlayers, int &ndisks);
    

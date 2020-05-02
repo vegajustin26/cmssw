@@ -5,12 +5,11 @@
 
 #include <vector>
 
-class L1TStub;
-
 namespace Trklet {
   
   class Settings;
   class Stub;
+  class L1TStub;
   class Tracklet;
   class L1SimTrack;
   

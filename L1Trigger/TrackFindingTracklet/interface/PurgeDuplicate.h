@@ -7,18 +7,17 @@
 
 #include <vector>
 
-class L1TStub;
-
 namespace Trklet {
 
   class Settings;
   class Globals;
   class MemoryBase;
   class Stub;
+  class L1TStub;
   class Track;
   class Tracklet;
 
-  class PurgeDuplicate:public ProcessBase{
+  class PurgeDuplicate : public ProcessBase {
     
   public:
     

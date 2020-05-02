@@ -3,12 +3,11 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 
-class L1TStub;
-
 namespace Trklet {
 
   class Settings;
   class Stub;
+  class L1TStub;
 
   class DiskResidual {
   public:

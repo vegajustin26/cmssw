@@ -80,7 +80,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   
   edm::LogVerbatim("Tracklet") << "Will read memory modules file";
   
-  string memfile="../data/memorymodules_"+settings_->geomext()+".dat";
+  string memfile="../data/memorymodules_"+settings_->geomext()+".dat"; //fixme
   ifstream inmem(memfile.c_str());
   assert(inmem.good());
   
@@ -98,7 +98,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   
   edm::LogVerbatim("Tracklet") << "Will read processing modules file";
   
-  string procfile="../data/processingmodules_"+settings_->geomext()+".dat";
+  string procfile="../data/processingmodules_"+settings_->geomext()+".dat"; //fixme
   ifstream inproc(procfile.c_str());
   assert(inproc.good());
   
@@ -116,7 +116,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   
   edm::LogVerbatim("Tracklet") << "Will read wiring information";
   
-  string wirefile="../data/wires_"+settings_->geomext()+".dat";
+  string wirefile="../data/wires_"+settings_->geomext()+".dat"; //fixme 
   ifstream inwire(wirefile.c_str());
   assert(inwire.good());
   
@@ -143,7 +143,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
     } 
   }
   
-  ifstream indtc("../data/dtclinklayerdisk.dat");
+  ifstream indtc("../data/dtclinklayerdisk.dat"); //FIXME
   assert(indtc.good());
   string dtc;
   indtc >> dtc;
@@ -159,7 +159,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
     indtc >> dtc;
   }
   
-  cabling_.init("../data/calcNumDTCLinks.txt","../data/modules_T5v3_27SP_nonant_tracklet.dat");
+  cabling_.init("../data/calcNumDTCLinks.txt","../data/modules_T5v3_27SP_nonant_tracklet.dat"); //FIXME
   
 }
 
