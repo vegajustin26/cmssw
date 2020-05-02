@@ -28,8 +28,6 @@ namespace Trklet {
 
     void setVMPhiBin();
 
-    double rinv(double phi1, double phi2,double r1, double r2);
-
     void writeTETable();
   
   private:
