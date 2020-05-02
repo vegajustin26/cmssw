@@ -22,6 +22,51 @@ ifeq ("$(wildcard lib)","")
 $(shell mkdir lib)
 endif
 
+#
+# Add system headers here (hack around problem with makedepend
+# if you added file remove the dummyIncl directory to rewrite files
+#
+ifeq ("$(wildcard dummyIncl)","")
+$(shell mkdir dummyIncl)
+$(shell mkdir dummyIncl/sys)
+$(shell mkdir dummyIncl/ext)
+$(shell touch dummyIncl/TBranch.h)
+$(shell touch dummyIncl/TCanvas.h)
+$(shell touch dummyIncl/TChain.h)
+$(shell touch dummyIncl/TColor.h)
+$(shell touch dummyIncl/TEfficiency.h)
+$(shell touch dummyIncl/TFile.h)
+$(shell touch dummyIncl/TH1D.h)
+$(shell touch dummyIncl/TH1F.h)
+$(shell touch dummyIncl/TH2F.h)
+$(shell touch dummyIncl/TLatex.h)
+$(shell touch dummyIncl/TLegend.h)
+$(shell touch dummyIncl/TMath.h)
+$(shell touch dummyIncl/TROOT.h)
+$(shell touch dummyIncl/TStyle.h)
+$(shell touch dummyIncl/TSystem.h)
+$(shell touch dummyIncl/TTree.h)
+$(shell touch dummyIncl/array)
+$(shell touch dummyIncl/bitset)
+$(shell touch dummyIncl/cassert)
+$(shell touch dummyIncl/cctype)
+$(shell touch dummyIncl/cmath)
+$(shell touch dummyIncl/cstdlib)
+$(shell touch dummyIncl/fstream)
+$(shell touch dummyIncl/iomanip)
+$(shell touch dummyIncl/iostream)
+$(shell touch dummyIncl/limits)
+$(shell touch dummyIncl/map)
+$(shell touch dummyIncl/set)
+$(shell touch dummyIncl/sstream)
+$(shell touch dummyIncl/string)
+$(shell touch dummyIncl/vector)
+$(shell touch dummyIncl/ext/hash_set)
+$(shell touch dummyIncl/sys/time.h)
+endif
+
+
+
 ifeq ("$(wildcard FWCore)","")
 $(shell mkdir FWCore)
 $(shell mkdir FWCore/MessageLogger)

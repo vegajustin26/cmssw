@@ -5,7 +5,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/StubTripletsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/StubTripletsMemory.h"
 
 #include <vector>
 
