@@ -123,7 +123,7 @@ bool var_base::use_root = false;
 // between different types of stubs
 struct L1TStubCompare {
 public:
-  bool operator()(const L1TStub& x, const L1TStub& y) const {
+  bool operator()(const Trklet::L1TStub& x, const Trklet::L1TStub& y) const {
     if (x.layer() != y.layer())
       return (y.layer() > x.layer());
     else {
@@ -417,7 +417,7 @@ void L1FPGATrackProducer::beginRun(const edm::Run& run, const edm::EventSetup& i
 //////////
 // PRODUCE
 void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
-  typedef std::map<L1TStub,
+  typedef std::map<Trklet::L1TStub,
                    edm::Ref<edmNew::DetSetVector<TTStub<Ref_Phase2TrackerDigi_> >, TTStub<Ref_Phase2TrackerDigi_> >,
                    L1TStubCompare>
       stubMapType;
@@ -754,7 +754,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
                        imodule,
                        isPSmodule,
                        isFlipped)) {
-          L1TStub lastStub = ev.lastStub();
+          Trklet::L1TStub lastStub = ev.lastStub();
           stubMap[lastStub] = tempStubPtr;
         }
       } else {
