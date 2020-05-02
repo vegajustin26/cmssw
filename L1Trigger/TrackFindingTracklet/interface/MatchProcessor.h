@@ -35,8 +35,6 @@ namespace Trklet {
     void execute();
     
     bool matchCalculator(Tracklet* tracklet,Stub* fpgastub, L1TStub* stub);
-  
-    double bend(double r, double rinv);    
     
   private:
     

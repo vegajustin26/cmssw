@@ -33,8 +33,6 @@ namespace Trklet {
     
     double rinv(double phi1, double phi2,double r1, double r2);
 
-    double bend(double r, double rinv);
-
     void writeTETable();
     
   private:

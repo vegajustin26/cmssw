@@ -21,8 +21,6 @@ namespace Trklet {
     void init(const Settings* settings, Globals* globals, unsigned int nrbits, unsigned int nphiderbits);
     
     int bendLoookup(int diskindex,int bendindex);
-    
-    double bend(double r, double rinv);
   
   private:
     
