@@ -8,13 +8,9 @@
 
 #include <vector>
 
-//class DTCLink;
-//class DTC;
-
 namespace Trklet {
 
   class Settings;
-
   
   class Cabling {
   public:

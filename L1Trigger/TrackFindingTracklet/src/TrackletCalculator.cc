@@ -3,6 +3,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
+using namespace Trklet;
 
 TrackletCalculator::TrackletCalculator(string name, const Settings* const settings, Globals* globals, unsigned int iSector):
   TrackletCalculatorBase(name, settings, globals, iSector){

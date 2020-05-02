@@ -14,7 +14,7 @@ namespace Trklet {
 
   class StubTripletsMemory : public MemoryBase {
   public:
-    StubTripletsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    StubTripletsMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
 
     void addStubs(std::pair<Stub*, L1TStub*> stub1, std::pair<Stub*, L1TStub*> stub2, std::pair<Stub*, L1TStub*> stub3) {
       stubs1_.push_back(stub1);

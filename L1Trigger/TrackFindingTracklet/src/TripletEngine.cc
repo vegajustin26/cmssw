@@ -3,6 +3,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
+using namespace Trklet;
 
 TripletEngine::TripletEngine(string name, const Settings* settings, Globals* global, unsigned int iSector):
     ProcessBase(name,settings,global,iSector){

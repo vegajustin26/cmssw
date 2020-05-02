@@ -4,6 +4,8 @@
 
 #include <iomanip>
 
+using namespace Trklet;
+
 TrackletEventProcessor::~TrackletEventProcessor() {
 
   for (unsigned int i=0;i<settings_->NSector();i++) {

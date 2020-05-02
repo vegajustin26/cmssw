@@ -16,7 +16,7 @@ namespace Trklet {
   
   class TrackFitMemory : public MemoryBase {
   public:
-    TrackFitMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    TrackFitMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
 
     void addTrack(Tracklet* tracklet) { tracks_.push_back(tracklet); }
     void addStubList(std::vector<std::pair<Stub*, L1TStub*>> stublist) { stublists_.push_back(stublist); }
@@ -36,7 +36,7 @@ namespace Trklet {
       stubidslists_.clear();
     }
     
-    bool foundTrack(ofstream& outres, L1SimTrack simtrk);
+    bool foundTrack(std::ofstream& outres, L1SimTrack simtrk);
     
     void writeTF(bool first);
 

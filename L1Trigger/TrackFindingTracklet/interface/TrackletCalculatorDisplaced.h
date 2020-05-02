@@ -9,13 +9,13 @@
 
 #include <vector>
 
-class MemoryBase;
 class L1TStub;
 
 namespace Trklet {
 
   class Settings;
   class Globals;
+  class MemoryBase;
   class Stub;
   
   class TrackletCalculatorDisplaced:public ProcessBase{

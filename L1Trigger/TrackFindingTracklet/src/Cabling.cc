@@ -6,6 +6,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
+using namespace Trklet;
 
 Cabling::Cabling() {}
 

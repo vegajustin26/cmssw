@@ -7,14 +7,13 @@
 #include "L1Trigger/TrackFindingTracklet/interface/AllProjectionsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMProjectionsMemory.h"
 
-class MemoryBase;
-
 namespace Trklet {
   
   class Settings;
   class Globals;
+  class MemoryBase;
   
-  class ProjectionRouter:public ProcessBase{
+  class ProjectionRouter:public ProcessBase {
     
   public:
     ProjectionRouter(string name, const Settings* settings, Globals* global, unsigned int iSector);

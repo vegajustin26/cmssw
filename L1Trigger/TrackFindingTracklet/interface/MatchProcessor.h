@@ -12,17 +12,17 @@
 
 #include <vector>
 
-class MemoryBase;
 class L1TStub;
 
 namespace Trklet {
 
   class Settings;
   class Globals;
+  class MemoryBase;
   class Stub;
   class Tracklet;
 
-  class MatchProcessor:public ProcessBase{
+  class MatchProcessor:public ProcessBase {
     
   public:
     

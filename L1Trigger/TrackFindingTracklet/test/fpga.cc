@@ -53,6 +53,8 @@ bool   var_base::use_root = false;
 #endif
 // --------------------------------
 
+using namespace Trklet;
+
 int main(const int argc, const char** argv)
 {
 

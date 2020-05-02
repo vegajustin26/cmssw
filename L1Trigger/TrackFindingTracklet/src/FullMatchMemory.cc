@@ -7,6 +7,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
+using namespace Trklet;
 
 FullMatchMemory::FullMatchMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
   MemoryBase(name, settings, iSector) {

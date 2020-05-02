@@ -13,7 +13,7 @@ namespace Trklet {
 
   class CleanTrackMemory : public MemoryBase {
   public:
-    CleanTrackMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    CleanTrackMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
 
     void addTrack(Tracklet* tracklet) { tracks_.push_back(tracklet); }
     
@@ -21,7 +21,7 @@ namespace Trklet {
     
     void clean() { tracks_.clear(); }
     
-    bool foundTrack(ofstream& outres, L1SimTrack simtrk);
+    bool foundTrack(std::ofstream& outres, L1SimTrack simtrk);
     
     void writeCT(bool first);
 

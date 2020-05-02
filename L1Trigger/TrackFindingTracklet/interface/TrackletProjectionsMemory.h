@@ -14,7 +14,7 @@ namespace Trklet {
   
   class TrackletProjectionsMemory : public MemoryBase {
   public:
-    TrackletProjectionsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    TrackletProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
 
     void addProj(Tracklet* tracklet);
 

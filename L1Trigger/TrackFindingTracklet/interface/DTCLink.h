@@ -2,50 +2,31 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_DTCLink_h
 #define L1Trigger_TrackFindingTracklet_interface_DTCLink_h
 
-#include "L1TStub.h"
-#include "Stub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 
-using namespace std;
+namespace Trklet {
+  
+  class DTCLink {
+  public:
+    DTCLink(double phimin, double phimax);
 
-class DTCLink {
-public:
-  DTCLink(double phimin, double phimax) {
-    if (phimin > M_PI) {
-      phimin -= 2 * M_PI;
-      phimax -= 2 * M_PI;
-    }
-    assert(phimax > phimin);
-    phimin_ = phimin;
-    phimax_ = phimax;
-  }
+    void addStub(std::pair<Stub*, L1TStub*> stub);
 
-  void addStub(std::pair<Stub*, L1TStub*> stub) { stubs_.push_back(stub); }
+    bool inRange(double phi, bool overlaplayer);
+    
+    unsigned int nStubs() const { return stubs_.size(); }
+    
+    Stub* getFPGAStub(unsigned int i) const { return stubs_[i].first; }
+    L1TStub* getL1TStub(unsigned int i) const { return stubs_[i].second; }
+    std::pair<Stub*, L1TStub*> getStub(unsigned int i) const { return stubs_[i]; }
+    
+    void clean() { stubs_.clear(); }
 
-  bool inRange(double phi, bool overlaplayer) {
-    double phimax = phimax_;
-    double phimin = phimin_;
-    if (overlaplayer) {
-      double dphi = phimax - phimin;
-      assert(dphi > 0.0);
-      assert(dphi < M_PI);
-      phimin -= dphi / 6.0;
-      phimax += dphi / 6.0;
-    }
-    return (phi < phimax && phi > phimin) || (phi + 2 * M_PI < phimax && phi + 2 * M_PI > phimin);
-  }
-
-  unsigned int nStubs() const { return stubs_.size(); }
-
-  Stub* getFPGAStub(unsigned int i) const { return stubs_[i].first; }
-  L1TStub* getL1TStub(unsigned int i) const { return stubs_[i].second; }
-  std::pair<Stub*, L1TStub*> getStub(unsigned int i) const { return stubs_[i]; }
-
-  void clean() { stubs_.clear(); }
-
-private:
-  double phimin_;
-  double phimax_;
-  std::vector<std::pair<Stub*, L1TStub*> > stubs_;
+  private:
+    double phimin_;
+    double phimax_;
+    std::vector<std::pair<Stub*, L1TStub*> > stubs_;
+  };
 };
-
 #endif

@@ -7,12 +7,11 @@
 
 #include <vector>
 
-class MemoryBase;
-
 namespace Trklet {
 
   class Settings;
   class Globals;
+  class MemoryBase;
 
   class TrackletEngineDisplaced:public ProcessBase{
     

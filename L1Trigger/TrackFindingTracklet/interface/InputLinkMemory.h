@@ -18,9 +18,9 @@ namespace Trklet {
 
   class InputLinkMemory:public MemoryBase{
   public:
-    InputLinkMemory(string name, const Settings* const settings, unsigned int iSector, double, double);
+    InputLinkMemory(std::string name, const Settings* const settings, unsigned int iSector, double, double);
 
-    bool addStub(const Settings* settings, Globals* globals, L1TStub& al1stub, Stub& stub, string dtc);
+    bool addStub(const Settings* settings, Globals* globals, L1TStub& al1stub, Stub& stub, std::string dtc);
     
     unsigned int nStubs() const {return stubs_.size();}
     

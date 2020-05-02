@@ -14,12 +14,13 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
+using namespace Trklet;
 
-PurgeDuplicate::PurgeDuplicate(string name, const Settings* settings, Globals* global, unsigned int iSector):
+PurgeDuplicate::PurgeDuplicate(std::string name, const Settings* settings, Globals* global, unsigned int iSector):
   ProcessBase(name,settings,global,iSector){
 }
 
-void PurgeDuplicate::addOutput(MemoryBase* memory,string output) {
+void PurgeDuplicate::addOutput(MemoryBase* memory,std::string output) {
 
   if (settings_->writetrace()) {
     edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
@@ -45,7 +46,7 @@ void PurgeDuplicate::addOutput(MemoryBase* memory,string output) {
   assert(0);
 }
 
-void PurgeDuplicate::addInput(MemoryBase* memory,string input) {
+void PurgeDuplicate::addInput(MemoryBase* memory,std::string input) {
 
   if (settings_->writetrace()) {
     edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding input from "<<memory->getName() << " to input "<<input;
