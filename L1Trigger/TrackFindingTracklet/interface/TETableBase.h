@@ -7,7 +7,10 @@
 #include <cmath>
 #include <vector>
 
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+
 using namespace std;
+using namespace Trklet;
 
 class TETableBase {
 public:

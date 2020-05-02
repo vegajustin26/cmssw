@@ -8,13 +8,13 @@
 #include <vector>
 
 class L1TStub;
-class VMRouterPhiCorrTable;
 
 namespace Trklet {
 
   class Settings;
   class Globals;
   class Stub;
+  class VMRouterPhiCorrTable;
 
   class InputLinkMemory:public MemoryBase{
   public:
