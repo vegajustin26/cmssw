@@ -182,20 +182,20 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   }
   cleanTimer_.stop();
   
-  bool hitlayer[6];
-  bool hitdisk[5];
+  //bool hitlayer[6];
+  //bool hitdisk[5];
   int stublayer[6];
   int stublayer1[6][settings_->NSector()];
   int stubdisk1[5][settings_->NSector()];
   for (unsigned int ll=0;ll<6;ll++){
-    hitlayer[ll]=false;
+    //hitlayer[ll]=false;
     stublayer[ll]=0;
     for (unsigned int jj=0;jj<settings_->NSector();jj++){
       stublayer1[ll][jj]=0;
     }
   }
   for (unsigned int ll=0;ll<5;ll++){
-    hitdisk[ll]=false;
+    //hitdisk[ll]=false;
     for (unsigned int jj=0;jj<settings_->NSector();jj++){
       stubdisk1[ll][jj]=0;
     }
@@ -233,7 +233,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     
     if (stub.layer()<7) {
       
-      hitlayer[stub.layer()]=true;
+      //hitlayer[stub.layer()]=true;
       
       stub.lorentzcor(-40.0/10000.0);
       
@@ -251,7 +251,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
       
     } else {
       stubdisk1[abs(stub.disk())-1][isector]++;
-      hitdisk[abs(stub.disk())-1]=true;
+      //hitdisk[abs(stub.disk())-1]=true;
     }
     
     int layer=stub.layer()+1;

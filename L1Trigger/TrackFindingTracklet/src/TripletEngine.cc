@@ -2,6 +2,8 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
+#include <algorithm>
+
 using namespace std;
 using namespace Trklet;
 
