@@ -12,10 +12,9 @@ namespace tmtt {
   class KFParamsComb;
 }
 
-class TETableBase;
-
 namespace Trklet{
 
+  class TETableBase;
   class TrackDerTable;
   class ProjectionRouterBendTable;
   class VMRouterPhiCorrTable;
