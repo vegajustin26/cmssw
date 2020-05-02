@@ -45,10 +45,6 @@ namespace Trklet {
 
     bool LLDSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* middleFPGAStub, L1TStub* middleStub, Stub* outerFPGAStub, L1TStub* outerStub);
 
-    int round_int( double r ) {
-      return (r > 0.0) ? (r + 0.5) : (r - 0.5); 
-    }
-    
     void exactproj(double rproj,double rinv, double phi0, double d0,
 		   double t, double z0, double r0,
 		   double &phiproj, double &zproj,

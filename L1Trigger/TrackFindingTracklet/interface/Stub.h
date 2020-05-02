@@ -83,10 +83,6 @@ namespace Trklet {
     
     bool isPSmodule() const {return isPSmodule_;}
     
-    int round_int( double r ) {
-      return (r > 0.0) ? (r + 0.5) : (r - 0.5); 
-    }
-    
     double rapprox() const;
     double zapprox() const;
     double phiapprox(double phimin, double) const;

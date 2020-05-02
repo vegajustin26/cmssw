@@ -60,8 +60,6 @@ public:
     return table_[drrel];
   }
 
-  int round_int(double r) { return (r > 0.0) ? (r + 0.5) : (r - 0.5); }
-
 private:
   int nbits_;
   int entries_;

@@ -170,6 +170,10 @@ namespace Trklet{
     
   }
 
+  inline int round_int(double r) { return (r > 0.0) ? (r + 0.5) : (r - 0.5); }
+
+
+  
 };
 
 #endif

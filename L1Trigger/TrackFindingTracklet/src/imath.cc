@@ -9,6 +9,8 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
+using namespace Trklet;
+
 std::string var_base::itos(int i) {
   std::ostringstream os;
   os << i;
