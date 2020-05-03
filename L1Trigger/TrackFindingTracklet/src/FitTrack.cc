@@ -232,7 +232,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<std::pair<Stub*,L1T
     globals_->trackDerTable()=derTablePtr;
   }
   
-  TrackDerTable& derTable=*globals_->trackDerTable(); //FIXME should be const
+  const TrackDerTable& derTable=*globals_->trackDerTable();
   
   //First step is to build list of layers and disks.
   
@@ -506,7 +506,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<std::pair<Stub*,L1T
    if (std::abs(rinv)<0.0057/4) ptbin=2;
    if (std::abs(rinv)<0.0057/8) ptbin=3;
 
-   TrackDer* derivatives=derTable.getDerivatives(layermask, diskmask,alphaindex,rinvindex);
+   const TrackDer* derivatives=derTable.getDerivatives(layermask, diskmask,alphaindex,rinvindex);
 
    if (derivatives==0) {
      if (settings_->warnNoDer()) { 

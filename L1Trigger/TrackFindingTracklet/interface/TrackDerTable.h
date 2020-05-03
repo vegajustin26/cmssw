@@ -21,11 +21,11 @@ namespace Trklet {
     
     ~TrackDerTable() {}
 
-    TrackDer* getDerivatives(int index) { return &derivatives_[index]; }
+    const TrackDer* getDerivatives(int index) const { return &derivatives_[index]; }
 
-    TrackDer* getDerivatives(unsigned int layermask,unsigned int diskmask,unsigned int alphaindex,unsigned int rinvindex);
+    const TrackDer* getDerivatives(unsigned int layermask,unsigned int diskmask,unsigned int alphaindex,unsigned int rinvindex) const ;
     
-    int getIndex(unsigned int layermask, unsigned int diskmask);
+    int getIndex(unsigned int layermask, unsigned int diskmask) const;
     
     void addEntry(unsigned int layermask, unsigned int diskmask, int multiplicity, int nrinv);
     

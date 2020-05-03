@@ -73,7 +73,7 @@ namespace Trklet {
     void sett(double t) { t_ = t; }
     double gett() const { return t_; }
     
-    void fill(int t, double MinvDt[4][12], int iMinvDt[4][12]);
+    void fill(int t, double MinvDt[4][12], int iMinvDt[4][12]) const;
 
   private:
     int irinvdphi_[6];

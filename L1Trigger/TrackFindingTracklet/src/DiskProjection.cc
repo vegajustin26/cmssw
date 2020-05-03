@@ -47,7 +47,8 @@ void DiskProjection::init(const Trklet::Settings* settings,
   fpgaphiprojder_.set(iphider, settings->nbitsphiprojderL123(), false, __LINE__, __FILE__);
   fpgarprojder_.set(irder, settings->nrbitsprojderdisk(), false, __LINE__, __FILE__);
   
-  //FIXME the -3 and +3 should be evaluated and efficiency for matching hits checked.
+  //TODO the -3 and +3 should be evaluated and efficiency for matching hits checked.
+  //This code should be migrated in the ProjectionRouter
   int rbin1 = 8.0 * (irproj * settings->krprojshiftdisk() - 3 - settings->rmindiskvm()) / (settings->rmaxdisk() - settings->rmindiskvm());
   int rbin2 = 8.0 * (irproj * settings->krprojshiftdisk() + 3 - settings->rmindiskvm()) / (settings->rmaxdisk() - settings->rmindiskvm());
   

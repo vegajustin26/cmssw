@@ -38,10 +38,10 @@ TrackDerTable::TrackDerTable(const Settings* settings) {
   }
 }
 
-TrackDer* TrackDerTable::getDerivatives(unsigned int layermask,
+const TrackDer* TrackDerTable::getDerivatives(unsigned int layermask,
 					unsigned int diskmask,
 					unsigned int alphaindex,
-					unsigned int rinvindex) {
+					unsigned int rinvindex) const {
   int index = getIndex(layermask, diskmask);
   if (index < 0) {
     return 0;
@@ -49,7 +49,7 @@ TrackDer* TrackDerTable::getDerivatives(unsigned int layermask,
   return &derivatives_[index + alphaindex * (1 << settings_->nrinvBitsTable()) + rinvindex];
 }
 
-int TrackDerTable::getIndex(unsigned int layermask, unsigned int diskmask) {
+int TrackDerTable::getIndex(unsigned int layermask, unsigned int diskmask) const {
     assert(layermask < LayerMem_.size());
 
     assert(diskmask < DiskMem_.size());

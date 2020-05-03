@@ -1,3 +1,4 @@
+
 #include "L1Trigger/TrackFindingTracklet/interface/TrackDer.h"
 
 using namespace std;
@@ -39,7 +40,7 @@ void TrackDer::setIndex(int layermask, int diskmask, int alphamask, int irinv) {
   irinv_ = irinv;
 }
 
-void TrackDer::fill(int t, double MinvDt[4][12], int iMinvDt[4][12]) {
+void TrackDer::fill(int t, double MinvDt[4][12], int iMinvDt[4][12]) const {
   unsigned int nlayer = 0;
   if (layermask_ & 1)
     nlayer++;
