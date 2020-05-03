@@ -25,8 +25,7 @@ namespace Trklet {
     
     unsigned int nbits(unsigned int power);
 
-    //method sets the layer and disk based on the name. pos is the position in the
-    //memory name where the layer or disk is specified
+    //method sets the layer and disk based on the name. pos is the position in the memory name where the layer or disk is specified
     void initLayerDisk(unsigned int pos, int& layer, int& disk);
     void initLayerDisk(unsigned int pos, int& layer, int& disk, int& layerdisk);
 

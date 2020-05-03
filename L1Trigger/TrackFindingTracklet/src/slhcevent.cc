@@ -23,7 +23,6 @@ L1SimTrack::L1SimTrack(int eventid, int trackid, int type, double pt, double eta
 }
 
 void L1SimTrack::write(ofstream& out){
-  
   if (pt_ > -2.0) {
     out << "SimTrack: " 
 	<< eventid_ << "\t" 
@@ -37,8 +36,8 @@ void L1SimTrack::write(ofstream& out){
 	<< vz_ << "\t" << endl; 
   }  
 }
+
 void L1SimTrack::write(ostream& out){
-  
   if (pt_ > -2) {
     out << "SimTrack: " 
 	<< eventid_ << "\t" 
@@ -54,7 +53,6 @@ void L1SimTrack::write(ostream& out){
 }
 
 void SLHCEvent::addL1SimTrack(int eventid,int trackid,int type,double pt,double eta,double phi,double vx,double vy,double vz){
-
   vx-=x_offset_;
   vy-=y_offset_;
   L1SimTrack simtrack(eventid,trackid,type,pt,eta,phi,vx,vy,vz);
@@ -80,8 +78,7 @@ bool SLHCEvent::addStub(int layer,int ladder,int module, int strip, int eventid,
   x-=x_offset_;
   y-=y_offset_;
   
-  L1TStub stub(eventid,tps,-1,-1,layer, ladder, module, strip, 
-	       x, y, z, -1.0, -1.0, pt, bend, isPSmodule, isFlipped);
+  L1TStub stub(eventid,tps,-1,-1,layer, ladder, module, strip, x, y, z, -1.0, -1.0, pt, bend, isPSmodule, isFlipped);
   
   for(unsigned int i=0;i<innerStack.size();i++){
     if (innerStack[i]) {
@@ -208,7 +205,7 @@ SLHCEvent::SLHCEvent(istream& in) {
 	tps.push_back(tp);
       }
 
-      if (layer>999&&layer<1999&& z<0.0) {
+      if (layer>999&&layer<1999&& z<0.0) { //negative disk
 	layer+=1000;
       }
 

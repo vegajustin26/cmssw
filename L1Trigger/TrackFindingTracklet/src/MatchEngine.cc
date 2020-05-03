@@ -268,7 +268,6 @@ void MatchEngine::execute() {
 	}
 
 	//Read vmstub memory and extract data fields
-	//std::pair<Stub*,L1TStub*> stub=vmstubs_->getStubBin(rzbin,istubtmp);
 	VMStubME vmstub=vmstubs_->getVMStubMEBin(rzbin,istubtmp);
 
 	bool isPSmodule=vmstub.isPSmodule();

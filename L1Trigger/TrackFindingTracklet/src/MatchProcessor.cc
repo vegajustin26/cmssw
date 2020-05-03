@@ -70,7 +70,6 @@ MatchProcessor::MatchProcessor(string name, const Settings* settings, Globals* g
     }
 
     
-    
     if (iSector_==0&&layer_>0&&settings_->writeTable()) {
 
       ofstream outphicut;
@@ -94,9 +93,6 @@ MatchProcessor::MatchProcessor(string name, const Settings* settings, Globals* g
       outzcut.close();
     }
 
-
-
-    
 
     if (layer_>0) {
 

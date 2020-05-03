@@ -31,7 +31,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/FitTrack.h"
 #include "L1Trigger/TrackFindingTracklet/interface/PurgeDuplicate.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
-//#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 namespace Trklet {
 

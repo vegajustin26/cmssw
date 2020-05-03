@@ -19,8 +19,6 @@ TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name, const Sett
    if (phimax_>M_PI) phimax_-=2*M_PI;
    if (phimin_>phimax_)  phimin_-=2*M_PI;
   
-   maxtracklet_=127;
-  
    trackletproj_L1PHI1_=0;
    trackletproj_L1PHI2_=0;
    trackletproj_L1PHI3_=0;
@@ -681,7 +679,7 @@ void TrackletCalculatorDisplaced::execute() {
   unsigned int countsel=0;
   
   for (unsigned int l=0;l<stubtriplets_.size();l++) {
-    if (trackletpars_->nTracklets()>=maxtracklet_) {
+    if (trackletpars_->nTracklets()>=settings_->ntrackletmax()) {
       edm::LogVerbatim("Tracklet") << "Will break on too many tracklets in "<<getName();
       break;
     }
@@ -725,7 +723,7 @@ void TrackletCalculatorDisplaced::execute() {
 	}
       }
       
-      if (trackletpars_->nTracklets()>=maxtracklet_) {
+      if (trackletpars_->nTracklets()>=settings_->ntrackletmax()) {
 	edm::LogVerbatim("Tracklet") << "Will break on number of tracklets in "<<getName();
 	break;
       }

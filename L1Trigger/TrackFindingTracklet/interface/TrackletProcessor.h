@@ -37,8 +37,6 @@ namespace Trklet {
     
     int iTC_;
     
-    unsigned int maxtracklet_; //maximum numbor of tracklets that be stored
-    
     std::vector<VMStubsTEMemory*> innervmstubs_;
     std::vector<VMStubsTEMemory*> outervmstubs_;
     

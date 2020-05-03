@@ -51,9 +51,6 @@ bool InputLinkMemory::addStub(const Settings* settings, Globals* globals, L1TStu
   unsigned int nallbits=settings_->nbitsallstubs(layerdisk_);
   int phibin=iphi.bits(iphi.nbits()-nallbits,nallbits);
   int iphivmRaw=iphi.bits(iphi.nbits()-5,5);
-
-  //int iphivmRaw=stub.iphivmRaw();
-  //int phibin=iphivmRaw/(32/settings_->nallstubs(layerdisk_));
   
   if (phibin!=phiregion_) return false;
   

@@ -83,7 +83,6 @@ void FullMatchMemory::addMatch(Tracklet* tracklet, std::pair<Stub*, L1TStub*> st
       edm::LogPrint("Tracklet") << "Wrong TCID ordering in " << getName() << " : " << matches_[matches_.size() - 1].first->TCID() << " "
 				<< tracklet->TCID() << " " << matches_[matches_.size() - 1].first->trackletIndex() << " "
 				<< tracklet->trackletIndex();
-      //assert(0);
     }
   }
   matches_.push_back(tmp);

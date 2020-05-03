@@ -162,6 +162,5 @@ namespace Trklet {
     const Settings* settings_;
     
   };
-
 };
 #endif

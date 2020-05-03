@@ -64,27 +64,18 @@ namespace Trklet{
     double& Vfull(int i,int j,int ptbin,int index) {return Vfull_[i][j][ptbin][index]; }
     
     IMATH_TrackletCalculator* ITC_L1L2() { return ITC_L1L2_; }
-    
     IMATH_TrackletCalculator* ITC_L2L3() { return ITC_L2L3_; }
-    
     IMATH_TrackletCalculator* ITC_L3L4() { return ITC_L3L4_; }
-    
     IMATH_TrackletCalculator* ITC_L5L6() { return ITC_L5L6_; }
     
     IMATH_TrackletCalculatorDisk* ITC_F1F2() { return ITC_F1F2_; }
-    
     IMATH_TrackletCalculatorDisk* ITC_F3F4() { return ITC_F3F4_; }
-    
     IMATH_TrackletCalculatorDisk* ITC_B1B2() { return ITC_B1B2_; }
-    
     IMATH_TrackletCalculatorDisk* ITC_B3B4() { return ITC_B3B4_; }
     
     IMATH_TrackletCalculatorOverlap* ITC_L1F1() { return ITC_L1F1_; }
-    
     IMATH_TrackletCalculatorOverlap* ITC_L1B1() { return ITC_L1B1_; }
-    
     IMATH_TrackletCalculatorOverlap* ITC_L2F1() { return ITC_L2F1_; }
-    
     IMATH_TrackletCalculatorOverlap* ITC_L2B1() { return ITC_L2B1_; }
     
     std::ofstream& ofstream(std::string fname) {

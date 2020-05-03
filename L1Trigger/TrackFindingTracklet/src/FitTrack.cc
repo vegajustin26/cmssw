@@ -207,7 +207,7 @@ void trackFitKF(Tracklet* tracklet, std::vector<std::pair<Stub*,L1TStub*>> &trac
         stubidslist.push_back(std::make_pair(layer,(it->first->phiregion().value()<<7)+it->first->stubindex().value()));
       }
 
-      // And that's all we need! The rest is just for fitting, which is duplicated in PurgeDuplicate out of necessity
+      // And that's all we need! The rest is just for fitting (in PurgeDuplicate)
       return;
     }
     
@@ -513,8 +513,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<std::pair<Stub*,L1T
        FPGAWord tmpl,tmpd;
        tmpl.set(layermask,6);
        tmpd.set(diskmask,10);
-       edm::LogVerbatim("Tracklet") << "No derivative for layermask, diskmask : "
-				    <<layermask<<" "<<tmpl.str()<<" "<<diskmask<<" "<<tmpd.str()<<" eta = "<<asinh(t);
+       edm::LogVerbatim("Tracklet") << "No derivative for layermask, diskmask : "<<layermask<<" "<<tmpl.str()<<" "<<diskmask<<" "<<tmpd.str()<<" eta = "<<asinh(t);
      }
      return;
    }

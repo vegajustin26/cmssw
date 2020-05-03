@@ -109,7 +109,7 @@ void Cabling::addphi(string dtc, double phi, int layer, int module) {
     isec = dtc[4] - '0';
   }
   
-  double phisec = Trklet::phiRange(phi - isec * 2 * M_PI / 9.0);  //Nonant cabling hardcoded here
+  double phisec = Trklet::phiRange(phi - isec * 2 * M_PI / 9.0); // nonant cabling
   
   assert(dtcranges.find(dtcbase) != dtcranges.end());
   

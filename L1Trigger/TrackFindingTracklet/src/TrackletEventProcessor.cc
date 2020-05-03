@@ -34,23 +34,25 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   settings_->kphiprojdisk()=globals_->ITC_L1L2()->phi0_final.get_K()*4.0;
   settings_->krdisk() = settings_->kr();
   settings_->kzpars() = settings_->kz();  
-  
-  edm::LogVerbatim("Tracklet") << "=========================================================";
-  edm::LogVerbatim("Tracklet") << "Conversion factors for global coordinates:";
-  edm::LogVerbatim("Tracklet") << "z    kz            = "<< settings_->kz() ;
-  edm::LogVerbatim("Tracklet") << "r    kr            = "<< settings_->kr() ;
-  edm::LogVerbatim("Tracklet") << "phi  kphi1         = "<< settings_->kphi1() ;
-  edm::LogVerbatim("Tracklet") << "=========================================================";
-  edm::LogVerbatim("Tracklet") << "Conversion factors for track(let) parameters:";
-  edm::LogVerbatim("Tracklet") << "rinv krinvpars     = "<< settings_->krinvpars() ;
-  edm::LogVerbatim("Tracklet") << "phi0 kphi0pars     = "<< settings_->kphi0pars() ;
-  edm::LogVerbatim("Tracklet") << "d0   kd0pars       = "<< settings_->kd0pars() ;
-  edm::LogVerbatim("Tracklet") << "t    ktpars        = "<< settings_->ktpars() ;
-  edm::LogVerbatim("Tracklet") << "z0   kz0pars       = "<< settings_->kzpars() ;
-  edm::LogVerbatim("Tracklet") << "=========================================================";
-  edm::LogVerbatim("Tracklet") << "phi0bitshift = "<<settings_->phi0bitshift();
-  edm::LogVerbatim("Tracklet") << "d0bitshift   = "<<"???";
-  edm::LogVerbatim("Tracklet") << "=========================================================";
+
+  if (settings_->debugTracklet()) {
+    edm::LogVerbatim("Tracklet") << "=========================================================";
+    edm::LogVerbatim("Tracklet") << "Conversion factors for global coordinates:";
+    edm::LogVerbatim("Tracklet") << "z    kz            = "<< settings_->kz() ;
+    edm::LogVerbatim("Tracklet") << "r    kr            = "<< settings_->kr() ;
+    edm::LogVerbatim("Tracklet") << "phi  kphi1         = "<< settings_->kphi1() ;
+    edm::LogVerbatim("Tracklet") << "=========================================================";
+    edm::LogVerbatim("Tracklet") << "Conversion factors for track(let) parameters:";
+    edm::LogVerbatim("Tracklet") << "rinv krinvpars     = "<< settings_->krinvpars() ;
+    edm::LogVerbatim("Tracklet") << "phi0 kphi0pars     = "<< settings_->kphi0pars() ;
+    edm::LogVerbatim("Tracklet") << "d0   kd0pars       = "<< settings_->kd0pars() ;
+    edm::LogVerbatim("Tracklet") << "t    ktpars        = "<< settings_->ktpars() ;
+    edm::LogVerbatim("Tracklet") << "z0   kz0pars       = "<< settings_->kzpars() ;
+    edm::LogVerbatim("Tracklet") << "=========================================================";
+    edm::LogVerbatim("Tracklet") << "phi0bitshift = "<<settings_->phi0bitshift();
+    edm::LogVerbatim("Tracklet") << "d0bitshift   = "<<"???";
+    edm::LogVerbatim("Tracklet") << "=========================================================";
+  }
   
   const Settings& settings=*settings_;
   Globals* globals=globals_;

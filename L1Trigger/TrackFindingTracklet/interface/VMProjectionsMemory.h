@@ -14,14 +14,7 @@ namespace Trklet {
   public:
     VMProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
     
-    void addTracklet(Tracklet* tracklet, unsigned int allprojindex) {
-      std::pair<Tracklet*, unsigned int> tmp(tracklet, allprojindex);
-      //Check that order of TCID is correct
-      if (tracklets_.size() > 0) {
-	assert(tracklets_[tracklets_.size() - 1].first->TCID() <= tracklet->TCID());
-      }
-      tracklets_.push_back(tmp);
-    }
+    void addTracklet(Tracklet* tracklet, unsigned int allprojindex);
     
     unsigned int nTracklets() const { return tracklets_.size(); }
     

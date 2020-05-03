@@ -10,6 +10,7 @@ using namespace Trklet;
 
 TrackletProcessor::TrackletProcessor(string name, const Settings* const settings,Globals* globals, unsigned int iSector):
    TrackletCalculatorBase(name,settings,globals,iSector){
+  
     double dphi=2*M_PI/settings_->NSector();
     double dphiHG=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();
     phimin_=iSector_*dphi-dphiHG;
@@ -21,8 +22,6 @@ TrackletProcessor::TrackletProcessor(string name, const Settings* const settings
     if (phimin_>phimax_)  phimin_-=2*M_PI;
     phioffset_=phimin_;
     
-    maxtracklet_=127;
-
     for(unsigned int ilayer=0;ilayer<6;ilayer++){
       vector<TrackletProjectionsMemory*> tmp(settings_->nallstubs(ilayer),0);
       trackletprojlayers_.push_back(tmp);
@@ -32,7 +31,6 @@ TrackletProcessor::TrackletProcessor(string name, const Settings* const settings
       vector<TrackletProjectionsMemory*> tmp(settings_->nallstubs(idisk+6),0);
       trackletprojdisks_.push_back(tmp);
     }
-          
     
     layer_=0;
     disk_=0;
@@ -44,7 +42,6 @@ TrackletProcessor::TrackletProcessor(string name, const Settings* const settings
     if (name_[3]=='D') disk_=name_[4]-'0';    
 
     extra_=(layer_==2&&disk_==0);
-
 
     // set TC index
     if      (name_[7]=='A') iTC_ =0;
@@ -272,7 +269,6 @@ void TrackletProcessor::execute() {
 
       unsigned phiindex=32*innerphibin+outerphibin;
       
-      
       //overlap seeding
       if (disk_==1 && (layer_==1 || layer_==2) ) {
 
@@ -296,7 +292,6 @@ void TrackletProcessor::execute() {
 	      edm::LogVerbatim("Tracklet") << getName() << " looking for matching stub in bin "<<ibin<<" with "<<outervmstubs_[ivmmem]->nVMStubsBinned(ibin)<<" stubs";
 	    }
 	    for(unsigned int j=0;j<outervmstubs_[ivmmem]->nVMStubsBinned(ibin);j++){
-	      //if (countall>=settings_->maxStep("TE")) break;
 	      countall++;
 	      countteall++;
 	      
@@ -397,7 +392,6 @@ void TrackletProcessor::execute() {
 		  edm::LogVerbatim("Tracklet") << "In "<<getName()<<" have outer stub";
 		}
 		
-		//if (countall>=settings_->maxStep("TE")) break;
 		countteall++;
 		countall++;
 
@@ -485,7 +479,6 @@ void TrackletProcessor::execute() {
 	      if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName() << " looking for matching stub in bin "<<ibin
 									   <<" with "<<outervmstubs_[ivmmem]->nVMStubsBinned(ibin)<<" stubs";
 	      for(unsigned int j=0;j<outervmstubs_[ivmmem]->nVMStubsBinned(ibin);j++){
-		//if (countall>=settings_->maxStep("TE")) break;
 		countall++;
 		countteall++;
 		
@@ -557,7 +550,7 @@ void TrackletProcessor::execute() {
 
     for(unsigned int i=0;i<stubpairs.nStubPairs();i++){
 
-      if (trackletpars_->nTracklets()>=maxtracklet_) {
+      if (trackletpars_->nTracklets()>=settings_->ntrackletmax()) {
 	edm::LogVerbatim("Tracklet") << "Will break on too many tracklets in "<<getName();
 	break;
       }
@@ -604,7 +597,7 @@ void TrackletProcessor::execute() {
 	globals_->ofstream("tc_seedpairs.txt") << stubpairs.getTEDName(i)<<" "<<accept<<endl;
       }
 
-      if (trackletpars_->nTracklets()>=maxtracklet_) {
+      if (trackletpars_->nTracklets()>=settings_->ntrackletmax()) {
 	edm::LogVerbatim("Tracklet") << "Will break on number of tracklets in "<<getName();
 	break;
       }
@@ -622,7 +615,6 @@ void TrackletProcessor::execute() {
       if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Will break on MAXTC 2";
       //break;
     }
-      
     
     if (settings_->writeMonitorData("TP")) {
       globals_->ofstream("trackletcalculator.txt") << getName()<<" "<<countall<<" "<<countsel<<endl;
@@ -647,8 +639,6 @@ void TrackletProcessor::setVMPhiBin() {
       innervmstubs_[ivmmem]->setother(outervmstubs_[ivmmem]);
       outervmstubs_[ivmmem]->setother(innervmstubs_[ivmmem]);
 
-
-    
       if ((layer_==1 && disk_==0)||
 	  (layer_==2 && disk_==0)||
 	  (layer_==3 && disk_==0)||
@@ -751,7 +741,6 @@ void TrackletProcessor::setVMPhiBin() {
 	
 	innerphibits_=settings_->nfinephi(0,iSeed_);
 	outerphibits_=settings_->nfinephi(0,iSeed_);
-	
 	
 	int outerrbits=3;
 	

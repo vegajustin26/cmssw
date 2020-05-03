@@ -23,10 +23,7 @@ namespace Trklet {
 
     TrackDer* getDerivatives(int index) { return &derivatives_[index]; }
 
-    TrackDer* getDerivatives(unsigned int layermask,
-			     unsigned int diskmask,
-			     unsigned int alphaindex,
-			     unsigned int rinvindex);
+    TrackDer* getDerivatives(unsigned int layermask,unsigned int diskmask,unsigned int alphaindex,unsigned int rinvindex);
     
     int getIndex(unsigned int layermask, unsigned int diskmask);
     

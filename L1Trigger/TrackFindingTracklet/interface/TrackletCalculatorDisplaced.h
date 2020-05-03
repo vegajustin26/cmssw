@@ -24,32 +24,25 @@ namespace Trklet {
     TrackletCalculatorDisplaced(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
     
     void addOutputProjection(TrackletProjectionsMemory* &outputProj, MemoryBase* memory);
-
     void addOutput(MemoryBase* memory,std::string output);
-    
     void addInput(MemoryBase* memory,std::string input);
 
     void execute(); 
 
     void addDiskProj(Tracklet* tracklet, int disk);
-    
     bool addLayerProj(Tracklet* tracklet, int layer); 
 
     void addProjection(int layer,int iphi,TrackletProjectionsMemory* trackletprojs, Tracklet* tracklet);
-
     void addProjectionDisk(int disk,int iphi,TrackletProjectionsMemory* trackletprojs, Tracklet* tracklet);
 
     bool LLLSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* middleFPGAStub, L1TStub* middleStub, Stub* outerFPGAStub, L1TStub* outerStub);
-
     bool DDLSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* middleFPGAStub, L1TStub* middleStub, Stub* outerFPGAStub, L1TStub* outerStub);
-
     bool LLDSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* middleFPGAStub, L1TStub* middleStub, Stub* outerFPGAStub, L1TStub* outerStub);
 
     void exactproj(double rproj,double rinv, double phi0, double d0,
 		   double t, double z0, double r0,
 		   double &phiproj, double &zproj,
 		   double &phider, double &zder); 
-
     
     void exactprojdisk(double zproj, double rinv, double, double,  //phi0 and d0 are not used.
 		       double t, double z0,
@@ -82,8 +75,6 @@ namespace Trklet {
     
     std::vector<double> toR_;
     std::vector<double> toZ_;
-    
-    unsigned int maxtracklet_; //maximum numbor of tracklets that be stored
     
     std::vector<AllStubsMemory*> innerallstubs_;
     std::vector<AllStubsMemory*> middleallstubs_;

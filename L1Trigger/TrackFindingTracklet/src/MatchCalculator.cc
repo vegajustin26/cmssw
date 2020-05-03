@@ -307,7 +307,6 @@ void MatchCalculator::execute() {
 	}
       } else {  //disk matches
 	
-	
 	//check that stubs and projections in same half of detector
 	assert(stub->z()*tracklet->t()>0.0);
 

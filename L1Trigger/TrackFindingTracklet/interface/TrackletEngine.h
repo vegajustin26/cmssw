@@ -21,7 +21,6 @@ namespace Trklet {
     TrackletEngine(std::string name, const Settings* const settings, Globals* global, unsigned int iSector);
     
     void addOutput(MemoryBase* memory, std::string output); 
-    
     void addInput(MemoryBase* memory, std::string input);
     
     void execute();

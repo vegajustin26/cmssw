@@ -498,7 +498,7 @@ namespace Trklet {
     
     unsigned int seedIndex_;
     
-    //Three types of tracklets... Overly complicated
+    // three types of trackletss
     bool barrel_;
     bool disk_;
     bool overlap_;
@@ -524,7 +524,7 @@ namespace Trklet {
     int      projlayer_[4];
     int      projdisk_[5];
     
-    //Track  parameters from track fit
+    //Track parameters from track fit
     TrackPars<FPGAWord> fpgafitpars_;  
     FPGAWord ichisqrphifit_;
     FPGAWord ichisqrzfit_;
@@ -540,7 +540,6 @@ namespace Trklet {
     int hitpattern_;
     
     Track *fpgatrack_;
-    
     
     LayerProjection layerproj_[6];
     DiskProjection diskproj_[5];

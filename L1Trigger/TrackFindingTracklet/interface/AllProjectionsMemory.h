@@ -6,7 +6,6 @@
 
 #include <vector>
 
-
 namespace Trklet {
 
   class Settings;
@@ -25,10 +24,6 @@ namespace Trklet {
     
     void writeAP(bool first);
     
-    //int layer() const { return layer_; }
-    //int disk() const { return disk_; }
-    
-    
   private:
     double phimin_;
     double phimax_;
@@ -36,9 +31,6 @@ namespace Trklet {
     
     int layer_;
     int disk_;
-    
   };
-  
 };
-
 #endif

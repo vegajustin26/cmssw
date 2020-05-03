@@ -159,7 +159,6 @@ int TETableInnerDisk::getLookupValue(const Settings* settings, int irbin, int iz
     valueL3 = 0;
   
   // finally pack values for second and third layer together
-  
   int value = (valueL3 << 9) + valueD2;
   
   return value;

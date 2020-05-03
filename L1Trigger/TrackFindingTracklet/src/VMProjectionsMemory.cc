@@ -40,6 +40,15 @@ VMProjectionsMemory::VMProjectionsMemory(string name, const Settings* const sett
     assert((layer_ != 0) || (disk_ != 0));
 }
 
+void VMProjectionsMemory::addTracklet(Tracklet* tracklet, unsigned int allprojindex) {
+  std::pair<Tracklet*, unsigned int> tmp(tracklet, allprojindex);
+  //Check that order of TCID is correct
+  if (tracklets_.size() > 0) {
+    assert(tracklets_[tracklets_.size() - 1].first->TCID() <= tracklet->TCID());
+  }
+  tracklets_.push_back(tmp);
+}
+
 void VMProjectionsMemory::writeVMPROJ(bool first) {
   
   std::string fname = "../data/MemPrints/VMProjections/VMProjections_";
@@ -48,7 +57,7 @@ void VMProjectionsMemory::writeVMPROJ(bool first) {
   int len = fname.size();
   if (fname[len - 2] == 'n' && fname[len - 1] > '1' && fname[len - 1] <= '9')
     return;
-  //
+  
   fname += "_";
   ostringstream oss;
   oss << iSector_ + 1;

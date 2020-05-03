@@ -23,7 +23,6 @@ Sector::Sector(unsigned int i, const Settings* settings, Globals* globals):
 }
 
 Sector::~Sector() {
-  // Clean up memory allocations to simplify memory-leak finding
   for (const auto& p : Processes_) {
     ProcessBase* proc = p.second;
     delete proc;

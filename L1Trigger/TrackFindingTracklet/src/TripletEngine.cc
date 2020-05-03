@@ -46,7 +46,7 @@ TripletEngine::TripletEngine(string name, const Settings* settings, Globals* glo
     if (name_[7] == 'D')
       disk2_ = name_[8] - '0';
 
-    if      (layer1_ == 3 && layer2_ == 4){
+    if (layer1_ == 3 && layer2_ == 4){
       layer3_ = 2;
       iSeed_ = 8;
     }
@@ -65,13 +65,11 @@ TripletEngine::TripletEngine(string name, const Settings* settings, Globals* glo
     else
       assert(0);
         
-    if ((layer2_==4 && layer3_==2)||
-	(layer2_==6 && layer3_==4)){
+    if ((layer2_==4 && layer3_==2) || (layer2_==6 && layer3_==4)){
       secondphibits_=settings_->nfinephi(1,iSeed_);
       thirdphibits_=settings_->nfinephi(2,iSeed_);
     }
-    if ((layer2_==3 && disk3_==1)||
-        (disk2_==2 && layer3_==2)){
+    if ((layer2_==3 && disk3_==1) || (disk2_==2 && layer3_==2)){
       secondphibits_=settings_->nfinephi(1,iSeed_);
       thirdphibits_=settings_->nfinephi(2,iSeed_);
     }
@@ -85,6 +83,7 @@ TripletEngine::~TripletEngine() {
 }
 
 void TripletEngine::addOutput(MemoryBase* memory,string output) {
+  
   if (settings_->writetrace()) {
     edm::LogVerbatim("Tracklet") << "In "<<name_<<" adding output to "<<memory->getName() << " to output "<<output;
   }

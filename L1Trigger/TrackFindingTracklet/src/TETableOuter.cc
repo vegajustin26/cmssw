@@ -33,7 +33,6 @@ void TETableOuter::init(const Settings* settings,int layer, int zbits, int rbits
 
     for (int izbin = 0; izbin < zbins_; izbin++) {
       for (int irbin = 0; irbin < rbins_; irbin++) {
-        //int ibin=irbin+izbin*rbins_;
         int value = getLookupValue(settings, izbin, irbin);
         table_.push_back(value);
       }

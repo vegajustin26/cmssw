@@ -71,7 +71,6 @@ Tracklet::Tracklet(const Trklet::Settings* settings, L1TStub* innerStub, L1TStub
     projdisk_[i]=settings->projdisks(seedIndex_,i);
   }
   
-  
   //Handle projections to the layers
   for (int i=0;i<4;i++) {
     
@@ -79,7 +78,6 @@ Tracklet::Tracklet(const Trklet::Settings* settings, L1TStub* innerStub, L1TStub
     if (!layerprojs[i].valid()) continue;
     
     layerproj_[projlayer_[i]-1]=layerprojs[i];
-    
   }
   //Now handle projections to the disks
   for (int i=0;i<5;i++) {
@@ -87,10 +85,8 @@ Tracklet::Tracklet(const Trklet::Settings* settings, L1TStub* innerStub, L1TStub
     if (projdisk_[i]==0) continue;
     if (!diskprojs[i].valid()) continue;
     
-    diskproj_[projdisk_[i]-1]=diskprojs[i];
-    
+    diskproj_[projdisk_[i]-1]=diskprojs[i];  
   }
-  
   
   ichisqrphifit_.set(-1,8,false);
   ichisqrzfit_.set(-1,8,false);
@@ -136,7 +132,6 @@ int Tracklet::tpseed() {
 bool Tracklet::stubtruthmatch(L1TStub* stub) {
 
     set<int> tpset;
-
     set<int> tpsetstub;
     set<int> tpsetstubinner;
     set<int> tpsetstubouter;
@@ -579,7 +574,6 @@ std::map<int, int> Tracklet::getStubIDs() {
       }     
       
     }
-    
     
     return stubIDs;
 }

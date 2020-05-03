@@ -16,7 +16,7 @@ void VMStubsMEMemory::writeStubs(bool first) {
   int len = fname.size();
   if (fname[len - 2] == 'n' && fname[len - 1] > '1' && fname[len - 1] <= '9')
     return;
-  //
+  
   fname += "_";
   ostringstream oss;
   oss << iSector_ + 1;

@@ -20,9 +20,7 @@ namespace Trklet {
     TrackletCalculator(std::string name, const Settings* const settings, Globals* globals, unsigned int iSector);
     
     void addOutputProjection(TrackletProjectionsMemory* &outputProj, MemoryBase* memory);
-    
     void addOutput(MemoryBase* memory,std::string output);
-    
     void addInput(MemoryBase* memory,std::string input);
     
     void execute();
@@ -31,16 +29,9 @@ namespace Trklet {
     
     int iTC_;
     
-    unsigned int maxtracklet_; //maximum numbor of tracklets that be stored
-
     std::vector<AllStubsMemory*> innerallstubs_;
     std::vector<AllStubsMemory*> outerallstubs_;
-    std::vector<StubPairsMemory*> stubpairs_;
-    
-  };
-  
+    std::vector<StubPairsMemory*> stubpairs_;    
+  };  
 };
-
-
-
 #endif

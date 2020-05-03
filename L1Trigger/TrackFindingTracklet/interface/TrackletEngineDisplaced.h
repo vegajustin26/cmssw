@@ -13,7 +13,7 @@ namespace Trklet {
   class Globals;
   class MemoryBase;
 
-  class TrackletEngineDisplaced:public ProcessBase{
+  class TrackletEngineDisplaced : public ProcessBase {
     
   public:
     
@@ -22,7 +22,6 @@ namespace Trklet {
     ~TrackletEngineDisplaced();
     
     void addOutput(MemoryBase* memory,std::string output);
-    
     void addInput(MemoryBase* memory,std::string input);
     
     void execute();
@@ -52,6 +51,5 @@ namespace Trklet {
     int iSeed_;
     
   };
-
 };
 #endif

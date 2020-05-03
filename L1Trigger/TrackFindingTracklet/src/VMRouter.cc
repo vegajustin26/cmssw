@@ -175,8 +175,7 @@ void VMRouter::execute() {
 	    index=stub.first->r().value()>>(stub.first->r().nbits()-nbitsfinebintable_);
 	  }
 	} else {
-	  //Take the top nbitsfinebintable_ bits of the z coordinate. The & is to handle the negative
-	  //z values.
+	  //Take the top nbitsfinebintable_ bits of the z coordinate. The & is to handle the negative z values.
 	  index=(stub.first->z().value()>>(stub.first->z().nbits()-nbitsfinebintable_))&((1<<nbitsfinebintable_)-1);
 	}
 
@@ -319,7 +318,6 @@ FPGAWord VMRouter::lookup(unsigned int iseed, unsigned int inner,FPGAWord z, FPG
       globals_->teTable(0,6)=new TETableInnerOverlap(settings_,1,1,settings_->zbitstab(0,6),settings_->rbitstab(0,6));
       globals_->teTable(0,7)=new TETableInnerOverlap(settings_,2,1,settings_->zbitstab(0,7),settings_->rbitstab(0,7));
       globals_->teTable(0,10)=new TETableInner(settings_,2,3,1,settings_->zbitstab(0,10),settings_->rbitstab(0,10),true);
-
       
       globals_->teTable(1,0)=new TETableOuter(settings_,2,settings_->zbitstab(1,0),settings_->rbitstab(1,0));
       globals_->teTable(1,1)=new TETableOuter(settings_,3,settings_->zbitstab(1,1),settings_->rbitstab(1,1));
@@ -349,7 +347,6 @@ FPGAWord VMRouter::lookup(unsigned int iseed, unsigned int inner,FPGAWord z, FPG
     }
     
     assert(globals_->teTable(inner,iseed)!=0);
-
     
     unsigned int zbits=settings_->zbitstab(inner,iseed);
     assert(zbits!=0);

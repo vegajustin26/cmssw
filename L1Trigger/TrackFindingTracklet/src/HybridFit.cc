@@ -93,30 +93,19 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
 	edm::LogVerbatim("L1track") << "Will create disk stub with : ";
     }
     
-    if (settings_->printDebugKF())
+    if (settings_->printDebugKF()) {
       edm::LogVerbatim("L1track") << kfphi << " " << kfr << " " << kfz << " " << kfbend << " " << kflayer << " " << isBarrel << " " << psmodule;
-    // For debugging, this should ideally be unique index in stub collection for nonant. But can't access that from here, so use this poor version instead.
+    }
     unsigned int uniqueIndex = 1000 * L1stubID + L1stubptr->allStubIndex();
-    tmtt::Stub* TMTTstubptr = new tmtt::Stub(kfphi,
-					     kfr,
-					     kfz,
-					     kfbend,
-					     kflayer,
-					     psmodule,
-					     isBarrel,
-					     iphi,
-					     -alpha,
-					     &TMTTsettings,
-					     nullptr,
-					     uniqueIndex,
-					     kf_phi_sec);
+    tmtt::Stub* TMTTstubptr = new tmtt::Stub(kfphi,kfr,kfz,kfbend,kflayer,psmodule,isBarrel,iphi,-alpha,&TMTTsettings,nullptr,uniqueIndex,kf_phi_sec);
     TMTTstubs.push_back(TMTTstubptr);
     L1StubIndices[uniqueIndex] = L1stubptr;
     L1stubID++;
   }
   
-  if (settings_->printDebugKF())
+  if (settings_->printDebugKF()) {
     edm::LogVerbatim("L1track") << "Made TMTTstubs: trackstublist.size() = " << trackstublist.size();
+  }
   
   double kfrinv = tracklet->rinvapprox();
   double kfphi0 = tracklet->phi0approx();
@@ -125,10 +114,9 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
   double kfd0 = tracklet->d0approx();
   
   if (settings_->printDebugKF()) {
-    edm::LogVerbatim("L1track") << "tracklet phi0 = " << kfphi0 << "\n"
-				<< "iSector = " << iSector_ << "\n"
+    edm::LogVerbatim("L1track") << "tracklet phi0 = " << kfphi0 << "\n"<< "iSector = " << iSector_ << "\n"
 				<< "dphisectorHG = " << settings_->dphisectorHG();
-  }
+  }s
   
   // KF wants global phi0, not phi0 measured with respect to lower edge of sector (Tracklet convention).
   kfphi0 = kfphi0 + iSector_ * 2 * M_PI / settings_->NSector() - 0.5 * settings_->dphisectorHG();

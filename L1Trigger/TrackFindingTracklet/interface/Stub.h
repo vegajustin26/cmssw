@@ -25,9 +25,6 @@ namespace Trklet {
 
     ~Stub() {  }
 
-    //Returns a number from 0 to 31 //FIXME should not be used
-    //unsigned int iphivmRaw() const;
-
     FPGAWord iphivmFineBins(int VMbits, int finebits) const;
 
     std::string str() const {
@@ -94,7 +91,6 @@ namespace Trklet {
     FPGAWord finez() const {
       return finez_;
     }
-    
     
     
   private:

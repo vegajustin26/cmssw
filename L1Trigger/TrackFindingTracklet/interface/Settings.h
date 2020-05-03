@@ -17,7 +17,7 @@ namespace Trklet{
     
   public:
 
-    Settings(){
+    Settings() {
 
       //Uncomment to run the hybrid algorithm
       //#ifdef CMSSW_GIT_HASH
@@ -70,7 +70,6 @@ namespace Trklet{
     double dzmax() const {return zlength_/32.0;}
 
     double half2SmoduleWidth() const { return half2SmoduleWidth_; }
-
     
     double bendcutte(unsigned int inner, unsigned int iSeed) const {return bendcutte_[inner][iSeed];}
     double bendcutme(unsigned int layerdisk) const {return bendcutme_[layerdisk];}
@@ -210,6 +209,8 @@ namespace Trklet{
     unsigned int NLONGVMBITS() const { return NLONGVMBITS_; } 
     unsigned int NLONGVMBINS() const { return (1<<NLONGVMBITS_); }
 
+    unsigned int ntrackletmax() const {return ntrackletmax_; }
+    
     //Bits used to store track parameter in tracklet
     int nbitsrinv() const { return nbitsrinv_; }
     int nbitsphi0() const { return nbitsphi0_; }
@@ -342,6 +343,8 @@ namespace Trklet{
     
     double ptcutte_{1.8}; //Minimum pt in TE
 
+    unsigned int ntrackletmax_{127}; //maximum number of tracklets that can be stored
+    
     //Bits used to store track parameter in tracklet
     int nbitsrinv_{14};
     int nbitsphi0_{18};

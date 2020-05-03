@@ -82,8 +82,7 @@ int TETableInnerOverlap::getLookupValue(const Settings* settings, int izbin, int
     findr(r2,z1,rmind2,rmaxd2);
     findr(r2,z2,rmind2,rmaxd2);
 
-    if (print) edm::LogVerbatim("Tracklet") << "PRINT layer1 rmind2 rmaxd2 z2 r1 "<<layer1_<<" "
-					    <<rmind2<<" "<<rmaxd2<<" "<<z2<<" "<<r1;
+    if (print) edm::LogVerbatim("Tracklet") << "PRINT layer1 rmind2 rmaxd2 z2 r1 "<<layer1_<<" "<<rmind2<<" "<<rmaxd2<<" "<<z2<<" "<<r1;
     
     assert(rmind2<rmaxd2);
 

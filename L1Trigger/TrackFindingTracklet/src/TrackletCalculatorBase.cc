@@ -33,7 +33,6 @@ void TrackletCalculatorBase::exacttracklet(double r1, double z1, double phi1,
     phi0=Trklet::phiRange(phi1tmp+asin(0.5*r1*rinv));
     
     double rhopsi1=2*asin(0.5*r1*rinv)/rinv;
-	    
     double rhopsi2=2*asin(0.5*r2*rinv)/rinv;
     
     t=(z1-z2)/(rhopsi1-rhopsi2);
@@ -41,13 +40,11 @@ void TrackletCalculatorBase::exacttracklet(double r1, double z1, double phi1,
     z0=z1-t*rhopsi1;
 
     for (int i=0;i<4;i++) {
-      exactproj(rproj_[i],rinv,phi0,t,z0,
-		phiproj[i],zproj[i],phider[i],zder[i]);
+      exactproj(rproj_[i],rinv,phi0,t,z0,phiproj[i],zproj[i],phider[i],zder[i]);
     }
 
     for (int i=0;i<5;i++) {
-      exactprojdisk(settings_->zmean(i),rinv,phi0,t,z0,
-		phiprojdisk[i],rprojdisk[i],phiderdisk[i],rderdisk[i]);
+      exactprojdisk(settings_->zmean(i),rinv,phi0,t,z0,phiprojdisk[i],rprojdisk[i],phiderdisk[i],rderdisk[i]);
     }
 }
 
@@ -71,25 +68,19 @@ void TrackletCalculatorBase::exacttrackletdisk(double r1, double z1, double phi1
     phi0=Trklet::phiRange(phi1tmp+asin(0.5*r1*rinv));
     
     double rhopsi1=2*asin(0.5*r1*rinv)/rinv;
-	    
     double rhopsi2=2*asin(0.5*r2*rinv)/rinv;
     
     t=(z1-z2)/(rhopsi1-rhopsi2);
     
     z0=z1-t*rhopsi1;
 
-
     for (int i=0;i<3;i++) {
-      exactprojdisk(zproj_[i],rinv,phi0,t,z0,
-		    phiproj[i],rproj[i],
-		    phider[i],rder[i]);
+      exactprojdisk(zproj_[i],rinv,phi0,t,z0,phiproj[i],rproj[i],phider[i],rder[i]);
     }
 
 
     for (int i=0;i<3;i++) {
-      exactproj(settings_->rmean(i),rinv,phi0,t,z0,
-		    phiprojLayer[i],zprojLayer[i],
-		    phiderLayer[i],zderLayer[i]);
+      exactproj(settings_->rmean(i),rinv,phi0,t,z0,phiprojLayer[i],zprojLayer[i],phiderLayer[i],zderLayer[i]);
     }
 
 }
@@ -116,7 +107,6 @@ void TrackletCalculatorBase::exacttrackletOverlap(double r1, double z1, double p
     phi0=Trklet::phiRange(phi1tmp+asin(0.5*r1*rinv));
     
     double rhopsi1=2*asin(0.5*r1*rinv)/rinv;
-	    
     double rhopsi2=2*asin(0.5*r2*rinv)/rinv;
     
     t=(z1-z2)/(rhopsi1-rhopsi2);
@@ -124,22 +114,16 @@ void TrackletCalculatorBase::exacttrackletOverlap(double r1, double z1, double p
     z0=z1-t*rhopsi1;
 
     for (int i=0;i<4;i++) {
-      exactprojdisk(zprojoverlap_[i],rinv,phi0,t,z0,
-		    phiproj[i],rproj[i],
-		    phider[i],rder[i]);
+      exactprojdisk(zprojoverlap_[i],rinv,phi0,t,z0,phiproj[i],rproj[i],phider[i],rder[i]);
     }
 
-
     for (int i=0;i<1;i++) {
-      exactproj(settings_->rmean(i),rinv,phi0,t,z0,
-		    phiprojLayer[i],zprojLayer[i],
-		    phiderLayer[i],zderLayer[i]);
+      exactproj(settings_->rmean(i),rinv,phi0,t,z0,phiprojLayer[i],zprojLayer[i],phiderLayer[i],zderLayer[i]);
     }
 }
 
 void TrackletCalculatorBase::exactproj(double rproj,double rinv,double phi0,double t, double z0,
-				       double &phiproj, double &zproj,
-				       double &phider, double &zder) {
+				       double &phiproj, double &zproj,double &phider, double &zder) {
   
   phiproj=phi0-asin(0.5*rproj*rinv);
   zproj=z0+(2*t/rinv)*asin(0.5*rproj*rinv);
@@ -148,10 +132,8 @@ void TrackletCalculatorBase::exactproj(double rproj,double rinv,double phi0,doub
   zder=t/sqrt(1-pow(0.5*rproj*rinv,2));
 }
 
-void TrackletCalculatorBase::exactprojdisk(double zproj,double rinv,double phi0,
-					   double t, double z0,
-					   double &phiproj, double &rproj,
-					   double &phider, double &rder) {
+void TrackletCalculatorBase::exactprojdisk(double zproj,double rinv,double phi0,double t, double z0,
+					   double &phiproj, double &rproj,double &phider, double &rder) {
   
   if (t<0) zproj=-zproj;
   
@@ -277,11 +259,8 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub, L1TStub* innerSt
     }
 	    
     assert(outerFPGAStub->isBarrel());
-    
     assert(layer_==innerFPGAStub->layer().value()+1);
-    
     assert(layer_==1||layer_==2||layer_==3||layer_==5);
-
     	  
     double r1=innerStub->r();
     double z1=innerStub->z();
@@ -290,7 +269,6 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub, L1TStub* innerSt
     double r2=outerStub->r();
     double z2=outerStub->z();
     double phi2=outerStub->phi();
-    
     
     double rinv,phi0,t,z0;
     
@@ -378,7 +356,7 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub, L1TStub* innerSt
     ITC->der_phiD_final.calculate();
     ITC->der_rD_final.calculate();
 
-    //store the approcximate results
+    //store the approximate results
     rinvapprox = ITC->rinv_final.get_fval();
     phi0approx = ITC->phi0_final.get_fval();
     tapprox    = ITC->t_final.get_fval();
@@ -485,13 +463,11 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub, L1TStub* innerSt
     izproj[2]   = ITC->zL_2_final.get_ival();
     izproj[3]   = ITC->zL_3_final.get_ival();
 
-
     if (!goodTrackPars(ITC->rinv_final.local_passes(),ITC->z0_final.local_passes())) return false;
-
 
     if (!inSector(iphi0,irinv,phi0approx,rinvapprox)) return false;
 
-    for(int i=0; i<4; ++i){
+    for (int i=0; i<4; ++i) {
 
       //reject projection if z is out of range
       if (izproj[i]<-(1<<(settings_->nzbitsstub(0)-1))) continue;
@@ -612,7 +588,6 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub, L1TStub* innerSt
       }
     }
     
-    
     for(unsigned int j=0;j<4;j++){ //no projections to 5th disk!!
       int disk=j+1;
       if (disk==4&&addL3) continue;
@@ -641,7 +616,6 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,L1TStub* innerStub,
     int disk=innerFPGAStub->disk().value();
     assert(abs(disk)==1||abs(disk)==3);
     
-    
     assert(innerStub->isPSmodule());
     assert(outerStub->isPSmodule());
 	    
@@ -652,7 +626,6 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,L1TStub* innerStub,
     double r2=outerStub->r();
     double z2=outerStub->z();
     double phi2=outerStub->phi();
-	    
     
     if (r2<r1+2.0) {
       return false; //Protection... Should be handled cleaner to avoid problem with floating point calculation
@@ -958,9 +931,8 @@ bool TrackletCalculatorBase::overlapSeeding(Stub* innerFPGAStub, L1TStub* innerS
     double z2=outerStub->z();
     double phi2=outerStub->phi();
     
-    //Protection... Should be handled cleaner to avoid problem with floating point calculation and with overflows in the integer calculation
+    //Protection for wrong radii. Could be handled cleaner to avoid problem with floating point calculation and with overflows in the integer calculation.
     if (r1<r2+1.5) {
-      //edm::LogVerbatim("Tracklet") << "in overlap tracklet: radii wrong";
       return false;
     }
     
@@ -973,8 +945,7 @@ bool TrackletCalculatorBase::overlapSeeding(Stub* innerFPGAStub, L1TStub* innerS
 			 rinv,phi0,t,z0,
 			 phiproj,zproj,phider,zder,
 			 phiprojdisk,rprojdisk,phiderdisk,rderdisk);
-    
-    
+        
     //Truncates floating point positions to integer representation precision
     if (settings_->useapprox()) {
       phi1=innerFPGAStub->phiapprox(phimin_,phimax_);

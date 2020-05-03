@@ -19,8 +19,6 @@ TrackletCalculator::TrackletCalculator(string name, const Settings* const settin
       phimax_=Trklet::phiRange(phimax_);
       if (phimin_>phimax_)  phimin_-=2*M_PI;
       phioffset_=phimin_;
-    
-      maxtracklet_=127;
       
       for(unsigned int ilayer=0;ilayer<6;ilayer++){
 	vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(ilayer),0);
@@ -238,7 +236,7 @@ void TrackletCalculator::execute() {
     unsigned int countsel=0;
 
     for(unsigned int l=0;l<stubpairs_.size();l++){
-      if (trackletpars_->nTracklets()>=maxtracklet_) {
+      if (trackletpars_->nTracklets()>=settings_->ntrackletmax()) {
 	edm::LogVerbatim("Tracklet") << "Will break on too many tracklets in "<<getName();
 	break;
       }
@@ -284,7 +282,7 @@ void TrackletCalculator::execute() {
 	  }
 	}
 
-	if (trackletpars_->nTracklets()>=maxtracklet_) {
+	if (trackletpars_->nTracklets()>=settings_->ntrackletmax()) {
 	  edm::LogVerbatim("Tracklet") << "Will break on number of tracklets in "<<getName();
 	  break;
 	}

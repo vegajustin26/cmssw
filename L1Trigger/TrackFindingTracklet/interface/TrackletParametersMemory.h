@@ -6,16 +6,13 @@
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
-
 #include <vector>
-
 
 namespace Trklet {
 
   class Settings;
   class Globals;
 
-  
   class TrackletParametersMemory : public MemoryBase {
   public:
     TrackletParametersMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
