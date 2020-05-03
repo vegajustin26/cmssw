@@ -197,12 +197,12 @@ void MatchEngine::execute() {
 	  writeindex=writeindexplus;
 	}
 
-	if (savefirst) { //FIXME code needs to be cleaner
+	if (savefirst) { //TODO - make code logic simpler
 	  std::pair<int,int> tmp(iprojtmp,rzfirst);
 	  projbuffer[writeindextmp]=tmp;
 	}
 	if (savelast) {
-	  std::pair<int,int> tmp(iprojtmp,rzlast+100); //FIXME hack to flag that this is second bin
+	  std::pair<int,int> tmp(iprojtmp,rzlast+100); //TODO remove hack to flag that this is second bin
 	  if (savefirst) {
 	    projbuffer[writeindextmpplus]=tmp;
 	  } else {
@@ -237,7 +237,7 @@ void MatchEngine::execute() {
 
 	  projrinv=barrel?(16+(((-2)*proj->fpgaphiprojder(layer_).value())>>(proj->fpgaphiprojder(layer_).nbits()-4))):proj->getBendIndex(disk_).value();
 	  assert(projrinv>=0);
-	  if (settings_->extended()&&projrinv==32){ //FIXME - should not need this
+	  if (settings_->extended()&&projrinv==32){ //TODO - displaced code shout ensure that this is not needed
 	    edm::LogPrint("Tracklet") << "Warning: projrinv:"<<projrinv;
 	    projrinv=31;
 	  }
@@ -276,7 +276,7 @@ void MatchEngine::execute() {
 	       
 	int nbits=isPSmodule?3:4;
 
-	//FIXME - not using finephi
+	//TODO - should use finephi information to reduce combinatorics
 	
 	unsigned int index=(projrinv<<nbits)+vmstub.bend().value();
 

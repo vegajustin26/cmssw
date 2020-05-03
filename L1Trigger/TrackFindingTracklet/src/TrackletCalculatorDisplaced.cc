@@ -941,7 +941,7 @@ bool TrackletCalculatorDisplaced::LLLSeeding(Stub* innerFPGAStub, L1TStub* inner
     double phiprojdiskapprox[5],rprojdiskapprox[5];
     double phiderdiskapprox[5],rderdiskapprox[5];
 
-    //FIXME: do the actual integer calculation
+    //TODO: implement the actual integer calculation
     
     phi0 -= 0.171;
 
@@ -1219,7 +1219,7 @@ bool TrackletCalculatorDisplaced::DDLSeeding(Stub* innerFPGAStub, L1TStub* inner
     double phiprojdiskapprox[5],rprojdiskapprox[5];
     double phiderdiskapprox[5],rderdiskapprox[5];
 
-    //FIXME: do the actual integer calculation
+    //TODO: implement the actual integer calculation
     
     phi0 -= 0.171;
 
@@ -1481,7 +1481,7 @@ bool TrackletCalculatorDisplaced::LLDSeeding(Stub* innerFPGAStub, L1TStub* inner
     double phiprojdiskapprox[5],rprojdiskapprox[5];
     double phiderdiskapprox[5],rderdiskapprox[5];
 
-    //FIXME: do the actual integer calculation
+    //TODO: implement the actual integer calculation
     
     phi0 -= 0.171;
 

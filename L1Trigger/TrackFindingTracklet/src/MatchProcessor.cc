@@ -29,7 +29,7 @@ MatchProcessor::MatchProcessor(string name, const Settings* settings, Globals* g
 
     initLayerDisk(3,layer_,disk_);
 
-    //FIXME should sort out constants here
+    //TODO should sort out constants here
     icorrshift_=7;
 
     if (layer_<=3) {
@@ -220,7 +220,7 @@ void MatchProcessor::addInput(MemoryBase* memory,string input) {
 
 void MatchProcessor::execute() {
 
-    if (globals_->projectionRouterBendTable()==0){  //FIXME more to constructor?!
+  if (globals_->projectionRouterBendTable()==0){  // move to constructor?!
       ProjectionRouterBendTable* bendTablePtr=new ProjectionRouterBendTable();
       bendTablePtr->init(settings_,globals_, nrbits_, nphiderbits_);
       globals_->projectionRouterBendTable()=bendTablePtr;
@@ -520,7 +520,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet,Stub* fpgastub, L1TStub*
       int iz=fpgastub->z().value();
       int iphi=tracklet->fpgaphiprojdisk(disk).value();
       
-      int shifttmp=6;  //FIXME - express in terms of constants
+      int shifttmp=6;  //TODO - express in terms of constants
       assert(shifttmp>=0);
       int iphicorr=(iz*tracklet->fpgaphiprojderdisk(disk).value())>>shifttmp;
       
@@ -528,7 +528,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet,Stub* fpgastub, L1TStub*
       
       int ir=tracklet->fpgarprojdisk(disk).value();
       
-      int shifttmp2=7; //FIXME - express in terms of constants
+      int shifttmp2=7; //TODO - express in terms of constants
       assert(shifttmp2>=0);
       int ircorr=(iz*tracklet->fpgarprojderdisk(disk).value())>>shifttmp2;
       

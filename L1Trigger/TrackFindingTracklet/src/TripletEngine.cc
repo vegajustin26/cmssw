@@ -196,7 +196,7 @@ void TripletEngine::execute() {
 
 		FPGAWord iphisecondbin=secondvmstub.stub().first->iphivmFineBins(nvmbitssecond,secondphibits_);
 
-		//FIXME not using same number of bits as in the TED?
+		//TODO: not using same number of bits as in the TED?
 		//assert(iphisecondbin==(int)secondvmstub.finephi());
 		FPGAWord iphithirdbin=thirdvmstub.finephi();
 		
@@ -254,7 +254,7 @@ void TripletEngine::execute() {
 	
 	  int start=(bin>>1);
 	  int last=start+(bin&1);
-          if (firstvmstub.stub().first->disk().value() < 0){  //FIXME
+          if (firstvmstub.stub().first->disk().value() < 0){  //TODO - negative disk should come from memory
             start = settings_->NLONGVMBINS() - last - 1;
             last = settings_->NLONGVMBINS() - start - 1;
           }
@@ -355,7 +355,7 @@ void TripletEngine::execute() {
 
 		FPGAWord iphisecondbin=secondvmstub.stub().first->iphivmFineBins(nvmbitssecond,secondphibits_);
                   
-		//FIXME not using same number of bits as in the TED?
+		//TODO: not using same number of bits as in the TED?
 		//assert(iphisecondbin==(int)secondvmstub.finephi());
 		FPGAWord iphithirdbin=thirdvmstub.finephi();
 

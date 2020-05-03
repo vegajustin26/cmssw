@@ -27,7 +27,7 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
 
     fullMatches_.resize(12,0);
     
-    //FIXME should sort out constants here
+    //TODO - need to sort out constants here
     icorrshift_=7;
 
     if (layerdisk_<3) {
@@ -319,7 +319,7 @@ void MatchCalculator::execute() {
 	int iz=fpgastub->z().value();
 	int iphi=tracklet->fpgaphiprojdisk(disk).value();
 
-	//FIXME - need to express interms of constants
+	//TODO - need to express interms of constants
 	int shifttmp=6;
 	assert(shifttmp>=0);
 	int iphicorr=(iz*tracklet->fpgaphiprojderdisk(disk).value())>>shifttmp;
@@ -328,7 +328,7 @@ void MatchCalculator::execute() {
 
 	int ir=tracklet->fpgarprojdisk(disk).value();
 	  
-	//FIXME - need to express interms of constants
+	//TODO - need to express interms of constants
 	int shifttmp2=7;
 	
 	assert(shifttmp2>=0);
@@ -351,7 +351,7 @@ void MatchCalculator::execute() {
 	  }
 	}
 
-	//FIXME stub and projection r should not use different # bits...
+	//TODO stub and projection r should not use different # bits...
 	int ideltar=(irstub>>1)-ir;
 	
 	if (!stub->isPSmodule()) {	  
