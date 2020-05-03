@@ -139,14 +139,14 @@ void VMRouter::execute() {
 	if (allStubCounter>127) continue;
 	std::pair<Stub*,L1TStub*> stub=stubinputs_[j]->getStub(i);
 
-	bool negdisk=(stub.first->disk().value()<0);//FIXME how do we know that we have negative disk
+	bool negdisk=(stub.first->disk().value()<0); //Note - this information is not part of the stub - but rather from which input memory we are reading
 
 	//use &127 to make sure we fit into the number of bits -
 	//though we should have protected against overflows above
 	FPGAWord allStubIndex(allStubCounter&127,7,true,__LINE__,__FILE__);
 	
-	stub.first->setAllStubIndex(allStubCounter);  //FIXME - should not be needed
-	stub.second->setAllStubIndex(allStubCounter); //FIXME - should not be needed
+	stub.first->setAllStubIndex(allStubCounter);  //TODO - should not be needed - but need to migrate some other pieces of code before removing
+	stub.second->setAllStubIndex(allStubCounter); //TODO - should not be needed - but need to migrate some other pieces of code before removing
 
 	allStubCounter++;
 	
@@ -167,7 +167,8 @@ void VMRouter::execute() {
 	unsigned int ivmMinus=ivm; 
 	if (extrabits==0&&ivm!=0) ivmMinus--;
 
-	//Calculate the z and r position for the vmstub FIXME should project to nominal layer/disk position
+	//Calculate the z and r position for the vmstub
+	//TODO should project to nominal layer/disk position (as used by the TE outer memories?)
 	int index=-1;
 	if (layerdisk_>5) {
 	  index=stub.first->r().value();
@@ -194,7 +195,7 @@ void VMRouter::execute() {
 	}
 
 	VMStubME vmstub(stub,
-			stub.first->iphivmFineBins(5,3), //FIXME
+			stub.first->iphivmFineBins(iphi.nbits()-(settings_->nbitsallstubs(layerdisk_)+settings_->nbitsvmme(layerdisk_)),settings_->nbitsvmme(layerdisk_)),
 			FPGAWord(rzfine,3,true,__LINE__,__FILE__),
 			stub.first->bend(),
 			allStubIndex);
@@ -227,7 +228,7 @@ void VMRouter::execute() {
 	  int bin=-1;
 	  if (inner!=0) {
 	    bin=binlookup.value()/8;
-	    unsigned int tmp=binlookup.value()&7; //three bits in outer layers //FIXME
+	    unsigned int tmp=binlookup.value()&7; //three bits in outer layers - this could be coded cleaner...
 	    binlookup.set(tmp,3,true,__LINE__,__FILE__);
 	  }
 
@@ -338,7 +339,7 @@ FPGAWord VMRouter::lookup(unsigned int iseed, unsigned int inner,FPGAWord z, FPG
       if (r.value()>100&&r.value()<settings_->rmindiskl3overlapvm()/settings_->kr()) return FPGAWord(-1,2,false,__LINE__,__FILE__);
       int bin=0;
       if(!isPSmodule) {
-	bin = r.value(); // 0 to 9 //FIXME
+	bin = r.value(); // 0 to 9 for the ring index
 	bin = bin >> 2; // 0 to 2
 	bin += 1;
       }
@@ -359,7 +360,7 @@ FPGAWord VMRouter::lookup(unsigned int iseed, unsigned int inner,FPGAWord z, FPG
     assert(lutwidth!=0);
     
     int zbin=(z.value()+(1<<(z.nbits()-1)))>>(z.nbits()-zbits);
-    if (negdisk) zbin=7-zbin;//FIXME should not have hardcoded 7 here
+    if (negdisk) zbin=(1<<zbits)-1-zbin;
     int rbin=(r.value()+(1<<(r.nbits()-1)))>>(r.nbits()-rbits);
     if (layerdisk_>=6) {
       rbin=r.value()>>(r.nbits()-rbits);

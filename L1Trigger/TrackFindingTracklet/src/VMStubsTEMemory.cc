@@ -95,8 +95,10 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub, int bin) {
   
 }
 
+
+// TODO - should migrate away from using this method for any binned memory
 bool VMStubsTEMemory::addVMStub(VMStubTE vmstub) {
-  
+
   FPGAWord binlookup=vmstub.vmbits();
   
   assert(binlookup.value()>=0);
@@ -153,7 +155,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub) {
 	  if(vmstub.stub().first->isPSmodule()) {
 	    bin = 0;
 	  } else {
-	    bin = vmstub.stub().first->r().value(); // 0 to 9 //FIXME
+	    bin = vmstub.stub().first->r().value(); // 0 to 9
 	    bin = bin >> 2; // 0 to 2
 	    bin += 1;
 	  }
