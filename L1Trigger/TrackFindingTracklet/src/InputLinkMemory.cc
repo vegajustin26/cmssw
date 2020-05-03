@@ -33,7 +33,7 @@ bool InputLinkMemory::addStub(const Settings* settings, Globals* globals, L1TStu
   }
   
   unsigned int stublayerdisk=stub.layerdisk();
-  assert(stublayerdisk>=0&&stublayerdisk<11);
+  assert(stublayerdisk<11);
   
   if (stublayerdisk!=layerdisk_) return false;
   
