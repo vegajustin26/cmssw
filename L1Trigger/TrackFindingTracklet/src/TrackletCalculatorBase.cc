@@ -414,13 +414,13 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub, L1TStub* innerSt
     int iphiproj[4],izproj[4];
     int iphiprojdisk[5],irprojdisk[5];
     
-    int ir1=innerFPGAStub->ir();
-    int iphi1=innerFPGAStub->iphi();
-    int iz1=innerFPGAStub->iz();
+    int ir1=innerFPGAStub->r().value();
+    int iphi1=innerFPGAStub->phi().value();
+    int iz1=innerFPGAStub->z().value();
       
-    int ir2=outerFPGAStub->ir();
-    int iphi2=outerFPGAStub->iphi();
-    int iz2=outerFPGAStub->iz();
+    int ir2=outerFPGAStub->r().value();
+    int iphi2=outerFPGAStub->phi().value();
+    int iz2=outerFPGAStub->z().value();
     
     iphi1<<=(settings_->nphibitsstub(5)-settings_->nphibitsstub(layer_-1));
     iphi2<<=(settings_->nphibitsstub(5)-settings_->nphibitsstub(layer_));
@@ -767,13 +767,13 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,L1TStub* innerStub,
     
     int iphiprojdisk[3],irprojdisk[3];
 
-    int ir1=innerFPGAStub->ir();
-    int iphi1=innerFPGAStub->iphi();
-    int iz1=innerFPGAStub->iz();
+    int ir1=innerFPGAStub->r().value();
+    int iphi1=innerFPGAStub->phi().value();
+    int iz1=innerFPGAStub->z().value();
     
-    int ir2=outerFPGAStub->ir();
-    int iphi2=outerFPGAStub->iphi();
-    int iz2=outerFPGAStub->iz();
+    int ir2=outerFPGAStub->r().value();
+    int iphi2=outerFPGAStub->phi().value();
+    int iz2=outerFPGAStub->z().value();
     
     //To get same precission as for layers.
     iphi1<<=(settings_->nphibitsstub(5)-settings_->nphibitsstub(0));
@@ -1081,13 +1081,13 @@ bool TrackletCalculatorBase::overlapSeeding(Stub* innerFPGAStub, L1TStub* innerS
     
     int iphiprojdisk[4],irprojdisk[4];
     
-    int ir2=innerFPGAStub->ir();
-    int iphi2=innerFPGAStub->iphi();
-    int iz2=innerFPGAStub->iz();
+    int ir2=innerFPGAStub->r().value();
+    int iphi2=innerFPGAStub->phi().value();
+    int iz2=innerFPGAStub->z().value();
       
-    int ir1=outerFPGAStub->ir();
-    int iphi1=outerFPGAStub->iphi();
-    int iz1=outerFPGAStub->iz();
+    int ir1=outerFPGAStub->r().value();
+    int iphi1=outerFPGAStub->phi().value();
+    int iz1=outerFPGAStub->z().value();
       
     //To get global precission
     ir1<<=(8-settings_->nrbitsstub(ll-1));

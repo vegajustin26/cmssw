@@ -65,11 +65,6 @@ namespace Trklet {
     FPGAWord phicorr() const { return phicorr_; }
     FPGAWord alphanew() const { return alphanew_; }
     
-    //FIXME should remove these...
-    int ir() const { return r_.value(); }
-    int iz() const { return z_.value(); }
-    int iphi() const { return phi_.value(); }
-    
     FPGAWord stubindex() const {return stubindex_;}
     FPGAWord layer() const {return layer_;}
     FPGAWord disk() const {return disk_;}

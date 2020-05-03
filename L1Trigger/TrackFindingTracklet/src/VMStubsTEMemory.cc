@@ -153,7 +153,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub) {
 	  if(vmstub.stub().first->isPSmodule()) {
 	    bin = 0;
 	  } else {
-	    bin = vmstub.stub().first->ir(); // 0 to 9 //FIXME
+	    bin = vmstub.stub().first->r().value(); // 0 to 9 //FIXME
 	    bin = bin >> 2; // 0 to 2
 	    bin += 1;
 	  }
