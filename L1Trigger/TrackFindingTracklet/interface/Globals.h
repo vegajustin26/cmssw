@@ -23,22 +23,27 @@ namespace Trklet{
   class Globals {
   public:
     
-    Globals(const Trklet::Settings* settings){
+    Globals() {}
+
+    void init(const Trklet::Settings* settings){
+
+      imathGlobals_=new imathGlobals();
+      
       // tracklet calculators 
-      ITC_L1L2_ = new IMATH_TrackletCalculator(settings,1,2);
-      ITC_L2L3_ = new IMATH_TrackletCalculator(settings,2,3);
-      ITC_L3L4_ = new IMATH_TrackletCalculator(settings,3,4);
-      ITC_L5L6_ = new IMATH_TrackletCalculator(settings,5,6);
+      ITC_L1L2_ = new IMATH_TrackletCalculator(settings,imathGlobals_,1,2);
+      ITC_L2L3_ = new IMATH_TrackletCalculator(settings,imathGlobals_,2,3);
+      ITC_L3L4_ = new IMATH_TrackletCalculator(settings,imathGlobals_,3,4);
+      ITC_L5L6_ = new IMATH_TrackletCalculator(settings,imathGlobals_,5,6);
       
-      ITC_F1F2_ = new IMATH_TrackletCalculatorDisk(settings,1,2);
-      ITC_F3F4_ = new IMATH_TrackletCalculatorDisk(settings,3,4);
-      ITC_B1B2_ = new IMATH_TrackletCalculatorDisk(settings,-1,-2);
-      ITC_B3B4_ = new IMATH_TrackletCalculatorDisk(settings,-3,-4);
+      ITC_F1F2_ = new IMATH_TrackletCalculatorDisk(settings,imathGlobals_,1,2);
+      ITC_F3F4_ = new IMATH_TrackletCalculatorDisk(settings,imathGlobals_,3,4);
+      ITC_B1B2_ = new IMATH_TrackletCalculatorDisk(settings,imathGlobals_,-1,-2);
+      ITC_B3B4_ = new IMATH_TrackletCalculatorDisk(settings,imathGlobals_,-3,-4);
       
-      ITC_L1F1_ = new IMATH_TrackletCalculatorOverlap(settings,1,1);
-      ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(settings,2,1);
-      ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(settings,1,-1);
-      ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(settings,2,-1);
+      ITC_L1F1_ = new IMATH_TrackletCalculatorOverlap(settings,imathGlobals_,1,1);
+      ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(settings,imathGlobals_,2,1);
+      ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(settings,imathGlobals_,1,-1);
+      ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(settings,imathGlobals_,2,-1);
     }
     
     SLHCEvent*& event() { return theEvent_; }
@@ -106,6 +111,8 @@ namespace Trklet{
     IMATH_TrackletCalculatorOverlap* ITC_L2F1_{0};
     IMATH_TrackletCalculatorOverlap* ITC_L1B1_{0};
     IMATH_TrackletCalculatorOverlap* ITC_L2B1_{0};
+
+    imathGlobals *imathGlobals_{0};
     
     SLHCEvent* theEvent_{0}; 
     

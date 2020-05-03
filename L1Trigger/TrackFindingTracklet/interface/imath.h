@@ -141,14 +141,22 @@
 
 // Print out information on the pass/fail status of all variables. Warning:
 // this outputs a lot of information for busy events!
-static const bool printCutInfo_ = false;
+
+struct imathGlobals {
+  bool printCutInfo_{false};
+#ifdef IMATH_ROOT
+  TFile *h_file_;
+  bool use_root;
+#endif
+};
 
 class var_cut;
 class var_flag;
 
 class var_base {
 public:
-  var_base(std::string name, var_base *p1, var_base *p2, var_base *p3, int l) {
+  var_base(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, var_base *p3, int l) {
+    globals_=globals;
     p1_ = p1;
     p2_ = p2;
     p3_ = p3;
@@ -175,18 +183,18 @@ public:
     h_ = 0;
     h_nbins_ = 1024;
     h_precision_ = 0.02;
-    if (h_file_ == 0) {
-      h_file_ = new TFile("imath.root", "RECREATE");
+    if (globals_->h_file_ == 0) {
+      globals_->h_file_ = new TFile("imath.root", "RECREATE");
       edm::LogVerbatim("Tracklet") << "recreating file imath.root";
     }
 #endif
   }
   virtual ~var_base() {
 #ifdef IMATH_ROOT
-    if (h_file_) {
-      h_file_->ls();
-      h_file_->Close();
-      h_file_ = 0;
+    if (globals_->h_file_) {
+      globals_->h_file_->ls();
+      globals_->h_file_->Close();
+      globals_->h_file_ = 0;
     }
 #endif
   }
@@ -273,13 +281,11 @@ public:
   static std::string pipe_delay_wire(var_base *v, std::string name_delayed, int nbits, int delay);
 
 #ifdef IMATH_ROOT
-  static TFile *h_file_;
-  static bool use_root;
-  static TTree *AddToTree(var_base *v, char *s = 0);
-  static TTree *AddToTree(int *v, char *s);
-  static TTree *AddToTree(double *v, char *s);
-  static void FillTree();
-  static void WriteTree();
+  static TTree *AddToTree(imathGlobals *globals, var_base *v, char *s = 0);
+  static TTree *AddToTree(imathGlobals *globals, int *v, char *s);
+  static TTree *AddToTree(imathGlobals *globals, double *v, char *s);
+  static void FillTree(imathGlobals *globals);
+  static void WriteTree(imathGlobals *globals);
 #endif
 
   void dump_cout();
@@ -287,6 +293,7 @@ public:
   static std::string itos(int i);
 
 protected:
+  imathGlobals *globals_; 
   std::string name_;
   var_base *p1_;
   var_base *p2_;
@@ -328,8 +335,8 @@ protected:
 
 class var_adjustK : public var_base {
 public:
-  var_adjustK(std::string name, var_base *p1, double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1)
-      : var_base(name, p1, 0, 0, 0) {
+ var_adjustK(imathGlobals *globals, std::string name, var_base *p1, double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1)
+   : var_base(globals,name, p1, 0, 0, 0) {
     op_ = "adjustK";
     K_ = p1->get_K();
     Kmap_ = p1->get_Kmap();
@@ -361,9 +368,9 @@ protected:
 
 class var_adjustKR : public var_base {
 public:
-  var_adjustKR(
+  var_adjustKR(imathGlobals *globals, 
       std::string name, var_base *p1, double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1)
-      : var_base(name, p1, 0, 0, 1) {
+    : var_base(globals,name, p1, 0, 0, 1) {
     op_ = "adjustKR";
     K_ = p1->get_K();
     Kmap_ = p1->get_Kmap();
@@ -393,7 +400,7 @@ protected:
 
 class var_param : public var_base {
 public:
-  var_param(std::string name, double fval, int nbits) : var_base(name, 0, 0, 0, 0) {
+ var_param(imathGlobals *globals, std::string name, double fval, int nbits) : var_base(globals, name, 0, 0, 0, 0) {
     op_ = "const";
     nbits_ = nbits;
     int l = log2(std::abs(fval)) + 1.9999999 - nbits;
@@ -402,7 +409,7 @@ public:
     fval_ = fval;
     ival_ = fval / K_;
   }
-  var_param(std::string name, std::string units, double fval, double K) : var_base(name, 0, 0, 0, 0) {
+ var_param(imathGlobals *globals, std::string name, std::string units, double fval, double K) : var_base(globals, name, 0, 0, 0, 0) {
     op_ = "const";
     K_ = K;
     nbits_ = log2(fval / K) + 1.999999;  //plus one to round up
@@ -440,7 +447,7 @@ public:
 class var_def : public var_base {
 public:
   //construct from scratch
-  var_def(std::string name, std::string units, double fmax, double K) : var_base(name, 0, 0, 0, 1) {
+ var_def(imathGlobals *globals, std::string name, std::string units, double fmax, double K) : var_base(globals, name, 0, 0, 0, 1) {
     op_ = "def";
     K_ = K;
     nbits_ = log2(fmax / K) + 1.999999;  //plus one to round up
@@ -458,7 +465,7 @@ public:
     }
   }
   //construct from abother variable (all provenance info is lost!)
-  var_def(std::string name, var_base *p) : var_base(name, 0, 0, 0, 1) {
+ var_def(imathGlobals *globals, std::string name, var_base *p) : var_base(globals, name, 0, 0, 0, 1) {
     op_ = "def";
     K_ = p->get_K();
     nbits_ = p->get_nbits();
@@ -483,8 +490,8 @@ public:
 
 class var_add : public var_base {
 public:
-  var_add(std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
-      : var_base(name, p1, p2, 0, 1) {
+  var_add(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
+    : var_base(globals, name, p1, p2, 0, 1) {
     op_ = "add";
 
     std::map<std::string, int> map1 = p1->get_Kmap();
@@ -574,8 +581,8 @@ protected:
 
 class var_subtract : public var_base {
 public:
-  var_subtract(std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
-      : var_base(name, p1, p2, 0, 1) {
+  var_subtract(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
+    : var_base(globals, name, p1, p2, 0, 1) {
     op_ = "subtract";
 
     std::map<std::string, int> map1 = p1->get_Kmap();
@@ -665,7 +672,7 @@ protected:
 
 class var_nounits : public var_base {
 public:
-  var_nounits(std::string name, var_base *p1, int ps = 17) : var_base(name, p1, 0, 0, MULT_LATENCY) {
+ var_nounits(imathGlobals *globals, std::string name, var_base *p1, int ps = 17) : var_base(globals, name, p1, 0, 0, MULT_LATENCY) {
     op_ = "nounits";
     ps_ = ps;
     nbits_ = p1->get_nbits();
@@ -691,8 +698,8 @@ protected:
 
 class var_shiftround : public var_base {
 public:
-  var_shiftround(std::string name, var_base *p1, int shift)
-      : var_base(name, p1, 0, 0, 1) {  // latency is one because there is an addition
+  var_shiftround(imathGlobals *globals, std::string name, var_base *p1, int shift)
+    : var_base(globals, name, p1, 0, 0, 1) {  // latency is one because there is an addition
     op_ = "shiftround";
     shift_ = shift;
 
@@ -710,7 +717,7 @@ protected:
 
 class var_shift : public var_base {
 public:
-  var_shift(std::string name, var_base *p1, int shift) : var_base(name, p1, 0, 0, 0) {
+ var_shift(imathGlobals *globals, std::string name, var_base *p1, int shift) : var_base(globals, name, p1, 0, 0, 0) {
     op_ = "shift";
     shift_ = shift;
 
@@ -728,7 +735,7 @@ protected:
 
 class var_neg : public var_base {
 public:
-  var_neg(std::string name, var_base *p1) : var_base(name, p1, 0, 0, 1) {
+ var_neg(imathGlobals *globals, std::string name, var_base *p1) : var_base(globals, name, p1, 0, 0, 1) {
     op_ = "neg";
     nbits_ = p1->get_nbits();
     Kmap_ = p1->get_Kmap();
@@ -741,7 +748,7 @@ public:
 
 class var_timesC : public var_base {
 public:
-  var_timesC(std::string name, var_base *p1, double cF, int ps = 17) : var_base(name, p1, 0, 0, MULT_LATENCY) {
+ var_timesC(imathGlobals *globals, std::string name, var_base *p1, double cF, int ps = 17) : var_base(globals, name, p1, 0, 0, MULT_LATENCY) {
     op_ = "timesC";
     cF_ = cF;
     ps_ = ps;
@@ -773,8 +780,8 @@ protected:
 
 class var_mult : public var_base {
 public:
-  var_mult(std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
-      : var_base(name, p1, p2, 0, MULT_LATENCY) {
+  var_mult(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
+    : var_base(globals, name, p1, p2, 0, MULT_LATENCY) {
     op_ = "mult";
 
     std::map<std::string, int> map1 = p1->get_Kmap();
@@ -820,8 +827,8 @@ protected:
 
 class var_DSP_postadd : public var_base {
 public:
-  var_DSP_postadd(std::string name, var_base *p1, var_base *p2, var_base *p3, double range = -1, int nmax = 18)
-      : var_base(name, p1, p2, p3, DSP_LATENCY) {
+  var_DSP_postadd(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, var_base *p3, double range = -1, int nmax = 18)
+    : var_base(globals, name, p1, p2, p3, DSP_LATENCY) {
     op_ = "DSP_postadd";
 
     //first, get constants for the p1*p2
@@ -929,8 +936,8 @@ class var_inv : public var_base {
 public:
   enum mode { pos, neg, both };
 
-  var_inv(std::string name, var_base *p1, double offset, int nbits, int n, unsigned int shift, mode m, int nbaddr = -1)
-      : var_base(name, p1, 0, 0, LUT_LATENCY) {
+  var_inv(imathGlobals *globals, std::string name, var_base *p1, double offset, int nbits, int n, unsigned int shift, mode m, int nbaddr = -1)
+    : var_base(globals, name, p1, 0, 0, LUT_LATENCY) {
     op_ = "inv";
     offset_ = offset;
     nbits_ = nbits;
@@ -1022,11 +1029,11 @@ protected:
 
 class var_cut : public var_base {
 public:
- var_cut(double lower_cut, double upper_cut) : var_base("", 0, 0, 0, 0), lower_cut_(lower_cut), upper_cut_(upper_cut), parent_flag_(0) {
+ var_cut(imathGlobals *globals, double lower_cut, double upper_cut) : var_base(globals, "", 0, 0, 0, 0), lower_cut_(lower_cut), upper_cut_(upper_cut), parent_flag_(0) {
     op_ = "cut";
   }
 
-  var_cut(var_base *cut_var, double lower_cut, double upper_cut) : var_cut(lower_cut, upper_cut) {
+ var_cut(imathGlobals *globals, var_base *cut_var, double lower_cut, double upper_cut) : var_cut(globals, lower_cut, upper_cut) {
     set_cut_var(cut_var);
   }
 
@@ -1058,7 +1065,7 @@ protected:
 class var_flag : public var_base {
 public:
   template <class... Args>
-  var_flag(std::string name, var_base *cut, Args... args) : var_base(name, 0, 0, 0, 0) {
+    var_flag(imathGlobals *globals, std::string name, var_base *cut, Args... args) : var_base(globals, name, 0, 0, 0, 0) {
     op_ = "flag";
     nbits_ = 1;
     add_cuts(cut, args...);

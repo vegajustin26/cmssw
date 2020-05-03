@@ -58,13 +58,13 @@ void var_base::analyze() {
       edm::LogVerbatim("Tracklet") << slog;
       h_->Print();
     }
-    h_file_->cd();
+    globals_->h_file_->cd();
     TCanvas *c = new TCanvas();
     c->cd();
     h_->Draw("colz");
     h_->Write();
   } else {
-    if (use_root) {
+    if (globals_->use_root) {
       sprintf(slog,"analyzing %s: no histogram!\n", name_.c_str());
       edm::LogVerbatim("Tracklet") << slog;
     }
@@ -221,13 +221,13 @@ void var_base::get_inputs(std::vector<var_base *> *vd) {
 }
 
 #ifdef IMATH_ROOT
-TTree *var_base::AddToTree(var_base *v, char *s) {
-  if (h_file_ == 0) {
-    h_file_ = new TFile("imath.root", "RECREATE");
+TTree *var_base::AddToTree(imathGlobals *globals, var_base *v, char *s) {
+  if (globals->h_file_ == 0) {
+    globals->h_file_ = new TFile("imath.root", "RECREATE");
     edm::LogVerbatim("Tracklet") << "recreating file imath.root";
   }
-  h_file_->cd();
-  TTree *tt = (TTree *)h_file_->Get("tt");
+  globals->h_file_->cd();
+  TTree *tt = (TTree *)globals->h_file_->Get("tt");
   if (tt == 0) {
     tt = new TTree("tt", "");
     edm::LogVerbatim("Tracklet") << "creating TTree tt";
@@ -248,21 +248,21 @@ TTree *var_base::AddToTree(var_base *v, char *s) {
   }
 
   if (v->p1_)
-    AddToTree(v->p1_, s);
+    AddToTree(globals,v->p1_, s);
   if (v->p2_)
-    AddToTree(v->p2_, s);
+    AddToTree(globals,v->p2_, s);
   if (v->p3_)
-    AddToTree(v->p3_, s);
+    AddToTree(globals,v->p3_, s);
 
   return tt;
 }
-TTree *var_base::AddToTree(double *v, char *s) {
-  if (h_file_ == 0) {
-    h_file_ = new TFile("imath.root", "RECREATE");
+TTree *var_base::AddToTree(imathGlobals *globals, double *v, char *s) {
+  if (globals->h_file_ == 0) {
+    globals->h_file_ = new TFile("imath.root", "RECREATE");
     edm::LogVerbatim("Tracklet") << "recreating file imath.root";
   }
-  h_file_->cd();
-  TTree *tt = (TTree *)h_file_->Get("tt");
+  globals->h_file_->cd();
+  TTree *tt = (TTree *)globals->h_file_->Get("tt");
   if (tt == 0) {
     tt = new TTree("tt", "");
     edm::LogVerbatim("Tracklet") << "creating TTree tt";
@@ -270,13 +270,13 @@ TTree *var_base::AddToTree(double *v, char *s) {
   tt->Branch(s, v);
   return tt;
 }
-TTree *var_base::AddToTree(int *v, char *s) {
-  if (h_file_ == 0) {
-    h_file_ = new TFile("imath.root", "RECREATE");
+TTree *var_base::AddToTree(imathGlobals *globals, int *v, char *s) {
+  if (globals->h_file_ == 0) {
+    globals->h_file_ = new TFile("imath.root", "RECREATE");
     edm::LogVerbatim("Tracklet") << "recreating file imath.root";
   }
-  h_file_->cd();
-  TTree *tt = (TTree *)h_file_->Get("tt");
+  globals->h_file_->cd();
+  TTree *tt = (TTree *)globals->h_file_->Get("tt");
   if (tt == 0) {
     tt = new TTree("tt", "");
     edm::LogVerbatim("Tracklet") << "creating TTree tt";
@@ -284,20 +284,20 @@ TTree *var_base::AddToTree(int *v, char *s) {
   tt->Branch(s, v);
   return tt;
 }
-void var_base::FillTree() {
-  if (h_file_ == 0)
+void var_base::FillTree(imathGlobals *globals) {
+  if (globals->h_file_ == 0)
     return;
-  h_file_->cd();
-  TTree *tt = (TTree *)h_file_->Get("tt");
+  globals->h_file_->cd();
+  TTree *tt = (TTree *)globals->h_file_->Get("tt");
   if (tt == 0)
     return;
   tt->Fill();
 }
-void var_base::WriteTree() {
-  if (h_file_ == 0)
+void var_base::WriteTree(imathGlobals *globals) {
+  if (globals->h_file_ == 0)
     return;
-  h_file_->cd();
-  TTree *tt = (TTree *)h_file_->Get("tt");
+  globals->h_file_->cd();
+  TTree *tt = (TTree *)globals->h_file_->Get("tt");
   if (tt == 0)
     return;
   tt->Write();
@@ -323,7 +323,7 @@ bool var_base::local_passes() const {
     const int lower_cut = cast_cut->get_lower_cut() / K_;
     const int upper_cut = cast_cut->get_upper_cut() / K_;
     passes = passes || (ival_ > lower_cut && ival_ < upper_cut);
-    if (printCutInfo_) {
+    if (globals_->printCutInfo_) {
       edm::LogVerbatim("Tracklet") << "  " << name_ << " " << ((ival_ > lower_cut && ival_ < upper_cut) ? "PASSES" : "FAILS")
 				   << " (required: " << lower_cut * K_ << " < " << ival_ * K_ << " < " << upper_cut * K_ << ")";
     }
@@ -348,7 +348,7 @@ void var_base::passes(std::map<const var_base *, std::vector<bool> > &passes,
       if (!passes.count(this))
         passes[this];
       passes.at(this).push_back(ival_ > lower_cut && ival_ < upper_cut);
-      if (printCutInfo_) {
+      if (globals_->printCutInfo_) {
 	edm::LogVerbatim("Tracklet") << "  " << name_ << " "
 				     << ((ival_ > lower_cut && ival_ < upper_cut) ? "PASSES" : "FAILS")
 				     << " (required: " << lower_cut * K_ << " < " << ival_ * K_ << " < " << upper_cut * K_ << ")";
@@ -395,7 +395,7 @@ var_base *var_base::get_cut_var() {
 
 bool var_flag::passes() {
 
-  if (printCutInfo_) {
+  if (globals_->printCutInfo_) {
     edm::LogVerbatim("Tracklet") << "Checking if " << name_ << " passes...";
   }
 
@@ -433,7 +433,7 @@ bool var_flag::passes() {
     passes = passes && local_passes;
   }
 
-  if (printCutInfo_) {
+  if (globals_->printCutInfo_) {
     edm::LogVerbatim("Tracklet") << name_ << " " << (passes ? "PASSES" : "FAILS");
   }
   

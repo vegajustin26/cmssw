@@ -24,11 +24,11 @@ bool var_base::calculate(int debug_level) {
   if (fval_ < minval_)
     minval_ = fval_;
 #ifdef IMATH_ROOT
-  if (use_root) {
+  if (globals_->use_root) {
     if (h_ == 0) {
-      h_file_->cd();
+      globals_->h_file_->cd();
       std::string hname = "h_" + name_;
-      h_ = (TH2F *)h_file_->Get(hname.c_str());
+      h_ = (TH2F *)globals_->h_file_->Get(hname.c_str());
       if (h_ == 0) {
         h_precision_ = 0.5 * h_nbins_ * K_;
         std::string st = name_ + ";fval;fval-ival*K";

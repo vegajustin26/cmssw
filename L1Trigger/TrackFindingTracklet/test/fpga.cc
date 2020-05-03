@@ -27,10 +27,6 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-#ifdef IMATH_ROOT
-TFile* var_base::h_file_=0;
-bool   var_base::use_root = false;
-#endif
 
 #include <iomanip>
 #include <fstream>
