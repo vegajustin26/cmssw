@@ -158,7 +158,7 @@ void Sector::addProc(string procType,string procName) {
       ME_.push_back(new MatchEngine(procName,settings_,globals_,isector_));
       Processes_[procName]=ME_.back();
     } else if (procType=="MatchCalculator:"||
-	       procType=="DiskMatchCalculator:") { //FIXME should not be used in configurations
+	       procType=="DiskMatchCalculator:") { //TODO should not be used in configurations
       MC_.push_back(new MatchCalculator(procName,settings_,globals_,isector_));
       Processes_[procName]=MC_.back();
     } else if (procType=="MatchProcessor:") {

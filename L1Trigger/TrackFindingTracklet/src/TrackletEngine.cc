@@ -80,7 +80,7 @@ void TrackletEngine::execute() {
     int start=lookupbits.bits(4,nbits-4);
     int next=lookupbits.bits(3,1);
     
-    if ((iSeed_==4 || iSeed_==5)&&innervmstub.stub().first->disk().value()<0) { //FIXME - need to store negative disk
+    if ((iSeed_==4 || iSeed_==5)&&innervmstub.stub().first->disk().value()<0) { //TODO - need to store negative disk
       start+=4;
     }
     int last=start+next;

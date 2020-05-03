@@ -478,7 +478,7 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub, L1TStub* innerSt
       if (iphiproj[i]<=0) continue;
       
       //Adjust bits for r and z projection depending on layer
-      if (lproj_[i]<=3) {  //FIXME clean up logic
+      if (lproj_[i]<=3) {  //TODO clean up logic
 	iphiproj[i]>>=(settings_->nphibitsstub(5)-settings_->nphibitsstub(lproj_[i]-1));
       }
       else {

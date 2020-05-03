@@ -232,7 +232,7 @@ std::string Tracklet::vmstrlayer(int layer, unsigned int allstubindex) {
   // top 5 bits of rinv and shifted to be positive
   int irinvvm = 16+(tmp_irinv>>(nbits_irinv-5));
   
-  if (settings_->extended() && (irinvvm>31)) { //FIXME - shoud not need this
+  if (settings_->extended() && (irinvvm>31)) { //TODO - displaced tracking should protect against this
     edm::LogPrint("Tracklet") << "Warning irinvvm too large:"<<irinvvm;
     irinvvm=31;
   }

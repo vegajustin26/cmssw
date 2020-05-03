@@ -123,7 +123,7 @@ void TrackDerTable::addEntry(unsigned int layermask, unsigned int diskmask, int 
       edm::LogPrint("Tracklet") << "Duplicate entry:  layermask=" << layermask << " diskmaks=" << diskmask;
     }
 
-    assert(address == -1);  //FIXME Should not already have this one!
+    assert(address == -1);
 
     LayerDiskMem_[layerdiskaddress] = nextLayerDiskValue_;
 
@@ -266,7 +266,6 @@ void TrackDerTable::fillTable(const Settings* settings) {
 
       double delta = 0.1;
 
-      //FIXME should be merged in calculateDerivatves???
       for (int i = 0; i < nlayers; i++) {
         if (r[i] > 60.0)
           continue;

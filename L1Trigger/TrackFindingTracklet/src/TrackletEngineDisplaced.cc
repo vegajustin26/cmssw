@@ -277,7 +277,7 @@ void TrackletEngineDisplaced::execute() {
 	  if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << getName()<<"["<<iSector_<<"] Disk-disk pair";
 
 	  int lookupbits=firstvmstub.vmbits().value()&511;
-	  bool negdisk=firstvmstub.stub().first->disk().value()<0; //FIXME
+	  bool negdisk=firstvmstub.stub().first->disk().value()<0;
 	  int rdiffmax=(lookupbits>>6);	
 	  int newbin=(lookupbits&63);
 	  int bin=newbin/8;

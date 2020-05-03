@@ -235,7 +235,7 @@ double Stub::zapprox() const {
   int sign=1;
   if (disk_.value()<0) sign=-1;
   if (sign<0) {
-    return (z_.value()+1)*settings_->kz()+sign*settings_->zmean(abs(disk_.value())-1);  //FIXME Not sure why this is needed to get agreement with integer calculations
+    return (z_.value()+1)*settings_->kz()+sign*settings_->zmean(abs(disk_.value())-1);  //Should understand why this is needed to get agreement with integer calculations
   } else {
     return z_.value()*settings_->kz()+sign*settings_->zmean(abs(disk_.value())-1);
   }

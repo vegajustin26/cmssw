@@ -465,7 +465,7 @@ void TrackletProcessor::execute() {
 
 	    
 	    int lookupbits=(int)innervmstub.vmbits().value();
-	    bool negdisk=innervmstub.stub().first->disk().value()<0; //FIXME
+	    bool negdisk=innervmstub.stub().first->disk().value()<0; //TODO - need to store negative disk
 	    int rdiffmax=(lookupbits>>6);	
 	    int newbin=(lookupbits&63);
 	    int bin=newbin/8;
