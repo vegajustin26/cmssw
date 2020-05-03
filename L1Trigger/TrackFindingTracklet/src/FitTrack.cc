@@ -224,7 +224,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<std::pair<Stub*,L1T
     
     TrackDerTable* derTablePtr= new TrackDerTable(settings_);
     
-    derTablePtr->readPatternFile(settings_->fitpatternfile());
+    derTablePtr->readPatternFile(settings_->fitPatternFile());
     derTablePtr->fillTable(settings_);
     edm::LogVerbatim("Tracklet") << "Number of entries in derivative table: " << derTablePtr->getEntries();
     assert(derTablePtr->getEntries()!=0);

@@ -1,5 +1,4 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEventProcessor.h"
-#include "L1Trigger/TrackFindingTracklet/interface/HistImp.h"
 #include "L1Trigger/TrackFindingTracklet/interface/StubVariance.h"
 
 #include <iomanip>
@@ -12,7 +11,11 @@ TrackletEventProcessor::~TrackletEventProcessor() {
     delete sectors_[i];
   }
   delete globals_;
-  
+
+  if (settings_->bookHistos()) {
+    histimp_->close();
+  }
+
 }
     
 void TrackletEventProcessor::init(const Settings* theSettings) {
@@ -57,33 +60,34 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   const Settings& settings=*settings_;
   Globals* globals=globals_;
 
+  if (settings_->writeVerilog() || settings_->writeHLS()) {
 #include "../plugins/WriteInvTables.icc"
 #include "../plugins/WriteDesign.icc"
-
-  HistImp* histimp;
-  if (settings_->bookHistos()) {
-    histimp = new HistImp;
-    histimp->init();
-    histimp->bookLayerResidual();
-    histimp->bookDiskResidual();
-    histimp->bookTrackletParams();
-    histimp->bookSeedEff();
+  }
     
-    globals_->histograms()=histimp;
+  if (settings_->bookHistos()) {
+    histimp_ = new HistImp;
+    histimp_->init();
+    histimp_->bookLayerResidual();
+    histimp_->bookDiskResidual();
+    histimp_->bookTrackletParams();
+    histimp_->bookSeedEff();
+    
+    globals_->histograms()=histimp_;
   }
 
   
   // create the sector processors (1 sector processor = 1 board)
-  sectors_=new Sector*[settings_->NSector()];
+  sectors_ = new Sector*[settings_->NSector()];
   
   for (unsigned int i=0;i<settings_->NSector();i++) {
-    sectors_[i]=new Sector(i,settings_,globals_);
+    sectors_[i] = new Sector(i,settings_,globals_);
   }  
-  
+
+  // get the memory modules
   edm::LogVerbatim("Tracklet") << "Will read memory modules file";
   
-  string memfile="../data/memorymodules_"+settings_->geomext()+".dat"; //fixme
-  ifstream inmem(memfile.c_str());
+  ifstream inmem(settings_->memoryModulesFile().c_str());
   assert(inmem.good());
   
   while (inmem.good()){
@@ -98,10 +102,10 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
     }
   }
   
+  // get the processing modules
   edm::LogVerbatim("Tracklet") << "Will read processing modules file";
   
-  string procfile="../data/processingmodules_"+settings_->geomext()+".dat"; //fixme
-  ifstream inproc(procfile.c_str());
+  ifstream inproc(settings_->processingModulesFile().c_str());
   assert(inproc.good());
   
   while (inproc.good()){
@@ -115,11 +119,11 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
       sectors_[i]->addProc(procType,procName);
     }
   }
-  
+
+  // get the wiring information 
   edm::LogVerbatim("Tracklet") << "Will read wiring information";
   
-  string wirefile="../data/wires_"+settings_->geomext()+".dat"; //fixme 
-  ifstream inwire(wirefile.c_str());
+  ifstream inwire(settings_->wiresFile().c_str());
   assert(inwire.good());
   
   while (inwire.good()){
@@ -144,8 +148,9 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
       sectors_[i]->addWire(mem,procin,procout);
     } 
   }
-  
-  ifstream indtc("../data/dtclinklayerdisk.dat"); //FIXME
+
+  // get the DTC/cabling information 
+  ifstream indtc(settings_->DTCLinkLayerDiskFile());
   assert(indtc.good());
   string dtc;
   indtc >> dtc;
@@ -161,7 +166,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
     indtc >> dtc;
   }
   
-  cabling_.init("../data/calcNumDTCLinks.txt","../data/modules_T5v3_27SP_nonant_tracklet.dat"); //FIXME
+  cabling_.init(settings_->DTCLinkFile(),settings_->moduleCablingFile());
   
 }
 
@@ -184,20 +189,16 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   }
   cleanTimer_.stop();
   
-  //bool hitlayer[6];
-  //bool hitdisk[5];
   int stublayer[6];
   int stublayer1[6][settings_->NSector()];
   int stubdisk1[5][settings_->NSector()];
   for (unsigned int ll=0;ll<6;ll++){
-    //hitlayer[ll]=false;
     stublayer[ll]=0;
     for (unsigned int jj=0;jj<settings_->NSector();jj++){
       stublayer1[ll][jj]=0;
     }
   }
   for (unsigned int ll=0;ll<5;ll++){
-    //hitdisk[ll]=false;
     for (unsigned int jj=0;jj<settings_->NSector();jj++){
       stubdisk1[ll][jj]=0;
     }
@@ -220,11 +221,9 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     
     L1TStub stub=ev.stub(j);
     
-    if (settings_->debugTracklet()) edm::LogVerbatim("Tracklet") << "Stub: layer="<<stub.layer()+1
-								 <<" disk="<<stub.disk()  
-								 <<" phi="<<stub.phi()
-								 <<" r="<<stub.r()
-								 <<" z="<<stub.z();
+    if (settings_->debugTracklet()) {
+      edm::LogVerbatim("Tracklet") << "Stub: layer="<<stub.layer()+1<<" disk="<<stub.disk()<<" phi="<<stub.phi()<<" r="<<stub.r()<<" z="<<stub.z();
+    }
     
     double phi=stub.phi();
     phi+=0.5*settings_->dphisectorHG();
@@ -234,9 +233,6 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     assert(isector<settings_->NSector());
     
     if (stub.layer()<7) {
-      
-      //hitlayer[stub.layer()]=true;
-      
       stub.lorentzcor(-40.0/10000.0);
       
       double phi=stub.phi();
@@ -253,7 +249,6 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
       
     } else {
       stubdisk1[abs(stub.disk())-1][isector]++;
-      //hitdisk[abs(stub.disk())-1]=true;
     }
     
     int layer=stub.layer()+1;
@@ -351,15 +346,6 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     }
     	
   }
-  
-  /*
-    for(int ii=0;ii<6;ii++){
-    if (hitlayer[ii]) nlayershit++;
-    if (ii<5) {
-    if (hitdisk[ii]) nlayershit++;
-    }
-    } 
-  */  
   
   if (settings_->writeMem()) {
     for (unsigned int k=0;k<settings_->NSector();k++) {
@@ -567,7 +553,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     }
   }
   PDTimer_.stop();
-  
+    
 }
 
 void TrackletEventProcessor::printSummary() {

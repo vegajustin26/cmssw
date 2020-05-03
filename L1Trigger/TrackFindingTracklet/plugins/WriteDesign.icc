@@ -1,5 +1,3 @@
-
-if (settings.writeVerilog() || settings.writeHLS()) {
   std::map<std::string, std::vector<var_base *> > v;
 
   ////////////////////////////////////////////////////////////////////////////
@@ -648,4 +646,3 @@ if (settings.writeVerilog() || settings.writeHLS()) {
       var_base::Design_print(v, fv, var_base::hls);
     fv.close();
   }
-}

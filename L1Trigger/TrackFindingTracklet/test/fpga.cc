@@ -21,15 +21,9 @@
 #include "../interface/IMATH_TrackletCalculatorOverlap.h"
 
 #include "../interface/slhcevent.h"
-
 #include "../interface/Sector.h"
-//#include "../interface/Cabling.h"
-//#include "../interface/FPGAWord.h"
-//#include "../interface/CPUTimer.h"
-//#include "../interface/StubVariance.h"
 #include "../interface/Settings.h"
 #include "../interface/TrackletEventProcessor.h"
-
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -60,6 +54,30 @@ int main(const int argc, const char** argv)
 
   Trklet::Settings settings;
 
+  // ---------------------------------------------------------
+  // these are options that are read from python configuration files for the CMSSW running, set manually for the standalone version
+
+  settings.setDTCLinkFile("../data/calcNumDTCLinks.txt"); 
+  settings.setModuleCablingFile("../data/modules_T5v3_27SP_nonant_tracklet.dat");
+  settings.setDTCLinkLayerDiskFile("../data/dtclinklayerdisk.dat");
+  settings.setFitPatternFile("../data/fitpattern.txt");
+  settings.setProcessingModulesFile("../data/processingmodules_"+settings.geomext()+".dat");
+  settings.setMemoryModulesFile("../data/memorymodules_"+settings.geomext()+".dat");
+  settings.setWiresFile("../data/wires_"+settings.geomext()+".dat");
+
+  //if (settings.debugTracklet()) {
+  edm::LogVerbatim("Tracklet") << "cabling DTC links :     " << settings.DTCLinkFile();
+  edm::LogVerbatim("Tracklet") << "module cabling :     " << settings.moduleCablingFile();
+  edm::LogVerbatim("Tracklet") << "DTC link layer disk :     " <<settings.DTCLinkLayerDiskFile();
+
+  edm::LogVerbatim("Tracklet") << "fit pattern :     " << settings.fitPatternFile();
+  edm::LogVerbatim("Tracklet") << "process modules : " << settings.processingModulesFile();
+  edm::LogVerbatim("Tracklet") << "memory modules :  " << settings.memoryModulesFile();
+  edm::LogVerbatim("Tracklet") << "wires          :  " << settings.wiresFile();
+  //}
+
+  // ---------------------------------------------------------
+  
   TrackletEventProcessor eventProcessor;
 
   eventProcessor.init(&settings);
@@ -89,9 +107,9 @@ int main(const int argc, const char** argv)
   ofstream outpars;
   if (settings.writeMonitorData("Pars")) outpars.open("trackpars.txt");
 
-
-//Open file to hold ROOT-Tree
-// --------------------------
+  
+  // Open file to hold ROOT-Tree
+  // --------------------------
 #ifdef USEROOT
   TFile  *hfile = new TFile("myTest.root","RECREATE","Simple ROOT Ntuple"); 
   TTree *trackTree = new TTree("FPGAEvent","L1Track Tree");
@@ -99,12 +117,11 @@ int main(const int argc, const char** argv)
   fpgaEvent->reset();
   trackTree->Branch("Event",&fpgaEvent);
 #endif
-// --------------------------
-
-
-
-// Define Sectors (boards)	 
-
+  // --------------------------
+  
+  
+  // Define Sectors (boards)
+  
   if (settings.writeMonitorData("Seeds")) {
     ofstream fout("seeds.txt", ofstream::out);
     fout.close();
@@ -112,14 +129,12 @@ int main(const int argc, const char** argv)
 
   for (int eventnum=0;eventnum<nevents&&!in->eof();eventnum++){
     
-    //readTimer.start();
     SLHCEvent ev(*in);
-    //readTimer.stop();
-
+    
     L1SimTrack simtrk;
 
-// setup ROOT Tree and Add Monte Carlo tracks to the ROOT-Tree Event
-// -----------------------------------------------------------------
+    // setup ROOT Tree and Add Monte Carlo tracks to the ROOT-Tree Event
+    // -----------------------------------------------------------------
 #ifdef USEROOT
     fpgaEvent->reset();
     fpgaEvent->nevt = eventnum;
@@ -129,8 +144,7 @@ int main(const int argc, const char** argv)
       fpgaEvent->mcTracks.push_back(*mcTrack);
     }
 #endif
-// ------------------------------------------------------------------	 
-
+    // ------------------------------------------------------------------	 
     
 
     if (settings.writeMonitorData("Seeds")) {
@@ -200,7 +214,7 @@ int main(const int argc, const char** argv)
 #endif
 // ------------------------------
 
-
+    
     if (settings.writeMonitorData("MatchEff")) { 
       static ofstream out("matcheff.txt");
       int nsim=0;
@@ -226,7 +240,6 @@ int main(const int argc, const char** argv)
 	for (int seed=-1;seed<8;seed++){
 	  bool eff=false;
 	  bool effloose=false;
-	  //int layerdisk=0;
 	  int itrackmatch=-1;
 	  for (unsigned int itrack=0;itrack<tracks.size();itrack++) {
 	    std::vector<L1TStub*> stubs=tracks[itrack]->stubs();
@@ -302,16 +315,6 @@ int main(const int argc, const char** argv)
 
   }
 
-
-  /*
-  edm::LogVerbatim("Tracklet") << "Process             Times called   Average time (ms)      Total time (s)";
-  edm::LogVerbatim("Tracklet") << "Reading               "
-       <<setw(10)<<readTimer.ntimes()
-       <<setw(20)<<setprecision(3)<<readTimer.avgtime()*1000.0
-       <<setw(20)<<setprecision(3)<<readTimer.tottime();
-  */
-
   eventProcessor.printSummary();
-
 
 } 

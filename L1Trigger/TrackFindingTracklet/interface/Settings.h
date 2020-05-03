@@ -26,6 +26,24 @@ namespace Trklet{
 
     }
 
+    // processing & memory modules, wiring, etc.
+    std::string DTCLinkFile() const { return DTCLinkFile_; }
+    std::string moduleCablingFile() const { return moduleCablingFile_; }
+    std::string DTCLinkLayerDiskFile() const { return DTCLinkLayerDiskFile_; }
+    std::string fitPatternFile() const { return fitPatternFile_; }
+    std::string processingModulesFile() const { return processingModulesFile_; }
+    std::string memoryModulesFile() const { return memoryModulesFile_; }
+    std::string wiresFile() const { return wiresFile_; }
+
+    void setDTCLinkFile(std::string DTCLinkFileName) { DTCLinkFile_ = DTCLinkFileName; }
+    void setModuleCablingFile(std::string moduleCablingFileName) { moduleCablingFile_ = moduleCablingFileName; }
+    void setDTCLinkLayerDiskFile(std::string DTCLinkLayerDiskFileName) { DTCLinkLayerDiskFile_ = DTCLinkLayerDiskFileName; }
+    void setFitPatternFile(std::string fitPatternFileName) { fitPatternFile_ = fitPatternFileName; }
+    void setProcessingModulesFile(std::string processingModulesFileName) { processingModulesFile_ = processingModulesFileName; }
+    void setMemoryModulesFile(std::string memoryModulesFileName) { memoryModulesFile_ = memoryModulesFileName; }
+    void setWiresFile(std::string wiresFileName) { wiresFile_ = wiresFileName; }
+
+    
     unsigned int nzbitsstub(unsigned int layerdisk) const {return nzbitsstub_[layerdisk];}
     unsigned int nphibitsstub(unsigned int layerdisk) const {return nphibitsstub_[layerdisk];}
     unsigned int nrbitsstub(unsigned int layerdisk) const {return nrbitsstub_[layerdisk];}
@@ -158,9 +176,6 @@ namespace Trklet{
     bool extended() const {return extended_;}
     void setExtended(bool extended) {extended_ = extended;}
     
-    std::string fitpatternfile() const {return fitpatternfile_;}
-    void setFitpatternfile(std::string fitpatternfile) {fitpatternfile_ = fitpatternfile;}
-
     std::string skimfile() const {return skimfile_;}
     void setSkimfile(std::string skimfile) {skimfile_ = skimfile;}
 
@@ -279,6 +294,14 @@ namespace Trklet{
     
   private:
 
+    std::string DTCLinkFile_; 
+    std::string moduleCablingFile_;
+    std::string DTCLinkLayerDiskFile_;
+    std::string fitPatternFile_;
+    std::string processingModulesFile_;
+    std::string memoryModulesFile_;
+    std::string wiresFile_;
+    
     unsigned int NSector_{9};
 
     double rcrit_{55.0};
@@ -635,8 +658,6 @@ namespace Trklet{
     unsigned int nHelixPar_{4};   // 4 or 5 param helix fit
     bool extended_{false}; // turn on displaced tracking
     
-    std::string fitpatternfile_{"../data/fitpattern.txt"}; // list of the different hit patterns for fits (read in through python config for CMSSW running)
-
     std::string skimfile_{""}; //if not empty events will be written out in ascii format to this file
     
     //constants derivative from the above - TODO should be calculated in Settings.h, not set externally

@@ -1,5 +1,5 @@
-if (settings.writeInvTable() || settings.writeHLSInvTable()) {
-  cout << " Writing Inverse Tables \n";
+  edm::LogVerbatim("Tracklet") << " Writing Inverse Tables";
+  
   ofstream finv;
   void (*writeLUT)(const var_inv&, ofstream&) = NULL;
   string extension = "";
@@ -81,4 +81,4 @@ if (settings.writeInvTable() || settings.writeHLSInvTable()) {
   finv.open("L2B1_invt." + extension);
   writeLUT(globals->ITC_L2B1()->invt, finv);
   finv.close();
-}
+

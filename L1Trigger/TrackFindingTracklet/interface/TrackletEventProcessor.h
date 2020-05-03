@@ -6,7 +6,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Cabling.h"
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
-
+#include "L1Trigger/TrackFindingTracklet/interface/HistImp.h"
 
 namespace Trklet {
 
@@ -33,6 +33,8 @@ namespace Trklet {
     Globals* globals_{};
     
     Sector** sectors_{};
+
+    HistImp* histimp_{};
     
     int eventnum_={0};
     

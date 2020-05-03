@@ -256,16 +256,25 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 
   DTCLinkLayerDiskFile = iConfig.getParameter<edm::FileInPath>("DTCLinkLayerDiskFile");
 
-  
-  // --------------------------------------------------------------------------------
-  // get all constants
-  // --------------------------------------------------------------------------------
-
   extended_ = iConfig.getUntrackedParameter<bool>("Extended", false);
   nHelixPar_ = iConfig.getUntrackedParameter<unsigned int>("Hnpar", 4);
+
+  // --------------------------------------------------------------------------------
+  // set options in Settings based on inputs from configuration files
+  // --------------------------------------------------------------------------------
+
   settings.setExtended(extended_);
   settings.setNHelixPar(nHelixPar_);
 
+  settings.setDTCLinkFile(DTCLinkFile.fullPath()); 
+  settings.setModuleCablingFile(moduleCablingFile.fullPath());
+  settings.setDTCLinkLayerDiskFile(DTCLinkLayerDiskFile.fullPath());
+  settings.setFitPatternFile(fitPatternFile.fullPath());
+  settings.setProcessingModulesFile(processingModulesFile.fullPath());
+  settings.setMemoryModulesFile(memoryModulesFile.fullPath());
+  settings.setWiresFile(wiresFile.fullPath());
+
+  // initialize the tracklet event processing (this sets all the processing & memory modules, wiring, etc)  
   eventProcessor.init(&settings);
 
   eventnum = 0;
@@ -273,111 +282,16 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     asciiEventOut_.open(asciiEventOutName_.c_str());
   }
 
-  /*
   if (settings.debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "cabling DTC links :     " << DTCLinkFile.fullPath();
     edm::LogVerbatim("Tracklet") << "module cabling :     " << moduleCablingFile.fullPath();
     edm::LogVerbatim("Tracklet") << "DTC link layer disk :     " << DTCLinkLayerDiskFile.fullPath();
-  }
 
-  cabling.init(DTCLinkFile.fullPath().c_str(), moduleCablingFile.fullPath().c_str());
-
-  ifstream in(DTCLinkLayerDiskFile.fullPath().c_str());
-  string dtc;
-  in >> dtc;
-  while (in.good()) {
-    vector<int> tmp;
-    dtclayerdisk[dtc] = tmp;
-    int layerdisk; 
-    in >> layerdisk;
-    while (layerdisk > 0) {
-      dtclayerdisk[dtc].push_back(layerdisk);
-      in >> layerdisk;
-    }
-    in >> dtc;
-  }
-  
-  for (unsigned int i = 0; i < settings.NSector(); i++) {
-    sectors[i] = new Sector(i,&settings,globals);
-  }
-
-  if (settings.debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "fit pattern :     " << fitPatternFile.fullPath();
     edm::LogVerbatim("Tracklet") << "process modules : " << processingModulesFile.fullPath();
     edm::LogVerbatim("Tracklet") << "memory modules :  " << memoryModulesFile.fullPath();
     edm::LogVerbatim("Tracklet") << "wires          :  " << wiresFile.fullPath();
   }
-
-  if (settings.debugTracklet())
-    edm::LogVerbatim("Tracklet") << "Will read memory modules file" ;
-
-  // Read list of memory modules (format: ModuleType: ModuleInstance)
-  ifstream inmem(memoryModulesFile.fullPath().c_str());
-  assert(inmem.good());
-
-  while (inmem.good()) {
-    string memType, memName, size;
-    inmem >> memType >> memName >> size;
-    if (!inmem.good())
-      continue;
-    if (settings.writetrace()) {
-      edm::LogVerbatim("Tracklet") << "Read memory: " << memType << " " << memName;
-    }
-    for (unsigned int i = 0; i < settings.NSector(); i++) {
-      sectors[i]->addMem(memType, memName);
-    }
-  }
-
-  if (settings.debugTracklet())
-    edm::LogVerbatim("Tracklet") << "Will read processing modules file";
-
-  // Read list of processing modules (format: ModuleType: ModuleInstance)
-  ifstream inproc(processingModulesFile.fullPath().c_str());
-  assert(inproc.good());
-
-  while (inproc.good()) {
-    string procType, procName;
-    inproc >> procType >> procName;
-    if (!inproc.good())
-      continue;
-    if (settings.writetrace()) {
-      edm::LogVerbatim("Tracklet") << "Read process: " << procType << " " << procName;
-    }
-    for (unsigned int i = 0; i < settings.NSector(); i++) {
-      sectors[i]->addProc(procType, procName);
-    }
-  }
-
-  if (settings.debugTracklet())
-    edm::LogVerbatim("Tracklet") << "Will read wiring information";
-
-  // Reading wiring map (format: Mem  input=> ProcModuleWrite.pinX  output=>ProcModuleRead.pinY)
-  ifstream inwire(wiresFile.fullPath().c_str());
-  assert(inwire.good());
-
-  while (inwire.good()) {
-    string line;
-    getline(inwire, line);
-    if (!inwire.good())
-      continue;
-    if (settings.writetrace()) {
-      edm::LogVerbatim("Tracklet") << "Line : " << line;
-    }
-    stringstream ss(line);
-    string mem, tmp1, procin, tmp2, procout;
-    ss >> mem >> tmp1 >> procin;
-    if (procin == "output=>") {
-      procin = "";
-      ss >> procout;
-    } else {
-      ss >> tmp2 >> procout;
-    }
-
-    for (unsigned int i = 0; i < settings.NSector(); i++) {
-      sectors[i]->addWire(mem, procin, procout);
-    }
-  }
-  */
 
 }
 
@@ -387,13 +301,6 @@ L1FPGATrackProducer::~L1FPGATrackProducer() {
   if (asciiEventOutName_ != "") {
     asciiEventOut_.close();
   }
-  /*
-  if (settings.bookHistos()) {
-    histimp->close();
-  }
-
-  delete[] sectors;
-  */
 }
 
 //////////
@@ -457,8 +364,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   ev.setEventNum(eventnum);
   ev.setIPx(bsPosition.x());
   ev.setIPy(bsPosition.y());
-
-  //globals->event()=&ev;
 
   // tracking particles
   edm::Handle<std::vector<TrackingParticle> > TrackingParticleHandle;
@@ -726,7 +631,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
       float stub_bend = tempStubPtr->bendFE();
       float stub_pt = -1;
       if (layer > 999 && posStub.z() < 0.0) {
-        //stub_pt=-stub_pt;
         stub_bend = -stub_bend;
       }
       if (irphi.size() != 0) {
@@ -773,9 +677,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     fout.close();
   }
 
-  //  bool first = true;
-
-  //std::vector<Track*> tracks;
   std::vector<Trklet::Track*>& tracks=eventProcessor.tracks();
 
   int selectmu = 0;
@@ -791,7 +692,8 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   int nlayershit = 0;
 
-  //#include "FPGA.icc"
+
+  // this performs the actual tracklet event processing
   eventProcessor.event(ev);
 
   
@@ -822,8 +724,8 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     unsigned int trksector = track->sector();
     unsigned int trkseed = (unsigned int)abs(track->seed());
 
-    aTrack.setPhiSector(trksector);    //tracklet phi sector
-    aTrack.setTrackSeedType(trkseed);  //tracklet seed
+    aTrack.setPhiSector(trksector);
+    aTrack.setTrackSeedType(trkseed);
 
     vector<Trklet::L1TStub*> stubptrs = track->stubs();
     vector<Trklet::L1TStub> stubs;
@@ -856,10 +758,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   }
 
   iEvent.put(std::move(L1TkTracksForOutput), "Level1TTTracks");
-
-  //for (unsigned int k = 0; k < settings.NSector(); k++) {
-  //sectors[k]->clean();
-  //}
 
 }  /// End of produce()
 
