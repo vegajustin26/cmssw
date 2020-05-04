@@ -15,15 +15,17 @@ namespace Trklet {
 
   class Settings {
   public:
-    Settings() {
-      //Uncomment to run the hybrid algorithm
-      #ifdef CMSSW_GIT_HASH
-      #define USEHYBRID
-      #endif
+    Settings(){
+//Uncomment to run the hybrid algorithm
+#ifdef CMSSW_GIT_HASH
+#define USEHYBRID
+#endif
     }
 
     // processing & memory modules, wiring, etc.
-    std::string DTCLinkFile() const { return DTCLinkFile_; }
+    std::string DTCLinkFile() const {
+      return DTCLinkFile_;
+    }
     std::string moduleCablingFile() const { return moduleCablingFile_; }
     std::string DTCLinkLayerDiskFile() const { return DTCLinkLayerDiskFile_; }
     std::string fitPatternFile() const { return fitPatternFile_; }

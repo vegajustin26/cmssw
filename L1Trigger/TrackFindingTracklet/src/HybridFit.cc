@@ -12,7 +12,7 @@ using namespace Trklet;
 HybridFit::HybridFit(unsigned int iSector, const Settings* settings, Globals* globals) {
   iSector_ = iSector;
   settings_ = settings;
-  globals_ = globals;  
+  globals_ = globals;
 }
 
 void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>& trackstublist) {
@@ -124,7 +124,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
 
   // KF wants global phi0, not phi0 measured with respect to lower edge of sector (Tracklet convention).
   kfphi0 = kfphi0 + iSector_ * 2 * M_PI / settings_->NSector() - 0.5 * settings_->dphisectorHG();
-  
+
   if (kfphi0 > M_PI)
     kfphi0 -= 2 * M_PI;
   if (kfphi0 < -M_PI)
