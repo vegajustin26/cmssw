@@ -54,7 +54,7 @@ namespace Trklet {
     int duplicate() const { return duplicate_; }
     int sector() const { return sector_; }
     
-    double pt(const Settings* settings, double bfield = 3.811202) const { return (0.3 * bfield / 100.0) / (irinv_ * settings->krinvpars()); }
+    double pt(const Settings* settings) const { return ( settings->c() * settings->bfield() / 100.0) / (irinv_ * settings->krinvpars()); }
 
     double phi0(const Settings* settings) const;
 

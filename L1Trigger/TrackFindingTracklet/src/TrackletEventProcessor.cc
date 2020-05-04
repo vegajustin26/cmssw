@@ -1,9 +1,17 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEventProcessor.h"
 #include "L1Trigger/TrackFindingTracklet/interface/StubVariance.h"
 
+
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
+#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
+#include "L1Trigger/TrackFindingTracklet/interface/HistImp.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Track.h"
+
 #include <iomanip>
 
 using namespace Trklet;
+using namespace std;
 
 TrackletEventProcessor::~TrackletEventProcessor() {
 
@@ -21,7 +29,7 @@ TrackletEventProcessor::~TrackletEventProcessor() {
 void TrackletEventProcessor::init(const Settings* theSettings) {
 
   settings_ = theSettings;
-  
+
   globals_ = new Globals();
   globals_->init(settings_);
   

@@ -1,15 +1,22 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_TrackletEventProcessor_h
 #define L1Trigger_TrackFindingTracklet_interface_TrackletEventProcessor_h
 
-#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/CPUTimer.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Cabling.h"
-#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
-#include "L1Trigger/TrackFindingTracklet/interface/HistImp.h"
+
+#include <map>
+#include <vector>
+#include <string>
 
 namespace Trklet {
 
+  class Settings;
+  class SLHCEvent;
+  class Globals;
+  class Sector;
+  class HistImp;
+  class Track;
+  
   class TrackletEventProcessor {
     
   public:
@@ -57,7 +64,7 @@ namespace Trklet {
 
     std::vector<Track*> tracks_;
 
-    std::map<string,vector<int> > dtclayerdisk_;
+    std::map<std::string,std::vector<int> > dtclayerdisk_;
     
   };
   

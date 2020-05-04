@@ -3,11 +3,7 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
 
-#include "L1Trigger/TrackFindingTracklet/interface/CandidateMatchMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/FullMatchMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/AllProjectionsMemory.h"
-
+#include <string>
 #include <vector>
 
 namespace Trklet {
@@ -17,6 +13,10 @@ namespace Trklet {
   class Stub;
   class L1TStub;
   class Tracklet;
+  class AllStubsMemory;
+  class AllProjectionsMemory;
+  class CandidateMatchMemory;
+  class FullMatchMemory;
 
   class MatchCalculator : public ProcessBase {
     

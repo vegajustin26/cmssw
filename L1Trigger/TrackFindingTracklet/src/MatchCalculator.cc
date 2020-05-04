@@ -1,6 +1,13 @@
 #include "L1Trigger/TrackFindingTracklet/interface/MatchCalculator.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
+#include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
+#include "L1Trigger/TrackFindingTracklet/interface/CandidateMatchMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/FullMatchMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/AllProjectionsMemory.h"
+
+
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 

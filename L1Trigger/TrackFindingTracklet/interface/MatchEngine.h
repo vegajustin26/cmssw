@@ -2,11 +2,6 @@
 #define L1Trigger_TrackFindingTracklet_interface_MatchEngine_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculator.h"
-#include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/VMProjectionsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/CandidateMatchMemory.h"
-
 #include <vector>
 
 namespace Trklet {
@@ -14,6 +9,9 @@ namespace Trklet {
   class Settings;
   class Globals;
   class MemoryBase;
+  class VMStubsMEMemory;
+  class VMProjectionsMemory;
+  class CandidateMatchMemory;
 
   class MatchEngine:public ProcessBase {
     

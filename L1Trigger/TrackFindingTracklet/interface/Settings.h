@@ -142,6 +142,9 @@ namespace Trklet{
     
     double ptcut() const {return ptcut_;}
     double rinvcut() const {return 0.01*c_*bfield_/ptcut_;} //0.01 to convert to cm-1
+
+    double c() const {return c_;}
+    double bfield() const {return bfield_;}
     
     double rinvmax() const { return 0.01*c_*bfield_/ptmin_;}
     

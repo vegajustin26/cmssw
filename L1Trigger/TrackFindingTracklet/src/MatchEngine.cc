@@ -1,6 +1,11 @@
 #include "L1Trigger/TrackFindingTracklet/interface/MatchEngine.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
+#include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMProjectionsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/CandidateMatchMemory.h"
+
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 

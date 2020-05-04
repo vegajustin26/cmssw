@@ -2,46 +2,64 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_Sector_h
 #define L1Trigger_TrackFindingTracklet_interface_Sector_h
 
-#include "L1Trigger/TrackFindingTracklet/interface/InputLinkMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/StubTripletsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TrackletParametersMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TrackletProjectionsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/AllProjectionsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/VMProjectionsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/CandidateMatchMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/FullMatchMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TrackFitMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/CleanTrackMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 
-#include "L1Trigger/TrackFindingTracklet/interface/VMRouter.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TrackletEngine.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TrackletEngineDisplaced.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TripletEngine.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculator.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TrackletProcessor.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculatorDisplaced.h"
-#include "L1Trigger/TrackFindingTracklet/interface/ProjectionRouter.h"
-#include "L1Trigger/TrackFindingTracklet/interface/MatchEngine.h"
-#include "L1Trigger/TrackFindingTracklet/interface/MatchCalculator.h"
-#include "L1Trigger/TrackFindingTracklet/interface/MatchProcessor.h"
-#include "L1Trigger/TrackFindingTracklet/interface/FitTrack.h"
-#include "L1Trigger/TrackFindingTracklet/interface/PurgeDuplicate.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Util.h"
+#include<string>
+#include<map>
+#include<vector>
+#include<set>
+#include<fstream>
+
 
 namespace Trklet {
 
   class Settings;
+  class Globals;
+  class ProcessBase;
+  class MemoryBase;
+  class Tracklet;
+  class Track;
+  class Stub;
 
+  //Memory modules
+  class InputLinkMemory;
+  class AllStubsMemory;
+  class VMStubsTEMemory;
+  class VMStubsMEMemory;
+  class StubPairsMemory;
+  class StubTripletsMemory;
+  class TrackletParametersMemory;
+  class TrackletProjectionsMemory;
+  class AllProjectionsMemory;
+  class VMProjectionsMemory;
+  class CandidateMatchMemory;
+  class FullMatchMemory;
+  class TrackFitMemory;
+  class CleanTrackMemory;
+
+  //Processing modules
+  class VMRouter;
+  class TrackletEngine;
+  class TrackletEngineDisplaced;
+  class TripletEngine;
+  class TrackletCalculator;
+  class TrackletProcessor;
+  class TrackletCalculatorDisplaced;
+  class ProjectionRouter;
+  class MatchEngine;
+  class MatchCalculator;
+  class MatchProcessor;
+  class FitTrack;
+  class PurgeDuplicate;
+
+  
   class Sector{
   public:
     Sector(unsigned int i, const Settings* settings, Globals* globals);
     ~Sector();
     
-    bool addStub(L1TStub stub, std::string dtc);
+    bool addStub(L1TStub stub, std::string dtc); //TODO - should be pointer or string
 
     // Creates all required memory modules based on wiring map (args: module type, module instance)
     void addMem(std::string memType,std::string memName);
@@ -88,7 +106,7 @@ namespace Trklet {
     void executeFT();
     void executePD(std::vector<Track*>& tracks);
     
-    bool foundTrack(ofstream& outres, L1SimTrack simtrk);
+    bool foundTrack(std::ofstream& outres, L1SimTrack simtrk);
 
     std::vector<Tracklet*> getAllTracklets();
     std::vector<std::pair<Stub*,L1TStub*> > getStubs() const;

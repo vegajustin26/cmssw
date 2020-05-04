@@ -21,7 +21,7 @@
 #include "../interface/IMATH_TrackletCalculatorOverlap.h"
 
 #include "../interface/slhcevent.h"
-#include "../interface/Sector.h"
+#include "../interface/Track.h"
 #include "../interface/Settings.h"
 #include "../interface/TrackletEventProcessor.h"
 
@@ -44,6 +44,7 @@
 // --------------------------------
 
 using namespace Trklet;
+using namespace std;
 
 int main(const int argc, const char** argv)
 {

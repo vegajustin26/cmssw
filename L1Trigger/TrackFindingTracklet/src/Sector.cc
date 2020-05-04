@@ -3,6 +3,38 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
+#include "L1Trigger/TrackFindingTracklet/interface/InputLinkMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/StubTripletsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletParametersMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletProjectionsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/AllProjectionsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMProjectionsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/CandidateMatchMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/FullMatchMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackFitMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/CleanTrackMemory.h"
+
+#include "L1Trigger/TrackFindingTracklet/interface/VMRouter.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletEngine.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletEngineDisplaced.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TripletEngine.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculator.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletProcessor.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculatorDisplaced.h"
+#include "L1Trigger/TrackFindingTracklet/interface/ProjectionRouter.h"
+#include "L1Trigger/TrackFindingTracklet/interface/MatchEngine.h"
+#include "L1Trigger/TrackFindingTracklet/interface/MatchCalculator.h"
+#include "L1Trigger/TrackFindingTracklet/interface/MatchProcessor.h"
+#include "L1Trigger/TrackFindingTracklet/interface/FitTrack.h"
+#include "L1Trigger/TrackFindingTracklet/interface/PurgeDuplicate.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Util.h"
+
+
+
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
