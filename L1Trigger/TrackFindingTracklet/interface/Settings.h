@@ -17,9 +17,9 @@ namespace Trklet {
   public:
     Settings() {
       //Uncomment to run the hybrid algorithm
-      //#ifdef CMSSW_GIT_HASH
-      //#define USEHYBRID
-      //#endif
+      #ifdef CMSSW_GIT_HASH
+      #define USEHYBRID
+      #endif
     }
 
     // processing & memory modules, wiring, etc.
