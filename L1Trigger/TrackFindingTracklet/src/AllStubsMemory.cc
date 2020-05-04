@@ -6,10 +6,8 @@ using namespace std;
 using namespace Trklet;
 
 
-AllStubsMemory::AllStubsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+AllStubsMemory::AllStubsMemory(string name, const Settings* const settings, unsigned int iSector) :
   MemoryBase(name, settings, iSector) {
-  phimin_ = phimin;
-  phimax_ = phimax;
   
   //set the layer or disk that the memory is in
   initLayerDisk(3, layer_, disk_);

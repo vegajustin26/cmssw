@@ -9,13 +9,7 @@ using namespace Trklet;
 
 TrackletEngineDisplaced::TrackletEngineDisplaced(string name, const Settings* settings, Globals* global, unsigned int iSector):
   ProcessBase(name,settings,global,iSector){
-    double dphi=2*M_PI/settings_->NSector();
-    phimin_=iSector*dphi;
-    phimax_=phimin_+dphi;
-    if (phimin_>M_PI) phimin_-=2*M_PI;
-    if (phimax_>M_PI) phimax_-=2*M_PI;
-    if (phimin_>phimax_)  phimin_-=2*M_PI;
-    assert(phimax_>phimin_);
+
     stubpairs_.clear();
     firstvmstubs_.clear();
     secondvmstubs_=0;

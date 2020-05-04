@@ -14,7 +14,7 @@ namespace Trklet {
   
   class VMStubsTEMemory : public MemoryBase {
   public:
-    VMStubsTEMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    VMStubsTEMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
     bool addVMStub(VMStubTE vmstub, int bin);
 
@@ -60,8 +60,7 @@ namespace Trklet {
     bool extra_;
     bool extended_; // for the L2L3->D1 and D1D2->L2
     bool isinner_;  // is inner layer/disk for TE purpose
-    double phimin_;
-    double phimax_;
+
     std::vector<bool> vmbendtable_;
     
     std::vector<VMStubTE> stubsvm_;

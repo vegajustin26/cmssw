@@ -5,11 +5,8 @@ using namespace std;
 using namespace Trklet;
 
 
-StubPairsMemory::StubPairsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
-  MemoryBase(name, settings, iSector) {
-  phimin_ = phimin;
-  phimax_ = phimax;
-  }
+StubPairsMemory::StubPairsMemory(string name, const Settings* const settings, unsigned int iSector) :
+  MemoryBase(name, settings, iSector) {}
 
 void StubPairsMemory::writeSP(bool first) {
   std::string fname = "../data/MemPrints/StubPairs/StubPairs_";

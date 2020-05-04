@@ -41,7 +41,10 @@ namespace Trklet {
     
     std::string name_;
     unsigned int iSector_;
-    
+
+    double phimin_;
+    double phimax_;
+
     const Settings* const settings_;
     Globals* globals_;
   };

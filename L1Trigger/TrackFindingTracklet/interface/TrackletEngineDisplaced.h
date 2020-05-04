@@ -30,9 +30,6 @@ namespace Trklet {
   
   private:
     
-    double phimax_;
-    double phimin_;
-    
     int layer1_;
     int layer2_;
     int disk1_;

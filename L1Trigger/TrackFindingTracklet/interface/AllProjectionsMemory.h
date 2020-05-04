@@ -12,7 +12,7 @@ namespace Trklet {
   
   class AllProjectionsMemory : public MemoryBase {
   public:
-    AllProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    AllProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector);
     
     void addTracklet(Tracklet* tracklet) { tracklets_.push_back(tracklet); }
     
@@ -25,8 +25,6 @@ namespace Trklet {
     void writeAP(bool first);
     
   private:
-    double phimin_;
-    double phimax_;
     std::vector<Tracklet*> tracklets_;
     
     int layer_;

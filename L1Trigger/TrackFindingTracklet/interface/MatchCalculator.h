@@ -40,8 +40,6 @@ namespace Trklet {
     int icorrshift_;
     int icorzshift_;
     int phi0shift_;
-    double phimin_;
-    double phimax_;
     double phioffset_;
     
     unsigned int phimatchcut_[12];

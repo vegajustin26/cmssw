@@ -6,10 +6,8 @@
 using namespace std;
 using namespace Trklet;
 
-TrackletProjectionsMemory::TrackletProjectionsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax):
+TrackletProjectionsMemory::TrackletProjectionsMemory(string name, const Settings* const settings, unsigned int iSector):
   MemoryBase(name, settings, iSector) {
-    phimin_ = phimin;
-    phimax_ = phimax;
 
     string subname = name.substr(11, 2);
     if (subname[0] == '_')

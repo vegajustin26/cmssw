@@ -14,7 +14,7 @@ namespace Trklet {
   
   class TrackletProjectionsMemory : public MemoryBase {
   public:
-    TrackletProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    TrackletProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
     void addProj(Tracklet* tracklet);
 
@@ -30,8 +30,7 @@ namespace Trklet {
     int disk() const { return disk_; }
     
   private:
-    double phimin_;
-    double phimax_;
+
     std::vector<Tracklet*> tracklets_;
     
     int layer_;

@@ -66,8 +66,6 @@ namespace Trklet {
     int TCIndex_;
     int layer_;
     int disk_;
-    double phimin_;
-    double phimax_;
     double rproj_[4];
     int lproj_[4];
     double zproj_[3];

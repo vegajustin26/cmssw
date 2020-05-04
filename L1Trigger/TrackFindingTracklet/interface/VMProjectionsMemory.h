@@ -12,7 +12,7 @@ namespace Trklet {
 
   class VMProjectionsMemory : public MemoryBase {
   public:
-    VMProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    VMProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector);
     
     void addTracklet(Tracklet* tracklet, unsigned int allprojindex);
     
@@ -29,8 +29,6 @@ namespace Trklet {
     int disk() const { return disk_; }
     
   private:
-    double phimin_;
-    double phimax_;
     int layer_;
     int disk_;
     std::vector<std::pair<Tracklet*, unsigned int> > tracklets_;

@@ -6,11 +6,9 @@
 using namespace std;
 using namespace Trklet;
 
-CandidateMatchMemory::CandidateMatchMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+CandidateMatchMemory::CandidateMatchMemory(string name, const Settings* const settings, unsigned int iSector) :
   MemoryBase(name, settings, iSector) {
   
-    phimin_ = phimin;
-    phimax_ = phimax;
     string subname = name.substr(3, 2);
     layer_ = 0;
     disk_ = 0;

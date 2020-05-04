@@ -254,7 +254,7 @@ void TrackletProcessor::execute() {
     unsigned int countteall=0;
     unsigned int counttepass=0;
 
-    StubPairsMemory stubpairs("tmp",settings_,iSector_,0.0,1.0); //dummy arguments for now
+    StubPairsMemory stubpairs("tmp",settings_,iSector_); //dummy arguments for now
 
     bool print=false;
     

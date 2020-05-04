@@ -10,12 +10,8 @@ using namespace std;
 using namespace Trklet;
 
 TripletEngine::TripletEngine(string name, const Settings* settings, Globals* global, unsigned int iSector):
-    ProcessBase(name,settings,global,iSector){
-    double dphi=2*M_PI/settings_->NSector();
-    phimin_=Trklet::phiRange(iSector*dphi);
-    phimax_=Trklet::phiRange(phimin_+dphi);
-    if (phimin_>phimax_)  phimin_-=2*M_PI;
-    assert(phimax_>phimin_);
+  ProcessBase(name,settings,global,iSector){
+  
     stubpairs_.clear();
     thirdvmstubs_.clear();
     layer1_=0;

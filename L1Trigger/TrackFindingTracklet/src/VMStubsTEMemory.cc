@@ -5,10 +5,8 @@
 using namespace std;
 using namespace Trklet;
 
-VMStubsTEMemory::VMStubsTEMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax):
+VMStubsTEMemory::VMStubsTEMemory(string name, const Settings* const settings, unsigned int iSector):
   MemoryBase(name,settings,iSector){
-    phimin_=phimin;
-    phimax_=phimax;
 
     //set the layer or disk that the memory is in
     initLayerDisk(6,layer_,disk_);

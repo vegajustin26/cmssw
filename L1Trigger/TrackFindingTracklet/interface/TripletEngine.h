@@ -33,9 +33,6 @@ namespace Trklet {
 
     int count_;
     
-    double phimax_;
-    double phimin_;
-    
     int layer1_;
     int layer2_;
     int layer3_;

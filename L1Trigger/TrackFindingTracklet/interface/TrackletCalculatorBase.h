@@ -74,8 +74,6 @@ namespace Trklet {
     int iSeed_;
     int TCIndex_;
     
-    double phimin_;
-    double phimax_;
     double phioffset_;
     
     int layer_;

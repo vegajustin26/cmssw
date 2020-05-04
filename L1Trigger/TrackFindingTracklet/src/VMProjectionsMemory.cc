@@ -5,10 +5,8 @@
 using namespace std;
 using namespace Trklet;
 
-VMProjectionsMemory::VMProjectionsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+VMProjectionsMemory::VMProjectionsMemory(string name, const Settings* const settings, unsigned int iSector) :
   MemoryBase(name, settings, iSector) {
-    phimin_ = phimin;
-    phimax_ = phimax;
     string subname = name.substr(7, 2);
     layer_ = 0;
     disk_ = 0;

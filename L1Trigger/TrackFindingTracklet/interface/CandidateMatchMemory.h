@@ -14,7 +14,7 @@ namespace Trklet {
   
   class CandidateMatchMemory : public MemoryBase {
   public:
-    CandidateMatchMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    CandidateMatchMemory(std::string name, const Settings* const settings, unsigned int iSector);
     
     void addMatch(std::pair<Tracklet*, int> tracklet, std::pair<Stub*, L1TStub*> stub) {
       std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > tmp(tracklet, stub);
@@ -47,8 +47,7 @@ namespace Trklet {
     int disk() const { return disk_; }
     
   private:
-    double phimin_;
-    double phimax_;
+
     std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > > matches_;
     
     int layer_;

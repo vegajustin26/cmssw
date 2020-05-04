@@ -17,16 +17,6 @@ using namespace Trklet;
 MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals* global, unsigned int iSector):
   ProcessBase(name,settings,global,iSector){
   
-    double dphi=2*M_PI/settings_->NSector();
-    double dphiHG=0.5*settings_->dphisectorHG()-M_PI/settings_->NSector();
-    phimin_=iSector_*dphi-dphiHG;
-    phimax_=phimin_+dphi+2*dphiHG;
-    phimin_-=M_PI/settings_->NSector();
-    phimax_-=M_PI/settings_->NSector();
-    if (phimin_>M_PI) {
-      phimin_-=2*M_PI;
-      phimax_-=2*M_PI;
-    }
     phioffset_=phimin_;
 
     phiregion_=0; //TODO set correctly

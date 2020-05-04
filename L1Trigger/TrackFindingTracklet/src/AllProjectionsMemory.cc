@@ -8,12 +8,9 @@ using namespace Trklet;
 using namespace std;
 
 
-AllProjectionsMemory::AllProjectionsMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+AllProjectionsMemory::AllProjectionsMemory(string name, const Settings* const settings, unsigned int iSector) :
   MemoryBase(name, settings, iSector) {
   
-  phimin_ = phimin;
-  phimax_ = phimax;
-
   string subname = name.substr(3, 2);
   if (subname[0] == '_')
     subname = name.substr(9, 2);

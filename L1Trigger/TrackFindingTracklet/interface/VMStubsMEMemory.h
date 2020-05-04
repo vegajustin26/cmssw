@@ -14,7 +14,7 @@ namespace Trklet {
   
   class VMStubsMEMemory : public MemoryBase {
   public:
-    VMStubsMEMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    VMStubsMEMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
     void addStub(VMStubME stub, unsigned int bin) {
       stubs_.push_back(stub);
@@ -55,8 +55,6 @@ namespace Trklet {
     void writeStubs(bool first);
 
   private:
-    double phimin_;
-    double phimax_;
     std::vector<VMStubME> stubs_;
     //std::vector<VMStubME> binnedstubs_[settings_->MEBinsDisks() * 2];
     // LS HACK: the above doesn't work :(

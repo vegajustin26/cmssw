@@ -4,11 +4,8 @@
 using namespace std;
 using namespace Trklet;
 
-TrackletParametersMemory::TrackletParametersMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax)
-  : MemoryBase(name, settings, iSector) {
-  phimin_ = phimin;
-  phimax_ = phimax;
-}
+TrackletParametersMemory::TrackletParametersMemory(string name, const Settings* const settings, unsigned int iSector)
+  : MemoryBase(name, settings, iSector) {}
 
 void TrackletParametersMemory::writeMatches(Globals* globals, int &matchesL1, int &matchesL3, int &matchesL5) {
   ofstream& out=globals->ofstream("nmatches.txt");

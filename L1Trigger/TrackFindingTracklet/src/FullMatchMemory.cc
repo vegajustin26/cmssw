@@ -9,10 +9,8 @@
 using namespace std;
 using namespace Trklet;
 
-FullMatchMemory::FullMatchMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
+FullMatchMemory::FullMatchMemory(string name, const Settings* const settings, unsigned int iSector) :
   MemoryBase(name, settings, iSector) {
-    phimin_ = phimin;
-    phimax_ = phimax;
     string subname = name.substr(8, 2);
     if (settings_->extended())
       subname = name.substr(10, 2);

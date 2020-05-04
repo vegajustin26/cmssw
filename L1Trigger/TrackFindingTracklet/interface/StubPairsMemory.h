@@ -14,7 +14,7 @@ namespace Trklet {
 
   class StubPairsMemory : public MemoryBase {
   public:
-    StubPairsMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    StubPairsMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
     void addStubPair(const VMStubTE& stub1,
 		     const VMStubTE& stub2,
@@ -50,8 +50,6 @@ namespace Trklet {
 
     
   private:
-    double phimin_;
-    double phimax_;
 
     std::vector<std::pair<VMStubTE,VMStubTE> > stubs_;
 

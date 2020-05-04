@@ -13,7 +13,7 @@ namespace Trklet {
   
   class AllStubsMemory : public MemoryBase {
   public:
-    AllStubsMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    AllStubsMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
     void addStub(std::pair<Stub*, L1TStub*> stub) { stubs_.push_back(stub); }
 
@@ -31,8 +31,7 @@ namespace Trklet {
     int disk() const { return disk_; }
     
   private:
-    double phimin_;
-    double phimax_;
+
     std::vector<std::pair<Stub*, L1TStub*> > stubs_;
     
     int layer_;

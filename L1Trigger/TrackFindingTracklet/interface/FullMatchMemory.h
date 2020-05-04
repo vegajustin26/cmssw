@@ -14,7 +14,7 @@ namespace Trklet {
   
   class FullMatchMemory : public MemoryBase {
   public:
-    FullMatchMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    FullMatchMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
     void addMatch(Tracklet* tracklet, std::pair<Stub*, L1TStub*> stub);
 
@@ -34,8 +34,7 @@ namespace Trklet {
     int disk() const { return disk_; }
     
   private:
-    double phimin_;
-    double phimax_;
+
     std::vector<std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > > matches_;
     
     int layer_;

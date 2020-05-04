@@ -3,11 +3,8 @@
 using namespace std;
 using namespace Trklet;
 
-VMStubsMEMemory::VMStubsMEMemory(string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax) :
-  MemoryBase(name, settings, iSector) {
-  phimin_ = phimin;
-  phimax_ = phimax;
-}
+VMStubsMEMemory::VMStubsMEMemory(string name, const Settings* const settings, unsigned int iSector) :
+  MemoryBase(name, settings, iSector) {}
 
 void VMStubsMEMemory::writeStubs(bool first) {
   std::string fname = "../data/MemPrints/VMStubsME/VMStubs_";

@@ -15,7 +15,7 @@ namespace Trklet {
 
   class TrackletParametersMemory : public MemoryBase {
   public:
-    TrackletParametersMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    TrackletParametersMemory(std::string name, const Settings* const settings, unsigned int iSector);
     
     void addTracklet(Tracklet *tracklet) { tracklets_.push_back(tracklet); }
     
@@ -35,8 +35,6 @@ namespace Trklet {
     void writeTPAR(bool first);
     
   private:
-    double phimin_;
-    double phimax_;
     std::vector<Tracklet *> tracklets_;
   };
 
