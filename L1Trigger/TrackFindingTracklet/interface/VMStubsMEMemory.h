@@ -11,7 +11,7 @@ namespace Trklet {
   class Settings;
   class Stub;
   class L1TStub;
-  
+
   class VMStubsMEMemory : public MemoryBase {
   public:
     VMStubsMEMemory(std::string name, const Settings* const settings, unsigned int iSector);
@@ -20,38 +20,38 @@ namespace Trklet {
       stubs_.push_back(stub);
       binnedstubs_[bin].push_back(stub);
     }
-    
+
     unsigned int nStubs() const { return stubs_.size(); }
-    
+
     VMStubME getVMStubME(unsigned int i) const { return stubs_[i]; }
     Stub* getFPGAStub(unsigned int i) const { return stubs_[i].stub().first; }
     L1TStub* getL1TStub(unsigned int i) const { return stubs_[i].stub().second; }
     std::pair<Stub*, L1TStub*> getStub(unsigned int i) const { return stubs_[i].stub(); }
-    
+
     unsigned int nStubsBin(unsigned int bin) const {
       assert(bin < settings_->MEBinsDisks() * 2);
       return binnedstubs_[bin].size();
     }
-    
+
     VMStubME getVMStubMEBin(unsigned int bin, unsigned int i) const {
       assert(bin < settings_->MEBinsDisks() * 2);
       assert(i < binnedstubs_[bin].size());
       return binnedstubs_[bin][i];
     }
-    
+
     std::pair<Stub*, L1TStub*> getStubBin(unsigned int bin, unsigned int i) const {
       assert(bin < settings_->MEBinsDisks() * 2);
       assert(i < binnedstubs_[bin].size());
       return binnedstubs_[bin][i].stub();
     }
-    
+
     void clean() {
       stubs_.clear();
       for (unsigned int i = 0; i < settings_->MEBinsDisks() * 2; i++) {
-	binnedstubs_[i].clear();
+        binnedstubs_[i].clear();
       }
     }
-    
+
     void writeStubs(bool first);
 
   private:
@@ -62,5 +62,5 @@ namespace Trklet {
     std::vector<VMStubME> binnedstubs_[16];
   };
 
-};
+};  // namespace Trklet
 #endif

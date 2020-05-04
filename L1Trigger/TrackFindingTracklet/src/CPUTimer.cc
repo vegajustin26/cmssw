@@ -2,9 +2,7 @@
 
 using namespace Trklet;
 
-void CPUTimer::start() {
-  gettimeofday(&tstart_, 0);
-}
+void CPUTimer::start() { gettimeofday(&tstart_, 0); }
 
 void CPUTimer::stop() {
   timeval tstop;

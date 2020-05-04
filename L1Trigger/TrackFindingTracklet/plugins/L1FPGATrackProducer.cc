@@ -179,12 +179,12 @@ private:
   // settings containing various constants for the tracklet processing
   Trklet::Settings settings;
 
-  // event processor for the tracklet track finding 
+  // event processor for the tracklet track finding
   Trklet::TrackletEventProcessor eventProcessor;
-  
+
   unsigned int nHelixPar_;
   bool extended_;
-  
+
   std::map<string, vector<int> > dtclayerdisk;
 
   edm::ESHandle<TrackerTopology> tTopoHandle;
@@ -264,7 +264,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   settings.setExtended(extended_);
   settings.setNHelixPar(nHelixPar_);
 
-  settings.setDTCLinkFile(DTCLinkFile.fullPath()); 
+  settings.setDTCLinkFile(DTCLinkFile.fullPath());
   settings.setModuleCablingFile(moduleCablingFile.fullPath());
   settings.setDTCLinkLayerDiskFile(DTCLinkLayerDiskFile.fullPath());
   settings.setFitPatternFile(fitPatternFile.fullPath());
@@ -272,7 +272,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   settings.setMemoryModulesFile(memoryModulesFile.fullPath());
   settings.setWiresFile(wiresFile.fullPath());
 
-  // initialize the tracklet event processing (this sets all the processing & memory modules, wiring, etc)  
+  // initialize the tracklet event processing (this sets all the processing & memory modules, wiring, etc)
   eventProcessor.init(&settings);
 
   eventnum = 0;
@@ -290,7 +290,6 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     edm::LogVerbatim("Tracklet") << "memory modules :  " << memoryModulesFile.fullPath();
     edm::LogVerbatim("Tracklet") << "wires          :  " << wiresFile.fullPath();
   }
-
 }
 
 /////////////
@@ -669,13 +668,13 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   if (asciiEventOutName_ != "") {
     ev.write(asciiEventOut_);
   }
-    
+
   if (settings.writeMonitorData("Seeds")) {
     ofstream fout("seeds.txt", ofstream::out);
     fout.close();
   }
 
-  std::vector<Trklet::Track*>& tracks=eventProcessor.tracks();
+  std::vector<Trklet::Track*>& tracks = eventProcessor.tracks();
 
   Trklet::L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
@@ -691,7 +690,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   eventProcessor.event(ev);
 
   int ntracks = 0;
-  
+
   for (unsigned itrack = 0; itrack < tracks.size(); itrack++) {
     Trklet::Track* track = tracks[itrack];
 
@@ -711,7 +710,19 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     unsigned int tmp_hit = track->hitpattern();
     double tmp_Bfield = mMagneticFieldStrength;
 
-    TTTrack<Ref_Phase2TrackerDigi_> aTrack(tmp_rinv, tmp_phi, tmp_tanL, tmp_z0, tmp_d0, tmp_chi2rphi, tmp_chi2rz, 0, 0, 0, tmp_hit, settings.nHelixPar(), tmp_Bfield);
+    TTTrack<Ref_Phase2TrackerDigi_> aTrack(tmp_rinv,
+                                           tmp_phi,
+                                           tmp_tanL,
+                                           tmp_z0,
+                                           tmp_d0,
+                                           tmp_chi2rphi,
+                                           tmp_chi2rz,
+                                           0,
+                                           0,
+                                           0,
+                                           tmp_hit,
+                                           settings.nHelixPar(),
+                                           tmp_Bfield);
 
     unsigned int trksector = track->sector();
     unsigned int trkseed = (unsigned int)abs(track->seed());
@@ -737,7 +748,8 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     }
 
     // pt consistency
-    float ptconsistency = StubPtConsistency::getConsistency(aTrack, theTrackerGeom, tTopo, mMagneticFieldStrength, settings.nHelixPar());
+    float ptconsistency =
+        StubPtConsistency::getConsistency(aTrack, theTrackerGeom, tTopo, mMagneticFieldStrength, settings.nHelixPar());
     aTrack.setStubPtConsistency(ptconsistency);
 
     // set TTTrack word

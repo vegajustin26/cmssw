@@ -5,15 +5,14 @@ namespace Trklet {
 
   class Globals;
   class SLHCEvent;
-  
+
   class StubVariance {
   public:
     StubVariance(SLHCEvent& ev, Globals* globals);
-    
+
     void process(SLHCEvent& ev, Globals* globals);
-    
+
   private:
-    
   };
-};
+};  // namespace Trklet
 #endif

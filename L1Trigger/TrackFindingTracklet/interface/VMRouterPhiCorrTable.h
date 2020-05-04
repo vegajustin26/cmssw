@@ -10,36 +10,35 @@
 #include <vector>
 
 namespace Trklet {
-  
+
   class Settings;
-  
+
   class VMRouterPhiCorrTable : public TETableBase {
   public:
     VMRouterPhiCorrTable();
-    
+
     ~VMRouterPhiCorrTable() {}
-    
+
     void init(const Settings* settings, int layer, int bendbits, int rbits);
-    
+
     int getphiCorrValue(int ibend, int irbin) const;
 
     int lookupPhiCorr(int ibend, int rbin);
 
   private:
-    
-    double rmean_;    
+    double rmean_;
     double rmin_;
     double rmax_;
-    
+
     double dr_;
-    
+
     int bendbits_;
     int rbits_;
-    
+
     int bendbins_;
     int rbins_;
-    
+
     int layer_;
   };
-};
+};  // namespace Trklet
 #endif

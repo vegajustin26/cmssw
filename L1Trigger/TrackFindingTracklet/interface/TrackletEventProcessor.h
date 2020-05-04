@@ -16,12 +16,10 @@ namespace Trklet {
   class Sector;
   class HistImp;
   class Track;
-  
+
   class TrackletEventProcessor {
-    
   public:
-    
-    TrackletEventProcessor() { };
+    TrackletEventProcessor(){};
 
     ~TrackletEventProcessor();
 
@@ -34,22 +32,21 @@ namespace Trklet {
     std::vector<Track*>& tracks() { return tracks_; }
 
   private:
-    
     const Settings* settings_{0};
-    
+
     Globals* globals_{};
-    
+
     Sector** sectors_{};
 
     HistImp* histimp_{};
-    
-    int eventnum_={0};
-    
+
+    int eventnum_ = {0};
+
     Cabling cabling_;
-    
+
     CPUTimer cleanTimer_;
     CPUTimer addStubTimer_;
-    CPUTimer VMRouterTimer_;  
+    CPUTimer VMRouterTimer_;
     CPUTimer TETimer_;
     CPUTimer TEDTimer_;
     CPUTimer TRETimer_;
@@ -64,10 +61,8 @@ namespace Trklet {
 
     std::vector<Track*> tracks_;
 
-    std::map<std::string,std::vector<int> > dtclayerdisk_;
-    
+    std::map<std::string, std::vector<int> > dtclayerdisk_;
   };
-  
-};    
+
+};  // namespace Trklet
 #endif
-      

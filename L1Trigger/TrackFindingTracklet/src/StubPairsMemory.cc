@@ -4,9 +4,8 @@
 using namespace std;
 using namespace Trklet;
 
-
-StubPairsMemory::StubPairsMemory(string name, const Settings* const settings, unsigned int iSector) :
-  MemoryBase(name, settings, iSector) {}
+StubPairsMemory::StubPairsMemory(string name, const Settings* const settings, unsigned int iSector)
+    : MemoryBase(name, settings, iSector) {}
 
 void StubPairsMemory::writeSP(bool first) {
   std::string fname = "../data/MemPrints/StubPairs/StubPairs_";
@@ -24,9 +23,9 @@ void StubPairsMemory::writeSP(bool first) {
     out_.open(fname.c_str());
   } else
     out_.open(fname.c_str(), std::ofstream::app);
-  
+
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
-  
+
   for (unsigned int j = 0; j < stubs_.size(); j++) {
     string stub1index = stubs_[j].first.stub().first->stubindex().str();
     string stub2index = stubs_[j].second.stub().first->stubindex().str();
@@ -37,7 +36,7 @@ void StubPairsMemory::writeSP(bool first) {
     out_ << " " << stub1index << "|" << stub2index << " " << Trklet::hexFormat(stub1index + stub2index) << endl;
   }
   out_.close();
-  
+
   bx_++;
   event_++;
   if (bx_ > 7)

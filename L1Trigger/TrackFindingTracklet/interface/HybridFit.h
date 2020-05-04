@@ -31,8 +31,8 @@ namespace Trklet {
 
   private:
     unsigned int iSector_;
-    
+
     const Settings* const settings_;
   };
-};
+};  // namespace Trklet
 #endif

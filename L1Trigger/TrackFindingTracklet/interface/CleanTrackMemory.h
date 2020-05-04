@@ -13,24 +13,24 @@ namespace Trklet {
 
   class CleanTrackMemory : public MemoryBase {
   public:
-    CleanTrackMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
+    CleanTrackMemory(
+        std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
 
     void addTrack(Tracklet* tracklet) { tracks_.push_back(tracklet); }
-    
+
     unsigned int nTracks() const { return tracks_.size(); }
-    
+
     void clean() { tracks_.clear(); }
-    
+
     bool foundTrack(std::ofstream& outres, L1SimTrack simtrk);
-    
+
     void writeCT(bool first);
 
-    
   private:
     double phimin_;
     double phimax_;
     std::vector<Tracklet*> tracks_;
   };
-  
-};
+
+};  // namespace Trklet
 #endif

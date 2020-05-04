@@ -5,12 +5,11 @@
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 
-#include<string>
-#include<map>
-#include<vector>
-#include<set>
-#include<fstream>
-
+#include <string>
+#include <map>
+#include <vector>
+#include <set>
+#include <fstream>
 
 namespace Trklet {
 
@@ -53,23 +52,22 @@ namespace Trklet {
   class FitTrack;
   class PurgeDuplicate;
 
-  
-  class Sector{
+  class Sector {
   public:
     Sector(unsigned int i, const Settings* settings, Globals* globals);
     ~Sector();
-    
-    bool addStub(L1TStub stub, std::string dtc); //TODO - should be pointer or string
+
+    bool addStub(L1TStub stub, std::string dtc);  //TODO - should be pointer or string
 
     // Creates all required memory modules based on wiring map (args: module type, module instance)
-    void addMem(std::string memType,std::string memName);
+    void addMem(std::string memType, std::string memName);
 
     // Creates all required processing modules based on wiring map (args: module type, module instance)
-    void addProc(std::string procType,std::string procName);
+    void addProc(std::string procType, std::string procName);
 
     //--- Create all required proc -> mem module connections, based on wiring map
     //--- (args: memory instance & input/output proc modules it connects to in format procName.pinName)
-    void addWire(std::string mem,std::string procinfull,std::string procoutfull);
+    void addWire(std::string mem, std::string procinfull, std::string procoutfull);
 
     ProcessBase* getProc(std::string procName);
     MemoryBase* getMem(std::string memName);
@@ -78,7 +76,7 @@ namespace Trklet {
     void writeVMSTE(bool first);
     void writeVMSME(bool first);
     void writeAS(bool first);
-    void writeSP(bool first); 
+    void writeSP(bool first);
     void writeST(bool first);
     void writeTPAR(bool first);
     void writeTPROJ(bool first);
@@ -88,7 +86,7 @@ namespace Trklet {
     void writeMC(bool first);
     void writeTF(bool first);
     void writeCT(bool first);
-    
+
     void clean();
 
     // execute the different tracklet processing modules
@@ -105,25 +103,24 @@ namespace Trklet {
     void executeMP();
     void executeFT();
     void executePD(std::vector<Track*>& tracks);
-    
+
     bool foundTrack(std::ofstream& outres, L1SimTrack simtrk);
 
     std::vector<Tracklet*> getAllTracklets();
-    std::vector<std::pair<Stub*,L1TStub*> > getStubs() const;
-    
+    std::vector<std::pair<Stub*, L1TStub*> > getStubs() const;
+
     std::set<int> seedMatch(int itp);
-    
-    double phimin() const {return phimin_;}
-    double phimax() const {return phimax_;}
+
+    double phimin() const { return phimin_; }
+    double phimax() const { return phimax_; }
 
   private:
-    
     int isector_;
     const Settings* const settings_;
     Globals* globals_;
     double phimin_;
     double phimax_;
-    
+
     std::map<std::string, MemoryBase*> Memories_;
     std::vector<MemoryBase*> MemoriesV_;
     std::vector<InputLinkMemory*> IL_;
@@ -140,7 +137,7 @@ namespace Trklet {
     std::vector<FullMatchMemory*> FM_;
     std::vector<TrackFitMemory*> TF_;
     std::vector<CleanTrackMemory*> CT_;
-    
+
     std::map<std::string, ProcessBase*> Processes_;
     std::vector<VMRouter*> VMR_;
     std::vector<TrackletEngine*> TE_;
@@ -155,7 +152,6 @@ namespace Trklet {
     std::vector<MatchProcessor*> MP_;
     std::vector<FitTrack*> FT_;
     std::vector<PurgeDuplicate*> PD_;
-    
   };
-};
+};  // namespace Trklet
 #endif

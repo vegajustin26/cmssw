@@ -15,28 +15,28 @@ namespace Trklet {
 
   class TrackletParametersMemory : public MemoryBase {
   public:
-    TrackletParametersMemory(std::string name, const Settings* const settings, unsigned int iSector);
-    
+    TrackletParametersMemory(std::string name, const Settings *const settings, unsigned int iSector);
+
     void addTracklet(Tracklet *tracklet) { tracklets_.push_back(tracklet); }
-    
+
     unsigned int nTracklets() const { return tracklets_.size(); }
-    
+
     Tracklet *getFPGATracklet(unsigned int i) const { return tracklets_[i]; }
-    
+
     void clean() {
       for (unsigned int i = 0; i < tracklets_.size(); i++) {
-	delete tracklets_[i];
+        delete tracklets_[i];
       }
       tracklets_.clear();
     }
-    
-    void writeMatches(Globals* globals, int &matchesL1, int &matchesL3, int &matchesL5);
+
+    void writeMatches(Globals *globals, int &matchesL1, int &matchesL3, int &matchesL5);
 
     void writeTPAR(bool first);
-    
+
   private:
     std::vector<Tracklet *> tracklets_;
   };
 
-};
+};  // namespace Trklet
 #endif

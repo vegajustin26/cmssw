@@ -12,26 +12,23 @@ namespace Trklet {
 
   class Settings;
   class Globals;
-  
-  class TrackletCalculator:public TrackletCalculatorBase{
-    
+
+  class TrackletCalculator : public TrackletCalculatorBase {
   public:
-    
     TrackletCalculator(std::string name, const Settings* const settings, Globals* globals, unsigned int iSector);
-    
-    void addOutputProjection(TrackletProjectionsMemory* &outputProj, MemoryBase* memory);
-    void addOutput(MemoryBase* memory,std::string output);
-    void addInput(MemoryBase* memory,std::string input);
-    
+
+    void addOutputProjection(TrackletProjectionsMemory*& outputProj, MemoryBase* memory);
+    void addOutput(MemoryBase* memory, std::string output);
+    void addInput(MemoryBase* memory, std::string input);
+
     void execute();
-    
+
   private:
-    
     int iTC_;
-    
+
     std::vector<AllStubsMemory*> innerallstubs_;
     std::vector<AllStubsMemory*> outerallstubs_;
-    std::vector<StubPairsMemory*> stubpairs_;    
-  };  
-};
+    std::vector<StubPairsMemory*> stubpairs_;
+  };
+};  // namespace Trklet
 #endif

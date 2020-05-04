@@ -10,20 +10,18 @@
 #include <vector>
 
 namespace Trklet {
-  
+
   class Settings;
-  
-  class TETableInnerOverlap : public TETableBase{
-    
+
+  class TETableInnerOverlap : public TETableBase {
   public:
-    
     TETableInnerOverlap(const Settings* settings);
     TETableInnerOverlap(const Settings* settings, int layer1, int disk2, int zbits, int rbits);
 
-    ~TETableInnerOverlap() { }
+    ~TETableInnerOverlap() {}
 
     void init(const Settings* settings, int layer1, int disk2, int zbits, int rbits);
-    
+
     // negative return means that seed can not be formed
     int getLookupValue(const Settings* settings, int izbin, int irbin);
 
@@ -31,28 +29,27 @@ namespace Trklet {
     double rintercept(double zcut, double r, double z);
 
     int lookup(int zbin, int rbin);
-    
+
   private:
-    
     int layer1_;
     int disk2_;
     int zbits_;
     int rbits_;
-    
+
     int rbins_;
     double rminl1_;
     double rmaxl1_;
     double dr_;
-    
+
     int zbins_;
     double zminl1_;
     double zmaxl1_;
     double dz_;
-    
+
     double zmeand2_;
-    
+
     double rmaxdisk_;
     double rmindisk_;
   };
-};
+};  // namespace Trklet
 #endif

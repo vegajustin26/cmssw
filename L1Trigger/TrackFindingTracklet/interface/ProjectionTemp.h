@@ -5,16 +5,16 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 namespace Trklet {
-  
+
   class ProjectionTemp {
   public:
     ProjectionTemp(Tracklet* proj,
-		   unsigned int slot,
-		   unsigned int projrinv,
-		   int projfinerz,
-		   unsigned int projfinephi,
-		   unsigned int iphi,
-		   bool isPSseed);
+                   unsigned int slot,
+                   unsigned int projrinv,
+                   int projfinerz,
+                   unsigned int projfinephi,
+                   unsigned int iphi,
+                   bool isPSseed);
 
     ProjectionTemp();
 
@@ -27,7 +27,7 @@ namespace Trklet {
     unsigned int projfinephi() const { return projfinephi_; }
     unsigned int iphi() const { return iphi_; }
     bool isPSseed() const { return isPSseed_; }
-    
+
   private:
     Tracklet* proj_;
     unsigned int slot_;
@@ -37,5 +37,5 @@ namespace Trklet {
     unsigned int iphi_;
     bool isPSseed_;
   };
-};
+};  // namespace Trklet
 #endif

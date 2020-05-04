@@ -14,7 +14,7 @@ TrackDer::TrackDer() {
     itdzordr_[i] = 9999999;
     iz0dphi_[i] = 9999999;
     iz0dzordr_[i] = 9999999;
-    
+
     rinvdphi_[i] = 0.0;
     rinvdzordr_[i] = 0.0;
     phi0dphi_[i] = 0.0;
@@ -24,7 +24,7 @@ TrackDer::TrackDer() {
     z0dphi_[i] = 0.0;
     z0dzordr_[i] = 0.0;
   }
-  
+
   for (unsigned int i = 0; i < 3; i++) {
     for (unsigned int j = 0; j < 3; j++) {
       tdzcorr_[i][j] = 0.0;

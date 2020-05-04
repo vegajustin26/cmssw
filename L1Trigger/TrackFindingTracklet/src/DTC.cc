@@ -5,7 +5,6 @@
 using namespace std;
 using namespace Trklet;
 
-
 DTC::DTC(string name) {
   name_ = name;
   for (unsigned int i = 0; i < 11; i++) {
@@ -14,13 +13,9 @@ DTC::DTC(string name) {
   }
 }
 
-void DTC::init(string name) {
-  name_ = name;
-}
+void DTC::init(string name) { name_ = name; }
 
-void DTC::addSec(int sector) {
-  sectors_.push_back(sector);
-}
+void DTC::addSec(int sector) { sectors_.push_back(sector); }
 
 void DTC::addphi(double phi, int layerdisk) {
   assert(layerdisk >= 0);

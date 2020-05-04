@@ -13,9 +13,7 @@ DTCLink::DTCLink(double phimin, double phimax) {
   phimax_ = phimax;
 }
 
-void DTCLink::addStub(std::pair<Stub*, L1TStub*> stub) {
-  stubs_.push_back(stub);
-}
+void DTCLink::addStub(std::pair<Stub*, L1TStub*> stub) { stubs_.push_back(stub); }
 
 bool DTCLink::inRange(double phi, bool overlaplayer) {
   double phimax = phimax_;
@@ -29,4 +27,3 @@ bool DTCLink::inRange(double phi, bool overlaplayer) {
   }
   return (phi < phimax && phi > phimin) || (phi + 2 * M_PI < phimax && phi + 2 * M_PI > phimin);
 }
-

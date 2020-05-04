@@ -10,12 +10,11 @@
 #include <vector>
 
 namespace Trklet {
-  
+
   class Settings;
-  
+
   class TETableOuterDisk : public TETableBase {
   public:
-
     TETableOuterDisk(const Settings* settings);
     TETableOuterDisk(const Settings* settings, int disk, int zbits, int rbits);
 
@@ -30,23 +29,23 @@ namespace Trklet {
 
   private:
     double zmean_;
-    
+
     double rmin_;
     double rmax_;
-    
+
     double zmin_;
     double zmax_;
-    
+
     double dr_;
     double dz_;
-    
+
     int zbits_;
     int rbits_;
-    
+
     int zbins_;
     int rbins_;
-    
+
     int disk_;
   };
-};
+};  // namespace Trklet
 #endif

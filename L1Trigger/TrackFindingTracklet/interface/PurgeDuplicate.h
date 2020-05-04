@@ -18,30 +18,26 @@ namespace Trklet {
   class Tracklet;
 
   class PurgeDuplicate : public ProcessBase {
-    
   public:
-    
     PurgeDuplicate(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    void addOutput(MemoryBase* memory,std::string output);
+    void addOutput(MemoryBase* memory, std::string output);
 
-    void addInput(MemoryBase* memory,std::string input);
-    
+    void addInput(MemoryBase* memory, std::string input);
+
     void execute(std::vector<Track*>& outputtracks_);
 
   private:
-    
     double getPhiRes(Tracklet* curTracklet, std::pair<Stub*, L1TStub*> curStub);
-    
+
     std::vector<Track*> inputtracks_;
-    std::vector<std::vector<std::pair<Stub*,L1TStub*>>> inputstublists_;
-    std::vector<std::vector<std::pair<int,int>>> inputstubidslists_;
-    std::vector<std::vector<std::pair<int,int>>> mergedstubidslists_;
+    std::vector<std::vector<std::pair<Stub*, L1TStub*>>> inputstublists_;
+    std::vector<std::vector<std::pair<int, int>>> inputstubidslists_;
+    std::vector<std::vector<std::pair<int, int>>> mergedstubidslists_;
     std::vector<TrackFitMemory*> inputtrackfits_;
     std::vector<Tracklet*> inputtracklets_;
     std::vector<CleanTrackMemory*> outputtracklets_;
-    
   };
 
-};
+};  // namespace Trklet
 #endif

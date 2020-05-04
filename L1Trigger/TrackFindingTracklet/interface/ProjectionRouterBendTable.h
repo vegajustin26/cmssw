@@ -8,25 +8,23 @@
 #include <vector>
 
 namespace Trklet {
-  
+
   class Settings;
   class Globals;
 
   class ProjectionRouterBendTable {
   public:
     ProjectionRouterBendTable() {}
-    
+
     ~ProjectionRouterBendTable() {}
-    
+
     void init(const Settings* settings, Globals* globals, unsigned int nrbits, unsigned int nphiderbits);
-    
-    int bendLoookup(int diskindex,int bendindex);
-  
+
+    int bendLoookup(int diskindex, int bendindex);
+
   private:
-    
     std::vector<int> bendtable_[5];
-    
   };
 
-};
+};  // namespace Trklet
 #endif

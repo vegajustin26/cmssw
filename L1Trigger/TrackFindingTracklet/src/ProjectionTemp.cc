@@ -4,12 +4,12 @@ using namespace std;
 using namespace Trklet;
 
 ProjectionTemp::ProjectionTemp(Tracklet* proj,
-			       unsigned int slot,
-			       unsigned int projrinv,
-			       int projfinerz,
-			       unsigned int projfinephi,
-			       unsigned int iphi,
-			       bool isPSseed) {
+                               unsigned int slot,
+                               unsigned int projrinv,
+                               int projfinerz,
+                               unsigned int projfinephi,
+                               unsigned int iphi,
+                               bool isPSseed) {
   proj_ = proj;
   slot_ = slot;
   projrinv_ = projrinv;

@@ -18,16 +18,16 @@ namespace Trklet {
     TETableBase(const Settings* settings);
 
     virtual ~TETableBase() {}
-    
+
     virtual int lookup(int, int);
 
     void writeVMTable(std::string name, bool positive = true);
-    
+
   protected:
     const Settings* settings_;
     std::vector<int> table_;
     int nbits_;
   };
 
-};
+};  // namespace Trklet
 #endif

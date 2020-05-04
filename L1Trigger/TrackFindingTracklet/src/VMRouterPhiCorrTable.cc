@@ -5,59 +5,56 @@
 using namespace std;
 using namespace Trklet;
 
-VMRouterPhiCorrTable::VMRouterPhiCorrTable() : TETableBase(0) {
-  nbits_ = 14;
-}
+VMRouterPhiCorrTable::VMRouterPhiCorrTable() : TETableBase(0) { nbits_ = 14; }
 
 void VMRouterPhiCorrTable::init(const Settings* settings, int layer, int bendbits, int rbits) {
-    assert(bendbits == 3 || bendbits == 4);
+  assert(bendbits == 3 || bendbits == 4);
 
-    settings_=settings;
-    
-    layer_ = layer;
-    bendbits_ = bendbits;
-    rbits_ = rbits;
+  settings_ = settings;
 
-    rbins_ = (1 << rbits);
-    rmin_ = settings->rmean(layer - 1) - settings->drmax();
-    rmax_ = settings->rmean(layer - 1) + settings->drmax();
-    dr_ = 2 * settings->drmax() / rbins_;
+  layer_ = layer;
+  bendbits_ = bendbits;
+  rbits_ = rbits;
 
-    bendbins_ = (1 << bendbits);
+  rbins_ = (1 << rbits);
+  rmin_ = settings->rmean(layer - 1) - settings->drmax();
+  rmax_ = settings->rmean(layer - 1) + settings->drmax();
+  dr_ = 2 * settings->drmax() / rbins_;
 
-    rmean_ = settings->rmean(layer - 1);
+  bendbins_ = (1 << bendbits);
 
-    for (int ibend = 0; ibend < bendbins_; ibend++) {
-      for (int irbin = 0; irbin < rbins_; irbin++) {
-        int value = getphiCorrValue(ibend, irbin);
-        table_.push_back(value);
-      }
+  rmean_ = settings->rmean(layer - 1);
+
+  for (int ibend = 0; ibend < bendbins_; ibend++) {
+    for (int irbin = 0; irbin < rbins_; irbin++) {
+      int value = getphiCorrValue(ibend, irbin);
+      table_.push_back(value);
     }
+  }
 
-    if (settings->writeTable()) {
-      writeVMTable("VMPhiCorrL" + std::to_string(layer_) + ".txt", false);
-    }
+  if (settings->writeTable()) {
+    writeVMTable("VMPhiCorrL" + std::to_string(layer_) + ".txt", false);
+  }
 }
 
 int VMRouterPhiCorrTable::getphiCorrValue(int ibend, int irbin) const {
-  
-    double bend = Trklet::benddecode(ibend, layer_ <= 3);
+  double bend = Trklet::benddecode(ibend, layer_ <= 3);
 
-    //for the rbin - calculate the distance to the nominal layer radius
-    double Delta = (irbin + 0.5) * dr_ - settings_->drmax();
+  //for the rbin - calculate the distance to the nominal layer radius
+  double Delta = (irbin + 0.5) * dr_ - settings_->drmax();
 
-    //calculate the phi correction - this is a somewhat approximate formula
-    double dphi = (Delta / 0.18) * (bend * 0.009) / rmean_;
+  //calculate the phi correction - this is a somewhat approximate formula
+  double dphi = (Delta / 0.18) * (bend * 0.009) / rmean_;
 
-    int idphi = 0;
+  int idphi = 0;
 
-    if (layer_ <= 3) {
-      idphi = dphi / settings_->kphi();
-    } else {
-      idphi = dphi / settings_->kphi1();
-    }
+  if (layer_ <= 3) {
+    idphi = dphi / settings_->kphi();
+  } else {
+    idphi = dphi / settings_->kphi1();
+  }
 
-    return idphi;
+  return idphi;
 }
 
 int VMRouterPhiCorrTable::lookupPhiCorr(int ibend, int rbin) {

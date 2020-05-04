@@ -13,26 +13,23 @@ namespace Trklet {
   class Settings;
   class Globals;
 
-  class TripletEngine:public ProcessBase{
-    
+  class TripletEngine : public ProcessBase {
   public:
-    
     TripletEngine(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
     ~TripletEngine();
 
-    void addOutput(MemoryBase* memory,std::string output);
-    void addInput(MemoryBase* memory,std::string input);
-    
+    void addOutput(MemoryBase* memory, std::string output);
+    void addInput(MemoryBase* memory, std::string input);
+
     void execute();
 
     void readTables();
     void writeTables();
 
   private:
-
     int count_;
-    
+
     int layer1_;
     int layer2_;
     int layer3_;
@@ -51,10 +48,10 @@ namespace Trklet {
     int r1_;
     int r2_;
     int r3_;
-  
+
     std::vector<VMStubsTEMemory*> thirdvmstubs_;
     std::vector<StubPairsMemory*> stubpairs_;
-    
+
     StubTripletsMemory* stubtriplets_;
 
     std::map<std::string, std::vector<std::vector<std::string> > > tmpSPTable_;
@@ -63,9 +60,9 @@ namespace Trklet {
 
     int secondphibits_;
     int thirdphibits_;
-    
+
     int iSeed_;
   };
 
-};
+};  // namespace Trklet
 #endif

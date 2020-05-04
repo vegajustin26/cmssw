@@ -13,26 +13,26 @@ namespace Trklet {
   class VMProjectionsMemory : public MemoryBase {
   public:
     VMProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector);
-    
+
     void addTracklet(Tracklet* tracklet, unsigned int allprojindex);
-    
+
     unsigned int nTracklets() const { return tracklets_.size(); }
-    
+
     Tracklet* getFPGATracklet(unsigned int i) const { return tracklets_[i].first; }
     int getAllProjIndex(unsigned int i) const { return tracklets_[i].second; }
-    
+
     void writeVMPROJ(bool first);
-    
+
     void clean() { tracklets_.clear(); }
-    
+
     int layer() const { return layer_; }
     int disk() const { return disk_; }
-    
+
   private:
     int layer_;
     int disk_;
     std::vector<std::pair<Tracklet*, unsigned int> > tracklets_;
   };
 
-};
+};  // namespace Trklet
 #endif

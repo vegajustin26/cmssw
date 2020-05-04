@@ -2,7 +2,8 @@
 
 using namespace Trklet;
 
-MatchEngineUnit::MatchEngineUnit(bool barrel, vector<bool> table, vector<bool> tablePS, vector<bool> table2S) : candmatches_(5) {
+MatchEngineUnit::MatchEngineUnit(bool barrel, vector<bool> table, vector<bool> tablePS, vector<bool> table2S)
+    : candmatches_(5) {
   idle_ = true;
   barrel_ = barrel;
   table_ = table;
@@ -12,12 +13,12 @@ MatchEngineUnit::MatchEngineUnit(bool barrel, vector<bool> table, vector<bool> t
 }
 
 void MatchEngineUnit::init(VMStubsMEMemory* vmstubsmemory,
-			   unsigned int slot,
-			   int projrinv,
-			   int projfinerz,
-			   int projfinephi,
-			   bool isPSseed,
-			   Tracklet* proj) {
+                           unsigned int slot,
+                           int projrinv,
+                           int projfinerz,
+                           int projfinephi,
+                           bool isPSseed,
+                           Tracklet* proj) {
   vmstubsmemory_ = vmstubsmemory;
   idle_ = false;
   slot_ = slot;
@@ -34,32 +35,32 @@ void MatchEngineUnit::step() {
     return;
   if (candmatches_.almostfull())
     return;
-  
+
   VMStubME vmstub = vmstubsmemory_->getVMStubMEBin(slot_, istub_);
-  
+
   istub_++;
   if (istub_ >= vmstubsmemory_->nStubsBin(slot_))
     idle_ = true;
-  
+
   bool isPSmodule = vmstub.isPSmodule();
   int stubfinerz = vmstub.finerz().value();
   int stubfinephi = vmstub.finephi().value();
-  
+
   int deltaphi = stubfinephi - projfinephi_;
-  
+
   bool dphicut = (abs(deltaphi) < 3) || (abs(deltaphi) > 5);  //TODO - need better implementations
-  
+
   if (!barrel_)
     dphicut = true;
-  
+
   int nbits = isPSmodule ? 3 : 4;
-  
+
   unsigned int index = (projrinv_ << nbits) + vmstub.bend().value();
-  
+
   //Check if stub z position consistent
   int idrz = stubfinerz - projfinerz_;
   bool pass;
-  
+
   if (barrel_) {
     if (isPSseed_) {
       pass = idrz >= -2 && idrz <= 2;
@@ -73,7 +74,7 @@ void MatchEngineUnit::step() {
       pass = idrz >= -5 && idrz <= 5;
     }
   }
-  
+
   //Check if stub bend and proj rinv consistent
   if (pass && dphicut) {
     if (barrel_ ? table_[index] : (isPSmodule ? tablePS_[index] : table2S_[index])) {
@@ -82,4 +83,3 @@ void MatchEngineUnit::step() {
     }
   }
 }
-

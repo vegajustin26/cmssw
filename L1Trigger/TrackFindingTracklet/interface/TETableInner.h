@@ -10,23 +10,34 @@
 #include <vector>
 
 namespace Trklet {
-  
+
   class Settings;
-  
+
   class TETableInner : public TETableBase {
   public:
-
     TETableInner(const Settings* settings);
-    TETableInner(const Settings* settings, int layer1, int layer2, int layer3, int zbits, int rbits, bool thirdLayerIsDisk = false);
-    
+    TETableInner(const Settings* settings,
+                 int layer1,
+                 int layer2,
+                 int layer3,
+                 int zbits,
+                 int rbits,
+                 bool thirdLayerIsDisk = false);
+
     ~TETableInner() {}
 
     void init(const Settings* settings, int layer1, int layer2, int zbits, int rbits);
-    void init(const Settings* settings, int layer1, int layer2, int layer3, int zbits, int rbits, bool thirdLayerIsDisk = false);
-    
+    void init(const Settings* settings,
+              int layer1,
+              int layer2,
+              int layer3,
+              int zbits,
+              int rbits,
+              bool thirdLayerIsDisk = false);
+
     // negative return means that seed can not be formed
     int getLookupValue(const Settings* settings, int izbin, int irbin, bool extra);
-    
+
     void findzL2(double z, double r, double& zminl2, double& zmaxl2);
     double zinterceptL2(double zcut, double z, double r);
 
@@ -37,33 +48,33 @@ namespace Trklet {
     double rintercept(double zcut, double r, double z);
 
     int lookup(int zbin, int rbin);
-    
+
   private:
     bool thirdLayerIsDisk_;
-    
+
     int layer1_;
     int layer2_;
     int layer3_;
     int zbits_;
     int rbits_;
-    
+
     int rbins_;
     double rminl1_;
     double rmaxl1_;
     double dr_;
-    
+
     int zbins_;
     double zminl1_;
     double zminl2_;
     double dz_;
-    
+
     double rmeanl2_;
     double rmeanl3_;
     double zmeand3_;
-    
+
     double rmaxdisk_;
     double rmindisk_;
   };
-  
-};
+
+};  // namespace Trklet
 #endif

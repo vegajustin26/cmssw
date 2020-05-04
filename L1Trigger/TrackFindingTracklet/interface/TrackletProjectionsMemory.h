@@ -5,13 +5,11 @@
 
 #include <vector>
 
-
 namespace Trklet {
 
   class Settings;
   class Tracklet;
 
-  
   class TrackletProjectionsMemory : public MemoryBase {
   public:
     TrackletProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector);
@@ -28,14 +26,13 @@ namespace Trklet {
 
     int layer() const { return layer_; }
     int disk() const { return disk_; }
-    
-  private:
 
+  private:
     std::vector<Tracklet*> tracklets_;
-    
+
     int layer_;
     int disk_;
   };
 
-};
+};  // namespace Trklet
 #endif

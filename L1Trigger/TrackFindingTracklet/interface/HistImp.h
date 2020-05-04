@@ -11,13 +11,13 @@ namespace Trklet {
 
   class Settings;
   class Globals;
-  
+
   class HistImp : public HistBase {
   public:
     HistImp();
 
     virtual ~HistImp() {}
-    
+
     void init();
     void close();
 
@@ -25,32 +25,34 @@ namespace Trklet {
     void bookDiskResidual();
     void bookTrackletParams();
 
-    virtual void fillTrackletParams(const Settings* settings,
-				    Globals* globals,
-				    int seedIndex,
-				    int iSector,
-				    double rinv,
-				    double irinv,
-				    double phi0,
-				    double iphi0,
-				    double eta,
-				    double ieta,
-				    double z0,
-				    double iz0,
-				    int tp);
-    
-    void FillLayerResidual(int layer, int seed, double phiresid, double iphiresid, double zresid, double izresid, bool match);
-    
-    virtual void FillDiskResidual(int disk, int seed, double phiresid, double iphiresid, double rresid, double irresid, bool match);
-    
+    virtual void fillTrackletParams(const Settings *settings,
+                                    Globals *globals,
+                                    int seedIndex,
+                                    int iSector,
+                                    double rinv,
+                                    double irinv,
+                                    double phi0,
+                                    double iphi0,
+                                    double eta,
+                                    double ieta,
+                                    double z0,
+                                    double iz0,
+                                    int tp);
+
+    void FillLayerResidual(
+        int layer, int seed, double phiresid, double iphiresid, double zresid, double izresid, bool match);
+
+    virtual void FillDiskResidual(
+        int disk, int seed, double phiresid, double iphiresid, double rresid, double irresid, bool match);
+
     void bookSeedEff();
-    
+
     //Efficiency for finding seed
     virtual void fillSeedEff(int seedIndex, double etaTP, bool eff);
-    
+
   private:
     TFile *h_file_;
-    
+
     //Layer residuales
     TH1F *h_layerresid_phi_L3_L1L2_;
     TH1F *h_layerresid_phi_L3_L1L2_match_;
@@ -60,7 +62,7 @@ namespace Trklet {
     TH1F *h_layerresid_z_L3_L1L2_match_;
     TH1F *h_layerresid_zf_L3_L1L2_;
     TH1F *h_layerresid_zf_L3_L1L2_match_;
-    
+
     //Disk residuals
     TH1F *h_diskresid_phi_D1_L1L2_;
     TH1F *h_diskresid_phi_D1_L1L2_match_;
@@ -70,7 +72,7 @@ namespace Trklet {
     TH1F *h_diskresid_r_D1_L1L2_match_;
     TH1F *h_diskresid_rf_D1_L1L2_;
     TH1F *h_diskresid_rf_D1_L1L2_match_;
-    
+
     //Tracklet parameters
     TH1F *h_rinv_L1L2_;
     TH1F *h_irinv_L1L2_;
@@ -100,7 +102,7 @@ namespace Trklet {
     TH1F *h_iz0_matched_L1L2_;
     TH1F *h_z0res_L1L2_;
     TH1F *h_iz0res_L1L2_;
-    
+
     //seeding efficiency
     TEfficiency *h_eff_eta_L1L2seed_;
     TEfficiency *h_eff_eta_L2L3seed_;
@@ -112,5 +114,5 @@ namespace Trklet {
     TEfficiency *h_eff_eta_D1L2seed_;
   };
 
-};
+};  // namespace Trklet
 #endif

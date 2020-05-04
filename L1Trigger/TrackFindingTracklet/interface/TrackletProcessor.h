@@ -15,44 +15,40 @@ namespace Trklet {
   class Globals;
   class MemoryBase;
 
-  class TrackletProcessor:public TrackletCalculatorBase{
-    
+  class TrackletProcessor : public TrackletCalculatorBase {
   public:
-    
-    TrackletProcessor(std::string name, const Settings* const settings,Globals* globals, unsigned int iSector);
-    
-    void addOutputProjection(TrackletProjectionsMemory* &outputProj, MemoryBase* memory);
-  
-    void addOutput(MemoryBase* memory,std::string output);
-    
-    void addInput(MemoryBase* memory,std::string input);
+    TrackletProcessor(std::string name, const Settings* const settings, Globals* globals, unsigned int iSector);
+
+    void addOutputProjection(TrackletProjectionsMemory*& outputProj, MemoryBase* memory);
+
+    void addOutput(MemoryBase* memory, std::string output);
+
+    void addInput(MemoryBase* memory, std::string input);
 
     void execute();
 
     void setVMPhiBin();
 
     void writeTETable();
-    
+
   private:
-    
     int iTC_;
-    
+
     std::vector<VMStubsTEMemory*> innervmstubs_;
     std::vector<VMStubsTEMemory*> outervmstubs_;
-    
+
     std::vector<AllStubsMemory*> innerallstubs_;
     std::vector<AllStubsMemory*> outerallstubs_;
-    
+
     bool extra_;
-    
+
     std::map<unsigned int, std::vector<bool> > phitable_;
     std::map<unsigned int, std::vector<bool> > pttableinner_;
     std::map<unsigned int, std::vector<bool> > pttableouter_;
-    
+
     int innerphibits_;
     int outerphibits_;
-    
   };
 
-};
+};  // namespace Trklet
 #endif

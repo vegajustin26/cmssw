@@ -7,17 +7,15 @@
 using namespace Trklet;
 using namespace std;
 
-
-AllProjectionsMemory::AllProjectionsMemory(string name, const Settings* const settings, unsigned int iSector) :
-  MemoryBase(name, settings, iSector) {
-  
+AllProjectionsMemory::AllProjectionsMemory(string name, const Settings* const settings, unsigned int iSector)
+    : MemoryBase(name, settings, iSector) {
   string subname = name.substr(3, 2);
   if (subname[0] == '_')
     subname = name.substr(9, 2);
-  
+
   layer_ = 0;
   disk_ = 0;
-  
+
   if (subname == "L1")
     layer_ = 1;
   if (subname == "L2")
@@ -82,12 +80,12 @@ void AllProjectionsMemory::writeAP(bool first) {
     out_.open(fname.c_str());
   } else
     out_.open(fname.c_str(), std::ofstream::app);
-  
+
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
-  
+
   for (unsigned int j = 0; j < tracklets_.size(); j++) {
     string proj =
-      (layer_ > 0) ? tracklets_[j]->trackletprojstrlayer(layer_) : tracklets_[j]->trackletprojstrdisk(disk_);
+        (layer_ > 0) ? tracklets_[j]->trackletprojstrlayer(layer_) : tracklets_[j]->trackletprojstrdisk(disk_);
     out_ << "0x";
     if (j < 16)
       out_ << "0";
@@ -95,10 +93,9 @@ void AllProjectionsMemory::writeAP(bool first) {
     out_ << " " << proj << "  " << Trklet::hexFormat(proj) << endl;
   }
   out_.close();
-  
+
   bx_++;
   event_++;
   if (bx_ > 7)
     bx_ = 0;
 }
-

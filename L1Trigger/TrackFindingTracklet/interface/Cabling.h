@@ -11,21 +11,21 @@
 namespace Trklet {
 
   class Settings;
-  
+
   class Cabling {
   public:
     Cabling();
-    
+
     void init(std::string dtcconfig, std::string moduleconfig);
 
-    std::string dtc(int layer, int ladder, int module); 
+    std::string dtc(int layer, int ladder, int module);
 
     void addphi(std::string dtc, double phi, int layer, int module);
 
     void writephirange();
-    
+
     std::vector<std::string> DTCs() const;
-    
+
   private:
     std::vector<DTCLink> links_;
     std::map<std::string, DTC> dtcranges;
@@ -33,5 +33,5 @@ namespace Trklet {
     std::map<int, std::map<int, std::map<int, std::string> > > modules;
   };
 
-};
+};  // namespace Trklet
 #endif

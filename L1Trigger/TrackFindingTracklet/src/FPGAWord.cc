@@ -32,40 +32,43 @@ void FPGAWord::set(int value, int nbits, bool positive, int line, const char* fi
   if (positive) {
     if (value >= (1 << nbits)) {
       if (file != 0) {
-	edm::LogProblem("Tracklet") << "value too large:" << value << " " << (1 << nbits) << " (" << file << ":" << line << ")";
+        edm::LogProblem("Tracklet") << "value too large:" << value << " " << (1 << nbits) << " (" << file << ":" << line
+                                    << ")";
       }
     }
     assert(value < (1 << nbits));
   } else {
     if (value > (1 << (nbits - 1))) {
-      edm::LogProblem("Tracklet") << "value too large:" << value << " " << (1 << (nbits - 1)) << " (" << file << ":" << line << ")";
+      edm::LogProblem("Tracklet") << "value too large:" << value << " " << (1 << (nbits - 1)) << " (" << file << ":"
+                                  << line << ")";
     }
     assert(value <= (1 << (nbits - 1)));
     if (value < -(1 << (nbits - 1))) {
-      edm::LogProblem("Tracklet") << "value too negative:" << value << " " << -(1 << (nbits - 1)) << " (" << file << ":" << line << ")";
+      edm::LogProblem("Tracklet") << "value too negative:" << value << " " << -(1 << (nbits - 1)) << " (" << file << ":"
+                                  << line << ")";
     }
     assert(value >= -(1 << (nbits - 1)));
   }
 }
 
 std::string FPGAWord::str() const {
-    const int nbit = nbits_;
+  const int nbit = nbits_;
 
-    if (!(nbit > 0 && nbit < 22))
-      edm::LogVerbatim("Tracklet") << "nbit: " << nbit;
-    if (nbit == -1)
-      return "?";
-    if (nbit == 0)
-      return "~";
+  if (!(nbit > 0 && nbit < 22))
+    edm::LogVerbatim("Tracklet") << "nbit: " << nbit;
+  if (nbit == -1)
+    return "?";
+  if (nbit == 0)
+    return "~";
 
-    int valtmp=value_;
-    string str="";
-    for(int i=0;i<nbit;i++) {
-      str=((valtmp&1)?"1":"0")+str;
-      valtmp>>=1;
-    }
+  int valtmp = value_;
+  string str = "";
+  for (int i = 0; i < nbit; i++) {
+    str = ((valtmp & 1) ? "1" : "0") + str;
+    valtmp >>= 1;
+  }
 
-    return str;
+  return str;
 }
 
 unsigned int FPGAWord::bits(unsigned int lsb, unsigned int nbit) {

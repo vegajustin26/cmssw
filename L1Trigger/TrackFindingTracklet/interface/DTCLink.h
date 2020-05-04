@@ -6,7 +6,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 
 namespace Trklet {
-  
+
   class DTCLink {
   public:
     DTCLink(double phimin, double phimax);
@@ -14,13 +14,13 @@ namespace Trklet {
     void addStub(std::pair<Stub*, L1TStub*> stub);
 
     bool inRange(double phi, bool overlaplayer);
-    
+
     unsigned int nStubs() const { return stubs_.size(); }
-    
+
     Stub* getFPGAStub(unsigned int i) const { return stubs_[i].first; }
     L1TStub* getL1TStub(unsigned int i) const { return stubs_[i].second; }
     std::pair<Stub*, L1TStub*> getStub(unsigned int i) const { return stubs_[i]; }
-    
+
     void clean() { stubs_.clear(); }
 
   private:
@@ -28,5 +28,5 @@ namespace Trklet {
     double phimax_;
     std::vector<std::pair<Stub*, L1TStub*> > stubs_;
   };
-};
+};  // namespace Trklet
 #endif

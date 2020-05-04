@@ -3,23 +3,23 @@
 using namespace std;
 using namespace Trklet;
 
-VMStubTE::VMStubTE(std::pair<Stub*, L1TStub*> stub, FPGAWord finephi, FPGAWord bend, FPGAWord vmbits, FPGAWord allstubindex) {
-  stub_=stub;
-  finephi_=finephi;
-  bend_=bend;
-  vmbits_=vmbits;
-  allStubIndex_=allstubindex;
+VMStubTE::VMStubTE(
+    std::pair<Stub*, L1TStub*> stub, FPGAWord finephi, FPGAWord bend, FPGAWord vmbits, FPGAWord allstubindex) {
+  stub_ = stub;
+  finephi_ = finephi;
+  bend_ = bend;
+  vmbits_ = vmbits;
+  allStubIndex_ = allstubindex;
 }
 
 std::string VMStubTE::str() const {
-  
-  string stub=allStubIndex_.str();
-  stub+="|";
-  stub+=bend_.str();
-  stub+="|";
-  stub+=finephi_.str();
-  stub+="|";
-  stub+=vmbits_.str();
-  
-  return stub;  
+  string stub = allStubIndex_.str();
+  stub += "|";
+  stub += bend_.str();
+  stub += "|";
+  stub += finephi_.str();
+  stub += "|";
+  stub += vmbits_.str();
+
+  return stub;
 }

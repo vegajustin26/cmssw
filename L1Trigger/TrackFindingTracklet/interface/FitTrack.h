@@ -11,44 +11,42 @@
 namespace Trklet {
 
   class Settings;
-  class Globals; 
+  class Globals;
   class Stub;
   class L1TStub;
-  
+
   class FitTrack : public ProcessBase {
-    
   public:
-    
     FitTrack(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
-    
+
     void addOutput(MemoryBase* memory, std::string output);
 
     void addInput(MemoryBase* memory, std::string input);
-    
+
     // used if USEHYBRID is not defined
-    void trackFitChisq(Tracklet* tracklet, std::vector<std::pair<Stub*,L1TStub*>> &, std::vector<std::pair<int,int>> &);
-    
+    void trackFitChisq(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&, std::vector<std::pair<int, int>>&);
+
     // used if USEHYBRID is defined
-    void trackFitKF(Tracklet* tracklet, std::vector<std::pair<Stub*,L1TStub*>> &trackstublist, std::vector<std::pair<int,int>> &stubidslist);
+    void trackFitKF(Tracklet* tracklet,
+                    std::vector<std::pair<Stub*, L1TStub*>>& trackstublist,
+                    std::vector<std::pair<int, int>>& stubidslist);
 
     // used for propagating tracklet without fitting
-    void trackFitFake(Tracklet* tracklet, std::vector<std::pair<Stub*,L1TStub*>> &, std::vector<std::pair<int,int>> &);
-    
+    void trackFitFake(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&, std::vector<std::pair<int, int>>&);
+
     std::vector<Tracklet*> orderedMatches(std::vector<FullMatchMemory*>& fullmatch);
 
     void execute();
 
   private:
-    
     std::vector<TrackletParametersMemory*> seedtracklet_;
     std::vector<FullMatchMemory*> fullmatch1_;
     std::vector<FullMatchMemory*> fullmatch2_;
     std::vector<FullMatchMemory*> fullmatch3_;
     std::vector<FullMatchMemory*> fullmatch4_;
-    
+
     TrackFitMemory* trackfit_;
-    
   };
 
-};
+};  // namespace Trklet
 #endif

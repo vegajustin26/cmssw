@@ -523,7 +523,8 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
   }
 
   if (!(L1Tk_nPar == 4 || L1Tk_nPar == 5)) {
-    edm::LogVerbatim("Tracklet") << "Invalid number of track parameters, specified L1Tk_nPar == " << L1Tk_nPar << " but only 4/5 are valid options! Exiting...";
+    edm::LogVerbatim("Tracklet") << "Invalid number of track parameters, specified L1Tk_nPar == " << L1Tk_nPar
+                                 << " but only 4/5 are valid options! Exiting...";
     return;
   }
 
@@ -897,12 +898,14 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
           if (detIdStub.subdetId() == StripSubdetector::TOB) {
             layer = static_cast<int>(tTopo->layer(detIdStub));
             if (DebugMode)
-              edm::LogVerbatim("Tracklet") << "   stub in layer " << layer << " at position x y z = " << x << " " << y << " " << z;
+              edm::LogVerbatim("Tracklet")
+                  << "   stub in layer " << layer << " at position x y z = " << x << " " << y << " " << z;
             tmp_trk_lhits += pow(10, layer - 1);
           } else if (detIdStub.subdetId() == StripSubdetector::TID) {
             layer = static_cast<int>(tTopo->layer(detIdStub));
             if (DebugMode)
-              edm::LogVerbatim("Tracklet") << "   stub in disk " << layer << " at position x y z = " << x << " " << y << " " << z;
+              edm::LogVerbatim("Tracklet")
+                  << "   stub in disk " << layer << " at position x y z = " << x << " " << y << " " << z;
             tmp_trk_dhits += pow(10, layer - 1);
           }
 
@@ -925,9 +928,10 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
 
       if (DebugMode) {
         edm::LogVerbatim("Tracklet") << "L1 track,"
-				     << " pt: " << tmp_trk_pt << " eta: " << tmp_trk_eta << " phi: " << tmp_trk_phi << " z0: " << tmp_trk_z0
-				     << " chi2: " << tmp_trk_chi2 << " chi2rphi: " << tmp_trk_chi2rphi << " chi2rz: " << tmp_trk_chi2rz
-				     << " nstub: " << tmp_trk_nstub;
+                                     << " pt: " << tmp_trk_pt << " eta: " << tmp_trk_eta << " phi: " << tmp_trk_phi
+                                     << " z0: " << tmp_trk_z0 << " chi2: " << tmp_trk_chi2
+                                     << " chi2rphi: " << tmp_trk_chi2rphi << " chi2rz: " << tmp_trk_chi2rz
+                                     << " nstub: " << tmp_trk_nstub;
         if (tmp_trk_genuine)
           edm::LogVerbatim("Tracklet") << "    (is genuine)";
         if (tmp_trk_unknown)
@@ -995,9 +999,10 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
         myTP_dxy = sqrt(myTP_x0 * myTP_x0 + myTP_y0 * myTP_y0);
 
         if (DebugMode) {
-          edm::LogVerbatim("Tracklet") << "TP matched to track has pt = " << my_tp->p4().pt() << " eta = " << my_tp->momentum().eta()
-				       << " phi = " << my_tp->momentum().phi() << " z0 = " << my_tp->vertex().z()
-				       << " pdgid = " << my_tp->pdgId() << " dxy = " << myTP_dxy;
+          edm::LogVerbatim("Tracklet") << "TP matched to track has pt = " << my_tp->p4().pt()
+                                       << " eta = " << my_tp->momentum().eta() << " phi = " << my_tp->momentum().phi()
+                                       << " z0 = " << my_tp->vertex().z() << " pdgid = " << my_tp->pdgId()
+                                       << " dxy = " << myTP_dxy;
         }
       }
 
@@ -1130,12 +1135,13 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
       continue;
 
     if (DebugMode)
-      edm::LogVerbatim("Tracklet") << "Tracking particle, pt: " << tmp_tp_pt << " eta: " << tmp_tp_eta << " phi: " << tmp_tp_phi
-				   << " z0: " << tmp_tp_z0 << " d0: " << tmp_tp_d0 << " z_prod: " << tmp_tp_z0_prod
-				   << " d_prod: " << tmp_tp_d0_prod << " pdgid: " << tmp_tp_pdgid << " eventID: " << iterTP->eventId().event()
-				   << " ttclusters " << MCTruthTTClusterHandle->findTTClusterRefs(tp_ptr).size() << " ttstubs "
-				   << MCTruthTTStubHandle->findTTStubRefs(tp_ptr).size() << " tttracks "
-				   << MCTruthTTTrackHandle->findTTTrackPtrs(tp_ptr).size();
+      edm::LogVerbatim("Tracklet") << "Tracking particle, pt: " << tmp_tp_pt << " eta: " << tmp_tp_eta
+                                   << " phi: " << tmp_tp_phi << " z0: " << tmp_tp_z0 << " d0: " << tmp_tp_d0
+                                   << " z_prod: " << tmp_tp_z0_prod << " d_prod: " << tmp_tp_d0_prod
+                                   << " pdgid: " << tmp_tp_pdgid << " eventID: " << iterTP->eventId().event()
+                                   << " ttclusters " << MCTruthTTClusterHandle->findTTClusterRefs(tp_ptr).size()
+                                   << " ttstubs " << MCTruthTTStubHandle->findTTStubRefs(tp_ptr).size() << " tttracks "
+                                   << MCTruthTTTrackHandle->findTTTrackPtrs(tp_ptr).size();
 
     // ----------------------------------------------------------------------------------------------
     // only consider TPs associated with >= 1 cluster, or >= X stubs, or have stubs in >= X layers (configurable options)
@@ -1182,7 +1188,8 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
 
     if (DebugMode)
       edm::LogVerbatim("Tracklet") << "TP is associated with " << nStubTP << " stubs, and has stubs in " << nStubLayerTP
-				   << " different layers/disks, and has GENUINE stubs in " << nStubLayerTP_g << " layers ";
+                                   << " different layers/disks, and has GENUINE stubs in " << nStubLayerTP_g
+                                   << " layers ";
 
     if (TP_minNStub > 0) {
       if (DebugMode)
@@ -1235,18 +1242,19 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
         if (DebugMode) {
           if (MCTruthTTTrackHandle->findTrackingParticlePtr(matchedTracks.at(it)).isNull()) {
             edm::LogVerbatim("Tracklet") << "track matched to TP is NOT uniquely matched to a TP";
-          }
-	  else {
+          } else {
             edm::Ptr<TrackingParticle> my_tp = MCTruthTTTrackHandle->findTrackingParticlePtr(matchedTracks.at(it));
             edm::LogVerbatim("Tracklet") << "TP matched to track matched to TP ... tp pt = " << my_tp->p4().pt()
-                 << " eta = " << my_tp->momentum().eta() << " phi = " << my_tp->momentum().phi()
-                 << " z0 = " << my_tp->vertex().z();
+                                         << " eta = " << my_tp->momentum().eta() << " phi = " << my_tp->momentum().phi()
+                                         << " z0 = " << my_tp->vertex().z();
           }
-	  edm::LogVerbatim("Tracklet") << "   ... matched L1 track has pt = " << matchedTracks.at(it)->momentum().perp()
-				       << " eta = " << matchedTracks.at(it)->momentum().eta()
-				       << " phi = " << matchedTracks.at(it)->momentum().phi() << " chi2 = " << matchedTracks.at(it)->chi2()
-				       << " consistency = " << matchedTracks.at(it)->stubPtConsistency()
-				       << " z0 = " << matchedTracks.at(it)->z0() << " nstub = " << matchedTracks.at(it)->getStubRefs().size();
+          edm::LogVerbatim("Tracklet") << "   ... matched L1 track has pt = " << matchedTracks.at(it)->momentum().perp()
+                                       << " eta = " << matchedTracks.at(it)->momentum().eta()
+                                       << " phi = " << matchedTracks.at(it)->momentum().phi()
+                                       << " chi2 = " << matchedTracks.at(it)->chi2()
+                                       << " consistency = " << matchedTracks.at(it)->stubPtConsistency()
+                                       << " z0 = " << matchedTracks.at(it)->z0()
+                                       << " nstub = " << matchedTracks.at(it)->getStubRefs().size();
           if (tmp_trk_genuine)
             edm::LogVerbatim("Tracklet") << "    (genuine!) ";
           if (tmp_trk_loosegenuine)

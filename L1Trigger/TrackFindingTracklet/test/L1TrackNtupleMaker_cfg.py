@@ -25,17 +25,8 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.MessageLogger = cms.Service("MessageLogger",
-                                    destinations = cms.untracked.vstring('cout'),
-                                    categories   = cms.untracked.vstring('Tracklet'),
-                                    debugModules = cms.untracked.vstring('*'),
-                                    cout         = cms.untracked.PSet(
-                                        threshold = cms.untracked.string('DEBUG'),
-                                        INFO = cms.untracked.PSet(limit = cms.untracked.int32(0)),
-                                        DEBUG = cms.untracked.PSet(limit = cms.untracked.int32(0)),
-                                        Tracklet = cms.untracked.PSet(limit = cms.untracked.int32(-1))
-                                    ),
-)
+process.MessageLogger.categories.append('Tracklet')
+process.MessageLogger.Tracklet = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 
 if GEOMETRY == "D49": 
     print "using geometry " + GEOMETRY + " (tilted)"
@@ -63,8 +54,10 @@ def getTxtFile(txtFileName):
   return FileUtils.loadListFromFile(os.environ['CMSSW_BASE']+'/src/'+txtFileName)
 
 if GEOMETRY == "D49":
-    inputMC = ["/store/relval/CMSSW_11_1_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_110X_mcRun4_realistic_v2_2026D49PU200-v1/20000/F7BF4AED-51F1-9D47-B86D-6C3DDA134AB9.root"]
-
+    #inputMC = ["/store/relval/CMSSW_11_1_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_110X_mcRun4_realistic_v2_2026D49PU200-v1/20000/F7BF4AED-51F1-9D47-B86D-6C3DDA134AB9.root"]
+    inputMC = ["file:/eos/cms/store/user/skinnari/L1TK/TTbar_D49/FBC9E601-AC44-3E40-B8B6-E6A671F1D2C7.root",
+               "file:/eos/cms/store/user/skinnari/L1TK/TTbar_D49/FCFA04F4-151E-664D-AE00-18056F7D3F4D.root"]
+    
 else:
     print "this is not a valid geometry!!!"
     

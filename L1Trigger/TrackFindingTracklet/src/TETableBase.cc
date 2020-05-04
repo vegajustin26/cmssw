@@ -3,9 +3,7 @@
 using namespace std;
 using namespace Trklet;
 
-TETableBase::TETableBase(const Settings* settings) :
-  settings_(settings) {
-}
+TETableBase::TETableBase(const Settings* settings) : settings_(settings) {}
 
 int TETableBase::lookup(int, int) {
   assert(0);  //Should never get here - this should be a pure virtual fcn
@@ -19,16 +17,16 @@ void TETableBase::writeVMTable(std::string name, bool positive) {
     if (i != 0) {
       out << "," << endl;
     }
-    
+
     assert(nbits_ > 0);
-    
+
     int itable = table_[i];
     if (positive) {
       if (table_[i] < 0) {
-	itable = (1 << nbits_) - 1;
+        itable = (1 << nbits_) - 1;
       }
     }
-    
+
     out << itable;
   }
   out << endl << "};" << endl;

@@ -5,20 +5,21 @@ using namespace std;
 using namespace Trklet;
 
 TrackletParametersMemory::TrackletParametersMemory(string name, const Settings* const settings, unsigned int iSector)
-  : MemoryBase(name, settings, iSector) {}
+    : MemoryBase(name, settings, iSector) {}
 
-void TrackletParametersMemory::writeMatches(Globals* globals, int &matchesL1, int &matchesL3, int &matchesL5) {
-  ofstream& out=globals->ofstream("nmatches.txt");
+void TrackletParametersMemory::writeMatches(Globals* globals, int& matchesL1, int& matchesL3, int& matchesL5) {
+  ofstream& out = globals->ofstream("nmatches.txt");
   for (unsigned int i = 0; i < tracklets_.size(); i++) {
     if ((tracklets_[i]->nMatches() + tracklets_[i]->nMatchesDisk()) > 0) {
       if (tracklets_[i]->layer() == 1)
-	matchesL1++;
+        matchesL1++;
       if (tracklets_[i]->layer() == 3)
-	matchesL3++;
+        matchesL3++;
       if (tracklets_[i]->layer() == 5)
-	matchesL5++;
+        matchesL5++;
     }
-    out << tracklets_[i]->layer() << " " << tracklets_[i]->disk() << " " << tracklets_[i]->nMatches() << " "<< tracklets_[i]->nMatchesDisk() << endl;
+    out << tracklets_[i]->layer() << " " << tracklets_[i]->disk() << " " << tracklets_[i]->nMatches() << " "
+        << tracklets_[i]->nMatchesDisk() << endl;
   }
 }
 
@@ -38,9 +39,9 @@ void TrackletParametersMemory::writeTPAR(bool first) {
     out_.open(fname.c_str());
   } else
     out_.open(fname.c_str(), std::ofstream::app);
-  
+
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
-  
+
   for (unsigned int j = 0; j < tracklets_.size(); j++) {
     string tpar = tracklets_[j]->trackletparstr();
     out_ << "0x";
@@ -50,7 +51,7 @@ void TrackletParametersMemory::writeTPAR(bool first) {
     out_ << " " << tpar << " " << Trklet::hexFormat(tpar) << endl;
   }
   out_.close();
-  
+
   bx_++;
   event_++;
   if (bx_ > 7)

@@ -2,8 +2,8 @@
 // Basic example ROOT script for making tracking performance plots using the ntuples produced by L1TrackNtupleMaker.cc
 //
 // e.g. in ROOT do: .L L1TrackNtuplePlot.C++, L1TrackNtuplePlot("TTbar_PU200_hybrid")
-//  
-// By Louise Skinnari, June 2013 
+//
+// By Louise Skinnari, June 2013
 // ----------------------------------------------------------------------------------------------------------------
 
 #include "TROOT.h"
@@ -130,7 +130,8 @@ void L1TrackNtuplePlot(TString type,
   tree->Add(type_dir + type + ".root");
 
   if (tree->GetEntries() == 0) {
-    cout << "File doesn't exist or is empty, returning..." << endl; //cout's kept in this file as it is an example standalone plotting script, not running in central CMSSW
+    cout << "File doesn't exist or is empty, returning..."
+         << endl;  //cout's kept in this file as it is an example standalone plotting script, not running in central CMSSW
     return;
   }
 

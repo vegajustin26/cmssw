@@ -10,25 +10,25 @@
 #include <cassert>
 #include <cmath>
 
-namespace Trklet{
+namespace Trklet {
   class Globals;
 
   class HistBase {
   public:
     HistBase() {}
-    
+
     virtual ~HistBase() {}
-    
+
     virtual void close() {}
-    
+
     virtual void FillLayerResidual(int, int, double, double, double, double, bool) {
       return;  //default implementation does nothing
     }
-    
+
     virtual void FillDiskResidual(int, int, double, double, double, double, bool) {
       return;  //default implementation does nothing
     }
-    
+
     //arguments are
     // int seedIndex
     // int iSector
@@ -37,19 +37,20 @@ namespace Trklet{
     // double ieta, eta
     // double iz0, z0
     // int tp
-    virtual void fillTrackletParams(const Settings*, Globals*, int, int, double, double, double, double, double, double, double, double, int) {
+    virtual void fillTrackletParams(
+        const Settings*, Globals*, int, int, double, double, double, double, double, double, double, double, int) {
       return;  //default implementation does nothing
     }
-    
+
     //int seedIndex
     //double etaTP
     //bool eff
     virtual void fillSeedEff(int, double, bool) {
       return;  //default implementation does nothing
     }
-    
+
   private:
   };
 
-};
+};  // namespace Trklet
 #endif

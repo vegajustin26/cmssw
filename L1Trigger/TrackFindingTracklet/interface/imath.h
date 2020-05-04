@@ -156,7 +156,7 @@ class var_flag;
 class var_base {
 public:
   var_base(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, var_base *p3, int l) {
-    globals_=globals;
+    globals_ = globals;
     p1_ = p1;
     p2_ = p2;
     p3_ = p3;
@@ -293,7 +293,7 @@ public:
   static std::string itos(int i);
 
 protected:
-  imathGlobals *globals_; 
+  imathGlobals *globals_;
   std::string name_;
   var_base *p1_;
   var_base *p2_;
@@ -335,8 +335,14 @@ protected:
 
 class var_adjustK : public var_base {
 public:
- var_adjustK(imathGlobals *globals, std::string name, var_base *p1, double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1)
-   : var_base(globals,name, p1, 0, 0, 0) {
+  var_adjustK(imathGlobals *globals,
+              std::string name,
+              var_base *p1,
+              double Knew,
+              double epsilon = 1e-5,
+              bool do_assert = false,
+              int nbits = -1)
+      : var_base(globals, name, p1, 0, 0, 0) {
     op_ = "adjustK";
     K_ = p1->get_K();
     Kmap_ = p1->get_Kmap();
@@ -368,9 +374,14 @@ protected:
 
 class var_adjustKR : public var_base {
 public:
-  var_adjustKR(imathGlobals *globals, 
-      std::string name, var_base *p1, double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1)
-    : var_base(globals,name, p1, 0, 0, 1) {
+  var_adjustKR(imathGlobals *globals,
+               std::string name,
+               var_base *p1,
+               double Knew,
+               double epsilon = 1e-5,
+               bool do_assert = false,
+               int nbits = -1)
+      : var_base(globals, name, p1, 0, 0, 1) {
     op_ = "adjustKR";
     K_ = p1->get_K();
     Kmap_ = p1->get_Kmap();
@@ -400,7 +411,7 @@ protected:
 
 class var_param : public var_base {
 public:
- var_param(imathGlobals *globals, std::string name, double fval, int nbits) : var_base(globals, name, 0, 0, 0, 0) {
+  var_param(imathGlobals *globals, std::string name, double fval, int nbits) : var_base(globals, name, 0, 0, 0, 0) {
     op_ = "const";
     nbits_ = nbits;
     int l = log2(std::abs(fval)) + 1.9999999 - nbits;
@@ -409,7 +420,8 @@ public:
     fval_ = fval;
     ival_ = fval / K_;
   }
- var_param(imathGlobals *globals, std::string name, std::string units, double fval, double K) : var_base(globals, name, 0, 0, 0, 0) {
+  var_param(imathGlobals *globals, std::string name, std::string units, double fval, double K)
+      : var_base(globals, name, 0, 0, 0, 0) {
     op_ = "const";
     K_ = K;
     nbits_ = log2(fval / K) + 1.999999;  //plus one to round up
@@ -420,8 +432,8 @@ public:
       int l = log2(K);
       if (std::abs(pow(2, l) / K - 1) > 1e-5) {
         char slog[100];
-	sprintf(slog,"defining unitless constant, yet K is not a power of 2! %g, %g", K, pow(2, l));
-	edm::LogVerbatim("Tracklet") << slog;
+        sprintf(slog, "defining unitless constant, yet K is not a power of 2! %g, %g", K, pow(2, l));
+        edm::LogVerbatim("Tracklet") << slog;
       }
       Kmap_["2"] = l;
     }
@@ -447,7 +459,8 @@ public:
 class var_def : public var_base {
 public:
   //construct from scratch
- var_def(imathGlobals *globals, std::string name, std::string units, double fmax, double K) : var_base(globals, name, 0, 0, 0, 1) {
+  var_def(imathGlobals *globals, std::string name, std::string units, double fmax, double K)
+      : var_base(globals, name, 0, 0, 0, 1) {
     op_ = "def";
     K_ = K;
     nbits_ = log2(fmax / K) + 1.999999;  //plus one to round up
@@ -457,15 +470,15 @@ public:
       //defining a constant, K should be a power of two
       int l = log2(K);
       if (std::abs(pow(2, l) / K - 1) > 1e-5) {
-	char slog[100];
-	sprintf(slog,"defining unitless constant, yet K is not a power of 2! %g, %g", K, pow(2, l));
-	edm::LogVerbatim("Tracklet") << slog;
+        char slog[100];
+        sprintf(slog, "defining unitless constant, yet K is not a power of 2! %g, %g", K, pow(2, l));
+        edm::LogVerbatim("Tracklet") << slog;
       }
       Kmap_["2"] = l;
     }
   }
   //construct from abother variable (all provenance info is lost!)
- var_def(imathGlobals *globals, std::string name, var_base *p) : var_base(globals, name, 0, 0, 0, 1) {
+  var_def(imathGlobals *globals, std::string name, var_base *p) : var_base(globals, name, 0, 0, 0, 1) {
     op_ = "def";
     K_ = p->get_K();
     nbits_ = p->get_nbits();
@@ -491,7 +504,7 @@ public:
 class var_add : public var_base {
 public:
   var_add(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
-    : var_base(globals, name, p1, p2, 0, 1) {
+      : var_base(globals, name, p1, p2, 0, 1) {
     op_ = "add";
 
     std::map<std::string, int> map1 = p1->get_Kmap();
@@ -515,9 +528,9 @@ public:
     for (it = map1.begin(); it != map1.end(); ++it) {
       if (it->second != 0) {
         if (it->first != "2") {
-          sprintf(slog,"var_add: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
-	  edm::LogVerbatim("Tracklet") << slog;
-	  edm::LogVerbatim("Tracklet") << " *********************************************************";
+          sprintf(slog, "var_add: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
+          edm::LogVerbatim("Tracklet") << slog;
+          edm::LogVerbatim("Tracklet") << " *********************************************************";
           p1->dump_cout();
           edm::LogVerbatim("Tracklet") << " *********************************************************";
           p2->dump_cout();
@@ -530,7 +543,7 @@ public:
     double ki2 = p2->get_K() / pow(2, s2);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
-      sprintf(slog,"var_add: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
+      sprintf(slog, "var_add: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
       edm::LogVerbatim("Tracklet") << slog;
       edm::LogVerbatim("Tracklet") << " *********************************************************";
       p1->dump_cout();
@@ -582,7 +595,7 @@ protected:
 class var_subtract : public var_base {
 public:
   var_subtract(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
-    : var_base(globals, name, p1, p2, 0, 1) {
+      : var_base(globals, name, p1, p2, 0, 1) {
     op_ = "subtract";
 
     std::map<std::string, int> map1 = p1->get_Kmap();
@@ -601,14 +614,14 @@ public:
     }
 
     char slog[100];
-    
+
     //assert if different
     for (it = map1.begin(); it != map1.end(); ++it) {
       if (it->second != 0) {
         if (it->first != "2") {
-	  sprintf(slog,"var_add: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
-	  edm::LogVerbatim("Tracklet") << slog;
-	  edm::LogVerbatim("Tracklet") << " *********************************************************";
+          sprintf(slog, "var_add: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
+          edm::LogVerbatim("Tracklet") << slog;
+          edm::LogVerbatim("Tracklet") << " *********************************************************";
           p1->dump_cout();
           edm::LogVerbatim("Tracklet") << " *********************************************************";
           p2->dump_cout();
@@ -621,7 +634,7 @@ public:
     double ki2 = p2->get_K() / pow(2, s2);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
-      sprintf(slog,"var_add: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
+      sprintf(slog, "var_add: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
       edm::LogVerbatim("Tracklet") << slog;
       edm::LogVerbatim("Tracklet") << " *********************************************************";
       p1->dump_cout();
@@ -672,7 +685,8 @@ protected:
 
 class var_nounits : public var_base {
 public:
- var_nounits(imathGlobals *globals, std::string name, var_base *p1, int ps = 17) : var_base(globals, name, p1, 0, 0, MULT_LATENCY) {
+  var_nounits(imathGlobals *globals, std::string name, var_base *p1, int ps = 17)
+      : var_base(globals, name, p1, 0, 0, MULT_LATENCY) {
     op_ = "nounits";
     ps_ = ps;
     nbits_ = p1->get_nbits();
@@ -699,7 +713,7 @@ protected:
 class var_shiftround : public var_base {
 public:
   var_shiftround(imathGlobals *globals, std::string name, var_base *p1, int shift)
-    : var_base(globals, name, p1, 0, 0, 1) {  // latency is one because there is an addition
+      : var_base(globals, name, p1, 0, 0, 1) {  // latency is one because there is an addition
     op_ = "shiftround";
     shift_ = shift;
 
@@ -717,7 +731,7 @@ protected:
 
 class var_shift : public var_base {
 public:
- var_shift(imathGlobals *globals, std::string name, var_base *p1, int shift) : var_base(globals, name, p1, 0, 0, 0) {
+  var_shift(imathGlobals *globals, std::string name, var_base *p1, int shift) : var_base(globals, name, p1, 0, 0, 0) {
     op_ = "shift";
     shift_ = shift;
 
@@ -735,7 +749,7 @@ protected:
 
 class var_neg : public var_base {
 public:
- var_neg(imathGlobals *globals, std::string name, var_base *p1) : var_base(globals, name, p1, 0, 0, 1) {
+  var_neg(imathGlobals *globals, std::string name, var_base *p1) : var_base(globals, name, p1, 0, 0, 1) {
     op_ = "neg";
     nbits_ = p1->get_nbits();
     Kmap_ = p1->get_Kmap();
@@ -748,7 +762,8 @@ public:
 
 class var_timesC : public var_base {
 public:
- var_timesC(imathGlobals *globals, std::string name, var_base *p1, double cF, int ps = 17) : var_base(globals, name, p1, 0, 0, MULT_LATENCY) {
+  var_timesC(imathGlobals *globals, std::string name, var_base *p1, double cF, int ps = 17)
+      : var_base(globals, name, p1, 0, 0, MULT_LATENCY) {
     op_ = "timesC";
     cF_ = cF;
     ps_ = ps;
@@ -781,7 +796,7 @@ protected:
 class var_mult : public var_base {
 public:
   var_mult(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
-    : var_base(globals, name, p1, p2, 0, MULT_LATENCY) {
+      : var_base(globals, name, p1, p2, 0, MULT_LATENCY) {
     op_ = "mult";
 
     std::map<std::string, int> map1 = p1->get_Kmap();
@@ -827,8 +842,14 @@ protected:
 
 class var_DSP_postadd : public var_base {
 public:
-  var_DSP_postadd(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, var_base *p3, double range = -1, int nmax = 18)
-    : var_base(globals, name, p1, p2, p3, DSP_LATENCY) {
+  var_DSP_postadd(imathGlobals *globals,
+                  std::string name,
+                  var_base *p1,
+                  var_base *p2,
+                  var_base *p3,
+                  double range = -1,
+                  int nmax = 18)
+      : var_base(globals, name, p1, p2, p3, DSP_LATENCY) {
     op_ = "DSP_postadd";
 
     //first, get constants for the p1*p2
@@ -863,13 +884,14 @@ public:
     for (it = map1.begin(); it != map1.end(); ++it) {
       if (it->second != 0) {
         if (it->first != "2") {
-          sprintf(slog,"var_DSP_postadd: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
-	  edm::LogVerbatim("Tracklet") << slog;
-	  edm::LogVerbatim("Tracklet") << " *********************************************************";
+          sprintf(
+              slog, "var_DSP_postadd: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
+          edm::LogVerbatim("Tracklet") << slog;
+          edm::LogVerbatim("Tracklet") << " *********************************************************";
           p1->dump_cout();
-	  edm::LogVerbatim("Tracklet") << " *********************************************************";
+          edm::LogVerbatim("Tracklet") << " *********************************************************";
           p2->dump_cout();
-	  edm::LogVerbatim("Tracklet") << " *********************************************************";
+          edm::LogVerbatim("Tracklet") << " *********************************************************";
           p3->dump_cout();
           assert(0);
         }
@@ -880,7 +902,7 @@ public:
     double ki2 = p3->get_K() / pow(2, s3);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
-      sprintf(slog,"var_DSP_postadd: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
+      sprintf(slog, "var_DSP_postadd: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
       edm::LogVerbatim("Tracklet") << slog;
       edm::LogVerbatim("Tracklet") << " *********************************************************";
       p1->dump_cout();
@@ -894,7 +916,7 @@ public:
 
     shift3_ = s3 - s0;
     if (shift3_ < 0) {
-      sprintf(slog,"var_DSP_postadd: loosing precision on C in A*B+C: %i", shift3_);
+      sprintf(slog, "var_DSP_postadd: loosing precision on C in A*B+C: %i", shift3_);
       edm::LogVerbatim("Tracklet") << slog;
       assert(0);
     }
@@ -936,8 +958,16 @@ class var_inv : public var_base {
 public:
   enum mode { pos, neg, both };
 
-  var_inv(imathGlobals *globals, std::string name, var_base *p1, double offset, int nbits, int n, unsigned int shift, mode m, int nbaddr = -1)
-    : var_base(globals, name, p1, 0, 0, LUT_LATENCY) {
+  var_inv(imathGlobals *globals,
+          std::string name,
+          var_base *p1,
+          double offset,
+          int nbits,
+          int n,
+          unsigned int shift,
+          mode m,
+          int nbaddr = -1)
+      : var_base(globals, name, p1, 0, 0, LUT_LATENCY) {
     op_ = "inv";
     offset_ = offset;
     nbits_ = nbits;
@@ -1029,11 +1059,13 @@ protected:
 
 class var_cut : public var_base {
 public:
- var_cut(imathGlobals *globals, double lower_cut, double upper_cut) : var_base(globals, "", 0, 0, 0, 0), lower_cut_(lower_cut), upper_cut_(upper_cut), parent_flag_(0) {
+  var_cut(imathGlobals *globals, double lower_cut, double upper_cut)
+      : var_base(globals, "", 0, 0, 0, 0), lower_cut_(lower_cut), upper_cut_(upper_cut), parent_flag_(0) {
     op_ = "cut";
   }
 
- var_cut(imathGlobals *globals, var_base *cut_var, double lower_cut, double upper_cut) : var_cut(globals, lower_cut, upper_cut) {
+  var_cut(imathGlobals *globals, var_base *cut_var, double lower_cut, double upper_cut)
+      : var_cut(globals, lower_cut, upper_cut) {
     set_cut_var(cut_var);
   }
 
@@ -1065,7 +1097,7 @@ protected:
 class var_flag : public var_base {
 public:
   template <class... Args>
-    var_flag(imathGlobals *globals, std::string name, var_base *cut, Args... args) : var_base(globals, name, 0, 0, 0, 0) {
+  var_flag(imathGlobals *globals, std::string name, var_base *cut, Args... args) : var_base(globals, name, 0, 0, 0, 0) {
     op_ = "flag";
     nbits_ = 1;
     add_cuts(cut, args...);

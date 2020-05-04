@@ -8,34 +8,31 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMProjectionsMemory.h"
 
 namespace Trklet {
-  
+
   class Settings;
   class Globals;
   class MemoryBase;
-  
-  class ProjectionRouter:public ProcessBase {
-    
+
+  class ProjectionRouter : public ProcessBase {
   public:
     ProjectionRouter(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
-    
-    void addOutput(MemoryBase* memory,std::string output);
-    void addInput(MemoryBase* memory,std::string input);
+
+    void addOutput(MemoryBase* memory, std::string output);
+    void addInput(MemoryBase* memory, std::string input);
 
     void execute();
-    
+
   private:
-    
     unsigned int layerdisk_;
-    
+
     int nrbits_;
     int nphiderbits_;
-    
+
     std::vector<TrackletProjectionsMemory*> inputproj_;
-    
+
     AllProjectionsMemory* allproj_;
     std::vector<VMProjectionsMemory*> vmprojs_;
-    
   };
 
-};
+};  // namespace Trklet
 #endif

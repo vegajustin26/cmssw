@@ -41,20 +41,20 @@ void var_base::analyze() {
   int iu = log2(get_range() / u);
   if (iu > 1) {
     char slog[1024];
-    sprintf(slog,"analyzing %s: range %g is much larger then %g. suggest cutting by a factor of 2^%i",
-	    name_.c_str(),
-	    get_range(),
-	    u,
-	    iu);
+    sprintf(slog,
+            "analyzing %s: range %g is much larger then %g. suggest cutting by a factor of 2^%i",
+            name_.c_str(),
+            get_range(),
+            u,
+            iu);
     edm::LogVerbatim("Tracklet") << slog;
-    
   }
 #ifdef IMATH_ROOT
   char slog[100];
   if (h_) {
     double eff = h_->Integral() / h_->GetEntries();
     if (eff < 0.99) {
-      sprintf(slog,"analyzing %s: range is too small, contains %f", name_.c_str(), eff);
+      sprintf(slog, "analyzing %s: range is too small, contains %f", name_.c_str(), eff);
       edm::LogVerbatim("Tracklet") << slog;
       h_->Print();
     }
@@ -65,7 +65,7 @@ void var_base::analyze() {
     h_->Write();
   } else {
     if (globals_->use_root) {
-      sprintf(slog,"analyzing %s: no histogram!\n", name_.c_str());
+      sprintf(slog, "analyzing %s: no histogram!\n", name_.c_str());
       edm::LogVerbatim("Tracklet") << slog;
     }
   }
@@ -248,11 +248,11 @@ TTree *var_base::AddToTree(imathGlobals *globals, var_base *v, char *s) {
   }
 
   if (v->p1_)
-    AddToTree(globals,v->p1_, s);
+    AddToTree(globals, v->p1_, s);
   if (v->p2_)
-    AddToTree(globals,v->p2_, s);
+    AddToTree(globals, v->p2_, s);
   if (v->p3_)
-    AddToTree(globals,v->p3_, s);
+    AddToTree(globals, v->p3_, s);
 
   return tt;
 }
@@ -324,8 +324,10 @@ bool var_base::local_passes() const {
     const int upper_cut = cast_cut->get_upper_cut() / K_;
     passes = passes || (ival_ > lower_cut && ival_ < upper_cut);
     if (globals_->printCutInfo_) {
-      edm::LogVerbatim("Tracklet") << "  " << name_ << " " << ((ival_ > lower_cut && ival_ < upper_cut) ? "PASSES" : "FAILS")
-				   << " (required: " << lower_cut * K_ << " < " << ival_ * K_ << " < " << upper_cut * K_ << ")";
+      edm::LogVerbatim("Tracklet") << "  " << name_ << " "
+                                   << ((ival_ > lower_cut && ival_ < upper_cut) ? "PASSES" : "FAILS")
+                                   << " (required: " << lower_cut * K_ << " < " << ival_ * K_ << " < " << upper_cut * K_
+                                   << ")";
     }
   }
   return passes;
@@ -349,9 +351,10 @@ void var_base::passes(std::map<const var_base *, std::vector<bool> > &passes,
         passes[this];
       passes.at(this).push_back(ival_ > lower_cut && ival_ < upper_cut);
       if (globals_->printCutInfo_) {
-	edm::LogVerbatim("Tracklet") << "  " << name_ << " "
-				     << ((ival_ > lower_cut && ival_ < upper_cut) ? "PASSES" : "FAILS")
-				     << " (required: " << lower_cut * K_ << " < " << ival_ * K_ << " < " << upper_cut * K_ << ")";
+        edm::LogVerbatim("Tracklet") << "  " << name_ << " "
+                                     << ((ival_ > lower_cut && ival_ < upper_cut) ? "PASSES" : "FAILS")
+                                     << " (required: " << lower_cut * K_ << " < " << ival_ * K_ << " < "
+                                     << upper_cut * K_ << ")";
       }
     }
   }
@@ -394,7 +397,6 @@ var_base *var_base::get_cut_var() {
 }
 
 bool var_flag::passes() {
-
   if (globals_->printCutInfo_) {
     edm::LogVerbatim("Tracklet") << "Checking if " << name_ << " passes...";
   }
@@ -436,6 +438,6 @@ bool var_flag::passes() {
   if (globals_->printCutInfo_) {
     edm::LogVerbatim("Tracklet") << name_ << " " << (passes ? "PASSES" : "FAILS");
   }
-  
+
   return passes;
 }

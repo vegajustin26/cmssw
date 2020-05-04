@@ -11,44 +11,41 @@
 namespace Trklet {
 
   class MemoryBase {
-
   public:
-    
     MemoryBase(std::string name, const Settings* const settings, unsigned int iSector);
 
-    virtual ~MemoryBase(){}
+    virtual ~MemoryBase() {}
 
-    std::string getName() const {return name_;}
-    std::string getLastPartOfName() const {return name_.substr(name_.find_last_of('_')+1);}
+    std::string getName() const { return name_; }
+    std::string getLastPartOfName() const { return name_.substr(name_.find_last_of('_') + 1); }
 
-    virtual void clean()=0;
+    virtual void clean() = 0;
 
     //method sets the layer and disk based on the name. pos is the position in the memory name where the layer or disk is specified
     void initLayerDisk(unsigned int pos, int& layer, int& disk);
-    
+
     unsigned int initLayerDisk(unsigned int pos);
-    
+
     // Based on memory name check if this memory is used for special seeding:
     // overlap is layer-disk seeding
     // extra is the L2L3 seeding
     // extended is the seeding for displaced tracks
     void initSpecialSeeding(unsigned int pos, bool& overlap, bool& extra, bool& extended);
-    
+
     //Used for a hack below due to MAC OS case sensitiviy problem for files
-    void findAndReplaceAll(std::string & data, std::string toSearch, std::string replaceStr);
-    
+    void findAndReplaceAll(std::string& data, std::string toSearch, std::string replaceStr);
+
     void openFile(bool first, std::string filebase);
-    
+
   protected:
-    
     std::string name_;
     unsigned int iSector_;
-    
+
     std::ofstream out_;
     int bx_;
     int event_;
-    
+
     const Settings* const settings_;
   };
-};
+};  // namespace Trklet
 #endif

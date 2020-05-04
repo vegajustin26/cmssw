@@ -12,21 +12,19 @@
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 
 namespace Trklet {
-  
-  class VMStubTE{
-    
+
+  class VMStubTE {
   public:
-    
     VMStubTE() {}
-    
+
     VMStubTE(std::pair<Stub*, L1TStub*> stub, FPGAWord finephi, FPGAWord bend, FPGAWord vmbits, FPGAWord allstubindex);
-    
+
     ~VMStubTE() {}
 
     FPGAWord finephi() const { return finephi_; }
-    
+
     FPGAWord bend() const { return bend_; }
-    
+
     FPGAWord vmbits() const { return vmbits_; }
 
     std::pair<Stub*, L1TStub*> stub() const { return stub_; }
@@ -34,22 +32,17 @@ namespace Trklet {
     bool isPSmodule() const { return stub_.first->isPSmodule(); }
 
     FPGAWord stubindex() const { return allStubIndex_; }
-    
+
     //return binary string for memory printout
     std::string str() const;
-  
+
   private:
-    
     FPGAWord finephi_;
     FPGAWord finerz_;
     FPGAWord bend_;
     FPGAWord vmbits_;
     FPGAWord allStubIndex_;
     std::pair<Stub*, L1TStub*> stub_;
-    
   };
-};
+};  // namespace Trklet
 #endif
-
-
-
