@@ -80,10 +80,11 @@
 #include "Geometry/Records/interface/StackedTrackerGeometryRecord.h"
 
 ///////////////
-// FPGA emulation
+// Tracklet emulation
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Cabling.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEventProcessor.h"
 
 ////////////////
@@ -106,11 +107,8 @@
 //////////////
 // NAMESPACES
 using namespace edm;
-
-#ifdef IMATH_ROOT
-TFile* var_base::h_file_ = 0;
-bool var_base::use_root = false;
-#endif
+using namespace std;
+using namespace Trklet;
 
 //////////////////////////////
 //                          //
@@ -679,7 +677,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   std::vector<Trklet::Track*>& tracks=eventProcessor.tracks();
 
-  int selectmu = 0;
   Trklet::L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
   ofstream outres;
@@ -690,16 +687,11 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   if (settings.writeMonitorData("ResEff"))
     outeff.open("trackeff.txt");
 
-  int nlayershit = 0;
-
-
   // this performs the actual tracklet event processing
   eventProcessor.event(ev);
 
-  
   int ntracks = 0;
   
-
   for (unsigned itrack = 0; itrack < tracks.size(); itrack++) {
     Trklet::Track* track = tracks[itrack];
 
