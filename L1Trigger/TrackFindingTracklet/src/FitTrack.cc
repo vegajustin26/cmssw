@@ -168,7 +168,9 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
 
     derTablePtr->readPatternFile(settings_->fitPatternFile());
     derTablePtr->fillTable(settings_);
-    edm::LogVerbatim("Tracklet") << "Number of entries in derivative table: " << derTablePtr->getEntries();
+    if (settings_->debugTracklet()) {
+      edm::LogVerbatim("Tracklet") << "Number of entries in derivative table: " << derTablePtr->getEntries();
+    }
     assert(derTablePtr->getEntries() != 0);
 
     globals_->trackDerTable() = derTablePtr;

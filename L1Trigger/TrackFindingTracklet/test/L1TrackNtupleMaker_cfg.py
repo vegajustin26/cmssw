@@ -54,9 +54,7 @@ def getTxtFile(txtFileName):
   return FileUtils.loadListFromFile(os.environ['CMSSW_BASE']+'/src/'+txtFileName)
 
 if GEOMETRY == "D49":
-    #inputMC = ["/store/relval/CMSSW_11_1_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_110X_mcRun4_realistic_v2_2026D49PU200-v1/20000/F7BF4AED-51F1-9D47-B86D-6C3DDA134AB9.root"]
-    inputMC = ["file:/eos/cms/store/user/skinnari/L1TK/TTbar_D49/FBC9E601-AC44-3E40-B8B6-E6A671F1D2C7.root",
-               "file:/eos/cms/store/user/skinnari/L1TK/TTbar_D49/FCFA04F4-151E-664D-AE00-18056F7D3F4D.root"]
+    inputMC = ["/store/relval/CMSSW_11_1_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_110X_mcRun4_realistic_v2_2026D49PU200-v1/20000/F7BF4AED-51F1-9D47-B86D-6C3DDA134AB9.root"]
     
 else:
     print "this is not a valid geometry!!!"

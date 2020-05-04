@@ -294,14 +294,14 @@ L1TrackNtupleMaker::~L1TrackNtupleMaker() {}
 // END JOB
 void L1TrackNtupleMaker::endJob() {
   // things to be done at the exit of the event Loop
-  cerr << "L1TrackNtupleMaker::endJob" << endl;
+  edm::LogVerbatim("Tracklet") << "L1TrackNtupleMaker::endJob";
 }
 
 ////////////
 // BEGIN JOB
 void L1TrackNtupleMaker::beginJob() {
   // things to be done before entering the event Loop
-  cerr << "L1TrackNtupleMaker::beginJob" << endl;
+  edm::LogVerbatim("Tracklet") << "L1TrackNtupleMaker::beginJob";
 
   //-----------------------------------------------------------------------------------------------
   // book histograms / make ntuple

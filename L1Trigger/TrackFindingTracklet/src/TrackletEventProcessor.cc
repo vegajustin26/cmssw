@@ -90,7 +90,9 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   }
 
   // get the memory modules
-  edm::LogVerbatim("Tracklet") << "Will read memory modules file";
+  if (settings_->debugTracklet()) {
+    edm::LogVerbatim("Tracklet") << "Will read memory modules file";
+  }
 
   ifstream inmem(settings_->memoryModulesFile().c_str());
   assert(inmem.good());
@@ -109,7 +111,9 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   }
 
   // get the processing modules
-  edm::LogVerbatim("Tracklet") << "Will read processing modules file";
+  if (settings_->debugTracklet()) {
+    edm::LogVerbatim("Tracklet") << "Will read processing modules file";
+  }
 
   ifstream inproc(settings_->processingModulesFile().c_str());
   assert(inproc.good());
@@ -128,7 +132,9 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   }
 
   // get the wiring information
-  edm::LogVerbatim("Tracklet") << "Will read wiring information";
+  if (settings_->debugTracklet()) {
+    edm::LogVerbatim("Tracklet") << "Will read wiring information";
+  }
 
   ifstream inwire(settings_->wiresFile().c_str());
   assert(inwire.good());
