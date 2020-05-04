@@ -109,26 +109,26 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         inputstubidslists_.push_back(stubidslist);
         mergedstubidslists_.push_back(stubidslist);
 
-        // Encoding: L1L2=1, L1D1=21, L2L3=2, L2D1=22, D1D2=11, L3L4=3, L5L6=5, D3D4=13
-        // Best Guess:          L1L2 > L1D1 > L2L3 > L2D1 > D1D2 > L3L4 > L5L6 > D3D4 (1,21,2,22,11,3,5,13)
-        // Best Rank:           L1L2 > L3L4 > D3D4 > D1D2 > L2L3 > L2D1 > L5L6 > L1D1 (1,3,13,11,2,22,5,21)
+        // Encoding: L1L2=0, L2L3=1, L3L4=2, L5L6=3, D1D2=4, D3D4=5, L1D1=6, L2D1=7
+        // Best Guess:          L1L2 > L1D1 > L2L3 > L2D1 > D1D2 > L3L4 > L5L6 > D3D4
+        // Best Rank:           L1L2 > L3L4 > D3D4 > D1D2 > L2L3 > L2D1 > L5L6 > L1D1
         // Rank-Informed Guess: L1L2 > L3L4 > L1D1 > L2L3 > L2D1 > D1D2 > L5L6 > D3D4
-        int curSeed = abs(aTrack->seed());
-        if (curSeed == 1) {
+        unsigned int curSeed = aTrack->seedIndex();
+        if (curSeed == 0) {
           seedRank.push_back(1);
-        } else if (curSeed == 3) {
-          seedRank.push_back(2);
-        } else if (curSeed == 13) {
-          seedRank.push_back(3);
-        } else if (curSeed == 11) {
-          seedRank.push_back(4);
         } else if (curSeed == 2) {
-          seedRank.push_back(5);
-        } else if (curSeed == 22) {
-          seedRank.push_back(6);
+          seedRank.push_back(2);
         } else if (curSeed == 5) {
+          seedRank.push_back(3);
+        } else if (curSeed == 4) {
+          seedRank.push_back(4);
+        } else if (curSeed == 1) {
+          seedRank.push_back(5);
+        } else if (curSeed == 7) {
+          seedRank.push_back(6);
+        } else if (curSeed == 3) {
           seedRank.push_back(7);
-        } else if (curSeed == 21) {
+        } else if (curSeed == 6) {
           seedRank.push_back(8);
         } else if (settings_->extended()) {
           seedRank.push_back(9);
