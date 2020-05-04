@@ -1,6 +1,9 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_HybridFit_h
 #define L1Trigger_TrackFindingTracklet_interface_HybridFit_h
 
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
+
 #ifdef USEHYBRID
 #include "DataFormats/L1TrackTrigger/interface/TTStub.h"
 #include "DataFormats/L1TrackTrigger/interface/TTCluster.h"
@@ -9,7 +12,6 @@
 #include "L1Trigger/TrackFindingTMTT/interface/L1track3D.h"
 #include "L1Trigger/TrackFindingTMTT/interface/Stub.h"
 #include "L1Trigger/TrackFindingTMTT/interface/KFParamsComb.h"
-#include "L1Trigger/TrackFindingTracklet/interface/HybridFit.h"
 #include "L1Trigger/TrackFindingTMTT/interface/Settings.h"
 #include "L1Trigger/TrackFindingTMTT/interface/L1fittedTrack.h"
 #include "L1Trigger/TrackFindingTMTT/interface/KFTrackletTrack.h"
@@ -21,18 +23,21 @@
 
 namespace Trklet {
 
-  class Settings;
+  class Stub;
+  class L1TStub;
+  class Tracklet;
 
   class HybridFit {
   public:
-    HybridFit(unsigned int iSector, const Settings* const settings);
+    HybridFit(unsigned int iSector, const Settings* settings, Globals* globals);
 
     void Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>& trackstublist);
 
   private:
     unsigned int iSector_;
 
-    const Settings* const settings_;
+    const Settings* settings_;
+    Globals* globals_;
   };
 };  // namespace Trklet
 #endif

@@ -1,12 +1,9 @@
 #include "L1Trigger/TrackFindingTracklet/interface/FitTrack.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackDerTable.h"
+#include "L1Trigger/TrackFindingTracklet/interface/HybridFit.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
-
-#ifdef USEHYBRID
-#include "L1Trigger/TrackFindingTracklet/interface/HybridFit.h"
-#endif
 
 using namespace std;
 using namespace Trklet;
@@ -153,7 +150,7 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
       return;
     }
 
-    HybridFit hybridFitter(iSector_, settings_);
+    HybridFit hybridFitter(iSector_, settings_, globals_);
     hybridFitter.Fit(tracklet, trackstublist);
     return;
   }

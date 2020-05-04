@@ -1,3 +1,9 @@
+#include "L1Trigger/TrackFindingTracklet/interface/HybridFit.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
+
 #ifdef USEHYBRID
 #include "DataFormats/L1TrackTrigger/interface/TTStub.h"
 #include "DataFormats/L1TrackTrigger/interface/TTCluster.h"
@@ -11,16 +17,15 @@
 #include "L1Trigger/TrackFindingTMTT/interface/L1fittedTrack.h"
 #include "L1Trigger/TrackFindingTMTT/interface/KFTrackletTrack.h"
 
-#include "L1Trigger/TrackFindingTracklet/interface/HybridFit.h"
-
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 using namespace Trklet;
 
-HybridFit::HybridFit(unsigned int iSector, const Settings* const settings) {
+HybridFit::HybridFit(unsigned int iSector, const Settings* settings, Globals* globals) {
   iSector_ = iSector;
   settings_ = settings;
+  globals_ = globals;  
 }
 
 void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>& trackstublist) {
@@ -129,11 +134,10 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
                                 << "iSector = " << iSector_ << "\n"
                                 << "dphisectorHG = " << settings_->dphisectorHG();
   }
-  s
 
-      // KF wants global phi0, not phi0 measured with respect to lower edge of sector (Tracklet convention).
-      kfphi0 = kfphi0 + iSector_ * 2 * M_PI / settings_->NSector() - 0.5 * settings_->dphisectorHG();
-
+  // KF wants global phi0, not phi0 measured with respect to lower edge of sector (Tracklet convention).
+  kfphi0 = kfphi0 + iSector_ * 2 * M_PI / settings_->NSector() - 0.5 * settings_->dphisectorHG();
+  
   if (kfphi0 > M_PI)
     kfphi0 -= 2 * M_PI;
   if (kfphi0 < -M_PI)
@@ -203,7 +207,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
     int iphi0fit = phi0fit / settings_->kphi0pars();
     int itanlfit = trk.tanLambda() / settings_->ktpars();
     int iz0fit = trk.z0() / settings_->kz0pars();
-    int id0fit = trk.d0() / settings_->kd0pars;
+    int id0fit = trk.d0() / settings_->kd0pars();
     int ichi2rphifit = trk.chi2rphi() / 16;
     int ichi2rzfit = trk.chi2rz() / 16;
 

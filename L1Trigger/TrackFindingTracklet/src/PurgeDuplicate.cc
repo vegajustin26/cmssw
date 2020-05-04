@@ -302,7 +302,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
       Tracklet* tracklet = inputtracklets_[itrk];
       std::vector<std::pair<Stub*, L1TStub*>> trackstublist = inputstublists_[itrk];
 
-      HybridFit hybridFitter(iSector_, settings_);
+      HybridFit hybridFitter(iSector_, settings_, globals_);
       hybridFitter.Fit(tracklet, trackstublist);
 
       // If the track was accepted (and thus fit), add to output
