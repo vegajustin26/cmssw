@@ -91,9 +91,9 @@ void FitTrack::addInput(MemoryBase* memory, string input) {
 }
 
 #ifdef USEHYBRID
-void trackFitKF(Tracklet* tracklet,
-                std::vector<std::pair<Stub*, L1TStub*>>& trackstublist,
-                std::vector<std::pair<int, int>>& stubidslist) {
+void FitTrack::trackFitKF(Tracklet* tracklet,
+			  std::vector<std::pair<Stub*, L1TStub*>>& trackstublist,
+			  std::vector<std::pair<int, int>>& stubidslist) {
   if (settings_->doKF()) {
     // From full match lists, collect all the stubs associated with the tracklet seed
 
