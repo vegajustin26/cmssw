@@ -2,21 +2,8 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
 #ifdef USEHYBRID
-#include "DataFormats/L1TrackTrigger/interface/TTStub.h"
-#include "DataFormats/L1TrackTrigger/interface/TTCluster.h"
-#include "SimTracker/TrackTriggerAssociation/interface/TTStubAssociationMap.h"
-#include "SimTracker/TrackTriggerAssociation/interface/TTClusterAssociationMap.h"
-#include "L1Trigger/TrackFindingTMTT/interface/L1track3D.h"
-#include "L1Trigger/TrackFindingTMTT/interface/Stub.h"
-#include "L1Trigger/TrackFindingTMTT/interface/KFParamsComb.h"
-#include "L1Trigger/TrackFindingTracklet/interface/HybridFit.h"
-#include "L1Trigger/TrackFindingTMTT/interface/Settings.h"
-#include "L1Trigger/TrackFindingTMTT/interface/L1fittedTrack.h"
-#include "L1Trigger/TrackFindingTMTT/interface/KFTrackletTrack.h"
-
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;

@@ -37,6 +37,7 @@
 <use   name="root"/>
 <use   name="rootrflx"/>
 <use   name="DataFormats/L1TrackTrigger"/>
+ <use   name="L1Trigger/TrackFindingTMTT"/>
 
 <export>
   <lib   name="1"/>
