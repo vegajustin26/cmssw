@@ -1,6 +1,9 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculator.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletProjectionsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -12,16 +15,7 @@ TrackletCalculator::TrackletCalculator(string name,
                                        Globals* globals,
                                        unsigned int iSector)
     : TrackletCalculatorBase(name, settings, globals, iSector) {
-  double dphi = 2 * M_PI / settings_->NSector();
-  double dphiHG = 0.5 * settings_->dphisectorHG() - M_PI / settings_->NSector();
-  phimin_ = iSector_ * dphi - dphiHG;
-  phimax_ = phimin_ + dphi + 2 * dphiHG;
-  phimin_ -= M_PI / settings_->NSector();
-  phimax_ -= M_PI / settings_->NSector();
-  phimin_ = Trklet::phiRange(phimin_);
-  phimax_ = Trklet::phiRange(phimax_);
-  if (phimin_ > phimax_)
-    phimin_ -= 2 * M_PI;
+
   phioffset_ = phimin_;
 
   for (unsigned int ilayer = 0; ilayer < 6; ilayer++) {

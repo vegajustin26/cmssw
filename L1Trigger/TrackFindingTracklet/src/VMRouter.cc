@@ -1,13 +1,16 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMRouter.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
-#include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TETableOuter.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TETableInner.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TETableOuterDisk.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TETableInnerDisk.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TETableInnerOverlap.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubTE.h"
+#include "L1Trigger/TrackFindingTracklet/interface/InputLinkMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -144,6 +147,7 @@ void VMRouter::addInput(MemoryBase* memory, string input) {
 }
 
 void VMRouter::execute() {
+
   unsigned int allStubCounter = 0;
 
   //Loop over the input stubs
@@ -192,21 +196,32 @@ void VMRouter::execute() {
         ivmMinus--;
 
       //Calculate the z and r position for the vmstub
-      //TODO should project to nominal layer/disk position (as used by the TE outer memories?)
-      int index = -1;
+
+      //Take the top nbitszfinebintable_ bits of the z coordinate
+      int indexz = ( ( (1<<(stub.first->z().nbits()-1))+stub.first->z().value() ) >> (stub.first->z().nbits() - nbitszfinebintable_) );
+      int indexr = -1;
       if (layerdisk_ > 5) {
-        index = stub.first->r().value();
+	if (negdisk) {
+	  indexz=(1<<nbitszfinebintable_)-indexz;
+	}
+        indexr = stub.first->r().value();
         if (stub.first->isPSmodule()) {
-          index = stub.first->r().value() >> (stub.first->r().nbits() - nbitsfinebintable_);
+          indexr = stub.first->r().value() >> (stub.first->r().nbits() - nbitsrfinebintable_);
         }
       } else {
         //Take the top nbitsfinebintable_ bits of the z coordinate. The & is to handle the negative z values.
-        index = (stub.first->z().value() >> (stub.first->z().nbits() - nbitsfinebintable_)) &
-                ((1 << nbitsfinebintable_) - 1);
+        indexr = ( ( (1<<(stub.first->r().nbits()-1))+stub.first->r().value() ) >> (stub.first->r().nbits() - nbitsrfinebintable_) );
       }
 
+      assert(indexz>=0);
+      assert(indexr>=0);
+      assert(indexz<(1<<nbitszfinebintable_));
+      assert(indexr<(1<<nbitsrfinebintable_));
+      unsigned int index=(indexz<<nbitsrfinebintable_)+indexr;
+      assert(index<finebintable_.size());
+      
       int rzfine = finebintable_[index];
-
+      
       assert(rzfine >= 0);
 
       int vmbin = rzfine >> 3;
@@ -288,52 +303,86 @@ void VMRouter::execute() {
 }
 
 void VMRouter::initFineBinTable() {
-  nbitsfinebintable_ = 8;
-  unsigned int nbins = 1 << nbitsfinebintable_;
+
 
   if (layerdisk_ < 6) {
-    finebintable_.resize(nbins, -1);
+    nbitszfinebintable_ = 7;
+    nbitsrfinebintable_ = 3;
+    //unsigned int nbins = 1 << (nbitszfinebintable_+nbitsrfinebintable_);
+    //finebintable_.resize(nbins, -1);
 
+    double dr = 2 * settings_->drmax() / (1<<nbitsrfinebintable_);
+    double dz = 2 * settings_->zlength() / (1<<nbitszfinebintable_);
+
+    double rmin = settings_->rmean(layerdisk_) - settings_->drmax();
+    double zmin = -settings_->zlength();    
+    int NBINS = settings_->NLONGVMBINS() * settings_->NLONGVMBINS();
+
+    for (int izbin = 0; izbin < (1<<nbitszfinebintable_); izbin++) {
+      for (int irbin = 0; irbin < (1<<nbitsrfinebintable_); irbin++) {
+	double z = zmin + (izbin + 0.5) * dz;
+	double r = rmin + (irbin + 0.5) * dr;
+
+	double zproj = z * settings_->rmean(layerdisk_) / r;
+	
+	int zbin = NBINS * (zproj + settings_->zlength()) / (2 * settings_->zlength());
+	
+	if (zbin < 0)
+	  zbin = 0;
+	if (zbin >= NBINS)
+	  zbin = NBINS - 1;	
+	finebintable_.push_back(zbin);
+      }
+    }
+    /*
     for (unsigned int i = 0; i < nbins; i++) {
       //awkward bit manipulations since the index is from a signed number...
       int index = (i + (1 << (nbitsfinebintable_ - 1))) & ((1 << nbitsfinebintable_) - 1);
 
       finebintable_[index] = (i >> (nbitsfinebintable_ - 6));
     }
+    */
   } else {
-    for (unsigned int i = 0; i < nbins; i++) {
-      double rstub = settings_->kr() * (i << (settings_->nrbitsstub(layerdisk_) - nbitsfinebintable_));
-      ;
+    nbitszfinebintable_ = 3;
+    nbitsrfinebintable_ = 7;
+    //unsigned int nbins = 1 << (nbitszfinebintable_+nbitsrfinebintable_);
 
-      //use tabulated values for the 2S modules
-      if (i < 10)
-        rstub = (layerdisk_ <= 7) ? settings_->rDSSinner(i) : settings_->rDSSouter(i);
+    double rmin = 0.0;
+    double dr = settings_->rmaxdisk() / (1<<nbitsrfinebintable_);;
 
-      if (rstub < settings_->rmindiskvm()) {
-        finebintable_.push_back(-1);
-      } else {
-        int rfine = 64 * (rstub - settings_->rmindiskvm()) / (settings_->rmaxdisk() - settings_->rmindiskvm());
-        finebintable_.push_back(rfine);
+    double zmin = settings_->zmean(layerdisk_ - 6) - settings_->dzmax();
+    double dz = 2 * settings_->dzmax() / (1<<nbitszfinebintable_);;
+
+    int NBINS = settings_->NLONGVMBINS() * settings_->NLONGVMBINS();
+    
+
+    for (int izbin = 0; izbin < (1<<nbitszfinebintable_); izbin++) {
+      for (int irbin = 0; irbin < (1<<nbitsrfinebintable_); irbin++) {
+
+	  double r = rmin + (irbin + 0.5) * dr;
+	  double z = zmin + (izbin + 0.5) * dz;
+
+	  if (irbin < 10) //special case for the tabulated radii
+	    r = (layerdisk_ <= 7) ? settings_->rDSSinner(irbin) : settings_->rDSSouter(irbin);
+	  
+	  double rproj = r * settings_->zmean(layerdisk_-6) / z;
+
+	  int rbin = NBINS * (rproj - settings_->rmindiskvm()) / (settings_->rmaxdisk() - settings_->rmindiskvm());
+
+	  if (rbin < 0)
+	    rbin = 0;
+	  if (rbin >= NBINS)
+	    rbin = NBINS - 1;
+
+	  finebintable_.push_back(rbin);
       }
     }
   }
-
-  if (iSector_ == 0 && settings_->writeTable()) {
-    ofstream outfinebin;
-    outfinebin.open(getName() + "_finebin.tab");
-    outfinebin << "{" << endl;
-    for (unsigned int i = 0; i < finebintable_.size(); i++) {
-      if (i != 0)
-        outfinebin << "," << endl;
-      outfinebin << finebintable_[i];
-    }
-    outfinebin << endl << "};" << endl;
-    outfinebin.close();
-  }
-}
+} 
 
 FPGAWord VMRouter::lookup(
     unsigned int iseed, unsigned int inner, FPGAWord z, FPGAWord r, bool negdisk, bool isPSmodule) {
+
   if (globals_->teTable(0, 0) == 0) {
     globals_->teTable(0, 0) =
         new TETableInner(settings_, 1, 2, -1, settings_->zbitstab(0, 0), settings_->rbitstab(0, 0));

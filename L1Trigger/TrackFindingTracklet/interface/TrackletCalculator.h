@@ -2,16 +2,18 @@
 #define L1Trigger_TrackFindingTracklet_interface_TrackletCalculator_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculatorBase.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TrackletProjectionsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
 
+#include <string>
 #include <vector>
 
 namespace Trklet {
 
   class Settings;
   class Globals;
+  class TrackletProjectionsMemory;
+  class MemoryBase;
+  class AllStubsMemory;
+  class StubPairsMemory;
 
   class TrackletCalculator : public TrackletCalculatorBase {
   public:

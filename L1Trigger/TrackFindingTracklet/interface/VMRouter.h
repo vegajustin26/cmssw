@@ -2,18 +2,22 @@
 #define L1Trigger_TrackFindingTracklet_interface_VMRouter_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
-#include "L1Trigger/TrackFindingTracklet/interface/InputLinkMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 
+
+#include <string>
 #include <vector>
+#include <utility>
 
 namespace Trklet {
 
   class Settings;
   class Globals;
   class MemoryBase;
+  class InputLinkMemory;
+  class AllStubsMemory;
+  class VMStubsMEMemory;
+  class VMStubsTEMemory;
 
   class VMRouter : public ProcessBase {
   public:
@@ -38,7 +42,8 @@ namespace Trklet {
     unsigned int overlapbits_;
     unsigned int nextrabits_;
 
-    int nbitsfinebintable_;
+    int nbitszfinebintable_;
+    int nbitsrfinebintable_;
     std::vector<int> finebintable_;
 
     //The input stub memories
