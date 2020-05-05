@@ -1,11 +1,11 @@
 #include "L1Trigger/TrackFindingTracklet/interface/MatchCalculator.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
-#include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/CandidateMatchMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/FullMatchMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllProjectionsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -515,7 +515,7 @@ std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > > 
         // skip as we were at the end
         continue;
       }
-      int TCID = candmatch[i]->getFPGATracklet(indexArray[i])->TCID();
+      int TCID = candmatch[i]->getMatch(indexArray[i]).first.first->TCID();
       int dSector = 0;
       if (dSector > 2)
         dSector -= settings_->NSector();

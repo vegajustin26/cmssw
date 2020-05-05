@@ -2,14 +2,14 @@
 #define L1Trigger_TrackFindingTracklet_interface_VMProjectionsMemory_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 #include <vector>
 
 namespace Trklet {
 
   class Settings;
-
+  class Tracklet;
+  
   class VMProjectionsMemory : public MemoryBase {
   public:
     VMProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector);

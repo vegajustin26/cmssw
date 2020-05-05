@@ -4,6 +4,8 @@
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
 
 #include <vector>
+#include <string>
+#include <utility>
 
 namespace Trklet {
 
@@ -17,8 +19,6 @@ namespace Trklet {
     FullMatchMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
     void addMatch(Tracklet* tracklet, std::pair<Stub*, L1TStub*> stub);
-
-    void addMatch(std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > match);
 
     unsigned int nMatches() const { return matches_.size(); }
 

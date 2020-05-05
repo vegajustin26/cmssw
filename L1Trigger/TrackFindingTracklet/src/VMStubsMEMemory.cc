@@ -1,4 +1,5 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 using namespace std;
 using namespace Trklet;

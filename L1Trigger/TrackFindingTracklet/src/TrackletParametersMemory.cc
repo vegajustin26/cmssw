@@ -1,11 +1,23 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletParametersMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
+
 
 using namespace std;
 using namespace Trklet;
 
 TrackletParametersMemory::TrackletParametersMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {}
+
+void TrackletParametersMemory::clean() {
+  for (unsigned int i = 0; i < tracklets_.size(); i++) {
+    delete tracklets_[i];
+  }
+  tracklets_.clear();
+}
+
+
 
 void TrackletParametersMemory::writeMatches(Globals* globals, int& matchesL1, int& matchesL3, int& matchesL5) {
   ofstream& out = globals->ofstream("nmatches.txt");

@@ -1,5 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/CandidateMatchMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -7,39 +8,24 @@ using namespace std;
 using namespace Trklet;
 
 CandidateMatchMemory::CandidateMatchMemory(string name, const Settings* const settings, unsigned int iSector)
-    : MemoryBase(name, settings, iSector) {
-  string subname = name.substr(3, 2);
-  layer_ = 0;
-  disk_ = 0;
-  if (subname == "L1")
-    layer_ = 1;
-  if (subname == "L2")
-    layer_ = 2;
-  if (subname == "L3")
-    layer_ = 3;
-  if (subname == "L4")
-    layer_ = 4;
-  if (subname == "L5")
-    layer_ = 5;
-  if (subname == "L6")
-    layer_ = 6;
+    : MemoryBase(name, settings, iSector) {}
 
-  if (subname == "D1")
-    disk_ = 1;
-  if (subname == "D2")
-    disk_ = 2;
-  if (subname == "D3")
-    disk_ = 3;
-  if (subname == "D4")
-    disk_ = 4;
-  if (subname == "D5")
-    disk_ = 5;
+void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, std::pair<Stub*, L1TStub*> stub) {
 
-  if (layer_ == 0 && disk_ == 0) {
-    edm::LogPrint("Tracklet") << name << " subname = " << subname << " " << layer_ << " " << disk_;
+  std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > tmp(tracklet, stub);
+
+  //Check for consistency
+  for (unsigned int i = 0; i < matches_.size(); i++) {
+    if (tracklet.first->TCID() < matches_[i].first.first->TCID()) {
+      edm::LogPrint("Tracklet") << "In " << getName() << " adding tracklet " << tracklet.first
+				<< " with lower TCID : " << tracklet.first->TCID() << " than earlier TCID "
+				<< matches_[i].first.first->TCID();
+      assert(0);
+    }
   }
-  assert((layer_ != 0) || (disk_ != 0));
+  matches_.push_back(tmp);
 }
+
 
 void CandidateMatchMemory::writeCM(bool first) {
   std::string fname = "../data/MemPrints/Matches/CandidateMatches_";
@@ -62,7 +48,7 @@ void CandidateMatchMemory::writeCM(bool first) {
 
   for (unsigned int j = 0; j < matches_.size(); j++) {
     string stubid = matches_[j].second.first->stubindex().str();                         // stub ID
-    int projindex = (layer_ > 0) ? matches_[j].first.second : matches_[j].first.second;  // Allproj index
+    int projindex = matches_[j].first.second;  // Allproj index
     FPGAWord tmp;
     if (projindex >= (1 << 7)) {
       projindex = (1 << 7) - 1;

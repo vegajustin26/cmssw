@@ -3,6 +3,7 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
 
+#include <string>
 #include <vector>
 
 namespace Trklet {

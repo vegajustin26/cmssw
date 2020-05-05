@@ -4,14 +4,15 @@
 #define L1Trigger_TrackFindingTracklet_interface_TrackletParametersMemory_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
+#include <string>
 #include <vector>
 
 namespace Trklet {
 
   class Settings;
   class Globals;
+  class Tracklet;
 
   class TrackletParametersMemory : public MemoryBase {
   public:
@@ -23,12 +24,7 @@ namespace Trklet {
 
     Tracklet *getFPGATracklet(unsigned int i) const { return tracklets_[i]; }
 
-    void clean() {
-      for (unsigned int i = 0; i < tracklets_.size(); i++) {
-        delete tracklets_[i];
-      }
-      tracklets_.clear();
-    }
+    void clean();
 
     void writeMatches(Globals *globals, int &matchesL1, int &matchesL3, int &matchesL5);
 

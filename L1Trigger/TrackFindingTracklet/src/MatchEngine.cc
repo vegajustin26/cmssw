@@ -5,6 +5,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMProjectionsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/CandidateMatchMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 

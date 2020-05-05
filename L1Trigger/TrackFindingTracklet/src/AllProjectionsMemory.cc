@@ -9,59 +9,8 @@ using namespace std;
 
 AllProjectionsMemory::AllProjectionsMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
-  string subname = name.substr(3, 2);
-  if (subname[0] == '_')
-    subname = name.substr(9, 2);
 
-  layer_ = 0;
-  disk_ = 0;
-
-  if (subname == "L1")
-    layer_ = 1;
-  if (subname == "L2")
-    layer_ = 2;
-  if (subname == "L3")
-    layer_ = 3;
-  if (subname == "L4")
-    layer_ = 4;
-  if (subname == "L5")
-    layer_ = 5;
-  if (subname == "L6")
-    layer_ = 6;
-  if (subname == "D1")
-    disk_ = 1;
-  if (subname == "D2")
-    disk_ = 2;
-  if (subname == "D3")
-    disk_ = 3;
-  if (subname == "D4")
-    disk_ = 4;
-  if (subname == "D5")
-    disk_ = 5;
-  if (subname == "F1")
-    disk_ = 1;
-  if (subname == "F2")
-    disk_ = 2;
-  if (subname == "F3")
-    disk_ = 3;
-  if (subname == "F4")
-    disk_ = 4;
-  if (subname == "F5")
-    disk_ = 5;
-  if (subname == "B1")
-    disk_ = -1;
-  if (subname == "B2")
-    disk_ = -2;
-  if (subname == "B3")
-    disk_ = -3;
-  if (subname == "B4")
-    disk_ = -4;
-  if (subname == "B5")
-    disk_ = -5;
-  if (layer_ == 0 && disk_ == 0) {
-    edm::LogPrint("Tracklet") << name << " subname = " << subname << " " << layer_ << " " << disk_;
-  }
-  assert((layer_ != 0) || (disk_ != 0));
+  initLayerDisk(3,layer_,disk_);
 }
 
 void AllProjectionsMemory::writeAP(bool first) {

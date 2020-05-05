@@ -8,61 +8,13 @@ using namespace Trklet;
 
 TrackletProjectionsMemory::TrackletProjectionsMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
-  string subname = name.substr(11, 2);
-  if (subname[0] == '_')
-    subname = name.substr(12, 2);
+
   if (settings_->extended()) {
-    subname = name.substr(14, 2);
-    if (subname[0] == '_')
-      subname = name.substr(15, 2);
+    initLayerDisk(14,layer_,disk_);
+  } else {
+    initLayerDisk(12,layer_,disk_);
   }
 
-  layer_ = 0;
-  disk_ = 0;
-  if (subname == "L1")
-    layer_ = 1;
-  if (subname == "L2")
-    layer_ = 2;
-  if (subname == "L3")
-    layer_ = 3;
-  if (subname == "L4")
-    layer_ = 4;
-  if (subname == "L5")
-    layer_ = 5;
-  if (subname == "L6")
-    layer_ = 6;
-  if (subname == "D1")
-    disk_ = 1;
-  if (subname == "D2")
-    disk_ = 2;
-  if (subname == "D3")
-    disk_ = 3;
-  if (subname == "D4")
-    disk_ = 4;
-  if (subname == "D5")
-    disk_ = 5;
-
-  subname = name.substr(11, 2);
-  if (subname[0] == '_')
-    subname = name.substr(14, 2);
-
-  if (subname == "D1")
-    disk_ = 1;
-  if (subname == "D2")
-    disk_ = 2;
-  if (subname == "D3")
-    disk_ = 3;
-  if (subname == "D4")
-    disk_ = 4;
-  if (subname == "D5")
-    disk_ = 5;
-
-  if (layer_ == 0 && disk_ == 0) {
-    edm::LogProblem("Tracklet") << name << " subname = " << subname << " " << layer_ << " " << disk_;
-    edm::LogProblem("Tracklet")
-        << "Please check that right *.dat files are included in TrackFindingTracklet/python/Tracklet_cfi.py";
-  }
-  assert((layer_ != 0) || (disk_ != 0));
 }
 
 void TrackletProjectionsMemory::addProj(Tracklet* tracklet) {

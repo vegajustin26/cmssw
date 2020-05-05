@@ -4,6 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubTE.h"
 
+#include <string>
 #include <vector>
 
 namespace Trklet {
