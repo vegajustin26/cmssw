@@ -130,7 +130,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
   if (kfphi0 < -M_PI)
     kfphi0 += 2 * M_PI;
 
-  std::pair<float, float> helixrphi(kfrinv * 1.0e11 / (2.9979e8 * TMTTsettings.magneticField()), kfphi0);
+  std::pair<float, float> helixrphi(kfrinv * 1.0e11 / (2.9979e8 * TMTTsettings.getBfield()), kfphi0);
   std::pair<float, float> helixrz(kfz0, kft);
 
   // KF HLS uses HT mbin (which is binned q/Pt) to allow for scattering. So estimate it from tracklet.
@@ -188,7 +188,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
     if (phi0fit < -M_PI)
       phi0fit += 2 * M_PI;
 
-    double rinvfit = 0.01 * 0.3 * TMTTsettings.magneticField() * trk.qOverPt();
+    double rinvfit = 0.01 * 0.3 * TMTTsettings.getBfield() * trk.qOverPt();
 
     int irinvfit = rinvfit / settings_->krinvpars();
     int iphi0fit = phi0fit / settings_->kphi0pars();
@@ -198,7 +198,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
     int ichi2rphifit = trk.chi2rphi() / 16;
     int ichi2rzfit = trk.chi2rz() / 16;
 
-    const vector<const tmtt::Stub*>& stubsFromFit = trk.stubs();
+    const vector<const tmtt::Stub*>& stubsFromFit = trk.getStubs();
     vector<L1TStub*> l1stubsFromFit;
     for (const tmtt::Stub* s : stubsFromFit) {
       unsigned int IDf = s->index();
@@ -232,7 +232,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
                          iz0fit,
                          ichi2rphifit,
                          ichi2rzfit,
-                         trk.hitPattern(),
+                         trk.getHitPattern(),
                          l1stubsFromFit);
   } else {
     if (settings_->printDebugKF()) {
