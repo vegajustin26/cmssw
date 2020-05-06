@@ -7,8 +7,6 @@
 #include <cmath>
 #include <vector>
 
-using namespace std;
-
 class InverseTable {
 public:
   InverseTable() {}
@@ -63,7 +61,7 @@ public:
 private:
   int nbits_;
   int entries_;
-  vector<int> table_;
+  std::vector<int> table_;
 };
 
 #endif

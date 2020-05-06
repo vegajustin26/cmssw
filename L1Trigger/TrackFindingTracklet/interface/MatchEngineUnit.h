@@ -17,7 +17,7 @@ namespace Trklet {
 
   class MatchEngineUnit {
   public:
-    MatchEngineUnit(bool barrel, vector<bool> table, vector<bool> tablePS, vector<bool> table2S);
+    MatchEngineUnit(bool barrel, std::vector<bool> table, std::vector<bool> tablePS, std::vector<bool> table2S);
 
     ~MatchEngineUnit() {}
 

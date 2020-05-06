@@ -4,8 +4,6 @@
 #include <cassert>
 #include <vector>
 
-using namespace std;
-
 namespace Trklet {
 
   template <class T>
@@ -52,7 +50,7 @@ namespace Trklet {
     }
 
   private:
-    vector<T> buffer_;
+    std::vector<T> buffer_;
 
     //buffer size
     unsigned int size_;
