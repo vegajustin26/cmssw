@@ -3,7 +3,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
-
 using namespace std;
 using namespace Trklet;
 
@@ -16,8 +15,6 @@ void TrackletParametersMemory::clean() {
   }
   tracklets_.clear();
 }
-
-
 
 void TrackletParametersMemory::writeMatches(Globals* globals, int& matchesL1, int& matchesL3, int& matchesL5) {
   ofstream& out = globals->ofstream("nmatches.txt");

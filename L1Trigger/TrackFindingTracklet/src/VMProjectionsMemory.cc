@@ -8,9 +8,7 @@ using namespace Trklet;
 
 VMProjectionsMemory::VMProjectionsMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
-
-  initLayerDisk(7,layer_,disk_);
-
+  initLayerDisk(7, layer_, disk_);
 }
 
 void VMProjectionsMemory::addTracklet(Tracklet* tracklet, unsigned int allprojindex) {

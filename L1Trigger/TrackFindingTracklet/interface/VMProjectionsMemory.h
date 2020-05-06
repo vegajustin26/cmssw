@@ -9,7 +9,7 @@ namespace Trklet {
 
   class Settings;
   class Tracklet;
-  
+
   class VMProjectionsMemory : public MemoryBase {
   public:
     VMProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector);

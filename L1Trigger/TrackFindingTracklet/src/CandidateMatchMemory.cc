@@ -11,21 +11,19 @@ CandidateMatchMemory::CandidateMatchMemory(string name, const Settings* const se
     : MemoryBase(name, settings, iSector) {}
 
 void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, std::pair<Stub*, L1TStub*> stub) {
-
   std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > tmp(tracklet, stub);
 
   //Check for consistency
   for (unsigned int i = 0; i < matches_.size(); i++) {
     if (tracklet.first->TCID() < matches_[i].first.first->TCID()) {
       edm::LogPrint("Tracklet") << "In " << getName() << " adding tracklet " << tracklet.first
-				<< " with lower TCID : " << tracklet.first->TCID() << " than earlier TCID "
-				<< matches_[i].first.first->TCID();
+                                << " with lower TCID : " << tracklet.first->TCID() << " than earlier TCID "
+                                << matches_[i].first.first->TCID();
       assert(0);
     }
   }
   matches_.push_back(tmp);
 }
-
 
 void CandidateMatchMemory::writeCM(bool first) {
   std::string fname = "../data/MemPrints/Matches/CandidateMatches_";
@@ -47,8 +45,8 @@ void CandidateMatchMemory::writeCM(bool first) {
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
 
   for (unsigned int j = 0; j < matches_.size(); j++) {
-    string stubid = matches_[j].second.first->stubindex().str();                         // stub ID
-    int projindex = matches_[j].first.second;  // Allproj index
+    string stubid = matches_[j].second.first->stubindex().str();  // stub ID
+    int projindex = matches_[j].first.second;                     // Allproj index
     FPGAWord tmp;
     if (projindex >= (1 << 7)) {
       projindex = (1 << 7) - 1;

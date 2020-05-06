@@ -8,13 +8,11 @@ using namespace Trklet;
 
 TrackletProjectionsMemory::TrackletProjectionsMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
-
   if (settings_->extended()) {
-    initLayerDisk(14,layer_,disk_);
+    initLayerDisk(14, layer_, disk_);
   } else {
-    initLayerDisk(12,layer_,disk_);
+    initLayerDisk(12, layer_, disk_);
   }
-
 }
 
 void TrackletProjectionsMemory::addProj(Tracklet* tracklet) {

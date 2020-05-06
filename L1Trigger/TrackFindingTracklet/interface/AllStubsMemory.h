@@ -12,7 +12,7 @@ namespace Trklet {
   class Settings;
   class Stub;
   class L1TStub;
-  
+
   class AllStubsMemory : public MemoryBase {
   public:
     AllStubsMemory(std::string name, const Settings* const settings, unsigned int iSector);

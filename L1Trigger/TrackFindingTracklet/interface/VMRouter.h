@@ -4,7 +4,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 
-
 #include <string>
 #include <vector>
 #include <utility>

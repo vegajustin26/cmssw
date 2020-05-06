@@ -15,7 +15,6 @@ TrackletCalculator::TrackletCalculator(string name,
                                        Globals* globals,
                                        unsigned int iSector)
     : TrackletCalculatorBase(name, settings, globals, iSector) {
-
   phioffset_ = phimin_;
 
   for (unsigned int ilayer = 0; ilayer < 6; ilayer++) {

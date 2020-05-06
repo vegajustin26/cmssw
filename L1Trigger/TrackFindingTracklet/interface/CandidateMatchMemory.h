@@ -32,7 +32,6 @@ namespace Trklet {
 
   private:
     std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > > matches_;
-
   };
 
 };  // namespace Trklet

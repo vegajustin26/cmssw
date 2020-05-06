@@ -11,11 +11,10 @@ using namespace Trklet;
 
 FullMatchMemory::FullMatchMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
-
   if (settings_->extended()) {
-    initLayerDisk(10,layer_,disk_);
+    initLayerDisk(10, layer_, disk_);
   } else {
-    initLayerDisk(8,layer_,disk_);
+    initLayerDisk(8, layer_, disk_);
   }
 }
 
