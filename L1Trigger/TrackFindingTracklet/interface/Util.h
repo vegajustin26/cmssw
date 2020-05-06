@@ -1,6 +1,9 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_Util_h
 #define L1Trigger_TrackFindingTracklet_interface_Util_h
 
+#include <cassert>
+#include <cmath>
+
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 namespace Trklet {
