@@ -306,7 +306,7 @@ void VMRouter::execute() {
 void VMRouter::initFineBinTable() {
   if (layerdisk_ < 6) {
     nbitszfinebintable_ = 7;
-    nbitsrfinebintable_ = 3;
+    nbitsrfinebintable_ = 4;
     //unsigned int nbins = 1 << (nbitszfinebintable_+nbitsrfinebintable_);
     //finebintable_.resize(nbins, -1);
 
@@ -333,14 +333,6 @@ void VMRouter::initFineBinTable() {
         finebintable_.push_back(zbin);
       }
     }
-    /*
-    for (unsigned int i = 0; i < nbins; i++) {
-      //awkward bit manipulations since the index is from a signed number...
-      int index = (i + (1 << (nbitsfinebintable_ - 1))) & ((1 << nbitsfinebintable_) - 1);
-
-      finebintable_[index] = (i >> (nbitsfinebintable_ - 6));
-    }
-    */
   } else {
     nbitszfinebintable_ = 3;
     nbitsrfinebintable_ = 7;
@@ -377,7 +369,21 @@ void VMRouter::initFineBinTable() {
       }
     }
   }
-}
+
+  if (iSector_==0&&settings_->writeTable()) {
+    
+    ofstream outfinebin;
+    outfinebin.open(getName()+"_finebin.tab");
+    outfinebin << "{"<<endl;
+    for(unsigned int i=0;i<finebintable_.size();i++) {
+      if (i!=0) outfinebin<<","<<endl;
+      outfinebin << finebintable_[i];
+    }
+    outfinebin <<endl<<"};"<<endl;
+    outfinebin.close();
+  }
+} 
+
 
 FPGAWord VMRouter::lookup(
     unsigned int iseed, unsigned int inner, FPGAWord z, FPGAWord r, bool negdisk, bool isPSmodule) {
