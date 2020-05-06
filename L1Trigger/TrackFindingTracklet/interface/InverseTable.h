@@ -1,6 +1,8 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_InverseTable_h
 #define L1Trigger_TrackFindingTracklet_interface_InverseTable_h
 
+#include "L1Trigger/TrackFindingTracklet/interface/Util.h"
+
 #include <iostream>
 #include <fstream>
 #include <cassert>
@@ -45,11 +47,11 @@ namespace Trklet {
     }
 
     void write(std::string fname) {
-      ofstream out(fname.c_str());
+      std::ofstream out(fname.c_str());
 
       for (int i = 0; i < entries_; i++) {
         unsigned int tt = table_[i];
-        out << std::hex << tt << endl;
+        out << std::hex << tt << std::endl;
       }
       out.close();
     }
