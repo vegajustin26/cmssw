@@ -250,8 +250,10 @@ void MatchEngine::execute() {
                 ? (16 + (((-2) * proj->fpgaphiprojder(layer_).value()) >> (proj->fpgaphiprojder(layer_).nbits() - 4)))
                 : proj->getBendIndex(disk_).value();
         assert(projrinv >= 0);
-        if (settings_->extended() && projrinv == 32) {  //TODO - displaced code shout ensure that this is not needed
-          edm::LogPrint("Tracklet") << "Warning: projrinv:" << projrinv;
+        if (settings_->extended() && projrinv == 32) {
+          if (settings_->debugTracklet()) {
+	    edm::LogVerbatim("Tracklet") << "Extended tracking, projrinv:" << projrinv;
+	  }
           projrinv = 31;
         }
         assert(projrinv < 32);
