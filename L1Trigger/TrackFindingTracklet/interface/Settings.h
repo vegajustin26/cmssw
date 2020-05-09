@@ -124,6 +124,9 @@ namespace Trklet {
       return rDSSouter_mod_[iBin / 2] + halfstrip_ * ((iBin % 2 == 0) ? -1 : 1);
     }
 
+    unsigned int vmrlutzbits(unsigned int layerdisk) const {return vmrlutzbits_[layerdisk];}
+    unsigned int vmrlutrbits(unsigned int layerdisk) const {return vmrlutrbits_[layerdisk];}
+    
     bool printDebugKF() const { return printDebugKF_; }
     bool debugTracklet() const { return debugTracklet_; }
     bool writetrace() const { return writetrace_; }
@@ -425,10 +428,15 @@ namespace Trklet {
     int chisqphifactbits_{14};
     int chisqzfactbits_{14};
 
+    std::array<unsigned int, 11> vmrlutzbits_{{7,7,7,7,7,7,3,3,3,3,3}}; // zbits used by LUT in VMR
+    std::array<unsigned int, 11> vmrlutrbits_{{4,4,4,4,4,4,8,8,8,8,8}}; // rbits used by LUT in VMR
+
+    
     std::array<std::array<unsigned int, 12>, 3> nfinephi_{{{{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}},    //inner
                                                            {{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}},    //outer
                                                            {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3}}}};  //outermost
 
+    
     //These are the number of bits used for the VM regions in the TE by seedindex
     std::array<std::array<unsigned int, 12>, 3> nphireg_{{{{5, 4, 4, 4, 4, 4, 4, 3, 4, 4, 5, 4}},    //inner
                                                           {{5, 4, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4}},    //outer
@@ -591,8 +599,8 @@ namespace Trklet {
 
     bool writeoutReal_{false};
 
-    bool bookHistos_{
-        false};  //set to true/false to turn on/off histogram booking internal to the tracking (class "HistImp")
+    //set to true/false to turn on/off histogram booking internal to the tracking (class "HistImp")
+    bool bookHistos_{false};
 
     // pt constants
     double ptcut_{1.91};  //Minimum pt cut

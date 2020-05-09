@@ -3,6 +3,7 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMRouterTable.h"
 
 #include <string>
 #include <vector>
@@ -28,10 +29,6 @@ namespace Trklet {
 
     void execute();
 
-    void initFineBinTable();
-
-    FPGAWord lookup(unsigned int iseed, unsigned int inner, FPGAWord z, FPGAWord r, bool negdisk, bool isPSmodule);
-
   private:
     //0-5 are the layers and 6-10 are the disks
     unsigned int layerdisk_;
@@ -43,7 +40,8 @@ namespace Trklet {
 
     int nbitszfinebintable_;
     int nbitsrfinebintable_;
-    std::vector<int> finebintable_;
+
+    VMRouterTable vmrtable_;
 
     //The input stub memories
     std::vector<InputLinkMemory*> stubinputs_;

@@ -125,13 +125,17 @@ void TrackletEngineDisplaced::execute() {
 
         int start = (bin >> 1);
         int last = start + (bin & 1);
+	if (last>7) {
+	  cout << getName() << "Warning setting last from "<<last<<" to 7"<<endl;
+	  last=7;
+	}
         if (settings_->debugTracklet()) {
           edm::LogVerbatim("Tracklet") << "Will look in zbins " << start << " to " << last;
         }
         for (int ibin = start; ibin <= last; ibin++) {
           for (unsigned int j = 0; j < secondvmstubs_->nVMStubsBinned(ibin); j++) {
             if (settings_->debugTracklet()) {
-              edm::LogVerbatim("Tracklet") << "In " << getName() << " have second stub";
+              edm::LogVerbatim("Tracklet") << "In " << getName() << " have second stub(1) "<<ibin<<" "<<j;
             }
 
             if (countall >= settings_->maxStep("TE"))
@@ -203,13 +207,18 @@ void TrackletEngineDisplaced::execute() {
 
         int start = (bin >> 1);
         int last = start + (bin & 1);
+	if (last>7) {
+	  cout << getName() << "Warning setting last from "<<last<<" to 7"<<endl;
+	  last=7;
+	}
+
         if (settings_->debugTracklet()) {
           edm::LogVerbatim("Tracklet") << "Will look in zbins " << start << " to " << last;
         }
         for (int ibin = start; ibin <= last; ibin++) {
           for (unsigned int j = 0; j < secondvmstubs_->nVMStubsBinned(ibin); j++) {
             if (settings_->debugTracklet()) {
-              edm::LogVerbatim("Tracklet") << "In " << getName() << " have second stub";
+              edm::LogVerbatim("Tracklet") << "In " << getName() << " have second stub(2) ";
             }
 
             if (countall >= settings_->maxStep("TE"))
@@ -288,6 +297,10 @@ void TrackletEngineDisplaced::execute() {
         if (negdisk)
           start += 4;
         int last = start + (bin & 1);
+	if (last>7) {
+	  cout << getName() << "Warning setting last from "<<last<<" to 7"<<endl;
+	  last=7;
+	}
         for (int ibin = start; ibin <= last; ibin++) {
           if (settings_->debugTracklet()) {
             edm::LogVerbatim("Tracklet") << getName() << " looking for matching stub in bin " << ibin << " with "

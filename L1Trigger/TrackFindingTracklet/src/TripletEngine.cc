@@ -64,8 +64,8 @@ TripletEngine::TripletEngine(string name, const Settings *settings, Globals *glo
     secondphibits_ = settings_->nfinephi(1, iSeed_);
     thirdphibits_ = settings_->nfinephi(2, iSeed_);
   }
-
   readTables();
+
 }
 
 TripletEngine::~TripletEngine() {

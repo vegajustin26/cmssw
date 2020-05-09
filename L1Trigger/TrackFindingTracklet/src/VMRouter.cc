@@ -1,11 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMRouter.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TETableOuter.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TETableInner.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TETableOuterDisk.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TETableInnerDisk.h"
-#include "L1Trigger/TrackFindingTracklet/interface/TETableInnerOverlap.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubTE.h"
 #include "L1Trigger/TrackFindingTracklet/interface/InputLinkMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
@@ -18,14 +13,20 @@ using namespace std;
 using namespace Trklet;
 
 VMRouter::VMRouter(string name, const Settings* settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {
+  : ProcessBase(name, settings, global, iSector), vmrtable_(settings) {
   layerdisk_ = initLayerDisk(4);
-  initFineBinTable();
 
   vmstubsMEPHI_.resize(settings_->nvmme(layerdisk_), 0);
 
   overlapbits_ = 7;
   nextrabits_ = overlapbits_ - (settings_->nbitsallstubs(layerdisk_) + settings_->nbitsvmme(layerdisk_));
+
+  vmrtable_.init(layerdisk_);
+
+  nbitszfinebintable_=settings_->vmrlutzbits(layerdisk_);
+  nbitsrfinebintable_=settings_->vmrlutrbits(layerdisk_);
+
+  
 }
 
 void VMRouter::addOutput(MemoryBase* memory, string output) {
@@ -166,10 +167,10 @@ void VMRouter::execute() {
       //though we should have protected against overflows above
       FPGAWord allStubIndex(allStubCounter & 127, 7, true, __LINE__, __FILE__);
 
-      stub.first->setAllStubIndex(
-          allStubCounter);  //TODO - should not be needed - but need to migrate some other pieces of code before removing
-      stub.second->setAllStubIndex(
-          allStubCounter);  //TODO - should not be needed - but need to migrate some other pieces of code before removing
+      //TODO - should not be needed - but need to migrate some other pieces of code before removing
+      stub.first->setAllStubIndex(allStubCounter);  
+      //TODO - should not be needed - but need to migrate some other pieces of code before removing
+      stub.second->setAllStubIndex(allStubCounter);  
 
       allStubCounter++;
 
@@ -218,17 +219,15 @@ void VMRouter::execute() {
       assert(indexr >= 0);
       assert(indexz < (1 << nbitszfinebintable_));
       assert(indexr < (1 << nbitsrfinebintable_));
-      unsigned int index = (indexz << nbitsrfinebintable_) + indexr;
-      assert(index < finebintable_.size());
 
-      int rzfine = finebintable_[index];
+      int melut=vmrtable_.lookup(indexz,indexr);
+      
+      assert(melut >= 0);
 
-      assert(rzfine >= 0);
-
-      int vmbin = rzfine >> 3;
+      int vmbin = melut >> 3;
       if (negdisk)
         vmbin += 8;
-      rzfine = rzfine & 7;
+      int rzfine = melut & 7;
 
       if (layerdisk_ > 5) {
         stub.first->setfiner(rzfine);
@@ -261,8 +260,47 @@ void VMRouter::execute() {
         if ((iseed == 4 || iseed == 5 || iseed == 6 || iseed == 7) && (!stub.first->isPSmodule()))
           continue;
 
-        FPGAWord binlookup = lookup(iseed, inner, stub.first->z(), stub.first->r(), negdisk, stub.first->isPSmodule());
+	unsigned int lutwidth=settings_->lutwidthtab(inner,iseed);
+	if (settings_->extended()) {
+	  lutwidth=settings_->lutwidthtabextended(inner,iseed);
+	}
 
+	int lutval=-999;
+
+	if (inner>0) {
+	  if (layerdisk_<6) {
+	    lutval=melut;
+	  } else {
+	    if (inner==2&&iseed==10) {
+	      lutval=0;
+	      if (stub.first->r().value()<10){
+		lutval=8*(1+(stub.first->r().value()>>2));
+	      } else {
+		if (stub.first->r().value()< settings_->rmindiskl3overlapvm() / settings_->kr()) {
+		  lutval=-1;
+		}
+	      }
+	    } else {
+	      lutval=vmrtable_.lookupdisk(indexz,indexr);
+	    }
+	  }
+	  if (lutval==-1) continue;
+	} else {
+	  if (iseed<6||iseed>7) {
+	    lutval=vmrtable_.lookupinner(indexz,indexr);
+	  } else {
+	    lutval=vmrtable_.lookupinneroverlap(indexz,indexr);
+	  }
+	  if (lutval==-1) continue;
+	  if (settings_->extended()) {
+	    lutval+=(vmrtable_.lookupinnerThird(indexz,indexr)<<10);
+	  }
+	}
+
+	assert(lutval>=0);
+
+	FPGAWord binlookup(lutval,lutwidth,true,__LINE__,__FILE__);
+	
         if (binlookup.value() < 0)
           continue;
 
@@ -303,164 +341,4 @@ void VMRouter::execute() {
   }
 }
 
-void VMRouter::initFineBinTable() {
-  if (layerdisk_ < 6) {
-    nbitszfinebintable_ = 7;
-    nbitsrfinebintable_ = 4;
-    //unsigned int nbins = 1 << (nbitszfinebintable_+nbitsrfinebintable_);
-    //finebintable_.resize(nbins, -1);
 
-    double dr = 2 * settings_->drmax() / (1 << nbitsrfinebintable_);
-    double dz = 2 * settings_->zlength() / (1 << nbitszfinebintable_);
-
-    double rmin = settings_->rmean(layerdisk_) - settings_->drmax();
-    double zmin = -settings_->zlength();
-    int NBINS = settings_->NLONGVMBINS() * settings_->NLONGVMBINS();
-
-    for (int izbin = 0; izbin < (1 << nbitszfinebintable_); izbin++) {
-      for (int irbin = 0; irbin < (1 << nbitsrfinebintable_); irbin++) {
-        double z = zmin + (izbin + 0.5) * dz;
-        double r = rmin + (irbin + 0.5) * dr;
-
-        double zproj = z * settings_->rmean(layerdisk_) / r;
-
-        int zbin = NBINS * (zproj + settings_->zlength()) / (2 * settings_->zlength());
-
-        if (zbin < 0)
-          zbin = 0;
-        if (zbin >= NBINS)
-          zbin = NBINS - 1;
-        finebintable_.push_back(zbin);
-      }
-    }
-  } else {
-    nbitszfinebintable_ = 3;
-    nbitsrfinebintable_ = 7;
-    //unsigned int nbins = 1 << (nbitszfinebintable_+nbitsrfinebintable_);
-
-    double rmin = 0.0;
-    double dr = settings_->rmaxdisk() / (1 << nbitsrfinebintable_);
-    ;
-
-    double zmin = settings_->zmean(layerdisk_ - 6) - settings_->dzmax();
-    double dz = 2 * settings_->dzmax() / (1 << nbitszfinebintable_);
-    ;
-
-    int NBINS = settings_->NLONGVMBINS() * settings_->NLONGVMBINS();
-
-    for (int izbin = 0; izbin < (1 << nbitszfinebintable_); izbin++) {
-      for (int irbin = 0; irbin < (1 << nbitsrfinebintable_); irbin++) {
-        double r = rmin + (irbin + 0.5) * dr;
-        double z = zmin + (izbin + 0.5) * dz;
-
-        if (irbin < 10)  //special case for the tabulated radii
-          r = (layerdisk_ <= 7) ? settings_->rDSSinner(irbin) : settings_->rDSSouter(irbin);
-
-        double rproj = r * settings_->zmean(layerdisk_ - 6) / z;
-
-        int rbin = NBINS * (rproj - settings_->rmindiskvm()) / (settings_->rmaxdisk() - settings_->rmindiskvm());
-
-        if (rbin < 0)
-          rbin = 0;
-        if (rbin >= NBINS)
-          rbin = NBINS - 1;
-
-        finebintable_.push_back(rbin);
-      }
-    }
-  }
-
-  if (iSector_==0&&settings_->writeTable()) {
-    
-    ofstream outfinebin;
-    outfinebin.open(getName()+"_finebin.tab");
-    outfinebin << "{"<<endl;
-    for(unsigned int i=0;i<finebintable_.size();i++) {
-      if (i!=0) outfinebin<<","<<endl;
-      outfinebin << finebintable_[i];
-    }
-    outfinebin <<endl<<"};"<<endl;
-    outfinebin.close();
-  }
-} 
-
-
-FPGAWord VMRouter::lookup(
-    unsigned int iseed, unsigned int inner, FPGAWord z, FPGAWord r, bool negdisk, bool isPSmodule) {
-  if (globals_->teTable(0, 0) == 0) {
-    globals_->teTable(0, 0) =
-        new TETableInner(settings_, 1, 2, -1, settings_->zbitstab(0, 0), settings_->rbitstab(0, 0));
-    globals_->teTable(0, 1) =
-        new TETableInner(settings_, 2, 3, -1, settings_->zbitstab(0, 1), settings_->rbitstab(0, 1));
-    globals_->teTable(0, 2) =
-        new TETableInner(settings_, 3, 4, 2, settings_->zbitstab(0, 2), settings_->rbitstab(0, 2));
-    globals_->teTable(0, 3) =
-        new TETableInner(settings_, 5, 6, 4, settings_->zbitstab(0, 3), settings_->rbitstab(0, 3));
-    globals_->teTable(0, 4) =
-        new TETableInnerDisk(settings_, 1, 2, -1, settings_->zbitstab(0, 4), settings_->rbitstab(0, 4));
-    globals_->teTable(0, 5) =
-        new TETableInnerDisk(settings_, 3, 4, -1, settings_->zbitstab(0, 5), settings_->rbitstab(0, 5));
-    globals_->teTable(0, 6) =
-        new TETableInnerOverlap(settings_, 1, 1, settings_->zbitstab(0, 6), settings_->rbitstab(0, 6));
-    globals_->teTable(0, 7) =
-        new TETableInnerOverlap(settings_, 2, 1, settings_->zbitstab(0, 7), settings_->rbitstab(0, 7));
-    globals_->teTable(0, 10) =
-        new TETableInner(settings_, 2, 3, 1, settings_->zbitstab(0, 10), settings_->rbitstab(0, 10), true);
-
-    globals_->teTable(1, 0) = new TETableOuter(settings_, 2, settings_->zbitstab(1, 0), settings_->rbitstab(1, 0));
-    globals_->teTable(1, 1) = new TETableOuter(settings_, 3, settings_->zbitstab(1, 1), settings_->rbitstab(1, 1));
-    globals_->teTable(1, 2) = new TETableOuter(settings_, 4, settings_->zbitstab(1, 2), settings_->rbitstab(1, 2));
-    globals_->teTable(1, 3) = new TETableOuter(settings_, 6, settings_->zbitstab(1, 3), settings_->rbitstab(1, 3));
-    globals_->teTable(1, 4) = new TETableOuterDisk(settings_, 2, settings_->zbitstab(1, 4), settings_->rbitstab(1, 4));
-    globals_->teTable(1, 5) = new TETableOuterDisk(settings_, 4, settings_->zbitstab(1, 5), settings_->rbitstab(1, 5));
-    globals_->teTable(1, 6) = new TETableOuterDisk(settings_, 1, settings_->zbitstab(1, 6), settings_->rbitstab(1, 6));
-    globals_->teTable(1, 7) = new TETableOuterDisk(settings_, 1, settings_->zbitstab(1, 7), settings_->rbitstab(1, 7));
-    globals_->teTable(1, 10) = new TETableOuter(settings_, 3, settings_->zbitstab(1, 10), settings_->rbitstab(1, 10));
-
-    globals_->teTable(2, 10) =
-        new TETableOuterDisk(settings_, 1, settings_->zbitstab(2, 10), settings_->rbitstab(2, 10));
-    globals_->teTable(2, 11) = new TETableOuter(settings_, 2, settings_->zbitstab(2, 11), settings_->rbitstab(2, 11));
-  }
-
-  if (iseed == 10 && inner == 2) {
-    //return if radius to small (values <100 corresponds to the 2S modules)
-    if (r.value() > 100 && r.value() < settings_->rmindiskl3overlapvm() / settings_->kr())
-      return FPGAWord(-1, 2, false, __LINE__, __FILE__);
-    int bin = 0;
-    if (!isPSmodule) {
-      bin = r.value();  // 0 to 9 for the ring index
-      bin = bin >> 2;   // 0 to 2
-      bin += 1;
-    }
-
-    return FPGAWord(bin * 8, settings_->lutwidthtabextended(inner, iseed), true, __LINE__, __FILE__);
-  }
-
-  assert(globals_->teTable(inner, iseed) != 0);
-
-  unsigned int zbits = settings_->zbitstab(inner, iseed);
-  assert(zbits != 0);
-  unsigned int rbits = settings_->rbitstab(inner, iseed);
-  assert(rbits != 0);
-  unsigned int lutwidth = settings_->lutwidthtab(inner, iseed);
-  if (settings_->extended()) {
-    lutwidth = settings_->lutwidthtabextended(inner, iseed);
-  }
-  assert(lutwidth != 0);
-
-  int zbin = (z.value() + (1 << (z.nbits() - 1))) >> (z.nbits() - zbits);
-  if (negdisk)
-    zbin = (1 << zbits) - 1 - zbin;
-  int rbin = (r.value() + (1 << (r.nbits() - 1))) >> (r.nbits() - rbits);
-  if (layerdisk_ >= 6) {
-    rbin = r.value() >> (r.nbits() - rbits);
-  }
-
-  int lutvalue = globals_->teTable(inner, iseed)->lookup(zbin, rbin);
-
-  if (lutvalue < 0) {
-    return FPGAWord(lutvalue, 2, false, __LINE__, __FILE__);
-  } else {
-    return FPGAWord(lutvalue, lutwidth, true, __LINE__, __FILE__);
-  }
-}
