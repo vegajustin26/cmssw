@@ -51,7 +51,7 @@ void TrackletCalculatorBase::exacttracklet(double r1,
   z0 = z1 - t * rhopsi1;
 
   for (int i = 0; i < 4; i++) {
-    exactproj(rproj_[i], rinv, phi0, t, z0, phiproj[i], zproj[i], phider[i], zder[i]);
+    exactproj(settings_->rmean(lproj_[i]-1), rinv, phi0, t, z0, phiproj[i], zproj[i], phider[i], zder[i]);
   }
 
   for (int i = 0; i < 5; i++) {
@@ -394,11 +394,12 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
   ITC->phi1.set_fval(sphi1);
   ITC->phi2.set_fval(sphi2);
 
-  ITC->rproj0.set_fval(rproj_[0]);
-  ITC->rproj1.set_fval(rproj_[1]);
-  ITC->rproj2.set_fval(rproj_[2]);
-  ITC->rproj3.set_fval(rproj_[3]);
+  ITC->rproj0.set_fval(settings_->rmean(lproj_[0]-1));
+  ITC->rproj1.set_fval(settings_->rmean(lproj_[1]-1));
+  ITC->rproj2.set_fval(settings_->rmean(lproj_[2]-1));
+  ITC->rproj3.set_fval(settings_->rmean(lproj_[3]-1));
 
+  
   ITC->zproj0.set_fval(t > 0 ? settings_->zmean(0) : -settings_->zmean(0));
   ITC->zproj1.set_fval(t > 0 ? settings_->zmean(1) : -settings_->zmean(1));
   ITC->zproj2.set_fval(t > 0 ? settings_->zmean(2) : -settings_->zmean(2));
@@ -572,7 +573,7 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
 
     layerprojs[i].init(settings_,
                        lproj_[i],
-                       rproj_[i],
+                       settings_->rmean(lproj_[i]-1),
                        iphiproj[i],
                        izproj[i],
                        ITC->der_phiL_final.get_ival(),
@@ -609,9 +610,10 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
       if (irprojdisk[i] < 20. / ITC->rD_0_final.get_K() || irprojdisk[i] > 120. / ITC->rD_0_final.get_K())
         continue;
 
+      
       diskprojs[i].init(settings_,
                         i + 1,
-                        rproj_[i],
+                        settings_->zmean(i),
                         iphiprojdisk[i],
                         irprojdisk[i],
                         ITC->der_phiD_final.get_ival(),
@@ -1015,7 +1017,7 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,
 
     diskprojs[i].init(settings_,
                       i + 1,
-                      rproj_[i],
+                      zproj_[i],
                       iphiprojdisk[i],
                       irprojdisk[i],
                       ITC->der_phiD_final.get_ival(),
@@ -1388,7 +1390,7 @@ bool TrackletCalculatorBase::overlapSeeding(Stub* innerFPGAStub,
 
     diskprojs[i].init(settings_,
                       i + 1,
-                      rproj_[i],
+                      settings_->zmean(i),
                       iphiprojdisk[i],
                       irprojdisk[i],
                       ITC->der_phiD_final.get_ival(),

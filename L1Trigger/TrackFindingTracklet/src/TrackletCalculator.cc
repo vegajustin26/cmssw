@@ -36,38 +36,7 @@ TrackletCalculator::TrackletCalculator(string name,
     disk_ = name_[4] - '0';
 
   // set TC index
-  if (name_[7] == 'A')
-    iTC_ = 0;
-  else if (name_[7] == 'B')
-    iTC_ = 1;
-  else if (name_[7] == 'C')
-    iTC_ = 2;
-  else if (name_[7] == 'D')
-    iTC_ = 3;
-  else if (name_[7] == 'E')
-    iTC_ = 4;
-  else if (name_[7] == 'F')
-    iTC_ = 5;
-  else if (name_[7] == 'G')
-    iTC_ = 6;
-  else if (name_[7] == 'H')
-    iTC_ = 7;
-  else if (name_[7] == 'I')
-    iTC_ = 8;
-  else if (name_[7] == 'J')
-    iTC_ = 9;
-  else if (name_[7] == 'K')
-    iTC_ = 10;
-  else if (name_[7] == 'L')
-    iTC_ = 11;
-  else if (name_[7] == 'M')
-    iTC_ = 12;
-  else if (name_[7] == 'N')
-    iTC_ = 13;
-  else if (name_[7] == 'O')
-    iTC_ = 14;
-
-  assert(iTC_ != -1);
+  iTC_=name_[7]-'A';
 
   if (name_.substr(3, 4) == "L1L2")
     iSeed_ = 0;
@@ -99,10 +68,6 @@ TrackletCalculator::TrackletCalculator(string name,
 
   if (iSeed_ == 0 || iSeed_ == 1 || iSeed_ == 2 || iSeed_ == 3) {
     if (layer_ == 1) {
-      rproj_[0] = settings_->rmean(2);
-      rproj_[1] = settings_->rmean(3);
-      rproj_[2] = settings_->rmean(4);
-      rproj_[3] = settings_->rmean(5);
       lproj_[0] = 3;
       lproj_[1] = 4;
       lproj_[2] = 5;
@@ -110,10 +75,6 @@ TrackletCalculator::TrackletCalculator(string name,
     }
 
     if (layer_ == 2) {
-      rproj_[0] = settings_->rmean(0);
-      rproj_[1] = settings_->rmean(3);
-      rproj_[2] = settings_->rmean(4);
-      rproj_[3] = settings_->rmean(5);
       lproj_[0] = 1;
       lproj_[1] = 4;
       lproj_[2] = 5;
@@ -121,10 +82,6 @@ TrackletCalculator::TrackletCalculator(string name,
     }
 
     if (layer_ == 3) {
-      rproj_[0] = settings_->rmean(0);
-      rproj_[1] = settings_->rmean(1);
-      rproj_[2] = settings_->rmean(4);
-      rproj_[3] = settings_->rmean(5);
       lproj_[0] = 1;
       lproj_[1] = 2;
       lproj_[2] = 5;
@@ -132,10 +89,6 @@ TrackletCalculator::TrackletCalculator(string name,
     }
 
     if (layer_ == 5) {
-      rproj_[0] = settings_->rmean(0);
-      rproj_[1] = settings_->rmean(1);
-      rproj_[2] = settings_->rmean(2);
-      rproj_[3] = settings_->rmean(3);
       lproj_[0] = 1;
       lproj_[1] = 2;
       lproj_[2] = 3;
