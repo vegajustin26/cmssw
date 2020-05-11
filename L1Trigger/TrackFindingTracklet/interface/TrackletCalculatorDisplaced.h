@@ -120,97 +120,11 @@ namespace Trklet {
 
     TrackletParametersMemory* trackletpars_;
 
-    TrackletProjectionsMemory* trackletproj_L1PHI1_;
-    TrackletProjectionsMemory* trackletproj_L1PHI2_;
-    TrackletProjectionsMemory* trackletproj_L1PHI3_;
-    TrackletProjectionsMemory* trackletproj_L1PHI4_;
-    TrackletProjectionsMemory* trackletproj_L1PHI5_;
-    TrackletProjectionsMemory* trackletproj_L1PHI6_;
-    TrackletProjectionsMemory* trackletproj_L1PHI7_;
-    TrackletProjectionsMemory* trackletproj_L1PHI8_;
+    //First index is layer/disk second is phi region
+    std::vector<std::vector<TrackletProjectionsMemory*> > trackletprojlayers_;
+    std::vector<std::vector<TrackletProjectionsMemory*> > trackletprojdisks_;
+    
 
-    TrackletProjectionsMemory* trackletproj_L2PHI1_;
-    TrackletProjectionsMemory* trackletproj_L2PHI2_;
-    TrackletProjectionsMemory* trackletproj_L2PHI3_;
-    TrackletProjectionsMemory* trackletproj_L2PHI4_;
-
-    TrackletProjectionsMemory* trackletproj_L3PHI1_;
-    TrackletProjectionsMemory* trackletproj_L3PHI2_;
-    TrackletProjectionsMemory* trackletproj_L3PHI3_;
-    TrackletProjectionsMemory* trackletproj_L3PHI4_;
-
-    TrackletProjectionsMemory* trackletproj_L4PHI1_;
-    TrackletProjectionsMemory* trackletproj_L4PHI2_;
-    TrackletProjectionsMemory* trackletproj_L4PHI3_;
-    TrackletProjectionsMemory* trackletproj_L4PHI4_;
-
-    TrackletProjectionsMemory* trackletproj_L5PHI1_;
-    TrackletProjectionsMemory* trackletproj_L5PHI2_;
-    TrackletProjectionsMemory* trackletproj_L5PHI3_;
-    TrackletProjectionsMemory* trackletproj_L5PHI4_;
-
-    TrackletProjectionsMemory* trackletproj_L6PHI1_;
-    TrackletProjectionsMemory* trackletproj_L6PHI2_;
-    TrackletProjectionsMemory* trackletproj_L6PHI3_;
-    TrackletProjectionsMemory* trackletproj_L6PHI4_;
-
-    TrackletProjectionsMemory* trackletproj_D1PHI1_;
-    TrackletProjectionsMemory* trackletproj_D1PHI2_;
-    TrackletProjectionsMemory* trackletproj_D1PHI3_;
-    TrackletProjectionsMemory* trackletproj_D1PHI4_;
-
-    TrackletProjectionsMemory* trackletproj_D2PHI1_;
-    TrackletProjectionsMemory* trackletproj_D2PHI2_;
-    TrackletProjectionsMemory* trackletproj_D2PHI3_;
-    TrackletProjectionsMemory* trackletproj_D2PHI4_;
-
-    TrackletProjectionsMemory* trackletproj_D3PHI1_;
-    TrackletProjectionsMemory* trackletproj_D3PHI2_;
-    TrackletProjectionsMemory* trackletproj_D3PHI3_;
-    TrackletProjectionsMemory* trackletproj_D3PHI4_;
-
-    TrackletProjectionsMemory* trackletproj_D4PHI1_;
-    TrackletProjectionsMemory* trackletproj_D4PHI2_;
-    TrackletProjectionsMemory* trackletproj_D4PHI3_;
-    TrackletProjectionsMemory* trackletproj_D4PHI4_;
-
-    TrackletProjectionsMemory* trackletproj_D5PHI1_;
-    TrackletProjectionsMemory* trackletproj_D5PHI2_;
-    TrackletProjectionsMemory* trackletproj_D5PHI3_;
-    TrackletProjectionsMemory* trackletproj_D5PHI4_;
-
-    TrackletProjectionsMemory* trackletproj_L1Plus_;
-    TrackletProjectionsMemory* trackletproj_L1Minus_;
-
-    TrackletProjectionsMemory* trackletproj_L2Plus_;
-    TrackletProjectionsMemory* trackletproj_L2Minus_;
-
-    TrackletProjectionsMemory* trackletproj_L3Plus_;
-    TrackletProjectionsMemory* trackletproj_L3Minus_;
-
-    TrackletProjectionsMemory* trackletproj_L4Plus_;
-    TrackletProjectionsMemory* trackletproj_L4Minus_;
-
-    TrackletProjectionsMemory* trackletproj_L5Plus_;
-    TrackletProjectionsMemory* trackletproj_L5Minus_;
-
-    TrackletProjectionsMemory* trackletproj_L6Plus_;
-    TrackletProjectionsMemory* trackletproj_L6Minus_;
-
-    TrackletProjectionsMemory* trackletproj_D1Plus_;
-    TrackletProjectionsMemory* trackletproj_D1Minus_;
-
-    TrackletProjectionsMemory* trackletproj_D2Plus_;
-    TrackletProjectionsMemory* trackletproj_D2Minus_;
-
-    TrackletProjectionsMemory* trackletproj_D3Plus_;
-    TrackletProjectionsMemory* trackletproj_D3Minus_;
-
-    TrackletProjectionsMemory* trackletproj_D4Plus_;
-    TrackletProjectionsMemory* trackletproj_D4Minus_;
-
-    TrackletProjectionsMemory* trackletproj_D5Plus_;
-    TrackletProjectionsMemory* trackletproj_D5Minus_;
   };
 
 };  // namespace Trklet

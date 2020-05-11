@@ -18,6 +18,17 @@ namespace Trklet {
       phi -= 2 * M_PI;
     return phi;
   }
+  
+  //method return phi in the 0 to +2pi range
+  inline double phiRange2PI(double phi) {
+    //catch if phi is very out of range, not a number etc
+    assert(std::abs(phi) < 100.0);
+    while (phi < 0.0 )
+      phi += 2 * M_PI;
+    while (phi > 2*M_PI)
+      phi -= 2 * M_PI;
+    return phi;
+  }
 
   //Converts string in binary to hex (used in writing out memory content)
   inline std::string hexFormat(std::string binary) {
