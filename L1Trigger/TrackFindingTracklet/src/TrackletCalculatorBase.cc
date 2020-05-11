@@ -51,7 +51,7 @@ void TrackletCalculatorBase::exacttracklet(double r1,
   z0 = z1 - t * rhopsi1;
 
   for (int i = 0; i < 4; i++) {
-    exactproj(settings_->rmean(lproj_[i]-1), rinv, phi0, t, z0, phiproj[i], zproj[i], phider[i], zder[i]);
+    exactproj(settings_->rmean(settings_->projlayers(iSeed_,i)-1), rinv, phi0, t, z0, phiproj[i], zproj[i], phider[i], zder[i]);
   }
 
   for (int i = 0; i < 5; i++) {
@@ -394,10 +394,10 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
   ITC->phi1.set_fval(sphi1);
   ITC->phi2.set_fval(sphi2);
 
-  ITC->rproj0.set_fval(settings_->rmean(lproj_[0]-1));
-  ITC->rproj1.set_fval(settings_->rmean(lproj_[1]-1));
-  ITC->rproj2.set_fval(settings_->rmean(lproj_[2]-1));
-  ITC->rproj3.set_fval(settings_->rmean(lproj_[3]-1));
+  ITC->rproj0.set_fval(settings_->rmean(settings_->projlayers(iSeed_,0)-1));
+  ITC->rproj1.set_fval(settings_->rmean(settings_->projlayers(iSeed_,1)-1));
+  ITC->rproj2.set_fval(settings_->rmean(settings_->projlayers(iSeed_,2)-1));
+  ITC->rproj3.set_fval(settings_->rmean(settings_->projlayers(iSeed_,3)-1));
 
   
   ITC->zproj0.set_fval(t > 0 ? settings_->zmean(0) : -settings_->zmean(0));
@@ -565,15 +565,15 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
       continue;
 
     //Adjust bits for r and z projection depending on layer
-    if (lproj_[i] <= 3) {  //TODO clean up logic
-      iphiproj[i] >>= (settings_->nphibitsstub(5) - settings_->nphibitsstub(lproj_[i] - 1));
+    if (settings_->projlayers(iSeed_,i) <= 3) {  //TODO clean up logic
+      iphiproj[i] >>= (settings_->nphibitsstub(5) - settings_->nphibitsstub(settings_->projlayers(iSeed_,i) - 1));
     } else {
       izproj[i] >>= (settings_->nzbitsstub(0) - settings_->nzbitsstub(5));
     }
 
     layerprojs[i].init(settings_,
-                       lproj_[i],
-                       settings_->rmean(lproj_[i]-1),
+                       settings_->projlayers(iSeed_,i),
+                       settings_->rmean(settings_->projlayers(iSeed_,i)-1),
                        iphiproj[i],
                        izproj[i],
                        ITC->der_phiL_final.get_ival(),
@@ -700,16 +700,17 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
   bool addL5 = false;
   bool addL6 = false;
   for (unsigned int j = 0; j < 4; j++) {
+    int lproj=settings_->projlayers(iSeed_,j);
     bool added = false;
-    if (tracklet->validProj(lproj_[j])) {
-      added = addLayerProj(tracklet, lproj_[j]);
-      if (added && lproj_[j] == 3)
+    if (tracklet->validProj(lproj)) {
+      added = addLayerProj(tracklet, lproj);
+      if (added && lproj == 3)
         addL3 = true;
-      if (added && lproj_[j] == 4)
+      if (added && lproj == 4)
         addL4 = true;
-      if (added && lproj_[j] == 5)
+      if (added && lproj == 5)
         addL5 = true;
-      if (added && lproj_[j] == 6)
+      if (added && lproj == 6)
         addL6 = true;
     }
   }

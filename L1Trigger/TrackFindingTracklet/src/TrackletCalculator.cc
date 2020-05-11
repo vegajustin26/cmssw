@@ -66,36 +66,6 @@ TrackletCalculator::TrackletCalculator(string name,
 
   assert((layer_ != 0) || (disk_ != 0));
 
-  if (iSeed_ == 0 || iSeed_ == 1 || iSeed_ == 2 || iSeed_ == 3) {
-    if (layer_ == 1) {
-      lproj_[0] = 3;
-      lproj_[1] = 4;
-      lproj_[2] = 5;
-      lproj_[3] = 6;
-    }
-
-    if (layer_ == 2) {
-      lproj_[0] = 1;
-      lproj_[1] = 4;
-      lproj_[2] = 5;
-      lproj_[3] = 6;
-    }
-
-    if (layer_ == 3) {
-      lproj_[0] = 1;
-      lproj_[1] = 2;
-      lproj_[2] = 5;
-      lproj_[3] = 6;
-    }
-
-    if (layer_ == 5) {
-      lproj_[0] = 1;
-      lproj_[1] = 2;
-      lproj_[2] = 3;
-      lproj_[3] = 4;
-    }
-  }
-
   if (iSeed_ == 4 || iSeed_ == 5) {
     if (disk_ == 1) {
       dproj_[0] = 3;
