@@ -79,7 +79,6 @@ namespace Trklet {
         assert(0);
       }
       return maxstep_.at(module) + maxstepoffset_;
-      ;
     }
 
     double zlength() const { return zlength_; }

@@ -292,8 +292,10 @@ void VMRouter::execute() {
 	    lutval=vmrtable_.lookupinneroverlap(indexz,indexr);
 	  }
 	  if (lutval==-1) continue;
-	  if (settings_->extended()) {
-	    lutval+=(vmrtable_.lookupinnerThird(indexz,indexr)<<10);
+	  if (settings_->extended()&&(iseed==2||iseed==3||iseed==10||iseed==4)) {
+	    int lutval2=vmrtable_.lookupinnerThird(indexz,indexr);
+	    if (lutval2==-1) continue;
+	    lutval+=(lutval2<<10);
 	  }
 	}
 

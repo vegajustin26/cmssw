@@ -163,8 +163,10 @@ void TripletEngine::execute() {
         int start = (bin >> 1);
         int last = start + (bin & 1);
 
+	
         for (int ibin = start; ibin <= last; ibin++) {
           for (unsigned int k = 0; k < thirdvmstubs_.size(); k++) {
+
             string vmsteSuffix = thirdvmstubs_.at(k)->getLastPartOfName();
             vmsteSuffix = vmsteSuffix.substr(0, vmsteSuffix.find_last_of('n'));
             if (stubpairs_.at(i)->getLastPartOfName() != vmsteSuffix)
@@ -174,11 +176,12 @@ void TripletEngine::execute() {
                 edm::LogVerbatim("Tracklet") << "In " << getName() << " have third stub";
               }
 
+
               if (countall >= settings_->maxStep("TRE"))
                 break;
               countall++;
 
-              VMStubTE thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
+	      VMStubTE thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
 
               assert(secondphibits_ != -1);
               assert(thirdphibits_ != -1);
@@ -199,6 +202,7 @@ void TripletEngine::execute() {
 
               index = (index << secondbend.nbits()) + secondbend.value();
               index = (index << thirdbend.nbits()) + thirdbend.value();
+
 
               if (index >= table_.size())
                 table_.resize(index + 1, false);
@@ -248,6 +252,7 @@ void TripletEngine::execute() {
 
         int start = (bin >> 1);
         int last = start + (bin & 1);
+	
         if (firstvmstub.stub().first->disk().value() < 0) {  //TODO - negative disk should come from memory
           start = settings_->NLONGVMBINS() - last - 1;
           last = settings_->NLONGVMBINS() - start - 1;

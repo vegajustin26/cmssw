@@ -1,6 +1,11 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEngineDisplaced.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
+#include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
+
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -125,6 +130,7 @@ void TrackletEngineDisplaced::execute() {
 
         int start = (bin >> 1);
         int last = start + (bin & 1);
+
 	if (last>7) {
 	  cout << getName() << "Warning setting last from "<<last<<" to 7"<<endl;
 	  last=7;
@@ -167,6 +173,7 @@ void TrackletEngineDisplaced::execute() {
             index = (index << firstbend.nbits()) + firstbend.value();
             index = (index << secondbend.nbits()) + secondbend.value();
 
+	   
             if (index >= table_.size())
               table_.resize(index + 1);
 
@@ -177,8 +184,9 @@ void TrackletEngineDisplaced::execute() {
                                              << benddecode(secondvmstub.bend().value(), secondvmstub.isPSmodule());
               }
               if (!settings_->writeTripletTables())
-                continue;
+		continue;
             }
+	    
 
             if (settings_->debugTracklet())
               edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " << getName();

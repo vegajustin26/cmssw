@@ -2,16 +2,18 @@
 #define L1Trigger_TrackFindingTracklet_interface_TrackletEngineDisplaced_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
-#include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
-#include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
 
+#include <string>
 #include <vector>
+#include <set>
 
 namespace Trklet {
 
   class Settings;
   class Globals;
   class MemoryBase;
+  class VMStubsTEMemory;
+  class StubPairsMemory;
 
   class TrackletEngineDisplaced : public ProcessBase {
   public:

@@ -83,8 +83,8 @@ void VMRouterTable::init(unsigned int layerdisk) {
 	vmrtableteinnerThird_.push_back(getLookup(3, z, r));
       }
 
-      if (layerdisk==2){  //projection from L3 to L5 for L3L4L5 seeding 
-	vmrtableteinnerThird_.push_back(getLookup(4, z, r));
+      if (layerdisk==2){  //projection from L3 to L5 for L3L4L2 seeding 
+	vmrtableteinnerThird_.push_back(getLookup(1, z, r));
       }
 
       if (layerdisk==6){  //projection from D1 to L2 for D1D2L2 seeding 
