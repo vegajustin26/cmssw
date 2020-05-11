@@ -96,7 +96,7 @@ void TrackletCalculatorBase::exacttrackletdisk(double r1,
   z0 = z1 - t * rhopsi1;
 
   for (int i = 0; i < 3; i++) {
-    exactprojdisk(zproj_[i], rinv, phi0, t, z0, phiproj[i], rproj[i], phider[i], rder[i]);
+    exactprojdisk(settings_->zmean(dproj_[i]-1), rinv, phi0, t, z0, phiproj[i], rproj[i], phider[i], rder[i]);
   }
 
   for (int i = 0; i < 3; i++) {
@@ -144,7 +144,7 @@ void TrackletCalculatorBase::exacttrackletOverlap(double r1,
   z0 = z1 - t * rhopsi1;
 
   for (int i = 0; i < 4; i++) {
-    exactprojdisk(zprojoverlap_[i], rinv, phi0, t, z0, phiproj[i], rproj[i], phider[i], rder[i]);
+    exactprojdisk(settings_->zmean(i+1), rinv, phi0, t, z0, phiproj[i], rproj[i], phider[i], rder[i]);
   }
 
   for (int i = 0; i < 1; i++) {
@@ -836,9 +836,9 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,
   ITC->rproj1.set_fval(settings_->rmean(1));
   ITC->rproj2.set_fval(settings_->rmean(2));
 
-  ITC->zproj0.set_fval(t > 0 ? zproj_[0] : -zproj_[0]);
-  ITC->zproj1.set_fval(t > 0 ? zproj_[1] : -zproj_[1]);
-  ITC->zproj2.set_fval(t > 0 ? zproj_[2] : -zproj_[2]);
+  ITC->zproj0.set_fval(t > 0 ? settings_->zmean(dproj_[0]-1) : -settings_->zmean(dproj_[0]-1));
+  ITC->zproj1.set_fval(t > 0 ? settings_->zmean(dproj_[1]-1) : -settings_->zmean(dproj_[1]-1));
+  ITC->zproj2.set_fval(t > 0 ? settings_->zmean(dproj_[2]-1) : -settings_->zmean(dproj_[2]-1));
 
   ITC->rinv_final.calculate();
   ITC->phi0_final.calculate();
@@ -1017,7 +1017,7 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,
 
     diskprojs[i].init(settings_,
                       i + 1,
-                      zproj_[i],
+                      settings_->zmean(dproj_[i]-1),
                       iphiprojdisk[i],
                       irprojdisk[i],
                       ITC->der_phiD_final.get_ival(),
@@ -1199,10 +1199,10 @@ bool TrackletCalculatorBase::overlapSeeding(Stub* innerFPGAStub,
   ITC->rproj1.set_fval(settings_->rmean(1));
   ITC->rproj2.set_fval(settings_->rmean(2));
 
-  ITC->zproj0.set_fval(t > 0 ? zprojoverlap_[0] : -zprojoverlap_[0]);
-  ITC->zproj1.set_fval(t > 0 ? zprojoverlap_[1] : -zprojoverlap_[1]);
-  ITC->zproj2.set_fval(t > 0 ? zprojoverlap_[2] : -zprojoverlap_[2]);
-  ITC->zproj3.set_fval(t > 0 ? zprojoverlap_[3] : -zprojoverlap_[3]);
+  ITC->zproj0.set_fval(t > 0 ? settings_->zmean(1) : -settings_->zmean(1));
+  ITC->zproj1.set_fval(t > 0 ? settings_->zmean(2) : -settings_->zmean(2));
+  ITC->zproj2.set_fval(t > 0 ? settings_->zmean(3) : -settings_->zmean(3));
+  ITC->zproj3.set_fval(t > 0 ? settings_->zmean(4) : -settings_->zmean(4));
 
   ITC->rinv_final.calculate();
   ITC->phi0_final.calculate();
