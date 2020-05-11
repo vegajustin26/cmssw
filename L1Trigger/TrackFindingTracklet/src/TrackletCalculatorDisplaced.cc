@@ -38,41 +38,9 @@ TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name,
     disk_ = name1[4] - '0';
 
   // set TC index
-  int iTC = -1;
   int iSeed = -1;
 
-  if (name1[9] == 'A')
-    iTC = 0;
-  else if (name1[9] == 'B')
-    iTC = 1;
-  else if (name1[9] == 'C')
-    iTC = 2;
-  else if (name1[9] == 'D')
-    iTC = 3;
-  else if (name1[9] == 'E')
-    iTC = 4;
-  else if (name1[9] == 'F')
-    iTC = 5;
-  else if (name1[9] == 'G')
-    iTC = 6;
-  else if (name1[9] == 'H')
-    iTC = 7;
-  else if (name1[9] == 'I')
-    iTC = 8;
-  else if (name1[9] == 'J')
-    iTC = 9;
-  else if (name1[9] == 'K')
-    iTC = 10;
-  else if (name1[9] == 'L')
-    iTC = 11;
-  else if (name1[9] == 'M')
-    iTC = 12;
-  else if (name1[9] == 'N')
-    iTC = 13;
-  else if (name1[9] == 'O')
-    iTC = 14;
-
-  assert(iTC != -1);
+  int iTC=name1[9]-'A';
 
   if (name1.substr(3, 6) == "L3L4L2")
     iSeed = 8;
@@ -1423,6 +1391,9 @@ void TrackletCalculatorDisplaced::exactprojdisk(double zproj,
                                                 double& rproj,
                                                 double& phider,
                                                 double& rder) {
+  //protect against t=0
+  if (std::abs(t)<0.1)
+    t=0.1;
   if (t < 0)
     zproj = -zproj;
   double rho = std::abs(1 / rinv);
@@ -1434,11 +1405,8 @@ void TrackletCalculatorDisplaced::exactprojdisk(double zproj,
   double y = y0 + rho * sin(phiV + c * beta);
 
   phiproj = atan2(y, x);
-  phiproj += -phimin_ + (phimax_ - phimin_) / 6.0;
-  if (phiproj > 2)
-    phiproj -= 8 * atan(1.);
-  if (phiproj < -2)
-    phiproj += 8 * atan(1.);
+
+  phiproj = phiRange(phiproj - phimin_ + (phimax_ - phimin_) / 6.0);
   rproj = sqrt(x * x + y * y);
 
   phider = c / t / (x * x + y * y) * (rho + x0 * cos(phiV + c * beta) + y0 * sin(phiV + c * beta));
@@ -1500,7 +1468,7 @@ void TrackletCalculatorDisplaced::exacttracklet(double r1,
 
   //results
   rinv = 1. / R1;
-  phi0 = atan(1.) * 2 + atan2(y0, x0);
+  phi0 = 0.5*M_PI + atan2(y0, x0);
 
   phi0 += -phimin_ + (phimax_ - phimin_) / 6.0;
   d0 = -R1 + sqrt(x0 * x0 + y0 * y0);
@@ -1515,22 +1483,9 @@ void TrackletCalculatorDisplaced::exacttracklet(double r1,
 
   //now in RZ:
   //turning angle
-  double beta1 = atan2(y1 - y0, x1 - x0) - atan2(-y0, -x0);
-  double beta2 = atan2(y2 - y0, x2 - x0) - atan2(-y0, -x0);
-  double beta3 = atan2(y3 - y0, x3 - x0) - atan2(-y0, -x0);
-
-  if (beta1 > 3.1415927)
-    beta1 -= 6.283185;
-  if (beta1 < -3.1415927)
-    beta1 += 6.283185;
-  if (beta2 > 3.1415927)
-    beta2 -= 6.283185;
-  if (beta2 < -3.1415927)
-    beta2 += 6.283185;
-  if (beta3 > 3.1415927)
-    beta3 -= 6.283185;
-  if (beta3 < -3.1415927)
-    beta3 += 6.283185;
+  double beta1 = phiRange(atan2(y1 - y0, x1 - x0) - atan2(-y0, -x0));
+  double beta2 = phiRange(atan2(y2 - y0, x2 - x0) - atan2(-y0, -x0));
+  double beta3 = phiRange(atan2(y3 - y0, x3 - x0) - atan2(-y0, -x0));
 
   double t12 = (z2 - z1) / std::abs(beta2 - beta1) / R1;
   double z12 = (z1 * beta2 - z2 * beta1) / (beta2 - beta1);
