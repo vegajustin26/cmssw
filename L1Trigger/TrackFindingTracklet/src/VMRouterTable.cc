@@ -1,6 +1,8 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMRouterTable.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
+#include <algorithm>
+
 using namespace std;
 using namespace Trklet;
 
@@ -40,7 +42,7 @@ void VMRouterTable::init(unsigned int layerdisk) {
       double r = rmin_ + (irbin + 0.5) * dr_;
       double z = zmin_ + (izbin + 0.5) * dz_;
 
-      if (layerdisk>5 & irbin < 10)  //special case for the tabulated radii in 2S disks
+      if (layerdisk>5 && irbin < 10)  //special case for the tabulated radii in 2S disks
 	r = (layerdisk <= 7) ? settings_->rDSSinner(irbin) : settings_->rDSSouter(irbin);
 
       int bin;
