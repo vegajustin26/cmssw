@@ -66,20 +66,6 @@ TrackletCalculator::TrackletCalculator(string name,
 
   assert((layer_ != 0) || (disk_ != 0));
 
-  if (iSeed_ == 4 || iSeed_ == 5) {
-    if (disk_ == 1) {
-      dproj_[0] = 3;
-      dproj_[1] = 4;
-      dproj_[2] = 5;
-    }
-
-    if (disk_ == 3) {
-      dproj_[0] = 1;
-      dproj_[1] = 2;
-      dproj_[2] = 5;
-    }
-  }
-
   if (settings_->usephicritapprox()) {
     double phicritFactor =
         0.5 * settings_->rcrit() * globals_->ITC_L1L2()->rinv_final.get_K() / globals_->ITC_L1L2()->phi0_final.get_K();

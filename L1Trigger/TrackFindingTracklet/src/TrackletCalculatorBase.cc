@@ -96,7 +96,7 @@ void TrackletCalculatorBase::exacttrackletdisk(double r1,
   z0 = z1 - t * rhopsi1;
 
   for (int i = 0; i < 3; i++) {
-    exactprojdisk(settings_->zmean(dproj_[i]-1), rinv, phi0, t, z0, phiproj[i], rproj[i], phider[i], rder[i]);
+    exactprojdisk(settings_->zmean(settings_->projdisks(iSeed_,i)-1), rinv, phi0, t, z0, phiproj[i], rproj[i], phider[i], rder[i]);
   }
 
   for (int i = 0; i < 3; i++) {
@@ -837,9 +837,9 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,
   ITC->rproj1.set_fval(settings_->rmean(1));
   ITC->rproj2.set_fval(settings_->rmean(2));
 
-  ITC->zproj0.set_fval(t > 0 ? settings_->zmean(dproj_[0]-1) : -settings_->zmean(dproj_[0]-1));
-  ITC->zproj1.set_fval(t > 0 ? settings_->zmean(dproj_[1]-1) : -settings_->zmean(dproj_[1]-1));
-  ITC->zproj2.set_fval(t > 0 ? settings_->zmean(dproj_[2]-1) : -settings_->zmean(dproj_[2]-1));
+  ITC->zproj0.set_fval(signt*settings_->zmean(settings_->projdisks(iSeed_,0)-1));
+  ITC->zproj1.set_fval(signt*settings_->zmean(settings_->projdisks(iSeed_,1)-1));
+  ITC->zproj2.set_fval(signt*settings_->zmean(settings_->projdisks(iSeed_,2)-1));
 
   ITC->rinv_final.calculate();
   ITC->phi0_final.calculate();
@@ -1018,7 +1018,7 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,
 
     diskprojs[i].init(settings_,
                       i + 1,
-                      settings_->zmean(dproj_[i]-1),
+                      settings_->zmean(settings_->projdisks(iSeed_,i)-1),
                       iphiprojdisk[i],
                       irprojdisk[i],
                       ITC->der_phiD_final.get_ival(),
@@ -1089,8 +1089,8 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,
   }
 
   for (unsigned int j = 0; j < 3; j++) {
-    if (tracklet->validProjDisk(sign * dproj_[j])) {
-      addDiskProj(tracklet, sign * dproj_[j]);
+    if (tracklet->validProjDisk(sign * settings_->projdisks(iSeed_,j))) {
+      addDiskProj(tracklet, sign * settings_->projdisks(iSeed_,j));
     }
   }
 
