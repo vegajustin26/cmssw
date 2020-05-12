@@ -29,12 +29,6 @@ TrackletCalculator::TrackletCalculator(string name,
 
   initLayerDisksandISeed(layerdisk1_,layerdisk2_,iSeed_);
   
-  if (layerdisk1_<6) {
-    disk_ = 0;
-  } else {
-    disk_ = layerdisk1_-5;
-  }
-
   // set TC index
   iTC_=name_[7]-'A';
 

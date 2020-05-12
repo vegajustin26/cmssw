@@ -810,18 +810,10 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,
   ITC->r1.set_fval(r1);
   ITC->r2.set_fval(r2);
   int signt = t > 0 ? 1 : -1;
-  ITC->z1.set_fval(z1 - signt * settings_->zmean(abs(disk_) - 1));
-  ITC->z2.set_fval(z2 - signt * settings_->zmean(abs(disk_)));
-  double sphi1 = phi1 - phioffset_;
-  if (sphi1 < 0)
-    sphi1 += 8 * atan(1.);
-  if (sphi1 > 8 * atan(1.))
-    sphi1 -= 8 * atan(1.);
-  double sphi2 = phi2 - phioffset_;
-  if (sphi2 < 0)
-    sphi2 += 8 * atan(1.);
-  if (sphi2 > 8 * atan(1.))
-    sphi2 -= 8 * atan(1.);
+  ITC->z1.set_fval(z1 - signt * settings_->zmean(layerdisk1_-6));
+  ITC->z2.set_fval(z2 - signt * settings_->zmean(layerdisk2_-6));
+  double sphi1 = phiRange2PI(phi1 - phioffset_);
+  double sphi2 = phiRange2PI(phi2 - phioffset_);
   ITC->phi1.set_fval(sphi1);
   ITC->phi2.set_fval(sphi2);
 
@@ -1027,7 +1019,7 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,
 
   if (settings_->writeMonitorData("TPars")) {
     globals_->ofstream("trackletparsdisk.txt")
-        << "Trackpars         " << disk_ << "   " << rinv << " " << rinvapprox << " " << ITC->rinv_final.get_fval()
+        << "Trackpars         " << layerdisk1_-5 << "   " << rinv << " " << rinvapprox << " " << ITC->rinv_final.get_fval()
         << "   " << phi0 << " " << phi0approx << " " << ITC->phi0_final.get_fval() << "   " << t << " " << tapprox
         << " " << ITC->t_final.get_fval() << "   " << z0 << " " << z0approx << " " << ITC->z0_final.get_fval() << endl;
   }
@@ -1059,7 +1051,7 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,
                                     true);
 
   if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "Found tracklet in disk = " << disk_ << " " << tracklet << " " << iSector_;
+    edm::LogVerbatim("Tracklet") << "Found tracklet for seed = " << iSeed_ << " " << tracklet << " " << iSector_;
   }
 
   tracklet->setTrackletIndex(trackletpars_->nTracklets());
@@ -1101,7 +1093,7 @@ bool TrackletCalculatorBase::overlapSeeding(Stub* innerFPGAStub,
   int disk = innerFPGAStub->disk().value();
 
   if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "trying to make overlap tracklet disk_ = " << disk_ << " " << getName();
+    edm::LogVerbatim("Tracklet") << "trying to make overlap tracklet for seed = " << iSeed_ << " " << getName();
   }
 
   double r1 = innerStub->r();
@@ -1174,17 +1166,9 @@ bool TrackletCalculatorBase::overlapSeeding(Stub* innerFPGAStub,
   ITC->r2.set_fval(r1);
   int signt = t > 0 ? 1 : -1;
   ITC->z1.set_fval(z2);
-  ITC->z2.set_fval(z1 - signt * settings_->zmean(abs(disk_)));
-  double sphi1 = phi1 - phioffset_;
-  if (sphi1 < 0)
-    sphi1 += 8 * atan(1.);
-  if (sphi1 > 8 * atan(1.))
-    sphi1 -= 8 * atan(1.);
-  double sphi2 = phi2 - phioffset_;
-  if (sphi2 < 0)
-    sphi2 += 8 * atan(1.);
-  if (sphi2 > 8 * atan(1.))
-    sphi2 -= 8 * atan(1.);
+  ITC->z2.set_fval(z1 - signt * settings_->zmean(layerdisk2_-6));
+  double sphi1 = phiRange2PI(phi1 - phioffset_);
+  double sphi2 = phiRange2PI(phi2 - phioffset_);
   ITC->phi1.set_fval(sphi2);
   ITC->phi2.set_fval(sphi1);
 
@@ -1192,10 +1176,10 @@ bool TrackletCalculatorBase::overlapSeeding(Stub* innerFPGAStub,
   ITC->rproj1.set_fval(settings_->rmean(1));
   ITC->rproj2.set_fval(settings_->rmean(2));
 
-  ITC->zproj0.set_fval(t > 0 ? settings_->zmean(1) : -settings_->zmean(1));
-  ITC->zproj1.set_fval(t > 0 ? settings_->zmean(2) : -settings_->zmean(2));
-  ITC->zproj2.set_fval(t > 0 ? settings_->zmean(3) : -settings_->zmean(3));
-  ITC->zproj3.set_fval(t > 0 ? settings_->zmean(4) : -settings_->zmean(4));
+  ITC->zproj0.set_fval(signt*settings_->zmean(1));
+  ITC->zproj1.set_fval(signt*settings_->zmean(2));
+  ITC->zproj2.set_fval(signt*settings_->zmean(3));
+  ITC->zproj3.set_fval(signt*settings_->zmean(4));
 
   ITC->rinv_final.calculate();
   ITC->phi0_final.calculate();
@@ -1400,7 +1384,7 @@ bool TrackletCalculatorBase::overlapSeeding(Stub* innerFPGAStub,
 
   if (settings_->writeMonitorData("TPars")) {
     globals_->ofstream("trackletparsoverlap.txt")
-        << "Trackpars " << disk_ << "   " << rinv << " " << irinv << " " << ITC->rinv_final.get_fval() << "   " << phi0
+        << "Trackpars " << layerdisk1_-5 << "   " << rinv << " " << irinv << " " << ITC->rinv_final.get_fval() << "   " << phi0
         << " " << iphi0 << " " << ITC->phi0_final.get_fval() << "   " << t << " " << it << " "
         << ITC->t_final.get_fval() << "   " << z0 << " " << iz0 << " " << ITC->z0_final.get_fval() << endl;
   }
