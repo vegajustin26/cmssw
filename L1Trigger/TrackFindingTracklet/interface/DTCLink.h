@@ -5,7 +5,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 
-namespace Trklet {
+namespace trklet {
 
   class DTCLink {
   public:
@@ -28,5 +28,5 @@ namespace Trklet {
     double phimax_;
     std::vector<std::pair<Stub*, L1TStub*> > stubs_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

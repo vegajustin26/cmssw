@@ -4,11 +4,11 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
-Stub::Stub(const Trklet::Settings* const settings) : settings_(settings) {}
+Stub::Stub(const trklet::Settings* const settings) : settings_(settings) {}
 
-Stub::Stub(const L1TStub& stub, const Trklet::Settings* const settings, double phiminsec, double phimaxsec)
+Stub::Stub(const L1TStub& stub, const trklet::Settings* const settings, double phiminsec, double phimaxsec)
     : settings_(settings) {
   double r = stub.r();
   double z = stub.z();
@@ -71,7 +71,7 @@ Stub::Stub(const L1TStub& stub, const Trklet::Settings* const settings, double p
 
     int iphibits = settings_->nphibitsstub(layer - 1);
 
-    double deltaphi = Trklet::phiRange(stubphi - phiminsec);
+    double deltaphi = trklet::phiRange(stubphi - phiminsec);
 
     int iphi = (1 << iphibits) * deltaphi / (phimaxsec - phiminsec);
 
@@ -112,7 +112,7 @@ Stub::Stub(const L1TStub& stub, const Trklet::Settings* const settings, double p
 
     int iphibits = settings_->nphibitsstub(disk + 5);
 
-    double deltaphi = Trklet::phiRange(stubphi - phiminsec);
+    double deltaphi = trklet::phiRange(stubphi - phiminsec);
 
     int iphi = (1 << iphibits) * deltaphi / (phimaxsec - phiminsec);
 
@@ -240,7 +240,7 @@ double Stub::phiapprox(double phimin, double) const {
   if (layer_.value() >= 3) {
     lphi = 8;
   }
-  return Trklet::phiRange(phimin + phi_.value() * settings_->kphi() / lphi);
+  return trklet::phiRange(phimin + phi_.value() * settings_->kphi() / lphi);
 }
 
 unsigned int Stub::layerdisk() const {

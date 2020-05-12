@@ -4,7 +4,7 @@
 #include <algorithm>
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 VMRouterTable::VMRouterTable(const Settings* settings) : settings_(settings) {}
 

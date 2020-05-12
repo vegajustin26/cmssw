@@ -1,7 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 Track::Track(int irinv,
              int iphi0,
@@ -48,8 +48,8 @@ double Track::phi0(const Settings* settings) const {
   double phimax = phimin + dphi + 2 * dphiHG;
   phimin -= M_PI / settings->NSector();
   phimax -= M_PI / settings->NSector();
-  phimin = Trklet::phiRange(phimin);
-  phimax = Trklet::phiRange(phimax);
+  phimin = trklet::phiRange(phimin);
+  phimax = trklet::phiRange(phimax);
   if (phimin > phimax)
     phimin -= 2 * M_PI;
   double phioffset = phimin;

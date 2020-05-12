@@ -3,7 +3,7 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/DTCLink.h"
 
-namespace Trklet {
+namespace trklet {
 
   class Stub;
   class L1TStub;
@@ -39,5 +39,5 @@ namespace Trklet {
     double phimin_[11];
     double phimax_[11];
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

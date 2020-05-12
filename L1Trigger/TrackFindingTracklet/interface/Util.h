@@ -6,7 +6,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-namespace Trklet {
+namespace trklet {
 
   //method return phi in the -pi to +pi range
   inline double phiRange(double phi) {
@@ -239,5 +239,5 @@ namespace Trklet {
 
   inline int round_int(double r) { return (r > 0.0) ? (r + 0.5) : (r - 0.5); }
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

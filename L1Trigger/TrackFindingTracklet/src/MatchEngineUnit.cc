@@ -1,7 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/MatchEngineUnit.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 MatchEngineUnit::MatchEngineUnit(bool barrel, vector<bool> table, vector<bool> tablePS, vector<bool> table2S)
     : candmatches_(5) {

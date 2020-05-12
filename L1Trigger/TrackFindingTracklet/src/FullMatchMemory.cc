@@ -7,7 +7,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 FullMatchMemory::FullMatchMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
@@ -64,7 +64,7 @@ void FullMatchMemory::writeMC(bool first) {
     if (j < 16)
       out_ << "0";
     out_ << hex << j << dec;
-    out_ << " " << match << " " << Trklet::hexFormat(match) << endl;
+    out_ << " " << match << " " << trklet::hexFormat(match) << endl;
   }
   out_.close();
 

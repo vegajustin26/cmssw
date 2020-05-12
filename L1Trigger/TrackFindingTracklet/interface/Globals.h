@@ -12,7 +12,7 @@ namespace tmtt {
   class KFParamsComb;
 }  // namespace tmtt
 
-namespace Trklet {
+namespace trklet {
 
   class TETableBase;
   class TrackDerTable;
@@ -24,7 +24,7 @@ namespace Trklet {
   public:
     Globals() {}
 
-    void init(const Trklet::Settings* settings) {
+    void init(const trklet::Settings* settings) {
       imathGlobals_ = new imathGlobals();
 
       // tracklet calculators
@@ -135,6 +135,6 @@ namespace Trklet {
 
     double Vfull_[11][11][4][1000];
   };
-};  // namespace Trklet
+};  // namespace trklet
 
 #endif

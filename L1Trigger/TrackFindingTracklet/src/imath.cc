@@ -9,7 +9,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-using namespace Trklet;
+using namespace trklet;
 
 std::string var_base::itos(int i) {
   return std::to_string(i);

@@ -1,7 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/ProjectionTemp.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 ProjectionTemp::ProjectionTemp(Tracklet* proj,
                                unsigned int slot,

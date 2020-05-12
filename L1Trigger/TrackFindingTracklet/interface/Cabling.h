@@ -8,7 +8,7 @@
 
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
 
@@ -33,5 +33,5 @@ namespace Trklet {
     std::map<int, std::map<int, std::map<int, std::string> > > modules;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

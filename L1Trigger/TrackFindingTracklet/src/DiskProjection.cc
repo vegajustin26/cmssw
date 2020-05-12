@@ -6,9 +6,9 @@
 #include <cassert>
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
-void DiskProjection::init(const Trklet::Settings* settings,
+void DiskProjection::init(const Settings* settings,
                           int projdisk,
                           double zproj,
                           int iphiproj,

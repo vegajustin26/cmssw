@@ -4,7 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -39,5 +39,5 @@ namespace Trklet {
     std::vector<bool> table2S_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

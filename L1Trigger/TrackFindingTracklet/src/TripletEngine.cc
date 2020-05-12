@@ -7,7 +7,7 @@
 #include <algorithm>
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 TripletEngine::TripletEngine(string name, const Settings *settings, Globals *global, unsigned int iSector)
     : ProcessBase(name, settings, global, iSector) {

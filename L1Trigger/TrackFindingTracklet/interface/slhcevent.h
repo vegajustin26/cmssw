@@ -12,7 +12,7 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 
-namespace Trklet {
+namespace trklet {
 
   class L1SimTrack {
   public:
@@ -123,5 +123,5 @@ namespace Trklet {
     double y_offset_{0.0};
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

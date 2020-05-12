@@ -3,7 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 AllStubsMemory::AllStubsMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {}

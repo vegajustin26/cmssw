@@ -3,7 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 HistImp::HistImp() {
   h_file_ = 0;

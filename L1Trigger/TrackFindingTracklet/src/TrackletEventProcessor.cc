@@ -9,7 +9,7 @@
 
 #include <iomanip>
 
-using namespace Trklet;
+using namespace trklet;
 using namespace std;
 
 TrackletEventProcessor::~TrackletEventProcessor() {
@@ -363,9 +363,9 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
         ldcode.set(layerdiskcode, 2);
         string dataword = ldcode.str() + "|" + fpgastub.str();
         if (topbit == 0) {
-          (*dtcstubs[dtcbase + "A"]) << dataword << " " << Trklet::hexFormat(dataword) << endl;
+          (*dtcstubs[dtcbase + "A"]) << dataword << " " << trklet::hexFormat(dataword) << endl;
         } else {
-          (*dtcstubs[dtcbase + "B"]) << dataword << " " << Trklet::hexFormat(dataword) << endl;
+          (*dtcstubs[dtcbase + "B"]) << dataword << " " << trklet::hexFormat(dataword) << endl;
         }
       }
     }

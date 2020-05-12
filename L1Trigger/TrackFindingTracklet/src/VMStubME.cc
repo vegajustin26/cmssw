@@ -1,7 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubME.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 VMStubME::VMStubME(
     std::pair<Stub*, L1TStub*> stub, FPGAWord finephi, FPGAWord finerz, FPGAWord bend, FPGAWord allstubindex) {

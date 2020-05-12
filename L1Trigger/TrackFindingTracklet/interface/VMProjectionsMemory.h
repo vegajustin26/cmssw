@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Tracklet;
@@ -34,5 +34,5 @@ namespace Trklet {
     std::vector<std::pair<Tracklet*, unsigned int> > tracklets_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

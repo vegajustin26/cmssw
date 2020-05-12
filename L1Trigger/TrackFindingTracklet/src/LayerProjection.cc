@@ -4,9 +4,9 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
-void LayerProjection::init(const Trklet::Settings* settings,
+void LayerProjection::init(const Settings* settings,
                            int projlayer,
                            double rproj,
                            int iphiproj,

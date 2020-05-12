@@ -5,7 +5,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 CandidateMatchMemory::CandidateMatchMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {}
@@ -54,7 +54,7 @@ void CandidateMatchMemory::writeCM(bool first) {
     if (j < 16)
       out_ << "0";
     out_ << hex << j << dec;
-    out_ << " " << tmp.str() << "|" << stubid << " " << Trklet::hexFormat(tmp.str() + stubid) << endl;
+    out_ << " " << tmp.str() << "|" << stubid << " " << trklet::hexFormat(tmp.str() + stubid) << endl;
   }
   out_.close();
 

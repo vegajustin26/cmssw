@@ -14,13 +14,13 @@
 //
 //   rmean[], zmean[]
 
-namespace Trklet {
+namespace trklet {
   class Globals;
 };
 
 class IMATH_TrackletCalculator {
 public:
-  IMATH_TrackletCalculator(const Trklet::Settings* settings, imathGlobals* globals, int i1, int i2)
+  IMATH_TrackletCalculator(const trklet::Settings* settings, imathGlobals* globals, int i1, int i2)
       : settings_(settings), globals_(globals) {
 #ifndef CMSSW_GIT_HASH
     edm::LogVerbatim("Tracklet") << "=============================================";
@@ -116,7 +116,7 @@ public:
     valid_der_rD.add_cut(&t_disk_cut_right);
   }
 
-  const Trklet::Settings* settings_;
+  const trklet::Settings* settings_;
   imathGlobals* globals_;
 
   //max values

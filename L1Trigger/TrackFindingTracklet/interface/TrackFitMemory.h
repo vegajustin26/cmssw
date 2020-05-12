@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Stub;
@@ -47,5 +47,5 @@ namespace Trklet {
     std::vector<std::vector<std::pair<int, int>>> stubidslists_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

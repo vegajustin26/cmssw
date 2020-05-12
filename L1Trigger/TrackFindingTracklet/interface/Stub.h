@@ -10,7 +10,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
 
@@ -97,5 +97,5 @@ namespace Trklet {
     const Settings* const settings_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

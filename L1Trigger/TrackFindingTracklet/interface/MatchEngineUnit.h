@@ -9,7 +9,7 @@
 #include <cassert>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Stub;
@@ -68,5 +68,5 @@ namespace Trklet {
     CircularBuffer<std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > > candmatches_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

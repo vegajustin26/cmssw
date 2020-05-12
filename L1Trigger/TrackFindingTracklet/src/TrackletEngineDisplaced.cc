@@ -10,7 +10,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 TrackletEngineDisplaced::TrackletEngineDisplaced(string name,
                                                  const Settings* settings,

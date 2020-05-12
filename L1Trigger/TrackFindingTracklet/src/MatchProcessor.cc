@@ -6,7 +6,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 MatchProcessor::MatchProcessor(string name, const Settings* settings, Globals* global, unsigned int iSector)
     : ProcessBase(name, settings, global, iSector), fullmatches_(12), inputProjBuffer_(3) {
@@ -389,7 +389,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, Stub* fpgastub, L1TStub
     double z = stub->z();
 
     if (settings_->useapprox()) {
-      double dphi = Trklet::phiRange(phi - fpgastub->phiapprox(phimin_, phimax_));
+      double dphi = trklet::phiRange(phi - fpgastub->phiapprox(phimin_, phimax_));
       assert(std::abs(dphi) < 0.001);
       phi = fpgastub->phiapprox(phimin_, phimax_);
       z = fpgastub->zapprox();
@@ -403,12 +403,12 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, Stub* fpgastub, L1TStub
     double dr = r - tracklet->rproj(layer_);
     assert(std::abs(dr) < settings_->drmax());
 
-    double dphi = Trklet::phiRange(phi - (tracklet->phiproj(layer_) + dr * tracklet->phiprojder(layer_)));
+    double dphi = trklet::phiRange(phi - (tracklet->phiproj(layer_) + dr * tracklet->phiprojder(layer_)));
 
     double dz = z - (tracklet->zproj(layer_) + dr * tracklet->zprojder(layer_));
 
     double dphiapprox =
-        Trklet::phiRange(phi - (tracklet->phiprojapprox(layer_) + dr * tracklet->phiprojderapprox(layer_)));
+        trklet::phiRange(phi - (tracklet->phiprojapprox(layer_) + dr * tracklet->phiprojderapprox(layer_)));
 
     double dzapprox = z - (tracklet->zprojapprox(layer_) + dr * tracklet->zprojderapprox(layer_));
 
@@ -542,7 +542,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, Stub* fpgastub, L1TStub
     double r = stub->r();
 
     if (settings_->useapprox()) {
-      double dphi = Trklet::phiRange(phi - fpgastub->phiapprox(phimin_, phimax_));
+      double dphi = trklet::phiRange(phi - fpgastub->phiapprox(phimin_, phimax_));
       assert(std::abs(dphi) < 0.001);
       phi = fpgastub->phiapprox(phimin_, phimax_);
       z = fpgastub->zapprox();
@@ -569,9 +569,9 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, Stub* fpgastub, L1TStub
     double dr = stub->r() - rproj;
     double drapprox = stub->r() - (tracklet->rprojapproxdisk(disk) + dz * tracklet->rprojderapproxdisk(disk));
 
-    double dphi = Trklet::phiRange(phi - phiproj);
+    double dphi = trklet::phiRange(phi - phiproj);
     double dphiapprox =
-        Trklet::phiRange(phi - (tracklet->phiprojapproxdisk(disk) + dz * tracklet->phiprojderapproxdisk(disk)));
+        trklet::phiRange(phi - (tracklet->phiprojapproxdisk(disk) + dz * tracklet->phiprojderapproxdisk(disk)));
 
     double drphi = dphi * stub->r();
     double drphiapprox = dphiapprox * stub->r();

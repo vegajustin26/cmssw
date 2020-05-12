@@ -6,7 +6,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 TrackletCalculatorBase::TrackletCalculatorBase(string name,
                                                const Settings* const settings,
@@ -33,7 +33,7 @@ void TrackletCalculatorBase::exacttracklet(double r1,
                                            double rprojdisk[5],
                                            double phiderdisk[5],
                                            double rderdisk[5]) {
-  double deltaphi = Trklet::phiRange(phi1 - phi2);
+  double deltaphi = trklet::phiRange(phi1 - phi2);
 
   double dist = sqrt(r2 * r2 + r1 * r1 - 2 * r1 * r2 * cos(deltaphi));
 
@@ -41,7 +41,7 @@ void TrackletCalculatorBase::exacttracklet(double r1,
 
   double phi1tmp = phi1 - phimin_;
 
-  phi0 = Trklet::phiRange(phi1tmp + asin(0.5 * r1 * rinv));
+  phi0 = trklet::phiRange(phi1tmp + asin(0.5 * r1 * rinv));
 
   double rhopsi1 = 2 * asin(0.5 * r1 * rinv) / rinv;
   double rhopsi2 = 2 * asin(0.5 * r2 * rinv) / rinv;
@@ -78,7 +78,7 @@ void TrackletCalculatorBase::exacttrackletdisk(double r1,
                                                double rproj[3],
                                                double phider[3],
                                                double rder[3]) {
-  double deltaphi = Trklet::phiRange(phi1 - phi2);
+  double deltaphi = trklet::phiRange(phi1 - phi2);
 
   double dist = sqrt(r2 * r2 + r1 * r1 - 2 * r1 * r2 * cos(deltaphi));
 
@@ -86,7 +86,7 @@ void TrackletCalculatorBase::exacttrackletdisk(double r1,
 
   double phi1tmp = phi1 - phimin_;
 
-  phi0 = Trklet::phiRange(phi1tmp + asin(0.5 * r1 * rinv));
+  phi0 = trklet::phiRange(phi1tmp + asin(0.5 * r1 * rinv));
 
   double rhopsi1 = 2 * asin(0.5 * r1 * rinv) / rinv;
   double rhopsi2 = 2 * asin(0.5 * r2 * rinv) / rinv;
@@ -123,7 +123,7 @@ void TrackletCalculatorBase::exacttrackletOverlap(double r1,
                                                   double rproj[3],
                                                   double phider[3],
                                                   double rder[3]) {
-  double deltaphi = Trklet::phiRange(phi1 - phi2);
+  double deltaphi = trklet::phiRange(phi1 - phi2);
 
   double dist = sqrt(r2 * r2 + r1 * r1 - 2 * r1 * r2 * cos(deltaphi));
 
@@ -134,7 +134,7 @@ void TrackletCalculatorBase::exacttrackletOverlap(double r1,
 
   double phi1tmp = phi1 - phimin_;
 
-  phi0 = Trklet::phiRange(phi1tmp + asin(0.5 * r1 * rinv));
+  phi0 = trklet::phiRange(phi1tmp + asin(0.5 * r1 * rinv));
 
   double rhopsi1 = 2 * asin(0.5 * r1 * rinv) / rinv;
   double rhopsi2 = 2 * asin(0.5 * r2 * rinv) / rinv;

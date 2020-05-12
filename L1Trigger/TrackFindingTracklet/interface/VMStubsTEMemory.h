@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Stub;
@@ -66,5 +66,5 @@ namespace Trklet {
     std::vector<std::vector<VMStubTE> > stubsbinnedvm_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

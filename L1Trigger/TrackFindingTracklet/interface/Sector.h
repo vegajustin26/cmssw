@@ -11,7 +11,7 @@
 #include <set>
 #include <fstream>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -153,5 +153,5 @@ namespace Trklet {
     std::vector<FitTrack*> FT_;
     std::vector<PurgeDuplicate*> PD_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

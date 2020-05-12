@@ -36,7 +36,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 Sector::Sector(unsigned int i, const Settings* settings, Globals* globals) : settings_(settings), globals_(globals) {
   isector_ = i;
@@ -46,8 +46,8 @@ Sector::Sector(unsigned int i, const Settings* settings, Globals* globals) : set
   phimax_ = phimin_ + dphi + 2 * dphiHG;
   phimin_ -= M_PI / settings_->NSector();
   phimax_ -= M_PI / settings_->NSector();
-  phimin_ = Trklet::phiRange(phimin_);
-  phimax_ = Trklet::phiRange(phimax_);
+  phimin_ = trklet::phiRange(phimin_);
+  phimax_ = trklet::phiRange(phimax_);
   if (phimin_ > phimax_)
     phimin_ -= 2 * M_PI;
 }

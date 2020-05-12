@@ -8,7 +8,7 @@
 #include <cassert>
 #include <bitset>
 
-namespace Trklet {
+namespace trklet {
 
   class MemoryBase {
   public:
@@ -47,5 +47,5 @@ namespace Trklet {
 
     const Settings* const settings_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

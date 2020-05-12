@@ -8,7 +8,7 @@
 #include <vector>
 #include <string>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class SLHCEvent;
@@ -64,5 +64,5 @@ namespace Trklet {
     std::map<std::string, std::vector<int> > dtclayerdisk_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

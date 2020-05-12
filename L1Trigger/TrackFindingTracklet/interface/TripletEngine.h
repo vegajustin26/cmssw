@@ -8,7 +8,7 @@
 
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -64,5 +64,5 @@ namespace Trklet {
     int iSeed_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

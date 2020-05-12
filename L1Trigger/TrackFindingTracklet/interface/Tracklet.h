@@ -20,7 +20,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
 
@@ -336,7 +336,7 @@ namespace Trklet {
                   double dzapprox,
                   int stubid,
                   double rstub,
-                  std::pair<Trklet::Stub*, L1TStub*> stubptrs);
+                  std::pair<trklet::Stub*, L1TStub*> stubptrs);
 
     void addMatchDisk(int disk,
                       int ideltaphi,
@@ -348,7 +348,7 @@ namespace Trklet {
                       double alpha,
                       int stubid,
                       double zstub,
-                      std::pair<Trklet::Stub*, L1TStub*> stubptrs);
+                      std::pair<trklet::Stub*, L1TStub*> stubptrs);
 
     int nMatches();
     int nMatchesDisk();
@@ -366,7 +366,7 @@ namespace Trklet {
       return layerresid_[layer - 1].valid();
     }
 
-    std::pair<Trklet::Stub*, L1TStub*> stubptrs(int layer) const {
+    std::pair<trklet::Stub*, L1TStub*> stubptrs(int layer) const {
       assert(layer >= 1 && layer <= 6);
       return layerresid_[layer - 1].stubptrs();
     }
@@ -518,9 +518,9 @@ namespace Trklet {
     bool overlap_;
     bool triplet_;
 
-    Trklet::Stub* innerFPGAStub_;
-    Trklet::Stub* middleFPGAStub_;
-    Trklet::Stub* outerFPGAStub_;
+    trklet::Stub* innerFPGAStub_;
+    trklet::Stub* middleFPGAStub_;
+    trklet::Stub* outerFPGAStub_;
 
     L1TStub* innerStub_;
     L1TStub* middleStub_;
@@ -563,5 +563,5 @@ namespace Trklet {
 
     const Settings* settings_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

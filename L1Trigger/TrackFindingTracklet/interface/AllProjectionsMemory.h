@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Tracklet;
@@ -31,5 +31,5 @@ namespace Trklet {
     int layer_;
     int disk_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

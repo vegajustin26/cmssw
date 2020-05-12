@@ -1,6 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/CPUTimer.h"
 
-using namespace Trklet;
+using namespace trklet;
 
 void CPUTimer::start() { gettimeofday(&tstart_, 0); }
 

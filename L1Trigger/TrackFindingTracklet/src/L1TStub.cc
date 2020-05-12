@@ -1,7 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 L1TStub::L1TStub() {}
 

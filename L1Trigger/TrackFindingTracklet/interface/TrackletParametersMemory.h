@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -34,5 +34,5 @@ namespace Trklet {
     std::vector<Tracklet *> tracklets_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

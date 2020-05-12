@@ -7,7 +7,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/AllProjectionsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMProjectionsMemory.h"
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -34,5 +34,5 @@ namespace Trklet {
     std::vector<VMProjectionsMemory*> vmprojs_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

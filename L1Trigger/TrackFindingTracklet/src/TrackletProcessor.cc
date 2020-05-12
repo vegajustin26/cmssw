@@ -6,7 +6,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 TrackletProcessor::TrackletProcessor(string name, const Settings* const settings, Globals* globals, unsigned int iSector)
     : TrackletCalculatorBase(name, settings, globals, iSector) {
@@ -16,8 +16,8 @@ TrackletProcessor::TrackletProcessor(string name, const Settings* const settings
   phimax_ = phimin_ + dphi + 2 * dphiHG;
   phimin_ -= M_PI / settings_->NSector();
   phimax_ -= M_PI / settings_->NSector();
-  phimin_ = Trklet::phiRange(phimin_);
-  phimax_ = Trklet::phiRange(phimax_);
+  phimin_ = trklet::phiRange(phimin_);
+  phimax_ = trklet::phiRange(phimax_);
   if (phimin_ > phimax_)
     phimin_ -= 2 * M_PI;
   phioffset_ = phimin_;

@@ -9,7 +9,7 @@
 #include <vector>
 #include <utility>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -60,5 +60,5 @@ namespace Trklet {
     std::vector<std::pair<std::pair<unsigned int, unsigned int>, std::vector<std::vector<VMStubsTEMemory*> > > >
         vmstubsTEPHI_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

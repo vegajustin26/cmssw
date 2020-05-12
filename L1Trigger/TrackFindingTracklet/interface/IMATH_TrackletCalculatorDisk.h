@@ -16,7 +16,7 @@
 
 class IMATH_TrackletCalculatorDisk {
 public:
-  IMATH_TrackletCalculatorDisk(const Trklet::Settings* settings, imathGlobals* globals, int i1, int i2)
+  IMATH_TrackletCalculatorDisk(const trklet::Settings* settings, imathGlobals* globals, int i1, int i2)
       : settings_(settings), globals_(globals) {
 #ifndef CMSSW_GIT_HASH
     edm::LogVerbatim("Tracklet") << "=============================================";
@@ -98,7 +98,7 @@ public:
     valid_der_rD.add_cut(&t_disk_cut_right);
   }
 
-  const Trklet::Settings* settings_;
+  const trklet::Settings* settings_;
   imathGlobals* globals_;
 
   //max values

@@ -1,8 +1,7 @@
-
 #include "L1Trigger/TrackFindingTracklet/interface/TrackDer.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 TrackDer::TrackDer() {
   for (unsigned int i = 0; i < 6; i++) {

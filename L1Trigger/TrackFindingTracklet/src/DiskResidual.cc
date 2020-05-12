@@ -2,9 +2,9 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
-void DiskResidual::init(const Trklet::Settings* settings,
+void DiskResidual::init(const Settings* settings,
                         int disk,
                         int iphiresid,
                         int irresid,

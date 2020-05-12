@@ -3,7 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
-using namespace Trklet;
+using namespace trklet;
 
 void ProjectionRouterBendTable::init(const Settings* settings,
                                      Globals* globals,

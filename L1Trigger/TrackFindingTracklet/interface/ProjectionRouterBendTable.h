@@ -7,7 +7,7 @@
 #include <cmath>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -26,5 +26,5 @@ namespace Trklet {
     std::vector<int> bendtable_[5];
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

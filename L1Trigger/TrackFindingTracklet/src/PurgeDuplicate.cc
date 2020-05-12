@@ -14,7 +14,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 PurgeDuplicate::PurgeDuplicate(std::string name, const Settings* settings, Globals* global, unsigned int iSector)
     : ProcessBase(name, settings, global, iSector) {}

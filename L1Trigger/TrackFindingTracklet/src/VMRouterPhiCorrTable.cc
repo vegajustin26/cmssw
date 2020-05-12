@@ -3,7 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 VMRouterPhiCorrTable::VMRouterPhiCorrTable() : TETableBase(0) { nbits_ = 14; }
 
@@ -38,7 +38,7 @@ void VMRouterPhiCorrTable::init(const Settings* settings, int layer, int bendbit
 }
 
 int VMRouterPhiCorrTable::getphiCorrValue(int ibend, int irbin) const {
-  double bend = Trklet::benddecode(ibend, layer_ <= 3);
+  double bend = trklet::benddecode(ibend, layer_ <= 3);
 
   //for the rbin - calculate the distance to the nominal layer radius
   double Delta = (irbin + 0.5) * dr_ - settings_->drmax();

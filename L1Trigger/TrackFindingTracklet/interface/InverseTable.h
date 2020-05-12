@@ -9,7 +9,7 @@
 #include <cmath>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class InverseTable {
   public:
@@ -67,5 +67,5 @@ namespace Trklet {
     int entries_;
     std::vector<int> table_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

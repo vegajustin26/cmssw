@@ -108,7 +108,7 @@
 // NAMESPACES
 using namespace edm;
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 //////////////////////////////
 //                          //
@@ -121,7 +121,7 @@ using namespace Trklet;
 // between different types of stubs
 struct L1TStubCompare {
 public:
-  bool operator()(const Trklet::L1TStub& x, const Trklet::L1TStub& y) const {
+  bool operator()(const trklet::L1TStub& x, const trklet::L1TStub& y) const {
     if (x.layer() != y.layer())
       return (y.layer() > x.layer());
     else {
@@ -174,13 +174,13 @@ private:
 
   string geometryType_;
 
-  Trklet::Sector** sectors;
+  trklet::Sector** sectors;
 
   // settings containing various constants for the tracklet processing
-  Trklet::Settings settings;
+  trklet::Settings settings;
 
   // event processor for the tracklet track finding
-  Trklet::TrackletEventProcessor eventProcessor;
+  trklet::TrackletEventProcessor eventProcessor;
 
   unsigned int nHelixPar_;
   bool extended_;
@@ -321,7 +321,7 @@ void L1FPGATrackProducer::beginRun(const edm::Run& run, const edm::EventSetup& i
 //////////
 // PRODUCE
 void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
-  typedef std::map<Trklet::L1TStub,
+  typedef std::map<trklet::L1TStub,
                    edm::Ref<edmNew::DetSetVector<TTStub<Ref_Phase2TrackerDigi_> >, TTStub<Ref_Phase2TrackerDigi_> >,
                    L1TStubCompare>
       stubMapType;
@@ -357,7 +357,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   iSetup.get<TrackerDigiGeometryRecord>().get(tGeomHandle);
 
   eventnum++;
-  Trklet::SLHCEvent ev;
+  trklet::SLHCEvent ev;
   ev.setEventNum(eventnum);
   ev.setIPx(bsPosition.x());
   ev.setIPy(bsPosition.y());
@@ -653,7 +653,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
                        imodule,
                        isPSmodule,
                        isFlipped)) {
-          Trklet::L1TStub lastStub = ev.lastStub();
+          trklet::L1TStub lastStub = ev.lastStub();
           stubMap[lastStub] = tempStubPtr;
         }
       } else {
@@ -674,9 +674,9 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     fout.close();
   }
 
-  std::vector<Trklet::Track*>& tracks = eventProcessor.tracks();
+  std::vector<trklet::Track*>& tracks = eventProcessor.tracks();
 
-  Trklet::L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+  trklet::L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
   ofstream outres;
   if (settings.writeMonitorData("ResEff"))
@@ -692,7 +692,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   int ntracks = 0;
 
   for (unsigned itrack = 0; itrack < tracks.size(); itrack++) {
-    Trklet::Track* track = tracks[itrack];
+    trklet::Track* track = tracks[itrack];
 
     if (track->duplicate())
       continue;
@@ -730,15 +730,15 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     aTrack.setPhiSector(trksector);
     aTrack.setTrackSeedType(trkseed);
 
-    vector<Trklet::L1TStub*> stubptrs = track->stubs();
-    vector<Trklet::L1TStub> stubs;
+    vector<trklet::L1TStub*> stubptrs = track->stubs();
+    vector<trklet::L1TStub> stubs;
 
     for (unsigned int i = 0; i < stubptrs.size(); i++) {
       stubs.push_back(*(stubptrs[i]));
     }
 
     stubMapType::const_iterator it;
-    for (vector<Trklet::L1TStub>::const_iterator itstubs = stubs.begin(); itstubs != stubs.end(); itstubs++) {
+    for (vector<trklet::L1TStub>::const_iterator itstubs = stubs.begin(); itstubs != stubs.end(); itstubs++) {
       it = stubMap.find(*itstubs);
       if (it != stubMap.end()) {
         aTrack.addStubRef(it->second);

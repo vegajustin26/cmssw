@@ -2,7 +2,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 VMStubsMEMemory::VMStubsMEMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
@@ -46,7 +46,7 @@ void VMStubsMEMemory::writeStubs(bool first) {
 
       FPGAWord finepos = binnedstubs_[i][j].finerz();
       stub += "|" + finepos.str();
-      out_ << hex << i << " " << j << dec << " " << stub << " " << Trklet::hexFormat(stub) << endl;
+      out_ << hex << i << " " << j << dec << " " << stub << " " << trklet::hexFormat(stub) << endl;
     }
   }
   out_.close();

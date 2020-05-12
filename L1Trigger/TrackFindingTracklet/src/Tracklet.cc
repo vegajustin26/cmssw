@@ -6,15 +6,15 @@
 #include <sstream>
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
-Tracklet::Tracklet(const Trklet::Settings* settings,
+Tracklet::Tracklet(const trklet::Settings* settings,
                    L1TStub* innerStub,
                    L1TStub* middleStub,
                    L1TStub* outerStub,
-                   Trklet::Stub* innerFPGAStub,
-                   Trklet::Stub* middleFPGAStub,
-                   Trklet::Stub* outerFPGAStub,
+                   trklet::Stub* innerFPGAStub,
+                   trklet::Stub* middleFPGAStub,
+                   trklet::Stub* outerFPGAStub,
                    double rinv,
                    double phi0,
                    double d0,
@@ -313,7 +313,7 @@ void Tracklet::addMatch(int layer,
                         double dzapprox,
                         int stubid,
                         double rstub,
-                        std::pair<Trklet::Stub*, L1TStub*> stubptrs) {
+                        std::pair<trklet::Stub*, L1TStub*> stubptrs) {
   assert(layer >= 1 && layer <= 6);
   layerresid_[layer - 1].init(
       settings_, layer, ideltaphi, ideltaz, stubid, dphi, dz, dphiapprox, dzapprox, rstub, stubptrs);
@@ -329,7 +329,7 @@ void Tracklet::addMatchDisk(int disk,
                             double alpha,
                             int stubid,
                             double zstub,
-                            std::pair<Trklet::Stub*, L1TStub*> stubptrs) {
+                            std::pair<trklet::Stub*, L1TStub*> stubptrs) {
   assert(abs(disk) >= 1 && abs(disk) <= 5);
   diskresid_[abs(disk) - 1].init(settings_,
                                  disk,
@@ -867,7 +867,7 @@ int Tracklet::disk2() const {
 
 bool Tracklet::foundTrack(L1SimTrack simtrk, double phioffset) {
   double deta = simtrk.eta() - asinh(itfit().value() * settings_->ktpars());
-  double dphi = Trklet::phiRange(simtrk.phi() - (iphi0fit().value() * settings_->kphi0pars() + phioffset));
+  double dphi = trklet::phiRange(simtrk.phi() - (iphi0fit().value() * settings_->kphi0pars() + phioffset));
 
   bool found = (std::abs(deta) < 0.06) && (std::abs(dphi) < 0.01);
 

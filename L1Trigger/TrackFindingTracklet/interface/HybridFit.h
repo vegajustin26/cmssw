@@ -21,7 +21,7 @@
 
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Stub;
   class L1TStub;
@@ -39,5 +39,5 @@ namespace Trklet {
     const Settings* settings_;
     Globals* globals_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

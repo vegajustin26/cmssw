@@ -9,7 +9,7 @@
 #include <cmath>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
 
@@ -40,5 +40,5 @@ namespace Trklet {
 
     int layer_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

@@ -7,7 +7,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 HybridFit::HybridFit(unsigned int iSector, const Settings* settings, Globals* globals) {
   iSector_ = iSector;

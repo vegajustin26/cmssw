@@ -2,7 +2,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-using namespace Trklet;
+using namespace trklet;
 using namespace std;
 
 MemoryBase::MemoryBase(string name, const Settings* const settings, unsigned int iSector) : settings_(settings) {

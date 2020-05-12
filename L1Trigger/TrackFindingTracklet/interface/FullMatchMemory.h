@@ -7,7 +7,7 @@
 #include <string>
 #include <utility>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Stub;
@@ -40,5 +40,5 @@ namespace Trklet {
     int disk_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

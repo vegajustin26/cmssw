@@ -3,7 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 DTC::DTC(string name) {
   name_ = name;
@@ -32,7 +32,7 @@ void DTC::addLink(double phimin, double phimax) {
 }
 
 int DTC::addStub(std::pair<Stub*, L1TStub*> stub) {
-  double phi = Trklet::phiRange(stub.second->phi());
+  double phi = trklet::phiRange(stub.second->phi());
   bool overlaplayer = ((stub.second->layer() + 1) % 2 == 0);
   int added = 0;
   for (unsigned int i = 0; i < links_.size(); i++) {

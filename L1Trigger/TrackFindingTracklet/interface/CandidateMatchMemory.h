@@ -7,7 +7,7 @@
 #include <string>
 #include <utility>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Stub;
@@ -34,5 +34,5 @@ namespace Trklet {
     std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > > matches_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

@@ -5,7 +5,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-using namespace Trklet;
+using namespace trklet;
 using namespace std;
 
 ProcessBase::ProcessBase(string name, const Settings* const settings, Globals* global, unsigned int iSector)

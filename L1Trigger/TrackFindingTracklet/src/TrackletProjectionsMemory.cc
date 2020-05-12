@@ -4,7 +4,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 TrackletProjectionsMemory::TrackletProjectionsMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
@@ -59,7 +59,7 @@ void TrackletProjectionsMemory::writeTPROJ(bool first) {
     if (j < 16)
       out_ << "0";
     out_ << hex << j << dec;
-    out_ << " " << proj << "  " << Trklet::hexFormat(proj) << endl;
+    out_ << " " << proj << "  " << trklet::hexFormat(proj) << endl;
   }
   out_.close();
 

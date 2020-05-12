@@ -3,7 +3,7 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
 
@@ -160,5 +160,5 @@ namespace Trklet {
 
     const Settings* settings_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

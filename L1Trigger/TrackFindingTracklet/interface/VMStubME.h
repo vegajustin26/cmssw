@@ -10,7 +10,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 
-namespace Trklet {
+namespace trklet {
 
   class VMStubME {
   public:
@@ -42,5 +42,5 @@ namespace Trklet {
     std::pair<Stub*, L1TStub*> stub_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

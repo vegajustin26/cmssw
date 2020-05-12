@@ -7,7 +7,7 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/HistBase.h"
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -114,5 +114,5 @@ namespace Trklet {
     TEfficiency *h_eff_eta_D1L2seed_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

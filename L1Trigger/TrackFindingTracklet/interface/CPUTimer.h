@@ -4,7 +4,7 @@
 #include <cmath>
 #include <sys/time.h>
 
-namespace Trklet {
+namespace trklet {
 
   class CPUTimer {
   public:
@@ -26,5 +26,5 @@ namespace Trklet {
 
     timeval tstart_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

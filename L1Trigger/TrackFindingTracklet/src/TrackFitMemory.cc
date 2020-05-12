@@ -3,7 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 TrackFitMemory::TrackFitMemory(
     string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax)
@@ -82,7 +82,7 @@ void TrackFitMemory::writeTF(bool first) {
     if (j < 16)
       out_ << "0";
     out_ << hex << j << dec << " ";
-    out_ << tracks_[j]->trackfitstr() << " " << Trklet::hexFormat(tracks_[j]->trackfitstr());
+    out_ << tracks_[j]->trackfitstr() << " " << trklet::hexFormat(tracks_[j]->trackfitstr());
     out_ << "\n";
   }
   out_.close();

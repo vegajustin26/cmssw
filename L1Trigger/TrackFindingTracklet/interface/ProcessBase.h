@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace Trklet {
+namespace trklet {
 
   class MemoryBase;
   class Settings;
@@ -44,5 +44,5 @@ namespace Trklet {
     const Settings* const settings_;
     Globals* globals_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

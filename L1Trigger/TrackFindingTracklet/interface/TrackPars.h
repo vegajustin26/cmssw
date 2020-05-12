@@ -10,7 +10,7 @@
 
 #include "Util.h"
 
-namespace Trklet {
+namespace trklet {
 
   template <class T>
   class TrackPars {
@@ -55,5 +55,5 @@ namespace Trklet {
     T z0_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

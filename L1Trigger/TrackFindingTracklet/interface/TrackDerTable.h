@@ -10,7 +10,7 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/TrackDer.h"
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -102,5 +102,5 @@ namespace Trklet {
     int lastMultiplicity_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

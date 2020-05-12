@@ -4,7 +4,7 @@
 #include <string>
 #include <cassert>
 
-namespace Trklet {
+namespace trklet {
 
   class FPGAWord {
   public:
@@ -33,5 +33,5 @@ namespace Trklet {
     int nbits_{-1};
     bool positive_{true};
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

@@ -7,7 +7,7 @@
 #include <cmath>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class TrackDer {
   public:
@@ -108,5 +108,5 @@ namespace Trklet {
     int irinv_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

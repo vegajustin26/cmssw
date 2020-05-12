@@ -1,7 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TETableBase.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 TETableBase::TETableBase(const Settings* settings) : settings_(settings) {}
 

@@ -4,7 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 TrackletParametersMemory::TrackletParametersMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {}
@@ -55,7 +55,7 @@ void TrackletParametersMemory::writeTPAR(bool first) {
     if (j < 16)
       out_ << "0";
     out_ << hex << j << dec;
-    out_ << " " << tpar << " " << Trklet::hexFormat(tpar) << endl;
+    out_ << " " << tpar << " " << trklet::hexFormat(tpar) << endl;
   }
   out_.close();
 

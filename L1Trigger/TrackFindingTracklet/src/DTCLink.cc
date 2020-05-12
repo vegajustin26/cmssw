@@ -1,7 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/DTCLink.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 DTCLink::DTCLink(double phimin, double phimax) {
   if (phimin > M_PI) {

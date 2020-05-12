@@ -4,7 +4,7 @@
 #include <cassert>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   template <class T>
   class CircularBuffer {
@@ -59,5 +59,5 @@ namespace Trklet {
     unsigned int rptr_;
     unsigned int wptr_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

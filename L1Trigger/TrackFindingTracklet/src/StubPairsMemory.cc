@@ -2,7 +2,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubTE.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 StubPairsMemory::StubPairsMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {}
@@ -31,7 +31,7 @@ void StubPairsMemory::writeSP(bool first) {
     if (j < 16)
       out_ << "0";
     out_ << hex << j << dec;
-    out_ << " " << stub1index << "|" << stub2index << " " << Trklet::hexFormat(stub1index + stub2index) << endl;
+    out_ << " " << stub1index << "|" << stub2index << " " << trklet::hexFormat(stub1index + stub2index) << endl;
   }
   out_.close();
 

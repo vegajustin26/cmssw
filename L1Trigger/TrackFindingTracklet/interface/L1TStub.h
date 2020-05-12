@@ -7,7 +7,7 @@
 #include <cmath>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class L1TStub {
   public:
@@ -129,5 +129,5 @@ namespace Trklet {
     unsigned int isPSmodule_;
     unsigned int isFlipped_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

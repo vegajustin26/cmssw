@@ -991,7 +991,7 @@ public:
     K_ = pow(2, -n) / p1->get_K();
 
     LUT = new int[Nelements_];
-    double offsetI = Trklet::round_int(offset_ / p1_->get_K());
+    double offsetI = trklet::round_int(offset_ / p1_->get_K());
     for (int i = 0; i < Nelements_; ++i) {
       int i1 = addr_to_ival(i);
       LUT[i] = gen_inv(offsetI + i1);
@@ -1031,14 +1031,14 @@ public:
     int lut = 0;
     if (i > 0) {
       int i1 = i + (1 << shift_) - 1;
-      int lut1 = (Trklet::round_int((1 << n_) / i) << ms) >> ms;
-      int lut2 = (Trklet::round_int((1 << n_) / (i1)) << ms) >> ms;
+      int lut1 = (trklet::round_int((1 << n_) / i) << ms) >> ms;
+      int lut2 = (trklet::round_int((1 << n_) / (i1)) << ms) >> ms;
       lut = 0.5 * (lut1 + lut2);
     } else if (i < -1) {
       int i1 = i + (1 << shift_) - 1;
       int i2 = i;
-      int lut1 = (Trklet::round_int((1 << n_) / i1) << ms) >> ms;
-      int lut2 = (Trklet::round_int((1 << n_) / i2) << ms) >> ms;
+      int lut1 = (trklet::round_int((1 << n_) / i1) << ms) >> ms;
+      int lut2 = (trklet::round_int((1 << n_) / i2) << ms) >> ms;
       lut = 0.5 * (lut1 + lut2);
     }
     return lut;

@@ -5,7 +5,7 @@
 
 #include <cassert>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Stub;
@@ -95,5 +95,5 @@ namespace Trklet {
     std::pair<Stub*, L1TStub*> stubptrs_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

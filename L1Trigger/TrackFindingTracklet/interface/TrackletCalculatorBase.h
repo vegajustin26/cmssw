@@ -7,7 +7,7 @@
 
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -139,5 +139,5 @@ namespace Trklet {
     std::vector<std::vector<TrackletProjectionsMemory*> > trackletprojdisks_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

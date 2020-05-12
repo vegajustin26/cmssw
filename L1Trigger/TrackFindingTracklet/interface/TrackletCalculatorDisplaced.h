@@ -9,7 +9,7 @@
 
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -127,5 +127,5 @@ namespace Trklet {
 
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

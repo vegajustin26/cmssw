@@ -6,7 +6,7 @@
 
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Stub;
@@ -55,5 +55,5 @@ namespace Trklet {
     std::vector<std::string> tedNames_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

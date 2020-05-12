@@ -4,7 +4,7 @@
 #include <cassert>
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
-namespace Trklet {
+namespace trklet {
 
   class ProjectionTemp {
   public:
@@ -37,5 +37,5 @@ namespace Trklet {
     unsigned int iphi_;
     bool isPSseed_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

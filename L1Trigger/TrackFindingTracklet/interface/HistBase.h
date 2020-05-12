@@ -10,7 +10,7 @@
 #include <cassert>
 #include <cmath>
 
-namespace Trklet {
+namespace trklet {
   class Globals;
 
   class HistBase {
@@ -52,5 +52,5 @@ namespace Trklet {
   private:
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

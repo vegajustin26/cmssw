@@ -12,7 +12,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 
-namespace Trklet {
+namespace trklet {
 
   class Track {
   public:
@@ -104,5 +104,5 @@ namespace Trklet {
     int sector_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

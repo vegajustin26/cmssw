@@ -4,7 +4,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-using namespace Trklet;
+using namespace trklet;
 using namespace std;
 
 AllProjectionsMemory::AllProjectionsMemory(string name, const Settings* const settings, unsigned int iSector)
@@ -37,7 +37,7 @@ void AllProjectionsMemory::writeAP(bool first) {
     if (j < 16)
       out_ << "0";
     out_ << hex << j << dec;
-    out_ << " " << proj << "  " << Trklet::hexFormat(proj) << endl;
+    out_ << " " << proj << "  " << trklet::hexFormat(proj) << endl;
   }
   out_.close();
 

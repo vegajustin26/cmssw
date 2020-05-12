@@ -5,7 +5,7 @@
 
 #include <cassert>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
 
@@ -164,5 +164,5 @@ namespace Trklet {
     double rprojderapprox_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

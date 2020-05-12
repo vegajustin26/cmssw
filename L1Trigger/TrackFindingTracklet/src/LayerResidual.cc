@@ -2,9 +2,9 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
-void LayerResidual::init(const Trklet::Settings* settings,
+void LayerResidual::init(const Settings* settings,
                          int layer,
                          int iphiresid,
                          int izresid,

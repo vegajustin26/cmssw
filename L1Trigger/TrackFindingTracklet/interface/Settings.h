@@ -11,7 +11,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-namespace Trklet {
+namespace trklet {
 
   class Settings {
   public:
@@ -669,6 +669,6 @@ namespace Trklet {
     mutable double krdisk_;
     mutable double kzpars_;
   };
-}  // namespace Trklet
+}  // namespace trklet
 
 #endif

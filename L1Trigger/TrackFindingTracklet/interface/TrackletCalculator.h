@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -32,5 +32,5 @@ namespace Trklet {
     std::vector<AllStubsMemory*> outerallstubs_;
     std::vector<StubPairsMemory*> stubpairs_;
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

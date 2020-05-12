@@ -10,7 +10,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-using namespace Trklet;
+using namespace trklet;
 using namespace std;
 
 InputLinkMemory::InputLinkMemory(string name, const Settings* const settings, unsigned int iSector, double, double)
@@ -93,7 +93,7 @@ void InputLinkMemory::writeStubs(bool first) {
     if (j < 16)
       out_ << "0";
     out_ << hex << j << dec;
-    out_ << " " << stub << " " << Trklet::hexFormat(stub) << endl;
+    out_ << " " << stub << " " << trklet::hexFormat(stub) << endl;
   }
   out_.close();
 }

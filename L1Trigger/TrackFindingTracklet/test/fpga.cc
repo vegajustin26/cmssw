@@ -44,11 +44,11 @@
 #endif
 // --------------------------------
 
-using namespace Trklet;
+using namespace trklet;
 using namespace std;
 
 int main(const int argc, const char **argv) {
-  Trklet::Settings settings;
+  trklet::Settings settings;
 
   // ---------------------------------------------------------
   // these are options that are read from python configuration files for the CMSSW running, set manually for the standalone version

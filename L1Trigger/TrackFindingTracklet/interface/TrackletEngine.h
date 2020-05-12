@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
   class Globals;
@@ -49,5 +49,5 @@ namespace Trklet {
     unsigned int outerphibits_;
   };
 
-};  // namespace Trklet
+};  // namespace trklet
 #endif

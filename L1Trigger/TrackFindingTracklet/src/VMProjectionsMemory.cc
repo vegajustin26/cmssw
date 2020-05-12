@@ -4,7 +4,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
-using namespace Trklet;
+using namespace trklet;
 
 VMProjectionsMemory::VMProjectionsMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
@@ -49,7 +49,7 @@ void VMProjectionsMemory::writeVMPROJ(bool first) {
     if (j < 16)
       out_ << "0";
     out_ << hex << j << dec;
-    out_ << " " << vmproj << " " << Trklet::hexFormat(vmproj) << endl;
+    out_ << " " << vmproj << " " << trklet::hexFormat(vmproj) << endl;
   }
   out_.close();
 

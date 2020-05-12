@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_StubVariance_h
 #define L1Trigger_TrackFindingTracklet_interface_StubVariance_h
 
-namespace Trklet {
+namespace trklet {
 
   class Globals;
   class SLHCEvent;
@@ -14,5 +14,5 @@ namespace Trklet {
 
   private:
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif

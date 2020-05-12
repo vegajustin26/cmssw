@@ -9,7 +9,7 @@
 #include <cmath>
 #include <vector>
 
-namespace Trklet {
+namespace trklet {
 
   class Settings;
 
@@ -61,5 +61,5 @@ namespace Trklet {
     std::vector<int> vmrtableteinnerThird_; //projection to disk1 for extended - iseed=10
     
   };
-};  // namespace Trklet
+};  // namespace trklet
 #endif
