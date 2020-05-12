@@ -14,7 +14,7 @@ Track::Track(int irinv,
              double chisqrz,
              int hitpattern,
              std::map<int, int> stubID,
-             std::vector<L1TStub*> l1stub,
+             const std::vector<const L1TStub*>& l1stub,
              int seed) {
   irinv_ = irinv;
   iphi0_ = iphi0;

@@ -14,7 +14,7 @@ void LayerResidual::init(const Settings* settings,
                          double phiresidapprox,
                          double zresidapprox,
                          double rstub,
-                         std::pair<Stub*, L1TStub*> stubptrs) {
+                         std::pair<const Stub*, const L1TStub*> stubptrs) {
   assert(layer >= 1);
   assert(layer <= 6);
 

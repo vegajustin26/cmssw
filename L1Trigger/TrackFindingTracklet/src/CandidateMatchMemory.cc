@@ -10,8 +10,8 @@ using namespace trklet;
 CandidateMatchMemory::CandidateMatchMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {}
 
-void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, std::pair<Stub*, L1TStub*> stub) {
-  std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > tmp(tracklet, stub);
+void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, std::pair<const Stub*, const L1TStub*> stub) {
+  std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1TStub*> > tmp(tracklet, stub);
 
   //Check for consistency
   for (unsigned int i = 0; i < matches_.size(); i++) {

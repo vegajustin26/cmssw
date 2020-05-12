@@ -145,7 +145,7 @@ int Tracklet::tpseed() {
   return 0;
 }
 
-bool Tracklet::stubtruthmatch(L1TStub* stub) {
+bool Tracklet::stubtruthmatch(const L1TStub* stub) {
   set<int> tpset;
   set<int> tpsetstub;
   set<int> tpsetstubinner;
@@ -313,7 +313,7 @@ void Tracklet::addMatch(int layer,
                         double dzapprox,
                         int stubid,
                         double rstub,
-                        std::pair<trklet::Stub*, L1TStub*> stubptrs) {
+                        std::pair<const trklet::Stub*, const L1TStub*> stubptrs) {
   assert(layer >= 1 && layer <= 6);
   layerresid_[layer - 1].init(
       settings_, layer, ideltaphi, ideltaz, stubid, dphi, dz, dphiapprox, dzapprox, rstub, stubptrs);
@@ -329,7 +329,7 @@ void Tracklet::addMatchDisk(int disk,
                             double alpha,
                             int stubid,
                             double zstub,
-                            std::pair<trklet::Stub*, L1TStub*> stubptrs) {
+                            std::pair<const trklet::Stub*, const L1TStub*> stubptrs) {
   assert(abs(disk) >= 1 && abs(disk) <= 5);
   diskresid_[abs(disk) - 1].init(settings_,
                                  disk,
@@ -409,8 +409,8 @@ std::string Tracklet::fullmatchdiskstr(int disk) {
   return oss;
 }
 
-std::vector<L1TStub*> Tracklet::getL1Stubs() {
-  std::vector<L1TStub*> tmp;
+std::vector<const L1TStub*> Tracklet::getL1Stubs() {
+  std::vector<const L1TStub*> tmp;
 
   if (innerStub_)
     tmp.push_back(innerStub_);
@@ -633,7 +633,7 @@ void Tracklet::setFitPars(double rinvfit,
                           int ichisqrphifit,
                           int ichisqrzfit,
                           int hitpattern,
-                          const vector<L1TStub*>& l1stubs) {
+                          const vector<const L1TStub*>& l1stubs) {
   fitpars_.init(rinvfit, phi0fit, d0fit, tfit, z0fit);
   chisqrphifit_ = chisqrphifit;
   chisqrzfit_ = chisqrzfit;
@@ -815,11 +815,8 @@ std::string Tracklet::trackfitstr() {
   return oss;
 }
 
-Track Tracklet::makeTrack(vector<L1TStub*> l1stubs) {
+Track Tracklet::makeTrack(const vector<const L1TStub*>& l1stubs) {
   assert(fit());
-  if (l1stubs.size() == 0) {
-    l1stubs = getL1Stubs();  // If fitter produced no stub list, take it from original tracklet.
-  };
 
   Track tmpTrack(fpgafitpars_.rinv().value(),
                  fpgafitpars_.phi0().value(),
@@ -832,7 +829,7 @@ Track Tracklet::makeTrack(vector<L1TStub*> l1stubs) {
                  chisqrzfit_,
                  hitpattern_,
                  getStubIDs(),
-                 l1stubs,
+                 (l1stubs.size()==0)?getL1Stubs():l1stubs,  // If fitter produced no stub list, take it from original tracklet.
                  getISeed());
 
   return tmpTrack;

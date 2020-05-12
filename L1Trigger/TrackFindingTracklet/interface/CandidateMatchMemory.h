@@ -20,11 +20,11 @@ namespace trklet {
 
     ~CandidateMatchMemory() = default;
 
-    void addMatch(std::pair<Tracklet*, int> tracklet, std::pair<Stub*, L1TStub*> stub);
+    void addMatch(std::pair<Tracklet*, int> tracklet, std::pair<const Stub*, const L1TStub*> stub);
 
     unsigned int nMatches() const { return matches_.size(); }
 
-    std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > getMatch(unsigned int i) const {
+    std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1TStub*> > getMatch(unsigned int i) const {
       return matches_[i];
     }
 
@@ -33,7 +33,7 @@ namespace trklet {
     void writeCM(bool first);
 
   private:
-    std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > > matches_;
+    std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1TStub*> > > matches_;
   };
 
 };  // namespace trklet

@@ -70,7 +70,7 @@ void TrackletEngine::execute() {
   assert(outervmstubs_ != 0);
 
   for (unsigned int i = 0; i < innervmstubs_->nVMStubs(); i++) {
-    VMStubTE innervmstub = innervmstubs_->getVMStubTE(i);
+    const VMStubTE& innervmstub = innervmstubs_->getVMStubTE(i);
     FPGAWord lookupbits = innervmstub.vmbits();
 
     unsigned int nbits = 7;
@@ -92,7 +92,7 @@ void TrackletEngine::execute() {
         if (countall >= settings_->maxStep("TE"))
           break;
         countall++;
-        VMStubTE outervmstub = outervmstubs_->getVMStubTEBinned(ibin, j);
+        const VMStubTE& outervmstub = outervmstubs_->getVMStubTEBinned(ibin, j);
 
         int rzbin = outervmstub.vmbits().bits(0, 3);
 

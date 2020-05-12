@@ -31,9 +31,9 @@ namespace trklet {
 
     bool empty() const { return candmatches_.empty(); }
 
-    std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > read() { return candmatches_.read(); }
+    std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > read() { return candmatches_.read(); }
 
-    std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > peek() const { return candmatches_.peek(); }
+    std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > peek() const { return candmatches_.peek(); }
 
     Tracklet* currentProj() const { return proj_; }
 
@@ -65,7 +65,7 @@ namespace trklet {
     std::vector<bool> table2S_;
 
     //save the candidate matches
-    CircularBuffer<std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > > candmatches_;
+    CircularBuffer<std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > > candmatches_;
   };
 
 };  // namespace trklet

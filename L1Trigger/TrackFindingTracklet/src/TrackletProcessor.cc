@@ -298,7 +298,7 @@ void TrackletProcessor::execute() {
     //overlap seeding
     if (disk_ == 1 && (layer_ == 1 || layer_ == 2)) {
       for (unsigned int i = 0; i < innervmstubs_[ivmmem]->nVMStubs(); i++) {
-        VMStubTE innervmstub = innervmstubs_[ivmmem]->getVMStubTE(i);
+        const VMStubTE& innervmstub = innervmstubs_[ivmmem]->getVMStubTE(i);
 
         int lookupbits = innervmstub.vmbits().value();
 
@@ -320,7 +320,7 @@ void TrackletProcessor::execute() {
             countall++;
             countteall++;
 
-            VMStubTE outervmstub = outervmstubs_[ivmmem]->getVMStubTEBinned(ibin, j);
+            const VMStubTE& outervmstub = outervmstubs_[ivmmem]->getVMStubTEBinned(ibin, j);
             int rbin = (outervmstub.vmbits().value() & 7);
             if (start != ibin)
               rbin += 8;
@@ -392,7 +392,7 @@ void TrackletProcessor::execute() {
 
         if ((layer_ == 1 && disk_ == 0) || (layer_ == 2 && disk_ == 0) || (layer_ == 3 && disk_ == 0) ||
             (layer_ == 5 && disk_ == 0)) {
-          VMStubTE innervmstub = innervmstubs_[ivmmem]->getVMStubTE(i);
+          const VMStubTE& innervmstub = innervmstubs_[ivmmem]->getVMStubTE(i);
 
           int lookupbits = (int)innervmstub.vmbits().value();
           int zdiffmax = (lookupbits >> 7);
@@ -420,7 +420,7 @@ void TrackletProcessor::execute() {
               countteall++;
               countall++;
 
-              VMStubTE outervmstub = outervmstubs_[ivmmem]->getVMStubTEBinned(ibin, j);
+              const VMStubTE& outervmstub = outervmstubs_[ivmmem]->getVMStubTEBinned(ibin, j);
 
               int zbin = (outervmstub.vmbits().value() & 7);
 
@@ -491,7 +491,7 @@ void TrackletProcessor::execute() {
           if (settings_->debugTracklet())
             edm::LogVerbatim("Tracklet") << getName() << "[" << iSector_ << "] Disk-disk pair";
 
-          VMStubTE innervmstub = innervmstubs_[ivmmem]->getVMStubTE(i);
+          const VMStubTE& innervmstub = innervmstubs_[ivmmem]->getVMStubTE(i);
 
           int lookupbits = (int)innervmstub.vmbits().value();
           bool negdisk = innervmstub.stub().first->disk().value() < 0;  //TODO - need to store negative disk
@@ -513,7 +513,7 @@ void TrackletProcessor::execute() {
               countall++;
               countteall++;
 
-              VMStubTE outervmstub = outervmstubs_[ivmmem]->getVMStubTEBinned(ibin, j);
+              const VMStubTE& outervmstub = outervmstubs_[ivmmem]->getVMStubTEBinned(ibin, j);
 
               int vmbits = (int)outervmstub.vmbits().value();
               int rbin = (vmbits & 7);

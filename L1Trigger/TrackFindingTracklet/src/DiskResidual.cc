@@ -16,7 +16,7 @@ void DiskResidual::init(const Settings* settings,
                         double zstub,
                         double alpha,
                         FPGAWord ialpha,
-                        std::pair<Stub*, L1TStub*> stubptrs) {
+                        std::pair<const Stub*, const L1TStub*> stubptrs) {
   assert(abs(disk) >= 1);
   assert(abs(disk) <= 5);
 

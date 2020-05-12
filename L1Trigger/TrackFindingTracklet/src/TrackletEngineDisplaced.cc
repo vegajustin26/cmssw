@@ -114,7 +114,7 @@ void TrackletEngineDisplaced::execute() {
   for (unsigned int iInnerMem = 0; iInnerMem < firstvmstubs_.size(); iInnerMem++) {
     assert(firstvmstubs_.at(iInnerMem)->nVMStubs() == firstvmstubs_.at(iInnerMem)->nVMStubs());
     for (unsigned int i = 0; i < firstvmstubs_.at(iInnerMem)->nVMStubs(); i++) {
-      VMStubTE firstvmstub = firstvmstubs_.at(iInnerMem)->getVMStubTE(i);
+      const VMStubTE& firstvmstub = firstvmstubs_.at(iInnerMem)->getVMStubTE(i);
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "In " << getName() << " have first stub";
       }
@@ -144,7 +144,7 @@ void TrackletEngineDisplaced::execute() {
             if (countall >= settings_->maxStep("TE"))
               break;
             countall++;
-            VMStubTE secondvmstub = secondvmstubs_->getVMStubTEBinned(ibin, j);
+            const VMStubTE& secondvmstub = secondvmstubs_->getVMStubTEBinned(ibin, j);
 
             int zbin = (secondvmstub.vmbits().value() & 7);
             if (start != ibin)
@@ -228,7 +228,7 @@ void TrackletEngineDisplaced::execute() {
               break;
             countall++;
 
-            VMStubTE secondvmstub = secondvmstubs_->getVMStubTEBinned(ibin, j);
+            const VMStubTE& secondvmstub = secondvmstubs_->getVMStubTEBinned(ibin, j);
 
             int zbin = (secondvmstub.vmbits().value() & 7);
             if (start != ibin)
@@ -312,7 +312,7 @@ void TrackletEngineDisplaced::execute() {
               break;
             countall++;
 
-            VMStubTE secondvmstub = secondvmstubs_->getVMStubTEBinned(ibin, j);
+            const VMStubTE& secondvmstub = secondvmstubs_->getVMStubTEBinned(ibin, j);
 
             int rbin = (secondvmstub.vmbits().value() & 7);
             if (start != ibin)
@@ -373,7 +373,7 @@ void TrackletEngineDisplaced::execute() {
                                  << secondvmstubs_->nVMStubs() << " " << countall << " " << countpass;
     for (unsigned int iInnerMem = 0; iInnerMem < firstvmstubs_.size(); iInnerMem++) {
       for (unsigned int i = 0; i < firstvmstubs_.at(iInnerMem)->nVMStubs(); i++) {
-        VMStubTE firstvmstub = firstvmstubs_.at(iInnerMem)->getVMStubTE(i);
+        const VMStubTE& firstvmstub = firstvmstubs_.at(iInnerMem)->getVMStubTE(i);
         edm::LogVerbatim("Tracklet") << "In TrackletEngineDisplaced::execute first stub : "
                                      << firstvmstub.stub().second->r() << " " << firstvmstub.stub().second->phi() << " "
                                      << firstvmstub.stub().second->r() * firstvmstub.stub().second->phi() << " "
@@ -381,7 +381,7 @@ void TrackletEngineDisplaced::execute() {
       }
     }
     for (unsigned int i = 0; i < secondvmstubs_->nVMStubs(); i++) {
-      VMStubTE secondvmstub = secondvmstubs_->getVMStubTE(i);
+      const VMStubTE& secondvmstub = secondvmstubs_->getVMStubTE(i);
       edm::LogVerbatim("Tracklet") << "In TrackletEngineDisplaced::execute second stub : "
                                    << secondvmstub.stub().second->r() << " " << secondvmstub.stub().second->phi() << " "
                                    << secondvmstub.stub().second->r() * secondvmstub.stub().second->phi() << " "

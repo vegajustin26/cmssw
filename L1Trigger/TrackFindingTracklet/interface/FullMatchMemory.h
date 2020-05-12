@@ -20,13 +20,13 @@ namespace trklet {
 
     ~FullMatchMemory() = default;
 
-    void addMatch(Tracklet* tracklet, std::pair<Stub*, L1TStub*> stub);
+    void addMatch(Tracklet* tracklet, std::pair<const Stub*, const L1TStub*> stub);
 
     unsigned int nMatches() const { return matches_.size(); }
 
     Tracklet* getTracklet(unsigned int i) const { return matches_[i].first; }
 
-    std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > getMatch(unsigned int i) const { return matches_[i]; }
+    std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > getMatch(unsigned int i) const { return matches_[i]; }
 
     void clean() { matches_.clear(); }
 
@@ -36,7 +36,7 @@ namespace trklet {
     int disk() const { return disk_; }
 
   private:
-    std::vector<std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > > matches_;
+    std::vector<std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > > matches_;
 
     int layer_;
     int disk_;

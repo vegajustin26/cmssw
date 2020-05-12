@@ -182,7 +182,7 @@ void TripletEngine::execute() {
                 break;
               countall++;
 
-	      VMStubTE thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
+	      const VMStubTE& thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
 
               assert(secondphibits_ != -1);
               assert(thirdphibits_ != -1);
@@ -270,7 +270,7 @@ void TripletEngine::execute() {
                 break;
               countall++;
 
-              VMStubTE thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
+              const VMStubTE& thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
 
               assert(secondphibits_ != -1);
               assert(thirdphibits_ != -1);
@@ -346,7 +346,7 @@ void TripletEngine::execute() {
                 break;
               countall++;
 
-              VMStubTE thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
+              const VMStubTE& thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
 
               assert(secondphibits_ != -1);
               assert(thirdphibits_ != -1);

@@ -246,7 +246,6 @@ void MatchProcessor::execute() {
           Tracklet* proj = projMem->getTracklet(iproj);
 
           FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layer_) : proj->fpgaphiprojdisk(disk_);
-          FPGAWord fpgarz = barrel_ ? proj->fpgazproj(layer_) : proj->fpgarprojdisk(disk_);
 
           int iphi = (fpgaphi.value() >> (fpgaphi.nbits() - nvmbits_)) & (nvmbins_ - 1);
 
@@ -342,10 +341,10 @@ void MatchProcessor::execute() {
     }
 
     if (iMEbest != nMatchEngines_ && (!bestInPipeline)) {
-      std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > candmatch = matchengines_[iMEbest].read();
+      std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > candmatch = matchengines_[iMEbest].read();
 
-      L1TStub* stub = candmatch.second.second;
-      Stub* fpgastub = candmatch.second.first;
+      const L1TStub* stub = candmatch.second.second;
+      const Stub* fpgastub = candmatch.second.first;
       Tracklet* tracklet = candmatch.first;
 
       if (oldTracklet != 0) {
@@ -368,7 +367,7 @@ void MatchProcessor::execute() {
   }
 }
 
-bool MatchProcessor::matchCalculator(Tracklet* tracklet, Stub* fpgastub, L1TStub* stub) {
+bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, const L1TStub* stub) {
   if (layer_ != 0) {
     int ir = fpgastub->r().value();
     int iphi = tracklet->fpgaphiproj(layer_).value();
@@ -458,7 +457,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, Stub* fpgastub, L1TStub
     assert(std::abs(dphiapprox) < 0.2);
 
     if (imatch) {
-      std::pair<Stub*, L1TStub*> tmp(fpgastub, stub);
+      std::pair<const Stub*, const L1TStub*> tmp(fpgastub, stub);
 
       tracklet->addMatch(layer_,
                          ideltaphi,
@@ -618,7 +617,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, Stub* fpgastub, L1TStub
     }
 
     if (imatch) {
-      std::pair<Stub*, L1TStub*> tmp(fpgastub, stub);
+      std::pair<const Stub*, const L1TStub*> tmp(fpgastub, stub);
 
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "MatchCalculator found match in disk " << getName();

@@ -59,7 +59,7 @@ namespace trklet {
     //Will require 'tight match' such that tp is part of each of the four clustes returns 0 if no tp matches
     int tpseed();
 
-    bool stubtruthmatch(L1TStub* stub);
+    bool stubtruthmatch(const L1TStub* stub);
 
     L1TStub* innerStub() { return innerStub_; }
     Stub* innerFPGAStub() { return innerFPGAStub_; }
@@ -336,7 +336,7 @@ namespace trklet {
                   double dzapprox,
                   int stubid,
                   double rstub,
-                  std::pair<trklet::Stub*, L1TStub*> stubptrs);
+                  std::pair<const trklet::Stub*, const L1TStub*> stubptrs);
 
     void addMatchDisk(int disk,
                       int ideltaphi,
@@ -348,7 +348,7 @@ namespace trklet {
                       double alpha,
                       int stubid,
                       double zstub,
-                      std::pair<trklet::Stub*, L1TStub*> stubptrs);
+                      std::pair<const trklet::Stub*, const L1TStub*> stubptrs);
 
     int nMatches();
     int nMatchesDisk();
@@ -366,7 +366,7 @@ namespace trklet {
       return layerresid_[layer - 1].valid();
     }
 
-    std::pair<trklet::Stub*, L1TStub*> stubptrs(int layer) const {
+    std::pair<const trklet::Stub*, const L1TStub*> stubptrs(int layer) const {
       assert(layer >= 1 && layer <= 6);
       return layerresid_[layer - 1].stubptrs();
     }
@@ -401,7 +401,7 @@ namespace trklet {
       return layerresid_[layer - 1].fpgazresid();
     }
 
-    std::vector<L1TStub*> getL1Stubs();
+    std::vector<const L1TStub*> getL1Stubs();
 
     std::map<int, int> getStubIDs();
 
@@ -467,11 +467,11 @@ namespace trklet {
                     int ichisqrphifit,
                     int ichisqrzfit,
                     int hitpattern,
-                    const std::vector<L1TStub*>& l1stubs = std::vector<L1TStub*>());
+                    const std::vector<const L1TStub*>& l1stubs = std::vector<const L1TStub*>());
 
     std::string trackfitstr();
 
-    Track makeTrack(std::vector<L1TStub*> l1stubs);
+    Track makeTrack(const std::vector<const L1TStub*>& l1stubs);
 
     Track* getTrack() {
       assert(fpgatrack_ != 0);

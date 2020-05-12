@@ -491,7 +491,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
       realrstub[i] = tracklet->outerStub()->r();
     }
     if (tracklet->validResid(layers[i]) && layers[i] < 4) {
-      std::pair<Stub*, L1TStub*> stubptrs = tracklet->stubptrs(layers[i]);
+      std::pair<const Stub*, const L1TStub*> stubptrs = tracklet->stubptrs(layers[i]);
       realrstub[i] = stubptrs.second->r();
       assert(std::abs(realrstub[i] - r[i]) < 5.0);
     }

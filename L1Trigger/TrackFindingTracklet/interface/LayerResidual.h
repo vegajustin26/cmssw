@@ -27,7 +27,7 @@ namespace trklet {
               double phiresidapprox,
               double zresidapprox,
               double rstub,
-              std::pair<Stub*, L1TStub*> stubptrs);
+              std::pair<const Stub*, const L1TStub*> stubptrs);
 
     bool valid() const { return valid_; }
 
@@ -71,7 +71,7 @@ namespace trklet {
       return rstub_;
     }
 
-    std::pair<Stub*, L1TStub*> stubptrs() const {
+    std::pair<const Stub*, const L1TStub*> stubptrs() const {
       assert(valid_);
       return stubptrs_;
     }
@@ -92,7 +92,7 @@ namespace trklet {
     double zresidapprox_;
 
     double rstub_;
-    std::pair<Stub*, L1TStub*> stubptrs_;
+    std::pair<const Stub*, const L1TStub*> stubptrs_;
   };
 
 };  // namespace trklet

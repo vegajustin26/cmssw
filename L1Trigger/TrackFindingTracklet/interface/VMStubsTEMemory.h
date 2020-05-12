@@ -27,9 +27,9 @@ namespace trklet {
 
     unsigned int nVMStubsBinned(unsigned int bin) const { return stubsbinnedvm_[bin].size(); }
 
-    VMStubTE getVMStubTE(unsigned int i) const { return stubsvm_[i]; }
+    const VMStubTE& getVMStubTE(unsigned int i) const { return stubsvm_[i]; }
 
-    VMStubTE getVMStubTEBinned(unsigned int bin, unsigned int i) const { return stubsbinnedvm_[bin][i]; }
+    const VMStubTE& getVMStubTEBinned(unsigned int bin, unsigned int i) const { return stubsbinnedvm_[bin][i]; }
 
     void clean();
 
@@ -41,7 +41,7 @@ namespace trklet {
 
     void setother(VMStubsTEMemory* other) { other_ = other; }
 
-    VMStubsTEMemory* other() const { return other_; }
+    VMStubsTEMemory* other() { return other_; }
 
     void setbendtable(const Settings* settings, std::vector<bool> vmbendtable);
 

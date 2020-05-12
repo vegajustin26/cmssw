@@ -270,7 +270,7 @@ int main(const int argc, const char **argv) {
           bool effloose = false;
           int itrackmatch = -1;
           for (unsigned int itrack = 0; itrack < tracks.size(); itrack++) {
-            std::vector<L1TStub *> stubs = tracks[itrack]->stubs();
+            std::vector<const L1TStub *> stubs = tracks[itrack]->stubs();
             if (seed == -1) {
               if (tracks[itrack]->duplicate())
                 continue;

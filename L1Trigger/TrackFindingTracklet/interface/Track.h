@@ -27,7 +27,7 @@ namespace trklet {
           double chisqrz,
           int hitpattern,
           std::map<int, int> stubID,
-          std::vector<L1TStub*> l1stub,
+          const std::vector<const L1TStub*>& l1stub,
           int seed);
 
     ~Track() = default;
@@ -45,7 +45,7 @@ namespace trklet {
     int ichisq() const { return ichisqrphi_ + ichisqrz_; }
 
     std::map<int, int> stubID() const { return stubID_; }
-    std::vector<L1TStub*> stubs() const { return l1stub_; }
+    std::vector<const L1TStub*> stubs() const { return l1stub_; }
     std::vector<std::pair<int, int>> stubIDpremerge() const { return stubIDpremerge_; }
     std::vector<std::pair<int, int>> stubIDprefit() const { return stubIDprefit_; }
 
@@ -96,7 +96,7 @@ namespace trklet {
     std::vector<std::pair<int, int>> stubIDpremerge_;
     std::vector<std::pair<int, int>> stubIDprefit_;
     std::map<int, int> stubID_;
-    std::vector<L1TStub*> l1stub_;
+    std::vector<const L1TStub*> l1stub_;
 
     unsigned int nstubs_;
     int seed_;

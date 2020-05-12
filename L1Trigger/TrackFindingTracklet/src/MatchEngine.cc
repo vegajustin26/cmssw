@@ -283,7 +283,7 @@ void MatchEngine::execute() {
       }
 
       //Read vmstub memory and extract data fields
-      VMStubME vmstub = vmstubs_->getVMStubMEBin(rzbin, istubtmp);
+      const VMStubME& vmstub = vmstubs_->getVMStubMEBin(rzbin, istubtmp);
 
       bool isPSmodule = vmstub.isPSmodule();
 

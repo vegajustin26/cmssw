@@ -179,7 +179,7 @@ void MatchCalculator::execute() {
 
   Tracklet* oldTracklet = 0;
 
-  std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > > mergedMatches =
+  std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1TStub*> > > mergedMatches =
       mergeMatches(matches_);
 
   for (unsigned int j = 0; j < mergedMatches.size(); j++) {
@@ -189,8 +189,8 @@ void MatchCalculator::execute() {
 
     countall++;
 
-    L1TStub* stub = mergedMatches[j].second.second;
-    Stub* fpgastub = mergedMatches[j].second.first;
+    const L1TStub* stub = mergedMatches[j].second.second;
+    const Stub* fpgastub = mergedMatches[j].second.first;
     Tracklet* tracklet = mergedMatches[j].first.first;
 
     //check that the matches are orderd correctly
@@ -453,7 +453,7 @@ void MatchCalculator::execute() {
       }
 
       if (imatch) {
-        std::pair<Stub*, L1TStub*> tmp(fpgastub, stub);
+        std::pair<const Stub*, const L1TStub*> tmp(fpgastub, stub);
 
         countsel++;
 
@@ -495,9 +495,9 @@ void MatchCalculator::execute() {
   }
 }
 
-std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > > MatchCalculator::mergeMatches(
+std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1TStub*> > > MatchCalculator::mergeMatches(
     vector<CandidateMatchMemory*>& candmatch) {
-  std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<Stub*, L1TStub*> > > tmp;
+  std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1TStub*> > > tmp;
 
   std::vector<unsigned int> indexArray;
   indexArray.reserve(candmatch.size());

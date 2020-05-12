@@ -18,7 +18,7 @@ FullMatchMemory::FullMatchMemory(string name, const Settings* const settings, un
   }
 }
 
-void FullMatchMemory::addMatch(Tracklet* tracklet, std::pair<Stub*, L1TStub*> stub) {
+void FullMatchMemory::addMatch(Tracklet* tracklet, std::pair<const Stub*, const L1TStub*> stub) {
   if (!settings_->doKF()) {  //When using KF we allow multiple matches
     for (unsigned int i = 0; i < matches_.size(); i++) {
       if (matches_[i].first == tracklet) {  //Better match, replace
@@ -27,7 +27,7 @@ void FullMatchMemory::addMatch(Tracklet* tracklet, std::pair<Stub*, L1TStub*> st
       }
     }
   }
-  std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > tmp(tracklet, stub);
+  std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > tmp(tracklet, stub);
   //Check that we have the right TCID order
   if (matches_.size() > 0) {
     if ((!settings_->doKF() && matches_[matches_.size() - 1].first->TCID() >= tracklet->TCID()) ||
