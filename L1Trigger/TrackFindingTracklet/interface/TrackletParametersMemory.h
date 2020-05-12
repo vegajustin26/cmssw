@@ -18,8 +18,6 @@ namespace Trklet {
   public:
     TrackletParametersMemory(std::string name, const Settings *const settings, unsigned int iSector);
 
-    virtual ~TrackletParametersMemory() {}
-
     void addTracklet(Tracklet *tracklet) { tracklets_.push_back(tracklet); }
 
     unsigned int nTracklets() const { return tracklets_.size(); }

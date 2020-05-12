@@ -17,8 +17,6 @@ namespace Trklet {
   public:
     VMStubsMEMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
-    virtual ~VMStubsMEMemory() {}
-
     void addStub(VMStubME stub, unsigned int bin) {
       stubs_.push_back(stub);
       binnedstubs_[bin].push_back(stub);

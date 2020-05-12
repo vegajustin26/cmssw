@@ -101,8 +101,6 @@ public:
     valid_der_rD.add_cut(&t_disk_cut_right);
   }
 
-  virtual ~IMATH_TrackletCalculatorOverlap() {}
-  
   const Trklet::Settings* settings_;
   imathGlobals* globals_;
 

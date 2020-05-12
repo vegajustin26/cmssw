@@ -15,8 +15,6 @@ namespace Trklet {
   public:
     AllProjectionsMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
-    virtual ~AllProjectionsMemory() {}
-    
     void addTracklet(Tracklet* tracklet) { tracklets_.push_back(tracklet); }
 
     unsigned int nTracklets() const { return tracklets_.size(); }

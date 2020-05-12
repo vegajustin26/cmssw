@@ -362,8 +362,6 @@ public:
     Kmap_["2"] = Kmap_["2"] + lr_;
   }
 
-  virtual ~var_adjustK() {}
-
   void adjust(double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1);
 
   void local_calculate();
@@ -403,8 +401,6 @@ public:
     Kmap_["2"] = Kmap_["2"] + lr_;
   }
 
-  virtual ~var_adjustKR() {}
-
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -442,8 +438,6 @@ public:
       Kmap_["2"] = l;
     }
   }
-
-  virtual ~var_param() {}
 
   void set_fval(double fval) {
     fval_ = fval;
@@ -503,7 +497,6 @@ public:
     fval_ = ival * K_;
     val_ = ival_ * K_;
   }
-  virtual ~var_def() {}
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
 };
@@ -588,7 +581,7 @@ public:
 
     K_ = ki1 * pow(2, Kmap_["2"]);
   }
-  virtual ~var_add() {}
+
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -679,8 +672,6 @@ public:
 
     K_ = ki1 * pow(2, Kmap_["2"]);
   }
-  
-  virtual ~var_subtract() {}
 
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -709,7 +700,6 @@ public:
     double c = ki * pow(2, -m);
     cI_ = c * pow(2, ps_);
   }
-  virtual ~var_nounits() {}
 
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -731,8 +721,6 @@ public:
     Kmap_ = p1->get_Kmap();
     K_ = p1->get_K();
   }
-  virtual ~var_shiftround() {}
-  
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -751,7 +739,6 @@ public:
     Kmap_ = p1->get_Kmap();
     K_ = p1->get_K();
   }
-  virtual ~var_shift() {}
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -768,7 +755,6 @@ public:
     Kmap_ = p1->get_Kmap();
     K_ = p1->get_K();
   }
-  virtual ~var_neg() {}
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -796,7 +782,7 @@ public:
     K_ = K_ * pow(2, m);
     Kmap_["2"] = s1 + m;
   }
-  virtual ~var_timesC() {}
+
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -846,7 +832,6 @@ public:
       K_ = K_ * pow(2, ps_);
     }
   }
-  virtual ~var_mult() {}
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -960,8 +945,6 @@ public:
 
     K_ = ki2 * pow(2, Kmap_["2"]);
   }
-  virtual ~var_DSP_postadd() {}
-
   void local_calculate();
   using var_base::print;
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -1014,7 +997,7 @@ public:
       LUT[i] = gen_inv(offsetI + i1);
     }
   }
-  virtual ~var_inv() {
+  ~var_inv() {
     //if(LUT) delete LUT;
     delete[] LUT;
   }
@@ -1085,7 +1068,6 @@ public:
       : var_cut(globals, lower_cut, upper_cut) {
     set_cut_var(cut_var);
   }
-  virtual ~var_cut() {}
 
   double get_lower_cut() const { return lower_cut_; }
   double get_upper_cut() const { return upper_cut_; }

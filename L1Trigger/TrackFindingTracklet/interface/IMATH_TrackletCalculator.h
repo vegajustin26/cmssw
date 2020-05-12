@@ -116,9 +116,6 @@ public:
     valid_der_rD.add_cut(&t_disk_cut_right);
   }
 
-  virtual ~IMATH_TrackletCalculator() {}
-
-  
   const Trklet::Settings* settings_;
   imathGlobals* globals_;
 

@@ -18,7 +18,7 @@ namespace Trklet {
     VMRouterTable(const Settings* settings);
     VMRouterTable(const Settings* settings, unsigned int layerdisk);
 
-    virtual ~VMRouterTable() {}
+    ~VMRouterTable() {}
 
     void init(unsigned int layerdisk);
 

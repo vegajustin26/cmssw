@@ -15,8 +15,6 @@ namespace Trklet {
   public:
     LayerResidual() { valid_ = false; }
 
-    virtual ~LayerResidual() {}
-
     void init(const Settings* settings,
               int layer,
               int iphiresid,
@@ -28,6 +26,8 @@ namespace Trklet {
               double zresidapprox,
               double rstub,
               std::pair<Stub*, L1TStub*> stubptrs);
+
+    virtual ~LayerResidual() {}
 
     bool valid() const { return valid_; }
 

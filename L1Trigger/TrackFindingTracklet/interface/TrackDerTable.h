@@ -19,7 +19,7 @@ namespace Trklet {
   public:
     TrackDerTable(const Settings* settings);
 
-    virtual ~TrackDerTable() {}
+    ~TrackDerTable() {}
 
     const TrackDer* getDerivatives(int index) const { return &derivatives_[index]; }
 

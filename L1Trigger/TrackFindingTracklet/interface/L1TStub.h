@@ -30,8 +30,6 @@ namespace Trklet {
             int isPSmodule,
             int isFlipped);
 
-    virtual ~L1TStub() {}
-    
     void AddInnerDigi(int ladder, int module, int irphi, int iz);
     void AddOuterDigi(int ladder, int module, int irphi, int iz);
 

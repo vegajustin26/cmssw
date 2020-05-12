@@ -18,8 +18,6 @@ namespace Trklet {
   public:
     FullMatchMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
-    virtual ~FullMatchMemory() {}
-
     void addMatch(Tracklet* tracklet, std::pair<Stub*, L1TStub*> stub);
 
     unsigned int nMatches() const { return matches_.size(); }

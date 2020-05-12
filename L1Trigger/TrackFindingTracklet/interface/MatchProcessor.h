@@ -25,8 +25,6 @@ namespace Trklet {
   public:
     MatchProcessor(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    virtual ~MatchProcessor() {}
-
     void addOutput(MemoryBase* memory, std::string output);
     void addInput(MemoryBase* memory, std::string input);
 
