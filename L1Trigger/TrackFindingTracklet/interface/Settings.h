@@ -100,8 +100,8 @@ namespace Trklet {
       return lutwidthtabextended_[inner][iSeed];
     }
 
-    double projlayers(unsigned int iSeed, unsigned int i) const { return projlayers_[iSeed][i]; }
-    double projdisks(unsigned int iSeed, unsigned int i) const { return projdisks_[iSeed][i]; }
+    unsigned int projlayers(unsigned int iSeed, unsigned int i) const { return projlayers_[iSeed][i]; }
+    unsigned int projdisks(unsigned int iSeed, unsigned int i) const { return projdisks_[iSeed][i]; }
     double rphimatchcut(unsigned int iSeed, unsigned int ilayer) const { return rphimatchcut_[ilayer][iSeed]; }
     double zmatchcut(unsigned int iSeed, unsigned int ilayer) const { return zmatchcut_[ilayer][iSeed]; }
     double rphicutPS(unsigned int iSeed, unsigned int idisk) const { return rphicutPS_[idisk][iSeed]; }
