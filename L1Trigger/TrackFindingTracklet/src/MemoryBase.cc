@@ -5,8 +5,7 @@
 using namespace trklet;
 using namespace std;
 
-MemoryBase::MemoryBase(string name, const Settings* const settings, unsigned int iSector) : settings_(settings) {
-  name_ = name;
+MemoryBase::MemoryBase(string name, const Settings* const settings, unsigned int iSector) : name_(name), settings_(settings) {
   iSector_ = iSector;
   bx_ = 0;
   event_ = 0;

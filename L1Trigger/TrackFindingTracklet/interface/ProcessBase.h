@@ -19,7 +19,7 @@ namespace trklet {
     virtual void addOutput(MemoryBase* memory, std::string output) = 0;
     virtual void addInput(MemoryBase* memory, std::string input) = 0;
 
-    std::string getName() const { return name_; }
+    std::string const& getName() const { return name_; }
 
     unsigned int nbits(unsigned int power);
 

@@ -9,8 +9,7 @@ using namespace trklet;
 using namespace std;
 
 ProcessBase::ProcessBase(string name, const Settings* const settings, Globals* global, unsigned int iSector)
-    : settings_(settings), globals_(global) {
-  name_ = name;
+  : name_(name), settings_(settings), globals_(global) {
   iSector_ = iSector;
   double dphi = 2 * M_PI / settings_->NSector();
   double dphiHG = 0.5 * settings_->dphisectorHG() - M_PI / settings_->NSector();
