@@ -30,7 +30,7 @@ namespace trklet {
           std::vector<L1TStub*> l1stub,
           int seed);
 
-    ~Track() {}
+    virtual ~Track() {}
 
     void setDuplicate(bool flag) { duplicate_ = flag; }
     void setSector(int nsec) { sector_ = nsec; }

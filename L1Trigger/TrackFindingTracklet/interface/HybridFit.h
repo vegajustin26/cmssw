@@ -31,6 +31,8 @@ namespace trklet {
   public:
     HybridFit(unsigned int iSector, const Settings* settings, Globals* globals);
 
+    virtual ~HybridFit() {}
+    
     void Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>& trackstublist);
 
   private:

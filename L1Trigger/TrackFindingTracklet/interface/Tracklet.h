@@ -53,7 +53,7 @@ namespace trklet {
              bool disk,
              bool overlap = false);
 
-    ~Tracklet() { delete fpgatrack_; }
+    virtual ~Tracklet() { delete fpgatrack_; }
 
     //Find tp corresponding to seed.
     //Will require 'tight match' such that tp is part of each of the four clustes returns 0 if no tp matches

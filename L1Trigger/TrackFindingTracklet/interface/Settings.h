@@ -21,6 +21,8 @@ namespace trklet {
 #define USEHYBRID
 #endif
     }
+    
+    virtual ~Settings() {}
 
     // processing & memory modules, wiring, etc.
     std::string DTCLinkFile() const {

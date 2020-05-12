@@ -17,6 +17,8 @@ namespace trklet {
   public:
     AllStubsMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
+    virtual ~AllStubsMemory() {}
+
     void addStub(std::pair<Stub*, L1TStub*> stub) { stubs_.push_back(stub); }
 
     unsigned int nStubs() const { return stubs_.size(); }

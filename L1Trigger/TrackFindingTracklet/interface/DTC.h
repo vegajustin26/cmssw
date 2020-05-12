@@ -12,6 +12,8 @@ namespace trklet {
   public:
     DTC(std::string name = "");
 
+    virtual ~DTC() {}
+
     void init(std::string name);
 
     void addSec(int sector);

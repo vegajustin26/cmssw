@@ -16,7 +16,7 @@ namespace trklet {
   public:
     ProjectionRouterBendTable() {}
 
-    ~ProjectionRouterBendTable() {}
+    virtual ~ProjectionRouterBendTable() {}
 
     void init(const Settings* settings, Globals* globals, unsigned int nrbits, unsigned int nphiderbits);
 

@@ -21,7 +21,7 @@ namespace trklet {
   public:
     TrackletEventProcessor(){};
 
-    ~TrackletEventProcessor();
+    virtual ~TrackletEventProcessor();
 
     void init(const Settings* theSettings);
 

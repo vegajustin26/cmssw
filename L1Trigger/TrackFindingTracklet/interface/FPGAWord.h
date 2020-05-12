@@ -12,7 +12,7 @@ namespace trklet {
 
     FPGAWord(int value, int nbits, bool positive = true, int line = -1, const char* file = 0);
 
-    ~FPGAWord() {}
+    virtual ~FPGAWord() {}
 
     void set(int value, int nbits, bool positive = true, int line = -1, const char* file = 0);
 

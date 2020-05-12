@@ -17,6 +17,8 @@ namespace trklet {
   public:
     TrackFitMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
 
+    virtual ~TrackFitMemory() {}
+
     void addTrack(Tracklet* tracklet) { tracks_.push_back(tracklet); }
     void addStubList(std::vector<std::pair<Stub*, L1TStub*>> stublist) { stublists_.push_back(stublist); }
     void addStubidsList(std::vector<std::pair<int, int>> stubidslist) { stubidslists_.push_back(stubidslist); }

@@ -18,7 +18,7 @@ namespace trklet {
 
     VMStubME(std::pair<Stub*, L1TStub*> stub, FPGAWord finephi, FPGAWord finerz, FPGAWord bend, FPGAWord allstubindex);
 
-    ~VMStubME() {}
+    virtual ~VMStubME() {}
 
     FPGAWord finephi() const { return finephi_; }
     FPGAWord finerz() const { return finerz_; }

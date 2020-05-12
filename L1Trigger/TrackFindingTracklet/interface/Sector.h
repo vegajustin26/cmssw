@@ -55,7 +55,8 @@ namespace trklet {
   class Sector {
   public:
     Sector(unsigned int i, const Settings* settings, Globals* globals);
-    ~Sector();
+
+    virtual ~Sector();
 
     bool addStub(L1TStub stub, std::string dtc);  //TODO - should be pointer or string
 

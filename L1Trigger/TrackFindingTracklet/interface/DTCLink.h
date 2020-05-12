@@ -11,6 +11,8 @@ namespace trklet {
   public:
     DTCLink(double phimin, double phimax);
 
+    virtual ~DTCLink() {}
+
     void addStub(std::pair<Stub*, L1TStub*> stub);
 
     bool inRange(double phi, bool overlaplayer);

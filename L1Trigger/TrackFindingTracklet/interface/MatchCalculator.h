@@ -22,6 +22,8 @@ namespace trklet {
   public:
     MatchCalculator(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
+    virtual ~MatchCalculator() {}
+
     void addOutput(MemoryBase* memory, std::string output);
     void addInput(MemoryBase* memory, std::string input);
 

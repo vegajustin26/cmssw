@@ -18,6 +18,7 @@ namespace trklet {
   public:
     L1SimTrack();
     L1SimTrack(int eventid, int trackid, int type, double pt, double eta, double phi, double vx, double vy, double vz);
+    virtual ~L1SimTrack() {}
 
     void write(std::ofstream& out);
     void write(std::ostream& out);
@@ -67,6 +68,7 @@ namespace trklet {
       eventnum_ = 0;
     }
     SLHCEvent(std::istream& in);
+    virtual ~SLHCEvent() {}
 
     void setIPx(double x) { x_offset_ = x; }
     void setIPy(double y) { y_offset_ = y; }
