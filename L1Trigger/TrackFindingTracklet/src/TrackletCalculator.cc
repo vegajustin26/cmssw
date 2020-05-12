@@ -27,44 +27,19 @@ TrackletCalculator::TrackletCalculator(string name,
     trackletprojdisks_.push_back(tmp);
   }
 
-  layer_ = 0;
-  disk_ = 0;
-
-  if (name_[3] == 'L')
-    layer_ = name_[4] - '0';
-  if (name_[3] == 'D')
-    disk_ = name_[4] - '0';
+  initLayerDisksandISeed(layerdisk1_,layerdisk2_,iSeed_);
+  
+  if (layerdisk1_<6) {
+    disk_ = 0;
+  } else {
+    disk_ = layerdisk1_-5;
+  }
 
   // set TC index
   iTC_=name_[7]-'A';
 
-  if (name_.substr(3, 4) == "L1L2")
-    iSeed_ = 0;
-  else if (name_.substr(3, 4) == "L3L4")
-    iSeed_ = 2;
-  else if (name_.substr(3, 4) == "L5L6")
-    iSeed_ = 3;
-  else if (name_.substr(3, 4) == "D1D2")
-    iSeed_ = 4;
-  else if (name_.substr(3, 4) == "D3D4")
-    iSeed_ = 5;
-  else if (name_.substr(3, 4) == "D1L1")
-    iSeed_ = 6;
-  else if (name_.substr(3, 4) == "D1L2")
-    iSeed_ = 7;
-  else if (name_.substr(3, 4) == "L1D1")
-    iSeed_ = 6;
-  else if (name_.substr(3, 4) == "L2D1")
-    iSeed_ = 7;
-  else if (name_.substr(3, 4) == "L2L3")
-    iSeed_ = 1;
-
-  assert(iSeed_ != -1);
-
   TCIndex_ = (iSeed_ << 4) + iTC_;
   assert(TCIndex_ >= 0 && TCIndex_ < 128);
-
-  assert((layer_ != 0) || (disk_ != 0));
 
   if (settings_->usephicritapprox()) {
     double phicritFactor =

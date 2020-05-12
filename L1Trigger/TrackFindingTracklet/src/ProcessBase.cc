@@ -96,25 +96,42 @@ void ProcessBase::initLayerDisksandISeed(unsigned int& layerdisk1, unsigned int&
   layerdisk1 = 99;
   layerdisk2 = 99;
 
-  if (name_[3] == 'L') {
-    layerdisk1 = name_[4] - '1';
+  if (name_.substr(0,3)=="TE_") {
+    if (name_[3] == 'L') {
+      layerdisk1 = name_[4] - '1';
+    }
+    if (name_[3] == 'D') {
+      layerdisk1 = 6 + name_[4] - '1';
+    }
+    if (name_[11] == 'L') {
+      layerdisk2 = name_[12] - '1';
+    }
+    if (name_[11] == 'D') {
+      layerdisk2 = 6 + name_[12] - '1';
+    }
+    if (name_[12] == 'L') {
+      layerdisk2 = name_[13] - '1';
+    }
+    if (name_[12] == 'D') {
+      layerdisk2 = 6 + name_[13] - '1';
+    }  
   }
-  if (name_[3] == 'D') {
-    layerdisk1 = 6 + name_[4] - '1';
+  
+  if (name_.substr(0,3)=="TC_") {
+    if (name_[3] == 'L') {
+      layerdisk1 = name_[4] - '1';
+    }
+    if (name_[3] == 'D') {
+      layerdisk1 = 6 + name_[4] - '1';
+    }
+    if (name_[5] == 'L') {
+      layerdisk2 = name_[6] - '1';
+    }
+    if (name_[5] == 'D') {
+      layerdisk2 = 6 + name_[6] - '1';
+    }
   }
-  if (name_[11] == 'L') {
-    layerdisk2 = name_[12] - '1';
-  }
-  if (name_[11] == 'D') {
-    layerdisk2 = 6 + name_[12] - '1';
-  }
-  if (name_[12] == 'L') {
-    layerdisk2 = name_[13] - '1';
-  }
-  if (name_[12] == 'D') {
-    layerdisk2 = 6 + name_[13] - '1';
-  }
-
+  
   if (layerdisk1 == 0 && layerdisk2 == 1)
     iSeed = 0;
   else if (layerdisk1 == 1 && layerdisk2 == 2)
@@ -134,6 +151,7 @@ void ProcessBase::initLayerDisksandISeed(unsigned int& layerdisk1, unsigned int&
   else {
     assert(0);
   }
+    
 }
 
 unsigned int ProcessBase::getISeed(std::string name) {

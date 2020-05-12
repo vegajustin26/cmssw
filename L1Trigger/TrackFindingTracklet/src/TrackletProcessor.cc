@@ -79,6 +79,7 @@ TrackletProcessor::TrackletProcessor(string name, const Settings* const settings
 
   assert(iTC_ != -1);
 
+  iSeed_=99;
   if (name_.substr(3, 4) == "L1L2")
     iSeed_ = 0;
   else if (name_.substr(3, 4) == "L3L4")
@@ -100,7 +101,7 @@ TrackletProcessor::TrackletProcessor(string name, const Settings* const settings
   else if (name_.substr(3, 4) == "L2L3")
     iSeed_ = 1;
 
-  assert(iSeed_ != -1);
+  assert(iSeed_ != 99);
 
   TCIndex_ = (iSeed_ << 4) + iTC_;
   assert(TCIndex_ >= 0 && TCIndex_ < 128);

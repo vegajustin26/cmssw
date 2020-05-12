@@ -249,10 +249,10 @@ void TrackletCalculatorBase::addProjectionDisk(int disk,
                                                int iphi,
                                                TrackletProjectionsMemory* trackletprojs,
                                                Tracklet* tracklet) {
-  if (iSeed_ == 1 && abs(disk) == 4)
+  if (iSeed_ == 2 && abs(disk) == 4)
     return;  //L3L4 projections to D3 are not used. Should be in configuration
   if (trackletprojs == 0) {
-    if (layer_ == 3 && abs(disk) == 3)
+    if (iSeed_ == 2 && abs(disk) == 3)
       return;  //L3L4 projections to D3 are not used.
     if (settings_->warnNoMem()) {
       edm::LogVerbatim("Tracklet") << "No projection memory exists in " << getName() << " for disk = " << abs(disk)
@@ -311,14 +311,14 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
                                            Stub* outerFPGAStub,
                                            L1TStub* outerStub) {
   if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "TrackletCalculator " << getName() << " " << layer_
+    edm::LogVerbatim("Tracklet") << "TrackletCalculator " << getName() 
                                  << " trying stub pair in layer (inner outer): " << innerFPGAStub->layer().value()
                                  << " " << outerFPGAStub->layer().value();
   }
 
   assert(outerFPGAStub->isBarrel());
-  assert(layer_ == innerFPGAStub->layer().value() + 1);
-  assert(layer_ == 1 || layer_ == 2 || layer_ == 3 || layer_ == 5);
+  assert(layerdisk1_ == (unsigned int) innerFPGAStub->layer().value());
+  assert(layerdisk1_<6&&layerdisk2_<6);
 
   double r1 = innerStub->r();
   double z1 = innerStub->z();
@@ -368,29 +368,21 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
   double phiprojdiskapprox[5], rprojdiskapprox[5];
 
   IMATH_TrackletCalculator* ITC;
-  if (layer_ == 1)
+  if (iSeed_ == 0)
     ITC = globals_->ITC_L1L2();
-  else if (layer_ == 2)
+  else if (iSeed_ == 1)
     ITC = globals_->ITC_L2L3();
-  else if (layer_ == 3)
+  else if (iSeed_ == 2)
     ITC = globals_->ITC_L3L4();
   else
     ITC = globals_->ITC_L5L6();
 
-  ITC->r1.set_fval(r1 - settings_->rmean(layer_ - 1));
-  ITC->r2.set_fval(r2 - settings_->rmean(layer_));
+  ITC->r1.set_fval(r1 - settings_->rmean(layerdisk1_));
+  ITC->r2.set_fval(r2 - settings_->rmean(layerdisk2_));
   ITC->z1.set_fval(z1);
   ITC->z2.set_fval(z2);
-  double sphi1 = phi1 - phioffset_;
-  if (sphi1 < 0)
-    sphi1 += 8 * atan(1.);
-  if (sphi1 > 8 * atan(1.))
-    sphi1 -= 8 * atan(1.);
-  double sphi2 = phi2 - phioffset_;
-  if (sphi2 < 0)
-    sphi2 += 8 * atan(1.);
-  if (sphi2 > 8 * atan(1.))
-    sphi2 -= 8 * atan(1.);
+  double sphi1 = phiRange2PI(phi1 - phioffset_);
+  double sphi2 = phiRange2PI(phi2 - phioffset_);
   ITC->phi1.set_fval(sphi1);
   ITC->phi2.set_fval(sphi2);
 
@@ -482,13 +474,13 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
   int iphi2 = outerFPGAStub->phi().value();
   int iz2 = outerFPGAStub->z().value();
 
-  iphi1 <<= (settings_->nphibitsstub(5) - settings_->nphibitsstub(layer_ - 1));
-  iphi2 <<= (settings_->nphibitsstub(5) - settings_->nphibitsstub(layer_));
-  ir1 <<= (8 - settings_->nrbitsstub(layer_ - 1));
-  ir2 <<= (8 - settings_->nrbitsstub(layer_));
+  iphi1 <<= (settings_->nphibitsstub(5) - settings_->nphibitsstub(layerdisk1_));
+  iphi2 <<= (settings_->nphibitsstub(5) - settings_->nphibitsstub(layerdisk2_));
+  ir1 <<= (8 - settings_->nrbitsstub(layerdisk1_));
+  ir2 <<= (8 - settings_->nrbitsstub(layerdisk2_));
 
-  iz1 <<= (settings_->nzbitsstub(0) - settings_->nzbitsstub(layer_ - 1));
-  iz2 <<= (settings_->nzbitsstub(0) - settings_->nzbitsstub(layer_));
+  iz1 <<= (settings_->nzbitsstub(0) - settings_->nzbitsstub(layerdisk1_));
+  iz2 <<= (settings_->nzbitsstub(0) - settings_->nzbitsstub(layerdisk2_));
 
   ITC->r1.set_ival(ir1);
   ITC->r2.set_ival(ir2);
@@ -631,7 +623,7 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
 
   if (settings_->writeMonitorData("TPars")) {
     globals_->ofstream("trackletpars.txt")
-        << "Trackpars " << layer_ << "   " << rinv << " " << rinvapprox << " " << ITC->rinv_final.get_fval() << "   "
+        << "Trackpars " << layerdisk1_+1 << "   " << rinv << " " << rinvapprox << " " << ITC->rinv_final.get_fval() << "   "
         << phi0 << " " << phi0approx << " " << ITC->phi0_final.get_fval() << "   " << t << " " << tapprox << " "
         << ITC->t_final.get_fval() << "   " << z0 << " " << z0approx << " " << ITC->z0_final.get_fval() << endl;
   }
@@ -663,7 +655,7 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
                                     false);
 
   if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "TrackletCalculator " << getName() << " Found tracklet in layer = " << layer_ << " "
+    edm::LogVerbatim("Tracklet") << "TrackletCalculator " << getName() << " Found tracklet for seed = " << iSeed_ << " "
                                  << iSector_ << " phi0 = " << phi0;
   }
 
@@ -1441,7 +1433,7 @@ bool TrackletCalculatorBase::overlapSeeding(Stub* innerFPGAStub,
                                     true);
 
   if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "Found tracklet in overlap = " << layer_ << " " << disk_ << " " << tracklet << " "
+    edm::LogVerbatim("Tracklet") << "Found tracklet in overlap seed = " << iSeed_ << " " << tracklet << " "
                                  << iSector_;
   }
 

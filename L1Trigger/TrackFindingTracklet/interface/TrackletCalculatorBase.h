@@ -114,7 +114,10 @@ namespace Trklet {
     bool overlapSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* outerFPGAStub, L1TStub* outerStub);
 
   protected:
-    int iSeed_;
+    unsigned int iSeed_;
+    unsigned int layerdisk1_;
+    unsigned int layerdisk2_;
+    
     int TCIndex_;
 
     double phioffset_;
@@ -122,9 +125,9 @@ namespace Trklet {
     int layer_;
     int disk_;
 
+    //TODO - remove from TP
     int lproj_[4];
     int dproj_[3];
-
     double rproj_[4];
     double zproj_[3];
     double zprojoverlap_[4];
