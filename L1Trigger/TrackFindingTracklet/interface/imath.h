@@ -272,20 +272,20 @@ public:
   void pipe_increment() { pipe_counter_++; }
   void add_delay(int i) { pipe_delays_.push_back(i); }
   bool has_delay(int i);  //returns true if already have this variable delayed.
-  static void Verilog_print(std::vector<var_base *> v, std::ofstream &fs) { Design_print(v, fs, verilog); }
-  static void HLS_print(std::vector<var_base *> v, std::ofstream &fs) { Design_print(v, fs, hls); }
-  static void Design_print(std::vector<var_base *> v, std::ofstream &fs, Verilog);
-  static void Design_print(std::vector<var_base *> v, std::ofstream &fs, HLS);
+  static void verilog_print(std::vector<var_base *> v, std::ofstream &fs) { design_print(v, fs, verilog); }
+  static void hls_print(std::vector<var_base *> v, std::ofstream &fs) { design_print(v, fs, hls); }
+  static void design_print(std::vector<var_base *> v, std::ofstream &fs, Verilog);
+  static void design_print(std::vector<var_base *> v, std::ofstream &fs, HLS);
   static std::string pipe_delay(var_base *v, int nbits, int delay);
   std::string pipe_delays(const int step);
   static std::string pipe_delay_wire(var_base *v, std::string name_delayed, int nbits, int delay);
 
 #ifdef IMATH_ROOT
-  static TTree *AddToTree(imathGlobals *globals, var_base *v, char *s = 0);
-  static TTree *AddToTree(imathGlobals *globals, int *v, char *s);
-  static TTree *AddToTree(imathGlobals *globals, double *v, char *s);
-  static void FillTree(imathGlobals *globals);
-  static void WriteTree(imathGlobals *globals);
+  static TTree *addToTree(imathGlobals *globals, var_base *v, char *s = 0);
+  static TTree *addToTree(imathGlobals *globals, int *v, char *s);
+  static TTree *addToTree(imathGlobals *globals, double *v, char *s);
+  static void fillTree(imathGlobals *globals);
+  static void writeTree(imathGlobals *globals);
 #endif
 
   void dump_cout();

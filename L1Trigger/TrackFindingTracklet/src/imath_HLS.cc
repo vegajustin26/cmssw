@@ -350,7 +350,7 @@ void var_base::print_all(std::ofstream& fs, HLS) {
   }
 }
 
-void var_base::Design_print(std::vector<var_base*> v, std::ofstream& fs, HLS) {
+void var_base::design_print(std::vector<var_base*> v, std::ofstream& fs, HLS) {
   //header of the module
 
   //inputs

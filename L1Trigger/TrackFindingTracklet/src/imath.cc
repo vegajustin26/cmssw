@@ -219,7 +219,7 @@ void var_base::get_inputs(std::vector<var_base *> *vd) {
 }
 
 #ifdef IMATH_ROOT
-TTree *var_base::AddToTree(imathGlobals *globals, var_base *v, char *s) {
+TTree *var_base::addToTree(imathGlobals *globals, var_base *v, char *s) {
   if (globals->h_file_ == 0) {
     globals->h_file_ = new TFile("imath.root", "RECREATE");
     edm::LogVerbatim("Tracklet") << "recreating file imath.root";
@@ -246,15 +246,15 @@ TTree *var_base::AddToTree(imathGlobals *globals, var_base *v, char *s) {
   }
 
   if (v->p1_)
-    AddToTree(globals, v->p1_, s);
+    addToTree(globals, v->p1_, s);
   if (v->p2_)
-    AddToTree(globals, v->p2_, s);
+    addToTree(globals, v->p2_, s);
   if (v->p3_)
-    AddToTree(globals, v->p3_, s);
+    addToTree(globals, v->p3_, s);
 
   return tt;
 }
-TTree *var_base::AddToTree(imathGlobals *globals, double *v, char *s) {
+TTree *var_base::addToTree(imathGlobals *globals, double *v, char *s) {
   if (globals->h_file_ == 0) {
     globals->h_file_ = new TFile("imath.root", "RECREATE");
     edm::LogVerbatim("Tracklet") << "recreating file imath.root";
@@ -268,7 +268,7 @@ TTree *var_base::AddToTree(imathGlobals *globals, double *v, char *s) {
   tt->Branch(s, v);
   return tt;
 }
-TTree *var_base::AddToTree(imathGlobals *globals, int *v, char *s) {
+TTree *var_base::addToTree(imathGlobals *globals, int *v, char *s) {
   if (globals->h_file_ == 0) {
     globals->h_file_ = new TFile("imath.root", "RECREATE");
     edm::LogVerbatim("Tracklet") << "recreating file imath.root";
@@ -282,7 +282,7 @@ TTree *var_base::AddToTree(imathGlobals *globals, int *v, char *s) {
   tt->Branch(s, v);
   return tt;
 }
-void var_base::FillTree(imathGlobals *globals) {
+void var_base::fillTree(imathGlobals *globals) {
   if (globals->h_file_ == 0)
     return;
   globals->h_file_->cd();
@@ -291,7 +291,7 @@ void var_base::FillTree(imathGlobals *globals) {
     return;
   tt->Fill();
 }
-void var_base::WriteTree(imathGlobals *globals) {
+void var_base::writeTree(imathGlobals *globals) {
   if (globals->h_file_ == 0)
     return;
   globals->h_file_->cd();

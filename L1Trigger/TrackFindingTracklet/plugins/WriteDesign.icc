@@ -641,8 +641,8 @@ for (const auto &calculator : v) {
   ofstream fv("TC_" + layer + (settings.writeVerilog() ? ".v" : ".cpp"));
 
   if (settings.writeVerilog())
-    var_base::Design_print(v, fv, var_base::verilog);
+    var_base::design_print(v, fv, var_base::verilog);
   else
-    var_base::Design_print(v, fv, var_base::hls);
+    var_base::design_print(v, fv, var_base::hls);
   fv.close();
 }
