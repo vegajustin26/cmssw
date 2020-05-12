@@ -12,9 +12,7 @@
 using namespace Trklet;
 
 std::string var_base::itos(int i) {
-  std::ostringstream os;
-  os << i;
-  return os.str();
+  return std::to_string(i);
 }
 
 std::string var_base::get_kstring() {

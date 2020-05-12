@@ -36,9 +36,9 @@ void ProjectionRouter::addOutput(MemoryBase* memory, string output) {
 
   for (unsigned int iproj = 0; iproj < nproj; iproj++) {
     for (unsigned int iprojvm = 0; iprojvm < nprojvm; iprojvm++) {
-      ostringstream oss;
-      oss << "vmprojoutPHI" << char(iproj + 'A') << iproj * nprojvm + iprojvm + 1;
-      string name = oss.str();
+      std::string name = "vmprojoutPHI";
+      name += char(iproj + 'A');
+      name += std::to_string(iproj * nprojvm + iprojvm + 1);
       if (output == name) {
         VMProjectionsMemory* tmp = dynamic_cast<VMProjectionsMemory*>(memory);
         assert(tmp != 0);

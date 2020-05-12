@@ -302,16 +302,18 @@ void TrackDerTable::fillTable(const Settings* settings) {
                                    << iMinvDt[2][10] << " " << iMinvDt[3][10] << " " << t << " " << nlayers << " "
                                    << ndisks;
 
-      ostringstream oss;
-      oss << "alpha :";
-      for (int iii = 0; iii < ndisks; iii++)
-        oss << " " << alpha[iii];
-      edm::LogVerbatim("Tracklet") << oss.str();
-      oss.str("");
-      oss << "z :";
-      for (int iii = 0; iii < ndisks; iii++)
-        oss << " " << z[iii];
-      edm::LogVerbatim("Tracklet") << oss.str();
+      std::string oss = "alpha :";
+      for (int iii = 0; iii < ndisks; iii++) {
+        oss += " ";
+	oss += std::to_string(alpha[iii]);
+      }
+      edm::LogVerbatim("Tracklet") << oss;
+      oss = "z :";
+      for (int iii = 0; iii < ndisks; iii++) {
+        oss += " ";
+	oss += std::to_string(z[iii]);
+      }
+      edm::LogVerbatim("Tracklet") << oss;
     }
 
     if (print) {
@@ -1202,30 +1204,33 @@ void TrackDerTable::calculateDerivativesMS(const Settings* settings,
 
   edm::LogVerbatim("Tracklet") << "V: " << ptbin;
   for (unsigned int ii = 0; ii < 2 * n; ii += 2) {
-    ostringstream oss;
+    std::string oss = "";
     for (unsigned int jj = 0; jj < 2 * n; jj += 2) {
-      oss << V[ii][jj] << " ";
+      oss += std::to_string(V[ii][jj]);
+      oss += " ";
     }
-    edm::LogVerbatim("Tracklet") << oss.str();
+    edm::LogVerbatim("Tracklet") << oss;
   }
   edm::LogVerbatim("Tracklet") << "Vcorr:";
   for (unsigned int ii = 0; ii < 2 * n; ii += 2) {
-    ostringstream oss;
+    std::string oss = "";
     for (unsigned int jj = 0; jj < 2 * n; jj += 2) {
-      oss << V[ii][jj] / sqrt(V[ii][ii] * V[jj][jj]) << " ";
+      oss += std::to_string(V[ii][jj] / sqrt(V[ii][ii] * V[jj][jj]));
+      oss += " ";
     }
-    edm::LogVerbatim("Tracklet") << oss.str();
+    edm::LogVerbatim("Tracklet") << oss;
   }
 
   invert(V, 2 * n);
 
   edm::LogVerbatim("Tracklet") << "Vinv:";
   for (unsigned int ii = 0; ii < 2 * n; ii += 2) {
-    ostringstream oss;
+    std::string oss = "";
     for (unsigned int jj = 0; jj < 2 * n; jj += 2) {
-      oss << V[ii][jj + 2 * n] << " ";
+      oss += std::to_string(V[ii][jj + 2 * n]);
+      oss += " ";
     }
-    edm::LogVerbatim("Tracklet") << oss.str();
+    edm::LogVerbatim("Tracklet") << oss;
   }
 
   //here we handle a barrel hit

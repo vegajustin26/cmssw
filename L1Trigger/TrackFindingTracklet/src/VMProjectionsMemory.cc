@@ -29,11 +29,9 @@ void VMProjectionsMemory::writeVMPROJ(bool first) {
     return;
 
   fname += "_";
-  ostringstream oss;
-  oss << iSector_ + 1;
   if (iSector_ + 1 < 10)
     fname += "0";
-  fname += oss.str();
+  fname += std::to_string(iSector_ + 1);
   fname += ".dat";
   if (first) {
     bx_ = 0;

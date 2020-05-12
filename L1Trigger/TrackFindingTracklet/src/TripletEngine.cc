@@ -132,13 +132,14 @@ void TripletEngine::execute() {
       edm::LogVerbatim("Tracklet") << thirdvmstubs_.at(i)->getName() << " " << thirdvmstubs_.at(i)->nVMStubs();
     }
     int s = 0;
-    ostringstream oss;
+    std::string oss = "";
     for (unsigned int i = 0; i < stubpairs_.size(); ++i) {
-      oss << stubpairs_.at(i)->nStubPairs() << " ";
+      oss += std::to_string(stubpairs_.at(i)->nStubPairs());
+      oss += " ";
       s += stubpairs_.at(i)->nStubPairs();
     }
     hacksum += nThirdStubs * s;
-    edm::LogVerbatim("Tracklet") << oss.str();
+    edm::LogVerbatim("Tracklet") << oss;
     for (unsigned int i = 0; i < stubpairs_.size(); ++i) {
       edm::LogVerbatim("Tracklet") << "                                          " << stubpairs_.at(i)->getName();
     }

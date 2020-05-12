@@ -723,12 +723,12 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
                                  << "dphi0/cov = " << drinv << "/" << dphi0_cov << " \n"
                                  << "dt/cov = " << drinv << "/" << dt_cov << " \n"
                                  << "dz0/cov = " << drinv << "/" << dz0_cov << "\n";
-    ostringstream oss;
-    oss << "D[0][k]= ";
+    std::string myout = "D[0][k]= ";
     for (unsigned int i = 0; i < 2 * n; i++) {
-      oss << D[0][i] << ", ";
+      myout += std::to_string(D[0][i]);
+      myout += ", ";
     }
-    edm::LogVerbatim("Tracklet") << oss.str();
+    edm::LogVerbatim("Tracklet") << myout;
   }
 
   for (unsigned int i = 0; i < n; i++) {  // loop over stubs

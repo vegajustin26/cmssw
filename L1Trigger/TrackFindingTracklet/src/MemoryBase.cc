@@ -102,11 +102,9 @@ void MemoryBase::openFile(bool first, std::string filebase) {
   findAndReplaceAll(fname, "PHIw", "PHIww");
 
   fname += "_";
-  ostringstream oss;
-  oss << iSector_ + 1;
   if (iSector_ + 1 < 10)
     fname += "0";
-  fname += oss.str();
+  fname += std::to_string(iSector_ + 1);
   fname += ".dat";
 
   if (first) {
