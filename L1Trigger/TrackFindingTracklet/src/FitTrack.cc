@@ -104,7 +104,7 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
     // Now get ALL matches (can have multiple per layer)
     for (unsigned int i = 0; i < fullmatch1_.size(); i++) {
       for (unsigned int j = 0; j < fullmatch1_[i]->nMatches(); j++) {
-        if (fullmatch1_[i]->getFPGATracklet(j)->TCID() == tracklet->TCID()) {
+        if (fullmatch1_[i]->getTracklet(j)->TCID() == tracklet->TCID()) {
           trackstublist.push_back(fullmatch1_[i]->getMatch(j).second);
         }
       }
@@ -112,7 +112,7 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
 
     for (unsigned int i = 0; i < fullmatch2_.size(); i++) {
       for (unsigned int j = 0; j < fullmatch2_[i]->nMatches(); j++) {
-        if (fullmatch2_[i]->getFPGATracklet(j)->TCID() == tracklet->TCID()) {
+        if (fullmatch2_[i]->getTracklet(j)->TCID() == tracklet->TCID()) {
           trackstublist.push_back(fullmatch2_[i]->getMatch(j).second);
         }
       }
@@ -120,7 +120,7 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
 
     for (unsigned int i = 0; i < fullmatch3_.size(); i++) {
       for (unsigned int j = 0; j < fullmatch3_[i]->nMatches(); j++) {
-        if (fullmatch3_[i]->getFPGATracklet(j)->TCID() == tracklet->TCID()) {
+        if (fullmatch3_[i]->getTracklet(j)->TCID() == tracklet->TCID()) {
           trackstublist.push_back(fullmatch3_[i]->getMatch(j).second);
         }
       }
@@ -128,7 +128,7 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
 
     for (unsigned int i = 0; i < fullmatch4_.size(); i++) {
       for (unsigned int j = 0; j < fullmatch4_[i]->nMatches(); j++) {
-        if (fullmatch4_[i]->getFPGATracklet(j)->TCID() == tracklet->TCID()) {
+        if (fullmatch4_[i]->getTracklet(j)->TCID() == tracklet->TCID()) {
           trackstublist.push_back(fullmatch4_[i]->getMatch(j).second);
         }
       }
@@ -859,7 +859,7 @@ std::vector<Tracklet*> FitTrack::orderedMatches(vector<FullMatchMemory*>& fullma
     //checks that we have correct order
     if (fullmatch[i]->nMatches() > 1) {
       for (unsigned int j = 0; j < fullmatch[i]->nMatches() - 1; j++) {
-        assert(fullmatch[i]->getFPGATracklet(j)->TCID() <= fullmatch[i]->getFPGATracklet(j + 1)->TCID());
+        assert(fullmatch[i]->getTracklet(j)->TCID() <= fullmatch[i]->getTracklet(j + 1)->TCID());
       }
     }
 
@@ -879,14 +879,14 @@ std::vector<Tracklet*> FitTrack::orderedMatches(vector<FullMatchMemory*>& fullma
         //skip as we were at the end
         continue;
       }
-      int TCID = fullmatch[i]->getFPGATracklet(indexArray[i])->TCID();
+      int TCID = fullmatch[i]->getTracklet(indexArray[i])->TCID();
       if (TCID < bestTCID) {
         bestTCID = TCID;
         bestIndex = i;
       }
     }
     if (bestIndex != -1) {
-      tmp.push_back(fullmatch[bestIndex]->getFPGATracklet(indexArray[bestIndex]));
+      tmp.push_back(fullmatch[bestIndex]->getTracklet(indexArray[bestIndex]));
       indexArray[bestIndex]++;
     }
   } while (bestIndex != -1);

@@ -454,7 +454,7 @@ std::vector<Tracklet*> Sector::getAllTracklets() {
   std::vector<Tracklet*> tmp;
   for (unsigned int i = 0; i < TPAR_.size(); i++) {
     for (unsigned int j = 0; j < TPAR_[i]->nTracklets(); j++) {
-      tmp.push_back(TPAR_[i]->getFPGATracklet(j));
+      tmp.push_back(TPAR_[i]->getTracklet(j));
     }
   }
   return tmp;
@@ -477,8 +477,8 @@ std::set<int> Sector::seedMatch(int itp) {
   for (unsigned int i = 0; i < TPAR_.size(); i++) {
     unsigned int nTracklet = TPAR_[i]->nTracklets();
     for (unsigned int j = 0; j < nTracklet; j++) {
-      if (TPAR_[i]->getFPGATracklet(j)->tpseed() == itp) {
-        tmpSeeds.insert(TPAR_[i]->getFPGATracklet(j)->getISeed());
+      if (TPAR_[i]->getTracklet(j)->tpseed() == itp) {
+        tmpSeeds.insert(TPAR_[i]->getTracklet(j)->getISeed());
       }
     }
   }

@@ -22,7 +22,7 @@ namespace trklet {
 
     unsigned int nMatches() const { return matches_.size(); }
 
-    Tracklet* getFPGATracklet(unsigned int i) const { return matches_[i].first; }
+    Tracklet* getTracklet(unsigned int i) const { return matches_[i].first; }
 
     std::pair<Tracklet*, std::pair<Stub*, L1TStub*> > getMatch(unsigned int i) const { return matches_[i]; }
 

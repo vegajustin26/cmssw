@@ -182,7 +182,7 @@ void MatchEngine::execute() {
       break;
 
     if (moreproj && (!bufferfull)) {
-      Tracklet* proj = vmprojs_->getFPGATracklet(iproj);
+      Tracklet* proj = vmprojs_->getTracklet(iproj);
 
       int iprojtmp = iproj;
 
@@ -239,7 +239,7 @@ void MatchEngine::execute() {
           second = true;
         }
 
-        Tracklet* proj = vmprojs_->getFPGATracklet(projindex);
+        Tracklet* proj = vmprojs_->getTracklet(projindex);
 
         nstubs = vmstubs_->nStubsBin(rzbin);
 
@@ -316,7 +316,7 @@ void MatchEngine::execute() {
       //Check if stub bend and proj rinv consistent
       if (pass) {
         if (barrel ? table_[index] : (isPSmodule ? tablePS_[index] : table2S_[index])) {
-          Tracklet* proj = vmprojs_->getFPGATracklet(projindex);
+          Tracklet* proj = vmprojs_->getTracklet(projindex);
           std::pair<Tracklet*, int> tmp(proj, vmprojs_->getAllProjIndex(projindex));
           if (settings_->writeMonitorData("Seeds")) {
             ofstream fout("seeds.txt", ofstream::app);

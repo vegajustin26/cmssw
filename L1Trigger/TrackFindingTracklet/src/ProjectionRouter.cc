@@ -85,7 +85,7 @@ void ProjectionRouter::execute() {
       if (allprojcount > settings_->maxStep("PR"))
         continue;
 
-      Tracklet* tracklet = inputproj_[j]->getFPGATracklet(i);
+      Tracklet* tracklet = inputproj_[j]->getTracklet(i);
 
       FPGAWord fpgaphi;
 

@@ -243,7 +243,7 @@ void MatchProcessor::execute() {
         iprojmem++;
       } else if (iproj < projMem->nTracklets()) {
         if (!inputProjBuffer_.almostfull()) {
-          Tracklet* proj = projMem->getFPGATracklet(iproj);
+          Tracklet* proj = projMem->getTracklet(iproj);
 
           FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layer_) : proj->fpgaphiprojdisk(disk_);
           FPGAWord fpgarz = barrel_ ? proj->fpgazproj(layer_) : proj->fpgarprojdisk(disk_);
