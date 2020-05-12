@@ -17,9 +17,9 @@ namespace trklet {
 
     ~StubTripletsMemory() = default;
 
-    void addStubs(std::pair<Stub*, L1TStub*> stub1,
-                  std::pair<Stub*, L1TStub*> stub2,
-                  std::pair<Stub*, L1TStub*> stub3) {
+    void addStubs(std::pair<const Stub*, const L1TStub*> stub1,
+                  std::pair<const Stub*, const L1TStub*> stub2,
+                  std::pair<const Stub*, const L1TStub*> stub3) {
       stubs1_.push_back(stub1);
       stubs2_.push_back(stub2);
       stubs3_.push_back(stub3);
@@ -27,17 +27,17 @@ namespace trklet {
 
     unsigned int nStubTriplets() const { return stubs1_.size(); }
 
-    Stub* getFPGAStub1(unsigned int i) const { return stubs1_[i].first; }
-    L1TStub* getL1TStub1(unsigned int i) const { return stubs1_[i].second; }
-    std::pair<Stub*, L1TStub*> getStub1(unsigned int i) const { return stubs1_[i]; }
+    const Stub* getFPGAStub1(unsigned int i) const { return stubs1_[i].first; }
+    const L1TStub* getL1TStub1(unsigned int i) const { return stubs1_[i].second; }
+    std::pair<const Stub*, const L1TStub*> getStub1(unsigned int i) const { return stubs1_[i]; }
 
-    Stub* getFPGAStub2(unsigned int i) const { return stubs2_[i].first; }
-    L1TStub* getL1TStub2(unsigned int i) const { return stubs2_[i].second; }
-    std::pair<Stub*, L1TStub*> getStub2(unsigned int i) const { return stubs2_[i]; }
+    const Stub* getFPGAStub2(unsigned int i) const { return stubs2_[i].first; }
+    const L1TStub* getL1TStub2(unsigned int i) const { return stubs2_[i].second; }
+    std::pair<const Stub*, const L1TStub*> getStub2(unsigned int i) const { return stubs2_[i]; }
 
-    Stub* getFPGAStub3(unsigned int i) const { return stubs3_[i].first; }
-    L1TStub* getL1TStub3(unsigned int i) const { return stubs3_[i].second; }
-    std::pair<Stub*, L1TStub*> getStub3(unsigned int i) const { return stubs3_[i]; }
+    const Stub* getFPGAStub3(unsigned int i) const { return stubs3_[i].first; }
+    const L1TStub* getL1TStub3(unsigned int i) const { return stubs3_[i].second; }
+    std::pair<const Stub*, const L1TStub*> getStub3(unsigned int i) const { return stubs3_[i]; }
 
     void clean() {
       stubs1_.clear();
@@ -48,9 +48,9 @@ namespace trklet {
     void writeST(bool first);
 
   private:
-    std::vector<std::pair<Stub*, L1TStub*> > stubs1_;
-    std::vector<std::pair<Stub*, L1TStub*> > stubs2_;
-    std::vector<std::pair<Stub*, L1TStub*> > stubs3_;
+    std::vector<std::pair<const Stub*, const L1TStub*> > stubs1_;
+    std::vector<std::pair<const Stub*, const L1TStub*> > stubs2_;
+    std::vector<std::pair<const Stub*, const L1TStub*> > stubs3_;
   };
 
 };  // namespace trklet

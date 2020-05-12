@@ -35,24 +35,24 @@ namespace trklet {
     void addProjection(int layer, int iphi, TrackletProjectionsMemory* trackletprojs, Tracklet* tracklet);
     void addProjectionDisk(int disk, int iphi, TrackletProjectionsMemory* trackletprojs, Tracklet* tracklet);
 
-    bool LLLSeeding(Stub* innerFPGAStub,
-                    L1TStub* innerStub,
-                    Stub* middleFPGAStub,
-                    L1TStub* middleStub,
-                    Stub* outerFPGAStub,
-                    L1TStub* outerStub);
-    bool DDLSeeding(Stub* innerFPGAStub,
-                    L1TStub* innerStub,
-                    Stub* middleFPGAStub,
-                    L1TStub* middleStub,
-                    Stub* outerFPGAStub,
-                    L1TStub* outerStub);
-    bool LLDSeeding(Stub* innerFPGAStub,
-                    L1TStub* innerStub,
-                    Stub* middleFPGAStub,
-                    L1TStub* middleStub,
-                    Stub* outerFPGAStub,
-                    L1TStub* outerStub);
+    bool LLLSeeding(const Stub* innerFPGAStub,
+                    const L1TStub* innerStub,
+                    const Stub* middleFPGAStub,
+                    const L1TStub* middleStub,
+                    const Stub* outerFPGAStub,
+                    const L1TStub* outerStub);
+    bool DDLSeeding(const Stub* innerFPGAStub,
+                    const L1TStub* innerStub,
+                    const Stub* middleFPGAStub,
+                    const L1TStub* middleStub,
+                    const Stub* outerFPGAStub,
+                    const L1TStub* outerStub);
+    bool LLDSeeding(const Stub* innerFPGAStub,
+                    const L1TStub* innerStub,
+                    const Stub* middleFPGAStub,
+                    const L1TStub* middleStub,
+                    const Stub* outerFPGAStub,
+                    const L1TStub* outerStub);
 
     void exactproj(double rproj,
                    double rinv,

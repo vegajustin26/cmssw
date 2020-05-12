@@ -20,7 +20,7 @@ namespace trklet {
 
     unsigned int nTracklets() const { return tracklets_.size(); }
 
-    Tracklet* getTracklet(unsigned int i) const { return tracklets_[i].first; }
+    Tracklet* getTracklet(unsigned int i) { return tracklets_[i].first; }
     int getAllProjIndex(unsigned int i) const { return tracklets_[i].second; }
 
     void writeVMPROJ(bool first);

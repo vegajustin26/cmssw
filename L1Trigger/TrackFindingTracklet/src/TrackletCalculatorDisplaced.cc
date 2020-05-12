@@ -218,14 +218,14 @@ void TrackletCalculatorDisplaced::execute() {
     for (unsigned int i = 0; i < stubtriplets_[l]->nStubTriplets(); i++) {
       countall++;
 
-      L1TStub* innerStub = stubtriplets_[l]->getL1TStub1(i);
-      Stub* innerFPGAStub = stubtriplets_[l]->getFPGAStub1(i);
+      const L1TStub* innerStub = stubtriplets_[l]->getL1TStub1(i);
+      const Stub* innerFPGAStub = stubtriplets_[l]->getFPGAStub1(i);
 
-      L1TStub* middleStub = stubtriplets_[l]->getL1TStub2(i);
-      Stub* middleFPGAStub = stubtriplets_[l]->getFPGAStub2(i);
+      const L1TStub* middleStub = stubtriplets_[l]->getL1TStub2(i);
+      const Stub* middleFPGAStub = stubtriplets_[l]->getFPGAStub2(i);
 
-      L1TStub* outerStub = stubtriplets_[l]->getL1TStub3(i);
-      Stub* outerFPGAStub = stubtriplets_[l]->getFPGAStub3(i);
+      const L1TStub* outerStub = stubtriplets_[l]->getL1TStub3(i);
+      const Stub* outerFPGAStub = stubtriplets_[l]->getFPGAStub3(i);
 
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced execute " << getName() << "[" << iSector_ << "]";
@@ -355,12 +355,12 @@ void TrackletCalculatorDisplaced::addProjectionDisk(int disk,
 }
 
 
-bool TrackletCalculatorDisplaced::LLLSeeding(Stub* innerFPGAStub,
-                                             L1TStub* innerStub,
-                                             Stub* middleFPGAStub,
-                                             L1TStub* middleStub,
-                                             Stub* outerFPGAStub,
-                                             L1TStub* outerStub) {
+bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
+                                             const L1TStub* innerStub,
+                                             const Stub* middleFPGAStub,
+                                             const L1TStub* middleStub,
+                                             const Stub* outerFPGAStub,
+                                             const L1TStub* outerStub) {
   if (settings_->debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced " << getName() << " " << layer_
                                  << " trying stub triplet in layer (L L L): " << innerFPGAStub->layer().value() << " "
@@ -702,12 +702,12 @@ bool TrackletCalculatorDisplaced::LLLSeeding(Stub* innerFPGAStub,
   return true;
 }
 
-bool TrackletCalculatorDisplaced::DDLSeeding(Stub* innerFPGAStub,
-                                             L1TStub* innerStub,
-                                             Stub* middleFPGAStub,
-                                             L1TStub* middleStub,
-                                             Stub* outerFPGAStub,
-                                             L1TStub* outerStub) {
+bool TrackletCalculatorDisplaced::DDLSeeding(const Stub* innerFPGAStub,
+                                             const L1TStub* innerStub,
+                                             const Stub* middleFPGAStub,
+                                             const L1TStub* middleStub,
+                                             const Stub* outerFPGAStub,
+                                             const L1TStub* outerStub) {
   if (settings_->debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced " << getName() << " " << layer_
                                  << " trying stub triplet in  (L2 D1 D2): " << innerFPGAStub->layer().value() << " "
@@ -1027,12 +1027,12 @@ bool TrackletCalculatorDisplaced::DDLSeeding(Stub* innerFPGAStub,
   return true;
 }
 
-bool TrackletCalculatorDisplaced::LLDSeeding(Stub* innerFPGAStub,
-                                             L1TStub* innerStub,
-                                             Stub* middleFPGAStub,
-                                             L1TStub* middleStub,
-                                             Stub* outerFPGAStub,
-                                             L1TStub* outerStub) {
+bool TrackletCalculatorDisplaced::LLDSeeding(const Stub* innerFPGAStub,
+                                             const L1TStub* innerStub,
+                                             const Stub* middleFPGAStub,
+                                             const L1TStub* middleStub,
+                                             const Stub* outerFPGAStub,
+                                             const L1TStub* outerStub) {
   if (settings_->debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced " << getName() << " " << layer_
                                  << " trying stub triplet in  (L2L3D1): " << middleFPGAStub->layer().value() << " "

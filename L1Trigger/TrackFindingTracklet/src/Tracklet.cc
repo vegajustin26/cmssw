@@ -9,12 +9,12 @@ using namespace std;
 using namespace trklet;
 
 Tracklet::Tracklet(const trklet::Settings* settings,
-                   L1TStub* innerStub,
-                   L1TStub* middleStub,
-                   L1TStub* outerStub,
-                   trklet::Stub* innerFPGAStub,
-                   trklet::Stub* middleFPGAStub,
-                   trklet::Stub* outerFPGAStub,
+                   const L1TStub* innerStub,
+                   const L1TStub* middleStub,
+                   const L1TStub* outerStub,
+                   const Stub* innerFPGAStub,
+                   const Stub* middleFPGAStub,
+                   const Stub* outerFPGAStub,
                    double rinv,
                    double phi0,
                    double d0,

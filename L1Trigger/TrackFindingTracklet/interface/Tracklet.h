@@ -27,12 +27,12 @@ namespace trklet {
   class Tracklet {
   public:
     Tracklet(const Settings* settings,
-             L1TStub* innerStub,
-             L1TStub* middleStub,
-             L1TStub* outerStub,
-             Stub* innerFPGAStub,
-             Stub* middleFPGAStub,
-             Stub* outerFPGAStub,
+             const L1TStub* innerStub,
+             const L1TStub* middleStub,
+             const L1TStub* outerStub,
+             const Stub* innerFPGAStub,
+             const Stub* middleFPGAStub,
+             const Stub* outerFPGAStub,
              double rinv,
              double phi0,
              double d0,
@@ -61,14 +61,14 @@ namespace trklet {
 
     bool stubtruthmatch(const L1TStub* stub);
 
-    L1TStub* innerStub() { return innerStub_; }
-    Stub* innerFPGAStub() { return innerFPGAStub_; }
+    const L1TStub* innerStub() { return innerStub_; }
+    const Stub* innerFPGAStub() { return innerFPGAStub_; }
 
-    L1TStub* middleStub() { return middleStub_; }
-    Stub* middleFPGAStub() { return middleFPGAStub_; }
+    const L1TStub* middleStub() { return middleStub_; }
+    const Stub* middleFPGAStub() { return middleFPGAStub_; }
 
-    L1TStub* outerStub() { return outerStub_; }
-    Stub* outerFPGAStub() { return outerFPGAStub_; }
+    const L1TStub* outerStub() { return outerStub_; }
+    const Stub* outerFPGAStub() { return outerFPGAStub_; }
 
     std::string addressstr();
 
@@ -518,13 +518,13 @@ namespace trklet {
     bool overlap_;
     bool triplet_;
 
-    trklet::Stub* innerFPGAStub_;
-    trklet::Stub* middleFPGAStub_;
-    trklet::Stub* outerFPGAStub_;
+    const Stub* innerFPGAStub_;
+    const Stub* middleFPGAStub_;
+    const Stub* outerFPGAStub_;
 
-    L1TStub* innerStub_;
-    L1TStub* middleStub_;
-    L1TStub* outerStub_;
+    const L1TStub* innerStub_;
+    const L1TStub* middleStub_;
+    const L1TStub* outerStub_;
 
     int trackletIndex_;
     int TCIndex_;
