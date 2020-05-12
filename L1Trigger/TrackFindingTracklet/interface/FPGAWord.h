@@ -10,11 +10,11 @@ namespace trklet {
   public:
     FPGAWord();
 
-    FPGAWord(int value, int nbits, bool positive = true, int line = -1, const char* file = 0);
+    FPGAWord(int value, int nbits, bool positive = true, int line = -1, const char* file = nullptr);
 
     ~FPGAWord() = default;
 
-    void set(int value, int nbits, bool positive = true, int line = -1, const char* file = 0);
+    void set(int value, int nbits, bool positive = true, int line = -1, const char* file = nullptr);
 
     std::string str() const;
 

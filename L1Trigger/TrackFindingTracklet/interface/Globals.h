@@ -95,40 +95,40 @@ namespace trklet {
     std::map<std::string, std::ofstream*> ofstreams_;
 
     // tracklet calculators
-    IMATH_TrackletCalculator* ITC_L1L2_{0};
-    IMATH_TrackletCalculator* ITC_L2L3_{0};
-    IMATH_TrackletCalculator* ITC_L3L4_{0};
-    IMATH_TrackletCalculator* ITC_L5L6_{0};
+    IMATH_TrackletCalculator* ITC_L1L2_{nullptr};
+    IMATH_TrackletCalculator* ITC_L2L3_{nullptr};
+    IMATH_TrackletCalculator* ITC_L3L4_{nullptr};
+    IMATH_TrackletCalculator* ITC_L5L6_{nullptr};
 
-    IMATH_TrackletCalculatorDisk* ITC_F1F2_{0};
-    IMATH_TrackletCalculatorDisk* ITC_F3F4_{0};
-    IMATH_TrackletCalculatorDisk* ITC_B1B2_{0};
-    IMATH_TrackletCalculatorDisk* ITC_B3B4_{0};
+    IMATH_TrackletCalculatorDisk* ITC_F1F2_{nullptr};
+    IMATH_TrackletCalculatorDisk* ITC_F3F4_{nullptr};
+    IMATH_TrackletCalculatorDisk* ITC_B1B2_{nullptr};
+    IMATH_TrackletCalculatorDisk* ITC_B3B4_{nullptr};
 
-    IMATH_TrackletCalculatorOverlap* ITC_L1F1_{0};
-    IMATH_TrackletCalculatorOverlap* ITC_L2F1_{0};
-    IMATH_TrackletCalculatorOverlap* ITC_L1B1_{0};
-    IMATH_TrackletCalculatorOverlap* ITC_L2B1_{0};
+    IMATH_TrackletCalculatorOverlap* ITC_L1F1_{nullptr};
+    IMATH_TrackletCalculatorOverlap* ITC_L2F1_{nullptr};
+    IMATH_TrackletCalculatorOverlap* ITC_L1B1_{nullptr};
+    IMATH_TrackletCalculatorOverlap* ITC_L2B1_{nullptr};
 
-    imathGlobals* imathGlobals_{0};
+    imathGlobals* imathGlobals_{nullptr};
 
-    SLHCEvent* theEvent_{0};
+    SLHCEvent* theEvent_{nullptr};
 
-    HistBase* theHistBase_{0};
+    HistBase* theHistBase_{nullptr};
 
-    TrackDerTable* trackDerTable_{0};
+    TrackDerTable* trackDerTable_{nullptr};
 
-    ProjectionRouterBendTable* projectionRouterBendTable_{0};
+    ProjectionRouterBendTable* projectionRouterBendTable_{nullptr};
 
-    tmtt::Settings* tmttSettings_{0};
+    tmtt::Settings* tmttSettings_{nullptr};
 
-    tmtt::KFParamsComb* tmttKFParamsComb_{0};
+    tmtt::KFParamsComb* tmttKFParamsComb_{nullptr};
 
-    std::array<VMRouterPhiCorrTable*, 6> thePhiCorr_{{0, 0, 0, 0, 0, 0}};
+    std::array<VMRouterPhiCorrTable*, 6> thePhiCorr_{{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}};
 
-    std::array<std::array<TETableBase*, 12>, 3> theTETable_{{{{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-                                                             {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-                                                             {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}}};
+    std::array<std::array<TETableBase*, 12>, 3> theTETable_{{{{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}},
+                                                             {{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}},
+                                                             {{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}}}};
 
     std::map<std::string, std::vector<int> > ILindex_;
 
