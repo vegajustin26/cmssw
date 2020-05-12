@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_TrackletEventProcessor_h
 #define L1Trigger_TrackFindingTracklet_interface_TrackletEventProcessor_h
 
-#include "L1Trigger/TrackFindingTracklet/interface/CPUTimer.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Timer.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Cabling.h"
 
 #include <map>
@@ -44,20 +44,20 @@ namespace trklet {
 
     Cabling* cabling_{};
 
-    CPUTimer cleanTimer_;
-    CPUTimer addStubTimer_;
-    CPUTimer VMRouterTimer_;
-    CPUTimer TETimer_;
-    CPUTimer TEDTimer_;
-    CPUTimer TRETimer_;
-    CPUTimer TCTimer_;
-    CPUTimer TCDTimer_;
-    CPUTimer PRTimer_;
-    CPUTimer METimer_;
-    CPUTimer MCTimer_;
-    CPUTimer MPTimer_;
-    CPUTimer FTTimer_;
-    CPUTimer PDTimer_;
+    Timer cleanTimer_;
+    Timer addStubTimer_;
+    Timer VMRouterTimer_;
+    Timer TETimer_;
+    Timer TEDTimer_;
+    Timer TRETimer_;
+    Timer TCTimer_;
+    Timer TCDTimer_;
+    Timer PRTimer_;
+    Timer METimer_;
+    Timer MCTimer_;
+    Timer MPTimer_;
+    Timer FTTimer_;
+    Timer PDTimer_;
 
     std::vector<Track*> tracks_;
 

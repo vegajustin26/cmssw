@@ -1,16 +1,17 @@
-#ifndef L1Trigger_TrackFindingTracklet_interface_CPUTimer_h
-#define L1Trigger_TrackFindingTracklet_interface_CPUTimer_h
+#ifndef L1Trigger_TrackFindingTracklet_interface_Timer_h
+#define L1Trigger_TrackFindingTracklet_interface_Timer_h
 
 #include <cmath>
-#include <sys/time.h>
+#include <ctime>
+#include <chrono>
 
 namespace trklet {
 
-  class CPUTimer {
+  class Timer {
   public:
-    CPUTimer(){}
+    Timer(){}
 
-    ~CPUTimer() = default;
+    ~Timer() = default;
 
     void start();
     void stop();
@@ -24,7 +25,7 @@ namespace trklet {
     double ttot_{0.0};
     double ttotsq_{0.0};
 
-    timeval tstart_;
+    std::chrono::high_resolution_clock::time_point tstart_;
   };
 };  // namespace trklet
 #endif

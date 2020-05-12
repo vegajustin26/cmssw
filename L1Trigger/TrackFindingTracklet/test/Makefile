@@ -66,6 +66,8 @@ $(shell touch dummyIncl/utility)
 $(shell touch dummyIncl/algorithm)
 $(shell touch dummyIncl/ext/hash_set)
 $(shell touch dummyIncl/sys/time.h)
+$(shell touch dummyIncl/ctime)
+$(shell touch dummyIncl/chrono)
 endif
 
 
