@@ -17,7 +17,8 @@ TrackletEventProcessor::~TrackletEventProcessor() {
     delete sectors_[i];
   }
   delete globals_;
-
+  delete cabling_;
+  
   if (settings_->bookHistos()) {
     histimp_->close();
   }
@@ -179,7 +180,8 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
     indtc >> dtc;
   }
 
-  cabling_.init(settings_->DTCLinkFile(), settings_->moduleCablingFile());
+  cabling_ = new Cabling(settings_->DTCLinkFile(), settings_->moduleCablingFile());
+  //cabling_.init(settings_->DTCLinkFile(), settings_->moduleCablingFile());
 }
 
 void TrackletEventProcessor::event(SLHCEvent& ev) {
@@ -269,13 +271,13 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     int ladder = stub.ladder();
     int module = stub.module();
 
-    string dtc = cabling_.dtc(layer, ladder, module);
+    string dtc = cabling_->dtc(layer, ladder, module);
     string dtcbase = dtc.substr(2, dtc.size() - 2);
     if (dtc[0] == 'n') {
       dtcbase = dtc.substr(0, 4) + dtc.substr(6, dtc.size() - 6);
     }
 
-    cabling_.addphi(dtc, stub.phi(), layer, module);
+    cabling_->addphi(dtc, stub.phi(), layer, module);
 
     for (unsigned int k = 0; k < settings_->NSector(); k++) {
       int diff = k - isector;
@@ -301,7 +303,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
       static std::map<string, ofstream*> dtcstubs;
 
       if (settings_->writeMem()) {
-        vector<string> dtcs = cabling_.DTCs();
+        vector<string> dtcs = cabling_->DTCs();
         for (auto it = dtcs.begin(); it != dtcs.end(); ++it) {
           string dtc = *it;
           string dtcbase = dtc.substr(2, dtc.size() - 2);
@@ -582,7 +584,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
 void TrackletEventProcessor::printSummary() {
   if (settings_->writeMonitorData("Cabling")) {
-    cabling_.writephirange();
+    cabling_->writephirange();
   }
 
   if (settings_->bookHistos()) {

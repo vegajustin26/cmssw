@@ -14,12 +14,11 @@ namespace trklet {
 
   class Cabling {
   public:
-    Cabling();
+
+    Cabling(std::string dtcconfig, std::string moduleconfig);
 
     ~Cabling() = default;
     
-    void init(std::string dtcconfig, std::string moduleconfig);
-
     std::string dtc(int layer, int ladder, int module);
 
     void addphi(std::string dtc, double phi, int layer, int module);

@@ -8,9 +8,7 @@
 using namespace std;
 using namespace trklet;
 
-Cabling::Cabling() {}
-
-void Cabling::init(string dtcconfig, string moduleconfig) {
+Cabling::Cabling(string dtcconfig, string moduleconfig) {
   ifstream indtc(dtcconfig.c_str());
   assert(indtc.good());
 

@@ -42,7 +42,7 @@ namespace trklet {
 
     int eventnum_ = {0};
 
-    Cabling cabling_;
+    Cabling* cabling_{};
 
     CPUTimer cleanTimer_;
     CPUTimer addStubTimer_;
