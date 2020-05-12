@@ -13,7 +13,7 @@ namespace trklet {
   public:
     TrackDer();
 
-    ~TrackDer() {}
+    ~TrackDer() = default;
 
     void setIndex(int layermask, int diskmask, int alphamask, int irinv);
 

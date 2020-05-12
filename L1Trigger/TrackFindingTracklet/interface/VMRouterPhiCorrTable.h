@@ -17,7 +17,7 @@ namespace trklet {
   public:
     VMRouterPhiCorrTable();
 
-    ~VMRouterPhiCorrTable() {}
+    ~VMRouterPhiCorrTable() = default;
 
     void init(const Settings* settings, int layer, int bendbits, int rbits);
 

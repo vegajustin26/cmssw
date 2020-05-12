@@ -23,7 +23,7 @@ namespace trklet {
   public:
     VMRouter(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    ~VMRouter() {}
+    ~VMRouter() = default;
 
     void addOutput(MemoryBase* memory, std::string output);
 

@@ -10,7 +10,7 @@ namespace trklet {
   public:
     CPUTimer(){}
 
-    ~CPUTimer(){}
+    ~CPUTimer() = default;
 
     void start();
     void stop();

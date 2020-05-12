@@ -17,7 +17,7 @@ namespace trklet {
   public:
     HistBase() {}
 
-    virtual ~HistBase() {}
+    virtual ~HistBase() = default;
 
     virtual void close() {}
 

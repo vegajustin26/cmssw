@@ -14,7 +14,7 @@ namespace trklet {
   public:
     MemoryBase(std::string name, const Settings* const settings, unsigned int iSector);
 
-    virtual ~MemoryBase() {}
+    virtual ~MemoryBase() = default;
 
     std::string getName() const { return name_; }
     std::string getLastPartOfName() const { return name_.substr(name_.find_last_of('_') + 1); }

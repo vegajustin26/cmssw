@@ -19,7 +19,7 @@ namespace trklet {
   public:
     TrackletProcessor(std::string name, const Settings* const settings, Globals* globals, unsigned int iSector);
 
-    ~TrackletProcessor() {}
+    ~TrackletProcessor() = default;
 
     void addOutputProjection(TrackletProjectionsMemory*& outputProj, MemoryBase* memory);
 

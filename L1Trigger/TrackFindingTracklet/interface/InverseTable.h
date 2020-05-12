@@ -15,7 +15,7 @@ namespace trklet {
   public:
     InverseTable() {}
 
-    ~InverseTable() {}
+    ~InverseTable() = default;
 
     void initR(int nbits, int offset, int invbits, bool pos) {
       nbits_ = nbits;

@@ -17,7 +17,7 @@ namespace trklet {
   public:
     MatchEngine(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    ~MatchEngine() {}
+    ~MatchEngine() = default;
 
     void addOutput(MemoryBase* memory, std::string output);
     void addInput(MemoryBase* memory, std::string input);

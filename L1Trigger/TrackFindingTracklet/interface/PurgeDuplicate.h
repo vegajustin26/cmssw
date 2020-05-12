@@ -21,7 +21,7 @@ namespace trklet {
   public:
     PurgeDuplicate(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    ~PurgeDuplicate() {}
+    ~PurgeDuplicate() = default;
 
     void addOutput(MemoryBase* memory, std::string output);
 

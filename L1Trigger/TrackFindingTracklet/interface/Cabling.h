@@ -16,7 +16,7 @@ namespace trklet {
   public:
     Cabling();
 
-    ~Cabling() {}
+    ~Cabling() = default;
     
     void init(std::string dtcconfig, std::string moduleconfig);
 

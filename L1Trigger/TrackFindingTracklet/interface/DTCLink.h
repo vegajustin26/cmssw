@@ -11,7 +11,7 @@ namespace trklet {
   public:
     DTCLink(double phimin, double phimax);
 
-    ~DTCLink() {}
+    ~DTCLink() = default;
 
     void addStub(std::pair<Stub*, L1TStub*> stub);
 

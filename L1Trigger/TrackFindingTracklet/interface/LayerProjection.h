@@ -11,7 +11,7 @@ namespace trklet {
   public:
     LayerProjection() { valid_ = false; }
 
-    ~LayerProjection() {}
+    ~LayerProjection() = default;
 
     void init(const Settings* settings,
               int projlayer,

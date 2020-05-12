@@ -24,7 +24,7 @@ namespace trklet {
   public:
     Globals() {}
 
-    ~Globals() {}
+    ~Globals() = default;
 
     void init(const trklet::Settings* settings) {
       imathGlobals_ = new imathGlobals();

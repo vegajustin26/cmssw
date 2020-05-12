@@ -13,7 +13,7 @@ namespace trklet {
   public:
     ProcessBase(std::string name, const Settings* const settings, Globals* global, unsigned int iSector);
 
-    virtual ~ProcessBase() {}
+    virtual ~ProcessBase() = default;
 
     // Add wire from pin "output" or "input" this proc module to memory instance "memory".
     virtual void addOutput(MemoryBase* memory, std::string output) = 0;

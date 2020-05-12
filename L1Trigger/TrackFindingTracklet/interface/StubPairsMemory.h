@@ -16,7 +16,7 @@ namespace trklet {
   public:
     StubPairsMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
-    ~StubPairsMemory() {}
+    ~StubPairsMemory() = default;
 
     void addStubPair(const VMStubTE& stub1,
                      const VMStubTE& stub2,

@@ -13,7 +13,7 @@ namespace trklet {
   public:
     DiskProjection() { valid_ = false; }
 
-    ~DiskProjection() {}
+    ~DiskProjection() = default;
 
     void init(const Settings* settings,
               int projdisk,

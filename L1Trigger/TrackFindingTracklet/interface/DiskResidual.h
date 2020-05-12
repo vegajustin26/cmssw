@@ -15,7 +15,7 @@ namespace trklet {
   public:
     DiskResidual() { valid_ = false; }
 
-    ~DiskResidual() {}
+    ~DiskResidual() = default;
     
     void init(const Settings* settings,
               int disk,

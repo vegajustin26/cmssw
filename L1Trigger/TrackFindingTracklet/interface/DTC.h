@@ -12,7 +12,7 @@ namespace trklet {
   public:
     DTC(std::string name = "");
 
-    ~DTC() {}
+    ~DTC() = default;
 
     void init(std::string name);
 

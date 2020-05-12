@@ -101,7 +101,7 @@ public:
     valid_der_rD.add_cut(&t_disk_cut_right);
   }
 
-  ~IMATH_TrackletCalculatorOverlap() {}
+  ~IMATH_TrackletCalculatorOverlap() = default;
 
   const trklet::Settings* settings_;
 

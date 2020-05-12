@@ -98,7 +98,7 @@ public:
     valid_der_rD.add_cut(&t_disk_cut_right);
   }
 
-  ~IMATH_TrackletCalculatorDisk() {}
+  ~IMATH_TrackletCalculatorDisk() = default;
 
   const trklet::Settings* settings_;
   

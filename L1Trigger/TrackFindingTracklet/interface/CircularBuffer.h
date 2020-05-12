@@ -15,7 +15,7 @@ namespace trklet {
       reset();
     }
 
-    ~CircularBuffer() {}
+    ~CircularBuffer() = default;
 
     void reset() {
       rptr_ = 0;

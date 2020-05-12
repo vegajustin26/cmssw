@@ -10,7 +10,7 @@ namespace trklet {
   public:
     StubVariance(SLHCEvent& ev, Globals* globals);
 
-    ~StubVariance() {}
+    ~StubVariance() = default;
 
     void process(SLHCEvent& ev, Globals* globals);
 
