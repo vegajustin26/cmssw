@@ -13,6 +13,8 @@ namespace Trklet {
   public:
     DiskProjection() { valid_ = false; }
 
+    virtual ~DiskProjection() {}
+    
     void init(const Settings* settings,
               int projdisk,
               double zproj,
@@ -30,8 +32,6 @@ namespace Trklet {
               double rprojderapprox);
 
     bool valid() const { return valid_; }
-
-    virtual ~DiskProjection() {}
 
     int projdisk() const {
       assert(valid_);

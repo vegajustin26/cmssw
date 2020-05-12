@@ -15,6 +15,8 @@ namespace Trklet {
   public:
     StubTripletsMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
+    virtual ~StubTripletsMemory() {}
+
     void addStubs(std::pair<Stub*, L1TStub*> stub1,
                   std::pair<Stub*, L1TStub*> stub2,
                   std::pair<Stub*, L1TStub*> stub3) {

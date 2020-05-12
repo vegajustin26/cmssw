@@ -20,7 +20,7 @@ namespace Trklet {
 
     Stub(const L1TStub& stub, const Settings* const settings, double phiminsec, double phimaxsec);
 
-    ~Stub() {}
+    virtual ~Stub() {}
 
     FPGAWord iphivmFineBins(int VMbits, int finebits) const;
 

@@ -16,6 +16,8 @@ namespace Trklet {
   public:
     Cabling();
 
+    virtual ~Cabling() {}
+    
     void init(std::string dtcconfig, std::string moduleconfig);
 
     std::string dtc(int layer, int ladder, int module);

@@ -19,6 +19,8 @@ namespace Trklet {
   public:
     InputLinkMemory(std::string name, const Settings* const settings, unsigned int iSector, double, double);
 
+    virtual ~InputLinkMemory() {}
+    
     bool addStub(const Settings* settings, Globals* globals, L1TStub& al1stub, Stub& stub, std::string dtc);
 
     unsigned int nStubs() const { return stubs_.size(); }
