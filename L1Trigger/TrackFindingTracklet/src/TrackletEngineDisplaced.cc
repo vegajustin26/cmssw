@@ -106,8 +106,7 @@ void TrackletEngineDisplaced::execute() {
   unsigned int nInnerStubs = 0;
 
   for (unsigned int iInnerMem = 0; iInnerMem < firstvmstubs_.size();
-       nInnerStubs += firstvmstubs_.at(iInnerMem)->nVMStubs(), iInnerMem++)
-    ;
+       nInnerStubs += firstvmstubs_.at(iInnerMem)->nVMStubs(), iInnerMem++);
 
   assert(!firstvmstubs_.empty());
   assert(secondvmstubs_ != 0);
@@ -131,10 +130,8 @@ void TrackletEngineDisplaced::execute() {
         int start = (bin >> 1);
         int last = start + (bin & 1);
 
-	if (last>7) {
-	  cout << getName() << "Warning setting last from "<<last<<" to 7"<<endl;
-	  last=7;
-	}
+	assert(last<8);
+
         if (settings_->debugTracklet()) {
           edm::LogVerbatim("Tracklet") << "Will look in zbins " << start << " to " << last;
         }
@@ -215,10 +212,8 @@ void TrackletEngineDisplaced::execute() {
 
         int start = (bin >> 1);
         int last = start + (bin & 1);
-	if (last>7) {
-	  cout << getName() << "Warning setting last from "<<last<<" to 7"<<endl;
-	  last=7;
-	}
+
+	assert(last<8);
 
         if (settings_->debugTracklet()) {
           edm::LogVerbatim("Tracklet") << "Will look in zbins " << start << " to " << last;
@@ -305,13 +300,11 @@ void TrackletEngineDisplaced::execute() {
         if (negdisk)
           start += 4;
         int last = start + (bin & 1);
-	if (last>7) {
-	  cout << getName() << "Warning setting last from "<<last<<" to 7"<<endl;
-	  last=7;
-	}
+	assert(last<8);
         for (int ibin = start; ibin <= last; ibin++) {
           if (settings_->debugTracklet()) {
-            edm::LogVerbatim("Tracklet") << getName() << " looking for matching stub in bin " << ibin << " with "
+            edm::LogVerbatim("Tracklet") << getName() << " looking for matching stub in "
+					 << secondvmstubs_->getName()<< " in bin = " << ibin << " with "
                                          << secondvmstubs_->nVMStubsBinned(ibin) << " stubs";
           }
           for (unsigned int j = 0; j < secondvmstubs_->nVMStubsBinned(ibin); j++) {
