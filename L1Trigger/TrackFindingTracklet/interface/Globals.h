@@ -22,11 +22,8 @@ namespace trklet {
 
   class Globals {
   public:
-    Globals() {}
-
-    ~Globals() = default;
-
-    void init(const trklet::Settings* settings) {
+    
+    Globals(const Settings* settings) {
       imathGlobals_ = new imathGlobals();
 
       // tracklet calculators
@@ -46,6 +43,8 @@ namespace trklet {
       ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(settings, imathGlobals_, 2, -1);
     }
 
+    ~Globals() = default;
+    
     SLHCEvent*& event() { return theEvent_; }
 
     HistBase*& histograms() { return theHistBase_; }

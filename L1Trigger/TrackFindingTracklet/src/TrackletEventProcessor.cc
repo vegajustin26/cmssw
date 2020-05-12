@@ -27,8 +27,7 @@ TrackletEventProcessor::~TrackletEventProcessor() {
 void TrackletEventProcessor::init(const Settings* theSettings) {
   settings_ = theSettings;
 
-  globals_ = new Globals();
-  globals_->init(settings_);
+  globals_ = new Globals(settings_);
 
   settings_->krinvpars() = globals_->ITC_L1L2()->rinv_final.get_K();
   settings_->kphi0pars() = globals_->ITC_L1L2()->phi0_final.get_K();
