@@ -13,7 +13,9 @@ DTC::DTC(string name) {
   }
 }
 
-void DTC::init(string name) { name_ = name; }
+void DTC::setName(string name) {
+  name_ = name;
+}
 
 void DTC::addSec(int sector) { sectors_.push_back(sector); }
 

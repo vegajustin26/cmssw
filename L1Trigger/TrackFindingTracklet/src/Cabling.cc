@@ -22,7 +22,7 @@ Cabling::Cabling(string dtcconfig, string moduleconfig) {
       continue;
 
     if (dtcs.find(dtc) == dtcs.end()) {
-      dtcs[dtc].init(dtc);
+      dtcs[dtc].setName(dtc);
     }
 
     dtcs[dtc].addSec(isec);
@@ -32,7 +32,7 @@ Cabling::Cabling(string dtcconfig, string moduleconfig) {
       dtcbase = "neg_" + dtc.substr(6, dtc.size() - 6);
     }
     if (dtcranges.find(dtcbase) == dtcranges.end()) {
-      dtcranges[dtcbase].init(dtcbase);
+      dtcranges[dtcbase].setName(dtcbase);
     }
   }
 
