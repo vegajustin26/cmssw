@@ -25,7 +25,7 @@ namespace trklet {
       z0_ = z0;
     }
 
-    virtual ~TrackPars() {}
+    ~TrackPars() {}
 
     void init(T rinv, T phi0, T d0, T t, T z0) {
       rinv_ = rinv;

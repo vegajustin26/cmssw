@@ -19,7 +19,7 @@ namespace trklet {
   public:
     TrackletCalculatorBase(std::string name, const Settings* const settings, Globals* global, unsigned int iSector);
 
-    virtual ~TrackletCalculatorBase() {}
+    ~TrackletCalculatorBase() {}
 
     void exacttracklet(double r1,
                        double z1,

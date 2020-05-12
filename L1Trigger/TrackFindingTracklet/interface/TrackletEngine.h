@@ -18,7 +18,7 @@ namespace trklet {
   public:
     TrackletEngine(std::string name, const Settings* const settings, Globals* global, unsigned int iSector);
 
-    virtual ~TrackletEngine() {}
+    ~TrackletEngine() {}
 
     void addOutput(MemoryBase* memory, std::string output);
     void addInput(MemoryBase* memory, std::string input);

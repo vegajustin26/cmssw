@@ -19,7 +19,7 @@ namespace trklet {
   public:
     FitTrack(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    virtual ~FitTrack() {}
+    ~FitTrack() {}
 
     void addOutput(MemoryBase* memory, std::string output);
 

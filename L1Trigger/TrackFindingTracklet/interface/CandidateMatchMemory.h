@@ -18,7 +18,7 @@ namespace trklet {
   public:
     CandidateMatchMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
-    virtual ~CandidateMatchMemory() {}
+    ~CandidateMatchMemory() {}
 
     void addMatch(std::pair<Tracklet*, int> tracklet, std::pair<Stub*, L1TStub*> stub);
 

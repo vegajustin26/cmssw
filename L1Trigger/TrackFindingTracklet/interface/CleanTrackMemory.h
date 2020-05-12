@@ -16,7 +16,7 @@ namespace trklet {
     CleanTrackMemory(
         std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
 
-    virtual ~CleanTrackMemory() {}
+    ~CleanTrackMemory() {}
     
     void addTrack(Tracklet* tracklet) { tracks_.push_back(tracklet); }
 

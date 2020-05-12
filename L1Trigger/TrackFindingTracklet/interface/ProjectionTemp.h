@@ -18,7 +18,7 @@ namespace trklet {
 
     ProjectionTemp();
 
-    virtual ~ProjectionTemp() {}
+    ~ProjectionTemp() {}
 
     Tracklet* proj() const { return proj_; }
     unsigned int slot() const { return slot_; }

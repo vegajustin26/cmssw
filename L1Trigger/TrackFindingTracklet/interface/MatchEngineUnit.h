@@ -19,7 +19,7 @@ namespace trklet {
   public:
     MatchEngineUnit(bool barrel, std::vector<bool> table, std::vector<bool> tablePS, std::vector<bool> table2S);
 
-    virtual ~MatchEngineUnit() {}
+    ~MatchEngineUnit() {}
 
     void init(VMStubsMEMemory* vmstubsmemory,
               unsigned int slot,

@@ -116,7 +116,7 @@ public:
     valid_der_rD.add_cut(&t_disk_cut_right);
   }
 
-  virtual ~IMATH_TrackletCalculator() {}
+  ~IMATH_TrackletCalculator() {}
 
   const trklet::Settings* settings_;
 

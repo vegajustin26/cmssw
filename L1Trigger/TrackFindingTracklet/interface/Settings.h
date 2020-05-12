@@ -22,7 +22,7 @@ namespace trklet {
 #endif
     }
     
-    virtual ~Settings() {}
+    ~Settings() {}
 
     // processing & memory modules, wiring, etc.
     std::string DTCLinkFile() const {
