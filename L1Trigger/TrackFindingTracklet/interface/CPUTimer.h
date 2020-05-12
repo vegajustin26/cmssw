@@ -8,9 +8,9 @@ namespace Trklet {
 
   class CPUTimer {
   public:
-    CPUTimer(){};
+    CPUTimer(){}
 
-    virtual ~CPUTimer(){};
+    ~CPUTimer(){}
 
     void start();
     void stop();

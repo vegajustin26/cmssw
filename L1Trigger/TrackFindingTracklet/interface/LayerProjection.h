@@ -11,6 +11,8 @@ namespace Trklet {
   public:
     LayerProjection() { valid_ = false; }
 
+    ~LayerProjection() {}
+
     void init(const Settings* settings,
               int projlayer,
               double rproj,
@@ -26,8 +28,6 @@ namespace Trklet {
               double zprojapprox,
               double phiprojderapprox,
               double zprojderapprox);
-
-    virtual ~LayerProjection() {}
 
     bool valid() const { return valid_; }
 

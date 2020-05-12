@@ -189,7 +189,7 @@ public:
     }
 #endif
   }
-  virtual ~var_base() {
+  ~var_base() {
 #ifdef IMATH_ROOT
     if (globals_->h_file_) {
       globals_->h_file_->ls();

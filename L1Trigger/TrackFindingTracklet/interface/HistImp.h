@@ -16,7 +16,7 @@ namespace Trklet {
   public:
     HistImp();
 
-    virtual ~HistImp() {}
+    ~HistImp() {}
 
     void init();
     void close();
