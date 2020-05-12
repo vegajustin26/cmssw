@@ -17,7 +17,7 @@ namespace trklet {
   public:
     TETableBase(const Settings* settings);
 
-    ~TETableBase() {}
+    virtual ~TETableBase() {}
 
     virtual int lookup(int, int);
 
