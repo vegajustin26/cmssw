@@ -90,7 +90,7 @@ void FitTrack::addInput(MemoryBase* memory, string input) {
 
 #ifdef USEHYBRID
 void FitTrack::trackFitKF(Tracklet* tracklet,
-                          std::vector<std::pair<Stub*, L1TStub*>>& trackstublist,
+                          std::vector<std::pair<const Stub*, const L1TStub*>>& trackstublist,
                           std::vector<std::pair<int, int>>& stubidslist) {
   if (settings_->doKF()) {
     // From full match lists, collect all the stubs associated with the tracklet seed
@@ -159,7 +159,7 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
 #endif
 
 void FitTrack::trackFitChisq(Tracklet* tracklet,
-                             std::vector<std::pair<Stub*, L1TStub*>>&,
+                             std::vector<std::pair<const Stub*, const L1TStub*>>&,
                              std::vector<std::pair<int, int>>&) {
   if (globals_->trackDerTable() == 0) {
     TrackDerTable* derTablePtr = new TrackDerTable(settings_);
@@ -824,7 +824,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
 }
 
 void FitTrack::trackFitFake(Tracklet* tracklet,
-                            std::vector<std::pair<Stub*, L1TStub*>>&,
+                            std::vector<std::pair<const Stub*, const L1TStub*>>&,
                             std::vector<std::pair<int, int>>&) {
   tracklet->setFitPars(tracklet->rinvapprox(),
                        tracklet->phi0approx(),
@@ -1031,7 +1031,7 @@ void FitTrack::execute() {
       edm::LogVerbatim("Tracklet") << getName() << " : nMatches = " << nMatches << " " << asinh(bestTracklet->t());
     }
 
-    std::vector<std::pair<Stub*, L1TStub*>> trackstublist;
+    std::vector<std::pair<const Stub*, const L1TStub*>> trackstublist;
     std::vector<std::pair<int, int>> stubidslist;
     if ((bestTracklet->getISeed() >= 8 && nMatchesUniq >= 1) ||
         nMatchesUniq >= 2) {  //For seeds index >=8 (triplet seeds), there are three stubs associated from start.

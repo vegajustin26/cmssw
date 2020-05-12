@@ -108,7 +108,7 @@ namespace trklet {
     bool foundTrack(std::ofstream& outres, L1SimTrack simtrk);
 
     std::vector<Tracklet*> getAllTracklets();
-    std::vector<std::pair<Stub*, L1TStub*> > getStubs() const;
+    std::vector<std::pair<const Stub*, const L1TStub*> > getStubs() const;
 
     std::set<int> seedMatch(int itp);
 

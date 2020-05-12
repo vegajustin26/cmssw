@@ -22,22 +22,22 @@ namespace trklet {
                      const VMStubTE& stub2,
                      const unsigned index = 0,
                      const std::string& tedName = "") {
-      stubs_.push_back(std::pair<VMStubTE, VMStubTE>(stub1, stub2));
+      stubs_.push_back(std::pair<const VMStubTE, const VMStubTE>(stub1, stub2));
       indices_.push_back(index);
       tedNames_.push_back(tedName);
     }
 
     unsigned int nStubPairs() const { return stubs_.size(); }
 
-    VMStubTE getVMStub1(unsigned int i) const { return stubs_[i].first; }
-    Stub* getFPGAStub1(unsigned int i) const { return stubs_[i].first.stub().first; }
-    L1TStub* getL1TStub1(unsigned int i) const { return stubs_[i].first.stub().second; }
-    std::pair<Stub*, L1TStub*> getStub1(unsigned int i) const { return stubs_[i].first.stub(); }
+    const VMStubTE& getVMStub1(unsigned int i) const { return stubs_[i].first; }
+    const Stub* getFPGAStub1(unsigned int i) const { return stubs_[i].first.stub().first; }
+    const L1TStub* getL1TStub1(unsigned int i) const { return stubs_[i].first.stub().second; }
+    std::pair<const Stub*, const L1TStub*> getStub1(unsigned int i) const { return stubs_[i].first.stub(); }
 
-    VMStubTE getVMStub2(unsigned int i) const { return stubs_[i].second; }
-    Stub* getFPGAStub2(unsigned int i) const { return stubs_[i].second.stub().first; }
-    L1TStub* getL1TStub2(unsigned int i) const { return stubs_[i].second.stub().second; }
-    std::pair<Stub*, L1TStub*> getStub2(unsigned int i) const { return stubs_[i].second.stub(); }
+    const VMStubTE& getVMStub2(unsigned int i) const { return stubs_[i].second; }
+    const Stub* getFPGAStub2(unsigned int i) const { return stubs_[i].second.stub().first; }
+    const L1TStub* getL1TStub2(unsigned int i) const { return stubs_[i].second.stub().second; }
+    std::pair<const Stub*, const L1TStub*> getStub2(unsigned int i) const { return stubs_[i].second.stub(); }
 
     unsigned getIndex(const unsigned i) const { return indices_.at(i); }
     const std::string& getTEDName(const unsigned i) const { return tedNames_.at(i); }
@@ -51,7 +51,7 @@ namespace trklet {
     void writeSP(bool first);
 
   private:
-    std::vector<std::pair<VMStubTE, VMStubTE> > stubs_;
+    std::vector<std::pair<const VMStubTE, const VMStubTE> > stubs_;
 
     std::vector<unsigned> indices_;
     std::vector<std::string> tedNames_;

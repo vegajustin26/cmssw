@@ -20,7 +20,7 @@ namespace trklet {
     ~TrackFitMemory() = default;
 
     void addTrack(Tracklet* tracklet) { tracks_.push_back(tracklet); }
-    void addStubList(std::vector<std::pair<Stub*, L1TStub*>> stublist) { stublists_.push_back(stublist); }
+    void addStubList(std::vector<std::pair<const Stub*, const L1TStub*>> stublist) { stublists_.push_back(stublist); }
     void addStubidsList(std::vector<std::pair<int, int>> stubidslist) { stubidslists_.push_back(stubidslist); }
 
     unsigned int nTracks() const { return tracks_.size(); }
@@ -28,7 +28,7 @@ namespace trklet {
     unsigned int nStubidslists() const { return stubidslists_.size(); }
 
     Tracklet* getTrack(unsigned int i) { return tracks_[i]; }
-    std::vector<std::pair<Stub*, L1TStub*>> getStublist(unsigned int i) const { return stublists_[i]; }
+    std::vector<std::pair<const Stub*, const L1TStub*>> getStublist(unsigned int i) const { return stublists_[i]; }
     std::vector<std::pair<int, int>> getStubidslist(unsigned int i) const { return stubidslists_[i]; }
 
     void clean() {
@@ -45,7 +45,7 @@ namespace trklet {
     double phimin_;
     double phimax_;
     std::vector<Tracklet*> tracks_;
-    std::vector<std::vector<std::pair<Stub*, L1TStub*>>> stublists_;
+    std::vector<std::vector<std::pair<const Stub*, const L1TStub*>>> stublists_;
     std::vector<std::vector<std::pair<int, int>>> stubidslists_;
   };
 

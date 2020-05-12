@@ -111,9 +111,9 @@ namespace trklet {
 
     bool inSector(int iphi0, int irinv, double phi0approx, double rinvapprox);
 
-    bool barrelSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* outerFPGAStub, L1TStub* outerStub);
-    bool diskSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* outerFPGAStub, L1TStub* outerStub);
-    bool overlapSeeding(Stub* innerFPGAStub, L1TStub* innerStub, Stub* outerFPGAStub, L1TStub* outerStub);
+    bool barrelSeeding(const Stub* innerFPGAStub, const L1TStub* innerStub, const Stub* outerFPGAStub, const L1TStub* outerStub);
+    bool diskSeeding(const Stub* innerFPGAStub, const L1TStub* innerStub, const Stub* outerFPGAStub, const L1TStub* outerStub);
+    bool overlapSeeding(const Stub* innerFPGAStub, const L1TStub* innerStub, const Stub* outerFPGAStub, const L1TStub* outerStub);
 
   protected:
     unsigned int iSeed_;

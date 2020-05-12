@@ -592,11 +592,11 @@ void TrackletProcessor::execute() {
       break;
     }
     countall++;
-    L1TStub* innerStub = stubpairs.getL1TStub1(i);
-    Stub* innerFPGAStub = stubpairs.getFPGAStub1(i);
+    const L1TStub* innerStub = stubpairs.getL1TStub1(i);
+    const Stub* innerFPGAStub = stubpairs.getFPGAStub1(i);
 
-    L1TStub* outerStub = stubpairs.getL1TStub2(i);
-    Stub* outerFPGAStub = stubpairs.getFPGAStub2(i);
+    const L1TStub* outerStub = stubpairs.getL1TStub2(i);
+    const Stub* outerFPGAStub = stubpairs.getFPGAStub2(i);
 
     if (settings_->debugTracklet()) {
       edm::LogVerbatim("Tracklet") << "TrackletProcessor execute " << getName() << "[" << iSector_ << "]";

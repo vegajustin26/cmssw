@@ -306,10 +306,10 @@ bool TrackletCalculatorBase::inSector(int iphi0, int irinv, double phi0approx, d
   return true;
 }
 
-bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
-                                           L1TStub* innerStub,
-                                           Stub* outerFPGAStub,
-                                           L1TStub* outerStub) {
+bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
+                                           const L1TStub* innerStub,
+                                           const Stub* outerFPGAStub,
+                                           const L1TStub* outerStub) {
   if (settings_->debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "TrackletCalculator " << getName() 
                                  << " trying stub pair in layer (inner outer): " << innerFPGAStub->layer().value()
@@ -727,10 +727,10 @@ bool TrackletCalculatorBase::barrelSeeding(Stub* innerFPGAStub,
   return true;
 }
 
-bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,
-                                         L1TStub* innerStub,
-                                         Stub* outerFPGAStub,
-                                         L1TStub* outerStub) {
+bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
+                                         const L1TStub* innerStub,
+                                         const Stub* outerFPGAStub,
+                                         const L1TStub* outerStub) {
   if (settings_->debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "TrackletCalculator::execute calculate disk seeds";
   }
@@ -1081,10 +1081,10 @@ bool TrackletCalculatorBase::diskSeeding(Stub* innerFPGAStub,
   return true;
 }
 
-bool TrackletCalculatorBase::overlapSeeding(Stub* innerFPGAStub,
-                                            L1TStub* innerStub,
-                                            Stub* outerFPGAStub,
-                                            L1TStub* outerStub) {
+bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
+                                            const L1TStub* innerStub,
+                                            const Stub* outerFPGAStub,
+                                            const L1TStub* outerStub) {
   //Deal with overlap stubs here
   assert(outerFPGAStub->isBarrel());
 

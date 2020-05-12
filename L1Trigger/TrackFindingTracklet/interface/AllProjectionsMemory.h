@@ -21,7 +21,7 @@ namespace trklet {
 
     unsigned int nTracklets() const { return tracklets_.size(); }
 
-    Tracklet* getTracklet(unsigned int i) const { return tracklets_[i]; }
+    const Tracklet* getTracklet(unsigned int i) const { return tracklets_[i]; }
 
     void clean() { tracklets_.clear(); }
 

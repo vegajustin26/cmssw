@@ -24,9 +24,9 @@ namespace trklet {
 
     unsigned int nMatches() const { return matches_.size(); }
 
-    Tracklet* getTracklet(unsigned int i) const { return matches_[i].first; }
+    Tracklet* getTracklet(unsigned int i) { return matches_[i].first; }
 
-    std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > getMatch(unsigned int i) const { return matches_[i]; }
+    std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > getMatch(unsigned int i) { return matches_[i]; }
 
     void clean() { matches_.clear(); }
 

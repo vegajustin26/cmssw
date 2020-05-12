@@ -129,11 +129,11 @@ void TrackletCalculator::execute() {
     }
     for (unsigned int i = 0; i < stubpairs_[l]->nStubPairs(); i++) {
       countall++;
-      L1TStub* innerStub = stubpairs_[l]->getL1TStub1(i);
-      Stub* innerFPGAStub = stubpairs_[l]->getFPGAStub1(i);
+      const L1TStub* innerStub = stubpairs_[l]->getL1TStub1(i);
+      const Stub* innerFPGAStub = stubpairs_[l]->getFPGAStub1(i);
 
-      L1TStub* outerStub = stubpairs_[l]->getL1TStub2(i);
-      Stub* outerFPGAStub = stubpairs_[l]->getFPGAStub2(i);
+      const L1TStub* outerStub = stubpairs_[l]->getL1TStub2(i);
+      const Stub* outerFPGAStub = stubpairs_[l]->getFPGAStub2(i);
 
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "TrackletCalculator execute " << getName() << "[" << iSector_ << "]";

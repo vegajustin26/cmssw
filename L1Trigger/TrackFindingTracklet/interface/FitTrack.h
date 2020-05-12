@@ -26,15 +26,15 @@ namespace trklet {
     void addInput(MemoryBase* memory, std::string input);
 
     // used if USEHYBRID is not defined
-    void trackFitChisq(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&, std::vector<std::pair<int, int>>&);
+    void trackFitChisq(Tracklet* tracklet, std::vector<std::pair<const Stub*, const L1TStub*>>&, std::vector<std::pair<int, int>>&);
 
     // used if USEHYBRID is defined
     void trackFitKF(Tracklet* tracklet,
-                    std::vector<std::pair<Stub*, L1TStub*>>& trackstublist,
+                    std::vector<std::pair<const Stub*, const L1TStub*>>& trackstublist,
                     std::vector<std::pair<int, int>>& stubidslist);
 
     // used for propagating tracklet without fitting
-    void trackFitFake(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&, std::vector<std::pair<int, int>>&);
+    void trackFitFake(Tracklet* tracklet, std::vector<std::pair<const Stub*, const L1TStub*>>&, std::vector<std::pair<int, int>>&);
 
     std::vector<Tracklet*> orderedMatches(std::vector<FullMatchMemory*>& fullmatch);
 

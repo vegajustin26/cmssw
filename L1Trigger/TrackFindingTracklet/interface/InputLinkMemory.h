@@ -25,7 +25,7 @@ namespace trklet {
 
     unsigned int nStubs() const { return stubs_.size(); }
 
-    std::pair<Stub*, L1TStub*> getStub(unsigned int i) const { return stubs_[i]; }
+    std::pair<Stub*, L1TStub*> getStub(unsigned int i) { return stubs_[i]; }
 
     void writeStubs(bool first);
 
