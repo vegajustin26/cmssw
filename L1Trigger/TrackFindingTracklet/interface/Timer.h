@@ -2,7 +2,6 @@
 #define L1Trigger_TrackFindingTracklet_interface_Timer_h
 
 #include <cmath>
-#include <ctime>
 #include <chrono>
 
 namespace trklet {
