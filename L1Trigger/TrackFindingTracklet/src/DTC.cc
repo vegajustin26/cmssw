@@ -20,7 +20,6 @@ void DTC::setName(string name) {
 void DTC::addSec(int sector) { sectors_.push_back(sector); }
 
 void DTC::addphi(double phi, unsigned int layerdisk) {
-  assert(layerdisk >= 0);
   assert(layerdisk < N_LAYERDISK);
   if (phi < phimin_[layerdisk])
     phimin_[layerdisk] = phi;

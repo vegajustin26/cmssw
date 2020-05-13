@@ -17,9 +17,9 @@ namespace trklet {
   public:
     Settings(){
 //Uncomment to run the hybrid algorithm
-#ifdef CMSSW_GIT_HASH
-#define USEHYBRID
-#endif
+//#ifdef CMSSW_GIT_HASH
+//#define USEHYBRID
+//#endif
     }
     
     ~Settings() = default;
