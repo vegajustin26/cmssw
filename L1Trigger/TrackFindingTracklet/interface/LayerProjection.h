@@ -41,47 +41,47 @@ namespace trklet {
       return rproj_;
     };
 
-    FPGAWord fpgaphiproj() const {
+    const FPGAWord& fpgaphiproj() const {
       assert(valid_);
       return fpgaphiproj_;
     };
 
-    FPGAWord fpgazproj() const {
+    const FPGAWord& fpgazproj() const {
       assert(valid_);
       return fpgazproj_;
     };
 
-    FPGAWord fpgaphiprojder() const {
+    const FPGAWord& fpgaphiprojder() const {
       assert(valid_);
       return fpgaphiprojder_;
     };
 
-    FPGAWord fpgazprojder() const {
+    const FPGAWord& fpgazprojder() const {
       assert(valid_);
       return fpgazprojder_;
     };
 
-    FPGAWord fpgaphiprojvm() const {
+    const FPGAWord& fpgaphiprojvm() const {
       assert(valid_);
       return fpgaphiprojvm_;
     };
 
-    FPGAWord fpgazbin1projvm() const {
+    const FPGAWord& fpgazbin1projvm() const {
       assert(valid_);
       return fpgazbin1projvm_;
     };
 
-    FPGAWord fpgazbin2projvm() const {
+    const FPGAWord& fpgazbin2projvm() const {
       assert(valid_);
       return fpgazbin2projvm_;
     };
 
-    FPGAWord fpgafinezvm() const {
+    const FPGAWord& fpgafinezvm() const {
       assert(valid_);
       return fpgafinezvm_;
     };
 
-    FPGAWord fpgazprojvm() const {
+    const FPGAWord& fpgazprojvm() const {
       assert(valid_);
       return fpgazprojvm_;
     };

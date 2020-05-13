@@ -43,32 +43,32 @@ namespace trklet {
       return zproj_;
     };
 
-    FPGAWord fpgaphiproj() const {
+    const FPGAWord& fpgaphiproj() const {
       assert(valid_);
       return fpgaphiproj_;
     };
 
-    FPGAWord fpgarproj() const {
+    const FPGAWord& fpgarproj() const {
       assert(valid_);
       return fpgarproj_;
     };
 
-    FPGAWord fpgaphiprojder() const {
+    const FPGAWord& fpgaphiprojder() const {
       assert(valid_);
       return fpgaphiprojder_;
     };
 
-    FPGAWord fpgarprojder() const {
+    const FPGAWord& fpgarprojder() const {
       assert(valid_);
       return fpgarprojder_;
     };
 
-    FPGAWord fpgaphiprojvm() const {
+    const FPGAWord& fpgaphiprojvm() const {
       assert(valid_);
       return fpgaphiprojvm_;
     };
 
-    FPGAWord fpgarprojvm() const {
+    const FPGAWord& fpgarprojvm() const {
       assert(valid_);
       return fpgarprojvm_;
     };
@@ -78,17 +78,17 @@ namespace trklet {
       return phiproj_;
     };
 
-    FPGAWord fpgarbin1projvm() const {
+    const FPGAWord& fpgarbin1projvm() const {
       assert(valid_);
       return fpgarbin1projvm_;
     };
 
-    FPGAWord fpgarbin2projvm() const {
+    const FPGAWord& fpgarbin2projvm() const {
       assert(valid_);
       return fpgarbin2projvm_;
     };
 
-    FPGAWord fpgafinervm() const {
+    const FPGAWord& fpgafinervm() const {
       assert(valid_);
       return fpgafinervm_;
     };
@@ -130,7 +130,7 @@ namespace trklet {
 
     void setBendIndex(int bendindex) { fpgabendindex_.set(bendindex, 5, true, __LINE__, __FILE__); }
 
-    FPGAWord getBendIndex() const { return fpgabendindex_; }
+    const FPGAWord& getBendIndex() const { return fpgabendindex_; }
 
   protected:
     bool valid_;

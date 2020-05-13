@@ -730,7 +730,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     aTrack.setPhiSector(trksector);
     aTrack.setTrackSeedType(trkseed);
 
-    vector<trklet::L1TStub*> stubptrs = track->stubs();
+    const vector<const trklet::L1TStub*>& stubptrs = track->stubs();
     vector<trklet::L1TStub> stubs;
 
     for (unsigned int i = 0; i < stubptrs.size(); i++) {

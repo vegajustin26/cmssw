@@ -44,10 +44,12 @@ namespace trklet {
     int it() const { return it_; }
     int ichisq() const { return ichisqrphi_ + ichisqrz_; }
 
-    std::map<int, int> stubID() const { return stubID_; }
-    std::vector<const L1TStub*> stubs() const { return l1stub_; }
-    std::vector<std::pair<int, int>> stubIDpremerge() const { return stubIDpremerge_; }
-    std::vector<std::pair<int, int>> stubIDprefit() const { return stubIDprefit_; }
+    const std::map<int, int>& stubID() const { return stubID_; }
+    const std::vector<const L1TStub*>& stubs() const { return l1stub_; }
+
+    //These are not used? Should be removed?
+    const std::vector<std::pair<int, int>>& stubIDpremerge() const { return stubIDpremerge_; }
+    const std::vector<std::pair<int, int>>& stubIDprefit() const { return stubIDprefit_; }
 
     int hitpattern() const { return hitpattern_; }
     int seed() const { return seed_; }

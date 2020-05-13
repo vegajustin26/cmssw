@@ -35,11 +35,11 @@ namespace trklet {
       z0_ = z0;
     }
 
-    T rinv() const { return rinv_; }
-    T phi0() const { return phi0_; }
-    T d0() const { return d0_; }
-    T t() const { return t_; }
-    T z0() const { return z0_; }
+    const T& rinv() const { return rinv_; }
+    const T& phi0() const { return phi0_; }
+    const T& d0() const { return d0_; }
+    const T& t() const { return t_; }
+    const T& z0() const { return z0_; }
 
     T& rinv() { return rinv_; }
     T& phi0() { return phi0_; }

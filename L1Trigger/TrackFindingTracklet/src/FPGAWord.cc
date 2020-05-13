@@ -71,7 +71,7 @@ std::string FPGAWord::str() const {
   return str;
 }
 
-unsigned int FPGAWord::bits(unsigned int lsb, unsigned int nbit) {
+unsigned int FPGAWord::bits(unsigned int lsb, unsigned int nbit) const {
   assert(lsb + nbit <= (unsigned int)nbits());
   return (value_ >> lsb) & ((1 << nbit) - 1);
 }

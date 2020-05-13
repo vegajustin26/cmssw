@@ -33,17 +33,17 @@ namespace trklet {
 
     bool valid() const { return valid_; }
 
-    FPGAWord fpgaphiresid() const {
+    const FPGAWord& fpgaphiresid() const {
       assert(valid_);
       return fpgaphiresid_;
     };
 
-    FPGAWord fpgarresid() const {
+    const FPGAWord& fpgarresid() const {
       assert(valid_);
       return fpgarresid_;
     };
 
-    FPGAWord fpgastubid() const {
+    const FPGAWord& fpgastubid() const {
       assert(valid_);
       return fpgastubid_;
     };
@@ -78,7 +78,7 @@ namespace trklet {
       return alpha_;
     };
 
-    FPGAWord ialpha() const {
+    const FPGAWord& ialpha() const {
       assert(valid_);
       return ialpha_;
     };

@@ -90,22 +90,22 @@ namespace trklet {
       return layerproj_[layer - 1].valid();
     }
 
-    FPGAWord fpgaphiprojder(int layer) const {
+    const FPGAWord& fpgaphiprojder(int layer) const {
       assert(layer >= 1 && layer <= 6);
       return layerproj_[layer - 1].fpgaphiprojder();
     }
 
-    FPGAWord fpgazproj(int layer) const {
+    const FPGAWord& fpgazproj(int layer) const {
       assert(layer >= 1 && layer <= 6);
       return layerproj_[layer - 1].fpgazproj();
     }
 
-    FPGAWord fpgaphiproj(int layer) const {
+    const FPGAWord& fpgaphiproj(int layer) const {
       assert(layer >= 1 && layer <= 6);
       return layerproj_[layer - 1].fpgaphiproj();
     }
 
-    FPGAWord fpgazprojder(int layer) const {
+    const FPGAWord& fpgazprojder(int layer) const {
       assert(layer >= 1 && layer <= 6);
       return layerproj_[layer - 1].fpgazprojder();
     }
@@ -207,12 +207,12 @@ namespace trklet {
       return diskproj_[abs(disk) - 1].valid();
     }
 
-    FPGAWord fpgaphiresiddisk(int disk) {
+    const FPGAWord& fpgaphiresiddisk(int disk) {
       assert(abs(disk) >= 1 && abs(disk) <= 5);
       return diskresid_[abs(disk) - 1].fpgaphiresid();
     }
 
-    FPGAWord fpgarresiddisk(int disk) {
+    const FPGAWord& fpgarresiddisk(int disk) {
       assert(abs(disk) >= 1 && abs(disk) <= 5);
       return diskresid_[abs(disk) - 1].fpgarresid();
     }
@@ -247,7 +247,7 @@ namespace trklet {
       diskproj_[abs(disk) - 1].setBendIndex(bendIndex);
     }
 
-    FPGAWord getBendIndex(int disk) const {
+    const FPGAWord& getBendIndex(int disk) const {
       assert(abs(disk) >= 1 && abs(disk) <= 5);
       return diskproj_[abs(disk) - 1].getBendIndex();
     }
@@ -257,27 +257,27 @@ namespace trklet {
       return diskresid_[abs(disk) - 1].alpha();
     }
 
-    FPGAWord ialphadisk(int disk) const {
+    const FPGAWord& ialphadisk(int disk) const {
       assert(abs(disk) >= 1 && abs(disk) <= 5);
       return diskresid_[abs(disk) - 1].ialpha();
     }
 
-    FPGAWord fpgaphiprojdisk(int disk) const {
+    const FPGAWord& fpgaphiprojdisk(int disk) const {
       assert(abs(disk) >= 1 && abs(disk) <= 5);
       return diskproj_[abs(disk) - 1].fpgaphiproj();
     }
 
-    FPGAWord fpgaphiprojderdisk(int disk) const {
+    const FPGAWord& fpgaphiprojderdisk(int disk) const {
       assert(abs(disk) >= 1 && abs(disk) <= 5);
       return diskproj_[abs(disk) - 1].fpgaphiprojder();
     }
 
-    FPGAWord fpgarprojdisk(int disk) const {
+    const FPGAWord& fpgarprojdisk(int disk) const {
       assert(abs(disk) >= 1 && abs(disk) <= 5);
       return diskproj_[abs(disk) - 1].fpgarproj();
     }
 
-    FPGAWord fpgarprojderdisk(int disk) const {
+    const FPGAWord& fpgarprojderdisk(int disk) const {
       assert(abs(disk) >= 1 && abs(disk) <= 5);
       return diskproj_[abs(disk) - 1].fpgarprojder();
     }
@@ -391,12 +391,12 @@ namespace trklet {
       return layerresid_[layer - 1].zresidapprox();
     }
 
-    FPGAWord fpgaphiresid(int layer) const {
+    const FPGAWord& fpgaphiresid(int layer) const {
       assert(layer >= 1 && layer <= 6);
       return layerresid_[layer - 1].fpgaphiresid();
     }
 
-    FPGAWord fpgazresid(int layer) const {
+    const FPGAWord& fpgazresid(int layer) const {
       assert(layer >= 1 && layer <= 6);
       return layerresid_[layer - 1].fpgazresid();
     }
@@ -417,11 +417,11 @@ namespace trklet {
     double tapprox() const { return trackparsapprox_.t(); }
     double z0approx() const { return trackparsapprox_.z0(); }
 
-    FPGAWord fpgarinv() const { return fpgapars_.rinv(); }
-    FPGAWord fpgaphi0() const { return fpgapars_.phi0(); }
-    FPGAWord fpgad0() const { return fpgapars_.d0(); }
-    FPGAWord fpgat() const { return fpgapars_.t(); }
-    FPGAWord fpgaz0() const { return fpgapars_.z0(); }
+    const FPGAWord& fpgarinv() const { return fpgapars_.rinv(); }
+    const FPGAWord& fpgaphi0() const { return fpgapars_.phi0(); }
+    const FPGAWord& fpgad0() const { return fpgapars_.d0(); }
+    const FPGAWord& fpgat() const { return fpgapars_.t(); }
+    const FPGAWord& fpgaz0() const { return fpgapars_.z0(); }
 
     double rinvfit() const { return fitpars_.rinv(); }
     double phi0fit() const { return fitpars_.phi0(); }
@@ -436,11 +436,11 @@ namespace trklet {
     double tfitexact() const { return fitparsexact_.t(); }
     double z0fitexact() const { return fitparsexact_.z0(); }
 
-    FPGAWord irinvfit() const { return fpgafitpars_.rinv(); }
-    FPGAWord iphi0fit() const { return fpgafitpars_.phi0(); }
-    FPGAWord id0fit() const { return fpgafitpars_.d0(); }
-    FPGAWord itfit() const { return fpgafitpars_.t(); }
-    FPGAWord iz0fit() const { return fpgafitpars_.z0(); }
+    const FPGAWord& irinvfit() const { return fpgafitpars_.rinv(); }
+    const FPGAWord& iphi0fit() const { return fpgafitpars_.phi0(); }
+    const FPGAWord& id0fit() const { return fpgafitpars_.d0(); }
+    const FPGAWord& itfit() const { return fpgafitpars_.t(); }
+    const FPGAWord& iz0fit() const { return fpgafitpars_.z0(); }
     FPGAWord ichiSqfit() const {
       return FPGAWord(ichisqrphifit_.value() + ichisqrzfit_.value(), ichisqrphifit_.nbits());
     }

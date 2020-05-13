@@ -46,17 +46,17 @@ namespace trklet {
 
     void setPhiCorr(int phiCorr);
 
-    FPGAWord bend() const { return bend_; }
+    const FPGAWord& bend() const { return bend_; }
 
-    FPGAWord r() const { return r_; }
-    FPGAWord z() const { return z_; }
-    FPGAWord phi() const { return phi_; }
-    FPGAWord phicorr() const { return phicorr_; }
-    FPGAWord alphanew() const { return alphanew_; }
+    const FPGAWord& r() const { return r_; }
+    const FPGAWord& z() const { return z_; }
+    const FPGAWord& phi() const { return phi_; }
+    const FPGAWord& phicorr() const { return phicorr_; }
+    const FPGAWord& alphanew() const { return alphanew_; }
 
-    FPGAWord stubindex() const { return stubindex_; }
-    FPGAWord layer() const { return layer_; }
-    FPGAWord disk() const { return disk_; }
+    const FPGAWord& stubindex() const { return stubindex_; }
+    const FPGAWord& layer() const { return layer_; }
+    const FPGAWord& disk() const { return disk_; }
     unsigned int layerdisk() const;
 
     bool isBarrel() const { return layer_.value() != -1; }
@@ -70,11 +70,11 @@ namespace trklet {
 
     void setfiner(int finer) { finer_.set(finer, 4, true, __LINE__, __FILE__); }
 
-    FPGAWord finer() const { return finer_; }
+    const FPGAWord& finer() const { return finer_; }
 
     void setfinez(int finez) { finez_.set(finez, 4, true, __LINE__, __FILE__); }
 
-    FPGAWord finez() const { return finez_; }
+    const FPGAWord& finez() const { return finez_; }
 
   private:
     bool isPSmodule_;  //TODO should not be used can be removed

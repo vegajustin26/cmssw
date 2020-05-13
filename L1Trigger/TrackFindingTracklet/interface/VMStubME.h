@@ -20,16 +20,16 @@ namespace trklet {
 
     ~VMStubME() = default;
 
-    FPGAWord finephi() const { return finephi_; }
-    FPGAWord finerz() const { return finerz_; }
+    const FPGAWord& finephi() const { return finephi_; }
+    const FPGAWord& finerz() const { return finerz_; }
 
-    FPGAWord bend() const { return bend_; }
+    const FPGAWord& bend() const { return bend_; }
 
     std::pair<const Stub*, const L1TStub*> stub() const { return stub_; }
 
     bool isPSmodule() const { return stub_.first->isPSmodule(); }
 
-    FPGAWord stubindex() const { return allStubIndex_; }
+    const FPGAWord& stubindex() const { return allStubIndex_; }
 
     //return binary string for memory printout
     std::string str() const;

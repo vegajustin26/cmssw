@@ -19,7 +19,7 @@ namespace trklet {
     std::string str() const;
 
     //return the nbits starting with the lsb. lsb=0 means the least significant bit
-    unsigned int bits(unsigned int lsb, unsigned int nbit);
+    unsigned int bits(unsigned int lsb, unsigned int nbit) const;
 
     int value() const { return value_; }
     int nbits() const { return nbits_; }
