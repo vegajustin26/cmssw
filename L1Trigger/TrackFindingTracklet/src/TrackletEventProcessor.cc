@@ -4,7 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
-#include "L1Trigger/TrackFindingTracklet/interface/HistImp.h"
+#include "L1Trigger/TrackFindingTracklet/interface/HistBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 
 #include <iomanip>
@@ -20,7 +20,7 @@ TrackletEventProcessor::~TrackletEventProcessor() {
   delete cabling_;
   
   if (settings_->bookHistos()) {
-    histimp_->close();
+    histbase_->close();
   }
 }
 
@@ -72,14 +72,14 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   }
 
   if (settings_->bookHistos()) {
-    histimp_ = new HistImp;
-    histimp_->init();
-    histimp_->bookLayerResidual();
-    histimp_->bookDiskResidual();
-    histimp_->bookTrackletParams();
-    histimp_->bookSeedEff();
+    histbase_ = new HistBase;
+    histbase_->open();
+    histbase_->bookLayerResidual();
+    histbase_->bookDiskResidual();
+    histbase_->bookTrackletParams();
+    histbase_->bookSeedEff();
 
-    globals_->histograms() = histimp_;
+    globals_->histograms() = histbase_;
   }
 
   // create the sector processors (1 sector processor = 1 board)

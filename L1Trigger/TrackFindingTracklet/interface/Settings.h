@@ -600,7 +600,7 @@ namespace trklet {
 
     bool writeoutReal_{false};
 
-    //set to true/false to turn on/off histogram booking internal to the tracking (class "HistImp")
+    //set to true/false to turn on/off histogram booking internal to the tracking (class "HistBase/HistImp", does nothing in central CMSSW)
     bool bookHistos_{false};
 
     // pt constants

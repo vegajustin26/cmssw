@@ -31,7 +31,7 @@ HistImp::HistImp() {
   h_irinvres_L1L2_ = 0;
 }
 
-void HistImp::init() { h_file_ = new TFile("fpgahist.root", "RECREATE"); }
+void HistImp::open() { h_file_ = new TFile("fpgahist.root", "RECREATE"); }
 
 void HistImp::close() {
   if (h_file_) {

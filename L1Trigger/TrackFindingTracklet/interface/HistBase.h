@@ -19,10 +19,16 @@ namespace trklet {
 
     virtual ~HistBase() = default;
 
+    virtual void open() {}
     virtual void close() {}
 
+    virtual void bookLayerResidual() {}
+    virtual void bookDiskResidual() {}
+    virtual void bookTrackletParams() {}
+    virtual void bookSeedEff() {}
+    
     virtual void FillLayerResidual(int, int, double, double, double, double, bool) {}
-
+    
     virtual void FillDiskResidual(int, int, double, double, double, double, bool) {}
 
     //arguments are

@@ -14,7 +14,7 @@ namespace trklet {
   class SLHCEvent;
   class Globals;
   class Sector;
-  class HistImp;
+  class HistBase;
   class Track;
 
   class TrackletEventProcessor {
@@ -38,7 +38,7 @@ namespace trklet {
 
     Sector** sectors_{};
 
-    HistImp* histimp_{};
+    HistBase* histbase_{};
 
     int eventnum_ = {0};
 

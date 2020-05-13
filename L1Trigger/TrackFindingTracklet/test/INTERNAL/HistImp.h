@@ -18,7 +18,7 @@ namespace trklet {
 
     ~HistImp() = default;
 
-    void init();
+    void open();
     void close();
 
     void bookLayerResidual();
