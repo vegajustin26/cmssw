@@ -22,44 +22,43 @@ class IMATH_TrackletCalculator {
 public:
   IMATH_TrackletCalculator(const trklet::Settings* settings, imathGlobals* globals, int i1, int i2)
       : settings_(settings), globals_(globals) {
-#ifndef CMSSW_GIT_HASH
-    edm::LogVerbatim("Tracklet") << "=============================================";
-    char s[1024];
-    sprintf(s, "IMATH Tracklet Calculator %i %i dphisector = %f", i1, i2, settings->dphisector());
-    edm::LogVerbatim("Tracklet") << s;
-    sprintf(s, "rmaxL6 = %f, zmaxD5 = %f", settings->rmax(5), settings->zmax(4));
-    edm::LogVerbatim("Tracklet") << s;
-    sprintf(s, "      stub Ks: kr, kphi1, kz = %g, %g, %g", settings->kr(), settings->kphi1(), settings->kz());
-    edm::LogVerbatim("Tracklet") << s;
-    sprintf(s,
-            "  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g",
-            settings->kphi1() / settings->kr() * pow(2, settings->rinv_shift()),
-            settings->kphi1() * pow(2, settings->phi0_shift()),
-            settings->kz() / settings->kr() * pow(2, settings->t_shift()),
-            settings->kz() * pow(2, settings->z0_shift()));
-    edm::LogVerbatim("Tracklet") << s;
-    sprintf(s,
-            "layer proj Ks: kphiproj456, kphider, kzproj, kzder = %g, %g, %g, %g",
-            settings->kphi1() * pow(2, settings->SS_phiL_shift()),
-            settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderL_shift()),
-            settings->kz() * pow(2, settings->PS_zL_shift()),
-            settings->kz() / settings->kr() * pow(2, settings->PS_zderL_shift()));
-    edm::LogVerbatim("Tracklet") << s;
-    sprintf(s,
-            " disk proj Ks: kphiprojdisk, kphiprojderdisk, krprojdisk, krprojderdisk = %g, %g, %g, %g",
-            settings->kphi1() * pow(2, settings->SS_phiD_shift()),
-            settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderD_shift()),
-            settings->kr() * pow(2, settings->PS_rD_shift()),
-            settings->kr() / settings->kz() * pow(2, settings->PS_rderD_shift()));
-    edm::LogVerbatim("Tracklet") << s;
-    edm::LogVerbatim("Tracklet") << "=============================================";
+    if (settings_->debugTracklet()) {
+      edm::LogVerbatim("Tracklet") << "=============================================";
+      char s[1024];
+      sprintf(s, "IMATH Tracklet Calculator %i %i dphisector = %f", i1, i2, settings->dphisector());
+      edm::LogVerbatim("Tracklet") << s;
+      sprintf(s, "rmaxL6 = %f, zmaxD5 = %f", settings->rmax(5), settings->zmax(4));
+      edm::LogVerbatim("Tracklet") << s;
+      sprintf(s, "      stub Ks: kr, kphi1, kz = %g, %g, %g", settings->kr(), settings->kphi1(), settings->kz());
+      edm::LogVerbatim("Tracklet") << s;
+      sprintf(s,
+	      "  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g",
+	      settings->kphi1() / settings->kr() * pow(2, settings->rinv_shift()),
+	      settings->kphi1() * pow(2, settings->phi0_shift()),
+	      settings->kz() / settings->kr() * pow(2, settings->t_shift()),
+	      settings->kz() * pow(2, settings->z0_shift()));
+      edm::LogVerbatim("Tracklet") << s;
+      sprintf(s,
+	      "layer proj Ks: kphiproj456, kphider, kzproj, kzder = %g, %g, %g, %g",
+	      settings->kphi1() * pow(2, settings->SS_phiL_shift()),
+	      settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderL_shift()),
+	      settings->kz() * pow(2, settings->PS_zL_shift()),
+	      settings->kz() / settings->kr() * pow(2, settings->PS_zderL_shift()));
+      edm::LogVerbatim("Tracklet") << s;
+      sprintf(s,
+	      " disk proj Ks: kphiprojdisk, kphiprojderdisk, krprojdisk, krprojderdisk = %g, %g, %g, %g",
+	      settings->kphi1() * pow(2, settings->SS_phiD_shift()),
+	      settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderD_shift()),
+	      settings->kr() * pow(2, settings->PS_rD_shift()),
+	      settings->kr() / settings->kz() * pow(2, settings->PS_rderD_shift()));
+      edm::LogVerbatim("Tracklet") << s;
+      edm::LogVerbatim("Tracklet") << "=============================================";
+      
+      sprintf(s, "initializing 1/dr LUT %f %f", settings->rmean(i1 - 1), settings->rmean(i2 - 1));
+      edm::LogVerbatim("Tracklet") << s;
+    }
 
-    sprintf(s, "initilaizing 1/dr LUT %f %f", settings->rmean(i1 - 1), settings->rmean(i2 - 1));
-    edm::LogVerbatim("Tracklet") << s;
-#endif
-
-    double dr_mean = settings->rmean(i2 - 1) - settings->rmean(i1 - 1);
-    drinv.initLUT(dr_mean);
+    drinv.initLUT(settings->rmean(i2 - 1) - settings->rmean(i1 - 1));
     r1mean.set_fval(settings->rmean(i1 - 1));
     r2mean.set_fval(settings->rmean(i2 - 1));
     r12mean.set_fval(settings->rmean(i1 - 1) + settings->rmean(i2 - 1));
