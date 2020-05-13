@@ -43,7 +43,9 @@ namespace trklet {
       ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(settings, imathGlobals_, 2, -1);
     }
 
-    ~Globals() = default;
+    ~Globals() {
+      delete imathGlobals_;
+    }
     
     SLHCEvent*& event() { return theEvent_; }
 

@@ -53,6 +53,9 @@ Sector::Sector(unsigned int i, const Settings* settings, Globals* globals) : set
 }
 
 Sector::~Sector() {
+  for (unsigned int i = 0; i < MemoriesV_.size(); i++) {
+    MemoriesV_[i]->clean();
+  }
   for (const auto& p : Processes_) {
     ProcessBase* proc = p.second;
     delete proc;
