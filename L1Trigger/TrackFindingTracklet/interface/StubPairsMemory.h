@@ -42,7 +42,7 @@ namespace trklet {
     unsigned getIndex(const unsigned i) const { return indices_.at(i); }
     const std::string& getTEDName(const unsigned i) const { return tedNames_.at(i); }
 
-    void clean() {
+    void clean() override {
       stubs_.clear();
       indices_.clear();
       tedNames_.clear();

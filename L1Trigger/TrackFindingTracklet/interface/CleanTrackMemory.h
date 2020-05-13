@@ -22,7 +22,7 @@ namespace trklet {
 
     unsigned int nTracks() const { return tracks_.size(); }
 
-    void clean() { tracks_.clear(); }
+    void clean() override { tracks_.clear(); }
 
     bool foundTrack(std::ofstream& outres, L1SimTrack simtrk);
 

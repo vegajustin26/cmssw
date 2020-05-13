@@ -18,37 +18,36 @@ namespace trklet {
 
     ~HistImp() = default;
 
-    void open();
-    void close();
+    void open() override;
+    void close() override;
 
-    void bookLayerResidual();
-    void bookDiskResidual();
-    void bookTrackletParams();
+    void bookLayerResidual() override;
+    void bookDiskResidual() override;
+    void bookTrackletParams() override;
+    void bookSeedEff() override;
 
-    virtual void fillTrackletParams(const Settings *settings,
-                                    Globals *globals,
-                                    int seedIndex,
-                                    int iSector,
-                                    double rinv,
-                                    double irinv,
-                                    double phi0,
-                                    double iphi0,
-                                    double eta,
-                                    double ieta,
-                                    double z0,
-                                    double iz0,
-                                    int tp);
+    void fillTrackletParams(const Settings *settings,
+			    Globals *globals,
+			    int seedIndex,
+			    int iSector,
+			    double rinv,
+			    double irinv,
+			    double phi0,
+			    double iphi0,
+			    double eta,
+			    double ieta,
+			    double z0,
+			    double iz0,
+			    int tp) override;
 
     void FillLayerResidual(
-        int layer, int seed, double phiresid, double iphiresid, double zresid, double izresid, bool match);
+        int layer, int seed, double phiresid, double iphiresid, double zresid, double izresid, bool match) override;
 
-    virtual void FillDiskResidual(
-        int disk, int seed, double phiresid, double iphiresid, double rresid, double irresid, bool match);
-
-    void bookSeedEff();
+    void FillDiskResidual(
+        int disk, int seed, double phiresid, double iphiresid, double rresid, double irresid, bool match) override;
 
     //Efficiency for finding seed
-    virtual void fillSeedEff(int seedIndex, double etaTP, bool eff);
+    void fillSeedEff(int seedIndex, double etaTP, bool eff) override;
 
   private:
     TFile *h_file_;

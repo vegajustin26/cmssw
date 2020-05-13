@@ -26,7 +26,7 @@ namespace trklet {
 
     Tracklet *getTracklet(unsigned int i) { return tracklets_[i]; }
 
-    void clean();
+    void clean() override;
 
     void writeMatches(Globals *globals, int &matchesL1, int &matchesL3, int &matchesL5);
 

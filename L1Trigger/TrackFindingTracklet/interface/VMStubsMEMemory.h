@@ -48,7 +48,7 @@ namespace trklet {
       return binnedstubs_[bin][i].stub();
     }
 
-    void clean() {
+    void clean() override {
       stubs_.clear();
       for (unsigned int i = 0; i < binnedstubs_.size(); i++) {
         binnedstubs_[i].clear();

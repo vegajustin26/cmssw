@@ -31,7 +31,7 @@ namespace trklet {
     std::vector<std::pair<const Stub*, const L1TStub*>> getStublist(unsigned int i) const { return stublists_[i]; }
     std::vector<std::pair<int, int>> getStubidslist(unsigned int i) const { return stubidslists_[i]; }
 
-    void clean() {
+    void clean() override {
       tracks_.clear();
       stublists_.clear();
       stubidslists_.clear();

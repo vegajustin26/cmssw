@@ -24,8 +24,8 @@ namespace trklet {
 
     ~MatchCalculator() = default;
 
-    void addOutput(MemoryBase* memory, std::string output);
-    void addInput(MemoryBase* memory, std::string input);
+    void addOutput(MemoryBase* memory, std::string output) override;
+    void addInput(MemoryBase* memory, std::string input) override;
 
     void execute();
 

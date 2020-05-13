@@ -25,7 +25,7 @@ namespace trklet {
 
     void writeVMPROJ(bool first);
 
-    void clean() { tracklets_.clear(); }
+    void clean() override { tracklets_.clear(); }
 
     int layer() const { return layer_; }
     int disk() const { return disk_; }

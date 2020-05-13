@@ -39,7 +39,7 @@ namespace trklet {
     const L1TStub* getL1TStub3(unsigned int i) const { return stubs3_[i].second; }
     std::pair<const Stub*, const L1TStub*> getStub3(unsigned int i) const { return stubs3_[i]; }
 
-    void clean() {
+    void clean() override {
       stubs1_.clear();
       stubs2_.clear();
       stubs3_.clear();

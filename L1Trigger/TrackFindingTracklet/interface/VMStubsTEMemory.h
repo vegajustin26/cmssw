@@ -31,7 +31,7 @@ namespace trklet {
 
     const VMStubTE& getVMStubTEBinned(unsigned int bin, unsigned int i) const { return stubsbinnedvm_[bin][i]; }
 
-    void clean();
+    void clean() override;
 
     void writeStubs(bool first);
 

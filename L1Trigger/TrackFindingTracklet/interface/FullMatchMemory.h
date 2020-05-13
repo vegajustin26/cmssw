@@ -28,7 +28,7 @@ namespace trklet {
 
     std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > getMatch(unsigned int i) { return matches_[i]; }
 
-    void clean() { matches_.clear(); }
+    void clean() override { matches_.clear(); }
 
     void writeMC(bool first);
 

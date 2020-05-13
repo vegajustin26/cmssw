@@ -23,7 +23,7 @@ namespace trklet {
 
     const Tracklet* getTracklet(unsigned int i) const { return tracklets_[i]; }
 
-    void clean() { tracklets_.clear(); }
+    void clean() override { tracklets_.clear(); }
 
     void writeAP(bool first);
 

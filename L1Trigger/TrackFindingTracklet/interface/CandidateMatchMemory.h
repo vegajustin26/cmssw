@@ -28,7 +28,7 @@ namespace trklet {
       return matches_[i];
     }
 
-    void clean() { matches_.clear(); }
+    void clean() override { matches_.clear(); }
 
     void writeCM(bool first);
 

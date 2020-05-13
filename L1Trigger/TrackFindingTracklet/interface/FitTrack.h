@@ -21,9 +21,9 @@ namespace trklet {
 
     ~FitTrack() = default;
 
-    void addOutput(MemoryBase* memory, std::string output);
+    void addOutput(MemoryBase* memory, std::string output) override;
 
-    void addInput(MemoryBase* memory, std::string input);
+    void addInput(MemoryBase* memory, std::string input) override;
 
     // used if USEHYBRID is not defined
     void trackFitChisq(Tracklet* tracklet, std::vector<std::pair<const Stub*, const L1TStub*>>&, std::vector<std::pair<int, int>>&);

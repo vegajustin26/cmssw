@@ -25,7 +25,7 @@ namespace trklet {
 
     std::pair<const Stub*, const L1TStub*> getStub(unsigned int i) const { return stubs_[i]; }
 
-    void clean() { stubs_.clear(); }
+    void clean() override { stubs_.clear(); }
 
     void writeStubs(bool first);
 

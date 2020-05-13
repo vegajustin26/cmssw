@@ -29,7 +29,7 @@ namespace trklet {
 
     void writeStubs(bool first);
 
-    void clean();
+    void clean() override;
 
   private:
     std::vector<std::pair<Stub*, L1TStub*> > stubs_;
