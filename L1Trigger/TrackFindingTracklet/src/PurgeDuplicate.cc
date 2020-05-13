@@ -84,8 +84,8 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
 
   if (settings_->removalType() == "merge") {
     std::vector<std::pair<int, bool>> trackInfo;  // Track seed & duplicate flag
-    std::vector<int>
-        seedRank;  // Vector to store the relative rank of the track candidate for merging, based on seed type
+    // Vector to store the relative rank of the track candidate for merging, based on seed type
+    std::vector<int> seedRank;  
 
     // Get vectors from TrackFit and save them
     // inputtracklets: Tracklet objects from the FitTrack (not actually fit yet)
@@ -158,8 +158,8 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
     }
 
     // Find duplicates; Fill dupMap by looping over all pairs of "tracks"
-    for (unsigned int itrk = 0; itrk < numStublists - 1;
-         itrk++) {  // numStublists-1 since last track has no other to compare to
+    // numStublists-1 since last track has no other to compare to
+    for (unsigned int itrk = 0; itrk < numStublists - 1; itrk++) { 
       for (unsigned int jtrk = itrk + 1; jtrk < numStublists; jtrk++) {
         // Get primary track stubids
         std::vector<std::pair<int, int>> stubsTrk1 = inputstubidslists_[itrk];
