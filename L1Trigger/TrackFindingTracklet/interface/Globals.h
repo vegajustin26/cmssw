@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_Globals_h
 #define L1Trigger_TrackFindingTracklet_interface_Globals_h
 
-#include <iostream>
+#include <memory>
 
 #include "HistBase.h"
 
@@ -26,26 +26,31 @@ namespace trklet {
   public:
     
     Globals(const Settings* settings) {
-      imathGlobals_ = new imathGlobals();
+
+      imathGlobals *imathGlobs=new imathGlobals();
+
+      //takes owernship of globals pointer
+      imathGlobals_.reset(imathGlobs);
 
       // tracklet calculators
-      ITC_L1L2_ = new IMATH_TrackletCalculator(settings, imathGlobals_, 1, 2);
-      ITC_L2L3_ = new IMATH_TrackletCalculator(settings, imathGlobals_, 2, 3);
-      ITC_L3L4_ = new IMATH_TrackletCalculator(settings, imathGlobals_, 3, 4);
-      ITC_L5L6_ = new IMATH_TrackletCalculator(settings, imathGlobals_, 5, 6);
+      ITC_L1L2_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 1, 2));
+      ITC_L2L3_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 2, 3));
+      ITC_L3L4_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 3, 4));
+      ITC_L5L6_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 5, 6));
 
-      ITC_F1F2_ = new IMATH_TrackletCalculatorDisk(settings, imathGlobals_, 1, 2);
-      ITC_F3F4_ = new IMATH_TrackletCalculatorDisk(settings, imathGlobals_, 3, 4);
-      ITC_B1B2_ = new IMATH_TrackletCalculatorDisk(settings, imathGlobals_, -1, -2);
-      ITC_B3B4_ = new IMATH_TrackletCalculatorDisk(settings, imathGlobals_, -3, -4);
-
-      ITC_L1F1_ = new IMATH_TrackletCalculatorOverlap(settings, imathGlobals_, 1, 1);
-      ITC_L2F1_ = new IMATH_TrackletCalculatorOverlap(settings, imathGlobals_, 2, 1);
-      ITC_L1B1_ = new IMATH_TrackletCalculatorOverlap(settings, imathGlobals_, 1, -1);
-      ITC_L2B1_ = new IMATH_TrackletCalculatorOverlap(settings, imathGlobals_, 2, -1);
+      ITC_F1F2_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, 1, 2));
+      ITC_F3F4_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, 3, 4));
+      ITC_B1B2_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, -1, -2));
+      ITC_B3B4_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, -3, -4));
+      
+      ITC_L1F1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 1, 1));
+      ITC_L2F1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 2, 1));
+      ITC_L1B1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 1, -1));
+      ITC_L2B1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 2, -1));
     }
 
     ~Globals() {
+      /*
       delete ITC_L1L2_;
       delete ITC_L2L3_;
       delete ITC_L3L4_;
@@ -59,6 +64,7 @@ namespace trklet {
       delete ITC_L1B1_;
       delete ITC_L2B1_;
       delete imathGlobals_;  //has to be deleted after the imath calculators
+      */
     }
     
     SLHCEvent*& event() { return theEvent_; }
@@ -83,20 +89,20 @@ namespace trklet {
 
     double& Vfull(int i, int j, int ptbin, int index) { return Vfull_[i][j][ptbin][index]; }
 
-    IMATH_TrackletCalculator* ITC_L1L2() { return ITC_L1L2_; }
-    IMATH_TrackletCalculator* ITC_L2L3() { return ITC_L2L3_; }
-    IMATH_TrackletCalculator* ITC_L3L4() { return ITC_L3L4_; }
-    IMATH_TrackletCalculator* ITC_L5L6() { return ITC_L5L6_; }
+    IMATH_TrackletCalculator* ITC_L1L2() { return ITC_L1L2_.get(); }
+    IMATH_TrackletCalculator* ITC_L2L3() { return ITC_L2L3_.get(); }
+    IMATH_TrackletCalculator* ITC_L3L4() { return ITC_L3L4_.get(); }
+    IMATH_TrackletCalculator* ITC_L5L6() { return ITC_L5L6_.get(); }
 
-    IMATH_TrackletCalculatorDisk* ITC_F1F2() { return ITC_F1F2_; }
-    IMATH_TrackletCalculatorDisk* ITC_F3F4() { return ITC_F3F4_; }
-    IMATH_TrackletCalculatorDisk* ITC_B1B2() { return ITC_B1B2_; }
-    IMATH_TrackletCalculatorDisk* ITC_B3B4() { return ITC_B3B4_; }
+    IMATH_TrackletCalculatorDisk* ITC_F1F2() { return ITC_F1F2_.get(); }
+    IMATH_TrackletCalculatorDisk* ITC_F3F4() { return ITC_F3F4_.get(); }
+    IMATH_TrackletCalculatorDisk* ITC_B1B2() { return ITC_B1B2_.get(); }
+    IMATH_TrackletCalculatorDisk* ITC_B3B4() { return ITC_B3B4_.get(); }
 
-    IMATH_TrackletCalculatorOverlap* ITC_L1F1() { return ITC_L1F1_; }
-    IMATH_TrackletCalculatorOverlap* ITC_L1B1() { return ITC_L1B1_; }
-    IMATH_TrackletCalculatorOverlap* ITC_L2F1() { return ITC_L2F1_; }
-    IMATH_TrackletCalculatorOverlap* ITC_L2B1() { return ITC_L2B1_; }
+    IMATH_TrackletCalculatorOverlap* ITC_L1F1() { return ITC_L1F1_.get(); }
+    IMATH_TrackletCalculatorOverlap* ITC_L1B1() { return ITC_L1B1_.get(); }
+    IMATH_TrackletCalculatorOverlap* ITC_L2F1() { return ITC_L2F1_.get(); }
+    IMATH_TrackletCalculatorOverlap* ITC_L2B1() { return ITC_L2B1_.get(); }
 
     std::ofstream& ofstream(std::string fname) {
       if (ofstreams_.find(fname) != ofstreams_.end()) {
@@ -110,23 +116,23 @@ namespace trklet {
   private:
     std::map<std::string, std::ofstream*> ofstreams_;
 
+    std::unique_ptr<imathGlobals> imathGlobals_;
+    
     // tracklet calculators
-    IMATH_TrackletCalculator* ITC_L1L2_{nullptr};
-    IMATH_TrackletCalculator* ITC_L2L3_{nullptr};
-    IMATH_TrackletCalculator* ITC_L3L4_{nullptr};
-    IMATH_TrackletCalculator* ITC_L5L6_{nullptr};
+    std::unique_ptr<IMATH_TrackletCalculator> ITC_L1L2_;
+    std::unique_ptr<IMATH_TrackletCalculator> ITC_L2L3_;
+    std::unique_ptr<IMATH_TrackletCalculator> ITC_L3L4_;
+    std::unique_ptr<IMATH_TrackletCalculator> ITC_L5L6_;
 
-    IMATH_TrackletCalculatorDisk* ITC_F1F2_{nullptr};
-    IMATH_TrackletCalculatorDisk* ITC_F3F4_{nullptr};
-    IMATH_TrackletCalculatorDisk* ITC_B1B2_{nullptr};
-    IMATH_TrackletCalculatorDisk* ITC_B3B4_{nullptr};
+    std::unique_ptr<IMATH_TrackletCalculatorDisk> ITC_F1F2_;
+    std::unique_ptr<IMATH_TrackletCalculatorDisk> ITC_F3F4_;
+    std::unique_ptr<IMATH_TrackletCalculatorDisk> ITC_B1B2_;
+    std::unique_ptr<IMATH_TrackletCalculatorDisk> ITC_B3B4_;
 
-    IMATH_TrackletCalculatorOverlap* ITC_L1F1_{nullptr};
-    IMATH_TrackletCalculatorOverlap* ITC_L2F1_{nullptr};
-    IMATH_TrackletCalculatorOverlap* ITC_L1B1_{nullptr};
-    IMATH_TrackletCalculatorOverlap* ITC_L2B1_{nullptr};
-
-    imathGlobals* imathGlobals_{nullptr};
+    std::unique_ptr<IMATH_TrackletCalculatorOverlap> ITC_L1F1_;
+    std::unique_ptr<IMATH_TrackletCalculatorOverlap> ITC_L2F1_;
+    std::unique_ptr<IMATH_TrackletCalculatorOverlap> ITC_L1B1_;
+    std::unique_ptr<IMATH_TrackletCalculatorOverlap> ITC_L2B1_;
 
     SLHCEvent* theEvent_{nullptr};
 

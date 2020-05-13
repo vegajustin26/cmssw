@@ -124,8 +124,6 @@
 #include <cassert>
 #include <set>
 
-using namespace std;
-
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
