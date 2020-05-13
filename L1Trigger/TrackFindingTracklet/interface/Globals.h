@@ -1,6 +1,8 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_Globals_h
 #define L1Trigger_TrackFindingTracklet_interface_Globals_h
 
+#include <iostream>
+
 #include "HistBase.h"
 
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
@@ -44,7 +46,19 @@ namespace trklet {
     }
 
     ~Globals() {
-      delete imathGlobals_;
+      delete ITC_L1L2_;
+      delete ITC_L2L3_;
+      delete ITC_L3L4_;
+      delete ITC_L5L6_;
+      delete ITC_F1F2_;
+      delete ITC_F3F4_;
+      delete ITC_B1B2_;
+      delete ITC_B3B4_;
+      delete ITC_L1F1_;
+      delete ITC_L2F1_;
+      delete ITC_L1B1_;
+      delete ITC_L2B1_;
+      delete imathGlobals_;  //has to be deleted after the imath calculators
     }
     
     SLHCEvent*& event() { return theEvent_; }
