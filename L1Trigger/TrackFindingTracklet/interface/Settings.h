@@ -656,6 +656,7 @@ namespace trklet {
 
     double bfield_{3.8};  //B-field in T
     double c_{0.3};       //speed of light m/ns
+    //double c_{0.299792458};       //speed of light m/ns
 
     mutable double krinvpars_;
     mutable double kphi0pars_;
@@ -679,7 +680,8 @@ namespace trklet {
   constexpr unsigned int N_DISK = 5;
   constexpr unsigned int N_LAYERDISK = 11;
 
-  constexpr unsigned int N_SEEDINDEX = 12;
+  constexpr unsigned int N_SEEDINDEX = 12; // number of tracklet+triplet seeds
+  constexpr unsigned int N_PROJ = 4;       // number of projections (beyong stubs from seed)
   
   constexpr unsigned int N_TRACKDER_PTBIN = 4;
   constexpr unsigned int N_TRACKDER_INDEX = 1000;

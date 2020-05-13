@@ -1,13 +1,6 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_TrackPars_h
 #define L1Trigger_TrackFindingTracklet_interface_TrackPars_h
 
-//#include <iostream>
-//#include <fstream>
-//#include <cassert>
-//#include <cmath>
-//#include <vector>
-//#include <map>
-
 namespace trklet {
 
   template <class T>

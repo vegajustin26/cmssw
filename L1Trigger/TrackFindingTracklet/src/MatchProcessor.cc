@@ -430,7 +430,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, c
     }
 
     if (settings_->writeMonitorData("Residuals")) {
-      double pt = 0.003 * 3.8 / std::abs(tracklet->rinv());
+      double pt = 0.01 * settings_->c() * settings_->bfield() / std::abs(tracklet->rinv());
 
       globals_->ofstream("layerresiduals.txt")
           << layer_ << " " << seedindex << " " << pt << " "
@@ -598,7 +598,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, c
     double drcut = idrcut * settings_->krprojshiftdisk();
 
     if (settings_->writeMonitorData("Residuals")) {
-      double pt = 0.003 * 3.8 / std::abs(tracklet->rinv());
+      double pt = 0.01 * settings_->c() * settings_->bfield() / std::abs(tracklet->rinv());
 
       globals_->ofstream("diskresiduals.txt")
           << disk_ << " " << stub->isPSmodule() << " " << tracklet->layer() << " " << abs(tracklet->disk()) << " " << pt

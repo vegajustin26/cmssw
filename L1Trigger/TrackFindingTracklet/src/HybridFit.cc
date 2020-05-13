@@ -176,7 +176,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
 
     if (settings_->printDebugKF())
       edm::LogVerbatim("L1track") << "Done with Kalman fit. Pars: pt = " << trk.pt()
-                                  << ", 1/2R = " << 3.8 * 3 * trk.qOverPt() / 2000 << ", phi0 = " << trk.phi0()
+                                  << ", 1/2R = " << settings_->bfield() * 3 * trk.qOverPt() / 2000 << ", phi0 = " << trk.phi0()
                                   << ", eta = " << trk.eta() << ", z0 = " << trk.z0() << ", chi2 = " << trk.chi2()
                                   << ", accepted = " << trk.accepted();
 
@@ -188,7 +188,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
     if (phi0fit < -M_PI)
       phi0fit += 2 * M_PI;
 
-    double rinvfit = 0.01 * 0.3 * TMTTsettings.getBfield() * trk.qOverPt();
+    double rinvfit = 0.01 * settings_->c() * TMTTsettings.getBfield() * trk.qOverPt();
 
     int irinvfit = rinvfit / settings_->krinvpars();
     int iphi0fit = phi0fit / settings_->kphi0pars();

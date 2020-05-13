@@ -12,7 +12,6 @@ CleanTrackMemory::CleanTrackMemory(
   phimax_ = phimax;
 }
 
-
 void CleanTrackMemory::writeCT(bool first) {
   std::string fname = "../data/MemPrints/CleanTrack/CleanTrack_";
   fname += getName();

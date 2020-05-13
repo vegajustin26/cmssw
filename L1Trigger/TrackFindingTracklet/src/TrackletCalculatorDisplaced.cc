@@ -505,20 +505,25 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
   if (!success)
     return false;
 
-  double phicrit = phi0approx - asin(0.5 * settings_->rcrit() * rinvapprox);
-  int phicritapprox = iphi0 - 2 * irinv;
-  bool keep = (phicrit > settings_->phicritminmc()) && (phicrit < settings_->phicritmaxmc()),
-       keepapprox = (phicritapprox > settings_->iphicritminmc()) && (phicritapprox < settings_->iphicritmaxmc());
+  double phicritapprox = phi0approx - asin(0.5 * settings_->rcrit() * rinvapprox);
+  int phicrit = iphi0 - 2 * irinv;
+
+  int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.get_K();
+  int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.get_K();
+  
+  bool keepapprox = (phicritapprox > settings_->phicritminmc()) && (phicritapprox < settings_->phicritmaxmc()),
+       keep = (phicrit > iphicritmincut) && (phicrit < iphicritmaxcut);
+  
   if (settings_->debugTracklet())
     if (keep && !keepapprox)
       edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced::LLLSeeding tracklet kept with exact phicrit cut "
                                       "but not approximate, phicritapprox: "
                                    << phicritapprox;
   if (settings_->usephicritapprox()) {
-    if (!keep)
+    if (!keepapprox)
       return false;
   } else {
-    if (!keepapprox)
+    if (!keep)
       return false;
   }
 
@@ -845,20 +850,25 @@ bool TrackletCalculatorDisplaced::DDLSeeding(const Stub* innerFPGAStub,
   if (!success)
     return false;
 
-  double phicrit = phi0approx - asin(0.5 * settings_->rcrit() * rinvapprox);
-  int phicritapprox = iphi0 - 2 * irinv;
-  bool keep = (phicrit > settings_->phicritminmc()) && (phicrit < settings_->phicritmaxmc()),
-       keepapprox = (phicritapprox > settings_->iphicritminmc()) && (phicritapprox < settings_->iphicritmaxmc());
+  double phicritapprox = phi0approx - asin(0.5 * settings_->rcrit() * rinvapprox);
+  int phicrit = iphi0 - 2 * irinv;
+
+  int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.get_K();
+  int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.get_K();
+
+  bool keepapprox = (phicritapprox > settings_->phicritminmc()) && (phicritapprox < settings_->phicritmaxmc()),
+       keep = (phicrit > iphicritmincut) && (phicrit < iphicritmaxcut);
+
   if (settings_->debugTracklet())
     if (keep && !keepapprox)
       edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced::DDLSeeding tracklet kept with exact phicrit cut "
                                       "but not approximate, phicritapprox: "
                                    << phicritapprox;
   if (settings_->usephicritapprox()) {
-    if (!keep)
+    if (!keepapprox)
       return false;
   } else {
-    if (!keepapprox)
+    if (!keep)
       return false;
   }
 
@@ -1170,20 +1180,25 @@ bool TrackletCalculatorDisplaced::LLDSeeding(const Stub* innerFPGAStub,
   if (!success)
     return false;
 
-  double phicrit = phi0approx - asin(0.5 * settings_->rcrit() * rinvapprox);
-  int phicritapprox = iphi0 - 2 * irinv;
-  bool keep = (phicrit > settings_->phicritminmc()) && (phicrit < settings_->phicritmaxmc()),
-       keepapprox = (phicritapprox > settings_->iphicritminmc()) && (phicritapprox < settings_->iphicritmaxmc());
+  double phicritapprox = phi0approx - asin(0.5 * settings_->rcrit() * rinvapprox);
+  int phicrit = iphi0 - 2 * irinv;
+
+  int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.get_K();
+  int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.get_K();
+  
+  bool keepapprox = (phicritapprox > settings_->phicritminmc()) && (phicritapprox < settings_->phicritmaxmc()),
+       keep = (phicrit > iphicritmincut) && (phicrit < iphicritmaxcut);
+  
   if (settings_->debugTracklet())
     if (keep && !keepapprox)
       edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced::LLDSeeding tracklet kept with exact phicrit cut "
                                       "but not approximate, phicritapprox: "
                                    << phicritapprox;
   if (settings_->usephicritapprox()) {
-    if (!keep)
+    if (!keepapprox)
       return false;
   } else {
-    if (!keepapprox)
+    if (!keep)
       return false;
   }
 
