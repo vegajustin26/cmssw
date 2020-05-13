@@ -24,8 +24,6 @@ namespace trklet {
 
     void clean() override { tracks_.clear(); }
 
-    bool foundTrack(std::ofstream& outres, L1SimTrack simtrk);
-
     void writeCT(bool first);
 
   private:

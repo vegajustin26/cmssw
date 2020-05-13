@@ -488,8 +488,6 @@ namespace trklet {
     bool isOverlap() const { return overlap_; }
     int isDisk() const { return disk_; }
 
-    bool foundTrack(L1SimTrack simtrk, double phioffset);
-
     void setTrackletIndex(int index);
 
     int trackletIndex() const { return trackletIndex_; }

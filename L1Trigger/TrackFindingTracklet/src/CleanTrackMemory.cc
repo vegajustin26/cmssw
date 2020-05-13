@@ -12,47 +12,6 @@ CleanTrackMemory::CleanTrackMemory(
   phimax_ = phimax;
 }
 
-bool CleanTrackMemory::foundTrack(ofstream& outres, L1SimTrack simtrk) {
-  bool match = false;
-  double phioffset = phimin_ - (phimax_ - phimin_) / 6.0;
-  for (unsigned int i = 0; i < tracks_.size(); i++) {
-    match = match || tracks_[i]->foundTrack(simtrk, phimin_);
-    if (tracks_[i]->foundTrack(simtrk, phimin_)) {
-      Tracklet* tracklet = tracks_[i];
-      int charge = simtrk.trackid() / abs(simtrk.trackid());
-      if (abs(simtrk.trackid()) < 100)
-        charge = -charge;
-      double simphi = simtrk.phi();
-      if (simphi < 0.0)
-        simphi += 2 * M_PI;
-      int irinv = tracklet->irinvfit().value();
-      if (irinv == 0)
-        irinv = 1;
-      int layerordisk = -1;
-      if (tracklet->isBarrel()) {
-        layerordisk = tracklet->layer();
-      } else {
-        layerordisk = tracklet->disk();
-      }
-      outres << layerordisk << " " << tracklet->nMatches() << " " << simtrk.pt() * charge << " " << simphi << " "
-             << simtrk.eta() << " " << simtrk.vz() << "   " << (0.3 * 3.8 / 100.0) / tracklet->rinvfit() << " "
-             << tracklet->phi0fit() + phioffset << " " << asinh(tracklet->tfit()) << " " << tracklet->z0fit() << "   "
-             << (0.3 * 3.8 / 100.0) / tracklet->rinvfitexact() << " " << tracklet->phi0fitexact() + phioffset << " "
-             << asinh(tracklet->tfitexact()) << " " << tracklet->z0fitexact() << "   "
-             << (0.3 * 3.8 / 100.0) / (irinv * settings_->krinvpars()) << " "
-             << tracklet->iphi0fit().value() * settings_->kphi0pars() + phioffset << " "
-             << asinh(tracklet->itfit().value() * settings_->ktpars()) << " "
-             << tracklet->iz0fit().value() * settings_->kz() << "   "
-             << (0.3 * 3.8 / 100.0) / (1e-20 + tracklet->fpgarinv().value() * settings_->krinvpars()) << " "
-             << tracklet->fpgaphi0().value() * settings_->kphi0pars() + phioffset << " "
-             << asinh(tracklet->fpgat().value() * settings_->ktpars()) << " "
-             << tracklet->fpgaz0().value() * settings_->kz() << "               "
-             << (0.3 * 3.8 / 100.0) / (1e-20 + tracklet->rinvapprox()) << " " << tracklet->phi0approx() + phioffset
-             << " " << asinh(tracklet->tapprox()) << " " << tracklet->z0approx() << endl;
-    }
-  }
-  return match;
-}
 
 void CleanTrackMemory::writeCT(bool first) {
   std::string fname = "../data/MemPrints/CleanTrack/CleanTrack_";

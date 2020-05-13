@@ -862,15 +862,6 @@ int Tracklet::disk2() const {
   return innerStub_->disk() - 1;
 }
 
-bool Tracklet::foundTrack(L1SimTrack simtrk, double phioffset) {
-  double deta = simtrk.eta() - asinh(itfit().value() * settings_->ktpars());
-  double dphi = trklet::phiRange(simtrk.phi() - (iphi0fit().value() * settings_->kphi0pars() + phioffset));
-
-  bool found = (std::abs(deta) < 0.06) && (std::abs(dphi) < 0.01);
-
-  return found;
-}
-
 void Tracklet::setTrackletIndex(int index) {
   trackletIndex_ = index;
   assert(index < 128);

@@ -444,15 +444,6 @@ void Sector::executePD(std::vector<Track*>& tracks) {
   }
 }
 
-bool Sector::foundTrack(ofstream& outres, L1SimTrack simtrk) const {
-  bool match = false;
-  for (unsigned int i = 0; i < TF_.size(); i++) {
-    if (TF_[i]->foundTrack(outres, simtrk))
-      match = true;
-  }
-  return match;
-}
-
 std::vector<Tracklet*> Sector::getAllTracklets() const {
   std::vector<Tracklet*> tmp;
   for (unsigned int i = 0; i < TPAR_.size(); i++) {

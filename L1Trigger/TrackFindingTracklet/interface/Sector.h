@@ -105,8 +105,6 @@ namespace trklet {
     void executeFT();
     void executePD(std::vector<Track*>& tracks);
 
-    bool foundTrack(std::ofstream& outres, L1SimTrack simtrk) const;
-
     std::vector<Tracklet*> getAllTracklets() const;
     std::vector<std::pair<const Stub*, const L1TStub*> > getStubs() const;
 

@@ -37,8 +37,6 @@ namespace trklet {
       stubidslists_.clear();
     }
 
-    bool foundTrack(std::ofstream& outres, L1SimTrack simtrk);
-
     void writeTF(bool first);
 
   private:
