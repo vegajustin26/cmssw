@@ -110,7 +110,7 @@ namespace trklet {
     std::vector<Tracklet*> getAllTracklets();
     std::vector<std::pair<const Stub*, const L1TStub*> > getStubs() const;
 
-    std::set<int> seedMatch(int itp);
+    std::set<int> seedMatch(int itp) const;
 
     double phimin() const { return phimin_; }
     double phimax() const { return phimax_; }
