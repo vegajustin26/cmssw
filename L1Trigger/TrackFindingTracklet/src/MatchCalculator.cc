@@ -413,7 +413,6 @@ void MatchCalculator::execute() {
       if (!stub->isPSmodule()) {
         double alphanew = stub->alphanew();
         dphi += dr * alphanew * settings_->half2SmoduleWidth() / stub->r2();
-        ;
         dphiapprox += drapprox * alphanew * settings_->half2SmoduleWidth() / stub->r2();
 
         drphi += dr * alphanew * settings_->half2SmoduleWidth() / stub->r();

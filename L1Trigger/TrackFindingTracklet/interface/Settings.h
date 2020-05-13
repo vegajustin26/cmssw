@@ -194,8 +194,8 @@ namespace trklet {
 
     double dphisectorHG() const {
       return 2 * M_PI / NSector_ +
-             2 * fmax(std::abs(asin(0.5 * rinvmax() * rmean(0)) - asin(0.5 * rinvmax() * rcrit_)),
-                      std::abs(asin(0.5 * rinvmax() * rmean(5)) - asin(0.5 * rinvmax() * rcrit_)));
+	2 * std::max(std::abs(asin(0.5 * rinvmax() * rmean(0)) - asin(0.5 * rinvmax() * rcrit_)),
+		     std::abs(asin(0.5 * rinvmax() * rmean(5)) - asin(0.5 * rinvmax() * rcrit_)));
     }
 
     double rcrit() const { return rcrit_; }

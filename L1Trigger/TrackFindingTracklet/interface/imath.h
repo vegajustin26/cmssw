@@ -1015,7 +1015,6 @@ public:
     }
   }
   virtual ~var_inv() {
-    //if(LUT) delete LUT;
     delete[] LUT;
   }
 

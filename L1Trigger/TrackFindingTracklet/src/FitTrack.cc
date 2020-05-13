@@ -898,7 +898,6 @@ std::vector<Tracklet*> FitTrack::orderedMatches(vector<FullMatchMemory*>& fullma
       if (tmp[i - 1]->TCID() > tmp[i]->TCID()) {
         edm::LogVerbatim("Tracklet") << "Wrong TCID ordering in " << getName() << " : " << tmp[i - 1]->TCID() << " "
                                      << tmp[i]->TCID();
-        //assert(0);
       }
     }
   }

@@ -3,7 +3,6 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
-#include <iostream>
 #include <fstream>
 #include <cassert>
 #include <cmath>
