@@ -1098,17 +1098,12 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
 
     //Secondly the disks
     else {
-      if (std::abs(alpha[i - nlayers]) < 1e-10) {
-        MinvDt[0][2 * i] *= (rnew[i] / sigmaxpsdisk);
-        MinvDt[1][2 * i] *= (rnew[i] / sigmaxpsdisk);
-        MinvDt[2][2 * i] *= (rnew[i] / sigmaxpsdisk);
-        MinvDt[3][2 * i] *= (rnew[i] / sigmaxpsdisk);
-      } else {
-        MinvDt[0][2 * i] *= (rnew[i] / sigmax2sdisk);
-        MinvDt[1][2 * i] *= (rnew[i] / sigmax2sdisk);
-        MinvDt[2][2 * i] *= (rnew[i] / sigmax2sdisk);
-        MinvDt[3][2 * i] *= (rnew[i] / sigmax2sdisk);
-      }
+      double denom = (std::abs(alpha[i - nlayers]) < 1e-10) ? sigmaxpsdisk : sigmax2sdisk;
+
+      MinvDt[0][2 * i] *= (rnew[i] / denom);
+      MinvDt[1][2 * i] *= (rnew[i] / denom);
+      MinvDt[2][2 * i] *= (rnew[i] / denom);
+      MinvDt[3][2 * i] *= (rnew[i] / denom);
 
       assert(MinvDt[0][2 * i] == MinvDt[0][2 * i]);
 
@@ -1121,17 +1116,12 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
       iMinvDt[3][2 * i] =
           (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i] * settings->kphiproj123() / settings->kz();
 
-      if (std::abs(alpha[i - nlayers]) < 1e-10) {
-        MinvDt[0][2 * i + 1] /= sigmazpsdisk;
-        MinvDt[1][2 * i + 1] /= sigmazpsdisk;
-        MinvDt[2][2 * i + 1] /= sigmazpsdisk;
-        MinvDt[3][2 * i + 1] /= sigmazpsdisk;
-      } else {
-        MinvDt[0][2 * i + 1] /= sigmaz2sdisk;
-        MinvDt[1][2 * i + 1] /= sigmaz2sdisk;
-        MinvDt[2][2 * i + 1] /= sigmaz2sdisk;
-        MinvDt[3][2 * i + 1] /= sigmaz2sdisk;
-      }
+      denom = (std::abs(alpha[i - nlayers]) < 1e-10) ? sigmazpsdisk : sigmaz2sdisk;
+
+      MinvDt[0][2 * i + 1] /= denom;
+      MinvDt[1][2 * i + 1] /= denom;
+      MinvDt[2][2 * i + 1] /= denom;
+      MinvDt[3][2 * i + 1] /= denom;
 
       iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * settings->krprojshiftdisk() /
                               settings->krinvpars();

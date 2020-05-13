@@ -105,14 +105,14 @@ public:
   imathGlobals* globals_;
 
   //max values
-  double dr_max = 20.;
-  double delta0_max = 0.005;
-  double a2a_max = 0.1;
-  double x8_max = 1.;
-  double x22_max = 0.3;
-  double x13_max = 300.;
-  double deltaZ_max = 8.;
-  double der_phiD_max = 0.002;
+  const double dr_max = 20.;
+  const double delta0_max = 0.005;
+  const double a2a_max = 0.1;
+  const double x8_max = 1.;
+  const double x22_max = 0.3;
+  const double x13_max = 300.;
+  const double deltaZ_max = 8.;
+  const double der_phiD_max = 0.002;
 
   // constants
   //
