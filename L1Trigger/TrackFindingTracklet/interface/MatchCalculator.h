@@ -2,13 +2,13 @@
 #define L1Trigger_TrackFindingTracklet_interface_MatchCalculator_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/ProcessBase.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 #include <string>
 #include <vector>
 
 namespace trklet {
 
-  class Settings;
   class Globals;
   class Stub;
   class L1TStub;
@@ -42,12 +42,12 @@ namespace trklet {
     int phi0shift_;
     double phioffset_;
 
-    unsigned int phimatchcut_[12];
-    unsigned int zmatchcut_[12];
-    unsigned int rphicutPS_[12];
-    unsigned int rphicut2S_[12];
-    unsigned int rcutPS_[12];
-    unsigned int rcut2S_[12];
+    unsigned int phimatchcut_[N_SEEDINDEX];
+    unsigned int zmatchcut_[N_SEEDINDEX];
+    unsigned int rphicutPS_[N_SEEDINDEX];
+    unsigned int rphicut2S_[N_SEEDINDEX];
+    unsigned int rcutPS_[N_SEEDINDEX];
+    unsigned int rcut2S_[N_SEEDINDEX];
 
     int ialphafactinner_[10];
     int ialphafactouter_[10];

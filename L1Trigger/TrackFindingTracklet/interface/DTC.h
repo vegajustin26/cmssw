@@ -2,6 +2,7 @@
 #define L1Trigger_TrackFindingTracklet_interface_DTC_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/DTCLink.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 namespace trklet {
 
@@ -18,7 +19,7 @@ namespace trklet {
 
     void addSec(int sector);
 
-    void addphi(double phi, int layerdisk);
+    void addphi(double phi, unsigned int layerdisk);
 
     void addLink(double phimin, double phimax);
 
@@ -38,8 +39,8 @@ namespace trklet {
     std::vector<DTCLink> links_;
     std::vector<int> sectors_;
 
-    double phimin_[11];
-    double phimax_[11];
+    double phimin_[N_LAYERDISK];
+    double phimax_[N_LAYERDISK];
   };
 };  // namespace trklet
 #endif

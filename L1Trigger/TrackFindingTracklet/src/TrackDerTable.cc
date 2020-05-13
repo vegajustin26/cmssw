@@ -10,8 +10,8 @@ using namespace trklet;
 TrackDerTable::TrackDerTable(const Settings* settings) {
   settings_ = settings;
 
-  Nlay_ = 6;
-  Ndisk_ = 5;
+  Nlay_ = N_LAYER;
+  Ndisk_ = N_DISK;
 
   LayerMemBits_ = 6;
   DiskMemBits_ = 7;
@@ -764,10 +764,10 @@ void TrackDerTable::getVarianceMatrix(
   std::map<string, int> layerdiskmap = globals->layerdiskmap();
 
   if (layerdiskmap.size() == 0) {
-    for (unsigned int i = 0; i < 11; i++) {
-      for (unsigned int j = 0; j < 11; j++) {
-        for (unsigned int k = 0; k < 4; k++) {
-          for (unsigned int l = 0; l < 1000; l++) {
+    for (unsigned int i = 0; i < N_LAYERDISK; i++) {
+      for (unsigned int j = 0; j < N_LAYERDISK; j++) {
+        for (unsigned int k = 0; k < N_TRACKDER_PTBIN; k++) {
+          for (unsigned int l = 0; l < N_TRACKDER_INDEX; l++) {
             globals->Vfull(i, j, k, l) = 0.0;
           }
         }
@@ -805,12 +805,12 @@ void TrackDerTable::getVarianceMatrix(
       }
 
       if (type == "E") {
-        int i, j, entries;
+        unsigned int i, j, entries;
         double vij;
         in >> i >> j >> vij >> entries;
-        assert(ptbin < 4);
-        assert(i < 11);
-        assert(j < 11);
+        assert(ptbin < N_TRACKDER_PTBIN);
+        assert(i < N_LAYERDISK);
+        assert(j < N_LAYERDISK);
         globals->Vfull(i, j, ptbin, index) = vij;
         globals->Vfull(j, i, ptbin, index) = vij;
       }
@@ -819,20 +819,20 @@ void TrackDerTable::getVarianceMatrix(
     }
   }
 
-  unsigned int index[11];
+  unsigned int index[N_LAYERDISK];
   std::string layerdisk = "0000000000000000";
 
   unsigned int N = 0;
-  for (unsigned int i = 0; i < 6; i++) {
+  for (unsigned int i = 0; i < N_LAYER; i++) {
     if (layer[i]) {
       layerdisk[i] = '1';
       index[N] = i;
       N++;
     }
   }
-  for (unsigned int i = 0; i < 5; i++) {
+  for (unsigned int i = 0; i < N_DISK; i++) {
     if (disk[i]) {
-      index[N] = i + 6;
+      index[N] = i + N_LAYER;
       N++;
     }
   }

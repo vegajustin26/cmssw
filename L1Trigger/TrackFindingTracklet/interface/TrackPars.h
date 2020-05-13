@@ -8,8 +8,6 @@
 #include <vector>
 #include <map>
 
-#include "Util.h"
-
 namespace trklet {
 
   template <class T>

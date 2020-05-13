@@ -136,7 +136,8 @@ namespace trklet {
 
     std::map<std::string, int> layerdiskmap_;
 
-    double Vfull_[11][11][4][1000];
+    
+    double Vfull_[N_LAYERDISK][N_LAYERDISK][N_TRACKDER_PTBIN][N_TRACKDER_INDEX];
   };
 };  // namespace trklet
 

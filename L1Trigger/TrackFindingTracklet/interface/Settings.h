@@ -571,8 +571,8 @@ namespace trklet {
 
     std::array<double, 5> rDSSouter_mod_{{66.4903, 76.7750, 84.4562, 94.9920, 102.3160}};
 
-    double halfstrip_{
-        2.5};  //we want the center of the two strip positions in a module, not just the center of a module
+    //we want the center of the two strip positions in a module, not just the center of a module
+    double halfstrip_{2.5};  
 
     // various printouts for debugging and warnings
     bool printDebugKF_{false};   // if true print lots of debugging statements related to the KF fit
@@ -670,7 +670,21 @@ namespace trklet {
     mutable double kphiprojdisk_;
     mutable double krdisk_;
     mutable double kzpars_;
+    
   };
+
+  // constants
+  constexpr unsigned int N_LAYER = 6;
+  constexpr unsigned int N_PSLAYER = 3;
+  constexpr unsigned int N_DISK = 5;
+  constexpr unsigned int N_LAYERDISK = 11;
+
+  constexpr unsigned int N_SEEDINDEX = 12;
+  
+  constexpr unsigned int N_TRACKDER_PTBIN = 4;
+  constexpr unsigned int N_TRACKDER_INDEX = 1000;
+  
+  
 }  // namespace trklet
 
 #endif

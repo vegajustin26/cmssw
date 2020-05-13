@@ -57,7 +57,7 @@ namespace trklet {
     int sector() const { return sector_; }
 
     double pt(const Settings* settings) const {
-      return (settings->c() * settings->bfield() / 100.0) / (irinv_ * settings->krinvpars());
+      return (settings->c() * settings->bfield() * 0.01) / (irinv_ * settings->krinvpars());
     }
 
     double phi0(const Settings* settings) const;
@@ -75,7 +75,7 @@ namespace trklet {
     int nPSstubs() const {
       int npsstubs = 0;
       for (unsigned int i = 0; i < l1stub_.size(); i++) {
-        if (l1stub_[i]->layer() < 3)
+        if (l1stub_[i]->layer() < N_PSLAYER)
           npsstubs++;
       }
       return npsstubs;
