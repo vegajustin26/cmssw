@@ -1,5 +1,4 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEventProcessor.h"
-#include "L1Trigger/TrackFindingTracklet/interface/StubVariance.h"
 
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
@@ -186,10 +185,6 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   globals_->event() = &ev;
 
   tracks_.clear();
-
-  if (settings_->writeMonitorData("Variance")) {
-    StubVariance variance(ev, globals_, settings_);
-  }
 
   eventnum_++;
   bool first = (eventnum_ == 1);

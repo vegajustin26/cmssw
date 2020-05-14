@@ -59,7 +59,7 @@ namespace trklet {
                                      int iMinvDt[4][12],
                                      double sigma[12],
                                      double kfactor[12]);
-
+    /*
     static void calculateDerivativesMS(const Settings* settings,
                                        Globals* globals,
                                        unsigned int nlayers,
@@ -76,7 +76,7 @@ namespace trklet {
                                        double sigma[12],
                                        double kfactor[12],
                                        int ptbin);
-
+    */
     static double gett(const Settings* settings, int diskmask, int layermask);
 
   private:

@@ -34,50 +34,31 @@ void FitTrack::addInput(MemoryBase* memory, string input) {
     edm::LogVerbatim("Tracklet") << "In " << name_ << " adding input from " << memory->getName() << " to input "
                                  << input;
   }
-  if (input == "tparin" || input == "tpar1in" || input == "tpar2in" || input == "tpar3in" || input == "tpar4in" ||
-      input == "tpar5in" || input == "tpar6in" || input == "tpar7in" || input == "tpar8in" || input == "tpar9in" ||
-      input == "tpar10in" || input == "tpar11in" || input == "tpar12in" || input == "tpar13in" || input == "tpar14in" ||
-      input == "tpar15in") {
+  if (input.substr(0,4) == "tpar") {
     TrackletParametersMemory* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
     assert(tmp != 0);
     seedtracklet_.push_back(tmp);
     return;
   }
-  if (input == "fullmatch1in1" || input == "fullmatch1in2" || input == "fullmatch1in3" || input == "fullmatch1in4" ||
-      input == "fullmatch1in5" || input == "fullmatch1in6" || input == "fullmatch1in7" || input == "fullmatch1in8" ||
-      input == "fullmatch1in9" || input == "fullmatch1in10" || input == "fullmatch1in11" || input == "fullmatch1in12" ||
-      input == "fullmatch1in13" || input == "fullmatch1in14" || input == "fullmatch1in15" ||
-      input == "fullmatch1in16") {
+  if (input.substr(0,10) == "fullmatch1") {
     FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
     assert(tmp != 0);
     fullmatch1_.push_back(tmp);
     return;
   }
-  if (input == "fullmatch2in1" || input == "fullmatch2in2" || input == "fullmatch2in3" || input == "fullmatch2in4" ||
-      input == "fullmatch2in5" || input == "fullmatch2in6" || input == "fullmatch2in7" || input == "fullmatch2in8" ||
-      input == "fullmatch2in9" || input == "fullmatch2in10" || input == "fullmatch2in11" || input == "fullmatch2in12" ||
-      input == "fullmatch2in13" || input == "fullmatch2in14" || input == "fullmatch2in15" ||
-      input == "fullmatch2in16") {
+  if (input.substr(0,10) == "fullmatch2") {
     FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
     assert(tmp != 0);
     fullmatch2_.push_back(tmp);
     return;
   }
-  if (input == "fullmatch3in1" || input == "fullmatch3in2" || input == "fullmatch3in3" || input == "fullmatch3in4" ||
-      input == "fullmatch3in5" || input == "fullmatch3in6" || input == "fullmatch3in7" || input == "fullmatch3in8" ||
-      input == "fullmatch3in9" || input == "fullmatch3in10" || input == "fullmatch3in11" || input == "fullmatch3in12" ||
-      input == "fullmatch3in13" || input == "fullmatch3in14" || input == "fullmatch3in15" ||
-      input == "fullmatch3in16" || input == "fullmatch3in17") {
+  if (input.substr(0,10) == "fullmatch3") {
     FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
     assert(tmp != 0);
     fullmatch3_.push_back(tmp);
     return;
   }
-  if (input == "fullmatch4in1" || input == "fullmatch4in2" || input == "fullmatch4in3" || input == "fullmatch4in4" ||
-      input == "fullmatch4in5" || input == "fullmatch4in6" || input == "fullmatch4in7" || input == "fullmatch4in8" ||
-      input == "fullmatch4in9" || input == "fullmatch4in10" || input == "fullmatch4in11" || input == "fullmatch4in12" ||
-      input == "fullmatch4in13" || input == "fullmatch4in14" || input == "fullmatch4in15" ||
-      input == "fullmatch4in16" || input == "fullmatch4in17") {
+  if (input.substr(0,10) == "fullmatch4") {
     FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
     assert(tmp != 0);
     fullmatch4_.push_back(tmp);
@@ -518,13 +499,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
     ttab = t;
   } else {
     if (settings_->exactderivativesforfloating()) {
-      if (settings_->useMSFit()) {
-        TrackDerTable::calculateDerivativesMS(
-            settings_, globals_, nlayers, r, ndisks, z, alpha, t, rinv, D, iD, MinvDt, iMinvDt, sigma, kfactor, ptbin);
-      } else {
-        TrackDerTable::calculateDerivatives(
-            settings_, nlayers, r, ndisks, z, alpha, t, rinv, D, iD, MinvDt, iMinvDt, sigma, kfactor);
-      }
+      TrackDerTable::calculateDerivatives(settings_, nlayers, r, ndisks, z, alpha, t, rinv,
+					  D, iD, MinvDt, iMinvDt, sigma, kfactor);
 
       double MinvDtDummy[4][12];
       derivatives->fill(tracklet->fpgat().value(), MinvDtDummy, iMinvDt);
