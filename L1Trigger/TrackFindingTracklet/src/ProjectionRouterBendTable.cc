@@ -35,7 +35,7 @@ void ProjectionRouterBendTable::init(const Settings* settings,
 
           double rinv = -phider * (2.0 * t);
 
-          double bendproj = 0.5 * bend(rproj, rinv);
+          double bendproj = 0.5 * bend(rproj, rinv, settings->rcrit());
 
           int ibendproj = 2.0 * bendproj + 15.5;
           if (ibendproj < 0)

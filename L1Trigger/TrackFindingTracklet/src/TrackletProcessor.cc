@@ -722,8 +722,8 @@ void TrackletProcessor::setVMPhiBin() {
           for (int i1 = 0; i1 < 2; i1++) {
             for (int i2 = 0; i2 < 2; i2++) {
               double rinv1 = rinv(phiinner[i1], phiouter[i2], rinner, router);
-              double abendinner = -bend(rinner, rinv1);
-              double abendouter = -bend(router, rinv1);
+              double abendinner = -bend(rinner, rinv1, settings_->rcrit());
+              double abendouter = -bend(router, rinv1, settings_->rcrit());
               if (abendinner < bendinnermin)
                 bendinnermin = abendinner;
               if (abendinner > bendinnermax)
@@ -826,8 +826,8 @@ void TrackletProcessor::setVMPhiBin() {
                 for (int i3 = 0; i3 < 2; i3++) {
                   double rinner = router[i3] * settings_->zmean(disk_ - 1) / settings_->zmean(disk_);
                   double rinv1 = rinv(phiinner[i1], phiouter[i2], rinner, router[i3]);
-                  double abendinner = bend(rinner, rinv1);
-                  double abendouter = bend(router[i3], rinv1);
+                  double abendinner = bend(rinner, rinv1, settings_->rcrit());
+                  double abendouter = bend(router[i3], rinv1, settings_->rcrit());
                   if (abendinner < bendinnermin)
                     bendinnermin = abendinner;
                   if (abendinner > bendinnermax)
@@ -924,8 +924,8 @@ void TrackletProcessor::setVMPhiBin() {
                 for (int i3 = 0; i3 < 2; i3++) {
                   double rinner = settings_->rmean(layer_ - 1);
                   double rinv1 = rinv(phiinner[i1], phiouter[i2], rinner, router[i3]);
-                  double abendinner = bend(rinner, rinv1);
-                  double abendouter = bend(router[i3], rinv1);
+                  double abendinner = bend(rinner, rinv1, settings_->rcrit());
+                  double abendouter = bend(router[i3], rinv1, settings_->rcrit());
                   if (abendinner < bendinnermin)
                     bendinnermin = abendinner;
                   if (abendinner > bendinnermax)

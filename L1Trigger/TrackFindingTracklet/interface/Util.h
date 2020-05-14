@@ -214,13 +214,13 @@ namespace trklet {
     assert(0);
   }
 
-  inline double bend(double r, double rinv) {
+  inline double bend(double r, double rinv, double rcrit) {
     double dr = 0.18;
 
     double delta = r * dr * 0.5 * rinv;
 
     double bend = -delta / 0.009;
-    if (r < 55.0)
+    if (r < rcrit)
       bend = -delta / 0.01;
 
     return bend;
