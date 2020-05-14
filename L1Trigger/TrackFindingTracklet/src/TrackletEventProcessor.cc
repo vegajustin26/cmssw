@@ -26,22 +26,21 @@ TrackletEventProcessor::~TrackletEventProcessor() {
 void TrackletEventProcessor::init(const Settings* theSettings) {
   settings_ = theSettings;
 
+  
   globals_ = new Globals(settings_);
 
   settings_->krinvpars() = globals_->ITC_L1L2()->rinv_final.get_K();
   settings_->kphi0pars() = globals_->ITC_L1L2()->phi0_final.get_K();
   settings_->kd0pars() = settings_->kd0();
   settings_->ktpars() = globals_->ITC_L1L2()->t_final.get_K();
-  settings_->kz0pars() = globals_->ITC_L1L2()->z0_final.get_K();
-  settings_->kphiproj123() = globals_->ITC_L1L2()->phi0_final.get_K() * 4;
-  settings_->kzproj() = settings_->kz();
+
   settings_->kphider() = globals_->ITC_L1L2()->rinv_final.get_K() * (1 << settings_->phiderbitshift());
   settings_->kzder() = globals_->ITC_L1L2()->t_final.get_K() * (1 << settings_->zderbitshift());
   settings_->krprojshiftdisk() = globals_->ITC_L1L2()->rD_0_final.get_K();
   settings_->kphiprojdisk() = globals_->ITC_L1L2()->phi0_final.get_K() * 4.0;
-  settings_->krdisk() = settings_->kr();
-  settings_->kzpars() = settings_->kz();
 
+  //cout << "kzproj kz : "<<settings_->kzproj()<<" "<<settings_->kz()<<endl;
+  
   if (settings_->debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "========================================================= \n"
 				 << "Conversion factors for global coordinates: \n"
@@ -54,7 +53,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
 				 << "phi0 kphi0pars     = " << settings_->kphi0pars() << "\n"
 				 << "d0   kd0pars       = " << settings_->kd0pars() << "\n"
 				 << "t    ktpars        = " << settings_->ktpars() << "\n"
-				 << "z0   kz0pars       = " << settings_->kzpars() << "\n"
+				 << "z0   kz0pars       = " << settings_->kz0pars() << "\n"
 				 << "========================================================= \n"
 				 << "phi0bitshift = " << settings_->phi0bitshift() << "\n"
 				 << "d0bitshift   = ??? \n"

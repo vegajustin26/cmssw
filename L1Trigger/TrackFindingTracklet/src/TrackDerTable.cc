@@ -284,10 +284,10 @@ void TrackDerTable::fillTable(const Settings* settings) {
           continue;
         double tder = (MinvDtDelta[2][2 * ii + 1] - MinvDt[2][2 * ii + 1]) / delta;
         int itder = (1 << (settings_->fittbitshift() + settings_->rcorrbits())) * tder * settings_->kr() *
-                    settings_->kzproj() / settings_->ktpars();
+                    settings_->kz() / settings_->ktpars();
         double zder = (MinvDtDelta[3][2 * ii + 1] - MinvDt[3][2 * ii + 1]) / delta;
         int izder = (1 << (settings_->fitz0bitshift() + settings_->rcorrbits())) * zder * settings_->kr() *
-                    settings_->kzproj() / settings_->kzpars();
+                    settings_->kz() / settings_->kz0pars();
         der.settdzcorr(i, ii, tder);
         der.setz0dzcorr(i, ii, zder);
         der.setitdzcorr(i, ii, itder);
@@ -859,7 +859,7 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
     D[1][j] = (phimultiplier * dphidphi0 + rmultiplier * drdphi0) / sigma[j];
     D[2][j] = (phimultiplier * dphidt + rmultiplier * drdt) / sigma[j];
     D[3][j] = (phimultiplier * dphidz0 + rmultiplier * drdz0) / sigma[j];
-    kfactor[j] = settings->kphiproj123();
+    kfactor[j] = settings->kphi();
 
     j++;
 
@@ -918,7 +918,7 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
     iD[2][2 * i] =
         D[2][2 * i] * (1 << settings->chisqphifactbits()) * settings->ktpars() / (1 << settings->fittbitshift());
     iD[3][2 * i] =
-        D[3][2 * i] * (1 << settings->chisqphifactbits()) * settings->kzpars() / (1 << settings->fitz0bitshift());
+        D[3][2 * i] * (1 << settings->chisqphifactbits()) * settings->kz0pars() / (1 << settings->fitz0bitshift());
 
     iD[0][2 * i + 1] = D[0][2 * i + 1] * (1 << settings->chisqzfactbits()) * settings->krinvpars() /
                        (1 << settings->fitrinvbitshift());
@@ -927,7 +927,7 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
     iD[2][2 * i + 1] =
         D[2][2 * i + 1] * (1 << settings->chisqzfactbits()) * settings->ktpars() / (1 << settings->fittbitshift());
     iD[3][2 * i + 1] =
-        D[3][2 * i + 1] * (1 << settings->chisqzfactbits()) * settings->kzpars() / (1 << settings->fitz0bitshift());
+        D[3][2 * i + 1] * (1 << settings->chisqzfactbits()) * settings->kz0pars() / (1 << settings->fitz0bitshift());
 
     //First the barrel
     if (i < nlayers) {
@@ -941,7 +941,7 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
       iMinvDt[1][2 * i] =
           (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i] * settings->kphi1() / settings->kphi0pars();
       iMinvDt[2][2 * i] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i] * settings->kphi1() / settings->ktpars();
-      iMinvDt[3][2 * i] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i] * settings->kphi1() / settings->kzpars();
+      iMinvDt[3][2 * i] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i] * settings->kphi1() / settings->kz0pars();
 
       if (rnew[i] < 60.0) {
         MinvDt[0][2 * i + 1] /= sigmazpsbarrel;
@@ -950,13 +950,13 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
         MinvDt[3][2 * i + 1] /= sigmazpsbarrel;
 
         iMinvDt[0][2 * i + 1] =
-            (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * settings->kzproj() / settings->krinvpars();
+            (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * settings->kz() / settings->krinvpars();
         iMinvDt[1][2 * i + 1] =
-            (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * settings->kzproj() / settings->kphi0pars();
+            (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * settings->kz() / settings->kphi0pars();
         iMinvDt[2][2 * i + 1] =
-            (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * settings->kzproj() / settings->ktpars();
+            (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * settings->kz() / settings->ktpars();
         iMinvDt[3][2 * i + 1] =
-            (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * settings->kzproj() / settings->kzpars();
+            (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * settings->kz() / settings->kz0pars();
       } else {
         MinvDt[0][2 * i + 1] /= sigmaz2;
         MinvDt[1][2 * i + 1] /= sigmaz2;
@@ -965,14 +965,14 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
 
         int fact = (1 << (settings->nzbitsstub(0) - settings->nzbitsstub(5)));
 
-        iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * fact * settings->kzproj() /
+        iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * fact * settings->kz() /
                                 settings->krinvpars();
-        iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * fact * settings->kzproj() /
+        iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * fact * settings->kz() /
                                 settings->kphi0pars();
         iMinvDt[2][2 * i + 1] =
-            (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * fact * settings->kzproj() / settings->ktpars();
+            (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * fact * settings->kz() / settings->ktpars();
         iMinvDt[3][2 * i + 1] =
-            (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * fact * settings->kzproj() / settings->kzpars();
+            (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i + 1] * fact * settings->kz() / settings->kz0pars();
       }
     }
 
@@ -988,13 +988,13 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
       assert(MinvDt[0][2 * i] == MinvDt[0][2 * i]);
 
       iMinvDt[0][2 * i] =
-          (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i] * settings->kphiproj123() / settings->krinvpars();
+          (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i] * settings->kphi() / settings->krinvpars();
       iMinvDt[1][2 * i] =
-          (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i] * settings->kphiproj123() / settings->kphi0pars();
+          (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i] * settings->kphi() / settings->kphi0pars();
       iMinvDt[2][2 * i] =
-          (1 << settings->fittbitshift()) * MinvDt[2][2 * i] * settings->kphiproj123() / settings->ktpars();
+          (1 << settings->fittbitshift()) * MinvDt[2][2 * i] * settings->kphi() / settings->ktpars();
       iMinvDt[3][2 * i] =
-          (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i] * settings->kphiproj123() / settings->kz();
+          (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i] * settings->kphi() / settings->kz();
 
       denom = (std::abs(alpha[i - nlayers]) < 1e-10) ? sigmazpsdisk : sigmaz2sdisk;
 

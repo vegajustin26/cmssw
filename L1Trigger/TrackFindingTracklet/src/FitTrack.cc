@@ -648,7 +648,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
                                    << " " << j << " " << tracklet->fpgarinv().value() * settings_->krinvpars() << " + "
                                    << ((iMinvDt[0][j] * idelta[j])) * settings_->krinvpars() / 1024.0 << " "
                                    << iMinvDt[0][j] * settings_->krinvpars() / settings_->kphiprojdisk() / 1024.0 << " "
-                                   << idelta[j] * settings_->kphiproj123() * rstub[j / 2] * 10000 << " " << idelta[j];
+                                   << idelta[j] * settings_->kphi() * rstub[j / 2] * 10000 << " " << idelta[j];
     }
   }
 

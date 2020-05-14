@@ -46,8 +46,8 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
           settings_->rphimatchcut(iSeed, layerdisk_) / (settings_->kphi1() * settings_->rmean(layerdisk_));
       zmatchcut_[iSeed] = settings_->zmatchcut(iSeed, layerdisk_) / settings_->kz();
     } else {
-      rphicutPS_[iSeed] = settings_->rphicutPS(iSeed, layerdisk_ - 6) / (settings_->kphiproj123() * settings_->kr());
-      rphicut2S_[iSeed] = settings_->rphicut2S(iSeed, layerdisk_ - 6) / (settings_->kphiproj123() * settings_->kr());
+      rphicutPS_[iSeed] = settings_->rphicutPS(iSeed, layerdisk_ - 6) / (settings_->kphi() * settings_->kr());
+      rphicut2S_[iSeed] = settings_->rphicut2S(iSeed, layerdisk_ - 6) / (settings_->kphi() * settings_->kr());
       rcut2S_[iSeed] = settings_->rcut2S(iSeed, layerdisk_ - 6) / settings_->krprojshiftdisk();
       rcutPS_[iSeed] = settings_->rcutPS(iSeed, layerdisk_ - 6) / settings_->krprojshiftdisk();
     }
@@ -124,10 +124,10 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
   for (unsigned int i = 0; i < 10; i++) {
     ialphafactinner_[i] = (1 << settings_->alphashift()) * settings_->krprojshiftdisk() *
                           settings_->half2SmoduleWidth() / (1 << (settings_->nbitsalpha() - 1)) /
-                          (settings_->rDSSinner(i) * settings_->rDSSinner(i)) / settings_->kphiproj123();
+                          (settings_->rDSSinner(i) * settings_->rDSSinner(i)) / settings_->kphi();
     ialphafactouter_[i] = (1 << settings_->alphashift()) * settings_->krprojshiftdisk() *
                           settings_->half2SmoduleWidth() / (1 << (settings_->nbitsalpha() - 1)) /
-                          (settings_->rDSSouter(i) * settings_->rDSSouter(i)) / settings_->kphiproj123();
+                          (settings_->rDSSouter(i) * settings_->rDSSouter(i)) / settings_->kphi();
   }
 }
 
@@ -338,7 +338,7 @@ void MatchCalculator::execute() {
 
       ir += ircorr;
 
-      int ideltaphi = fpgastub->phi().value() * settings_->kphi() / settings_->kphiproj123() - iphi;
+      int ideltaphi = fpgastub->phi().value() * settings_->kphi() / settings_->kphi() - iphi;
 
       int irstub = fpgastub->r().value();
       int ialphafact = 0;
@@ -422,7 +422,7 @@ void MatchCalculator::execute() {
         idrcut = rcut2S_[seedindex];
       }
 
-      double drphicut = idrphicut * settings_->kphiproj123() * settings_->kr();
+      double drphicut = idrphicut * settings_->kphi() * settings_->kr();
       double drcut = idrcut * settings_->krprojshiftdisk();
 
       if (settings_->writeMonitorData("Residuals")) {
@@ -430,7 +430,7 @@ void MatchCalculator::execute() {
 
         globals_->ofstream("diskresiduals.txt")
             << disk << " " << stub->isPSmodule() << " " << tracklet->layer() << " " << abs(tracklet->disk()) << " "
-            << pt << " " << ideltaphi * settings_->kphiproj123() * stub->r() << " " << drphiapprox << " " << drphicut
+            << pt << " " << ideltaphi * settings_->kphi() * stub->r() << " " << drphiapprox << " " << drphicut
             << " " << ideltar * settings_->krprojshiftdisk() << " " << deltar << " " << drcut << " " << endl;
       }
 
@@ -440,7 +440,7 @@ void MatchCalculator::execute() {
 
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "imatch match disk: " << imatch << " " << match << " " << std::abs(ideltaphi)
-                                     << " " << drphicut / (settings_->kphiproj123() * stub->r()) << " "
+                                     << " " << drphicut / (settings_->kphi() * stub->r()) << " "
                                      << std::abs(ideltar) << " " << drcut / settings_->krprojshiftdisk()
                                      << " r = " << stub->r();
       }
