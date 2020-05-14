@@ -205,6 +205,7 @@ clean:
 	@rm -f matching
 	@rm -f main
 	@rm -f fpga
+	@rm -f fpga.a
 	@rm -f *~
 	@rm -f ../data/MemPrints/InputStubs/InputStubs*.dat
 	@rm -f ../data/MemPrints/InputStubs/Link_*.dat
@@ -328,6 +329,9 @@ clean:
 	@rm -f *_dict_rdict.pcm
 	@rm -f imath.a
 	@rm -rf FWCore/
+	@rm -rf lib/
+	@rm -rf dummyIncl/
+	@rm -rf .deps/
 
 
 
