@@ -681,7 +681,7 @@ namespace trklet {
   constexpr unsigned int N_LAYERDISK = 11;
 
   constexpr unsigned int N_SEEDINDEX = 12; // number of tracklet+triplet seeds
-  constexpr unsigned int N_PROJ = 4;       // number of projections (beyong stubs from seed)
+  constexpr unsigned int N_PROJ = 4;       // number of projections (beyond stubs from seed)
   
   constexpr unsigned int N_TRACKDER_PTBIN = 4;
   constexpr unsigned int N_TRACKDER_INDEX = 1000;

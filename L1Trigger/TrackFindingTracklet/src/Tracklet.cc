@@ -665,8 +665,7 @@ void Tracklet::setFitPars(double rinvfit,
 
   hitpattern_ = hitpattern;
 
-  delete fpgatrack_;
-  fpgatrack_ = new Track(makeTrack(l1stubs));
+  fpgatrack_.reset(new Track(makeTrack(l1stubs)));
 }
 
 std::string Tracklet::trackfitstr() {

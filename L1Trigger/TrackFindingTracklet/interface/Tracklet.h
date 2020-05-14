@@ -53,7 +53,7 @@ namespace trklet {
              bool disk,
              bool overlap = false);
 
-    ~Tracklet() { delete fpgatrack_; }
+    ~Tracklet() = default;
 
     //Find tp corresponding to seed.
     //Will require 'tight match' such that tp is part of each of the four clustes returns 0 if no tp matches
@@ -475,7 +475,7 @@ namespace trklet {
 
     Track* getTrack() {
       assert(fpgatrack_ != 0);
-      return fpgatrack_;
+      return fpgatrack_.get();
     }
 
     bool fit() const { return ichisqrphifit_.value() != -1; }
@@ -551,7 +551,8 @@ namespace trklet {
 
     int hitpattern_;
 
-    Track* fpgatrack_;
+    //Track* fpgatrack_;
+    std::unique_ptr<Track> fpgatrack_;
 
     LayerProjection layerproj_[6];
     DiskProjection diskproj_[5];
