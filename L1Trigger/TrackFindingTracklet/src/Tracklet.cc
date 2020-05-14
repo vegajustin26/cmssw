@@ -48,7 +48,7 @@ Tracklet::Tracklet(const trklet::Settings* settings,
   assert(disk_ || barrel_ || overlap_);
 
   if (barrel_ && middleStub == NULL)
-    assert(innerStub->layer() < 6);
+    assert(innerStub->layer() < N_LAYER);
 
   innerStub_ = innerStub;
   middleStub_ = middleStub;
@@ -70,28 +70,28 @@ Tracklet::Tracklet(const trklet::Settings* settings,
   fpgatrack_ = NULL;
 
   if (innerStub_)
-    assert(innerStub_->layer() < 6 || innerStub_->disk() < 5);
+    assert(innerStub_->layer() < N_LAYER || innerStub_->disk() < N_DISK);
   if (middleStub_)
-    assert(middleStub_->layer() < 6 || middleStub_->disk() < 5);
+    assert(middleStub_->layer() < N_LAYER || middleStub_->disk() < N_DISK);
   if (outerStub_)
-    assert(outerStub_->layer() < 6 || outerStub_->disk() < 5);
+    assert(outerStub_->layer() < N_LAYER || outerStub_->disk() < N_DISK);
 
   seedIndex_ = calcSeedIndex();
 
   triplet_ = (seedIndex_ >= 8);
 
   //fill projection layers
-  for (unsigned int i = 0; i < 4; i++) {
+  for (unsigned int i = 0; i < N_PROJLAYER; i++) {
     projlayer_[i] = settings->projlayers(seedIndex_, i);
   }
 
   //fill projection disks
-  for (unsigned int i = 0; i < 5; i++) {
+  for (unsigned int i = 0; i < N_PROJDISK; i++) {
     projdisk_[i] = settings->projdisks(seedIndex_, i);
   }
 
   //Handle projections to the layers
-  for (int i = 0; i < 4; i++) {
+  for (unsigned int i = 0; i < N_PROJLAYER; i++) {
     if (projlayer_[i] == 0)
       continue;
     if (!layerprojs[i].valid())
@@ -100,7 +100,7 @@ Tracklet::Tracklet(const trklet::Settings* settings,
     layerproj_[projlayer_[i] - 1] = layerprojs[i];
   }
   //Now handle projections to the disks
-  for (int i = 0; i < 5; i++) {
+  for (unsigned int i = 0; i < N_PROJDISK; i++) {
     if (projdisk_[i] == 0)
       continue;
     if (!diskprojs[i].valid())
@@ -285,7 +285,7 @@ std::string Tracklet::trackletprojstr(int layer) const {
 }
 
 std::string Tracklet::trackletprojstrD(int disk) const {
-  assert(abs(disk) >= 1 && abs(disk) <= 5);
+  assert(abs(disk) <= N_DISK);
   FPGAWord tmp;
   if (trackletIndex_ < 0 || trackletIndex_ > 127) {
     edm::LogPrint("Tracklet") << "trackletIndex_ = " << trackletIndex_;
@@ -330,7 +330,7 @@ void Tracklet::addMatchDisk(int disk,
                             int stubid,
                             double zstub,
                             std::pair<const trklet::Stub*, const L1TStub*> stubptrs) {
-  assert(abs(disk) >= 1 && abs(disk) <= 5);
+  assert(abs(disk) <= N_DISK);
   diskresid_[abs(disk) - 1].init(settings_,
                                  disk,
                                  ideltaphi,
@@ -349,7 +349,7 @@ void Tracklet::addMatchDisk(int disk,
 int Tracklet::nMatches() {
   int nmatches = 0;
 
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < N_LAYER; i++) {
     if (layerresid_[i].valid()) {
       nmatches++;
     }
@@ -361,7 +361,7 @@ int Tracklet::nMatches() {
 int Tracklet::nMatchesDisk() {
   int nmatches = 0;
 
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < N_DISK; i++) {
     if (diskresid_[i].valid()) {
       nmatches++;
     }
@@ -390,7 +390,7 @@ std::string Tracklet::fullmatchstr(int layer) {
 }
 
 std::string Tracklet::fullmatchdiskstr(int disk) {
-  assert(disk >= 1 && disk <= 5);
+  assert(disk > 0 && disk <= N_DISK);
 
   FPGAWord tmp;
   if (trackletIndex_ < 0 || trackletIndex_ > 127) {
@@ -419,13 +419,13 @@ std::vector<const L1TStub*> Tracklet::getL1Stubs() {
   if (outerStub_)
     tmp.push_back(outerStub_);
 
-  for (unsigned int i = 0; i < 6; i++) {
+  for (unsigned int i = 0; i < N_LAYER; i++) {
     if (layerresid_[i].valid()) {
       tmp.push_back(layerresid_[i].stubptrs().second);
     }
   }
 
-  for (unsigned int i = 0; i < 5; i++) {
+  for (unsigned int i = 0; i < N_DISK; i++) {
     if (diskresid_[i].valid())
       tmp.push_back(diskresid_[i].stubptrs().second);
   }
@@ -454,7 +454,7 @@ std::map<int, int> Tracklet::getStubIDs() {
     assert(outerFPGAStub_->phiregion().nbits() == 3);
 
   if (barrel_) {
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < N_LAYER; i++) {
       //check barrel
       if (layerresid_[i].valid()) {
         // two extra bits to indicate if the matched stub is local or from neighbor
@@ -465,7 +465,7 @@ std::map<int, int> Tracklet::getStubIDs() {
       }
 
       //check disk
-      if (i >= 5)
+      if (i >= N_DISK)
         continue;  //i=[0..4] for disks
       if (diskresid_[i].valid()) {
         if (i == 3 && layerresid_[0].valid() && innerFPGAStub_->layer().value() == 1)
@@ -494,7 +494,7 @@ std::map<int, int> Tracklet::getStubIDs() {
           ((outerFPGAStub_->phiregion().value()) << 7) + outerFPGAStub_->stubindex().value() + (1 << 10);
 
   } else if (disk_) {
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < N_DISK; i++) {
       //check barrel
       if (layerresid_[i].valid()) {
         // two extra bits to indicate if the matched stub is local or from neighbor
@@ -544,7 +544,7 @@ std::map<int, int> Tracklet::getStubIDs() {
     }
 
   } else if (overlap_) {
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < N_DISK; i++) {
       //check barrel
       if (layerresid_[i].valid()) {
         // two extra bits to indicate if the matched stub is local or from neighbor

@@ -7,8 +7,10 @@
 #include <cmath>
 #include <vector>
 
-namespace trklet {
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
+namespace trklet {
+  
   class TrackDer {
   public:
     TrackDer();
@@ -76,29 +78,29 @@ namespace trklet {
     void fill(int t, double MinvDt[4][12], int iMinvDt[4][12]) const;
 
   private:
-    int irinvdphi_[6];
-    int irinvdzordr_[6];
-    int iphi0dphi_[6];
-    int iphi0dzordr_[6];
-    int itdphi_[6];
-    int itdzordr_[6];
-    int iz0dphi_[6];
-    int iz0dzordr_[6];
+    int irinvdphi_[N_FITSTUB];
+    int irinvdzordr_[N_FITSTUB];
+    int iphi0dphi_[N_FITSTUB];
+    int iphi0dzordr_[N_FITSTUB];
+    int itdphi_[N_FITSTUB];
+    int itdzordr_[N_FITSTUB];
+    int iz0dphi_[N_FITSTUB];
+    int iz0dzordr_[N_FITSTUB];
 
-    int itdzcorr_[3][3];
-    int iz0dzcorr_[3][3];
+    int itdzcorr_[N_PSLAYER][N_PSLAYER];
+    int iz0dzcorr_[N_PSLAYER][N_PSLAYER];
 
-    double rinvdphi_[6];
-    double rinvdzordr_[6];
-    double phi0dphi_[6];
-    double phi0dzordr_[6];
-    double tdphi_[6];
-    double tdzordr_[6];
-    double z0dphi_[6];
-    double z0dzordr_[6];
+    double rinvdphi_[N_FITSTUB];
+    double rinvdzordr_[N_FITSTUB];
+    double phi0dphi_[N_FITSTUB];
+    double phi0dzordr_[N_FITSTUB];
+    double tdphi_[N_FITSTUB];
+    double tdzordr_[N_FITSTUB];
+    double z0dphi_[N_FITSTUB];
+    double z0dzordr_[N_FITSTUB];
 
-    double tdzcorr_[3][3];
-    double z0dzcorr_[3][3];
+    double tdzcorr_[N_PSLAYER][N_PSLAYER];
+    double z0dzcorr_[N_PSLAYER][N_PSLAYER];
 
     double t_;
 

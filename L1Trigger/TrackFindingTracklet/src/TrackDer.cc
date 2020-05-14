@@ -4,7 +4,7 @@ using namespace std;
 using namespace trklet;
 
 TrackDer::TrackDer() {
-  for (unsigned int i = 0; i < 6; i++) {
+  for (unsigned int i = 0; i < N_FITSTUB; i++) {
     irinvdphi_[i] = 9999999;
     irinvdzordr_[i] = 9999999;
     iphi0dphi_[i] = 9999999;
@@ -24,8 +24,8 @@ TrackDer::TrackDer() {
     z0dzordr_[i] = 0.0;
   }
 
-  for (unsigned int i = 0; i < 3; i++) {
-    for (unsigned int j = 0; j < 3; j++) {
+  for (unsigned int i = 0; i < N_PSLAYER; i++) {
+    for (unsigned int j = 0; j < N_PSLAYER; j++) {
       tdzcorr_[i][j] = 0.0;
       z0dzcorr_[i][j] = 0.0;
     }
@@ -56,7 +56,7 @@ void TrackDer::fill(int t, double MinvDt[4][12], int iMinvDt[4][12]) const {
   int sign = 1;
   if (t < 0)
     sign = -1;
-  for (unsigned int i = 0; i < 6; i++) {
+  for (unsigned int i = 0; i < N_FITSTUB; i++) {
     if (i < nlayer) {
       MinvDt[0][2 * i] = rinvdphi_[i];
       MinvDt[1][2 * i] = phi0dphi_[i];

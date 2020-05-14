@@ -665,13 +665,17 @@ namespace trklet {
   };
 
   // constants
-  constexpr unsigned int N_LAYER = 6;
+  constexpr int N_LAYER = 6;
+  constexpr int N_DISK = 5;
   constexpr unsigned int N_PSLAYER = 3;
-  constexpr unsigned int N_DISK = 5;
   constexpr unsigned int N_LAYERDISK = 11;
 
   constexpr unsigned int N_SEEDINDEX = 12; // number of tracklet+triplet seeds
   constexpr unsigned int N_PROJ = 4;       // number of projections (beyond stubs from seed)
+  constexpr unsigned int N_PROJLAYER = 4;  // max number of layers to project to
+  constexpr unsigned int N_PROJDISK = 5;   // max number of disks to project to
+
+  constexpr unsigned int N_FITSTUB = 6; // maximum number of stubs used in the chi2 fitting
   
   constexpr unsigned int N_TRACKDER_PTBIN = 4;
   constexpr unsigned int N_TRACKDER_INDEX = 1000;
