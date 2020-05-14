@@ -49,24 +49,8 @@ namespace trklet {
       ITC_L2B1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 2, -1));
     }
 
-    ~Globals() {
-      /*
-      delete ITC_L1L2_;
-      delete ITC_L2L3_;
-      delete ITC_L3L4_;
-      delete ITC_L5L6_;
-      delete ITC_F1F2_;
-      delete ITC_F3F4_;
-      delete ITC_B1B2_;
-      delete ITC_B3B4_;
-      delete ITC_L1F1_;
-      delete ITC_L2F1_;
-      delete ITC_L1B1_;
-      delete ITC_L2B1_;
-      delete imathGlobals_;  //has to be deleted after the imath calculators
-      */
-    }
-    
+    ~Globals() = default;
+
     SLHCEvent*& event() { return theEvent_; }
 
     HistBase*& histograms() { return theHistBase_; }
@@ -79,15 +63,11 @@ namespace trklet {
 
     VMRouterPhiCorrTable*& phiCorr(unsigned int layer) { return thePhiCorr_[layer]; }
 
-    TETableBase*& teTable(unsigned int inner, unsigned int iSeed) { return theTETable_[inner][iSeed]; }
-
     ProjectionRouterBendTable*& projectionRouterBendTable() { return projectionRouterBendTable_; }
 
     std::map<std::string, std::vector<int> >& ILindex() { return ILindex_; }
 
     std::map<std::string, int>& layerdiskmap() { return layerdiskmap_; }
-
-    double& Vfull(int i, int j, int ptbin, int index) { return Vfull_[i][j][ptbin][index]; }
 
     IMATH_TrackletCalculator* ITC_L1L2() { return ITC_L1L2_.get(); }
     IMATH_TrackletCalculator* ITC_L2L3() { return ITC_L2L3_.get(); }
@@ -148,16 +128,10 @@ namespace trklet {
 
     std::array<VMRouterPhiCorrTable*, 6> thePhiCorr_{{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}};
 
-    std::array<std::array<TETableBase*, 12>, 3> theTETable_{{{{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}},
-                                                             {{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}},
-                                                             {{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}}}};
-
     std::map<std::string, std::vector<int> > ILindex_;
 
     std::map<std::string, int> layerdiskmap_;
 
-    
-    double Vfull_[N_LAYERDISK][N_LAYERDISK][N_TRACKDER_PTBIN][N_TRACKDER_INDEX];
   };
 };  // namespace trklet
 

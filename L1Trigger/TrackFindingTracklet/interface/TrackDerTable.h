@@ -42,9 +42,6 @@ namespace trklet {
 
     static void invert(std::vector<std::vector<double> >& M, unsigned int n);
 
-    static void getVarianceMatrix(
-        Globals* globals, bool layer[6], bool disk[5], int ptbin, std::vector<std::vector<double> >& V);
-
     static void calculateDerivatives(const Settings* settings,
                                      unsigned int nlayers,
                                      double r[6],
@@ -59,24 +56,7 @@ namespace trklet {
                                      int iMinvDt[4][12],
                                      double sigma[12],
                                      double kfactor[12]);
-    /*
-    static void calculateDerivativesMS(const Settings* settings,
-                                       Globals* globals,
-                                       unsigned int nlayers,
-                                       double r[6],
-                                       unsigned int ndisks,
-                                       double z[5],
-                                       double alpha[5],
-                                       double t,
-                                       double rinv,
-                                       double D[4][12],
-                                       int iD[4][12],
-                                       double MinvDt[4][12],
-                                       int iMinvDt[4][12],
-                                       double sigma[12],
-                                       double kfactor[12],
-                                       int ptbin);
-    */
+
     static double gett(const Settings* settings, int diskmask, int layermask);
 
   private:
