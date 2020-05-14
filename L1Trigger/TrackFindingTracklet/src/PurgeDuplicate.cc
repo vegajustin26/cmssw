@@ -141,7 +141,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         if (stublist.size() != stubidslist.size())
           throw "Number of stubs and stubids don't match up!";
 
-        trackInfo.push_back(std::pair<int, bool>(i, false));
+        trackInfo.emplace_back(i, false);
       }
     }
 
