@@ -13,8 +13,9 @@ L1HybridTracks = cms.Sequence(offlineBeamSpot*TTTracksFromTrackletEmulation)
 L1HybridTracksWithAssociators = cms.Sequence(offlineBeamSpot*TTTracksFromTrackletEmulation*TrackTriggerAssociatorTracks)
 
 # extended hybrid emulation
-TTTrackAssociatorFromPixelDigisExtended = TTTrackAssociatorFromPixelDigis.clone()
-TTTrackAssociatorFromPixelDigisExtended.TTTracks = cms.VInputTag(cms.InputTag("TTTracksFromExtendedTrackletEmulation", "Level1TTTracks") )
+TTTrackAssociatorFromPixelDigisExtended = TTTrackAssociatorFromPixelDigis.clone(
+    TTTracks = cms.VInputTag(cms.InputTag("TTTracksFromExtendedTrackletEmulation", "Level1TTTracks") )
+)
 
 L1ExtendedHybridTracks = cms.Sequence(offlineBeamSpot*TTTracksFromExtendedTrackletEmulation)
 L1ExtendedHybridTracksWithAssociators = cms.Sequence(offlineBeamSpot*TTTracksFromExtendedTrackletEmulation*TTTrackAssociatorFromPixelDigisExtended)

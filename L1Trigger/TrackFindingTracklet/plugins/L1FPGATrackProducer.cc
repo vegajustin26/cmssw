@@ -400,11 +400,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
       float vy = iterTP->vertex().y();
       float vz = iterTP->vertex().z();
 
-      if (sim_pt < 1.0)
-        continue;
-      if (std::abs(vz) > 100.0)
-        continue;
-      if (hypot(vx, vy) > 50.0)
+      if (sim_pt < 1.0 || std::abs(vz) > 100.0 || hypot(vx, vy) > 50.0)
         continue;
 
       ev.addL1SimTrack(sim_eventid, ntps, sim_type, sim_pt, sim_eta, sim_phi, vx, vy, vz);
@@ -602,7 +598,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
       unsigned int isFlipped = 0;
       if (posStub_outer.mag() < posStub_inner.mag())
-        isFlipped = 1;
+	isFlipped = 1;
 
       // -----------------------------------------------------
       // correct sign for stubs in negative endcap
@@ -615,31 +611,29 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
         strip = irphi[0];
       }
 
-      if (tempStubPtr->rawBend() < 100.) {
-        if (ev.addStub(layer,
-                       ladder,
-                       module,
-                       strip,
-                       eventID,
-                       assocTPs,
-                       stub_pt,
-                       stub_bend,
-                       posStub.x(),
-                       posStub.y(),
-                       posStub.z(),
-                       innerStack,
-                       irphi,
-                       iz,
-                       iladder,
-                       imodule,
-                       isPSmodule,
-                       isFlipped)) {
-          trklet::L1TStub lastStub = ev.lastStub();
-          stubMap[lastStub] = tempStubPtr;
-        }
-      } else {
-        //if module FE inefficiencies are calculated, this stub was thrown out
+      //if module FE inefficiencies are calculated, a stub is thrown out is rawBend > 100 
+      if ( (tempStubPtr->rawBend() < 100.) && (ev.addStub(layer,
+							  ladder,
+							  module,
+							  strip,
+							  eventID,
+							  assocTPs,
+							  stub_pt,
+							  stub_bend,
+							  posStub.x(),
+							  posStub.y(),
+							  posStub.z(),
+							  innerStack,
+							  irphi,
+							  iz,
+							  iladder,
+							  imodule,
+							  isPSmodule,
+							  isFlipped)) ) {
+	trklet::L1TStub lastStub = ev.lastStub();
+	stubMap[lastStub] = tempStubPtr;
       }
+
     }
   }
 
@@ -660,13 +654,12 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   trklet::L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
   ofstream outres;
-  if (settings.writeMonitorData("ResEff"))
-    outres.open("trackres.txt");
-
   ofstream outeff;
-  if (settings.writeMonitorData("ResEff"))
+  if (settings.writeMonitorData("ResEff")) {
+    outres.open("trackres.txt");
     outeff.open("trackeff.txt");
-
+  }
+  
   // this performs the actual tracklet event processing
   eventProcessor.event(ev);
 
@@ -729,9 +722,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     }
 
     // pt consistency
-    float ptconsistency =
-        StubPtConsistency::getConsistency(aTrack, theTrackerGeom, tTopo, mMagneticFieldStrength, settings.nHelixPar());
-    aTrack.setStubPtConsistency(ptconsistency);
+    aTrack.setStubPtConsistency(StubPtConsistency::getConsistency(aTrack, theTrackerGeom, tTopo, mMagneticFieldStrength, settings.nHelixPar()));
 
     // set TTTrack word
     aTrack.setTrackWordBits();
