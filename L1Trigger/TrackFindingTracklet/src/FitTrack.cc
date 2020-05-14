@@ -27,7 +27,8 @@ void FitTrack::addOutput(MemoryBase* memory, string output) {
     return;
   }
 
-  throw cms::Exception("BadConfig") << "FitTrack::addOutput, output = " << output << " not known";
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+				    << " addOutput, output = " << output << " not known";
 }
 
 void FitTrack::addInput(MemoryBase* memory, string input) {
@@ -66,7 +67,8 @@ void FitTrack::addInput(MemoryBase* memory, string input) {
     return;
   }
 
-  throw cms::Exception("BadConfig") << "FitTrack : input = " << input << " not found";
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+				    << " input = " << input << " not found";
 }
 
 #ifdef USEHYBRID

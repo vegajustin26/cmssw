@@ -396,7 +396,7 @@ void TrackDerTable::fillTable(const Settings* settings) {
     unsigned int nderivatives = derivatives_.size();
     edm::LogVerbatim("Tracklet") << "nderivatives = " << nderivatives;
 
-    const string seedings[] = {"L1L2", "L3L4", "L5L6", "D1D2", "D3D4", "D1L1", "D1L2"};
+    const std::array<string, 7> seedings = {{"L1L2", "L3L4", "L5L6", "D1D2", "D3D4", "D1L1", "D1L2"}};
     const string prefix = "FitDerTableNew_";
 
     // open files for derivative tables

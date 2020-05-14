@@ -143,7 +143,8 @@ void MatchCalculator::addOutput(MemoryBase* memory, string output) {
     fullMatches_[iSeed] = tmp;
     return;
   }
-  throw cms::Exception("BadConfig") << "MatchCalculator::addOutput, could not find output " << output;
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+				    << " could not find output " << output;
 }
 
 void MatchCalculator::addInput(MemoryBase* memory, string input) {
@@ -169,7 +170,8 @@ void MatchCalculator::addInput(MemoryBase* memory, string input) {
     matches_.push_back(tmp);
     return;
   }
-  throw cms::Exception("BadConfig") << "MatchCalculator::addInput, could not find input " << input;
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+				    << " could not find input " << input;
 }
 
 void MatchCalculator::execute() {
@@ -382,7 +384,8 @@ void MatchCalculator::execute() {
       double dz = z - sign * settings_->zmean(layerdisk_ - 6);
 
       if (std::abs(dz) > settings_->dzmax()) {
-	throw cms::Exception("LogicError") << "MatchCalculator:: " << name_ << "_" << iSector_ << " "<< tracklet->getISeed()
+	throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__
+					   << " " << name_ << "_" << iSector_ << " "<< tracklet->getISeed()
 					   << "\n stub " << stub->z() << " disk " << disk << " " << dz;
       }
 

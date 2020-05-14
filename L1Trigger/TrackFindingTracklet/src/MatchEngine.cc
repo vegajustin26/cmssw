@@ -23,7 +23,8 @@ MatchEngine::MatchEngine(string name, const Settings* settings, Globals* global,
   else if (subname.substr(0,1)=="D")
     disk_ = stoi(subname.substr(1,1));
   else
-    throw cms::Exception("BadConfig") << "MatchEngine " << name << " subname = " << subname << " " << layer_ << " " << disk_;
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+				      << " " << name << " subname = " << subname << " " << layer_ << " " << disk_;
 
   if (layer_ > 0) {
     unsigned int nbits = 3;

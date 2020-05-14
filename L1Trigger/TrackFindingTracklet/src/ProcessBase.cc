@@ -36,7 +36,7 @@ unsigned int ProcessBase::nbits(unsigned int power) {
   if (power == 32)
     return 5;
 
-  throw cms::Exception("LogicError") << "nbits: power = " << power;
+  throw cms::Exception("LogicError")  << __FILE__ << " " << __LINE__ << "nbits: power = " << power;
   return -1;
 }
 
@@ -49,7 +49,8 @@ void ProcessBase::initLayerDisk(unsigned int pos, int& layer, int& disk) {
   else if (subname.substr(0,1)=="D")
     disk = stoi(subname.substr(1,1));
   else
-    throw cms::Exception("BadConfig") << "Memoryname = " << name_ << " subname = " << subname << " " << layer << " " << disk;
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+				      << " " << name_ << " subname = " << subname << " " << layer << " " << disk;
 }
 
 void ProcessBase::initLayerDisk(unsigned int pos, int& layer, int& disk, int& layerdisk) {

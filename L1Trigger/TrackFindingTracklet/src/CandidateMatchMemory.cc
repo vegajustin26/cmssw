@@ -17,7 +17,8 @@ void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, std::pai
   //Check for consistency
   for (unsigned int i = 0; i < matches_.size(); i++) {
     if (tracklet.first->TCID() < matches_[i].first.first->TCID()) {
-      throw cms::Exception("LogicError") << "In " << getName() << " adding tracklet " << tracklet.first
+      throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__
+					 << " In " << getName() << " adding tracklet " << tracklet.first
 					 << " with lower TCID : " << tracklet.first->TCID() << " than earlier TCID "
 					 << matches_[i].first.first->TCID();
     }

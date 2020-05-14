@@ -115,7 +115,7 @@ namespace trklet {
       if (ibend <= -7)
         return 7;
 
-      throw cms::Exception("BadConfig") << "Unknown bendencode for PS module for bend = " << bend << " ibend = " << ibend;
+      throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Unknown bendencode for PS module for bend = " << bend << " ibend = " << ibend;
     }
 
     if (ibend == 0 || ibend == 1)
@@ -151,7 +151,7 @@ namespace trklet {
     if (ibend <= -15)
       return 15;
 
-    throw cms::Exception("BadConfig") << "Unknown bendencode for 2S module for bend = " << bend << " ibend = " << ibend;
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Unknown bendencode for 2S module for bend = " << bend << " ibend = " << ibend;
   }
 
   //Should be optimized by layer - now first implementation to make sure it works OK
@@ -174,7 +174,7 @@ namespace trklet {
       if (ibend == 7)
         return -3.75;
 
-      throw cms::Exception("BadConfig") << "Unknown benddecode for PS module for ibend = " << ibend;
+      throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Unknown benddecode for PS module for ibend = " << ibend;
     }
 
     if (ibend == 0)
@@ -210,7 +210,7 @@ namespace trklet {
     if (ibend == 15)
       return -7.75;
 
-    throw cms::Exception("BadConfig") << "Unknown benddecode for 2S module for ibend = " << ibend;
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Unknown benddecode for 2S module for ibend = " << ibend;
   }
 
   inline double bend(double r, double rinv, double rcrit) {

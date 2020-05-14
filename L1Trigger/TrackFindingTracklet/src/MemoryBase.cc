@@ -16,12 +16,14 @@ void MemoryBase::initLayerDisk(unsigned int pos, int& layer, int& disk) {
   string subname = name_.substr(pos, 2);
   layer = 0;
   disk = 0;
+  
   if (subname.substr(0,1)=="L")
     layer = stoi(subname.substr(1,1));
   else if (subname.substr(0,1)=="D")
     disk = stoi(subname.substr(1,1));
   else
-    throw cms::Exception("BadConfig") << "Memoryname = " << name_ << " subname = " << subname << " " << layer << " " << disk;
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+				      << " name = " << name_ << " subname = " << subname << " " << layer << " " << disk;
 }
 
 unsigned int MemoryBase::initLayerDisk(unsigned int pos) {

@@ -77,7 +77,7 @@ namespace trklet {
 
     unsigned int maxStep(std::string module) const {
       if (maxstep_.find(module) == maxstep_.end()) {
-	throw cms::Exception("BadConfig") << "Settings::maxStep module = " << module << " not known";
+	throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " maxStep module = " << module << " not known";
       }
       return maxstep_.at(module) + maxstepoffset_;
     }
