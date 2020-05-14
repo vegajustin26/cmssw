@@ -2,6 +2,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include <cmath>
 
 using namespace std;
 using namespace trklet;
@@ -45,7 +46,7 @@ Stub::Stub(const L1TStub& stub, const trklet::Settings* const settings, double p
 
     int irbits = settings_->nrbitsstub(layer - 1);
 
-    int ir = round_int((1 << irbits) * ((r - settings_->rmean(layer - 1)) / (rmax - rmin)));
+    int ir = lround((1 << irbits) * ((r - settings_->rmean(layer - 1)) / (rmax - rmin)));
 
     double zmin = -settings_->zlength();
     double zmax = settings_->zlength();
@@ -56,7 +57,7 @@ Stub::Stub(const L1TStub& stub, const trklet::Settings* const settings, double p
 
     int izbits = settings_->nzbitsstub(layer - 1);
 
-    int iz = round_int((1 << izbits) * z / (zmax - zmin));
+    int iz = lround((1 << izbits) * z / (zmax - zmin));
 
     if (z < zmin || z > zmax) {
       edm::LogProblem("Tracklet") << "Error z, zmin, zmax :" << z << " " << zmin << " " << zmax;
