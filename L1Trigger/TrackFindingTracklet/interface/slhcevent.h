@@ -35,15 +35,7 @@ namespace trklet {
     double dxy() const { return -vx() * sin(phi()) + vy() * cos(phi()); }
     double d0() const { return -dxy(); }
     int charge() const {
-      if (type_ == 11)
-        return -1;
-      if (type_ == 13)
-        return -1;
-      if (type_ == -211)
-        return -1;
-      if (type_ == -321)
-        return -1;
-      if (type_ == -2212)
+      if (type_ == 11 || type_ == 13 || type_ == -211 || type_ == -321 || type_ == -2212)
         return -1;
       return 1;
     }

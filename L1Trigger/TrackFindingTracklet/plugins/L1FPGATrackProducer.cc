@@ -4,9 +4,6 @@
 //    july 2012 @ CU    //
 //////////////////////////
 
-#ifndef L1TFPGATRACK_PRDC_H
-#define L1TFPGATRACK_PRDC_H
-
 ////////////////////
 // FRAMEWORK HEADERS
 #include "FWCore/PluginManager/interface/ModuleDef.h"
@@ -147,7 +144,6 @@ public:
   explicit L1FPGATrackProducer(const edm::ParameterSet& iConfig);
   virtual ~L1FPGATrackProducer();
 
-protected:
 private:
   int eventnum;
 
@@ -281,43 +277,29 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   }
 
   if (settings.debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "cabling DTC links :     " << DTCLinkFile.fullPath();
-    edm::LogVerbatim("Tracklet") << "module cabling :     " << moduleCablingFile.fullPath();
-    edm::LogVerbatim("Tracklet") << "DTC link layer disk :     " << DTCLinkLayerDiskFile.fullPath();
-
-    edm::LogVerbatim("Tracklet") << "fit pattern :     " << fitPatternFile.fullPath();
-    edm::LogVerbatim("Tracklet") << "process modules : " << processingModulesFile.fullPath();
-    edm::LogVerbatim("Tracklet") << "memory modules :  " << memoryModulesFile.fullPath();
-    edm::LogVerbatim("Tracklet") << "wires          :  " << wiresFile.fullPath();
+    edm::LogVerbatim("Tracklet") << "cabling DTC links :     " << DTCLinkFile.fullPath()
+				 << "\n module cabling :     " << moduleCablingFile.fullPath()
+				 << "\n DTC link layer disk :     " << DTCLinkLayerDiskFile.fullPath()
+				 << "\n fit pattern :     " << fitPatternFile.fullPath()
+				 << "\n process modules : " << processingModulesFile.fullPath()
+				 << "\n memory modules :  " << memoryModulesFile.fullPath()
+				 << "\n wires          :  " << wiresFile.fullPath();
   }
 }
 
 /////////////
 // DESTRUCTOR
 L1FPGATrackProducer::~L1FPGATrackProducer() {
-  if (asciiEventOutName_ != "") {
+  if (asciiEventOutName_.is_open()) {
     asciiEventOut_.close();
   }
-}
-
-//////////
-// END JOB
-void L1FPGATrackProducer::endRun(const edm::Run& run, const edm::EventSetup& iSetup) {}
-
-void L1FPGATrackProducer::endJob() {
-#ifdef USEHYBRID
-#ifdef USE_HLS
-  TMTT::Settings settingsTMTT;
-  TMTT::KFParamsCombCallHLS fitterKF(&settingsTMTT, settings.nHelixPar(), "KFfitterHLS");
-  fitterKF.endJob();  // Check bits ranges of KF HLS.
-#endif
-#endif
 }
 
 ////////////
 // BEGIN JOB
 void L1FPGATrackProducer::beginRun(const edm::Run& run, const edm::EventSetup& iSetup) {}
 
+    
 //////////
 // PRODUCE
 void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
@@ -329,8 +311,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
       TTClusterRef;
 
   /// Prepare output
-  std::unique_ptr<std::vector<TTTrack<Ref_Phase2TrackerDigi_> > > L1TkTracksForOutput(
-      new std::vector<TTTrack<Ref_Phase2TrackerDigi_> >);
+  auto L1TkTracksForOutput = std::make_unique<std::vector<TTTrack<Ref_Phase2TrackerDigi_>>>();
 
   stubMapType stubMap;
 
@@ -768,5 +749,3 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 // ///////////////////////////
 // // DEFINE THIS AS A PLUG-IN
 DEFINE_FWK_MODULE(L1FPGATrackProducer);
-
-#endif
