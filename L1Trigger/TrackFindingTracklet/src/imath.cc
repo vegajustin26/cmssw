@@ -5,9 +5,11 @@
 // Date:   March 2018
 //
 
-#include "../interface/imath.h"
+#include "L1Trigger/TrackFindingTracklet/interface/imath.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+
+#include <cmath>
 
 using namespace trklet;
 
@@ -143,7 +145,7 @@ void var_adjustK::adjust(double Knew, double epsilon, bool do_assert, int nbits)
 
 void var_inv::initLUT(double offset) {
   offset_ = offset;
-  double offsetI = round_int(offset_ / p1_->get_K());
+  double offsetI = lround(offset_ / p1_->get_K());
   for (int i = 0; i < Nelements_; ++i) {
     int i1 = addr_to_ival(i);
     LUT[i] = gen_inv(offsetI + i1);

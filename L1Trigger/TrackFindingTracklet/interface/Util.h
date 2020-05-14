@@ -237,7 +237,5 @@ namespace trklet {
     return 2.0 * sin(dphi) / dr / sqrt(1.0 + 2 * r1 * r2 * (1.0 - cos(dphi)) / (dr * dr));
   }
 
-  inline int round_int(double r) { return (r > 0.0) ? (r + 0.5) : (r - 0.5); }
-
 };  // namespace trklet
 #endif
