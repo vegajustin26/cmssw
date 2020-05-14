@@ -25,21 +25,21 @@ TrackletEventProcessor::~TrackletEventProcessor() {
 
 void TrackletEventProcessor::init(const Settings* theSettings) {
   settings_ = theSettings;
-
   
   globals_ = new Globals(settings_);
+  
+  //Verify consistency
+  if (settings_->kphi0pars() != globals_->ITC_L1L2()->phi0_final.get_K()){
+    throw cms::Exception("Inconsistency") << "phi0 conversion parameter inconsistency\n";
+  }
 
-  settings_->krinvpars() = globals_->ITC_L1L2()->rinv_final.get_K();
-  settings_->kphi0pars() = globals_->ITC_L1L2()->phi0_final.get_K();
-  settings_->kd0pars() = settings_->kd0();
-  settings_->ktpars() = globals_->ITC_L1L2()->t_final.get_K();
-
-  settings_->kphider() = globals_->ITC_L1L2()->rinv_final.get_K() * (1 << settings_->phiderbitshift());
-  settings_->kzder() = globals_->ITC_L1L2()->t_final.get_K() * (1 << settings_->zderbitshift());
-  settings_->krprojshiftdisk() = globals_->ITC_L1L2()->rD_0_final.get_K();
-  settings_->kphiprojdisk() = globals_->ITC_L1L2()->phi0_final.get_K() * 4.0;
-
-  //cout << "kzproj kz : "<<settings_->kzproj()<<" "<<settings_->kz()<<endl;
+  if (settings_->krinvpars() != globals_->ITC_L1L2()->rinv_final.get_K()){
+    throw cms::Exception("Inconsistency") << "ring conversion parameter inconsistency\n";
+  }
+  
+  if (settings_->ktpars() != globals_->ITC_L1L2()->t_final.get_K()){
+    throw cms::Exception("Inconsistency") << "t conversion parameter inconsistency\n";
+  }
   
   if (settings_->debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "========================================================= \n"

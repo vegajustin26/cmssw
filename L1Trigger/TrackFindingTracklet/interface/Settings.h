@@ -287,16 +287,24 @@ namespace trklet {
     int chisqphifactbits() const { return chisqphifactbits_; }
     int chisqzfactbits() const { return chisqzfactbits_; }
 
-    //should not return reference...
-    double& krinvpars() const { return krinvpars_; }
-    double& kphi0pars() const { return kphi0pars_; }
-    double& kd0pars() const { return kd0pars_; }
-    double& ktpars() const { return ktpars_; }
+    //0.02 here is the maximum range in rinv values that can be represented
+    double krinvpars() const {
+      int shift=ceil(-log2(0.02*rmaxdisk_/((1<<nbitsrinv_)*dphisectorHG())));
+      return dphisectorHG()/rmaxdisk_/(1<<shift);
+    } 
+    double kphi0pars() const { return 2*kphi1(); }
+    //32.0 is the range in t we need to cover
+    double ktpars() const { return 32.0/(1<<nbitst_); }
     double kz0pars() const { return kz(); }
-    double& kphider() const { return kphider_; }
-    double& kzder() const { return kzder_; }
-    double& krprojshiftdisk() const { return krprojshiftdisk_; }
-    double& kphiprojdisk() const { return kphiprojdisk_; }
+    double kd0pars() const { return kd0(); }
+
+
+    double kphider() const { return krinvpars()/(1<<phiderbitshift_); }
+    double kzder() const { return ktpars()/(1<<zderbitshift_); }
+    
+    //This is a 'historical accident' and should be fixed so that we don't
+    //have the factor if 2
+    double krprojshiftdisk() const { return 2*kr(); }
 
   private:
     std::string DTCLinkFile_;
@@ -643,15 +651,6 @@ namespace trklet {
 
     double bfield_{3.8};    //B-field in T
     double c_{0.299792458}; //speed of light m/ns
-
-    mutable double krinvpars_;
-    mutable double kphi0pars_;
-    mutable double kd0pars_;
-    mutable double ktpars_;
-    mutable double kphider_;
-    mutable double kzder_;
-    mutable double krprojshiftdisk_;
-    mutable double kphiprojdisk_;
     
   };
 
