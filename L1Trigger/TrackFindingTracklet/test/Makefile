@@ -125,6 +125,15 @@ $(shell echo "    template <class T> LogPrint& operator<<(T const& t) {std::cout
 $(shell echo "    LogPrint& operator<<(std::ostream& (*f)(std::ostream&)) {std::cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "    LogPrint& operator<<(std::ios_base& (*f)(std::ios_base&)) {std::cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "  };" >> FWCore/MessageLogger/interface/MessageLogger.h)
+# another WARNING statement
+$(shell echo "  class LogWarning{" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "  public:" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogWarning(std::string type) { if(0) {std::cout<<type<<std::endl;} }" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    ~LogWarning() { std::cout << std::endl;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    template <class T> LogWarning& operator<<(T const& t) {std::cout << t;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogWarning& operator<<(std::ostream& (*f)(std::ostream&)) {std::cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "    LogWarning& operator<<(std::ios_base& (*f)(std::ios_base&)) {std::cout << f;return *this;}" >> FWCore/MessageLogger/interface/MessageLogger.h)
+$(shell echo "  };" >> FWCore/MessageLogger/interface/MessageLogger.h)
 # ERROR statement
 $(shell echo "  class LogProblem{" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "  public:" >> FWCore/MessageLogger/interface/MessageLogger.h)

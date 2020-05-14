@@ -5,6 +5,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -16,8 +17,8 @@ FitTrack::FitTrack(string name, const Settings* settings, Globals* global, unsig
 
 void FitTrack::addOutput(MemoryBase* memory, string output) {
   if (settings_->writetrace()) {
-    edm::LogVerbatim("Tracklet") << "In " << name_ << " adding output to " << memory->getName() << " to output "
-                                 << output;
+    edm::LogVerbatim("Tracklet") << "In " << name_ << " adding output to " << memory->getName()
+				 << " to output " << output;
   }
   if (output == "trackout") {
     TrackFitMemory* tmp = dynamic_cast<TrackFitMemory*>(memory);
@@ -26,13 +27,13 @@ void FitTrack::addOutput(MemoryBase* memory, string output) {
     return;
   }
 
-  assert(0);
+  throw cms::Exception("BadConfig") << "FitTrack::addOutput, output = " << output << " not known";
 }
 
 void FitTrack::addInput(MemoryBase* memory, string input) {
   if (settings_->writetrace()) {
-    edm::LogVerbatim("Tracklet") << "In " << name_ << " adding input from " << memory->getName() << " to input "
-                                 << input;
+    edm::LogVerbatim("Tracklet") << "In " << name_ << " adding input from " << memory->getName()
+				 << " to input " << input;
   }
   if (input.substr(0,4) == "tpar") {
     TrackletParametersMemory* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
@@ -65,8 +66,7 @@ void FitTrack::addInput(MemoryBase* memory, string input) {
     return;
   }
 
-  edm::LogPrint("Tracklet") << "Did not find input : " << input;
-  assert(0);
+  throw cms::Exception("BadConfig") << "FitTrack : input = " << input << " not found";
 }
 
 #ifdef USEHYBRID
@@ -77,10 +77,10 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
     // From full match lists, collect all the stubs associated with the tracklet seed
 
     // Get seed stubs first
-    trackstublist.push_back(std::make_pair(tracklet->innerFPGAStub(), tracklet->innerStub()));
+    trackstublist.emplace_back(tracklet->innerFPGAStub(), tracklet->innerStub());
     if (tracklet->getISeed() >= 8)
-      trackstublist.push_back(std::make_pair(tracklet->middleFPGAStub(), tracklet->middleStub()));
-    trackstublist.push_back(std::make_pair(tracklet->outerFPGAStub(), tracklet->outerStub()));
+      trackstublist.emplace_back(tracklet->middleFPGAStub(), tracklet->middleStub());
+    trackstublist.emplace_back(tracklet->outerFPGAStub(), tracklet->outerStub());
 
     // Now get ALL matches (can have multiple per layer)
     for (unsigned int i = 0; i < fullmatch1_.size(); i++) {
@@ -159,11 +159,11 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
 
   //First step is to build list of layers and disks.
 
-  int layers[6];
-  double r[6];
+  int layers[N_LAYER];
+  double r[N_LAYER];
   unsigned int nlayers = 0;
-  int disks[5];
-  double z[5];
+  int disks[N_DISK];
+  double z[N_DISK];
   unsigned int ndisks = 0;
 
   //Why do we need to use 10 entries here?
@@ -421,9 +421,9 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
   int ptbin = 0;
   if (std::abs(rinv) < 0.0057 / 2)
     ptbin = 1;
-  if (std::abs(rinv) < 0.0057 / 4)
+  else if (std::abs(rinv) < 0.0057 / 4)
     ptbin = 2;
-  if (std::abs(rinv) < 0.0057 / 8)
+  else if (std::abs(rinv) < 0.0057 / 8)
     ptbin = 3;
 
   const TrackDer* derivatives = derTable.getDerivatives(layermask, diskmask, alphaindex, rinvindex);
@@ -572,7 +572,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
     idelta[j] = iphiresid[i];
     delta[j] = phiresid[i];
     if (std::abs(phiresid[i]) > 0.2) {
-      edm::LogPrint("Tracklet") << getName() << " WARNING too large phiresid: " << phiresid[i] << " "
+      edm::LogWarning("Tracklet") << getName() << " WARNING too large phiresid: " << phiresid[i] << " "
                                 << phiresidexact[i];
     }
     assert(std::abs(phiresid[i]) < 1.0);
@@ -714,11 +714,11 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
                  iD[0][k] * idrinv - iD[1][k] * idphi0 - iD[2][k] * idt - iD[3][k] * idz0;
 
     if (NewChisqDebug) {
-      edm::LogVerbatim("Tracklet") << "delta[k]/sigma = " << delta[k] / sigma[k] << "  delta[k] = " << delta[k];
-      edm::LogVerbatim("Tracklet") << "sum = " << phifactor - delta[k] / sigma[k]
-                                   << "    drinvterm = " << D[0][k] * drinv << "  dphi0term = " << D[1][k] * dphi0
-                                   << "  dtterm = " << D[2][k] * dt << "  dz0term = " << D[3][k] * dz0;
-      edm::LogVerbatim("Tracklet") << "  phifactor = " << phifactor;
+      edm::LogVerbatim("Tracklet") << "delta[k]/sigma = " << delta[k] / sigma[k] << "  delta[k] = " << delta[k] << "\n"
+				   << "sum = " << phifactor - delta[k] / sigma[k]
+                                   << "  drinvterm = " << D[0][k] * drinv << "  dphi0term = " << D[1][k] * dphi0
+                                   << "  dtterm = " << D[2][k] * dt << "  dz0term = " << D[3][k] * dz0
+				   << "\n  phifactor = " << phifactor;
     }
 
     chisqfit += phifactor * phifactor;
@@ -731,11 +731,11 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
                 iD[1][k] * idphi0 - iD[2][k] * idt - iD[3][k] * idz0;
 
     if (NewChisqDebug) {
-      edm::LogVerbatim("Tracklet") << "delta[k]/sigma = " << delta[k] / sigma[k] << "  delta[k] = " << delta[k];
-      edm::LogVerbatim("Tracklet") << "sum = " << rzfactor - delta[k] / sigma[k]
-                                   << "    drinvterm = " << D[0][k] * drinv << "  dphi0term = " << D[1][k] * dphi0
-                                   << "  dtterm = " << D[2][k] * dt << "  dz0term = " << D[3][k] * dz0;
-      edm::LogVerbatim("Tracklet") << "  rzfactor = " << rzfactor;
+      edm::LogVerbatim("Tracklet") << "delta[k]/sigma = " << delta[k] / sigma[k] << "  delta[k] = " << delta[k] << "\n"
+				   << "sum = " << rzfactor - delta[k] / sigma[k]
+                                   << "  drinvterm = " << D[0][k] * drinv << "  dphi0term = " << D[1][k] * dphi0
+                                   << "  dtterm = " << D[2][k] * dt << "  dz0term = " << D[3][k] * dz0
+				   << "\n  rzfactor = " << rzfactor;
     }
 
     chisqfit += rzfactor * rzfactor;

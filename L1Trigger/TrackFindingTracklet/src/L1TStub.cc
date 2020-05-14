@@ -66,12 +66,7 @@ void L1TStub::write(ostream& out) {
 
 
 bool L1TStub::operator==(const L1TStub& other) const {
-  if (other.iphi() == iphi_ && other.iz() == iz_ && other.layer() == layer_ && other.ladder() == ladder_ &&
-      other.module() == module_)
-    return true;
-
-  else
-    return false;
+  return (other.iphi() == iphi_ && other.iz() == iz_ && other.layer() == layer_ && other.ladder() == ladder_ && other.module() == module_);
 }
 
 void L1TStub::lorentzcor(double shift) {

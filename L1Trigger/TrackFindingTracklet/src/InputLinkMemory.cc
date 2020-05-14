@@ -79,8 +79,7 @@ bool InputLinkMemory::addStub(
     L1TStub* l1stub = new L1TStub(al1stub);
     Stub* stubptr = new Stub(stub);
 
-    std::pair<Stub*, L1TStub*> tmp(stubptr, l1stub);
-    stubs_.push_back(tmp);
+    stubs_.emplace_back(stubptr, l1stub);
   }
   return true;
 }

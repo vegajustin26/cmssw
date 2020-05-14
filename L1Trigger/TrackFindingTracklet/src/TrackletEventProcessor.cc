@@ -43,30 +43,29 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   settings_->kzpars() = settings_->kz();
 
   if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "=========================================================";
-    edm::LogVerbatim("Tracklet") << "Conversion factors for global coordinates:";
-    edm::LogVerbatim("Tracklet") << "z    kz            = " << settings_->kz();
-    edm::LogVerbatim("Tracklet") << "r    kr            = " << settings_->kr();
-    edm::LogVerbatim("Tracklet") << "phi  kphi1         = " << settings_->kphi1();
-    edm::LogVerbatim("Tracklet") << "=========================================================";
-    edm::LogVerbatim("Tracklet") << "Conversion factors for track(let) parameters:";
-    edm::LogVerbatim("Tracklet") << "rinv krinvpars     = " << settings_->krinvpars();
-    edm::LogVerbatim("Tracklet") << "phi0 kphi0pars     = " << settings_->kphi0pars();
-    edm::LogVerbatim("Tracklet") << "d0   kd0pars       = " << settings_->kd0pars();
-    edm::LogVerbatim("Tracklet") << "t    ktpars        = " << settings_->ktpars();
-    edm::LogVerbatim("Tracklet") << "z0   kz0pars       = " << settings_->kzpars();
-    edm::LogVerbatim("Tracklet") << "=========================================================";
-    edm::LogVerbatim("Tracklet") << "phi0bitshift = " << settings_->phi0bitshift();
-    edm::LogVerbatim("Tracklet") << "d0bitshift   = "
-                                 << "???";
-    edm::LogVerbatim("Tracklet") << "=========================================================";
+    edm::LogVerbatim("Tracklet") << "========================================================= \n"
+				 << "Conversion factors for global coordinates: \n"
+				 << "z    kz            = " << settings_->kz() << "\n"
+				 << "r    kr            = " << settings_->kr() << "\n"
+				 << "phi  kphi1         = " << settings_->kphi1() << "\n"
+				 << "========================================================= \n"
+				 << "Conversion factors for track(let) parameters: \n"
+				 << "rinv krinvpars     = " << settings_->krinvpars() << "\n"
+				 << "phi0 kphi0pars     = " << settings_->kphi0pars() << "\n"
+				 << "d0   kd0pars       = " << settings_->kd0pars() << "\n"
+				 << "t    ktpars        = " << settings_->ktpars() << "\n"
+				 << "z0   kz0pars       = " << settings_->kzpars() << "\n"
+				 << "========================================================= \n"
+				 << "phi0bitshift = " << settings_->phi0bitshift() << "\n"
+				 << "d0bitshift   = ??? \n"
+				 << "=========================================================";
   }
 
+  //option to write out tables for HLS code, not used in production
+  /*
   const Settings& settings = *settings_;
   Globals* globals = globals_;
 
-  //uncomment option to write out tables for HLS code, not used in production
-  /*
   if (settings_->writeVerilog() || settings_->writeHLS()) {
 #include "../test/WriteInvTables.icc"
 #include "../test/WriteDesign.icc"
@@ -587,47 +586,47 @@ void TrackletEventProcessor::printSummary() {
     globals_->histograms()->close();
   }
 
-  edm::LogVerbatim("Tracklet") << "Process             Times called   Average time (ms)      Total time (s)";
-  edm::LogVerbatim("Tracklet") << "Cleaning              " << setw(10) << cleanTimer_.ntimes() << setw(20)
+  edm::LogVerbatim("Tracklet") << "Process             Times called   Average time (ms)      Total time (s) \n"
+			       << "Cleaning              " << setw(10) << cleanTimer_.ntimes() << setw(20)
                                << setprecision(3) << cleanTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << cleanTimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "Add Stubs             " << setw(10) << addStubTimer_.ntimes() << setw(20)
+                               << cleanTimer_.tottime() << "\n"
+			       << "Add Stubs             " << setw(10) << addStubTimer_.ntimes() << setw(20)
                                << setprecision(3) << addStubTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << addStubTimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "VMRouter              " << setw(10) << VMRouterTimer_.ntimes() << setw(20)
+                               << addStubTimer_.tottime() << "\n"
+			       << "VMRouter              " << setw(10) << VMRouterTimer_.ntimes() << setw(20)
                                << setprecision(3) << VMRouterTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << VMRouterTimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "TrackletEngine        " << setw(10) << TETimer_.ntimes() << setw(20)
+                               << VMRouterTimer_.tottime() << "\n"
+			       << "TrackletEngine        " << setw(10) << TETimer_.ntimes() << setw(20)
                                << setprecision(3) << TETimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << TETimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "TrackletEngineDisplaced" << setw(10) << TEDTimer_.ntimes() << setw(20)
+                               << TETimer_.tottime() << "\n"
+			       << "TrackletEngineDisplaced" << setw(10) << TEDTimer_.ntimes() << setw(20)
                                << setprecision(3) << TEDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << TEDTimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "TripletEngine         " << setw(10) << TRETimer_.ntimes() << setw(20)
+                               << TEDTimer_.tottime() << "\n"
+			       << "TripletEngine         " << setw(10) << TRETimer_.ntimes() << setw(20)
                                << setprecision(3) << TRETimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << TRETimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "TrackletCalculator    " << setw(10) << TCTimer_.ntimes() << setw(20)
+                               << TRETimer_.tottime() << "\n"
+			       << "TrackletCalculator    " << setw(10) << TCTimer_.ntimes() << setw(20)
                                << setprecision(3) << TCTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << TCTimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced" << setw(10) << TCDTimer_.ntimes() << setw(20)
+                               << TCTimer_.tottime() << "\n"
+			       << "TrackletCalculatorDisplaced" << setw(10) << TCDTimer_.ntimes() << setw(20)
                                << setprecision(3) << TCDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << TCDTimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "ProjectionRouter      " << setw(10) << PRTimer_.ntimes() << setw(20)
+                               << TCDTimer_.tottime() << "\n"
+			       << "ProjectionRouter      " << setw(10) << PRTimer_.ntimes() << setw(20)
                                << setprecision(3) << PRTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << PRTimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "MatchEngine           " << setw(10) << METimer_.ntimes() << setw(20)
+                               << PRTimer_.tottime() << "\n"
+			       << "MatchEngine           " << setw(10) << METimer_.ntimes() << setw(20)
                                << setprecision(3) << METimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << METimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "MatchCalculator       " << setw(10) << MCTimer_.ntimes() << setw(20)
+                               << METimer_.tottime() << "\n"
+			       << "MatchCalculator       " << setw(10) << MCTimer_.ntimes() << setw(20)
                                << setprecision(3) << MCTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << MCTimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "MatchProcessor        " << setw(10) << MPTimer_.ntimes() << setw(20)
+                               << MCTimer_.tottime() << "\n"
+			       << "MatchProcessor        " << setw(10) << MPTimer_.ntimes() << setw(20)
                                << setprecision(3) << MPTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << MPTimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "FitTrack              " << setw(10) << FTTimer_.ntimes() << setw(20)
+                               << MPTimer_.tottime() << "\n"
+			       << "FitTrack              " << setw(10) << FTTimer_.ntimes() << setw(20)
                                << setprecision(3) << FTTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << FTTimer_.tottime();
-  edm::LogVerbatim("Tracklet") << "PurgeDuplicate        " << setw(10) << PDTimer_.ntimes() << setw(20)
+                               << FTTimer_.tottime() << "\n"
+			       << "PurgeDuplicate        " << setw(10) << PDTimer_.ntimes() << setw(20)
                                << setprecision(3) << PDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
                                << PDTimer_.tottime();
 }

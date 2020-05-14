@@ -130,7 +130,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
   if (kfphi0 < -M_PI)
     kfphi0 += 2 * M_PI;
 
-  std::pair<float, float> helixrphi(kfrinv * 1.0e11 / (2.9979e8 * TMTTsettings.getBfield()), kfphi0);
+  std::pair<float, float> helixrphi(kfrinv / (0.01 * settings_->c() * settings_->bfield()), kfphi0);
   std::pair<float, float> helixrz(kfz0, kft);
 
   // KF HLS uses HT mbin (which is binned q/Pt) to allow for scattering. So estimate it from tracklet.
@@ -188,7 +188,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
     if (phi0fit < -M_PI)
       phi0fit += 2 * M_PI;
 
-    double rinvfit = 0.01 * settings_->c() * TMTTsettings.getBfield() * trk.qOverPt();
+    double rinvfit = 0.01 * settings_->c() * settings_->bfield() * trk.qOverPt();
 
     int irinvfit = rinvfit / settings_->krinvpars();
     int iphi0fit = phi0fit / settings_->kphi0pars();

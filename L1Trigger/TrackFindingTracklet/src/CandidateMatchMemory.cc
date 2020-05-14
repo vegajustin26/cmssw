@@ -3,6 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -16,10 +17,9 @@ void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, std::pai
   //Check for consistency
   for (unsigned int i = 0; i < matches_.size(); i++) {
     if (tracklet.first->TCID() < matches_[i].first.first->TCID()) {
-      edm::LogPrint("Tracklet") << "In " << getName() << " adding tracklet " << tracklet.first
-                                << " with lower TCID : " << tracklet.first->TCID() << " than earlier TCID "
-                                << matches_[i].first.first->TCID();
-      assert(0);
+      throw cms::Exception("LogicError") << "In " << getName() << " adding tracklet " << tracklet.first
+					 << " with lower TCID : " << tracklet.first->TCID() << " than earlier TCID "
+					 << matches_[i].first.first->TCID();
     }
   }
   matches_.push_back(tmp);
