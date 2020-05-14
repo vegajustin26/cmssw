@@ -136,9 +136,9 @@ public:
   var_param minus1{globals_, "minus1", -1., 10};
   //
   //
-  var_param r1mean{globals_, "r1mean", "Kr", settings_->rmax(5), settings_->kr()};
-  var_param r2mean{globals_, "r2mean", "Kr", settings_->rmax(5), settings_->kr()};
-  var_param r12mean{globals_, "r12mean", "Kr", 2 * settings_->rmax(5), settings_->kr()};
+  var_param r1mean{globals_, "r1mean", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
+  var_param r2mean{globals_, "r2mean", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
+  var_param r12mean{globals_, "r12mean", "Kr", 2 * settings_->rmax(trklet::N_DISK-1), settings_->kr()};
 
   //inputs
   var_def r1{globals_, "r1", "Kr", settings_->drmax(), settings_->kr()};
@@ -149,22 +149,22 @@ public:
   var_def phi1{globals_, "phi1", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
   var_def phi2{globals_, "phi2", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
 
-  var_def rproj0{globals_, "rproj0", "Kr", settings_->rmax(5), settings_->kr()};
-  var_def rproj1{globals_, "rproj1", "Kr", settings_->rmax(5), settings_->kr()};
-  var_def rproj2{globals_, "rproj2", "Kr", settings_->rmax(5), settings_->kr()};
-  var_def rproj3{globals_, "rproj3", "Kr", settings_->rmax(5), settings_->kr()};
+  var_def rproj0{globals_, "rproj0", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
+  var_def rproj1{globals_, "rproj1", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
+  var_def rproj2{globals_, "rproj2", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
+  var_def rproj3{globals_, "rproj3", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
 
-  var_def zproj0{globals_, "zproj0", "Kz", settings_->zmax(4), settings_->kz()};
-  var_def zproj1{globals_, "zproj1", "Kz", settings_->zmax(4), settings_->kz()};
-  var_def zproj2{globals_, "zproj2", "Kz", settings_->zmax(4), settings_->kz()};
-  var_def zproj3{globals_, "zproj3", "Kz", settings_->zmax(4), settings_->kz()};
-  var_def zproj4{globals_, "zproj4", "Kz", settings_->zmax(4), settings_->kz()};
+  var_def zproj0{globals_, "zproj0", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
+  var_def zproj1{globals_, "zproj1", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
+  var_def zproj2{globals_, "zproj2", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
+  var_def zproj3{globals_, "zproj3", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
+  var_def zproj4{globals_, "zproj4", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
 
   //calculations
 
   //tracklet
-  var_add r1abs{globals_, "r1abs", &r1, &r1mean, settings_->rmax(5)};
-  var_add r2abs{globals_, "r2abs", &r2, &r2mean, settings_->rmax(5)};
+  var_add r1abs{globals_, "r1abs", &r1, &r1mean, settings_->rmax(trklet::N_LAYER-1)};
+  var_add r2abs{globals_, "r2abs", &r2, &r2mean, settings_->rmax(trklet::N_LAYER-1)};
 
   var_subtract dr{globals_, "dr", &r2, &r1};
 
@@ -193,8 +193,8 @@ public:
   var_add x6m{globals_, "x6m", &minus1, &x6b, 2.};
   var_mult phi0a{globals_, "phi0a", &delta1, &x6m, settings_->dphisector()};
 
-  var_mult z0a{globals_, "z0a", &r1abs, &deltaZ, 120.};
-  var_mult z0b{globals_, "z0b", &z0a, &x6m, 120.};
+  var_mult z0a{globals_, "z0a", &r1abs, &deltaZ, settings_->zlength()};
+  var_mult z0b{globals_, "z0b", &z0a, &x6m, settings_->zlength()};
 
   var_add phi0{globals_, "phi0", &phi1, &phi0a, 2 * settings_->dphisector()};
   var_mult rinv{globals_, "rinv", &a2n, &delta0, 2 * settings_->maxrinv()};
@@ -385,7 +385,7 @@ public:
   var_cut x6a_cut{globals_, &x6a, -0.02, 0.02};
   var_cut x6m_cut{globals_, &x6m, -2., 2.};
   var_cut phi0a_cut{globals_, &phi0a, -settings_->dphisector(), settings_->dphisector()};
-  var_cut z0a_cut{globals_, &z0a, -120., 120.};
+  var_cut z0a_cut{globals_, &z0a, (-1)*settings_->zlength(), settings_->zlength()};
   var_cut phi0_cut{globals_, &phi0, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
   var_cut rinv_cut{globals_, &rinv, -settings_->maxrinv(), settings_->maxrinv()};
   var_cut t_cut{globals_, &t, -4, 4};

@@ -124,26 +124,26 @@ public:
   var_param minus1{globals_, "minus1", -1, 10};
   //
   //
-  var_param r1mean{globals_, "r1mean", "Kr", settings_->rmax(5), settings_->kr()};
-  var_param z2mean{globals_, "z2mean", "Kz", settings_->zmax(4), settings_->kz()};
+  var_param r1mean{globals_, "r1mean", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
+  var_param z2mean{globals_, "z2mean", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
 
   //inputs
   var_def r1{globals_, "r1", "Kr", settings_->drmax(), settings_->kr()};
-  var_def r2{globals_, "r2", "Kr", settings_->rmax(5), settings_->kr()};
+  var_def r2{globals_, "r2", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
   var_def z1{globals_, "z1", "Kz", settings_->zlength(), settings_->kz()};
   var_def z2{globals_, "z2", "Kz", settings_->dzmax(), settings_->kz()};
 
   var_def phi1{globals_, "phi1", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
   var_def phi2{globals_, "phi2", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
 
-  var_def rproj0{globals_, "rproj0", "Kr", settings_->rmax(5), settings_->kr()};
-  var_def rproj1{globals_, "rproj1", "Kr", settings_->rmax(5), settings_->kr()};
-  var_def rproj2{globals_, "rproj2", "Kr", settings_->rmax(5), settings_->kr()};
+  var_def rproj0{globals_, "rproj0", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
+  var_def rproj1{globals_, "rproj1", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
+  var_def rproj2{globals_, "rproj2", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
 
-  var_def zproj0{globals_, "zproj0", "Kz", settings_->zmax(4), settings_->kz()};
-  var_def zproj1{globals_, "zproj1", "Kz", settings_->zmax(4), settings_->kz()};
-  var_def zproj2{globals_, "zproj2", "Kz", settings_->zmax(4), settings_->kz()};
-  var_def zproj3{globals_, "zproj3", "Kz", settings_->zmax(4), settings_->kz()};
+  var_def zproj0{globals_, "zproj0", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
+  var_def zproj1{globals_, "zproj1", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
+  var_def zproj2{globals_, "zproj2", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
+  var_def zproj3{globals_, "zproj3", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
 
   //calculations
 
