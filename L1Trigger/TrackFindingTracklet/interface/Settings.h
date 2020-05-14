@@ -10,6 +10,7 @@
 #include <cmath>
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 namespace trklet {
 
@@ -69,16 +70,14 @@ namespace trklet {
 
     bool writeMonitorData(std::string module) const {
       if (writeMonitorData_.find(module) == writeMonitorData_.end()) {
-        edm::LogPrint("Tracklet") << "Settings::writeMonitorData module = " << module << " not known";
-        assert(0);
+	throw cms::Exception("BadConfig") << "Settings::writeMonitorData module = " << module << " not known";
       }
       return writeMonitorData_.at(module);
     }
 
     unsigned int maxStep(std::string module) const {
       if (maxstep_.find(module) == maxstep_.end()) {
-        edm::LogPrint("Tracklet") << "Settings::maxStep module = " << module << " not known";
-        assert(0);
+	throw cms::Exception("BadConfig") << "Settings::maxStep module = " << module << " not known";
       }
       return maxstep_.at(module) + maxstepoffset_;
     }
@@ -233,10 +232,6 @@ namespace trklet {
 
     double z0cut() const { return z0cut_; }
 
-    // Obsolete - only used in TrackletCalculatorDisplaced (Ryd - 2020-01-16)
-    int iphicritminmc() const { return iphicritminmc_; }
-    int iphicritmaxmc() const { return iphicritmaxmc_; }
-
     unsigned int NLONGVMBITS() const { return NLONGVMBITS_; }
     unsigned int NLONGVMBINS() const { return (1 << NLONGVMBITS_); }
 
@@ -356,10 +351,6 @@ namespace trklet {
     double rmindiskl3overlapvm_{50.0};
 
     double z0cut_{15.0};
-
-    // Obsolete - only used in TrackletCalculatorDisplaced (Ryd - 2020-01-16)
-    int iphicritminmc_{9253};
-    int iphicritmaxmc_{56269};
 
     unsigned int NLONGVMBITS_{3};
 
