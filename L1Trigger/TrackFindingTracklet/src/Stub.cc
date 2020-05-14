@@ -9,11 +9,14 @@ using namespace trklet;
 
 Stub::Stub(const trklet::Settings* const settings) : settings_(settings) {}
 
-Stub::Stub(const L1TStub& stub, const trklet::Settings* const settings, double phiminsec, double phimaxsec)
-    : settings_(settings) {
+Stub::Stub(const L1TStub& stub, const trklet::Settings* const settings, double phiminsec, double phimaxsec):
+  settings_(settings) {
+
   double r = stub.r();
   double z = stub.z();
   double sbend = stub.bend();
+
+  l1tstub_=&stub;
 
   isPSmodule_ = false;
   if (stub.isPSmodule())
@@ -161,9 +164,9 @@ Stub::Stub(const L1TStub& stub, const trklet::Settings* const settings, double p
 
     disk_.set(sign * disk, 4, false, __LINE__, __FILE__);
 
-    double alphanew = stub.alphanew();
-    assert(std::abs(alphanew) < 1.0);
-    int ialphanew = alphanew * (1 << (settings->nbitsalpha() - 1));
+    double alphanorm = stub.alphanorm();
+    assert(std::abs(alphanorm) < 1.0);
+    int ialphanew = alphanorm * (1 << (settings->nbitsalpha() - 1));
     assert(ialphanew < (1 << (settings->nbitsalpha() - 1)));
     assert(ialphanew >= -(1 << (settings->nbitsalpha() - 1)));
     alphanew_.set(ialphanew, settings->nbitsalpha(), false, __LINE__, __FILE__);

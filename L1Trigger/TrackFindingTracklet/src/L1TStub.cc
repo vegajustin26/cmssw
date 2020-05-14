@@ -39,25 +39,10 @@ L1TStub::L1TStub(int eventid,
   bend_ = bend;
   isPSmodule_ = isPSmodule;
   isFlipped_ = isFlipped;
-
+  
   allstubindex_ = 999;
 }
 
-void L1TStub::AddInnerDigi(int ladder, int module, int irphi, int iz) {
-  pair<int, int> tmplm(ladder, module);
-  innerdigisladdermodule_.push_back(tmplm);
-
-  pair<int, int> tmp(irphi, iz);
-  innerdigis_.push_back(tmp);
-}
-
-void L1TStub::AddOuterDigi(int ladder, int module, int irphi, int iz) {
-  pair<int, int> tmplm(ladder, module);
-  outerdigisladdermodule_.push_back(tmplm);
-
-  pair<int, int> tmp(irphi, iz);
-  outerdigis_.push_back(tmp);
-}
 
 void L1TStub::write(ofstream& out) {
   out << "Stub: " << layer_ + 1 << "\t" << ladder_ << "\t" << module_ << "\t" << strip_ << "\t" << eventid_ << "\t"
@@ -79,45 +64,6 @@ void L1TStub::write(ostream& out) {
   out << endl;
 }
 
-int L1TStub::ptsign() {
-  int ptsgn = -1.0;
-  if (diphi() < iphiouter())
-    ptsgn = -ptsgn;
-  return ptsgn;
-}
-
-double L1TStub::diphi() {
-  if (innerdigis_.size() == 0) {
-    return 0.0;
-  }
-  double phi_tmp = 0.0;
-  for (unsigned int i = 0; i < innerdigis_.size(); i++) {
-    phi_tmp += innerdigis_[i].first;
-  }
-  return phi_tmp / innerdigis_.size();
-}
-
-double L1TStub::iphiouter() {
-  if (outerdigis_.size() == 0) {
-    return 0.0;
-  }
-  double phi_tmp = 0.0;
-  for (unsigned int i = 0; i < outerdigis_.size(); i++) {
-    phi_tmp += outerdigis_[i].first;
-  }
-  return phi_tmp / outerdigis_.size();
-}
-
-double L1TStub::diz() {
-  if (innerdigis_.size() == 0) {
-    return 0.0;
-  }
-  double z_tmp = 0.0;
-  for (unsigned int i = 0; i < innerdigis_.size(); i++) {
-    z_tmp += innerdigis_[i].second;
-  }
-  return z_tmp / innerdigis_.size();
-}
 
 bool L1TStub::operator==(const L1TStub& other) const {
   if (other.iphi() == iphi_ && other.iz() == iz_ && other.layer() == layer_ && other.ladder() == ladder_ &&
@@ -147,7 +93,7 @@ double L1TStub::alpha() const {
   return -((int)strip_ - 509.5) * 0.009 * flip / r2();
 }
 
-double L1TStub::alphanew() const {
+double L1TStub::alphanorm() const {
   if (isPSmodule())
     return 0.0;
   int flip = 1;
@@ -159,19 +105,6 @@ double L1TStub::alphanew() const {
   return -((int)strip_ - 509.5) * flip / 510.0;
 }
 
-double L1TStub::alphatruncated() const {
-  if (isPSmodule())
-    return 0.0;
-  int flip = 1;
-  if (isFlipped())
-    flip = -1;
-  int striptruncated = strip_ / 1;
-  striptruncated *= 1;
-  if (z_ > 0.0) {
-    return (striptruncated - 509.5) * 0.009 * flip / r2();
-  }
-  return -(striptruncated - 509.5) * 0.009 * flip / r2();
-}
 
 void L1TStub::setXY(double x, double y) {
   x_ = x;

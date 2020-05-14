@@ -56,11 +56,6 @@ bool SLHCEvent::addStub(int layer,
                         double x,
                         double y,
                         double z,
-                        vector<bool> innerStack,
-                        vector<int> irphi,
-                        vector<int> iz,
-                        vector<int> iladder,
-                        vector<int> imodule,
                         int isPSmodule,
                         int isFlipped) {
   if (layer > 999 && layer < 1999 && z < 0.0) {
@@ -73,17 +68,6 @@ bool SLHCEvent::addStub(int layer,
 
   L1TStub stub(
       eventid, tps, -1, -1, layer, ladder, module, strip, x, y, z, -1.0, -1.0, pt, bend, isPSmodule, isFlipped);
-
-  for (unsigned int i = 0; i < innerStack.size(); i++) {
-    if (innerStack[i]) {
-      stub.AddInnerDigi(iladder[i], imodule[i], irphi[i], iz[i]);
-    } else {
-      stub.AddOuterDigi(iladder[i], imodule[i], irphi[i], iz[i]);
-    }
-  }
-
-  stub.setiphi(stub.diphi());
-  stub.setiz(stub.diz());
 
   stubs_.push_back(stub);
   return true;
@@ -222,22 +206,6 @@ SLHCEvent::SLHCEvent(istream& in) {
         eventid, tps, -1, -1, layer, ladder, module, strip, x, y, z, -1.0, -1.0, pt, bend, isPSmodule, isFlipped);
 
     in >> tmp;
-
-    while (tmp == "InnerStackDigi:" || tmp == "OuterStackDigi:") {
-      int irphi;
-      int iz;
-      int iladder;
-      int imodule;
-      in >> irphi;
-      in >> iz;
-      in >> iladder;
-      in >> imodule;
-      if (tmp == "InnerStackDigi:")
-        stub.AddInnerDigi(iladder, imodule, irphi, iz);
-      if (tmp == "OuterStackDigi:")
-        stub.AddOuterDigi(iladder, imodule, irphi, iz);
-      in >> tmp;
-    }
 
     double t = std::abs(stub.z()) / stub.r();
     double eta = asinh(t);

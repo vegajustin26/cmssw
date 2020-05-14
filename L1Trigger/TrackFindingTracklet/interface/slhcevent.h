@@ -88,11 +88,6 @@ namespace trklet {
                  double x,
                  double y,
                  double z,
-                 std::vector<bool> innerStack,
-                 std::vector<int> irphi,
-                 std::vector<int> iz,
-                 std::vector<int> iladder,
-                 std::vector<int> imodule,
                  int isPSmodule,
                  int isFlipped);
 

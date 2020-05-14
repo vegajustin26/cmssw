@@ -411,12 +411,12 @@ void MatchCalculator::execute() {
       double drphiapprox = dphiapprox * stub->r();
 
       if (!stub->isPSmodule()) {
-        double alphanew = stub->alphanew();
-        dphi += dr * alphanew * settings_->half2SmoduleWidth() / stub->r2();
-        dphiapprox += drapprox * alphanew * settings_->half2SmoduleWidth() / stub->r2();
+        double alphanorm = stub->alphanorm();
+        dphi += dr * alphanorm * settings_->half2SmoduleWidth() / stub->r2();
+        dphiapprox += drapprox * alphanorm * settings_->half2SmoduleWidth() / stub->r2();
 
-        drphi += dr * alphanew * settings_->half2SmoduleWidth() / stub->r();
-        drphiapprox += dr * alphanew * settings_->half2SmoduleWidth() / stub->r();
+        drphi += dr * alphanorm * settings_->half2SmoduleWidth() / stub->r();
+        drphiapprox += dr * alphanorm * settings_->half2SmoduleWidth() / stub->r();
       }
 
       int seedindex = tracklet->getISeed();

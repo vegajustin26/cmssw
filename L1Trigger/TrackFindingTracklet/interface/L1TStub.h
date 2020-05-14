@@ -31,14 +31,11 @@ namespace trklet {
             int isFlipped);
 
     ~L1TStub() = default;
-    
-    void AddInnerDigi(int ladder, int module, int irphi, int iz);
-    void AddOuterDigi(int ladder, int module, int irphi, int iz);
 
     void write(std::ofstream& out);
     void write(std::ostream& out);
 
-    int ptsign();
+    //int ptsign();
 
     double diphi();
 
@@ -55,10 +52,7 @@ namespace trklet {
     }
     unsigned int ladder() const { return ladder_; }
     unsigned int module() const { return module_; }
-    std::vector<std::pair<int, int> > innerdigis() const { return innerdigis_; }
-    std::vector<std::pair<int, int> > outerdigis() const { return outerdigis_; }
-    std::vector<std::pair<int, int> > innerdigisladdermodule() const { return innerdigisladdermodule_; }
-    std::vector<std::pair<int, int> > outerdigisladdermodule() const { return outerdigisladdermodule_; }
+
     double x() const { return x_; }
     double y() const { return y_; }
     double z() const { return z_; }
@@ -94,9 +88,7 @@ namespace trklet {
     double alpha() const;
 
     //Scaled to go between -1 and +1
-    double alphanew() const;
-
-    double alphatruncated() const;
+    double alphanorm() const;
 
     void setXY(double x, double y);
 
@@ -122,11 +114,6 @@ namespace trklet {
     double pt_;
     double bend_;
     unsigned int allstubindex_;
-
-    std::vector<std::pair<int, int> > innerdigis_;
-    std::vector<std::pair<int, int> > innerdigisladdermodule_;
-    std::vector<std::pair<int, int> > outerdigis_;
-    std::vector<std::pair<int, int> > outerdigisladdermodule_;
 
     unsigned int isPSmodule_;
     unsigned int isFlipped_;

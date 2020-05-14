@@ -76,6 +76,8 @@ namespace trklet {
 
     const FPGAWord& finez() const { return finez_; }
 
+    const L1TStub* l1tstub() const { return l1tstub_; }
+    
   private:
     bool isPSmodule_;  //TODO should not be used can be removed
     FPGAWord layer_;
@@ -94,6 +96,7 @@ namespace trklet {
     FPGAWord finer_;  //TODO should not be member data
     FPGAWord finez_;  //TODO should not be member data
 
+    const L1TStub* l1tstub_;
     const Settings* const settings_;
   };
 
