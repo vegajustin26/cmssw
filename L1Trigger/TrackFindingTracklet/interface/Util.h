@@ -5,6 +5,7 @@
 #include <cmath>
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 namespace trklet {
 
@@ -114,7 +115,7 @@ namespace trklet {
       if (ibend <= -7)
         return 7;
 
-      assert(0);
+      throw cms::Exception("BadConfig") << "Unknown bendencode for PS module for bend = " << bend << " ibend = " << ibend;
     }
 
     if (ibend == 0 || ibend == 1)
@@ -150,9 +151,7 @@ namespace trklet {
     if (ibend <= -15)
       return 15;
 
-    edm::LogVerbatim("Tracklet") << "bend ibend : " << bend << " " << ibend;
-
-    assert(0);
+    throw cms::Exception("BadConfig") << "Unknown bendencode for 2S module for bend = " << bend << " ibend = " << ibend;
   }
 
   //Should be optimized by layer - now first implementation to make sure it works OK
@@ -175,7 +174,7 @@ namespace trklet {
       if (ibend == 7)
         return -3.75;
 
-      assert(0);
+      throw cms::Exception("BadConfig") << "Unknown benddecode for PS module for ibend = " << ibend;
     }
 
     if (ibend == 0)
@@ -211,11 +210,11 @@ namespace trklet {
     if (ibend == 15)
       return -7.75;
 
-    assert(0);
+    throw cms::Exception("BadConfig") << "Unknown benddecode for 2S module for ibend = " << ibend;
   }
 
   inline double bend(double r, double rinv, double rcrit) {
-    double dr = 0.18;
+    constexpr double dr = 0.18;
 
     double delta = r * dr * 0.5 * rinv;
 
