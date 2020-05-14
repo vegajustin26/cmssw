@@ -22,7 +22,7 @@ namespace trklet {
                      const VMStubTE& stub2,
                      const unsigned index = 0,
                      const std::string& tedName = "") {
-      stubs_.push_back(std::pair<const VMStubTE, const VMStubTE>(stub1, stub2));
+      stubs_.emplace_back(stub1, stub2);
       indices_.push_back(index);
       tedNames_.push_back(tedName);
     }
