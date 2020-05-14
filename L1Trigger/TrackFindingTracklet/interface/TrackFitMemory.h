@@ -11,7 +11,6 @@ namespace trklet {
   class Stub;
   class L1TStub;
   class Tracklet;
-  class L1SimTrack;
 
   class TrackFitMemory : public MemoryBase {
   public:

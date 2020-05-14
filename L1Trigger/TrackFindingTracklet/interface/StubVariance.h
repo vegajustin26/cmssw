@@ -4,15 +4,16 @@
 namespace trklet {
 
   class Globals;
+  class Settings;
   class SLHCEvent;
 
   class StubVariance {
   public:
-    StubVariance(SLHCEvent& ev, Globals* globals);
+    StubVariance(SLHCEvent& ev, Globals* globals, const Settings* settings);
 
     ~StubVariance() = default;
 
-    void process(SLHCEvent& ev, Globals* globals);
+    void process(SLHCEvent& ev, Globals* globals, const Settings* settings);
 
   private:
   };

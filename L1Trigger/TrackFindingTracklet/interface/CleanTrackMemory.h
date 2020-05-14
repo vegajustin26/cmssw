@@ -9,7 +9,6 @@ namespace trklet {
 
   class Settings;
   class Tracklet;
-  class L1SimTrack;
 
   class CleanTrackMemory : public MemoryBase {
   public:

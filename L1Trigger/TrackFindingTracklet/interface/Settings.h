@@ -645,9 +645,8 @@ namespace trklet {
     //constants derivative from the above - TODO should be calculated in Settings.h, not set externally
     //then we can remove the mutable
 
-    double bfield_{3.8};  //B-field in T
-    double c_{0.3};       //speed of light m/ns
-    //double c_{0.299792458};       //speed of light m/ns
+    double bfield_{3.8};    //B-field in T
+    double c_{0.299792458}; //speed of light m/ns
 
     mutable double krinvpars_;
     mutable double kphi0pars_;

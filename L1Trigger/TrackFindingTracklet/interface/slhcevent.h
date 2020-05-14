@@ -27,7 +27,6 @@ namespace trklet {
     int trackid() const { return trackid_; }
     int type() const { return type_; }
     double pt() const { return pt_; }
-    double rinv() const { return charge() * 0.01 * 0.3 * 3.8 / pt_; }
     double eta() const { return eta_; }
     double phi() const { return phi_; }
     double vx() const { return vx_; }
