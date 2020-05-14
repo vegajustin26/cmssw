@@ -8,6 +8,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -142,8 +143,7 @@ void MatchCalculator::addOutput(MemoryBase* memory, string output) {
     fullMatches_[iSeed] = tmp;
     return;
   }
-  edm::LogPrint("Tracklet") << "Count not fined output = " << output;
-  assert(0);
+  throw cms::Exception("BadConfig") << "MatchCalculator::addOutput, could not find output " << output;
 }
 
 void MatchCalculator::addInput(MemoryBase* memory, string input) {
@@ -169,8 +169,7 @@ void MatchCalculator::addInput(MemoryBase* memory, string input) {
     matches_.push_back(tmp);
     return;
   }
-  edm::LogVerbatim("Tracklet") << getName() << " Could not find input " << input;
-  assert(0);
+  throw cms::Exception("BadConfig") << "MatchCalculator::addInput, could not find input " << input;
 }
 
 void MatchCalculator::execute() {
@@ -327,7 +326,6 @@ void MatchCalculator::execute() {
 
       //TODO - need to express interms of constants
       int shifttmp = 6;
-      assert(shifttmp >= 0);
       int iphicorr = (iz * tracklet->fpgaphiprojderdisk(disk).value()) >> shifttmp;
 
       iphi += iphicorr;
@@ -336,8 +334,6 @@ void MatchCalculator::execute() {
 
       //TODO - need to express interms of constants
       int shifttmp2 = 7;
-
-      assert(shifttmp2 >= 0);
       int ircorr = (iz * tracklet->fpgarprojderdisk(disk).value()) >> shifttmp2;
 
       ir += ircorr;
@@ -386,10 +382,8 @@ void MatchCalculator::execute() {
       double dz = z - sign * settings_->zmean(layerdisk_ - 6);
 
       if (std::abs(dz) > settings_->dzmax()) {
-        edm::LogProblem("Tracklet") << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " "
-                                    << tracklet->getISeed();
-        edm::LogProblem("Tracklet") << "stub " << stub->z() << " disk " << disk << " " << dz;
-        assert(std::abs(dz) < settings_->dzmax());
+	throw cms::Exception("LogicError") << "MatchCalculator:: " << name_ << "_" << iSector_ << " "<< tracklet->getISeed()
+					   << "\n stub " << stub->z() << " disk " << disk << " " << dz;
       }
 
       double phiproj = tracklet->phiprojdisk(disk) + dz * tracklet->phiprojderdisk(disk);

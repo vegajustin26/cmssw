@@ -8,6 +8,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -17,32 +18,12 @@ MatchEngine::MatchEngine(string name, const Settings* settings, Globals* global,
   layer_ = 0;
   disk_ = 0;
   string subname = name.substr(3, 2);
-  if (subname == "L1")
-    layer_ = 1;
-  if (subname == "L2")
-    layer_ = 2;
-  if (subname == "L3")
-    layer_ = 3;
-  if (subname == "L4")
-    layer_ = 4;
-  if (subname == "L5")
-    layer_ = 5;
-  if (subname == "L6")
-    layer_ = 6;
-  if (subname == "D1")
-    disk_ = 1;
-  if (subname == "D2")
-    disk_ = 2;
-  if (subname == "D3")
-    disk_ = 3;
-  if (subname == "D4")
-    disk_ = 4;
-  if (subname == "D5")
-    disk_ = 5;
-  if (layer_ == 0 && disk_ == 0) {
-    edm::LogPrint("Tracklet") << name << " subname = " << subname << " " << layer_ << " " << disk_;
-  }
-  assert((layer_ != 0) || (disk_ != 0));
+  if (subname.substr(0,1)=="L")
+    layer_ = stoi(subname.substr(1,1));
+  else if (subname.substr(0,1)=="D")
+    disk_ = stoi(subname.substr(1,1));
+  else
+    throw cms::Exception("BadConfig") << "MatchEngine " << name << " subname = " << subname << " " << layer_ << " " << disk_;
 
   if (layer_ > 0) {
     unsigned int nbits = 3;

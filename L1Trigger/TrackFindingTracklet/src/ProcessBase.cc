@@ -44,34 +44,12 @@ void ProcessBase::initLayerDisk(unsigned int pos, int& layer, int& disk) {
   string subname = name_.substr(pos, 2);
   layer = 0;
   disk = 0;
-
-  if (subname == "L1")
-    layer = 1;
-  if (subname == "L2")
-    layer = 2;
-  if (subname == "L3")
-    layer = 3;
-  if (subname == "L4")
-    layer = 4;
-  if (subname == "L5")
-    layer = 5;
-  if (subname == "L6")
-    layer = 6;
-  if (subname == "D1")
-    disk = 1;
-  if (subname == "D2")
-    disk = 2;
-  if (subname == "D3")
-    disk = 3;
-  if (subname == "D4")
-    disk = 4;
-  if (subname == "D5")
-    disk = 5;
-  if (layer == 0 && disk == 0) {
-    edm::LogPrint("Tracklet") << "Memoryname = " << name_ << " subname = " << subname << " layer " << layer << " disk "
-                              << disk;
-  }
-  assert((layer != 0) || (disk != 0));
+  if (subname.substr(0,1)=="L")
+    layer = stoi(subname.substr(1,1));
+  else if (subname.substr(0,1)=="D")
+    disk = stoi(subname.substr(1,1));
+  else
+    throw cms::Exception("BadConfig") << "Memoryname = " << name_ << " subname = " << subname << " " << layer << " " << disk;
 }
 
 void ProcessBase::initLayerDisk(unsigned int pos, int& layer, int& disk, int& layerdisk) {
