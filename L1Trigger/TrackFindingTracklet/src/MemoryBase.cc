@@ -1,6 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace trklet;
 using namespace std;

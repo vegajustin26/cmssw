@@ -4,6 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace trklet;
 using namespace std;
@@ -35,8 +36,7 @@ unsigned int ProcessBase::nbits(unsigned int power) {
   if (power == 32)
     return 5;
 
-  edm::LogVerbatim("Tracklet") << "nbits: power = " << power;
-  assert(0);
+  throw cms::Exception("LogicError") << "nbits: power = " << power;
   return -1;
 }
 
@@ -77,19 +77,19 @@ void ProcessBase::initLayerDisksandISeed(unsigned int& layerdisk1, unsigned int&
     if (name_[3] == 'L') {
       layerdisk1 = name_[4] - '1';
     }
-    if (name_[3] == 'D') {
+    else if (name_[3] == 'D') {
       layerdisk1 = 6 + name_[4] - '1';
     }
     if (name_[11] == 'L') {
       layerdisk2 = name_[12] - '1';
     }
-    if (name_[11] == 'D') {
+    else if (name_[11] == 'D') {
       layerdisk2 = 6 + name_[12] - '1';
     }
-    if (name_[12] == 'L') {
+    else if (name_[12] == 'L') {
       layerdisk2 = name_[13] - '1';
     }
-    if (name_[12] == 'D') {
+    else if (name_[12] == 'D') {
       layerdisk2 = 6 + name_[13] - '1';
     }  
   }
@@ -98,13 +98,13 @@ void ProcessBase::initLayerDisksandISeed(unsigned int& layerdisk1, unsigned int&
     if (name_[3] == 'L') {
       layerdisk1 = name_[4] - '1';
     }
-    if (name_[3] == 'D') {
+    else if (name_[3] == 'D') {
       layerdisk1 = 6 + name_[4] - '1';
     }
     if (name_[5] == 'L') {
       layerdisk2 = name_[6] - '1';
     }
-    if (name_[5] == 'D') {
+    else if (name_[5] == 'D') {
       layerdisk2 = 6 + name_[6] - '1';
     }
   }

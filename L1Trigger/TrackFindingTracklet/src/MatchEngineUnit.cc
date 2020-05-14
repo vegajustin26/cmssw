@@ -32,9 +32,7 @@ void MatchEngineUnit::init(VMStubsMEMemory* vmstubsmemory,
 }
 
 void MatchEngineUnit::step() {
-  if (idle())
-    return;
-  if (candmatches_.almostfull())
+  if (idle() || candmatches_.almostfull())
     return;
 
   const VMStubME& vmstub = vmstubsmemory_->getVMStubMEBin(slot_, istub_);
@@ -77,10 +75,8 @@ void MatchEngineUnit::step() {
   }
 
   //Check if stub bend and proj rinv consistent
-  if (pass && dphicut) {
-    if (barrel_ ? table_[index] : (isPSmodule ? tablePS_[index] : table2S_[index])) {
-      std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > tmp(proj_, vmstub.stub());
-      candmatches_.store(tmp);
-    }
+  if ( (pass && dphicut) && (barrel_ ? table_[index] : (isPSmodule ? tablePS_[index] : table2S_[index])) ) {
+    std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > tmp(proj_, vmstub.stub());
+    candmatches_.store(tmp);
   }
 }
