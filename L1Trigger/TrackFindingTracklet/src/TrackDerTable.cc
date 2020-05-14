@@ -1135,6 +1135,7 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
   }
 }
 
+/*
 void TrackDerTable::calculateDerivativesMS(const Settings* settings,
                                            Globals* globals,
                                            unsigned int nlayers,
@@ -1431,6 +1432,8 @@ void TrackDerTable::calculateDerivativesMS(const Settings* settings,
     }
   }
 }
+
+*/
 
 double TrackDerTable::gett(const Settings* settings, int diskmask, int layermask) {
   if (diskmask == 0)
