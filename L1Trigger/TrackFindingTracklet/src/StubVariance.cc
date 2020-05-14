@@ -9,15 +9,16 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 using namespace trklet;
 
-StubVariance::StubVariance(SLHCEvent& ev, Globals* globals) { process(ev, globals); }
+StubVariance::StubVariance(SLHCEvent& ev, Globals* globals, const Settings* settings) { process(ev, globals, settings); }
 
-void StubVariance::process(SLHCEvent& ev, Globals* globals) {
+void StubVariance::process(SLHCEvent& ev, Globals* globals, const Settings* settings) {
   edm::LogVerbatim("Tracklet") << "Process variance:" << ev.nsimtracks();
   assert(ev.nsimtracks() == 1);
 
@@ -29,7 +30,7 @@ void StubVariance::process(SLHCEvent& ev, Globals* globals) {
   double z0 = simtrk.vz();
 
   double t = sinh(eta);
-  double rinv = -0.01 * 0.3 * 3.8 / pt;
+  double rinv = -0.01 * settings->c() * settings->bfield() / pt;
 
   double layerresidphi[6];
   double diskresidphi[5];

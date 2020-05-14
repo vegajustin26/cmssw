@@ -188,7 +188,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   tracks_.clear();
 
   if (settings_->writeMonitorData("Variance")) {
-    StubVariance variance(ev, globals_);
+    StubVariance variance(ev, globals_, settings_);
   }
 
   eventnum_++;
