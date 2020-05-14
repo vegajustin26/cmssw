@@ -57,40 +57,32 @@ void TrackDer::fill(int t, double MinvDt[4][12], int iMinvDt[4][12]) const {
   if (t < 0)
     sign = -1;
   for (unsigned int i = 0; i < N_FITSTUB; i++) {
+    MinvDt[0][2 * i] = rinvdphi_[i];
+    MinvDt[1][2 * i] = phi0dphi_[i];
+    MinvDt[2][2 * i] = sign * tdphi_[i];
+    MinvDt[3][2 * i] = sign * z0dphi_[i];
+    MinvDt[0][2 * i + 1] = rinvdzordr_[i];
+    MinvDt[1][2 * i + 1] = phi0dzordr_[i];
+    MinvDt[2][2 * i + 1] = tdzordr_[i];
+    MinvDt[3][2 * i + 1] = z0dzordr_[i];
+    iMinvDt[0][2 * i] = irinvdphi_[i];
+    iMinvDt[1][2 * i] = iphi0dphi_[i];
+    iMinvDt[2][2 * i] = sign * itdphi_[i];
+    iMinvDt[3][2 * i] = sign * iz0dphi_[i];
+    iMinvDt[0][2 * i + 1] = irinvdzordr_[i];
+    iMinvDt[1][2 * i + 1] = iphi0dzordr_[i];
+    iMinvDt[2][2 * i + 1] = itdzordr_[i];
+    iMinvDt[3][2 * i + 1] = iz0dzordr_[i];
     if (i < nlayer) {
-      MinvDt[0][2 * i] = rinvdphi_[i];
-      MinvDt[1][2 * i] = phi0dphi_[i];
-      MinvDt[2][2 * i] = sign * tdphi_[i];
-      MinvDt[3][2 * i] = sign * z0dphi_[i];
-      MinvDt[0][2 * i + 1] = sign * rinvdzordr_[i];
-      MinvDt[1][2 * i + 1] = sign * phi0dzordr_[i];
-      MinvDt[2][2 * i + 1] = tdzordr_[i];
-      MinvDt[3][2 * i + 1] = z0dzordr_[i];
-      iMinvDt[0][2 * i] = irinvdphi_[i];
-      iMinvDt[1][2 * i] = iphi0dphi_[i];
-      iMinvDt[2][2 * i] = sign * itdphi_[i];
-      iMinvDt[3][2 * i] = sign * iz0dphi_[i];
-      iMinvDt[0][2 * i + 1] = sign * irinvdzordr_[i];
-      iMinvDt[1][2 * i + 1] = sign * iphi0dzordr_[i];
-      iMinvDt[2][2 * i + 1] = itdzordr_[i];
-      iMinvDt[3][2 * i + 1] = iz0dzordr_[i];
+      MinvDt[0][2 * i + 1] *= sign;
+      MinvDt[1][2 * i + 1] *= sign;
+      iMinvDt[0][2 * i + 1] *= sign;
+      iMinvDt[1][2 * i + 1] *= sign;
     } else {
-      MinvDt[0][2 * i] = rinvdphi_[i];
-      MinvDt[1][2 * i] = phi0dphi_[i];
-      MinvDt[2][2 * i] = sign * tdphi_[i];
-      MinvDt[3][2 * i] = sign * z0dphi_[i];
-      MinvDt[0][2 * i + 1] = rinvdzordr_[i];
-      MinvDt[1][2 * i + 1] = phi0dzordr_[i];
-      MinvDt[2][2 * i + 1] = sign * tdzordr_[i];
-      MinvDt[3][2 * i + 1] = sign * z0dzordr_[i];
-      iMinvDt[0][2 * i] = irinvdphi_[i];
-      iMinvDt[1][2 * i] = iphi0dphi_[i];
-      iMinvDt[2][2 * i] = sign * itdphi_[i];
-      iMinvDt[3][2 * i] = sign * iz0dphi_[i];
-      iMinvDt[0][2 * i + 1] = irinvdzordr_[i];
-      iMinvDt[1][2 * i + 1] = iphi0dzordr_[i];
-      iMinvDt[2][2 * i + 1] = sign * itdzordr_[i];
-      iMinvDt[3][2 * i + 1] = sign * iz0dzordr_[i];
+      MinvDt[2][2 * i + 1] *= sign;
+      MinvDt[3][2 * i + 1] *= sign;
+      iMinvDt[2][2 * i + 1] *= sign;
+      iMinvDt[3][2 * i + 1] *= sign;
     }
   }
 }

@@ -5,10 +5,6 @@ using namespace trklet;
 
 TETableBase::TETableBase(const Settings* settings) : settings_(settings) {}
 
-int TETableBase::lookup(int, int) {
-  assert(0);  //Should never get here - this should be a pure virtual fcn
-};
-
 void TETableBase::writeVMTable(std::string name, bool positive) {
   ofstream out;
   out.open(name.c_str());

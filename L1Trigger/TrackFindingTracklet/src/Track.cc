@@ -1,5 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 
+#include <algorithm>
+
 using namespace std;
 using namespace trklet;
 
@@ -29,9 +31,7 @@ Track::Track(int irinv,
 
   hitpattern_ = hitpattern;
 
-  nstubs_ = l1stub.size();
-  if (nstubs_ > 6)
-    nstubs_ = 6;  //maximum used in fit
+  nstubs_ = std::max((int)l1stub.size(), 6);
 
   stubID_ = stubID;
   l1stub_ = l1stub;

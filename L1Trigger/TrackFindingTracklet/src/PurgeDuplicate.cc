@@ -101,7 +101,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         Tracklet* aTrack = inputtrackfits_[i]->getTrack(j);
         inputtracklets_.push_back(inputtrackfits_[i]->getTrack(j));
 
-        std::vector<std::pair<Stub*, L1TStub*>> stublist = inputtrackfits_[i]->getStublist(j);
+        std::vector<std::pair<const Stub*, const L1TStub*>> stublist = inputtrackfits_[i]->getStublist(j);
 
         inputstublists_.push_back(stublist);
 

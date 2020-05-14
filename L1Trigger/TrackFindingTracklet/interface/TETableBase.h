@@ -19,7 +19,7 @@ namespace trklet {
 
     virtual ~TETableBase() = default;
 
-    virtual int lookup(int, int);
+    virtual void lookup(int, int) {}
 
     void writeVMTable(std::string name, bool positive = true);
 
