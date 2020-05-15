@@ -196,70 +196,10 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   }
   cleanTimer_.stop();
 
-  int stublayer[6];
-  int stublayer1[6][settings_->NSector()];
-  int stubdisk1[5][settings_->NSector()];
-  for (unsigned int ll = 0; ll < 6; ll++) {
-    stublayer[ll] = 0;
-    for (unsigned int jj = 0; jj < settings_->NSector(); jj++) {
-      stublayer1[ll][jj] = 0;
-    }
-  }
-  for (unsigned int ll = 0; ll < 5; ll++) {
-    for (unsigned int jj = 0; jj < settings_->NSector(); jj++) {
-      stubdisk1[ll][jj] = 0;
-    }
-  }
-
-  int stubcount[6][24 * settings_->NSector()];
-  for (unsigned int ll = 0; ll < 24 * settings_->NSector(); ll++) {
-    stubcount[0][ll] = 0;
-    stubcount[1][ll] = 0;
-    stubcount[2][ll] = 0;
-    stubcount[3][ll] = 0;
-    stubcount[4][ll] = 0;
-    stubcount[5][ll] = 0;
-  }
-
   addStubTimer_.start();
 
   for (int j = 0; j < ev.nstubs(); j++) {
     L1TStub stub = ev.stub(j);
-
-    if (settings_->debugTracklet()) {
-      edm::LogVerbatim("Tracklet") << "Stub: layer=" << stub.layer() + 1 << " disk=" << stub.disk()
-                                   << " phi=" << stub.phi() << " r=" << stub.r() << " z=" << stub.z();
-    }
-
-    double phi = stub.phi();
-    phi += 0.5 * settings_->dphisectorHG();
-
-    if (phi < 0.0)
-      phi += 2 * M_PI;
-    unsigned int isector = settings_->NSector() * phi / (2 * M_PI);
-    assert(isector < settings_->NSector());
-
-    if (stub.layer() < 7) {
-      stub.lorentzcor(-40.0 / 10000.0);
-
-      double phi = stub.phi();
-      if (phi < 0.0)
-        phi += 2 * M_PI;
-      unsigned int iphi = 24 * settings_->NSector() * phi / (2 * M_PI);
-      assert(iphi < 24 * settings_->NSector());
-      double max = 115.0;
-      if (stub.layer() == 0)
-        max = 70.0;
-      if (std::abs(stub.z()) < max)
-        stubcount[stub.layer()][iphi]++;
-      unsigned int isector = iphi / 24;
-      assert(isector < settings_->NSector());
-      stublayer1[stub.layer()][isector]++;
-      stublayer[stub.layer()]++;
-
-    } else {
-      stubdisk1[abs(stub.disk()) - 1][isector]++;
-    }
 
     int layer = stub.layer() + 1;
     int ladder = stub.ladder();
@@ -273,6 +213,10 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
     cabling_->addphi(dtc, stub.phi(), layer, module);
 
+    double phi = phiRange2PI(stub.phi()+ 0.5 * settings_->dphisectorHG());
+    
+    unsigned int isector = settings_->NSector() * phi / (2 * M_PI);
+    
     for (unsigned int k = 0; k < settings_->NSector(); k++) {
       int diff = k - isector;
       int nSector = settings_->NSector();
@@ -374,24 +318,6 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     }
   }
 
-  if (settings_->writeMonitorData("StubsLayer")) {
-    static ofstream out("stubslayer.txt");
-    out << stublayer[0] << " " << stublayer[1] << " " << stublayer[2] << " " << stublayer[3] << " " << stublayer[4]
-        << " " << stublayer[5] << endl;
-  }
-
-  if (settings_->writeMonitorData("StubsLayerSector")) {
-    static ofstream out("stubslayerpersector.txt");
-    for (unsigned int jj = 0; jj < settings_->NSector(); jj++) {
-      out << stublayer1[0][jj] << " " << stublayer1[1][jj] << " " << stublayer1[2][jj] << " " << stublayer1[3][jj]
-          << " " << stublayer1[4][jj] << " " << stublayer1[5][jj] << endl;
-    }
-    static ofstream out1("stubsdiskpersector.txt");
-    for (unsigned int jj = 0; jj < settings_->NSector(); jj++) {
-      out1 << stubdisk1[0][jj] << " " << stubdisk1[1][jj] << " " << stubdisk1[2][jj] << " " << stubdisk1[3][jj] << " "
-           << stubdisk1[4][jj] << endl;
-    }
-  }
 
   addStubTimer_.stop();
 
