@@ -156,7 +156,7 @@ namespace trklet {
 
     double ptcut() const { return ptcut_; }
     double rinvcut() const { return 0.01 * c_ * bfield_ / ptcut_; }  //0.01 to convert to cm-1
-
+    
     double c() const { return c_; }
     double bfield() const { return bfield_; }
 
@@ -601,7 +601,7 @@ namespace trklet {
 
     // pt constants
     double ptcut_{1.91};  //Minimum pt cut
-
+    
     // Parameters for bit sizes
     int alphashift_{12};
     int nbitsalpha_{4};      //bits used to store alpha
@@ -659,11 +659,13 @@ namespace trklet {
   constexpr unsigned int N_LAYERDISK = 11;
 
   constexpr unsigned int N_SEEDINDEX = 12; // number of tracklet+triplet seeds
-  constexpr unsigned int N_PROJ = 4;       // number of projections (beyond stubs from seed)
   constexpr unsigned int N_PROJLAYER = 4;  // max number of layers to project to
   constexpr unsigned int N_PROJDISK = 5;   // max number of disks to project to
 
-  constexpr unsigned int N_FITSTUB = 6; // maximum number of stubs used in the chi2 fitting
+  // chi2 fitting
+  constexpr unsigned int N_FITSTUB = 6;    // maximum number of stubs used
+  constexpr unsigned int N_PROJ = 4;       // number of projections (beyond stubs from seed, i.e. N_FITSTUB-2)
+  constexpr unsigned int N_PROJMEAS = N_PROJ*2;   // number of projection measurements (each stub has two, phi+r/z, so N_PROJ*2)
   
   constexpr unsigned int N_TRACKDER_PTBIN = 4;
   constexpr unsigned int N_TRACKDER_INDEX = 1000;

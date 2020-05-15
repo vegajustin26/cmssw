@@ -194,7 +194,7 @@ void TrackDerTable::fillTable(const Settings* settings) {
     int irinv = der.irinv();
 
     double rinv =
-        (irinv - ((1 << (settings_->nrinvBitsTable() - 1)) - 0.5)) * 0.0057 / (1 << (settings_->nrinvBitsTable() - 1));
+        (irinv - ((1 << (settings_->nrinvBitsTable() - 1)) - 0.5)) * settings_->rinvmax() / (1 << (settings_->nrinvBitsTable() - 1));
 
     bool print = false;
 

@@ -160,24 +160,23 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
   const TrackDerTable& derTable = *globals_->trackDerTable();
 
   //First step is to build list of layers and disks.
-
   int layers[N_LAYER];
   double r[N_LAYER];
-  unsigned int nlayers = 0;
+  unsigned int nlayers = 0; // layers with found stub-projections
   int disks[N_DISK];
   double z[N_DISK];
-  unsigned int ndisks = 0;
+  unsigned int ndisks = 0; // disks with found stub-projections
 
-  //Why do we need to use 10 entries here?
-  double phiresid[10];
-  double zresid[10];
-  double phiresidexact[10];
-  double zresidexact[10];
-  int iphiresid[10];
-  int izresid[10];
-  double alpha[10];
+  // residuals (# stub-projections x 2 measurements for each)
+  double phiresid[N_PROJMEAS];
+  double zresid[N_PROJMEAS];
+  double phiresidexact[N_PROJMEAS];
+  double zresidexact[N_PROJMEAS];
+  int iphiresid[N_PROJMEAS];
+  int izresid[N_PROJMEAS];
+  double alpha[N_PROJMEAS];
 
-  for (unsigned int i = 0; i < 10; i++) {
+  for (unsigned int i = 0; i < N_PROJMEAS; i++) {
     iphiresid[i] = 0;
     izresid[i] = 0;
     alpha[i] = 0.0;
@@ -203,19 +202,19 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
   double rinv = tracklet->rinv();
 
   if (tracklet->isBarrel()) {
-    for (unsigned int l = 1; l <= 6; l++) {
+    for (unsigned int l = 1; l <= N_LAYER; l++) {
       if (l == (unsigned int)tracklet->layer() || l == (unsigned int)tracklet->layer() + 1) {
         matches[l - 1] = '1';
-        layermask |= (1 << (6 - l));
+        layermask |= (1 << (N_LAYER - l));
         layers[nlayers++] = l;
         continue;
       }
       if (tracklet->match(l)) {
         matches[l - 1] = '1';
-        layermask |= (1 << (6 - l));
+        layermask |= (1 << (N_LAYER - l));
         phiresid[nlayers] = tracklet->phiresidapprox(l);
         zresid[nlayers] = tracklet->zresidapprox(l);
-        phiresidexact[nlayers] = tracklet->phiresid(l);
+	phiresidexact[nlayers] = tracklet->phiresid(l);
         zresidexact[nlayers] = tracklet->zresid(l);
         iphiresid[nlayers] = tracklet->fpgaphiresid(l).value();
         izresid[nlayers] = tracklet->fpgazresid(l).value();
@@ -224,7 +223,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
       }
     }
 
-    for (unsigned int d = 1; d <= 5; d++) {
+    for (unsigned int d = 1; d <= N_DISK; d++) {
       if (layermask & (1 << (d - 1)))
         continue;
 
@@ -235,8 +234,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
         continue;
       if (tracklet->matchdisk(d)) {
         if (std::abs(tracklet->alphadisk(d)) < 1e-20) {
-          matches2[2 * (5 - d)] = '1';
-          diskmask |= (1 << (2 * (5 - d) + 1));
+          matches2[2 * (N_DISK - d)] = '1';
+          diskmask |= (1 << (2 * (N_DISK - d) + 1));
         } else {
           int ialpha = tracklet->ialphadisk(d).value();
           int nalpha = tracklet->ialphadisk(d).nbits();
@@ -246,7 +245,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
           alphaindex += ialpha * power;
           power = power << settings_->alphaBitsTable();
           matches2[2 * (d - 1) + 1] = '1';
-          diskmask |= (1 << (2 * (5 - d)));
+          diskmask |= (1 << (2 * (N_DISK - d)));
           mult = mult << settings_->alphaBitsTable();
         }
         alpha[ndisks] = tracklet->alphadisk(d);
@@ -273,11 +272,11 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
       if (tracklet->match(l)) {
         matches[l - 1] = '1';
 
-        layermask |= (1 << (6 - l));
+        layermask |= (1 << (N_LAYER - l));
 
         phiresid[nlayers] = tracklet->phiresidapprox(l);
         zresid[nlayers] = tracklet->zresidapprox(l);
-        phiresidexact[nlayers] = tracklet->phiresid(l);
+	phiresidexact[nlayers] = tracklet->phiresid(l);
         zresidexact[nlayers] = tracklet->zresid(l);
         iphiresid[nlayers] = tracklet->fpgaphiresid(l).value();
         izresid[nlayers] = tracklet->fpgazresid(l).value();
@@ -286,7 +285,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
       }
     }
 
-    for (unsigned int d1 = 1; d1 <= 5; d1++) {
+    for (unsigned int d1 = 1; d1 <= N_DISK; d1++) {
       int d = d1;
 
       // skip F/B5 if there's already a L2 match
@@ -297,8 +296,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
         d = -d1;
       if (d == tracklet->disk() ||  //All seeds in PS modules
           d == tracklet->disk2()) {
-        matches2[2 * (5 - d1)] = '1';
-        diskmask |= (1 << (2 * (5 - d1) + 1));
+        matches2[2 * (N_DISK - d1)] = '1';
+        diskmask |= (1 << (2 * (N_DISK - d1) + 1));
         alpha[ndisks] = 0.0;
         disks[ndisks++] = d;
         continue;
@@ -308,8 +307,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
         continue;
       if (tracklet->matchdisk(d)) {
         if (std::abs(tracklet->alphadisk(d)) < 1e-20) {
-          matches2[2 * (5 - d1)] = '1';
-          diskmask |= (1 << (2 * (5 - d1) + 1));
+          matches2[2 * (N_DISK - d1)] = '1';
+          diskmask |= (1 << (2 * (N_DISK - d1) + 1));
         } else {
           int ialpha = tracklet->ialphadisk(d).value();
           int nalpha = tracklet->ialphadisk(d).nbits();
@@ -328,7 +327,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
         phiresid[nlayers + ndisks] = tracklet->phiresidapproxdisk(d);
         zresid[nlayers + ndisks] = tracklet->rresidapproxdisk(d);
         assert(std::abs(tracklet->phiresiddisk(d)) < 0.2);
-        phiresidexact[nlayers + ndisks] = tracklet->phiresiddisk(d);
+	phiresidexact[nlayers + ndisks] = tracklet->phiresiddisk(d);
         zresidexact[nlayers + ndisks] = tracklet->rresiddisk(d);
         iphiresid[nlayers + ndisks] = tracklet->fpgaphiresiddisk(d).value();
         izresid[nlayers + ndisks] = tracklet->fpgarresiddisk(d).value();
@@ -342,18 +341,18 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
     for (unsigned int l = 1; l <= 2; l++) {
       if (l == (unsigned int)tracklet->layer()) {
         matches[l - 1] = '1';
-        layermask |= (1 << (6 - l));
+        layermask |= (1 << (N_LAYER - l));
         layers[nlayers++] = l;
         continue;
       }
       if (tracklet->match(l)) {
         matches[l - 1] = '1';
-        layermask |= (1 << (6 - l));
+        layermask |= (1 << (N_LAYER - l));
         assert(std::abs(tracklet->phiresidapprox(l)) < 0.2);
         phiresid[nlayers] = tracklet->phiresidapprox(l);
         zresid[nlayers] = tracklet->zresidapprox(l);
         assert(std::abs(tracklet->phiresid(l)) < 0.2);
-        phiresidexact[nlayers] = tracklet->phiresid(l);
+	phiresidexact[nlayers] = tracklet->phiresid(l);
         zresidexact[nlayers] = tracklet->zresid(l);
         iphiresid[nlayers] = tracklet->fpgaphiresid(l).value();
         izresid[nlayers] = tracklet->fpgazresid(l).value();
@@ -362,7 +361,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
       }
     }
 
-    for (unsigned int d1 = 1; d1 <= 5; d1++) {
+    for (unsigned int d1 = 1; d1 <= N_DISK; d1++) {
       if (mult == 1 << (3 * settings_->alphaBitsTable()))
         continue;
       int d = d1;
@@ -370,8 +369,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
         d = -d1;
       if (d == tracklet->disk()) {  //All seeds in PS modules
         disks[ndisks] = tracklet->disk();
-        matches2[2 * (5 - d1)] = '1';
-        diskmask |= (1 << (2 * (5 - d1) + 1));
+        matches2[2 * (N_DISK - d1)] = '1';
+        diskmask |= (1 << (2 * (N_DISK - d1) + 1));
         ndisks++;
         continue;
       }
@@ -381,7 +380,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
       if (tracklet->matchdisk(d)) {
         if (std::abs(tracklet->alphadisk(d)) < 1e-20) {
           matches2[2 * (d1 - 1)] = '1';
-          diskmask |= (1 << (2 * (5 - d1) + 1));
+          diskmask |= (1 << (2 * (N_DISK - d1) + 1));
           FPGAWord tmp;
           tmp.set(diskmask, 10);
         } else {
@@ -393,7 +392,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
           alphaindex += ialpha * power;
           power = power << settings_->alphaBitsTable();
           matches2[2 * (d1 - 1) + 1] = '1';
-          diskmask |= (1 << (2 * (5 - d1)));
+          diskmask |= (1 << (2 * (N_DISK - d1)));
           FPGAWord tmp;
           tmp.set(diskmask, 10);
           mult = mult << settings_->alphaBitsTable();
@@ -414,18 +413,18 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
     }
   }
 
-  int rinvindex = (1 << (settings_->nrinvBitsTable() - 1)) * rinv / 0.0057 + (1 << (settings_->nrinvBitsTable() - 1));
+  int rinvindex = (1 << (settings_->nrinvBitsTable() - 1)) * rinv / settings_->rinvmax() + (1 << (settings_->nrinvBitsTable() - 1));
   if (rinvindex < 0)
     rinvindex = 0;
   if (rinvindex >= (1 << settings_->nrinvBitsTable()))
     rinvindex = (1 << settings_->nrinvBitsTable()) - 1;
 
   int ptbin = 0;
-  if (std::abs(rinv) < 0.0057 / 2)
+  if (std::abs(rinv) < settings_->rinvmax() / 2)
     ptbin = 1;
-  else if (std::abs(rinv) < 0.0057 / 4)
+  else if (std::abs(rinv) < settings_->rinvmax() / 4)
     ptbin = 2;
-  else if (std::abs(rinv) < 0.0057 / 8)
+  else if (std::abs(rinv) < settings_->rinvmax() / 8)
     ptbin = 3;
 
   const TrackDer* derivatives = derTable.getDerivatives(layermask, diskmask, alphaindex, rinvindex);
