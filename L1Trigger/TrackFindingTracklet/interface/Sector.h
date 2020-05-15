@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include <set>
+#include <unordered_set>
 #include <fstream>
 
 namespace trklet {
@@ -108,7 +108,7 @@ namespace trklet {
     std::vector<Tracklet*> getAllTracklets() const;
     std::vector<std::pair<const Stub*, const L1TStub*> > getStubs() const;
 
-    std::set<int> seedMatch(int itp) const;
+    std::unordered_set<int> seedMatch(int itp) const;
 
     double phimin() const { return phimin_; }
     double phimax() const { return phimax_; }

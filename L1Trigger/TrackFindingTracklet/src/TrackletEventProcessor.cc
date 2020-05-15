@@ -414,9 +414,9 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
              << (hitmask & 128) << " " << (hitmask & 256) << " " << (hitmask & 512) << " " << (hitmask & 1024) << endl;
     }
 
-    std::set<int> matchseed;
+    std::unordered_set<int> matchseed;
     for (unsigned int k = 0; k < N_SECTOR; k++) {
-      std::set<int> matchseedtmp = sectors_[k]->seedMatch(iTP);
+      std::unordered_set<int> matchseedtmp = sectors_[k]->seedMatch(iTP);
       matchseed.insert(matchseedtmp.begin(), matchseedtmp.end());
     }
     if (settings_->bookHistos()) {

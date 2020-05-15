@@ -137,12 +137,12 @@ void HistImp::fillTrackletParams(const Settings* settings,
     h_irinv_L1L2_->Fill(irinv);
     h_phi0_L1L2_->Fill(phi0);
     h_iphi0_L1L2_->Fill(iphi0);
-    double phi0global = phi0 + iSector * 2 * M_PI / settings->NSector();
+    double phi0global = phi0 + iSector * 2 * M_PI / N_SECTOR;
     if (phi0global > M_PI)
       phi0global -= 2 * M_PI;
     if (phi0global < -M_PI)
       phi0global += 2 * M_PI;
-    double iphi0global = iphi0 + iSector * 2 * M_PI / settings->NSector();
+    double iphi0global = iphi0 + iSector * 2 * M_PI / N_SECTOR;
     if (iphi0global > M_PI)
       iphi0global -= 2 * M_PI;
     if (iphi0global < -M_PI)
@@ -165,16 +165,16 @@ void HistImp::fillTrackletParams(const Settings* settings,
       h_z0_matched_L1L2_->Fill(z0);
       h_iz0_matched_L1L2_->Fill(iz0);
       L1SimTrack simtrk = globals->event()->simtrack(tp - 1);
-      h_rinvres_L1L2_->Fill(rinv - simtrk.rinv());
-      h_irinvres_L1L2_->Fill(irinv - simtrk.rinv());
+      h_rinvres_L1L2_->Fill(rinv - (simtrk.charge()*0.01*0.3*3.8/simtrk.pt()));
+      h_irinvres_L1L2_->Fill(irinv - (simtrk.charge()*0.01*0.3*3.8/simtrk.pt()));
       double simtrkphi0 = simtrk.phi();
-      double dphiHG = 0.5 * settings->dphisectorHG() - M_PI / settings->NSector();
-      double phimin = +dphiHG - M_PI / settings->NSector();
+      double dphiHG = 0.5 * settings->dphisectorHG() - M_PI / N_SECTOR;
+      double phimin = +dphiHG - M_PI / N_SECTOR;
       double phioffset = phimin;
-      while (iphi0 - phioffset - simtrkphi0 > M_PI / settings->NSector())
-        simtrkphi0 += 2 * M_PI / settings->NSector();
-      while (iphi0 - phioffset - simtrkphi0 < -M_PI / settings->NSector())
-        simtrkphi0 -= 2 * M_PI / settings->NSector();
+      while (iphi0 - phioffset - simtrkphi0 > M_PI / N_SECTOR)
+        simtrkphi0 += 2 * M_PI / N_SECTOR;
+      while (iphi0 - phioffset - simtrkphi0 < -M_PI / N_SECTOR)
+        simtrkphi0 -= 2 * M_PI / N_SECTOR;
       h_phi0res_L1L2_->Fill(phi0 - phioffset - simtrkphi0);
       h_iphi0res_L1L2_->Fill(iphi0 - phioffset - simtrkphi0);
       h_etares_L1L2_->Fill(eta - simtrk.eta());

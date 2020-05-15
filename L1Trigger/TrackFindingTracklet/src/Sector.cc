@@ -466,8 +466,8 @@ std::vector<std::pair<const Stub*, const L1TStub*> > Sector::getStubs() const {
   return tmp;
 }
 
-std::set<int> Sector::seedMatch(int itp) const {
-  std::set<int> tmpSeeds;
+std::unordered_set<int> Sector::seedMatch(int itp) const {
+  std::unordered_set<int> tmpSeeds;
   for (unsigned int i = 0; i < TPAR_.size(); i++) {
     unsigned int nTracklet = TPAR_[i]->nTracklets();
     for (unsigned int j = 0; j < nTracklet; j++) {
