@@ -3,6 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/CleanTrackMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 
 #ifdef USEHYBRID
 #include "DataFormats/L1TrackTrigger/interface/TTStub.h"

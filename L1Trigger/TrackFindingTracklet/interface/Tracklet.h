@@ -9,7 +9,7 @@
 #include <set>
 
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
+//#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackPars.h"
@@ -23,6 +23,7 @@
 namespace trklet {
 
   class Settings;
+  class Stub;
 
   class Tracklet {
   public:

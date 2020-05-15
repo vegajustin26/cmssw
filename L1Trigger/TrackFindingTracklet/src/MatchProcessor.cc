@@ -12,7 +12,7 @@ MatchProcessor::MatchProcessor(string name, const Settings* settings, Globals* g
     : ProcessBase(name, settings, global, iSector), fullmatches_(12), inputProjBuffer_(3) {
   phioffset_ = phimin_;
 
-  phiregion_ = 0;  //TODO set properly
+  phiregion_ = name[8]-'A';
 
   initLayerDisk(3, layer_, disk_);
 
@@ -466,7 +466,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, c
                          dz,
                          dphiapprox,
                          dzapprox,
-                         (fpgastub->phiregion().value() << 7) + fpgastub->stubindex().value(),
+                         (phiregion_ << 7) + fpgastub->stubindex().value(),
                          stub->r(),
                          tmp);
 
@@ -637,7 +637,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, c
                              drphiapprox / stub->r(),
                              drapprox,
                              stub->alpha(),
-                             (fpgastub->phiregion().value() << 7) + fpgastub->stubindex().value(),
+                             (phiregion_ << 7) + fpgastub->stubindex().value(),
                              stub->z(),
                              tmp);
       if (settings_->debugTracklet()) {

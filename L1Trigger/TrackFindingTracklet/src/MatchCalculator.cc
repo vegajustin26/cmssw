@@ -6,6 +6,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllProjectionsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
@@ -17,7 +18,7 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
     : ProcessBase(name, settings, global, iSector) {
   phioffset_ = phimin_;
 
-  phiregion_ = 0;  //TODO set correctly
+  phiregion_ = name[8]-'A';
   layerdisk_ = initLayerDisk(3);
 
   fullMatches_.resize(12, 0);
@@ -301,7 +302,7 @@ void MatchCalculator::execute() {
                            dz,
                            dphiapprox,
                            dzapprox,
-                           (fpgastub->phiregion().value() << 7) + fpgastub->stubindex().value(),
+                           (phiregion_ << 7) + fpgastub->stubindex().value(),
                            stub->r(),
                            mergedMatches[j].second);
 
@@ -471,7 +472,7 @@ void MatchCalculator::execute() {
                                drphiapprox / stub->r(),
                                drapprox,
                                stub->alpha(),
-                               (fpgastub->phiregion().value() << 7) + fpgastub->stubindex().value(),
+                               (phiregion_ << 7) + fpgastub->stubindex().value(),
                                stub->z(),
                                tmp);
         if (settings_->debugTracklet()) {

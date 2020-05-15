@@ -18,15 +18,11 @@ Stub::Stub(const L1TStub& stub, const trklet::Settings* const settings, double p
 
   l1tstub_=&stub;
 
-  isPSmodule_ = false;
+  int bendbits = 4;
   if (stub.isPSmodule())
-    isPSmodule_ = true;
+    bendbits = 3;
 
-  int ibend = bendencode(sbend, isPSmodule_);
-
-  int bendbits = 3;
-  if (!isPSmodule_)
-    bendbits = 4;
+  int ibend = bendencode(sbend, stub.isPSmodule());
 
   bend_.set(ibend, bendbits, true, __LINE__, __FILE__);
 
@@ -130,7 +126,7 @@ Stub::Stub(const L1TStub& stub, const trklet::Settings* const settings, double p
     int ir = (1 << settings_->nrbitsstub(disk + 5)) * (r - rmin) / (rmax - rmin);
 
     int irSS = -1;
-    if (!isPSmodule_) {
+    if (!stub.isPSmodule()) {
       for (int i = 0; i < 10; ++i) {
         if (disk <= 2) {
           if (std::abs(r - settings_->rDSSinner(i)) < 0.2) {
@@ -178,15 +174,15 @@ FPGAWord Stub::iphivmFineBins(int VMbits, int finebits) const {
   return FPGAWord(finephi, finebits, true, __LINE__, __FILE__);
 }
 
-std::string Stub::phiregionaddressstr() const {
-  assert(phiregion().value() > -1);
-  return phiregion().str() + stubindex_.str();
+unsigned int Stub::phiregionaddress() const {
+  int iphi = (phicorr_.value() >> (phicorr_.nbits() - settings_->nbitsallstubs(layerdisk())));
+  return (iphi<<7) + stubindex_.value();
 }
 
-FPGAWord Stub::phiregion() const {
-  // 3 bits
+std::string Stub::phiregionaddressstr() const {
   int iphi = (phicorr_.value() >> (phicorr_.nbits() - settings_->nbitsallstubs(layerdisk())));
-  return FPGAWord(iphi, 3, true, __LINE__, __FILE__);
+  FPGAWord phiregion(iphi, 3, true, __LINE__, __FILE__);
+  return phiregion.str() + stubindex_.str();
 }
 
 void Stub::setAllStubIndex(int nstub) {

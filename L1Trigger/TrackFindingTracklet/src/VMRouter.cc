@@ -229,12 +229,6 @@ void VMRouter::execute() {
         vmbin += 8;
       int rzfine = melut & 7;
 
-      if (layerdisk_ > 5) {
-        stub.first->setfiner(rzfine);
-      } else {
-        stub.first->setfinez(rzfine);
-      }
-
       VMStubME vmstub(stub,
                       stub.first->iphivmFineBins(
                           iphi.nbits() - (settings_->nbitsallstubs(layerdisk_) + settings_->nbitsvmme(layerdisk_)),

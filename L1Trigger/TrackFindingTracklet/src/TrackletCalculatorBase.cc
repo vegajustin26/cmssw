@@ -1,5 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculatorBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 

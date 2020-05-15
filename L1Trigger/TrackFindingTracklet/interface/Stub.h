@@ -38,11 +38,10 @@ namespace trklet {
 
     std::string strbare() const { return bend_.str() + r_.str() + z_.str() + phi_.str(); }
 
-    std::string phiregionaddressstr() const;  //TODO - should migrate away from suing this method
+    unsigned int phiregionaddress() const;  
+    std::string phiregionaddressstr() const;  
 
-    FPGAWord phiregion() const;  //TODO - should migrate away from using this method
-
-    void setAllStubIndex(int nstub);  //TODO - should migrate away from using this method
+    void setAllStubIndex(int nstub);  //should migrate away from using this method
 
     void setPhiCorr(int phiCorr);
 
@@ -62,24 +61,16 @@ namespace trklet {
     bool isBarrel() const { return layer_.value() != -1; }
     bool isDisk() const { return disk_.value() != 0; }
 
-    bool isPSmodule() const { return isPSmodule_; }
+    bool isPSmodule() const { return isBarrel()?(layer_.value()<3):(r_.value()>10); }
 
     double rapprox() const;
     double zapprox() const;
     double phiapprox(double phimin, double) const;
 
-    void setfiner(int finer) { finer_.set(finer, 4, true, __LINE__, __FILE__); }
-
-    const FPGAWord& finer() const { return finer_; }
-
-    void setfinez(int finez) { finez_.set(finez, 4, true, __LINE__, __FILE__); }
-
-    const FPGAWord& finez() const { return finez_; }
-
     const L1TStub* l1tstub() const { return l1tstub_; }
     
   private:
-    bool isPSmodule_;  //TODO should not be used can be removed
+    //bool isPSmodule_;  //TODO should not be used can be removed
     FPGAWord layer_;
     FPGAWord disk_;
     FPGAWord r_;
@@ -92,9 +83,6 @@ namespace trklet {
     FPGAWord phicorr_;  //Corrected for bend to nominal radius
 
     FPGAWord stubindex_;
-
-    FPGAWord finer_;  //TODO should not be member data
-    FPGAWord finez_;  //TODO should not be member data
 
     const L1TStub* l1tstub_;
     const Settings* const settings_;
