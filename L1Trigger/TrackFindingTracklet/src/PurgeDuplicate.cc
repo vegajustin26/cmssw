@@ -24,9 +24,9 @@ void PurgeDuplicate::addOutput(MemoryBase* memory, std::string output) {
     edm::LogVerbatim("Tracklet") << "In " << name_ << " adding output to " << memory->getName() << " to output "
                                  << output;
   }
-  if (output == "trackout" || output == "trackout1" || output == "trackout2" || output == "trackout3" ||
-      output == "trackout4" || output == "trackout5" || output == "trackout6" || output == "trackout7" ||
-      output == "trackout8" || output == "trackout9" || output == "trackout10" || output == "trackout11") {
+  unordered_set<string> outputs = { "trackout","trackout1","trackout2","trackout3","trackout4","trackout5",
+				    "trackout6","trackout7","trackout8","trackout9","trackout10","trackout11" };
+  if (outputs.find(output) != outputs.end()) {
     CleanTrackMemory* tmp = dynamic_cast<CleanTrackMemory*>(memory);
     assert(tmp != 0);
     outputtracklets_.push_back(tmp);
@@ -41,9 +41,9 @@ void PurgeDuplicate::addInput(MemoryBase* memory, std::string input) {
     edm::LogVerbatim("Tracklet") << "In " << name_ << " adding input from " << memory->getName() << " to input "
                                  << input;
   }
-  if (input == "trackin" || input == "trackin1" || input == "trackin2" || input == "trackin3" || input == "trackin4" ||
-      input == "trackin5" || input == "trackin6" || input == "trackin7" || input == "trackin8" || input == "trackin9" ||
-      input == "trackin10" || input == "trackin11") {
+  unordered_set<string> inputs = { "trackin","trackin1","trackin2","trackin3","trackin4","trackin5",
+				   "trackin6","trackin7","trackin8","trackin9","trackin10","trackin11" };
+  if (inputs.find(input) != inputs.end()) {
     TrackFitMemory* tmp = dynamic_cast<TrackFitMemory*>(memory);
     assert(tmp != 0);
     inputtrackfits_.push_back(tmp);

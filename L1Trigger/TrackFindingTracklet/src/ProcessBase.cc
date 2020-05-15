@@ -6,6 +6,8 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
+#include <unordered_map>
+
 using namespace trklet;
 using namespace std;
 
@@ -36,8 +38,8 @@ unsigned int ProcessBase::nbits(unsigned int power) {
   if (power == 32)
     return 5;
 
-  throw cms::Exception("LogicError")  << __FILE__ << " " << __LINE__ << "nbits: power = " << power;
-  return -1;
+  throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << "nbits: power = " << power;
+  return 0;
 }
 
 void ProcessBase::initLayerDisk(unsigned int pos, int& layer, int& disk) {
@@ -133,57 +135,22 @@ void ProcessBase::initLayerDisksandISeed(unsigned int& layerdisk1, unsigned int&
 }
 
 unsigned int ProcessBase::getISeed(std::string name) {
-  //assumes here that namme is on the form XX_L1L2_XXX where L1L2 gives iSeed=0
 
   std::size_t pos = name.find("_");
   std::string name1 = name.substr(pos + 1);
-
   pos = name1.find("_");
   std::string name2 = name1.substr(0, pos);
 
-  if (name2 == "L1L2")
-    return 0;
-  if (name2 == "L2L3")
-    return 1;
-  if (name2 == "L3L4")
-    return 2;
-  if (name2 == "L5L6")
-    return 3;
-  if (name2 == "D1D2")
-    return 4;
-  if (name2 == "D3D4")
-    return 5;
-  if (name2 == "L1D1")
-    return 6;
-  if (name2 == "L2D1")
-    return 7;
+  unordered_map<string,unsigned int> seedmap = { {"L1L2",0},{"L2L3",1},{"L3L4",2},{"L5L6",3},
+						 {"D1D2",4},{"D3D4",5},{"L1D1",6},{"L2D1",7},
+						 {"L1L2XX",0},{"L2L3XX",1},{"L3L4XX",2},{"L5L6XX",3},
+						 {"D1D2XX",4},{"D3D4XX",5},{"L1D1XX",6},{"L2D1XX",7},
+						 {"L3L4L2",8},{"L5L6L4",9},{"L2L3D1",10},{"D1D2L2",11} };
+  unordered_map<string,unsigned int>::const_iterator found = seedmap.find(name2);
+  if (found != seedmap.end())
+    return found->second;
 
-  if (name2 == "L1L2XX")
-    return 0;
-  if (name2 == "L2L3XX")
-    return 1;
-  if (name2 == "L3L4XX")
-    return 2;
-  if (name2 == "L5L6XX")
-    return 3;
-  if (name2 == "D1D2XX")
-    return 4;
-  if (name2 == "D3D4XX")
-    return 5;
-  if (name2 == "L1D1XX")
-    return 6;
-  if (name2 == "L2D1XX")
-    return 7;
-  if (name2 == "L3L4L2")
-    return 8;
-  if (name2 == "L5L6L4")
-    return 9;
-  if (name2 == "L2L3D1")
-    return 10;
-  if (name2 == "D1D2L2")
-    return 11;
-
-  edm::LogPrint("Tracklet") << getName() << " name name1 name2 " << name << " - " << name1 << " - " << name2;
-  assert(0);
+  throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " " << getName()
+				     << " name name1 name2 " << name << " - " << name1 << " - " << name2;
   return 0;
 }
