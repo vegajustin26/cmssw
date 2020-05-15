@@ -218,9 +218,8 @@ namespace trklet {
 
     double delta = r * dr * 0.5 * rinv;
 
-    double bend = -delta / 0.009;
-    if (r < rcrit)
-      bend = -delta / 0.01;
+    double stripPitch = (r < rcrit) ? 0.01 : 0.009;
+    double bend = -delta / stripPitch;
 
     return bend;
   }

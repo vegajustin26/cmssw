@@ -19,10 +19,10 @@ namespace trklet {
 
     void setIndex(int layermask, int diskmask, int alphamask, int irinv);
 
-    int getLayerMask() const { return layermask_; }
-    int getDiskMask() const { return diskmask_; }
-    int getAlphaMask() const { return alphamask_; }
-    int getirinv() const { return irinv_; }
+    int layerMask() const { return layermask_; }
+    int diskMask() const { return diskmask_; }
+    int alphaMask() const { return alphamask_; }
+    int irinv() const { return irinv_; }
 
     void setirinvdphi(int i, int irinvdphi) { irinvdphi_[i] = irinvdphi; }
     void setirinvdzordr(int i, int irinvdzordr) { irinvdzordr_[i] = irinvdzordr; }
@@ -48,32 +48,32 @@ namespace trklet {
     void settdzcorr(int i, int j, double tdzcorr) { tdzcorr_[i][j] = tdzcorr; }
     void setz0dzcorr(int i, int j, double z0dzcorr) { z0dzcorr_[i][j] = z0dzcorr; }
 
-    double getrinvdphi(int i) const { return rinvdphi_[i]; }
-    double getrinvdzordr(int i) const { return rinvdzordr_[i]; }
-    double getphi0dphi(int i) const { return phi0dphi_[i]; }
-    double getphi0dzordr(int i) const { return phi0dzordr_[i]; }
-    double gettdphi(int i) const { return tdphi_[i]; }
-    double gettdzordr(int i) const { return tdzordr_[i]; }
-    double getz0dphi(int i) const { return z0dphi_[i]; }
-    double getz0dzordr(int i) const { return z0dzordr_[i]; }
+    double rinvdphi(int i) const { return rinvdphi_[i]; }
+    double rinvdzordr(int i) const { return rinvdzordr_[i]; }
+    double phi0dphi(int i) const { return phi0dphi_[i]; }
+    double phi0dzordr(int i) const { return phi0dzordr_[i]; }
+    double tdphi(int i) const { return tdphi_[i]; }
+    double tdzordr(int i) const { return tdzordr_[i]; }
+    double z0dphi(int i) const { return z0dphi_[i]; }
+    double z0dzordr(int i) const { return z0dzordr_[i]; }
 
-    double gettdzcorr(int i, int j) const { return tdzcorr_[i][j]; }
-    double getz0dzcorr(int i, int j) const { return z0dzcorr_[i][j]; }
+    double tdzcorr(int i, int j) const { return tdzcorr_[i][j]; }
+    double z0dzcorr(int i, int j) const { return z0dzcorr_[i][j]; }
 
-    double getirinvdphi(int i) const { return irinvdphi_[i]; }
-    double getirinvdzordr(int i) const { return irinvdzordr_[i]; }
-    double getiphi0dphi(int i) const { return iphi0dphi_[i]; }
-    double getiphi0dzordr(int i) const { return iphi0dzordr_[i]; }
-    double getitdphi(int i) const { return itdphi_[i]; }
-    double getitdzordr(int i) const { return itdzordr_[i]; }
-    double getiz0dphi(int i) const { return iz0dphi_[i]; }
-    double getiz0dzordr(int i) const { return iz0dzordr_[i]; }
+    double irinvdphi(int i) const { return irinvdphi_[i]; }
+    double irinvdzordr(int i) const { return irinvdzordr_[i]; }
+    double iphi0dphi(int i) const { return iphi0dphi_[i]; }
+    double iphi0dzordr(int i) const { return iphi0dzordr_[i]; }
+    double itdphi(int i) const { return itdphi_[i]; }
+    double itdzordr(int i) const { return itdzordr_[i]; }
+    double iz0dphi(int i) const { return iz0dphi_[i]; }
+    double iz0dzordr(int i) const { return iz0dzordr_[i]; }
 
-    int getitdzcorr(int i, int j) const { return itdzcorr_[i][j]; }
-    int getiz0dzcorr(int i, int j) const { return iz0dzcorr_[i][j]; }
+    int itdzcorr(int i, int j) const { return itdzcorr_[i][j]; }
+    int iz0dzcorr(int i, int j) const { return iz0dzcorr_[i][j]; }
 
-    void sett(double t) { t_ = t; }
-    double gett() const { return t_; }
+    void settpar(double t) { t_ = t; }
+    double tpar() const { return t_; }
 
     void fill(int t, double MinvDt[4][12], int iMinvDt[4][12]) const;
 

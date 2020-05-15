@@ -441,7 +441,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
     return;
   }
 
-  double ttabi = TrackDerTable::gett(settings_, diskmask, layermask);
+  double ttabi = TrackDerTable::tpar(settings_, diskmask, layermask);
   if (t < 0.0)
     ttabi = -ttabi;
   double ttab = ttabi;
@@ -520,16 +520,16 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
         if (r[ii] > 60.0)
           continue;
 
-        double tder = derivatives->gettdzcorr(i, ii);
-        double zder = derivatives->getz0dzcorr(i, ii);
+        double tder = derivatives->tdzcorr(i, ii);
+        double zder = derivatives->z0dzcorr(i, ii);
 
         double dr = realrstub[i] - r[i];
 
         MinvDt[2][2 * ii + 1] += dr * tder;
         MinvDt[3][2 * ii + 1] += dr * zder;
 
-        int itder = derivatives->getitdzcorr(i, ii);
-        int izder = derivatives->getiz0dzcorr(i, ii);
+        int itder = derivatives->itdzcorr(i, ii);
+        int izder = derivatives->iz0dzcorr(i, ii);
 
         int idr = dr / settings_->kr();
 

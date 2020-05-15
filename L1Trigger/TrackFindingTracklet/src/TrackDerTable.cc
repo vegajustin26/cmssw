@@ -188,10 +188,10 @@ void TrackDerTable::fillTable(const Settings* settings) {
 
   for (int i = 0; i < nentries; i++) {
     TrackDer& der = derivatives_[i];
-    int layermask = der.getLayerMask();
-    int diskmask = der.getDiskMask();
-    int alphamask = der.getAlphaMask();
-    int irinv = der.getirinv();
+    int layermask = der.layerMask();
+    int diskmask = der.diskMask();
+    int alphamask = der.alphaMask();
+    int irinv = der.irinv();
 
     double rinv =
         (irinv - ((1 << (settings_->nrinvBitsTable() - 1)) - 0.5)) * 0.0057 / (1 << (settings_->nrinvBitsTable() - 1));
@@ -217,7 +217,7 @@ void TrackDerTable::fillTable(const Settings* settings) {
     double z[5];
     double alpha[5];
 
-    double t = gett(settings, diskmask, layermask);
+    double t = tpar(settings, diskmask, layermask);
 
     for (unsigned d = 0; d < 5; d++) {
       if (diskmask & (3 << (2 * (4 - d)))) {
@@ -321,7 +321,7 @@ void TrackDerTable::fillTable(const Settings* settings) {
     }
 
     for (int j = 0; j < nlayers + ndisks; j++) {
-      der.sett(t);
+      der.settpar(t);
 
       //integer
       assert(std::abs(iMinvDt[0][2 * j]) < (1 << 23));
@@ -449,8 +449,8 @@ void TrackDerTable::fillTable(const Settings* settings) {
     }
 
     for (auto& der : derivatives_) {
-      unsigned int layerhits = der.getLayerMask();  // 6 bits layer hit pattern
-      unsigned int diskmask = der.getDiskMask();    // 10 bits disk hit pattern
+      unsigned int layerhits = der.layerMask();  // 6 bits layer hit pattern
+      unsigned int diskmask = der.diskMask();    // 10 bits disk hit pattern
       unsigned int diskhits = 0;
       if (diskmask & (3 << 8))
         diskhits += 16;
@@ -582,14 +582,14 @@ void TrackDerTable::fillTable(const Settings* settings) {
                 inputI = 3;  // D5
             }
             if (inputI >= 0 and inputI < 4) {
-              itmprinvdphi[inputI] = der.getirinvdphi(ider);
-              itmprinvdzordr[inputI] = der.getirinvdzordr(ider);
-              itmpphi0dphi[inputI] = der.getiphi0dphi(ider);
-              itmpphi0dzordr[inputI] = der.getiphi0dzordr(ider);
-              itmptdphi[inputI] = der.getitdphi(ider);
-              itmptdzordr[inputI] = der.getitdzordr(ider);
-              itmpz0dphi[inputI] = der.getiz0dphi(ider);
-              itmpz0dzordr[inputI] = der.getiz0dzordr(ider);
+              itmprinvdphi[inputI] = der.irinvdphi(ider);
+              itmprinvdzordr[inputI] = der.irinvdzordr(ider);
+              itmpphi0dphi[inputI] = der.iphi0dphi(ider);
+              itmpphi0dzordr[inputI] = der.iphi0dzordr(ider);
+              itmptdphi[inputI] = der.itdphi(ider);
+              itmptdzordr[inputI] = der.itdzordr(ider);
+              itmpz0dphi[inputI] = der.iz0dphi(ider);
+              itmpz0dzordr[inputI] = der.iz0dzordr(ider);
             }
 
             ider++;
@@ -1016,7 +1016,7 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
 }
 
 
-double TrackDerTable::gett(const Settings* settings, int diskmask, int layermask) {
+double TrackDerTable::tpar(const Settings* settings, int diskmask, int layermask) {
   if (diskmask == 0)
     return 0.0;
 

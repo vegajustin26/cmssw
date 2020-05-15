@@ -57,7 +57,7 @@ namespace trklet {
                                      double sigma[12],
                                      double kfactor[12]);
 
-    static double gett(const Settings* settings, int diskmask, int layermask);
+    static double tpar(const Settings* settings, int diskmask, int layermask);
 
   private:
     const Settings* settings_;
