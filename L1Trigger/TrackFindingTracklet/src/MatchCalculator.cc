@@ -514,9 +514,9 @@ std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1
       int TCID = candmatch[i]->getMatch(indexArray[i]).first.first->TCID();
       int dSector = 0;
       if (dSector > 2)
-        dSector -= settings_->NSector();
+        dSector -= N_SECTOR;
       if (dSector < -2)
-        dSector += settings_->NSector();
+        dSector += N_SECTOR;
       assert(abs(dSector) < 2);
       if (dSector == -1)
         dSector = 2;

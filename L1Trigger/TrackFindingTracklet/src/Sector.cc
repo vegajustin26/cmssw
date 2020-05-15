@@ -40,12 +40,12 @@ using namespace trklet;
 
 Sector::Sector(unsigned int i, const Settings* settings, Globals* globals) : settings_(settings), globals_(globals) {
   isector_ = i;
-  double dphi = 2 * M_PI / settings_->NSector();
-  double dphiHG = 0.5 * settings_->dphisectorHG() - M_PI / settings_->NSector();
+  double dphi = 2 * M_PI / N_SECTOR;
+  double dphiHG = 0.5 * settings_->dphisectorHG() - M_PI / N_SECTOR;
   phimin_ = isector_ * dphi - dphiHG;
   phimax_ = phimin_ + dphi + 2 * dphiHG;
-  phimin_ -= M_PI / settings_->NSector();
-  phimax_ -= M_PI / settings_->NSector();
+  phimin_ -= M_PI / N_SECTOR;
+  phimax_ -= M_PI / N_SECTOR;
   phimin_ = trklet::phiRange(phimin_);
   phimax_ = trklet::phiRange(phimax_);
   if (phimin_ > phimax_)
@@ -70,7 +70,7 @@ bool Sector::addStub(L1TStub stub, string dtc) {
   bool add = false;
 
   double phi = stub.phi();
-  double dphi = 0.5 * settings_->dphisectorHG() - M_PI / settings_->NSector();
+  double dphi = 0.5 * settings_->dphisectorHG() - M_PI / N_SECTOR;
 
   std::map<string, std::vector<int> >& ILindex = globals_->ILindex();
   std::vector<int>& tmp = ILindex[dtc];

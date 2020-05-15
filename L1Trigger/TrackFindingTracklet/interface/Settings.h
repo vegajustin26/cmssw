@@ -14,6 +14,10 @@
 
 namespace trklet {
 
+  // constants used within Settings
+  constexpr unsigned int N_SECTOR = 9;
+
+  
   class Settings {
   public:
     Settings(){
@@ -85,8 +89,8 @@ namespace trklet {
     double zlength() const { return zlength_; }
     double rmaxdisk() const { return rmaxdisk_; }
 
-    double drmax() const { return rmaxdisk_ / 32.0; }
-    double dzmax() const { return zlength_ / 32.0; }
+    double drmax() const { return rmaxdisk_ / maxt_; }
+    double dzmax() const { return zlength_ / maxt_; }
 
     double half2SmoduleWidth() const { return half2SmoduleWidth_; }
 
@@ -192,19 +196,17 @@ namespace trklet {
     void setSkimfile(std::string skimfile) { skimfile_ = skimfile; }
 
     double dphisectorHG() const {
-      return 2 * M_PI / NSector_ +
+      return 2 * M_PI / N_SECTOR +
 	2 * std::max(std::abs(asin(0.5 * rinvmax() * rmean(0)) - asin(0.5 * rinvmax() * rcrit_)),
 		     std::abs(asin(0.5 * rinvmax() * rmean(5)) - asin(0.5 * rinvmax() * rcrit_)));
     }
 
     double rcrit() const { return rcrit_; }
 
-    double dphisector() const { return 2 * M_PI / NSector_; }
+    double dphisector() const { return 2 * M_PI / N_SECTOR; }
 
-    unsigned int NSector() const { return NSector_; }
-
-    double phicritmin() const { return 0.5 * dphisectorHG() - M_PI / NSector_; }
-    double phicritmax() const { return dphisectorHG() - 0.5 * dphisectorHG() + M_PI / NSector_; }
+    double phicritmin() const { return 0.5 * dphisectorHG() - M_PI / N_SECTOR; }
+    double phicritmax() const { return dphisectorHG() - 0.5 * dphisectorHG() + M_PI / N_SECTOR; }
 
     double phicritminmc() const { return phicritmin() - dphicritmc_; }
     double phicritmaxmc() const { return phicritmax() + dphicritmc_; }
@@ -293,8 +295,7 @@ namespace trklet {
       return dphisectorHG()/rmaxdisk_/(1<<shift);
     } 
     double kphi0pars() const { return 2*kphi1(); }
-    //32.0 is the range in t we need to cover
-    double ktpars() const { return 32.0/(1<<nbitst_); }
+    double ktpars() const { return maxt_ / (1<<nbitst_); }
     double kz0pars() const { return kz(); }
     double kd0pars() const { return kd0(); }
 
@@ -315,11 +316,11 @@ namespace trklet {
     std::string memoryModulesFile_;
     std::string wiresFile_;
 
-    unsigned int NSector_{9};
-
-    double rcrit_{55.0};
+    double rcrit_{55.0}; // critical radius for the hourglass configuration 
 
     double dphicritmc_{0.005};
+
+    double maxt_{32.0}; //range in t that we must cover
 
     std::array<unsigned int, 6> irmean_{{851, 1269, 1784, 2347, 2936, 3697}};
     std::array<unsigned int, 5> izmean_{{2239, 2645, 3163, 3782, 4523}};
@@ -638,16 +639,13 @@ namespace trklet {
     std::string mergeComparison_{""};
 #endif
 
-    bool fakefit_{
-        false};  // if true, run a dummy fit, producing TTracks directly from output of tracklet pattern reco stage
+    // if true, run a dummy fit, producing TTracks directly from output of tracklet pattern reco stage
+    bool fakefit_{false}; 
 
     unsigned int nHelixPar_{4};  // 4 or 5 param helix fit
     bool extended_{false};       // turn on displaced tracking
 
     std::string skimfile_{""};  //if not empty events will be written out in ascii format to this file
-
-    //constants derivative from the above - TODO should be calculated in Settings.h, not set externally
-    //then we can remove the mutable
 
     double bfield_{3.8};    //B-field in T
     double c_{0.299792458}; //speed of light m/ns
@@ -669,8 +667,7 @@ namespace trklet {
   
   constexpr unsigned int N_TRACKDER_PTBIN = 4;
   constexpr unsigned int N_TRACKDER_INDEX = 1000;
-  
-  
+      
 }  // namespace trklet
 
 #endif

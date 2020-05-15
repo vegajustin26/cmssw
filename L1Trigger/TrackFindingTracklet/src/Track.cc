@@ -42,12 +42,12 @@ Track::Track(int irinv,
 }
 
 double Track::phi0(const Settings* settings) const {
-  double dphi = 2 * M_PI / settings->NSector();
-  double dphiHG = 0.5 * settings->dphisectorHG() - M_PI / settings->NSector();
+  double dphi = 2 * M_PI / N_SECTOR;
+  double dphiHG = 0.5 * settings->dphisectorHG() - M_PI / N_SECTOR;
   double phimin = sector_ * dphi - dphiHG;
   double phimax = phimin + dphi + 2 * dphiHG;
-  phimin -= M_PI / settings->NSector();
-  phimax -= M_PI / settings->NSector();
+  phimin -= M_PI / N_SECTOR;
+  phimax -= M_PI / N_SECTOR;
   phimin = trklet::phiRange(phimin);
   phimax = trklet::phiRange(phimax);
   if (phimin > phimax)

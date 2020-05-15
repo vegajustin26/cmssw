@@ -12,7 +12,7 @@ using namespace trklet;
 using namespace std;
 
 TrackletEventProcessor::~TrackletEventProcessor() {
-  for (unsigned int i = 0; i < settings_->NSector(); i++) {
+  for (unsigned int i = 0; i < N_SECTOR; i++) {
     delete sectors_[i];
   }
   delete globals_;
@@ -83,9 +83,9 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   }
 
   // create the sector processors (1 sector processor = 1 board)
-  sectors_ = new Sector*[settings_->NSector()];
+  sectors_ = new Sector*[N_SECTOR];
 
-  for (unsigned int i = 0; i < settings_->NSector(); i++) {
+  for (unsigned int i = 0; i < N_SECTOR; i++) {
     sectors_[i] = new Sector(i, settings_, globals_);
   }
 
@@ -105,7 +105,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
     if (settings_->writetrace()) {
       edm::LogVerbatim("Tracklet") << "Read memory: " << memType << " " << memName;
     }
-    for (unsigned int i = 0; i < settings_->NSector(); i++) {
+    for (unsigned int i = 0; i < N_SECTOR; i++) {
       sectors_[i]->addMem(memType, memName);
     }
   }
@@ -126,7 +126,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
     if (settings_->writetrace()) {
       edm::LogVerbatim("Tracklet") << "Read process: " << procType << " " << procName;
     }
-    for (unsigned int i = 0; i < settings_->NSector(); i++) {
+    for (unsigned int i = 0; i < N_SECTOR; i++) {
       sectors_[i]->addProc(procType, procName);
     }
   }
@@ -157,7 +157,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
       ss >> tmp2 >> procout;
     }
 
-    for (unsigned int i = 0; i < settings_->NSector(); i++) {
+    for (unsigned int i = 0; i < N_SECTOR; i++) {
       sectors_[i]->addWire(mem, procin, procout);
     }
   }
@@ -191,7 +191,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   bool first = (eventnum_ == 1);
 
   cleanTimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->clean();
   }
   cleanTimer_.stop();
@@ -215,20 +215,19 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
     double phi = phiRange2PI(stub.phi()+ 0.5 * settings_->dphisectorHG());
     
-    unsigned int isector = settings_->NSector() * phi / (2 * M_PI);
+    unsigned int isector = N_SECTOR * phi / (2 * M_PI);
     
-    for (unsigned int k = 0; k < settings_->NSector(); k++) {
+    for (unsigned int k = 0; k < N_SECTOR; k++) {
       int diff = k - isector;
-      int nSector = settings_->NSector();
-      if (diff > nSector / 2)
-        diff -= settings_->NSector();
-      if (diff < -nSector / 2)
-        diff += settings_->NSector();
+      if (diff > (int)N_SECTOR / 2)
+        diff -= (int)N_SECTOR;
+      if (diff < (-1)*(int)N_SECTOR / 2)
+        diff += (int)N_SECTOR;
       if (abs(diff) > 1)
         continue;
-      double phiminsect = k * 2 * M_PI / settings_->NSector() -
-                          0.5 * (settings_->dphisectorHG() - 2 * M_PI / settings_->NSector()) -
-                          M_PI / settings_->NSector();
+      double phiminsect = k * 2 * M_PI / N_SECTOR -
+                          0.5 * (settings_->dphisectorHG() - 2 * M_PI / N_SECTOR) -
+                          M_PI / N_SECTOR;
       double dphi = stub.phi() - phiminsect;
       if (dphi > M_PI)
         dphi -= 2 * M_PI;
@@ -312,7 +311,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   }
 
   if (settings_->writeMem()) {
-    for (unsigned int k = 0; k < settings_->NSector(); k++) {
+    for (unsigned int k = 0; k < N_SECTOR; k++) {
       if (k == settings_->writememsect())
         sectors_[k]->writeInputStubs(first);
     }
@@ -326,7 +325,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
   // VM router
   VMRouterTimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeVMR();
     if (settings_->writeMem() && k == settings_->writememsect()) {
       sectors_[k]->writeInputStubs(first);
@@ -339,21 +338,21 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
   // tracklet engine
   TETimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeTE();
   }
   TETimer_.stop();
 
   // tracklet engine displaced
   TEDTimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeTED();
   }
   TEDTimer_.stop();
 
   // triplet engine
   TRETimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeTRE();
     if (settings_->writeMem() && k == settings_->writememsect()) {
       sectors_[k]->writeST(first);
@@ -362,14 +361,14 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   TRETimer_.stop();
 
   // tracklet processor (alternative implementation to TE+TC)
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeTP();
     if (settings_->writeMem() && k == settings_->writememsect()) {
       sectors_[k]->writeTPAR(first);
     }
   }
 
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     if (settings_->writeMem() && k == settings_->writememsect()) {
       sectors_[k]->writeSP(first);
     }
@@ -377,7 +376,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
   // tracklet calculator
   TCTimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeTC();
     if (settings_->writeMem() && k == settings_->writememsect()) {
       sectors_[k]->writeTPAR(first);
@@ -416,7 +415,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     }
 
     std::set<int> matchseed;
-    for (unsigned int k = 0; k < settings_->NSector(); k++) {
+    for (unsigned int k = 0; k < N_SECTOR; k++) {
       std::set<int> matchseedtmp = sectors_[k]->seedMatch(iTP);
       matchseed.insert(matchseedtmp.begin(), matchseedtmp.end());
     }
@@ -430,7 +429,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
   // tracklet calculator displaced
   TCDTimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeTCD();
     if (settings_->writeMem() && k == settings_->writememsect()) {
       sectors_[k]->writeTPAR(first);
@@ -441,7 +440,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
   // projection router
   PRTimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executePR();
     if (settings_->writeMem() && k == settings_->writememsect()) {
       sectors_[k]->writeVMPROJ(first);
@@ -452,7 +451,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
   // match engine
   METimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeME();
     if (settings_->writeMem() && k == settings_->writememsect()) {
       sectors_[k]->writeCM(first);
@@ -462,19 +461,19 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
   // match calculator
   MCTimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeMC();
   }
   MCTimer_.stop();
 
   // match processor (alternative to ME+MC)
   MPTimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeMP();
   }
   MPTimer_.stop();
 
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     if (settings_->writeMem() && k == settings_->writememsect()) {
       sectors_[k]->writeMC(first);
     }
@@ -482,7 +481,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
   // fit track
   FTTimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeFT();
     if ((settings_->writeMem() || settings_->writeMonitorData("IFit")) && k == settings_->writememsect()) {
       sectors_[k]->writeTF(first);
@@ -492,7 +491,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
   // purge duplicate
   PDTimer_.start();
-  for (unsigned int k = 0; k < settings_->NSector(); k++) {
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executePD(tracks_);
     if (((settings_->writeMem() || settings_->writeMonitorData("IFit")) && k == settings_->writememsect()) ||
         settings_->writeMonitorData("CT")) {

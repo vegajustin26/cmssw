@@ -10,12 +10,12 @@ using namespace trklet;
 
 TrackletProcessor::TrackletProcessor(string name, const Settings* const settings, Globals* globals, unsigned int iSector)
     : TrackletCalculatorBase(name, settings, globals, iSector) {
-  double dphi = 2 * M_PI / settings_->NSector();
-  double dphiHG = 0.5 * settings_->dphisectorHG() - M_PI / settings_->NSector();
+  double dphi = 2 * M_PI / N_SECTOR;
+  double dphiHG = 0.5 * settings_->dphisectorHG() - M_PI / N_SECTOR;
   phimin_ = iSector_ * dphi - dphiHG;
   phimax_ = phimin_ + dphi + 2 * dphiHG;
-  phimin_ -= M_PI / settings_->NSector();
-  phimax_ -= M_PI / settings_->NSector();
+  phimin_ -= M_PI / N_SECTOR;
+  phimax_ -= M_PI / N_SECTOR;
   phimin_ = trklet::phiRange(phimin_);
   phimax_ = trklet::phiRange(phimax_);
   if (phimin_ > phimax_)

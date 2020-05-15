@@ -73,7 +73,7 @@ int main(const int argc, const char **argv) {
   //}
 
   // ---------------------------------------------------------
-
+  
   TrackletEventProcessor eventProcessor;
 
   eventProcessor.init(&settings);
@@ -96,13 +96,12 @@ int main(const int argc, const char **argv) {
   }
 
   ofstream outres;
-  if (settings.writeMonitorData("ResEff"))
-    outres.open("trackres.txt");
-
   ofstream outeff;
-  if (settings.writeMonitorData("ResEff"))
+  if (settings.writeMonitorData("ResEff")) {
+    outres.open("trackres.txt");
     outeff.open("trackeff.txt");
-
+  }
+  
   ofstream outpars;
   if (settings.writeMonitorData("Pars"))
     outpars.open("trackpars.txt");
@@ -328,14 +327,14 @@ int main(const int argc, const char **argv) {
     int ntrack = 0;
     for (unsigned int l = 0; l < tracks.size(); l++) {
       if (settings.writeMonitorData("Pars")) {
-        double phi = tracks[l]->iphi0() * settings.kphi0pars() + tracks[l]->sector() * 2 * M_PI / settings.NSector();
+        double phi = tracks[l]->iphi0() * settings.kphi0pars() + tracks[l]->sector() * 2 * M_PI / N_SECTOR;
         if (phi > M_PI)
           phi -= 2 * M_PI;
         double phisec = phi - 2 * M_PI;
         while (phisec < 0.0)
-          phisec += 2 * M_PI / settings.NSector();
+          phisec += 2 * M_PI / N_SECTOR;
         outpars << tracks[l]->duplicate() << " " << asinh(tracks[l]->it() * settings.ktpars()) << " " << phi << " "
-                << tracks[l]->iz0() * settings.kz() << " " << phisec / (2 * M_PI / settings.NSector()) << " "
+                << tracks[l]->iz0() * settings.kz() << " " << phisec / (2 * M_PI / N_SECTOR) << " "
                 << tracks[l]->irinv() * settings.krinvpars();
       }
       if (!tracks[l]->duplicate()) {
