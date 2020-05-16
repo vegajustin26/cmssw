@@ -89,8 +89,8 @@ namespace trklet {
     double zlength() const { return zlength_; }
     double rmaxdisk() const { return rmaxdisk_; }
 
-    double drmax() const { return rmaxdisk_ / maxt_; }
-    double dzmax() const { return zlength_ / maxt_; }
+    double drmax() const { return rmaxdisk_ / deltarzfract_; }
+    double dzmax() const { return zlength_ / deltarzfract_; }
 
     double half2SmoduleWidth() const { return half2SmoduleWidth_; }
 
@@ -318,6 +318,9 @@ namespace trklet {
     double rcrit_{55.0}; // critical radius for the hourglass configuration 
 
     double dphicritmc_{0.005};
+
+    //fraction of full r and z range that stubs can be located within layer/disk
+    double deltarzfract_{32.0};
 
     double maxt_{32.0}; //range in t that we must cover
 
