@@ -190,9 +190,9 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
     izresid[i] = 0;
   }
 
-  std::bitset<N_LAYER> matches;
-  std::bitset<N_DISK * 2> matches2;
-    
+  std::bitset<N_LAYER> lmatches;    //layer matches
+  std::bitset<N_DISK * 2> dmatches; //disk matches
+  
   int mult = 1;
 
   unsigned int layermask = 0;
@@ -206,13 +206,13 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
   if (tracklet->isBarrel()) {
     for (unsigned int l = 1; l <= N_LAYER; l++) {
       if (l == (unsigned int)tracklet->layer() || l == (unsigned int)tracklet->layer() + 1) {
-        matches.set(N_LAYER - l);
+        lmatches.set(N_LAYER - l);
         layermask |= (1 << (N_LAYER - l));
         layers[nlayers++] = l;
         continue;
       }
       if (tracklet->match(l)) {
-        matches.set(N_LAYER - l);
+        lmatches.set(N_LAYER - l);
         layermask |= (1 << (N_LAYER - l));
         phiresid[nlayers] = tracklet->phiresidapprox(l);
         zresid[nlayers] = tracklet->zresidapprox(l);
@@ -236,7 +236,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
         continue;
       if (tracklet->matchdisk(d)) {
         if (std::abs(tracklet->alphadisk(d)) < 1e-20) {
-          matches2.set(2 * d - 1);
+          dmatches.set(2 * d - 1);
           diskmask |= (1 << (2 * (N_DISK - d) + 1));
         } else {
           int ialpha = tracklet->ialphadisk(d).value();
@@ -246,7 +246,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
 
           alphaindex += ialpha * power;
           power = power << settings_->alphaBitsTable();
-	  matches2.set(2 * (N_DISK - d));
+	  dmatches.set(2 * (N_DISK - d));
           diskmask |= (1 << (2 * (N_DISK - d)));
           mult = mult << settings_->alphaBitsTable();
         }
@@ -262,12 +262,9 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
       }
     }
 
-    if (mult <= 1 << (3 * settings_->alphaBitsTable())) {
-
-      cout << "----------------- FILLED NEW " << matches.to_string() << " " << matches2.to_string() << endl;
-      
-      if (settings_->writeMonitorData("HitPattern")) {
-        globals_->ofstream("hitpattern.txt") << matches.to_string() << " " << matches2.to_string() << " " << mult << endl;
+    if (settings_->writeMonitorData("HitPattern")) {
+      if (mult <= 1 << (3 * settings_->alphaBitsTable())) {
+        globals_->ofstream("hitpattern.txt") << lmatches.to_string() << " " << dmatches.to_string() << " " << mult << endl;
       }
     }
   }
@@ -275,8 +272,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
   if (tracklet->isDisk()) {
     for (unsigned int l = 1; l <= 2; l++) {
       if (tracklet->match(l)) {
-        matches[l - 1] = '1';
-
+        lmatches.set(N_LAYER - l);
+	
         layermask |= (1 << (N_LAYER - l));
 
         phiresid[nlayers] = tracklet->phiresidapprox(l);
@@ -299,10 +296,9 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
 
       if (tracklet->fpgat().value() < 0.0)
         d = -d1;
-      if (d == tracklet->disk() ||  //All seeds in PS modules
-          d == tracklet->disk2()) {
-        matches2[2 * (N_DISK - d1)] = '1';
-        diskmask |= (1 << (2 * (N_DISK - d1) + 1));
+      if (d == tracklet->disk() || d == tracklet->disk2()) {
+	dmatches.set(2 * d1 - 1);
+	diskmask |= (1 << (2 * (N_DISK - d1) + 1));
         alpha[ndisks] = 0.0;
         disks[ndisks++] = d;
         continue;
@@ -312,7 +308,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
         continue;
       if (tracklet->matchdisk(d)) {
         if (std::abs(tracklet->alphadisk(d)) < 1e-20) {
-          matches2[2 * (N_DISK - d1)] = '1';
+          dmatches.set(2 * d1 - 1);
           diskmask |= (1 << (2 * (N_DISK - d1) + 1));
         } else {
           int ialpha = tracklet->ialphadisk(d).value();
@@ -322,8 +318,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
 
           alphaindex += ialpha * power;
           power = power << settings_->alphaBitsTable();
-          matches2[2 * (d1 - 1) + 1] = '1';
-          diskmask |= (1 << (2 * (5 - d1)));
+	  dmatches.set(2 * (N_DISK - d1));
+          diskmask |= (1 << (2 * (N_DISK - d1)));
           mult = mult << settings_->alphaBitsTable();
         }
 
@@ -345,13 +341,13 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
   if (tracklet->isOverlap()) {
     for (unsigned int l = 1; l <= 2; l++) {
       if (l == (unsigned int)tracklet->layer()) {
-        matches[l - 1] = '1';
-        layermask |= (1 << (N_LAYER - l));
+	lmatches.set(N_LAYER - l);
+	layermask |= (1 << (N_LAYER - l));
         layers[nlayers++] = l;
         continue;
       }
       if (tracklet->match(l)) {
-        matches[l - 1] = '1';
+        lmatches.set(N_LAYER - l);
         layermask |= (1 << (N_LAYER - l));
         assert(std::abs(tracklet->phiresidapprox(l)) < 0.2);
         phiresid[nlayers] = tracklet->phiresidapprox(l);
@@ -374,7 +370,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
         d = -d1;
       if (d == tracklet->disk()) {  //All seeds in PS modules
         disks[ndisks] = tracklet->disk();
-        matches2[2 * (N_DISK - d1)] = '1';
+	dmatches.set(2 * d1 - 1);
         diskmask |= (1 << (2 * (N_DISK - d1) + 1));
         ndisks++;
         continue;
@@ -384,7 +380,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
         continue;
       if (tracklet->matchdisk(d)) {
         if (std::abs(tracklet->alphadisk(d)) < 1e-20) {
-          matches2[2 * (d1 - 1)] = '1';
+	  dmatches.set(2 * (N_DISK - d1));
           diskmask |= (1 << (2 * (N_DISK - d1) + 1));
           FPGAWord tmp;
           tmp.set(diskmask, 10);
@@ -396,8 +392,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
 
           alphaindex += ialpha * power;
           power = power << settings_->alphaBitsTable();
-          matches2[2 * (d1 - 1) + 1] = '1';
-          diskmask |= (1 << (2 * (N_DISK - d1)));
+	  dmatches.set(2 * (N_DISK - d1));
+	  diskmask |= (1 << (2 * (N_DISK - d1)));
           FPGAWord tmp;
           tmp.set(diskmask, 10);
           mult = mult << settings_->alphaBitsTable();
