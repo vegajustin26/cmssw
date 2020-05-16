@@ -25,27 +25,27 @@ public:
     if (settings_->debugTracklet()) {
       edm::LogVerbatim("Tracklet") << "=============================================";
       char s[1024];
-      sprintf(s, "IMATH Tracklet Calculator %i %i dphisector = %f", i1, i2, settings->dphisector());
+      snprintf(s, 1024, "IMATH Tracklet Calculator %i %i dphisector = %f", i1, i2, settings->dphisector());
       edm::LogVerbatim("Tracklet") << s;
-      sprintf(s, "rmaxL6 = %f, zmaxD5 = %f", settings->rmax(5), settings->zmax(4));
+      snprintf(s, 1024, "rmaxL6 = %f, zmaxD5 = %f", settings->rmax(5), settings->zmax(4));
       edm::LogVerbatim("Tracklet") << s;
-      sprintf(s, "      stub Ks: kr, kphi1, kz = %g, %g, %g", settings->kr(), settings->kphi1(), settings->kz());
+      snprintf(s, 1024, "      stub Ks: kr, kphi1, kz = %g, %g, %g", settings->kr(), settings->kphi1(), settings->kz());
       edm::LogVerbatim("Tracklet") << s;
-      sprintf(s,
+      snprintf(s, 1024,
 	      "  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g",
 	      settings->kphi1() / settings->kr() * pow(2, settings->rinv_shift()),
 	      settings->kphi1() * pow(2, settings->phi0_shift()),
 	      settings->kz() / settings->kr() * pow(2, settings->t_shift()),
 	      settings->kz() * pow(2, settings->z0_shift()));
       edm::LogVerbatim("Tracklet") << s;
-      sprintf(s,
+      snprintf(s, 1024,
 	      "layer proj Ks: kphiproj456, kphider, kzproj, kzder = %g, %g, %g, %g",
 	      settings->kphi1() * pow(2, settings->SS_phiL_shift()),
 	      settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderL_shift()),
 	      settings->kz() * pow(2, settings->PS_zL_shift()),
 	      settings->kz() / settings->kr() * pow(2, settings->PS_zderL_shift()));
       edm::LogVerbatim("Tracklet") << s;
-      sprintf(s,
+      snprintf(s, 1024,
 	      " disk proj Ks: kphiprojdisk, kphiprojderdisk, krprojdisk, krprojderdisk = %g, %g, %g, %g",
 	      settings->kphi1() * pow(2, settings->SS_phiD_shift()),
 	      settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderD_shift()),
@@ -54,7 +54,7 @@ public:
       edm::LogVerbatim("Tracklet") << s;
       edm::LogVerbatim("Tracklet") << "=============================================";
       
-      sprintf(s, "initializing 1/dr LUT %f %f", settings->rmean(i1 - 1), settings->rmean(i2 - 1));
+      snprintf(s, 1024, "initializing 1/dr LUT %f %f", settings->rmean(i1 - 1), settings->rmean(i2 - 1));
       edm::LogVerbatim("Tracklet") << s;
     }
 
