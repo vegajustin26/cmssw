@@ -1,5 +1,5 @@
-// This class holds the tracklet parameters for the selected stub pairs
-// This class owns the tracklets. Further modules only holds pointers
+// TrackletParametersMemory: This class holds the tracklet parameters for selected stub pairs.
+// This class owns the tracklets. Further modules only holds pointers.
 #ifndef L1Trigger_TrackFindingTracklet_interface_TrackletParametersMemory_h
 #define L1Trigger_TrackFindingTracklet_interface_TrackletParametersMemory_h
 

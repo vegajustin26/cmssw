@@ -1,3 +1,5 @@
+// TrackletEngineDisplaced: this class forms tracklets (pairs of stubs) w/o beamspot constraint for the displaced (extended) tracking.
+// Triplet seeds are formed in the TripletEngine from these (=TrackletEngineDisplaced) + a third stub. 
 #ifndef L1Trigger_TrackFindingTracklet_interface_TrackletEngineDisplaced_h
 #define L1Trigger_TrackFindingTracklet_interface_TrackletEngineDisplaced_h
 

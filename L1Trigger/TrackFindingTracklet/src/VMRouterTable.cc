@@ -1,3 +1,4 @@
+// VMRouterTable: Lookup table used by the VMRouter to route stubs and provide information about which VMStubs are needed by the TrackletEngine
 #include "L1Trigger/TrackFindingTracklet/interface/VMRouterTable.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
@@ -96,15 +97,9 @@ void VMRouterTable::init(unsigned int layerdisk) {
       if (layerdisk==0||layerdisk==1) {
 	vmrtableteinneroverlap_.push_back(getLookup(6, z, r, layerdisk+6));
       }
-					
-      //int value = getLookupValue(settings, izbin, irbin);
-      //table_.push_back(value);
     }
   }
 
-  if (settings_->writeTable()) {
-    //writeVMTable("VMTableOuterL" + std::to_string(layer_) + ".tab");
-  }
 }
 
 int VMRouterTable::getLookup(unsigned int layerdisk, double z, double r, int iseed){
@@ -166,8 +161,6 @@ int VMRouterTable::getLookup(unsigned int layerdisk, double z, double r, int ise
     }
     assert(deltaz < 8);
     value += (deltaz << 7);
-
-    
     
     return value;
     
@@ -213,9 +206,6 @@ int VMRouterTable::getLookup(unsigned int layerdisk, double z, double r, int ise
       rbin2 = NBINS * (rmax - settings_->rmindiskvm()) / (settings_->rmaxdisk() - settings_->rmindiskvm());      
     }
     
-    //if (rbin1>=NBINS) return -1;
-    //if (rbin2<0) return -1;
-
     if (rbin2>=NBINS) rbin2=NBINS-1;
     if (rbin1<0) rbin1=0;
 
@@ -242,55 +232,44 @@ int VMRouterTable::getLookup(unsigned int layerdisk, double z, double r, int ise
     value += (rbin1 & 7);
     assert(value / 8 < 15);
     int deltar = rbin2 - rbin1;
-    //cout << rbin1 <<" "<<rbin2<<" "<<r1<<" "<<r2<<" z, r "<<z<<" "<<r<<" zmean z0cut "<<zmean<<" "<<z0cut<<endl;
-    //assert(deltar < 11);
     if (deltar>7) deltar=7;
     if (overlap) {
       value += (deltar << 7);
     } else {
       value += (deltar << 6);
     }
-
-    //if (iseed==10) cout << "iseed10: "<<deltar<<" "<<value<<endl;
     
-    return value;
-    
+    return value;    
   }
-
 }
 
 
 int VMRouterTable::lookup(int zbin, int rbin) {
   int index = zbin * rbins_ + rbin;
-  //cout << "zbin rbin rbins_ : "<<zbin<<" "<<rbin<<" "<<rbins_<<endl;
   assert(index>=0 && index<(int)vmrtable_.size());
   return vmrtable_[index];
 }
 
 int VMRouterTable::lookupdisk(int zbin, int rbin) {
   int index = zbin * rbins_ + rbin;
-  //cout << "zbin rbin rbins_ : "<<zbin<<" "<<rbin<<" "<<rbins_<<endl;
   assert(index>=0 && index<(int)vmrtabletedisk_.size());
   return vmrtabletedisk_[index];
 }
 
 int VMRouterTable::lookupinner(int zbin, int rbin) {
   int index = zbin * rbins_ + rbin;
-  //cout << "zbin rbin rbins_ : "<<zbin<<" "<<rbin<<" "<<rbins_<<endl;
   assert(index>=0 && index<(int)vmrtableteinner_.size());
   return vmrtableteinner_[index];
 }
 
 int VMRouterTable::lookupinneroverlap(int zbin, int rbin) {
   int index = zbin * rbins_ + rbin;
-  //cout << "zbin rbin rbins_ : "<<zbin<<" "<<rbin<<" "<<rbins_<<endl;
   assert(index>=0 && index<(int)vmrtableteinneroverlap_.size());
   return vmrtableteinneroverlap_[index];
 }
 
 int VMRouterTable::lookupinnerThird(int zbin, int rbin) {
   int index = zbin * rbins_ + rbin;
-  //cout << "zbin rbin rbins_ : "<<zbin<<" "<<rbin<<" "<<rbins_<<endl;
   assert(index>=0 && index<(int)vmrtableteinnerThird_.size());
   return vmrtableteinnerThird_[index];
 }

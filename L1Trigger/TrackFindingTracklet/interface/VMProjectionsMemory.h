@@ -1,3 +1,4 @@
+// VMProjectionsMemory: Class to hold a reduced format of the tracklet projections (from ProjectionRouter)
 #ifndef L1Trigger_TrackFindingTracklet_interface_VMProjectionsMemory_h
 #define L1Trigger_TrackFindingTracklet_interface_VMProjectionsMemory_h
 

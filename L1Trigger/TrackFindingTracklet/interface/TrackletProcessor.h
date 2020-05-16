@@ -1,3 +1,5 @@
+// TrackletProcessor: this class is an evolved version, performing the tasks of the TrackletEngine+TrackletCalculator.
+// It will combine TEs that feed into a TC to a single module.
 #ifndef L1Trigger_TrackFindingTracklet_interface_TrackletProcessor_h
 #define L1Trigger_TrackFindingTracklet_interface_TrackletProcessor_h
 

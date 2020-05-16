@@ -24,7 +24,6 @@ namespace trklet {
 
     // negative return means that seed can not be formed
     int getLookup(unsigned int layerdisk, double z, double r, int iseed=-1);
-    //int getLookupValue(const Settings* settings, int izbin, int irbin);
 
     int lookup(int zbin, int rbin);
     int lookupdisk(int zbin, int rbin);
@@ -35,8 +34,6 @@ namespace trklet {
   private:
 
     const Settings *settings_;
-    
-    //double rmean_;
 
     double rmin_;
     double rmax_;

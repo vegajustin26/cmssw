@@ -1,3 +1,4 @@
+// TrackletEventProcessor: Class responsible for the main event processing for the tracklet algorithm
 #ifndef L1Trigger_TrackFindingTracklet_interface_TrackletEventProcessor_h
 #define L1Trigger_TrackFindingTracklet_interface_TrackletEventProcessor_h
 

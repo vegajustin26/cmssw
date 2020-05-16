@@ -1,3 +1,4 @@
+// Globals: holds "global" variables such as the IMATH_TrackletCalculators
 #ifndef L1Trigger_TrackFindingTracklet_interface_Globals_h
 #define L1Trigger_TrackFindingTracklet_interface_Globals_h
 

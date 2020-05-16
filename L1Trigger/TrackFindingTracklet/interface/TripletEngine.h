@@ -1,3 +1,4 @@
+// TripletEngine: Adds third stub to stub pairs found by TrackletEngineDisplaced to form "triplet" seeds for the displaced (extended) tracking
 #ifndef L1Trigger_TrackFindingTracklet_interface_TripletEngine_h
 #define L1Trigger_TrackFindingTracklet_interface_TripletEngine_h
 

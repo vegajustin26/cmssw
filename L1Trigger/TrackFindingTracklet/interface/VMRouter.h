@@ -1,3 +1,4 @@
+// VMRouter: sorts input stubs into smaller units in phi (and possibly z), referred to as "Virtual Modules" (VMs)
 #ifndef L1Trigger_TrackFindingTracklet_interface_VMRouter_h
 #define L1Trigger_TrackFindingTracklet_interface_VMRouter_h
 
