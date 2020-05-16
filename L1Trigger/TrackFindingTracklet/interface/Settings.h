@@ -33,12 +33,12 @@ namespace trklet {
     std::string DTCLinkFile() const {
       return DTCLinkFile_;
     }
-    std::string moduleCablingFile() const { return moduleCablingFile_; }
-    std::string DTCLinkLayerDiskFile() const { return DTCLinkLayerDiskFile_; }
-    std::string fitPatternFile() const { return fitPatternFile_; }
-    std::string processingModulesFile() const { return processingModulesFile_; }
-    std::string memoryModulesFile() const { return memoryModulesFile_; }
-    std::string wiresFile() const { return wiresFile_; }
+    std::string const& moduleCablingFile() const { return moduleCablingFile_; }
+    std::string const& DTCLinkLayerDiskFile() const { return DTCLinkLayerDiskFile_; }
+    std::string const& fitPatternFile() const { return fitPatternFile_; }
+    std::string const& processingModulesFile() const { return processingModulesFile_; }
+    std::string const& memoryModulesFile() const { return memoryModulesFile_; }
+    std::string const& wiresFile() const { return wiresFile_; }
 
     void setDTCLinkFile(std::string DTCLinkFileName) { DTCLinkFile_ = DTCLinkFileName; }
     void setModuleCablingFile(std::string moduleCablingFileName) { moduleCablingFile_ = moduleCablingFileName; }
