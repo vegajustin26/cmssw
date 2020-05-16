@@ -72,7 +72,6 @@ namespace trklet {
     void setl1tstub(L1TStub* l1tstub)  { l1tstub_=l1tstub; }
     
   private:
-    //bool isPSmodule_;  //TODO should not be used can be removed
     FPGAWord layer_;
     FPGAWord disk_;
     FPGAWord r_;

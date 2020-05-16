@@ -7,7 +7,6 @@
 #include <cstdlib>
 #include <vector>
 #include <map>
-#include <ext/hash_set>
 #include <cmath>
 #include <cassert>
 
