@@ -27,9 +27,7 @@ namespace trklet {
     unsigned int nStubs() const { return stubs_.size(); }
 
     const VMStubME& getVMStubME(unsigned int i) const { return stubs_[i]; }
-    const Stub* getFPGAStub(unsigned int i) const { return stubs_[i].stub().first; }
-    const L1TStub* getL1TStub(unsigned int i) const { return stubs_[i].stub().second; }
-    std::pair<const Stub*, const L1TStub*> getStub(unsigned int i) const { return stubs_[i].stub(); }
+    const Stub* getFPGAStub(unsigned int i) const { return stubs_[i].stub(); }
 
     unsigned int nStubsBin(unsigned int bin) const {
       assert(bin < binnedstubs_.size());
@@ -42,7 +40,7 @@ namespace trklet {
       return binnedstubs_[bin][i];
     }
 
-    std::pair<const Stub*, const L1TStub*> getStubBin(unsigned int bin, unsigned int i) const {
+    const Stub* getStubBin(unsigned int bin, unsigned int i) const {
       assert(bin < binnedstubs_.size());
       assert(i < binnedstubs_[bin].size());
       return binnedstubs_[bin][i].stub();

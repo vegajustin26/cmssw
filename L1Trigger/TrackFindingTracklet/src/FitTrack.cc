@@ -3,6 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackDerTable.h"
 #include "L1Trigger/TrackFindingTracklet/interface/HybridFit.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
@@ -473,8 +474,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
       realrstub[i] = tracklet->outerStub()->r();
     }
     if (tracklet->validResid(layers[i]) && layers[i] < 4) {
-      std::pair<const Stub*, const L1TStub*> stubptrs = tracklet->stubptrs(layers[i]);
-      realrstub[i] = stubptrs.second->r();
+      const Stub* stubptr = tracklet->stubptr(layers[i]);
+      realrstub[i] = stubptr->l1tstub()->r();
       assert(std::abs(realrstub[i] - r[i]) < 5.0);
     }
     rstub[i] = r[i];

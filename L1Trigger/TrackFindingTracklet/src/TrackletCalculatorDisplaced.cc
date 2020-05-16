@@ -218,14 +218,14 @@ void TrackletCalculatorDisplaced::execute() {
     for (unsigned int i = 0; i < stubtriplets_[l]->nStubTriplets(); i++) {
       countall++;
 
-      const L1TStub* innerStub = stubtriplets_[l]->getL1TStub1(i);
       const Stub* innerFPGAStub = stubtriplets_[l]->getFPGAStub1(i);
+      const L1TStub* innerStub = innerFPGAStub->l1tstub();
 
-      const L1TStub* middleStub = stubtriplets_[l]->getL1TStub2(i);
       const Stub* middleFPGAStub = stubtriplets_[l]->getFPGAStub2(i);
+      const L1TStub* middleStub = middleFPGAStub->l1tstub();
 
-      const L1TStub* outerStub = stubtriplets_[l]->getL1TStub3(i);
       const Stub* outerFPGAStub = stubtriplets_[l]->getFPGAStub3(i);
+      const L1TStub* outerStub = middleFPGAStub->l1tstub();
 
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced execute " << getName() << "[" << iSector_ << "]";

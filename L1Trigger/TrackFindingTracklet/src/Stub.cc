@@ -9,7 +9,7 @@ using namespace trklet;
 
 Stub::Stub(const trklet::Settings* const settings) : settings_(settings) {}
 
-Stub::Stub(const L1TStub& stub, const trklet::Settings* const settings, double phiminsec, double phimaxsec):
+Stub::Stub(L1TStub& stub, const trklet::Settings* const settings, double phiminsec, double phimaxsec):
   settings_(settings) {
 
   double r = stub.r();

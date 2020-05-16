@@ -25,8 +25,8 @@ void StubPairsMemory::writeSP(bool first) {
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
 
   for (unsigned int j = 0; j < stubs_.size(); j++) {
-    string stub1index = stubs_[j].first.stub().first->stubindex().str();
-    string stub2index = stubs_[j].second.stub().first->stubindex().str();
+    string stub1index = stubs_[j].first.stub()->stubindex().str();
+    string stub2index = stubs_[j].second.stub()->stubindex().str();
     out_ << "0x";
     if (j < 16)
       out_ << "0";

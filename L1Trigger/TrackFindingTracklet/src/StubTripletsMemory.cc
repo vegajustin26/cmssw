@@ -26,9 +26,9 @@ void StubTripletsMemory::writeST(bool first) {
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
 
   for (unsigned int j = 0; j < stubs1_.size(); j++) {
-    string stub1index = stubs1_[j].first->stubindex().str();
-    string stub2index = stubs2_[j].first->stubindex().str();
-    string stub3index = stubs3_[j].first->stubindex().str();
+    string stub1index = stubs1_[j]->stubindex().str();
+    string stub2index = stubs2_[j]->stubindex().str();
+    string stub3index = stubs3_[j]->stubindex().str();
     if (j < 16)
       out_ << "0";
     out_ << hex << j << dec;

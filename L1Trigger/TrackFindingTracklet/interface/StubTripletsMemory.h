@@ -17,9 +17,9 @@ namespace trklet {
 
     ~StubTripletsMemory() = default;
 
-    void addStubs(std::pair<const Stub*, const L1TStub*> stub1,
-                  std::pair<const Stub*, const L1TStub*> stub2,
-                  std::pair<const Stub*, const L1TStub*> stub3) {
+    void addStubs(const Stub* stub1,
+                  const Stub* stub2,
+                  const Stub* stub3) {
       stubs1_.push_back(stub1);
       stubs2_.push_back(stub2);
       stubs3_.push_back(stub3);
@@ -27,17 +27,14 @@ namespace trklet {
 
     unsigned int nStubTriplets() const { return stubs1_.size(); }
 
-    const Stub* getFPGAStub1(unsigned int i) const { return stubs1_[i].first; }
-    const L1TStub* getL1TStub1(unsigned int i) const { return stubs1_[i].second; }
-    std::pair<const Stub*, const L1TStub*> getStub1(unsigned int i) const { return stubs1_[i]; }
+    const Stub* getFPGAStub1(unsigned int i) const { return stubs1_[i]; }
+    //const L1TStub* getL1TStub1(unsigned int i) const { return stubs1_[i]->l1tstub(); }
 
-    const Stub* getFPGAStub2(unsigned int i) const { return stubs2_[i].first; }
-    const L1TStub* getL1TStub2(unsigned int i) const { return stubs2_[i].second; }
-    std::pair<const Stub*, const L1TStub*> getStub2(unsigned int i) const { return stubs2_[i]; }
+    const Stub* getFPGAStub2(unsigned int i) const { return stubs2_[i]; }
+    //const L1TStub* getL1TStub2(unsigned int i) const { return stubs2_[i]->l1tstub(); }
 
-    const Stub* getFPGAStub3(unsigned int i) const { return stubs3_[i].first; }
-    const L1TStub* getL1TStub3(unsigned int i) const { return stubs3_[i].second; }
-    std::pair<const Stub*, const L1TStub*> getStub3(unsigned int i) const { return stubs3_[i]; }
+    const Stub* getFPGAStub3(unsigned int i) const { return stubs3_[i]; }
+    //const L1TStub* getL1TStub3(unsigned int i) const { return stubs3_[i]->l1tstub(); }
 
     void clean() override {
       stubs1_.clear();
@@ -48,9 +45,9 @@ namespace trklet {
     void writeST(bool first);
 
   private:
-    std::vector<std::pair<const Stub*, const L1TStub*> > stubs1_;
-    std::vector<std::pair<const Stub*, const L1TStub*> > stubs2_;
-    std::vector<std::pair<const Stub*, const L1TStub*> > stubs3_;
+    std::vector<const Stub* > stubs1_;
+    std::vector<const Stub* > stubs2_;
+    std::vector<const Stub* > stubs3_;
   };
 
 };  // namespace trklet

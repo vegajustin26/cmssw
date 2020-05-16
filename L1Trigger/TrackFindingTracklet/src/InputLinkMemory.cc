@@ -76,10 +76,10 @@ bool InputLinkMemory::addStub(
                                  << " r=" << al1stub.r();
   }
   if (stubs_.size() < settings_->maxStep("Link")) {
-    L1TStub* l1stub = new L1TStub(al1stub);
     Stub* stubptr = new Stub(stub);
+    stubptr->setl1tstub(new L1TStub(al1stub));
 
-    stubs_.emplace_back(stubptr, l1stub);
+    stubs_.emplace_back(stubptr);
   }
   return true;
 }
@@ -88,7 +88,7 @@ void InputLinkMemory::writeStubs(bool first) {
   openFile(first, "../data/MemPrints/InputStubs/InputStubs_");
 
   for (unsigned int j = 0; j < stubs_.size(); j++) {
-    string stub = stubs_[j].first->str();
+    string stub = stubs_[j]->str();
     if (j < 16)
       out_ << "0";
     out_ << hex << j << dec;
@@ -99,8 +99,8 @@ void InputLinkMemory::writeStubs(bool first) {
 
 void InputLinkMemory::clean() {
   for (unsigned int i = 0; i < stubs_.size(); i++) {
-    delete stubs_[i].first;
-    delete stubs_[i].second;
+    delete stubs_[i]->l1tstub();
+    delete stubs_[i];
   }
   stubs_.clear();
 }

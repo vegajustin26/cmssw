@@ -19,18 +19,18 @@ namespace trklet {
 
     ~AllStubsMemory() = default;
 
-    void addStub(std::pair<const Stub*, const L1TStub*> stub) { stubs_.push_back(stub); }
+    void addStub(const Stub* stub) { stubs_.push_back(stub); }
 
     unsigned int nStubs() const { return stubs_.size(); }
 
-    std::pair<const Stub*, const L1TStub*> getStub(unsigned int i) const { return stubs_[i]; }
+    const Stub* getStub(unsigned int i) const { return stubs_[i]; }
 
     void clean() override { stubs_.clear(); }
 
     void writeStubs(bool first);
 
   private:
-    std::vector<std::pair<const Stub*, const L1TStub*> > stubs_;
+    std::vector<const Stub*> stubs_;
   };
 
 };  // namespace trklet

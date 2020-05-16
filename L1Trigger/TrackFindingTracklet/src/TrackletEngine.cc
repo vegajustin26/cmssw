@@ -82,7 +82,7 @@ void TrackletEngine::execute() {
     int next = lookupbits.bits(3, 1);
 
     if ((iSeed_ == 4 || iSeed_ == 5) &&
-        innervmstub.stub().first->disk().value() < 0) {  //TODO - need to store negative disk
+        innervmstub.stub()->disk().value() < 0) {  //TODO - need to store negative disk
       start += 4;
     }
     int last = start + next;

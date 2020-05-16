@@ -7,7 +7,6 @@
 #include <cmath>
 #include <vector>
 
-#include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 
@@ -17,7 +16,7 @@ namespace trklet {
   public:
     VMStubTE() {}
 
-    VMStubTE(std::pair<Stub*, L1TStub*> stub, FPGAWord finephi, FPGAWord bend, FPGAWord vmbits, FPGAWord allstubindex);
+    VMStubTE(const Stub* stub, FPGAWord finephi, FPGAWord bend, FPGAWord vmbits, FPGAWord allstubindex);
 
     ~VMStubTE() = default;
 
@@ -27,9 +26,9 @@ namespace trklet {
 
     const FPGAWord& vmbits() const { return vmbits_; }
 
-    std::pair<const Stub*, const L1TStub*> stub() const { return stub_; }
+    const Stub* stub() const { return stub_; }
 
-    bool isPSmodule() const { return stub_.first->isPSmodule(); }
+    bool isPSmodule() const { return stub_->isPSmodule(); }
 
     const FPGAWord& stubindex() const { return allStubIndex_; }
 
@@ -42,7 +41,7 @@ namespace trklet {
     FPGAWord bend_;
     FPGAWord vmbits_;
     FPGAWord allStubIndex_;
-    std::pair<Stub*, L1TStub*> stub_;
+    const Stub* stub_;
   };
 };  // namespace trklet
 #endif

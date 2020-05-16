@@ -157,10 +157,10 @@ void VMRouter::execute() {
         continue;
       if (allStubCounter > 127)
         continue;
-      std::pair<Stub*, L1TStub*> stub = stubinputs_[j]->getStub(i);
+      Stub* stub = stubinputs_[j]->getStub(i);
 
       bool negdisk =
-          (stub.first->disk().value() <
+          (stub->disk().value() <
            0);  //Note - this information is not part of the stub - but rather from which input memory we are reading
 
       //use &127 to make sure we fit into the number of bits -
@@ -168,9 +168,9 @@ void VMRouter::execute() {
       FPGAWord allStubIndex(allStubCounter & 127, 7, true, __LINE__, __FILE__);
 
       //TODO - should not be needed - but need to migrate some other pieces of code before removing
-      stub.first->setAllStubIndex(allStubCounter);  
+      stub->setAllStubIndex(allStubCounter);  
       //TODO - should not be needed - but need to migrate some other pieces of code before removing
-      stub.second->setAllStubIndex(allStubCounter);  
+      stub->l1tstub()->setAllStubIndex(allStubCounter);  
 
       allStubCounter++;
 
@@ -181,7 +181,7 @@ void VMRouter::execute() {
 
       //Fill all the ME VM memories
 
-      FPGAWord iphi = stub.first->phicorr();
+      FPGAWord iphi = stub->phicorr();
       unsigned int ivm =
           iphi.bits(iphi.nbits() - (settings_->nbitsallstubs(layerdisk_) + settings_->nbitsvmme(layerdisk_)),
                     settings_->nbitsvmme(layerdisk_));
@@ -198,21 +198,21 @@ void VMRouter::execute() {
       //Calculate the z and r position for the vmstub
 
       //Take the top nbitszfinebintable_ bits of the z coordinate
-      int indexz = (((1 << (stub.first->z().nbits() - 1)) + stub.first->z().value()) >>
-                    (stub.first->z().nbits() - nbitszfinebintable_));
+      int indexz = (((1 << (stub->z().nbits() - 1)) + stub->z().value()) >>
+                    (stub->z().nbits() - nbitszfinebintable_));
       int indexr = -1;
       if (layerdisk_ > 5) {
         if (negdisk) {
           indexz = (1 << nbitszfinebintable_) - indexz;
         }
-        indexr = stub.first->r().value();
-        if (stub.first->isPSmodule()) {
-          indexr = stub.first->r().value() >> (stub.first->r().nbits() - nbitsrfinebintable_);
+        indexr = stub->r().value();
+        if (stub->isPSmodule()) {
+          indexr = stub->r().value() >> (stub->r().nbits() - nbitsrfinebintable_);
         }
       } else {
         //Take the top nbitsfinebintable_ bits of the z coordinate. The & is to handle the negative z values.
-        indexr = (((1 << (stub.first->r().nbits() - 1)) + stub.first->r().value()) >>
-                  (stub.first->r().nbits() - nbitsrfinebintable_));
+        indexr = (((1 << (stub->r().nbits() - 1)) + stub->r().value()) >>
+                  (stub->r().nbits() - nbitsrfinebintable_));
       }
 
       assert(indexz >= 0);
@@ -230,11 +230,11 @@ void VMRouter::execute() {
       int rzfine = melut & 7;
 
       VMStubME vmstub(stub,
-                      stub.first->iphivmFineBins(
+                      stub->iphivmFineBins(
                           iphi.nbits() - (settings_->nbitsallstubs(layerdisk_) + settings_->nbitsvmme(layerdisk_)),
                           settings_->nbitsvmme(layerdisk_)),
                       FPGAWord(rzfine, 3, true, __LINE__, __FILE__),
-                      stub.first->bend(),
+                      stub->bend(),
                       allStubIndex);
 
       assert(vmstubsMEPHI_[ivmPlus] != 0);
@@ -251,7 +251,7 @@ void VMRouter::execute() {
         unsigned int iseed = vmstubsTEPHI_[i].first.first;
         unsigned int inner = vmstubsTEPHI_[i].first.second;
 
-        if ((iseed == 4 || iseed == 5 || iseed == 6 || iseed == 7) && (!stub.first->isPSmodule()))
+        if ((iseed == 4 || iseed == 5 || iseed == 6 || iseed == 7) && (!stub->isPSmodule()))
           continue;
 
 	unsigned int lutwidth=settings_->lutwidthtab(inner,iseed);
@@ -267,10 +267,10 @@ void VMRouter::execute() {
 	  } else {
 	    if (inner==2&&iseed==10) {
 	      lutval=0;
-	      if (stub.first->r().value()<10){
-		lutval=8*(1+(stub.first->r().value()>>2));
+	      if (stub->r().value()<10){
+		lutval=8*(1+(stub->r().value()>>2));
 	      } else {
-		if (stub.first->r().value()< settings_->rmindiskl3overlapvm() / settings_->kr()) {
+		if (stub->r().value()< settings_->rmindiskl3overlapvm() / settings_->kr()) {
 		  lutval=-1;
 		}
 	      }
@@ -312,9 +312,9 @@ void VMRouter::execute() {
         }
 
         FPGAWord finephi =
-            stub.first->iphivmFineBins(settings_->nphireg(inner, iseed), settings_->nfinephi(inner, iseed));
+            stub->iphivmFineBins(settings_->nphireg(inner, iseed), settings_->nfinephi(inner, iseed));
 
-        VMStubTE tmpstub(stub, finephi, stub.first->bend(), binlookup, allStubIndex);
+        VMStubTE tmpstub(stub, finephi, stub->bend(), binlookup, allStubIndex);
 
         unsigned int nmem = vmstubsTEPHI_[i].second[ivmte].size();
 

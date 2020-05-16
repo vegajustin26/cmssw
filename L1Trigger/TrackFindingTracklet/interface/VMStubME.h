@@ -16,7 +16,7 @@ namespace trklet {
   public:
     VMStubME() {}
 
-    VMStubME(std::pair<const Stub*, const L1TStub*> stub, FPGAWord finephi, FPGAWord finerz, FPGAWord bend, FPGAWord allstubindex);
+    VMStubME(const Stub* stub, FPGAWord finephi, FPGAWord finerz, FPGAWord bend, FPGAWord allstubindex);
 
     ~VMStubME() = default;
 
@@ -25,9 +25,9 @@ namespace trklet {
 
     const FPGAWord& bend() const { return bend_; }
 
-    std::pair<const Stub*, const L1TStub*> stub() const { return stub_; }
+    const Stub* stub() const { return stub_; }
 
-    bool isPSmodule() const { return stub_.first->isPSmodule(); }
+    bool isPSmodule() const { return stub_->isPSmodule(); }
 
     const FPGAWord& stubindex() const { return allStubIndex_; }
 
@@ -39,7 +39,7 @@ namespace trklet {
     FPGAWord finephi_;
     FPGAWord finerz_;
     FPGAWord bend_;
-    std::pair<const Stub*, const L1TStub*> stub_;
+    const Stub* stub_;
   };
 
 };  // namespace trklet

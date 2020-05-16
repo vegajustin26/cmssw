@@ -289,7 +289,7 @@ void TrackletEngineDisplaced::execute() {
           edm::LogVerbatim("Tracklet") << getName() << "[" << iSector_ << "] Disk-disk pair";
 
         int lookupbits = firstvmstub.vmbits().value() & 511;
-        bool negdisk = firstvmstub.stub().first->disk().value() < 0;
+        bool negdisk = firstvmstub.stub()->disk().value() < 0;
         int rdiffmax = (lookupbits >> 6);
         int newbin = (lookupbits & 63);
         int bin = newbin / 8;
@@ -375,17 +375,17 @@ void TrackletEngineDisplaced::execute() {
       for (unsigned int i = 0; i < firstvmstubs_.at(iInnerMem)->nVMStubs(); i++) {
         const VMStubTE& firstvmstub = firstvmstubs_.at(iInnerMem)->getVMStubTE(i);
         edm::LogVerbatim("Tracklet") << "In TrackletEngineDisplaced::execute first stub : "
-                                     << firstvmstub.stub().second->r() << " " << firstvmstub.stub().second->phi() << " "
-                                     << firstvmstub.stub().second->r() * firstvmstub.stub().second->phi() << " "
-                                     << firstvmstub.stub().second->z();
+                                     << firstvmstub.stub()->l1tstub()->r() << " " << firstvmstub.stub()->l1tstub()->phi() << " "
+                                     << firstvmstub.stub()->l1tstub()->r() * firstvmstub.stub()->l1tstub()->phi() << " "
+                                     << firstvmstub.stub()->l1tstub()->z();
       }
     }
     for (unsigned int i = 0; i < secondvmstubs_->nVMStubs(); i++) {
       const VMStubTE& secondvmstub = secondvmstubs_->getVMStubTE(i);
       edm::LogVerbatim("Tracklet") << "In TrackletEngineDisplaced::execute second stub : "
-                                   << secondvmstub.stub().second->r() << " " << secondvmstub.stub().second->phi() << " "
-                                   << secondvmstub.stub().second->r() * secondvmstub.stub().second->phi() << " "
-                                   << secondvmstub.stub().second->z();
+                                   << secondvmstub.stub()->l1tstub()->r() << " " << secondvmstub.stub()->l1tstub()->phi() << " "
+                                   << secondvmstub.stub()->l1tstub()->r() * secondvmstub.stub()->l1tstub()->phi() << " "
+                                   << secondvmstub.stub()->l1tstub()->z();
     }
   }
 

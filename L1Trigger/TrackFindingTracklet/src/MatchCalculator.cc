@@ -181,7 +181,7 @@ void MatchCalculator::execute() {
 
   Tracklet* oldTracklet = 0;
 
-  std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1TStub*> > > mergedMatches =
+  std::vector<std::pair<std::pair<Tracklet*, int>, const Stub* > > mergedMatches =
       mergeMatches(matches_);
 
   for (unsigned int j = 0; j < mergedMatches.size(); j++) {
@@ -191,10 +191,10 @@ void MatchCalculator::execute() {
 
     countall++;
 
-    const L1TStub* stub = mergedMatches[j].second.second;
-    const Stub* fpgastub = mergedMatches[j].second.first;
+    const Stub* fpgastub = mergedMatches[j].second;
     Tracklet* tracklet = mergedMatches[j].first.first;
-
+    const L1TStub* stub=fpgastub->l1tstub();
+    
     //check that the matches are orderd correctly
     //allow equal here since we can have more than one cadidate match per tracklet projection
     if (oldTracklet != 0) {
@@ -450,7 +450,6 @@ void MatchCalculator::execute() {
       }
 
       if (imatch) {
-        std::pair<const Stub*, const L1TStub*> tmp(fpgastub, stub);
 
         countsel++;
 
@@ -474,7 +473,7 @@ void MatchCalculator::execute() {
                                stub->alpha(),
                                (phiregion_ << 7) + fpgastub->stubindex().value(),
                                stub->z(),
-                               tmp);
+                               fpgastub);
         if (settings_->debugTracklet()) {
           edm::LogVerbatim("Tracklet") << "Accepted full match in disk " << getName() << " " << tracklet << " "
                                        << iSector_;
@@ -492,9 +491,9 @@ void MatchCalculator::execute() {
   }
 }
 
-std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1TStub*> > > MatchCalculator::mergeMatches(
+std::vector<std::pair<std::pair<Tracklet*, int>, const Stub* > > MatchCalculator::mergeMatches(
     vector<CandidateMatchMemory*>& candmatch) {
-  std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1TStub*> > > tmp;
+  std::vector<std::pair<std::pair<Tracklet*, int>, const Stub* > > tmp;
 
   std::vector<unsigned int> indexArray;
   indexArray.reserve(candmatch.size());

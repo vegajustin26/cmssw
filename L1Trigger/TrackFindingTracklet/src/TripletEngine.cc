@@ -190,7 +190,7 @@ void TripletEngine::execute() {
               unsigned int nvmsecond = settings_->nallstubs(layer2_ - 1) * settings_->nvmte(1, iSeed_);
               unsigned int nvmbitssecond = nbits(nvmsecond);
 
-              FPGAWord iphisecondbin = secondvmstub.stub().first->iphivmFineBins(nvmbitssecond, secondphibits_);
+              FPGAWord iphisecondbin = secondvmstub.stub()->iphivmFineBins(nvmbitssecond, secondphibits_);
 
               //TODO: not using same number of bits as in the TED?
               //assert(iphisecondbin==(int)secondvmstub.finephi());
@@ -237,7 +237,7 @@ void TripletEngine::execute() {
                 fout.close();
               }
               stubtriplets_->addStubs(
-                  thirdvmstub.stub(), (stubpairs_.at(i))->getStub1(j), (stubpairs_.at(i))->getStub2(j));
+				      thirdvmstub.stub(), (stubpairs_.at(i))->getVMStub1(j).stub(), (stubpairs_.at(i))->getVMStub2(j).stub());
 
               countpass++;
             }
@@ -254,7 +254,7 @@ void TripletEngine::execute() {
         int start = (bin >> 1);
         int last = start + (bin & 1);
 	
-        if (firstvmstub.stub().first->disk().value() < 0) {  //TODO - negative disk should come from memory
+        if (firstvmstub.stub()->disk().value() < 0) {  //TODO - negative disk should come from memory
           start = settings_->NLONGVMBINS() - last - 1;
           last = settings_->NLONGVMBINS() - start - 1;
         }
@@ -318,7 +318,7 @@ void TripletEngine::execute() {
                 fout.close();
               }
               stubtriplets_->addStubs(
-                  thirdvmstub.stub(), (stubpairs_.at(i))->getStub1(j), (stubpairs_.at(i))->getStub2(j));
+				      thirdvmstub.stub(), (stubpairs_.at(i))->getVMStub1(j).stub(), (stubpairs_.at(i))->getVMStub2(j).stub());
               countpass++;
             }
           }
@@ -356,7 +356,7 @@ void TripletEngine::execute() {
               nvmsecond = settings_->nallstubs(layer2_ - 1) * settings_->nvmte(1, iSeed_);
               unsigned int nvmbitssecond = nbits(nvmsecond);
 
-              FPGAWord iphisecondbin = secondvmstub.stub().first->iphivmFineBins(nvmbitssecond, secondphibits_);
+              FPGAWord iphisecondbin = secondvmstub.stub()->iphivmFineBins(nvmbitssecond, secondphibits_);
 
               //TODO: not using same number of bits as in the TED?
               //assert(iphisecondbin==(int)secondvmstub.finephi());
@@ -402,7 +402,7 @@ void TripletEngine::execute() {
                 fout.close();
               }
               stubtriplets_->addStubs(
-                  thirdvmstub.stub(), (stubpairs_.at(i))->getStub1(j), (stubpairs_.at(i))->getStub2(j));
+				      thirdvmstub.stub(), (stubpairs_.at(i))->getVMStub1(j).stub(), (stubpairs_.at(i))->getVMStub2(j).stub());
               countpass++;
             }
           }

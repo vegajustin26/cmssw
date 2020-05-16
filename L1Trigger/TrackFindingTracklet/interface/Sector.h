@@ -106,7 +106,7 @@ namespace trklet {
     void executePD(std::vector<Track*>& tracks);
 
     std::vector<Tracklet*> getAllTracklets() const;
-    std::vector<std::pair<const Stub*, const L1TStub*> > getStubs() const;
+    std::vector<const Stub*> getStubs() const;
 
     std::unordered_set<int> seedMatch(int itp) const;
 

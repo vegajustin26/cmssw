@@ -9,8 +9,6 @@
 namespace trklet {
 
   class Settings;
-  class Stub;
-  class L1TStub;
 
   class StubPairsMemory : public MemoryBase {
   public:
@@ -30,14 +28,8 @@ namespace trklet {
     unsigned int nStubPairs() const { return stubs_.size(); }
 
     const VMStubTE& getVMStub1(unsigned int i) const { return stubs_[i].first; }
-    const Stub* getFPGAStub1(unsigned int i) const { return stubs_[i].first.stub().first; }
-    const L1TStub* getL1TStub1(unsigned int i) const { return stubs_[i].first.stub().second; }
-    std::pair<const Stub*, const L1TStub*> getStub1(unsigned int i) const { return stubs_[i].first.stub(); }
 
     const VMStubTE& getVMStub2(unsigned int i) const { return stubs_[i].second; }
-    const Stub* getFPGAStub2(unsigned int i) const { return stubs_[i].second.stub().first; }
-    const L1TStub* getL1TStub2(unsigned int i) const { return stubs_[i].second.stub().second; }
-    std::pair<const Stub*, const L1TStub*> getStub2(unsigned int i) const { return stubs_[i].second.stub(); }
 
     unsigned getIndex(const unsigned i) const { return indices_.at(i); }
     const std::string& getTEDName(const unsigned i) const { return tedNames_.at(i); }

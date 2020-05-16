@@ -70,7 +70,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub, int bin) {
     return false;
   }
 
-  bool negdisk = vmstub.stub().first->disk().value() < 0.0;
+  bool negdisk = vmstub.stub()->disk().value() < 0.0;
 
   if (overlap_) {
     if (disk_ == 1) {
@@ -84,7 +84,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub, int bin) {
       stubsbinnedvm_[bin].push_back(vmstub);
     }
   } else {
-    if (vmstub.stub().first->isBarrel()) {
+    if (vmstub.stub()->isBarrel()) {
       if (!isinner_) {
         stubsbinnedvm_[bin].push_back(vmstub);
       }
@@ -122,7 +122,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub) {
     return false;
   }
 
-  bool negdisk = vmstub.stub().first->disk().value() < 0.0;
+  bool negdisk = vmstub.stub()->disk().value() < 0.0;
 
   if (!extended_) {
     if (overlap_) {
@@ -137,7 +137,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub) {
         }
       }
     } else {
-      if (vmstub.stub().first->isBarrel()) {
+      if (vmstub.stub()->isBarrel()) {
         if (!isinner_) {
           stubsbinnedvm_[bin].push_back(vmstub);
         }
@@ -160,10 +160,10 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub) {
           assert(disk_ == 1);  // D1 from L2L3D1
 
           //bin 0 is PS, 1 through 3 is 2S
-          if (vmstub.stub().first->isPSmodule()) {
+          if (vmstub.stub()->isPSmodule()) {
             bin = 0;
           } else {
-            bin = vmstub.stub().first->r().value();  // 0 to 9
+            bin = vmstub.stub()->r().value();  // 0 to 9
             bin = bin >> 2;                          // 0 to 2
             bin += 1;
           }

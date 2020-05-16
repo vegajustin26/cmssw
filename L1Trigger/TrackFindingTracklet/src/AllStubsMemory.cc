@@ -12,7 +12,7 @@ void AllStubsMemory::writeStubs(bool first) {
   openFile(first, "../data/MemPrints/Stubs/AllStubs_");
 
   for (unsigned int j = 0; j < stubs_.size(); j++) {
-    string stub = stubs_[j].first->str();
+    string stub = stubs_[j]->str();
     out_ << "0x";
     if (j < 16)
       out_ << "0";

@@ -9,7 +9,6 @@ namespace trklet {
 
   class Settings;
   class Stub;
-  class L1TStub;
 
   class LayerResidual {
   public:
@@ -27,7 +26,7 @@ namespace trklet {
               double phiresidapprox,
               double zresidapprox,
               double rstub,
-              std::pair<const Stub*, const L1TStub*> stubptrs);
+              const Stub* stubptr);
 
     bool valid() const { return valid_; }
 
@@ -71,9 +70,9 @@ namespace trklet {
       return rstub_;
     }
 
-    std::pair<const Stub*, const L1TStub*> stubptrs() const {
+    const Stub* stubptr() const {
       assert(valid_);
-      return stubptrs_;
+      return stubptr_;
     }
 
   protected:
@@ -92,7 +91,7 @@ namespace trklet {
     double zresidapprox_;
 
     double rstub_;
-    std::pair<const Stub*, const L1TStub*> stubptrs_;
+    const Stub* stubptr_;
   };
 
 };  // namespace trklet

@@ -494,7 +494,7 @@ void TrackletProcessor::execute() {
           const VMStubTE& innervmstub = innervmstubs_[ivmmem]->getVMStubTE(i);
 
           int lookupbits = (int)innervmstub.vmbits().value();
-          bool negdisk = innervmstub.stub().first->disk().value() < 0;  //TODO - need to store negative disk
+          bool negdisk = innervmstub.stub()->disk().value() < 0;  //TODO - need to store negative disk
           int rdiffmax = (lookupbits >> 6);
           int newbin = (lookupbits & 63);
           int bin = newbin / 8;
@@ -592,11 +592,11 @@ void TrackletProcessor::execute() {
       break;
     }
     countall++;
-    const L1TStub* innerStub = stubpairs.getL1TStub1(i);
-    const Stub* innerFPGAStub = stubpairs.getFPGAStub1(i);
+    const Stub* innerFPGAStub = stubpairs.getVMStub1(i).stub();
+    const L1TStub* innerStub = innerFPGAStub->l1tstub();
 
-    const L1TStub* outerStub = stubpairs.getL1TStub2(i);
-    const Stub* outerFPGAStub = stubpairs.getFPGAStub2(i);
+    const Stub* outerFPGAStub = stubpairs.getVMStub2(i).stub();
+    const L1TStub* outerStub = outerFPGAStub->l1tstub();
 
     if (settings_->debugTracklet()) {
       edm::LogVerbatim("Tracklet") << "TrackletProcessor execute " << getName() << "[" << iSector_ << "]";

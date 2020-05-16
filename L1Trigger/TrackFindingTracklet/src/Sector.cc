@@ -454,8 +454,8 @@ std::vector<Tracklet*> Sector::getAllTracklets() const {
   return tmp;
 }
 
-std::vector<std::pair<const Stub*, const L1TStub*> > Sector::getStubs() const {
-  std::vector<std::pair<const Stub*, const L1TStub*> > tmp;
+std::vector<const Stub*> Sector::getStubs() const {
+  std::vector<const Stub*> tmp;
 
   for (unsigned int imem = 0; imem < IL_.size(); imem++) {
     for (unsigned int istub = 0; istub < IL_[imem]->nStubs(); istub++) {

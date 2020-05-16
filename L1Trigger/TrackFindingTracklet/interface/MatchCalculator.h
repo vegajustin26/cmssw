@@ -29,7 +29,7 @@ namespace trklet {
 
     void execute();
 
-    std::vector<std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1TStub*> > > mergeMatches(
+    std::vector<std::pair<std::pair<Tracklet*, int>, const Stub* > > mergeMatches(
         std::vector<CandidateMatchMemory*>& candmatch);
 
   private:

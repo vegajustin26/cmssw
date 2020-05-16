@@ -32,7 +32,7 @@ namespace trklet {
 
     void execute();
 
-    bool matchCalculator(Tracklet* tracklet, const Stub* fpgastub, const L1TStub* stub);
+    bool matchCalculator(Tracklet* tracklet, const Stub* fpgastub);
 
   private:
     int layer_;

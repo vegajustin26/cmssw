@@ -8,6 +8,7 @@
 #include <vector>
 #include <set>
 
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 //#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
@@ -18,12 +19,13 @@
 #include "L1Trigger/TrackFindingTracklet/interface/LayerResidual.h"
 #include "L1Trigger/TrackFindingTracklet/interface/DiskResidual.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
-#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
+//#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 
 namespace trklet {
 
   class Settings;
   class Stub;
+  class Track;
 
   class Tracklet {
   public:
@@ -337,7 +339,7 @@ namespace trklet {
                   double dzapprox,
                   int stubid,
                   double rstub,
-                  std::pair<const trklet::Stub*, const L1TStub*> stubptrs);
+                  const trklet::Stub* stubptr);
 
     void addMatchDisk(int disk,
                       int ideltaphi,
@@ -349,7 +351,7 @@ namespace trklet {
                       double alpha,
                       int stubid,
                       double zstub,
-                      std::pair<const trklet::Stub*, const L1TStub*> stubptrs);
+                      const trklet::Stub* stubptr);
 
     int nMatches();
     int nMatchesDisk();
@@ -367,9 +369,9 @@ namespace trklet {
       return layerresid_[layer - 1].valid();
     }
 
-    std::pair<const trklet::Stub*, const L1TStub*> stubptrs(int layer) const {
+    const trklet::Stub* stubptr(int layer) const {
       assert(layer > 0 && layer <= N_LAYER);
-      return layerresid_[layer - 1].stubptrs();
+      return layerresid_[layer - 1].stubptr();
     }
 
     double phiresid(int layer) const {

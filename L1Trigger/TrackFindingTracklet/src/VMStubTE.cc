@@ -4,7 +4,7 @@ using namespace std;
 using namespace trklet;
 
 VMStubTE::VMStubTE(
-    std::pair<Stub*, L1TStub*> stub, FPGAWord finephi, FPGAWord bend, FPGAWord vmbits, FPGAWord allstubindex) {
+		   const Stub* stub, FPGAWord finephi, FPGAWord bend, FPGAWord vmbits, FPGAWord allstubindex) {
   stub_ = stub;
   finephi_ = finephi;
   bend_ = bend;

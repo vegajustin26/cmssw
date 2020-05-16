@@ -341,10 +341,9 @@ void MatchProcessor::execute() {
     }
 
     if (iMEbest != nMatchEngines_ && (!bestInPipeline)) {
-      std::pair<Tracklet*, std::pair<const Stub*, const L1TStub*> > candmatch = matchengines_[iMEbest].read();
+      std::pair<Tracklet*, const Stub* > candmatch = matchengines_[iMEbest].read();
 
-      const L1TStub* stub = candmatch.second.second;
-      const Stub* fpgastub = candmatch.second.first;
+      const Stub* fpgastub = candmatch.second;
       Tracklet* tracklet = candmatch.first;
 
       if (oldTracklet != 0) {
@@ -353,7 +352,7 @@ void MatchProcessor::execute() {
       }
       oldTracklet = tracklet;
 
-      bool match = matchCalculator(tracklet, fpgastub, stub);
+      bool match = matchCalculator(tracklet, fpgastub);
 
       countall++;
       if (match)
@@ -367,7 +366,10 @@ void MatchProcessor::execute() {
   }
 }
 
-bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, const L1TStub* stub) {
+bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
+
+  const L1TStub* stub=fpgastub->l1tstub();
+  
   if (layer_ != 0) {
     int ir = fpgastub->r().value();
     int iphi = tracklet->fpgaphiproj(layer_).value();
@@ -457,7 +459,6 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, c
     assert(std::abs(dphiapprox) < 0.2);
 
     if (imatch) {
-      std::pair<const Stub*, const L1TStub*> tmp(fpgastub, stub);
 
       tracklet->addMatch(layer_,
                          ideltaphi,
@@ -468,7 +469,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, c
                          dzapprox,
                          (phiregion_ << 7) + fpgastub->stubindex().value(),
                          stub->r(),
-                         tmp);
+                         fpgastub);
 
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "Accepted full match in layer " << getName() << " " << tracklet << " "
@@ -477,7 +478,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, c
 
       int iSeed = tracklet->getISeed();
       assert(fullmatches_[iSeed] != 0);
-      fullmatches_[iSeed]->addMatch(tracklet, tmp);
+      fullmatches_[iSeed]->addMatch(tracklet, fpgastub);
 
       return true;
     } else {
@@ -617,7 +618,6 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, c
     }
 
     if (imatch) {
-      std::pair<const Stub*, const L1TStub*> tmp(fpgastub, stub);
 
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "MatchCalculator found match in disk " << getName();
@@ -639,7 +639,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, c
                              stub->alpha(),
                              (phiregion_ << 7) + fpgastub->stubindex().value(),
                              stub->z(),
-                             tmp);
+                             fpgastub);
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "Accepted full match in disk " << getName() << " " << tracklet << " "
                                      << iSector_;
@@ -647,7 +647,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, c
 
       int iSeed = tracklet->getISeed();
       assert(fullmatches_[iSeed] != 0);
-      fullmatches_[iSeed]->addMatch(tracklet, tmp);
+      fullmatches_[iSeed]->addMatch(tracklet, fpgastub);
 
       return true;
     } else {

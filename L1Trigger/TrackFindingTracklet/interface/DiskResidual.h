@@ -9,7 +9,6 @@ namespace trklet {
 
   class Settings;
   class Stub;
-  class L1TStub;
 
   class DiskResidual {
   public:
@@ -29,7 +28,7 @@ namespace trklet {
               double zstub,
               double alpha,
               FPGAWord ialpha,
-              std::pair<const Stub*, const L1TStub*> stubptrs);
+              const Stub* stubptr);
 
     bool valid() const { return valid_; }
 
@@ -83,9 +82,9 @@ namespace trklet {
       return ialpha_;
     };
 
-    std::pair<const Stub*, const L1TStub*> stubptrs() const {
+    const Stub* stubptr() const {
       assert(valid_);
-      return stubptrs_;
+      return stubptr_;
     };
 
   protected:
@@ -106,7 +105,7 @@ namespace trklet {
     double zstub_;
     double alpha_;
     FPGAWord ialpha_;
-    std::pair<const Stub*, const L1TStub*> stubptrs_;
+    const Stub* stubptr_;
   };
 
 };  // namespace trklet

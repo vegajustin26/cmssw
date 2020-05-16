@@ -1,6 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -314,10 +315,10 @@ void Tracklet::addMatch(int layer,
                         double dzapprox,
                         int stubid,
                         double rstub,
-                        std::pair<const trklet::Stub*, const L1TStub*> stubptrs) {
+                        const trklet::Stub* stubptr) {
   assert(layer >= 1 && layer <= 6);
   layerresid_[layer - 1].init(
-      settings_, layer, ideltaphi, ideltaz, stubid, dphi, dz, dphiapprox, dzapprox, rstub, stubptrs);
+      settings_, layer, ideltaphi, ideltaz, stubid, dphi, dz, dphiapprox, dzapprox, rstub, stubptr);
 }
 
 void Tracklet::addMatchDisk(int disk,
@@ -330,7 +331,7 @@ void Tracklet::addMatchDisk(int disk,
                             double alpha,
                             int stubid,
                             double zstub,
-                            std::pair<const trklet::Stub*, const L1TStub*> stubptrs) {
+                            const trklet::Stub* stubptr) {
   assert(abs(disk) <= N_DISK);
   diskresid_[abs(disk) - 1].init(settings_,
                                  disk,
@@ -343,8 +344,8 @@ void Tracklet::addMatchDisk(int disk,
                                  drapprox,
                                  zstub,
                                  alpha,
-                                 stubptrs.first->alphanew(),
-                                 stubptrs);
+                                 stubptr->alphanew(),
+                                 stubptr);
 }
 
 int Tracklet::nMatches() {
@@ -422,13 +423,13 @@ std::vector<const L1TStub*> Tracklet::getL1Stubs() {
 
   for (unsigned int i = 0; i < N_LAYER; i++) {
     if (layerresid_[i].valid()) {
-      tmp.push_back(layerresid_[i].stubptrs().second);
+      tmp.push_back(layerresid_[i].stubptr()->l1tstub());
     }
   }
 
   for (unsigned int i = 0; i < N_DISK; i++) {
     if (diskresid_[i].valid())
-      tmp.push_back(diskresid_[i].stubptrs().second);
+      tmp.push_back(diskresid_[i].stubptr()->l1tstub());
   }
 
   return tmp;

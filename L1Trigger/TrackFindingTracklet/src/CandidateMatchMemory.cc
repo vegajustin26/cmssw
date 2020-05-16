@@ -12,8 +12,8 @@ using namespace trklet;
 CandidateMatchMemory::CandidateMatchMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {}
 
-void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, std::pair<const Stub*, const L1TStub*> stub) {
-  std::pair<std::pair<Tracklet*, int>, std::pair<const Stub*, const L1TStub*> > tmp(tracklet, stub);
+void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, const Stub* stub) {
+  std::pair<std::pair<Tracklet*, int>, const Stub* > tmp(tracklet, stub);
 
   //Check for consistency
   for (unsigned int i = 0; i < matches_.size(); i++) {
@@ -45,7 +45,7 @@ void CandidateMatchMemory::writeCM(bool first) {
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
 
   for (unsigned int j = 0; j < matches_.size(); j++) {
-    string stubid = matches_[j].second.first->stubindex().str();  // stub ID
+    string stubid = matches_[j].second->stubindex().str();  // stub ID
     int projindex = matches_[j].first.second;                     // Allproj index
     FPGAWord tmp;
     if (projindex >= (1 << 7)) {

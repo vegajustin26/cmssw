@@ -18,7 +18,7 @@ namespace trklet {
   public:
     Stub(const Settings* const settings);
 
-    Stub(const L1TStub& stub, const Settings* const settings, double phiminsec, double phimaxsec);
+    Stub(L1TStub& stub, const Settings* const settings, double phiminsec, double phimaxsec);
 
     ~Stub() = default;
 
@@ -67,7 +67,9 @@ namespace trklet {
     double zapprox() const;
     double phiapprox(double phimin, double) const;
 
+    L1TStub* l1tstub() { return l1tstub_; } 
     const L1TStub* l1tstub() const { return l1tstub_; }
+    void setl1tstub(L1TStub* l1tstub)  { l1tstub_=l1tstub; }
     
   private:
     //bool isPSmodule_;  //TODO should not be used can be removed
@@ -84,7 +86,7 @@ namespace trklet {
 
     FPGAWord stubindex_;
 
-    const L1TStub* l1tstub_;
+    L1TStub* l1tstub_;
     const Settings* const settings_;
   };
 
