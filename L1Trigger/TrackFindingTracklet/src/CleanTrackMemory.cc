@@ -1,6 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/CleanTrackMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
+#include <iomanip>
 
 using namespace std;
 using namespace trklet;
@@ -13,13 +14,14 @@ CleanTrackMemory::CleanTrackMemory(
 }
 
 void CleanTrackMemory::writeCT(bool first) {
-  std::string fname = "../data/MemPrints/CleanTrack/CleanTrack_";
-  fname += getName();
-  fname += "_";
-  if (iSector_ + 1 < 10)
-    fname += "0";
-  fname += std::to_string(iSector_ + 1);
-  fname += ".dat";
+  std::ostringstream oss;
+  oss << "../data/MemPrints/CleanTrack/CleanTrack_"
+      << getName()
+      << "_"
+      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
+      << ".dat";
+  auto const& fname = oss.str();
+
   if (first) {
     bx_ = 0;
     event_ = 1;
@@ -31,8 +33,7 @@ void CleanTrackMemory::writeCT(bool first) {
 
   for (unsigned int j = 0; j < tracks_.size(); j++) {
     out_ << "0x";
-    if (j < 16)
-      out_ << "0";
+    out_ << std::setfill('0') << std::setw(2);
     out_ << hex << j << dec << " ";
     out_ << tracks_[j]->trackfitstr() << " " << trklet::hexFormat(tracks_[j]->trackfitstr());
     out_ << "\n";

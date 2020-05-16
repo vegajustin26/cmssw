@@ -1,5 +1,5 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
-
+#include <iomanip>
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
@@ -195,8 +195,7 @@ void VMStubsTEMemory::writeStubs(bool first) {
   if (isinner_) {  // inner VM for TE purpose
     for (unsigned int j = 0; j < stubsvm_.size(); j++) {
       out_ << "0x";
-      if (j < 16)
-        out_ << "0";
+      out_ << std::setfill('0') << std::setw(2);
       out_ << hex << j << dec;
       string stub = stubsvm_[j].str();
       out_ << " " << stub << " " << trklet::hexFormat(stub) << endl;

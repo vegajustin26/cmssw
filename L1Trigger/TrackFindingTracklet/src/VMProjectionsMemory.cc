@@ -1,6 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMProjectionsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
-
+#include <iomanip>
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
@@ -21,18 +21,16 @@ void VMProjectionsMemory::addTracklet(Tracklet* tracklet, unsigned int allprojin
 }
 
 void VMProjectionsMemory::writeVMPROJ(bool first) {
-  std::string fname = "../data/MemPrints/VMProjections/VMProjections_";
-  fname += getName();
+  std::ostringstream oss;
+  oss << "../data/MemPrints/VMProjections/VMProjections_"<< getName();
   //get rid of duplicates
-  int len = fname.size();
-  if (fname[len - 2] == 'n' && fname[len - 1] > '1' && fname[len - 1] <= '9')
+  auto const& tmp = oss.str();
+  int len = tmp.size();
+  if (tmp[len - 2] == 'n' && tmp[len - 1] > '1' && tmp[len - 1] <= '9')
     return;
+  oss << "_" << std::setfill('0') << std::setw(2) << (iSector_ + 1) << ".dat";
+  auto const& fname = oss.str();
 
-  fname += "_";
-  if (iSector_ + 1 < 10)
-    fname += "0";
-  fname += std::to_string(iSector_ + 1);
-  fname += ".dat";
   if (first) {
     bx_ = 0;
     event_ = 1;
@@ -46,8 +44,7 @@ void VMProjectionsMemory::writeVMPROJ(bool first) {
     string vmproj = (layer_ > 0) ? tracklets_[j].first->vmstrlayer(layer_, tracklets_[j].second)
                                  : tracklets_[j].first->vmstrdisk(disk_, tracklets_[j].second);
     out_ << "0x";
-    if (j < 16)
-      out_ << "0";
+    out_ << std::setfill('0') << std::setw(2);
     out_ << hex << j << dec;
     out_ << " " << vmproj << " " << trklet::hexFormat(vmproj) << endl;
   }

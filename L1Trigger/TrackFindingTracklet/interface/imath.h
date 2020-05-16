@@ -164,8 +164,8 @@ public:
     latency_ = l;
     int step1 = (p1) ? p1->get_step() + p1->get_latency() : 0;
     int step2 = (p2) ? p2->get_step() + p2->get_latency() : 0;
-    step_ = step1 > step2 ? step1 : step2;
-
+    step_ = std::max(step1, step2);
+    
     cuts_.clear();
     cut_var_ = NULL;
 

@@ -4,6 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMRouterPhiCorrTable.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
+#include <iomanip>
 #include <cmath>
 #include <sstream>
 #include <cctype>
@@ -89,8 +90,7 @@ void InputLinkMemory::writeStubs(bool first) {
 
   for (unsigned int j = 0; j < stubs_.size(); j++) {
     string stub = stubs_[j]->str();
-    if (j < 16)
-      out_ << "0";
+    out_ << std::setfill('0') << std::setw(2);
     out_ << hex << j << dec;
     out_ << " " << stub << " " << trklet::hexFormat(stub) << endl;
   }

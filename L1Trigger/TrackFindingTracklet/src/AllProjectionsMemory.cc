@@ -1,7 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/AllProjectionsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
-
+#include <iomanip>
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace trklet;
@@ -13,14 +13,14 @@ AllProjectionsMemory::AllProjectionsMemory(string name, const Settings* const se
 }
 
 void AllProjectionsMemory::writeAP(bool first) {
-  std::string fname = "../data/MemPrints/TrackletProjections/AllProj_";
-  fname += getName();
-  fname += "_";
-  if (iSector_ + 1 < 10)
-    fname += "0";
-  fname += std::to_string(iSector_ + 1);
-  fname += ".dat";
-  
+  std::ostringstream oss;
+  oss << "../data/MemPrints/TrackletProjections/AllProj_"
+      << getName()
+      << "_"
+      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
+      << ".dat";
+  auto const& fname = oss.str();
+   
   if (first) {
     bx_ = 0;
     event_ = 1;
@@ -34,8 +34,7 @@ void AllProjectionsMemory::writeAP(bool first) {
     string proj =
         (layer_ > 0) ? tracklets_[j]->trackletprojstrlayer(layer_) : tracklets_[j]->trackletprojstrdisk(disk_);
     out_ << "0x";
-    if (j < 16)
-      out_ << "0";
+    out_ << std::setfill('0') << std::setw(2);
     out_ << hex << j << dec;
     out_ << " " << proj << "  " << trklet::hexFormat(proj) << endl;
   }

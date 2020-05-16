@@ -1,9 +1,8 @@
 #include "L1Trigger/TrackFindingTracklet/interface/FullMatchMemory.h"
-
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
-
+#include <iomanip>
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
@@ -42,13 +41,14 @@ void FullMatchMemory::addMatch(Tracklet* tracklet, const Stub* stub) {
 }
 
 void FullMatchMemory::writeMC(bool first) {
-  std::string fname = "../data/MemPrints/Matches/FullMatches_";
-  fname += getName();
-  fname += "_";
-  if (iSector_ + 1 < 10)
-    fname += "0";
-  fname += std::to_string(iSector_ + 1);
-  fname += ".dat";
+  std::ostringstream oss;
+  oss << "../data/MemPrints/Matches/FullMatches_"
+      << getName()
+      << "_"
+      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
+      << ".dat";
+  auto const& fname = oss.str();
+
   if (first) {
     bx_ = 0;
     event_ = 1;
@@ -61,8 +61,7 @@ void FullMatchMemory::writeMC(bool first) {
   for (unsigned int j = 0; j < matches_.size(); j++) {
     string match = (layer_ > 0) ? matches_[j].first->fullmatchstr(layer_) : matches_[j].first->fullmatchdiskstr(disk_);
     out_ << "0x";
-    if (j < 16)
-      out_ << "0";
+    out_ << std::setfill('0') << std::setw(2);
     out_ << hex << j << dec;
     out_ << " " << match << " " << trklet::hexFormat(match) << endl;
   }

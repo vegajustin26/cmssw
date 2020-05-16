@@ -2,7 +2,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
-
+#include <iomanip>
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
@@ -28,13 +28,14 @@ void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, const St
 }
 
 void CandidateMatchMemory::writeCM(bool first) {
-  std::string fname = "../data/MemPrints/Matches/CandidateMatches_";
-  fname += getName();
-  fname += "_";
-  if (iSector_ + 1 < 10)
-    fname += "0";
-  fname += std::to_string(iSector_ + 1);
-  fname += ".dat";
+  std::ostringstream oss;
+  oss << "../data/MemPrints/Matches/CandidateMatches_"
+      << getName()
+      << "_"
+      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
+      << ".dat";
+  auto const& fname = oss.str();
+
   if (first) {
     bx_ = 0;
     event_ = 1;
@@ -46,15 +47,14 @@ void CandidateMatchMemory::writeCM(bool first) {
 
   for (unsigned int j = 0; j < matches_.size(); j++) {
     string stubid = matches_[j].second->stubindex().str();  // stub ID
-    int projindex = matches_[j].first.second;                     // Allproj index
+    int projindex = matches_[j].first.second;               // Allproj index
     FPGAWord tmp;
     if (projindex >= (1 << 7)) {
       projindex = (1 << 7) - 1;
     }
     tmp.set(projindex, 7, true, __LINE__, __FILE__);
     out_ << "0x";
-    if (j < 16)
-      out_ << "0";
+    out_ << std::setfill('0') << std::setw(2);
     out_ << hex << j << dec;
     out_ << " " << tmp.str() << "|" << stubid << " " << trklet::hexFormat(tmp.str() + stubid) << endl;
   }

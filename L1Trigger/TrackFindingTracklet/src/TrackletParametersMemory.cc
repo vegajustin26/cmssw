@@ -2,6 +2,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
+#include <iomanip>
 
 using namespace std;
 using namespace trklet;
@@ -33,13 +34,14 @@ void TrackletParametersMemory::writeMatches(Globals* globals, int& matchesL1, in
 }
 
 void TrackletParametersMemory::writeTPAR(bool first) {
-  std::string fname = "../data/MemPrints/TrackletParameters/TrackletParameters_";
-  fname += getName();
-  fname += "_";
-  if (iSector_ + 1 < 10)
-    fname += "0";
-  fname += std::to_string(iSector_ + 1);
-  fname += ".dat";
+  std::ostringstream oss;
+  oss << "../data/MemPrints/TrackletParameters/TrackletParameters_"
+      << getName()
+      << "_"
+      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
+      << ".dat";
+  auto const& fname = oss.str();
+
   if (first) {
     bx_ = 0;
     event_ = 1;
@@ -52,8 +54,7 @@ void TrackletParametersMemory::writeTPAR(bool first) {
   for (unsigned int j = 0; j < tracklets_.size(); j++) {
     string tpar = tracklets_[j]->trackletparstr();
     out_ << "0x";
-    if (j < 16)
-      out_ << "0";
+    out_ << std::setfill('0') << std::setw(2);
     out_ << hex << j << dec;
     out_ << " " << tpar << " " << trklet::hexFormat(tpar) << endl;
   }

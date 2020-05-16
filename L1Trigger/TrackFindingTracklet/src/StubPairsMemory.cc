@@ -1,5 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubTE.h"
+#include <iomanip>
 
 using namespace std;
 using namespace trklet;
@@ -8,13 +9,14 @@ StubPairsMemory::StubPairsMemory(string name, const Settings* const settings, un
     : MemoryBase(name, settings, iSector) {}
 
 void StubPairsMemory::writeSP(bool first) {
-  std::string fname = "../data/MemPrints/StubPairs/StubPairs_";
-  fname += getName();
-  fname += "_";
-  if (iSector_ + 1 < 10)
-    fname += "0";
-  fname += std::to_string(iSector_ + 1);
-  fname += ".dat";
+  std::ostringstream oss;
+  oss << "../data/MemPrints/StubPairs/StubPairs_"
+      << getName()
+      << "_"
+      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
+      << ".dat";
+  auto const& fname = oss.str();
+
   if (first) {
     bx_ = 0;
     event_ = 1;
@@ -28,8 +30,7 @@ void StubPairsMemory::writeSP(bool first) {
     string stub1index = stubs_[j].first.stub()->stubindex().str();
     string stub2index = stubs_[j].second.stub()->stubindex().str();
     out_ << "0x";
-    if (j < 16)
-      out_ << "0";
+    out_ << std::setfill('0') << std::setw(2);
     out_ << hex << j << dec;
     out_ << " " << stub1index << "|" << stub2index << " " << trklet::hexFormat(stub1index + stub2index) << endl;
   }

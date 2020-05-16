@@ -1,5 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+#include <iomanip>
 
 using namespace std;
 using namespace trklet;
@@ -18,18 +19,16 @@ VMStubsMEMemory::VMStubsMEMemory(string name, const Settings* const settings, un
 }
 
 void VMStubsMEMemory::writeStubs(bool first) {
-  std::string fname = "../data/MemPrints/VMStubsME/VMStubs_";
-  fname += getName();
+  std::ostringstream oss;
+  oss << "../data/MemPrints/VMStubsME/VMStubs_"<< getName();
   //get rid of duplicates
-  int len = fname.size();
-  if (fname[len - 2] == 'n' && fname[len - 1] > '1' && fname[len - 1] <= '9')
+  auto const& tmp = oss.str();
+  int len = tmp.size();
+  if (tmp[len - 2] == 'n' && tmp[len - 1] > '1' && tmp[len - 1] <= '9')
     return;
+  oss << "_" << std::setfill('0') << std::setw(2) << (iSector_ + 1) << ".dat";
+  auto const& fname = oss.str();
 
-  fname += "_";
-  if (iSector_ + 1 < 10)
-    fname += "0";
-  fname += std::to_string(iSector_ + 1);
-  fname += ".dat";
   if (first) {
     bx_ = 0;
     event_ = 1;
