@@ -272,7 +272,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   eventProcessor.init(&settings);
 
   eventnum = 0;
-  if (asciiEventOutName_ != "") {
+  if (not asciiEventOutName_.empty()) {
     asciiEventOut_.open(asciiEventOutName_.c_str());
   }
 

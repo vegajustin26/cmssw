@@ -173,7 +173,6 @@ namespace trklet {
 
     std::string geomext() const { return extended_ ? "hourglassExtended" : "hourglass"; }
 
-    bool useMSFit() const { return useMSFit_; }
     bool exactderivatives() const { return exactderivatives_; }
     bool exactderivativesforfloating() const { return exactderivativesforfloating_; }
     bool useapprox() const { return useapprox_; }
@@ -612,7 +611,6 @@ namespace trklet {
     unsigned int MEBinsDisks_{8};  //on each side
 
     // Options for chisq fit
-    bool useMSFit_{false};  //for both the integer and float
     bool exactderivatives_{false};
     bool exactderivativesforfloating_{true};  //only for the floating point
     bool useapprox_{true};          //use approximate postion based on integer representation for floating point
