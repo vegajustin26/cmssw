@@ -327,15 +327,9 @@ int main(const int argc, const char **argv) {
     int ntrack = 0;
     for (unsigned int l = 0; l < tracks.size(); l++) {
       if (settings.writeMonitorData("Pars")) {
-        double phi = tracks[l]->iphi0() * settings.kphi0pars() + tracks[l]->sector() * 2 * M_PI / N_SECTOR;
-        if (phi > M_PI)
-          phi -= 2 * M_PI;
-        double phisec = phi - 2 * M_PI;
-        while (phisec < 0.0)
-          phisec += 2 * M_PI / N_SECTOR;
-        outpars << tracks[l]->duplicate() << " " << asinh(tracks[l]->it() * settings.ktpars()) << " " << phi << " "
-                << tracks[l]->iz0() * settings.kz() << " " << phisec / (2 * M_PI / N_SECTOR) << " "
-                << tracks[l]->irinv() * settings.krinvpars();
+        outpars << tracks[l]->duplicate() << " " << tracks[l]->eta(&settings) << " " << tracks[l]->phi0(&settings) << " "
+                << tracks[l]->z0(&settings) << " " << phiRange2PI(tracks[l]->phi0(&settings)) / (2 * M_PI / N_SECTOR) << " "
+                << tracks[l]->rinv(&settings);
       }
       if (!tracks[l]->duplicate()) {
         ntrack++;

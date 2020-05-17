@@ -795,11 +795,10 @@ std::string Tracklet::trackfitstr() {
 Track Tracklet::makeTrack(const vector<const L1TStub*>& l1stubs) {
   assert(fit());
 
-  Track tmpTrack(fpgafitpars_.rinv().value(),
-                 fpgafitpars_.phi0().value(),
-                 fpgafitpars_.d0().value(),
-                 fpgafitpars_.t().value(),
-                 fpgafitpars_.z0().value(),
+  TrackPars<int> ipars(fpgafitpars_.rinv().value(),fpgafitpars_.phi0().value(),fpgafitpars_.d0().value(),
+		       fpgafitpars_.t().value(),fpgafitpars_.z0().value());
+  
+  Track tmpTrack(ipars,
                  ichisqrphifit_.value(),
                  ichisqrzfit_.value(),
                  chisqrphifit_,

@@ -5,6 +5,7 @@
 using namespace std;
 using namespace trklet;
 
+/*
 Track::Track(int irinv,
              int iphi0,
              int id0,
@@ -18,11 +19,40 @@ Track::Track(int irinv,
              std::map<int, int> stubID,
              const std::vector<const L1TStub*>& l1stub,
              int seed) {
-  irinv_ = irinv;
-  iphi0_ = iphi0;
-  id0_ = id0;
-  iz0_ = iz0;
-  it_ = it;
+  ipars_.rinv() = irinv;
+  ipars_.phi0() = iphi0;
+  ipars_.d0() = id0;
+  ipars_.z0() = iz0;
+  ipars_.t() = it;
+  ichisqrphi_ = ichisqrphi;
+  ichisqrz_ = ichisqrz;
+
+  chisqrphi_ = chisqrphi;
+  chisqrz_ = chisqrz;
+
+  hitpattern_ = hitpattern;
+
+  nstubs_ = std::max((int)l1stub.size(), 6);
+
+  stubID_ = stubID;
+  l1stub_ = l1stub;
+
+  seed_ = seed;
+  duplicate_ = false;
+  sector_ = -1;
+}
+*/
+
+Track::Track(TrackPars<int> ipars,
+             int ichisqrphi,
+             int ichisqrz,
+             double chisqrphi,
+             double chisqrz,
+             int hitpattern,
+             std::map<int, int> stubID,
+             const std::vector<const L1TStub*>& l1stub,
+             int seed) {
+  ipars_ = ipars;
   ichisqrphi_ = ichisqrphi;
   ichisqrz_ = ichisqrz;
 
@@ -54,5 +84,5 @@ double Track::phi0(const Settings* settings) const {
     phimin -= 2 * M_PI;
   double phioffset = phimin;
 
-  return iphi0_ * settings->kphi0pars() + phioffset;
+  return ipars_.phi0() * settings->kphi0pars() + phioffset;
 }

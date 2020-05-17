@@ -11,16 +11,14 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackPars.h"
 
 namespace trklet {
 
   class Track {
   public:
-    Track(int irinv,
-          int iphi0,
-          int id0,
-          int it,
-          int iz0,
+
+    Track(TrackPars<int> ipars,
           int ichisqrphi,
           int ichisqrz,
           double chisqrphi,
@@ -30,6 +28,7 @@ namespace trklet {
           const std::vector<const L1TStub*>& l1stub,
           int seed);
 
+    
     ~Track() = default;
 
     void setDuplicate(bool flag) { duplicate_ = flag; }
@@ -37,11 +36,8 @@ namespace trklet {
     void setStubIDpremerge(std::vector<std::pair<int, int>> stubIDpremerge) { stubIDpremerge_ = stubIDpremerge; }
     void setStubIDprefit(std::vector<std::pair<int, int>> stubIDprefit) { stubIDprefit_ = stubIDprefit; }
 
-    int irinv() const { return irinv_; }
-    int iphi0() const { return iphi0_; }
-    int id0() const { return id0_; }
-    int iz0() const { return iz0_; }
-    int it() const { return it_; }
+    const TrackPars<int>& pars() const { return ipars_; }
+    
     int ichisq() const { return ichisqrphi_ + ichisqrz_; }
 
     const std::map<int, int>& stubID() const { return stubID_; }
@@ -57,16 +53,16 @@ namespace trklet {
     int sector() const { return sector_; }
 
     double pt(const Settings* settings) const {
-      return (settings->c() * settings->bfield() * 0.01) / (irinv_ * settings->krinvpars());
+      return (settings->c() * settings->bfield() * 0.01) / (ipars_.rinv() * settings->krinvpars());
     }
 
     double phi0(const Settings* settings) const;
 
-    double eta(const Settings* settings) const { return asinh(it_ * settings->ktpars()); }
-    double tanL(const Settings* settings) const { return it_ * settings->ktpars(); }
-    double z0(const Settings* settings) const { return iz0_ * settings->kz0pars(); }
-    double rinv(const Settings* settings) const { return irinv_ * settings->krinvpars(); }
-    double d0(const Settings* settings) const { return id0_ * settings->kd0pars(); }  //Fix when fit for 5 pars
+    double eta(const Settings* settings) const { return asinh(ipars_.t() * settings->ktpars()); }
+    double tanL(const Settings* settings) const { return ipars_.t() * settings->ktpars(); }
+    double z0(const Settings* settings) const { return ipars_.z0() * settings->kz0pars(); }
+    double rinv(const Settings* settings) const { return ipars_.rinv() * settings->krinvpars(); }
+    double d0(const Settings* settings) const { return ipars_.d0() * settings->kd0pars(); }  //Fix when fit for 5 pars
     double chisq() const { return chisqrphi_ + chisqrz_; }
 
     double chisqrphi() const { return chisqrphi_; }
@@ -82,11 +78,8 @@ namespace trklet {
     }
 
   private:
-    int irinv_;
-    int iphi0_;
-    int id0_;
-    int iz0_;
-    int it_;
+
+    TrackPars<int> ipars_;
     int ichisqrphi_;
     int ichisqrz_;
 

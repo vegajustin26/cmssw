@@ -6,7 +6,7 @@ namespace trklet {
   template <class T>
   class TrackPars {
   public:
-    TrackPars() {}
+    TrackPars() = default;
 
     TrackPars(T rinv, T phi0, T d0, T t, T z0) {
       rinv_ = rinv;
