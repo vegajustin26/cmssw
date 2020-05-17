@@ -12,9 +12,7 @@ using namespace std;
 using namespace trklet;
 
 FitTrack::FitTrack(string name, const Settings* settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {
-  trackfit_ = 0;
-}
+  : ProcessBase(name, settings, global, iSector), trackfit_(nullptr) { }
 
 void FitTrack::addOutput(MemoryBase* memory, string output) {
   if (settings_->writetrace()) {
@@ -74,7 +72,7 @@ void FitTrack::addInput(MemoryBase* memory, string input) {
 
 #ifdef USEHYBRID
 void FitTrack::trackFitKF(Tracklet* tracklet,
-                          std::vector<std::pair<const Stub*, const L1TStub*>>& trackstublist,
+                          std::vector<const Stub*>& trackstublist,
                           std::vector<std::pair<int, int>>& stubidslist) {
   if (settings_->doKF()) {
     // From full match lists, collect all the stubs associated with the tracklet seed
@@ -86,49 +84,47 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
     trackstublist.emplace_back(tracklet->outerFPGAStub(), tracklet->outerStub());
 
     // Now get ALL matches (can have multiple per layer)
-    for (unsigned int i = 0; i < fullmatch1_.size(); i++) {
-      for (unsigned int j = 0; j < fullmatch1_[i]->nMatches(); j++) {
-        if (fullmatch1_[i]->getTracklet(j)->TCID() == tracklet->TCID()) {
-          trackstublist.push_back(fullmatch1_[i]->getMatch(j).second);
+    for (const auto& i : fullmatch1_ ) {
+      for (unsigned int j = 0; j < i->nMatches(); j++) {
+        if (i->getTracklet(j)->TCID() == tracklet->TCID()) {
+          trackstublist.push_back(i->getMatch(j).second);
         }
       }
     }
 
-    for (unsigned int i = 0; i < fullmatch2_.size(); i++) {
-      for (unsigned int j = 0; j < fullmatch2_[i]->nMatches(); j++) {
-        if (fullmatch2_[i]->getTracklet(j)->TCID() == tracklet->TCID()) {
-          trackstublist.push_back(fullmatch2_[i]->getMatch(j).second);
+    for (const auto& i : fullmatch2_ ) {
+      for (unsigned int j = 0; j < i->nMatches(); j++) {
+        if (i->getTracklet(j)->TCID() == tracklet->TCID()) {
+          trackstublist.push_back(i->getMatch(j).second);
         }
       }
     }
 
-    for (unsigned int i = 0; i < fullmatch3_.size(); i++) {
-      for (unsigned int j = 0; j < fullmatch3_[i]->nMatches(); j++) {
-        if (fullmatch3_[i]->getTracklet(j)->TCID() == tracklet->TCID()) {
-          trackstublist.push_back(fullmatch3_[i]->getMatch(j).second);
+    for (const auto& i : fullmatch3_ ) {
+      for (unsigned int j = 0; j < i->nMatches(); j++) {
+        if (i->getTracklet(j)->TCID() == tracklet->TCID()) {
+          trackstublist.push_back(i->getMatch(j).second);
         }
       }
     }
 
-    for (unsigned int i = 0; i < fullmatch4_.size(); i++) {
-      for (unsigned int j = 0; j < fullmatch4_[i]->nMatches(); j++) {
-        if (fullmatch4_[i]->getTracklet(j)->TCID() == tracklet->TCID()) {
-          trackstublist.push_back(fullmatch4_[i]->getMatch(j).second);
+    for (const auto& i : fullmatch4_ ) {
+      for (unsigned int j = 0; j < i->nMatches(); j++) {
+        if (i->getTracklet(j)->TCID() == tracklet->TCID()) {
+          trackstublist.push_back(i->getMatch(j).second);
         }
       }
     }
 
     // For merge removal, loop through the resulting list of stubs to calculate their stubids
     if (settings_->removalType() == "merge") {
-      for (std::vector<std::pair<Stub*, L1TStub*>>::iterator it = trackstublist.begin(); it != trackstublist.end();
-           it++) {
-        int layer = it->first->layer().value() + 1;  // Assume layer (1-6) stub first
-        if (it->first->layer().value() < 0) {        // if disk stub, though...
-          layer = it->first->disk().value() +
-                  10 * it->first->disk().value() / abs(it->first->disk().value());  //disk = +/- 11-15
+      for (const auto& it : trackstublist) {
+        int layer = it->layer().value() + 1;  // Assume layer (1-6) stub first
+        if (it->layer().value() < 0) {        // if disk stub, though...
+          layer = it->disk().value() +
+                  10 * it->disk().value() / abs(it->disk().value());  //disk = +/- 11-15
         }
-        stubidslist.push_back(
-            std::make_pair(layer, (it->first->phiregion().value() << 7) + it->first->stubindex().value()));
+        stubidslist.push_back(std::make_pair(layer, it->phiregionaddress().value()));
       }
 
       // And that's all we need! The rest is just for fitting (in PurgeDuplicate)
@@ -143,7 +139,7 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
 #endif
 
 void FitTrack::trackFitChisq(Tracklet* tracklet,
-                             std::vector<std::pair<const Stub*, const L1TStub*>>&,
+                             std::vector<const Stub*>&,
                              std::vector<std::pair<int, int>>&) {
   if (globals_->trackDerTable() == 0) {
     TrackDerTable* derTablePtr = new TrackDerTable(settings_);
@@ -799,7 +795,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
 }
 
 void FitTrack::trackFitFake(Tracklet* tracklet,
-                            std::vector<std::pair<const Stub*, const L1TStub*>>&,
+                            std::vector<const Stub*>&,
                             std::vector<std::pair<int, int>>&) {
   tracklet->setFitPars(tracklet->rinvapprox(),
                        tracklet->phi0approx(),
@@ -1005,7 +1001,7 @@ void FitTrack::execute() {
       edm::LogVerbatim("Tracklet") << getName() << " : nMatches = " << nMatches << " " << asinh(bestTracklet->t());
     }
 
-    std::vector<std::pair<const Stub*, const L1TStub*>> trackstublist;
+    std::vector<const Stub*> trackstublist;
     std::vector<std::pair<int, int>> stubidslist;
     if ((bestTracklet->getISeed() >= 8 && nMatchesUniq >= 1) ||
         nMatchesUniq >= 2) {  //For seeds index >=8 (triplet seeds), there are three stubs associated from start.
