@@ -179,7 +179,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
     indtc >> dtc;
   }
 
-  cabling_ = new Cabling(settings_->DTCLinkFile(), settings_->moduleCablingFile());
+  cabling_ = new Cabling(settings_->DTCLinkFile(), settings_->moduleCablingFile(), settings_);
 }
 
 void TrackletEventProcessor::event(SLHCEvent& ev) {

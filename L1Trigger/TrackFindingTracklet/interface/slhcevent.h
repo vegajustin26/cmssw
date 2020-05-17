@@ -6,7 +6,6 @@
 #include <fstream>
 #include <cstdlib>
 #include <vector>
-#include <map>
 #include <cmath>
 #include <cassert>
 
@@ -83,20 +82,20 @@ namespace trklet {
                  int isPSmodule,
                  int isFlipped);
 
-    L1TStub lastStub() { return stubs_.back(); }
+    const L1TStub& lastStub() const { return stubs_.back(); }
 
     void write(std::ofstream& out);
     void write(std::ostream& out);
 
     unsigned int layersHit(int tpid, int& nlayers, int& ndisks);
 
-    int nstubs() { return stubs_.size(); }
+    int nstubs() const { return stubs_.size(); }
 
-    L1TStub stub(int i) { return stubs_[i]; }
+    const L1TStub& stub(int i) const { return stubs_[i]; }
 
-    unsigned int nsimtracks() { return simtracks_.size(); }
+    unsigned int nsimtracks() const { return simtracks_.size(); }
 
-    L1SimTrack simtrack(int i) { return simtracks_[i]; }
+    const L1SimTrack& simtrack(int i) const { return simtracks_[i]; }
 
     int eventnum() const { return eventnum_; }
 

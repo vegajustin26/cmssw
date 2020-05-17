@@ -8,7 +8,10 @@
 using namespace std;
 using namespace trklet;
 
-Cabling::Cabling(string dtcconfig, string moduleconfig) {
+Cabling::Cabling(string dtcconfig, string moduleconfig, const Settings *settings) {
+
+  settings_=settings;
+  
   ifstream indtc(dtcconfig.c_str());
   assert(indtc.good());
 
@@ -21,18 +24,18 @@ Cabling::Cabling(string dtcconfig, string moduleconfig) {
     if (!indtc.good())
       continue;
 
-    if (dtcs.find(dtc) == dtcs.end()) {
-      dtcs[dtc].setName(dtc);
+    if (dtcs_.find(dtc) == dtcs_.end()) {
+      dtcs_[dtc].setName(dtc);
     }
 
-    dtcs[dtc].addSec(isec);
+    dtcs_[dtc].addSec(isec);
 
     string dtcbase = dtc.substr(2, dtc.size() - 2);
     if (dtc[0] == 'n') {
       dtcbase = "neg_" + dtc.substr(6, dtc.size() - 6);
     }
-    if (dtcranges.find(dtcbase) == dtcranges.end()) {
-      dtcranges[dtcbase].setName(dtcbase);
+    if (dtcranges_.find(dtcbase) == dtcranges_.end()) {
+      dtcranges_[dtcbase].setName(dtcbase);
     }
   }
 
@@ -72,25 +75,24 @@ Cabling::Cabling(string dtcconfig, string moduleconfig) {
     }
     if (!inmodules.good())
       break;
-    modules[layer][ladder][module] = dtc;
+    modules_[layer][ladder][module] = dtc;
   }
 }
 
-string Cabling::dtc(int layer, int ladder, int module) {
-  std::map<int, std::map<int, std::map<int, string> > >::const_iterator it1 = modules.find(layer);
-  assert(it1 != modules.end());
-  std::map<int, std::map<int, string> >::const_iterator it2 = it1->second.find(ladder);
+const string& Cabling::dtc(int layer, int ladder, int module) const {
+  auto it1 = modules_.find(layer);
+  assert(it1 != modules_.end());
+  auto it2 = it1->second.find(ladder);
   assert(it2 != it1->second.end());
-  std::map<int, string>::const_iterator it3 = it2->second.find(module);
+  auto it3 = it2->second.find(module);
   if (it3 == it2->second.end()) {
-    edm::LogPrint("Tracklet") << "Could not add stub " << layer << " " << ladder << " " << module;
+    edm::LogPrint("Tracklet") << "Could not find stub " << layer << " " << ladder << " " << module;
     assert(0);
   }
-  string dtc = it3->second;
-  return dtc;
+  return it3->second;
 }
 
-void Cabling::addphi(string dtc, double phi, int layer, int module) {
+void Cabling::addphi(const string& dtc, double phi, int layer, int module) {
   int layerdisk = layer - 1;
 
   if (layer > 1000)
@@ -107,23 +109,22 @@ void Cabling::addphi(string dtc, double phi, int layer, int module) {
     isec = dtc[4] - '0';
   }
 
-  double phisec = trklet::phiRange(phi - isec * 2 * M_PI / 9.0);  // nonant cabling
+  double phisec = trklet::phiRange(phi - isec * settings_->dphisector());
 
-  assert(dtcranges.find(dtcbase) != dtcranges.end());
+  assert(dtcranges_.find(dtcbase) != dtcranges_.end());
 
-  dtcranges[dtcbase].addphi(phisec, layerdisk);
+  dtcranges_[dtcbase].addphi(phisec, layerdisk);
 }
 
-void Cabling::writephirange() {
+void Cabling::writephirange() const {
   ofstream out("dtcphirange.txt");
 
-  std::map<string, DTC>::const_iterator it = dtcranges.begin();
-  for (; it != dtcranges.end(); ++it) {
-    for (unsigned int i = 0; i < 11; i++) {
-      double min = it->second.min(i);
-      double max = it->second.max(i);
+  for (auto&& it : dtcranges_) {
+    for (unsigned int i = 0; i < N_LAYERDISK; i++) {
+      double min = it.second.min(i);
+      double max = it.second.max(i);
       if (min < max) {
-        out << it->first << " " << i + 1 << " " << min << " " << max << endl;
+        out << it.first << " " << i + 1 << " " << min << " " << max << endl;
       }
     }
   }
@@ -132,7 +133,7 @@ void Cabling::writephirange() {
 std::vector<string> Cabling::DTCs() const {
   std::vector<string> tmp;
 
-  for (auto it = dtcs.begin(); it != dtcs.end(); ++it) {
+  for (auto it = dtcs_.begin(); it != dtcs_.end(); ++it) {
     tmp.push_back(it->first);
   }
 

@@ -5,44 +5,6 @@
 using namespace std;
 using namespace trklet;
 
-/*
-Track::Track(int irinv,
-             int iphi0,
-             int id0,
-             int it,
-             int iz0,
-             int ichisqrphi,
-             int ichisqrz,
-             double chisqrphi,
-             double chisqrz,
-             int hitpattern,
-             std::map<int, int> stubID,
-             const std::vector<const L1TStub*>& l1stub,
-             int seed) {
-  ipars_.rinv() = irinv;
-  ipars_.phi0() = iphi0;
-  ipars_.d0() = id0;
-  ipars_.z0() = iz0;
-  ipars_.t() = it;
-  ichisqrphi_ = ichisqrphi;
-  ichisqrz_ = ichisqrz;
-
-  chisqrphi_ = chisqrphi;
-  chisqrz_ = chisqrz;
-
-  hitpattern_ = hitpattern;
-
-  nstubs_ = std::max((int)l1stub.size(), 6);
-
-  stubID_ = stubID;
-  l1stub_ = l1stub;
-
-  seed_ = seed;
-  duplicate_ = false;
-  sector_ = -1;
-}
-*/
-
 Track::Track(TrackPars<int> ipars,
              int ichisqrphi,
              int ichisqrz,
