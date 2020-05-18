@@ -9,7 +9,7 @@
 #include "FWCore/PluginManager/interface/ModuleDef.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 //
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -137,7 +137,7 @@ public:
   }
 };
 
-class L1FPGATrackProducer : public edm::EDProducer {
+class L1FPGATrackProducer : public edm::stream::EDProducer<> {
 public:
   /// Constructor/destructor
   explicit L1FPGATrackProducer(const edm::ParameterSet& iConfig);
