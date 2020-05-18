@@ -42,7 +42,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
     return;
   }
 
-  std::vector<const tmtt::Stub*> TMTTstubs;
+  std::vector<tmtt::Stub*> TMTTstubs;
   std::map<unsigned int, const L1TStub*> L1StubIndices;
   unsigned int L1stubID = 0;
 
