@@ -29,7 +29,7 @@ namespace trklet {
     void execute(std::vector<Track*>& outputtracks_);
 
   private:
-    double getPhiRes(Tracklet* curTracklet, Stub* curStub);
+    double getPhiRes(Tracklet* curTracklet, const Stub* curStub);
 
     std::vector<Track*> inputtracks_;
     std::vector<std::vector<const Stub*>> inputstublists_;

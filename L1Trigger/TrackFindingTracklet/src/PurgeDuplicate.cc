@@ -305,7 +305,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
     // Make the final track objects, fit with KF, and send to output
     for (unsigned int itrk = 0; itrk < numStublists; itrk++) {
       Tracklet* tracklet = inputtracklets_[itrk];
-      std::vector<Stub*> trackstublist = inputstublists_[itrk];
+      std::vector<const Stub*> trackstublist = inputstublists_[itrk];
 
       HybridFit hybridFitter(iSector_, settings_, globals_);
       hybridFitter.Fit(tracklet, trackstublist);
