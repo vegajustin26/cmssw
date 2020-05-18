@@ -163,8 +163,6 @@ private:
 
   edm::FileInPath DTCLinkLayerDiskFile;
 
-  double phiWindowSF_;
-
   string asciiEventOutName_;
   std::ofstream asciiEventOut_;
 
@@ -204,9 +202,7 @@ private:
   /// ///////////////// ///
   /// MANDATORY METHODS ///
   virtual void beginRun(const edm::Run& run, const edm::EventSetup& iSetup);
-  virtual void endRun(const edm::Run& run, const edm::EventSetup& iSetup);
   virtual void produce(edm::Event& iEvent, const edm::EventSetup& iSetup);
-  virtual void endJob();
 };
 
 //////////////
@@ -236,8 +232,6 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 
   produces<std::vector<TTTrack<Ref_Phase2TrackerDigi_> > >("Level1TTTracks").setBranchAlias("Level1TTTracks");
 
-  phiWindowSF_ = iConfig.getUntrackedParameter<double>("phiWindowSF", 1.0);
-
   asciiEventOutName_ = iConfig.getUntrackedParameter<string>("asciiFileName", "");
 
   fitPatternFile = iConfig.getParameter<edm::FileInPath>("fitPatternFile");
@@ -250,8 +244,8 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 
   DTCLinkLayerDiskFile = iConfig.getParameter<edm::FileInPath>("DTCLinkLayerDiskFile");
 
-  extended_ = iConfig.getUntrackedParameter<bool>("Extended", false);
-  nHelixPar_ = iConfig.getUntrackedParameter<unsigned int>("Hnpar", 4);
+  extended_ = iConfig.getParameter<bool>("Extended");
+  nHelixPar_ = iConfig.getParameter<unsigned int>("Hnpar");
 
   // --------------------------------------------------------------------------------
   // set options in Settings based on inputs from configuration files
@@ -290,7 +284,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 /////////////
 // DESTRUCTOR
 L1FPGATrackProducer::~L1FPGATrackProducer() {
-  if (asciiEventOutName_.is_open()) {
+  if (asciiEventOut_.is_open()) {
     asciiEventOut_.close();
   }
 }
@@ -538,40 +532,21 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
         module = static_cast<int>(tTopo->tidWheel(detid));
       }
 
-      // clusters
-      std::vector<bool> innerStack;
-      std::vector<int> irphi;
-      std::vector<int> iz;
-      std::vector<int> iladder;
-      std::vector<int> imodule;
 
       /// Get the Inner and Outer TTCluster
       edm::Ref<edmNew::DetSetVector<TTCluster<Ref_Phase2TrackerDigi_> >, TTCluster<Ref_Phase2TrackerDigi_> >
-          innerCluster = tempStubPtr->clusterRef(0);
-
-      std::vector<int> innerrows = innerCluster->getRows();
-      std::vector<int> innercols = innerCluster->getCols();
-
-      for (unsigned int ihit = 0; ihit < innerrows.size(); ihit++) {
-        innerStack.push_back(true);
-        irphi.push_back(innerrows[ihit]);
-        iz.push_back(innercols[ihit]);
-        iladder.push_back(ladder);
-        imodule.push_back(module);
-      }
-
+	innerCluster = tempStubPtr->clusterRef(0);
       edm::Ref<edmNew::DetSetVector<TTCluster<Ref_Phase2TrackerDigi_> >, TTCluster<Ref_Phase2TrackerDigi_> >
-          outerCluster = tempStubPtr->clusterRef(1);
+	outerCluster = tempStubPtr->clusterRef(1);
 
+      std::vector<int> irphi;
+      std::vector<int> innerrows = innerCluster->getRows();
+      for (unsigned int ihit = 0; ihit < innerrows.size(); ihit++) {
+        irphi.push_back(innerrows[ihit]);
+      }
       std::vector<int> outerrows = outerCluster->getRows();
-      std::vector<int> outercols = outerCluster->getCols();
-
       for (unsigned int ihit = 0; ihit < outerrows.size(); ihit++) {
-        innerStack.push_back(false);
         irphi.push_back(outerrows[ihit]);
-        iz.push_back(outercols[ihit]);
-        iladder.push_back(ladder);
-        imodule.push_back(module);
       }
 
       // -----------------------------------------------------
@@ -623,11 +598,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 							  posStub.x(),
 							  posStub.y(),
 							  posStub.z(),
-							  innerStack,
-							  irphi,
-							  iz,
-							  iladder,
-							  imodule,
 							  isPSmodule,
 							  isFlipped)) ) {
 	trklet::L1TStub lastStub = ev.lastStub();

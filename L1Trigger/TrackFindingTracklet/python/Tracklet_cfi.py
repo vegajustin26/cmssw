@@ -10,8 +10,8 @@ TTTracksFromTrackletEmulation = cms.EDProducer("L1FPGATrackProducer",
                                                BeamSpotSource = cms.InputTag("offlineBeamSpot"),
                                                asciiFileName = cms.untracked.string(""),
                                                # (if running on CRAB use "../../fitpattern.txt" etc instead)
-                                               Extended=cms.untracked.bool(False),
-                                               Hnpar=cms.untracked.uint32(4),
+                                               Extended=cms.bool(False),
+                                               Hnpar=cms.uint32(4),
                                                fitPatternFile  = cms.FileInPath('L1Trigger/TrackFindingTracklet/data/fitpattern.txt'),
                                                memoryModulesFile  = cms.FileInPath('L1Trigger/TrackFindingTracklet/data/memorymodules_hourglass.dat'),
                                                processingModulesFile  = cms.FileInPath('L1Trigger/TrackFindingTracklet/data/processingmodules_hourglass.dat'),
@@ -22,8 +22,8 @@ TTTracksFromTrackletEmulation = cms.EDProducer("L1FPGATrackProducer",
     )
 
 TTTracksFromExtendedTrackletEmulation = TTTracksFromTrackletEmulation.clone(
-                                               Extended=cms.untracked.bool(True),
-                                               Hnpar=cms.untracked.uint32(5),
+                                               Extended=cms.bool(True),
+                                               Hnpar=cms.uint32(5),
                                                memoryModulesFile  = cms.FileInPath('L1Trigger/TrackFindingTracklet/data/memorymodules_hourglassExtended.dat'),
                                                processingModulesFile  = cms.FileInPath('L1Trigger/TrackFindingTracklet/data/processingmodules_hourglassExtended.dat'),
                                                wiresFile  = cms.FileInPath('L1Trigger/TrackFindingTracklet/data/wires_hourglassExtended.dat'),

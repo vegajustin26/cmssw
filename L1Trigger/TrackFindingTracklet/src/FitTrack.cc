@@ -416,14 +416,6 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
   if (rinvindex >= (1 << settings_->nrinvBitsTable()))
     rinvindex = (1 << settings_->nrinvBitsTable()) - 1;
 
-  int ptbin = 0;
-  if (std::abs(rinv) < settings_->rinvmax() / 2)
-    ptbin = 1;
-  else if (std::abs(rinv) < settings_->rinvmax() / 4)
-    ptbin = 2;
-  else if (std::abs(rinv) < settings_->rinvmax() / 8)
-    ptbin = 3;
-
   const TrackDer* derivatives = derTable.getDerivatives(layermask, diskmask, alphaindex, rinvindex);
 
   if (derivatives == 0) {
@@ -657,8 +649,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
   int iz0seed = tracklet->fpgaz0().value();
 
   int irinvfit = irinvseed + ((idrinv + (1 << settings_->fitrinvbitshift())) >> settings_->fitrinvbitshift());
-  int iphi0fit = iphi0seed + (idphi0 >> settings_->fitphi0bitshift());
 
+  int iphi0fit = iphi0seed + (idphi0 >> settings_->fitphi0bitshift());
   int itfit = itseed + (idt >> settings_->fittbitshift());
 
   int iz0fit = iz0seed + (idz0 >> settings_->fitz0bitshift());
