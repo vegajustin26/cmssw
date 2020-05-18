@@ -21,10 +21,10 @@ namespace trklet {
   class Settings {
   public:
     Settings(){
-//Uncomment to run the hybrid algorithm
-//#ifdef CMSSW_GIT_HASH
-//#define USEHYBRID
-//#endif
+//Comment out to run tracklet-only algorithm
+#ifdef CMSSW_GIT_HASH
+#define USEHYBRID
+#endif
     }
     
     ~Settings() = default;

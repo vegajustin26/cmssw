@@ -124,7 +124,7 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
           layer = it->disk().value() +
                   10 * it->disk().value() / abs(it->disk().value());  //disk = +/- 11-15
         }
-        stubidslist.push_back(std::make_pair(layer, it->phiregionaddress().value()));
+        stubidslist.push_back(std::make_pair(layer, it->phiregionaddress()));
       }
 
       // And that's all we need! The rest is just for fitting (in PurgeDuplicate)
