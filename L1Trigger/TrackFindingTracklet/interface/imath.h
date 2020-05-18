@@ -66,7 +66,7 @@
 //                   m is from enum mode {pos, neg, both} and refers to possible sign values of f
 //                            for pos and neg, the most significant bit of p1 (i.e. the sign bit) is ignored
 //                   shift is a shift applied in i1<->address conversions (used to reduce size of LUT)
-//                   nbaddr: if not specified, it is taken to be equal to p1->get_nbits()
+//                   nbaddr: if not specified, it is taken to be equal to p1->nbits()
 //
 //
 // var_nounits (string name, var_base *p1, int ps = 17):
@@ -162,8 +162,8 @@ public:
     p3_ = p3;
     name_ = name;
     latency_ = l;
-    int step1 = (p1) ? p1->get_step() + p1->get_latency() : 0;
-    int step2 = (p2) ? p2->get_step() + p2->get_latency() : 0;
+    int step1 = (p1) ? p1->step() + p1->latency() : 0;
+    int step2 = (p2) ? p2->step() + p2->latency() : 0;
     step_ = std::max(step1, step2);
     
     cuts_.clear();
@@ -204,14 +204,14 @@ public:
   static struct HLS {
   } hls;
 
-  std::string get_kstring();
-  std::string get_name() { return name_; }
-  std::string get_op() { return op_; }
-  var_base *get_p1() { return p1_; }
-  var_base *get_p2() { return p2_; }
-  var_base *get_p3() { return p3_; }
-  double get_fval() { return fval_; }
-  long int get_ival() { return ival_; }
+  std::string kstring() const;
+  std::string name() const { return name_; }
+  std::string op() const { return op_; }
+  var_base *p1() const { return p1_; }
+  var_base *p2() const { return p2_; }
+  var_base *p3() const { return p3_; }
+  double fval() const { return fval_; }
+  long int ival() const { return ival_; }
 
   bool local_passes() const;
   void passes(std::map<const var_base *, std::vector<bool> > &passes,
@@ -225,13 +225,13 @@ public:
                   HLS,
                   const std::map<const var_base *, std::set<std::string> > *const previous_cut_strings = NULL) const;
   void add_cut(var_cut *cut, const bool call_set_cut_var = true);
-  var_base *get_cut_var();
+  var_base *cut_var();
 
-  double get_minval() { return minval_; }
-  double get_maxval() { return maxval_; }
+  double minval() const { return minval_; }
+  double maxval() const { return maxval_; }
   void analyze();
 #ifdef IMATH_ROOT
-  TH2F *get_h() { return h_; }
+  TH2F *h() { return h_; }
 #endif
   void reset() {
     minval_ = std::numeric_limits<double>::max();
@@ -241,15 +241,15 @@ public:
 #endif
   }
 
-  int get_nbits() { return nbits_; }
-  std::map<std::string, int> get_Kmap() { return Kmap_; }
-  double get_range() { return (1 << (nbits_ - 1)) * K_; }  // everything is signed
-  double get_K() { return K_; };
-  int get_shift() { return Kmap_["2"]; }
+  int nbits() const { return nbits_; }
+  std::map<std::string, int> Kmap() const { return Kmap_; }
+  double range() const { return (1 << (nbits_ - 1)) * K_; }  // everything is signed
+  double K() const { return K_; };
+  int shift() const { return Kmap_.at("2"); }
 
   void makeready();
-  int get_step() { return step_; }
-  int get_latency() { return latency_; }
+  int step() const { return step_; }
+  int latency() const { return latency_; }
   void add_latency(unsigned int l) { latency_ += l; }  //only call before using the variable in calculation!
   bool calculate(int debug_level);
   bool calculate() { return calculate(0); }
@@ -266,7 +266,7 @@ public:
   void print_all(std::ofstream &fs, HLS);
   void print_truncation(std::string &t, const std::string &o1, const int ps, Verilog) const;
   void print_truncation(std::string &t, const std::string &o1, const int ps, HLS) const;
-  void get_inputs(std::vector<var_base *> *vd);  //collect all inputs
+  void inputs(std::vector<var_base *> *vd);  //collect all inputs
 
   int pipe_counter() { return pipe_counter_; }
   void pipe_increment() { pipe_counter_++; }
@@ -288,7 +288,7 @@ public:
   static void writeTree(imathGlobals *globals);
 #endif
 
-  void dump_cout();
+  void dump_msg();
   std::string dump();
   static std::string itos(int i);
 
@@ -344,8 +344,8 @@ public:
               int nbits = -1)
       : var_base(globals, name, p1, 0, 0, 0) {
     op_ = "adjustK";
-    K_ = p1->get_K();
-    Kmap_ = p1->get_Kmap();
+    K_ = p1->K();
+    Kmap_ = p1->Kmap();
 
     double r = Knew / K_;
 
@@ -357,7 +357,7 @@ public:
     if (nbits > 0)
       nbits_ = nbits;
     else
-      nbits_ = p1->get_nbits() - lr_;
+      nbits_ = p1->nbits() - lr_;
 
     Kmap_["2"] = Kmap_["2"] + lr_;
   }
@@ -385,8 +385,8 @@ public:
                int nbits = -1)
       : var_base(globals, name, p1, 0, 0, 1) {
     op_ = "adjustKR";
-    K_ = p1->get_K();
-    Kmap_ = p1->get_Kmap();
+    K_ = p1->K();
+    Kmap_ = p1->Kmap();
 
     double r = Knew / K_;
 
@@ -398,7 +398,7 @@ public:
     if (nbits > 0)
       nbits_ = nbits;
     else
-      nbits_ = p1->get_nbits() - lr_;
+      nbits_ = p1->nbits() - lr_;
 
     Kmap_["2"] = Kmap_["2"] + lr_;
   }
@@ -486,9 +486,9 @@ public:
   //construct from abother variable (all provenance info is lost!)
   var_def(imathGlobals *globals, std::string name, var_base *p) : var_base(globals, name, 0, 0, 0, 1) {
     op_ = "def";
-    K_ = p->get_K();
-    nbits_ = p->get_nbits();
-    Kmap_ = p->get_Kmap();
+    K_ = p->K();
+    nbits_ = p->nbits();
+    Kmap_ = p->Kmap();
   }
   void set_fval(double fval) {
     fval_ = fval;
@@ -514,60 +514,59 @@ public:
       : var_base(globals, name, p1, p2, 0, 1) {
     op_ = "add";
 
-    std::map<std::string, int> map1 = p1->get_Kmap();
-    std::map<std::string, int> map2 = p2->get_Kmap();
+    std::map<std::string, int> map1 = p1->Kmap();
+    std::map<std::string, int> map2 = p2->Kmap();
     int s1 = map1["2"];
     int s2 = map2["2"];
 
     //first check if the constants are all lined up
     //go over the two maps subtracting the units
-    std::map<std::string, int>::iterator it;
-    for (it = map2.begin(); it != map2.end(); ++it) {
-      if (map1.find(it->first) == map1.end())
-        map1[it->first] = -it->second;
+    for (const auto& it : map2) {
+      if (map1.find(it.first) == map1.end())
+        map1[it.first] = -it.second;
       else
-        map1[it->first] = map1[it->first] - it->second;
+        map1[it.first] = map1[it.first] - it.second;
     }
 
     char slog[100];
 
     //assert if different
-    for (it = map1.begin(); it != map1.end(); ++it) {
-      if (it->second != 0) {
-        if (it->first != "2") {
-          snprintf(slog, 100, "var_add: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
+    for (const auto& it : map1) {
+      if (it.second != 0) {
+        if (it.first != "2") {
+          snprintf(slog, 100, "var_add: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
           edm::LogVerbatim("Tracklet") << slog;
           edm::LogVerbatim("Tracklet") << " *********************************************************";
-          p1->dump_cout();
+          p1->dump_msg();
           edm::LogVerbatim("Tracklet") << " *********************************************************";
-          p2->dump_cout();
+          p2->dump_msg();
           assert(0);
         }
       }
     }
 
-    double ki1 = p1->get_K() / pow(2, s1);
-    double ki2 = p2->get_K() / pow(2, s2);
+    double ki1 = p1->K() / pow(2, s1);
+    double ki2 = p2->K() / pow(2, s2);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
       snprintf(slog, 100, "var_add: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
       edm::LogVerbatim("Tracklet") << slog;
       edm::LogVerbatim("Tracklet") << " *********************************************************";
-      p1->dump_cout();
+      p1->dump_msg();
       edm::LogVerbatim("Tracklet") << " *********************************************************";
-      p2->dump_cout();
+      p2->dump_msg();
       assert(0);
     }
     //everything checks out!
 
-    Kmap_ = p1->get_Kmap();
+    Kmap_ = p1->Kmap();
 
     int s0 = s1 < s2 ? s1 : s2;
     shift1 = s1 - s0;
     shift2 = s2 - s0;
 
-    int n1 = p1->get_nbits() + shift1;
-    int n2 = p2->get_nbits() + shift2;
+    int n1 = p1->nbits() + shift1;
+    int n2 = p2->nbits() + shift2;
     int n0 = 1 + (n1 > n2 ? n1 : n2);
 
     //before shifting, check the range
@@ -605,60 +604,59 @@ public:
       : var_base(globals, name, p1, p2, 0, 1) {
     op_ = "subtract";
 
-    std::map<std::string, int> map1 = p1->get_Kmap();
-    std::map<std::string, int> map2 = p2->get_Kmap();
+    std::map<std::string, int> map1 = p1->Kmap();
+    std::map<std::string, int> map2 = p2->Kmap();
     int s1 = map1["2"];
     int s2 = map2["2"];
 
     //first check if the constants are all lined up
     //go over the two maps subtracting the units
-    std::map<std::string, int>::iterator it;
-    for (it = map2.begin(); it != map2.end(); ++it) {
-      if (map1.find(it->first) == map1.end())
-        map1[it->first] = -it->second;
+    for (const auto& it : map2) {
+      if (map1.find(it.first) == map1.end())
+        map1[it.first] = -it.second;
       else
-        map1[it->first] = map1[it->first] - it->second;
+        map1[it.first] = map1[it.first] - it.second;
     }
 
     char slog[100];
 
     //assert if different
-    for (it = map1.begin(); it != map1.end(); ++it) {
-      if (it->second != 0) {
-        if (it->first != "2") {
-          snprintf(slog, 100, "var_add: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
+    for (const auto& it : map1) {
+      if (it.second != 0) {
+        if (it.first != "2") {
+          snprintf(slog, 100, "var_add: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
           edm::LogVerbatim("Tracklet") << slog;
           edm::LogVerbatim("Tracklet") << " *********************************************************";
-          p1->dump_cout();
+          p1->dump_msg();
           edm::LogVerbatim("Tracklet") << " *********************************************************";
-          p2->dump_cout();
+          p2->dump_msg();
           assert(0);
         }
       }
     }
 
-    double ki1 = p1->get_K() / pow(2, s1);
-    double ki2 = p2->get_K() / pow(2, s2);
+    double ki1 = p1->K() / pow(2, s1);
+    double ki2 = p2->K() / pow(2, s2);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
       snprintf(slog, 100, "var_add: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
       edm::LogVerbatim("Tracklet") << slog;
       edm::LogVerbatim("Tracklet") << " *********************************************************";
-      p1->dump_cout();
+      p1->dump_msg();
       edm::LogVerbatim("Tracklet") << " *********************************************************";
-      p2->dump_cout();
+      p2->dump_msg();
       assert(0);
     }
     //everything checks out!
 
-    Kmap_ = p1->get_Kmap();
+    Kmap_ = p1->Kmap();
 
     int s0 = s1 < s2 ? s1 : s2;
     shift1 = s1 - s0;
     shift2 = s2 - s0;
 
-    int n1 = p1->get_nbits() + shift1;
-    int n2 = p2->get_nbits() + shift2;
+    int n1 = p1->nbits() + shift1;
+    int n2 = p2->nbits() + shift2;
     int n0 = 1 + (n1 > n2 ? n1 : n2);
 
     //before shifting, check the range
@@ -698,10 +696,10 @@ public:
       : var_base(globals, name, p1, 0, 0, MULT_LATENCY) {
     op_ = "nounits";
     ps_ = ps;
-    nbits_ = p1->get_nbits();
+    nbits_ = p1->nbits();
 
-    int s1 = p1->get_shift();
-    double ki = p1->get_K() / pow(2, s1);
+    int s1 = p1->shift();
+    double ki = p1->K() / pow(2, s1);
     int m = log2(ki);
 
     K_ = pow(2, s1 + m);
@@ -727,9 +725,9 @@ public:
     op_ = "shiftround";
     shift_ = shift;
 
-    nbits_ = p1->get_nbits() - shift;
-    Kmap_ = p1->get_Kmap();
-    K_ = p1->get_K();
+    nbits_ = p1->nbits() - shift;
+    Kmap_ = p1->Kmap();
+    K_ = p1->K();
   }
   virtual ~var_shiftround() {}
   
@@ -747,9 +745,9 @@ public:
     op_ = "shift";
     shift_ = shift;
 
-    nbits_ = p1->get_nbits() - shift;
-    Kmap_ = p1->get_Kmap();
-    K_ = p1->get_K();
+    nbits_ = p1->nbits() - shift;
+    Kmap_ = p1->Kmap();
+    K_ = p1->K();
   }
   virtual ~var_shift() {}
   void local_calculate();
@@ -764,9 +762,9 @@ class var_neg : public var_base {
 public:
   var_neg(imathGlobals *globals, std::string name, var_base *p1) : var_base(globals, name, p1, 0, 0, 1) {
     op_ = "neg";
-    nbits_ = p1->get_nbits();
-    Kmap_ = p1->get_Kmap();
-    K_ = p1->get_K();
+    nbits_ = p1->nbits();
+    Kmap_ = p1->Kmap();
+    K_ = p1->K();
   }
   virtual ~var_neg() {}
   void local_calculate();
@@ -782,9 +780,9 @@ public:
     cF_ = cF;
     ps_ = ps;
 
-    nbits_ = p1->get_nbits();
-    Kmap_ = p1->get_Kmap();
-    K_ = p1->get_K();
+    nbits_ = p1->nbits();
+    Kmap_ = p1->Kmap();
+    K_ = p1->K();
 
     int s1 = Kmap_["2"];
     double l = log2(std::abs(cF));
@@ -813,25 +811,24 @@ public:
       : var_base(globals, name, p1, p2, 0, MULT_LATENCY) {
     op_ = "mult";
 
-    std::map<std::string, int> map1 = p1->get_Kmap();
-    std::map<std::string, int> map2 = p2->get_Kmap();
-    std::map<std::string, int>::iterator it;
-    for (it = map1.begin(); it != map1.end(); ++it) {
-      if (Kmap_.find(it->first) == Kmap_.end())
-        Kmap_[it->first] = it->second;
+    const std::map<std::string, int> map1 = p1->Kmap();
+    const std::map<std::string, int> map2 = p2->Kmap();
+    for (const auto& it : map1) {
+      if (Kmap_.find(it.first) == Kmap_.end())
+        Kmap_[it.first] = it.second;
       else
-        Kmap_[it->first] = Kmap_[it->first] + it->second;
+        Kmap_[it.first] = Kmap_[it.first] + it.second;
     }
-    for (it = map2.begin(); it != map2.end(); ++it) {
-      if (Kmap_.find(it->first) == Kmap_.end())
-        Kmap_[it->first] = it->second;
+    for (const auto& it : map2) {
+      if (Kmap_.find(it.first) == Kmap_.end())
+        Kmap_[it.first] = it.second;
       else
-        Kmap_[it->first] = Kmap_[it->first] + it->second;
+        Kmap_[it.first] = Kmap_[it.first] + it.second;
     }
-    K_ = p1->get_K() * p2->get_K();
+    K_ = p1->K() * p2->K();
     int s0 = Kmap_["2"];
 
-    int n0 = p1->get_nbits() + p2->get_nbits();
+    int n0 = p1->nbits() + p2->nbits();
     if (range > 0) {
       n0 = log2(range / K_) + 1e-9;
       n0 = n0 + 2;
@@ -868,63 +865,62 @@ public:
     op_ = "DSP_postadd";
 
     //first, get constants for the p1*p2
-    std::map<std::string, int> map1 = p1->get_Kmap();
-    std::map<std::string, int> map2 = p2->get_Kmap();
-    std::map<std::string, int>::iterator it;
-    for (it = map2.begin(); it != map2.end(); ++it) {
-      if (map1.find(it->first) == map1.end())
-        map1[it->first] = it->second;
+    std::map<std::string, int> map1 = p1->Kmap();
+    std::map<std::string, int> map2 = p2->Kmap();
+    for (const auto& it : map2) {
+      if (map1.find(it.first) == map1.end())
+        map1[it.first] = it.second;
       else
-        map1[it->first] = map1[it->first] + it->second;
+        map1[it.first] = map1[it.first] + it.second;
     }
-    double k0 = p1->get_K() * p2->get_K();
+    double k0 = p1->K() * p2->K();
     int s0 = map1["2"];
 
     //now addition
-    std::map<std::string, int> map3 = p3->get_Kmap();
+    std::map<std::string, int> map3 = p3->Kmap();
     int s3 = map3["2"];
 
     //first check if the constants are all lined up
     //go over the two maps subtracting the units
-    for (it = map3.begin(); it != map3.end(); ++it) {
-      if (map1.find(it->first) == map1.end())
-        map1[it->first] = -it->second;
+    for (const auto& it : map3) {
+      if (map1.find(it.first) == map1.end())
+        map1[it.first] = -it.second;
       else
-        map1[it->first] = map1[it->first] - it->second;
+        map1[it.first] = map1[it.first] - it.second;
     }
 
     char slog[100];
 
     //assert if different
-    for (it = map1.begin(); it != map1.end(); ++it) {
-      if (it->second != 0) {
-        if (it->first != "2") {
+    for (const auto& it : map1) {
+      if (it.second != 0) {
+        if (it.first != "2") {
           snprintf(
-		   slog, 100, "var_DSP_postadd: bad units! %s^%i for variable %s", (it->first).c_str(), it->second, name_.c_str());
+		   slog, 100, "var_DSP_postadd: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
           edm::LogVerbatim("Tracklet") << slog;
           edm::LogVerbatim("Tracklet") << " *********************************************************";
-          p1->dump_cout();
+          p1->dump_msg();
           edm::LogVerbatim("Tracklet") << " *********************************************************";
-          p2->dump_cout();
+          p2->dump_msg();
           edm::LogVerbatim("Tracklet") << " *********************************************************";
-          p3->dump_cout();
+          p3->dump_msg();
           assert(0);
         }
       }
     }
 
     double ki1 = k0 / pow(2, s0);
-    double ki2 = p3->get_K() / pow(2, s3);
+    double ki2 = p3->K() / pow(2, s3);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
       snprintf(slog, 100, "var_DSP_postadd: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
       edm::LogVerbatim("Tracklet") << slog;
       edm::LogVerbatim("Tracklet") << " *********************************************************";
-      p1->dump_cout();
+      p1->dump_msg();
       edm::LogVerbatim("Tracklet") << " *********************************************************";
-      p2->dump_cout();
+      p2->dump_msg();
       edm::LogVerbatim("Tracklet") << " *********************************************************";
-      p3->dump_cout();
+      p3->dump_msg();
       assert(0);
     }
     //everything checks out!
@@ -936,11 +932,11 @@ public:
       assert(0);
     }
 
-    Kmap_ = p3->get_Kmap();
+    Kmap_ = p3->Kmap();
     Kmap_["2"] = Kmap_["2"] - shift3_;
 
-    int n12 = p1->get_nbits() + p2->get_nbits();
-    int n3 = p3->get_nbits() + shift3_;
+    int n12 = p1->nbits() + p2->nbits();
+    int n3 = p3->nbits() + shift3_;
     int n0 = 1 + (n12 > n3 ? n12 : n3);
 
     //before shifting, check the range
@@ -992,7 +988,7 @@ public:
     shift_ = shift;
     m_ = m;
     if (nbaddr < 0)
-      nbaddr = p1->get_nbits();
+      nbaddr = p1->nbits();
     nbaddr_ = nbaddr - shift;
     if (m_ != mode::both)
       nbaddr_--;
@@ -1000,15 +996,14 @@ public:
     mask_ = Nelements_ - 1;
     ashift_ = sizeof(int) * 8 - nbaddr_;
 
-    std::map<std::string, int> map1 = p1->get_Kmap();
-    std::map<std::string, int>::iterator it;
-    for (it = map1.begin(); it != map1.end(); ++it)
-      Kmap_[it->first] = -it->second;
+    const std::map<std::string, int> map1 = p1->Kmap();
+    for (const auto& it : map1) 
+      Kmap_[it.first] = -it.second;
     Kmap_["2"] = Kmap_["2"] - n;
-    K_ = pow(2, -n) / p1->get_K();
+    K_ = pow(2, -n) / p1->K();
 
     LUT = new int[Nelements_];
-    double offsetI = lround(offset_ / p1_->get_K());
+    double offsetI = lround(offset_ / p1_->K());
     for (int i = 0; i < Nelements_; ++i) {
       int i1 = addr_to_ival(i);
       LUT[i] = gen_inv(offsetI + i1);
@@ -1020,8 +1015,8 @@ public:
 
   void set_mode(mode m) { m_ = m; }
   void initLUT(double offset);
-  double get_offset() { return offset_; }
-  double get_Ioffset() { return offset_ / p1_->get_K(); }
+  double offset() { return offset_; }
+  double Ioffset() { return offset_ / p1_->K(); }
 
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -1086,8 +1081,8 @@ public:
   }
   virtual ~var_cut() {}
 
-  double get_lower_cut() const { return lower_cut_; }
-  double get_upper_cut() const { return upper_cut_; }
+  double lower_cut() const { return lower_cut_; }
+  double upper_cut() const { return upper_cut_; }
 
   void local_passes(std::map<const var_base *, std::vector<bool> > &passes,
                     const std::map<const var_base *, std::vector<bool> > *const previous_passes = NULL) const;
@@ -1102,7 +1097,7 @@ public:
              const std::map<const var_base *, std::set<std::string> > *const previous_cut_strings = NULL) const;
 
   void set_parent_flag(var_flag *parent_flag, const bool call_add_cut);
-  var_flag *get_parent_flag() { return parent_flag_; }
+  var_flag *parent_flag() { return parent_flag_; }
   void set_cut_var(var_base *cut_var, const bool call_add_cut = true);
 
 protected:

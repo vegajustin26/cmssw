@@ -37,7 +37,7 @@ TrackletCalculator::TrackletCalculator(string name,
 
   if (settings_->usephicritapprox()) {
     double phicritFactor =
-        0.5 * settings_->rcrit() * globals_->ITC_L1L2()->rinv_final.get_K() / globals_->ITC_L1L2()->phi0_final.get_K();
+        0.5 * settings_->rcrit() * globals_->ITC_L1L2()->rinv_final.K() / globals_->ITC_L1L2()->phi0_final.K();
     if (std::abs(phicritFactor - 2.) > 0.25)
       edm::LogPrint("Tracklet")
           << "TrackletCalculator::TrackletCalculator phicrit approximation may be invalid! Please check.";

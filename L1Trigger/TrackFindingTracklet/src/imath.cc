@@ -17,16 +17,14 @@ std::string var_base::itos(int i) {
   return std::to_string(i);
 }
 
-std::string var_base::get_kstring() {
+std::string var_base::kstring() const {
   char s[1024];
   std::string t = "";
-  std::map<std::string, int>::iterator it;
-  for (it = Kmap_.begin(); it != Kmap_.end(); ++it) {
-    sprintf(s, "^(%i)", it->second);
+  for (const auto &Kmap : Kmap_) {
+    sprintf(s, "^(%i)", Kmap.second);
     std::string t0(s);
-    t = t + it->first + t0;
+    t = t + Kmap.first + t0;
   }
-
   return t;
 }
 
@@ -38,13 +36,13 @@ void var_base::analyze() {
   if (u < -minval_)
     u = -minval_;
 
-  int iu = log2(get_range() / u);
+  int iu = log2(range() / u);
   if (iu > 1) {
     char slog[1024];
     sprintf(slog,
             "analyzing %s: range %g is much larger then %g. suggest cutting by a factor of 2^%i",
             name_.c_str(),
-            get_range(),
+            range(),
             u,
             iu);
     edm::LogVerbatim("Tracklet") << slog;
@@ -81,7 +79,7 @@ void var_base::analyze() {
 
 std::string var_base::dump() {
   char s[1024];
-  std::string u = get_kstring();
+  std::string u = kstring();
   sprintf(
       s,
       "Name = %s \t Op = %s \t nbits = %i \n       ival = %li \t fval = %g \t K = %g Range = %f\n       units = %s\n",
@@ -91,15 +89,15 @@ std::string var_base::dump() {
       ival_,
       fval_,
       K_,
-      get_range(),
+      range(),
       u.c_str());
   std::string t(s);
   return t;
 }
 
-void var_base::dump_cout() {
+void var_base::dump_msg() {
   char s[2048];
-  std::string u = get_kstring();
+  std::string u = kstring();
   sprintf(s,
           "Name = %s \t Op = %s \t nbits = %i \n       ival = %li \t fval = %g \t K = %g Range = %f\n       units = "
           "%s\n       step = %i, latency = %i\n",
@@ -109,16 +107,16 @@ void var_base::dump_cout() {
           ival_,
           fval_,
           K_,
-          get_range(),
+          range(),
           u.c_str(),
           step_,
           latency_);
   std::string t(s);
   edm::LogVerbatim("Tracklet") << t;
   if (p1_)
-    p1_->dump_cout();
+    p1_->dump_msg();
   if (p2_)
-    p2_->dump_cout();
+    p2_->dump_msg();
 }
 
 void var_adjustK::adjust(double Knew, double epsilon, bool do_assert, int nbits) {
@@ -126,8 +124,8 @@ void var_adjustK::adjust(double Knew, double epsilon, bool do_assert, int nbits)
   //THIS METHID CAN BE USED ONLY FOR THE FINAL ANSWER
   //THE CHANGE IN CONSTANT CAN NOT BE PROPAGATED UP THE CALCULATION TREE
 
-  K_ = p1_->get_K();
-  Kmap_ = p1_->get_Kmap();
+  K_ = p1_->K();
+  Kmap_ = p1_->Kmap();
   double r = Knew / K_;
 
   lr_ = (r > 1) ? log2(r) + epsilon : log2(r);
@@ -138,14 +136,14 @@ void var_adjustK::adjust(double Knew, double epsilon, bool do_assert, int nbits)
   if (nbits > 0)
     nbits_ = nbits;
   else
-    nbits_ = p1_->get_nbits() - lr_;
+    nbits_ = p1_->nbits() - lr_;
 
   Kmap_["2"] = Kmap_["2"] + lr_;
 }
 
 void var_inv::initLUT(double offset) {
   offset_ = offset;
-  double offsetI = lround(offset_ / p1_->get_K());
+  double offsetI = lround(offset_ / p1_->K());
   for (int i = 0; i < Nelements_; ++i) {
     int i1 = addr_to_ival(i);
     LUT[i] = gen_inv(offsetI + i1);
@@ -179,7 +177,7 @@ std::string var_base::pipe_delay(var_base *v, int nbits, int delay) {
   if (v->has_delay(delay))
     return "";
   v->add_delay(delay);
-  std::string name = v->get_name();
+  std::string name = v->name();
   std::string name_delayed = name + "_delay" + itos(delay);
   std::string out = "wire signed [" + itos(nbits - 1) + ":0] " + name_delayed + ";\n";
   out = out + pipe_delay_wire(v, name_delayed, nbits, delay);
@@ -195,10 +193,10 @@ std::string var_base::pipe_delays(const int step) {
     out += p3_->pipe_delays(step);
 
   int l = step - latency_ - step_;
-  return (out + pipe_delay(this, get_nbits(), l));
+  return (out + pipe_delay(this, nbits(), l));
 }
 std::string var_base::pipe_delay_wire(var_base *v, std::string name_delayed, int nbits, int delay) {
-  std::string name = v->get_name();
+  std::string name = v->name();
   std::string name_pipe = name + "_pipe" + itos(v->pipe_counter());
   v->pipe_increment();
   std::string out = "pipe_delay #(.STAGES(" + itos(delay) + "), .WIDTH(" + itos(nbits) + ")) " + name_pipe +
@@ -206,17 +204,17 @@ std::string var_base::pipe_delay_wire(var_base *v, std::string name_delayed, int
   return out;
 }
 
-void var_base::get_inputs(std::vector<var_base *> *vd) {
+void var_base::inputs(std::vector<var_base *> *vd) {
   if (op_ == "def" && !usedasinput_) {
     usedasinput_ = true;
     vd->push_back(this);
   } else {
     if (p1_)
-      p1_->get_inputs(vd);
+      p1_->inputs(vd);
     if (p2_)
-      p2_->get_inputs(vd);
+      p2_->inputs(vd);
     if (p3_)
-      p3_->get_inputs(vd);
+      p3_->inputs(vd);
   }
 }
 
@@ -232,9 +230,9 @@ TTree *var_base::addToTree(imathGlobals *globals, var_base *v, char *s) {
     tt = new TTree("tt", "");
     edm::LogVerbatim("Tracklet") << "creating TTree tt";
   }
-  std::string si = v->get_name() + "_i";
-  std::string sf = v->get_name() + "_f";
-  std::string sv = v->get_name();
+  std::string si = v->name() + "_i";
+  std::string sf = v->name() + "_f";
+  std::string sv = v->name();
   if (s != 0) {
     std::string prefix(s);
     si = prefix + si;
@@ -307,12 +305,12 @@ void var_base::writeTree(imathGlobals *globals) {
 
 void var_cut::local_passes(std::map<const var_base *, std::vector<bool> > &passes,
                            const std::map<const var_base *, std::vector<bool> > *const previous_passes) const {
-  const int lower_cut = lower_cut_ / cut_var_->get_K();
-  const int upper_cut = upper_cut_ / cut_var_->get_K();
+  const int lower_cut = lower_cut_ / cut_var_->K();
+  const int upper_cut = upper_cut_ / cut_var_->K();
   if (!previous_passes || (previous_passes && !previous_passes->count(cut_var_))) {
     if (!passes.count(cut_var_))
       passes[cut_var_];
-    passes.at(cut_var_).push_back(cut_var_->get_ival() > lower_cut && cut_var_->get_ival() < upper_cut);
+    passes.at(cut_var_).push_back(cut_var_->ival() > lower_cut && cut_var_->ival() < upper_cut);
   }
 }
 
@@ -320,8 +318,8 @@ bool var_base::local_passes() const {
   bool passes = false;
   for (const auto &cut : cuts_) {
     const var_cut *const cast_cut = (var_cut *)cut;
-    const int lower_cut = cast_cut->get_lower_cut() / K_;
-    const int upper_cut = cast_cut->get_upper_cut() / K_;
+    const int lower_cut = cast_cut->lower_cut() / K_;
+    const int upper_cut = cast_cut->upper_cut() / K_;
     passes = passes || (ival_ > lower_cut && ival_ < upper_cut);
     if (globals_->printCutInfo_) {
       edm::LogVerbatim("Tracklet") << "  " << name_ << " "
@@ -344,8 +342,8 @@ void var_base::passes(std::map<const var_base *, std::vector<bool> > &passes,
 
   for (const auto &cut : cuts_) {
     const var_cut *const cast_cut = (var_cut *)cut;
-    const int lower_cut = cast_cut->get_lower_cut() / K_;
-    const int upper_cut = cast_cut->get_upper_cut() / K_;
+    const int lower_cut = cast_cut->lower_cut() / K_;
+    const int upper_cut = cast_cut->upper_cut() / K_;
     if (!previous_passes || (previous_passes && !previous_passes->count(this))) {
       if (!passes.count(this))
         passes[this];
@@ -376,7 +374,7 @@ void var_cut::set_cut_var(var_base *cut_var, const bool call_add_cut) {
 
 void var_flag::add_cut(var_base *cut, const bool call_set_parent_flag) {
   cuts_.push_back(cut);
-  if (cut->get_op() == "cut" && call_set_parent_flag) {
+  if (cut->op() == "cut" && call_set_parent_flag) {
     var_cut *const cast_cut = (var_cut *)cut;
     cast_cut->set_parent_flag(this, false);
   }
@@ -389,7 +387,7 @@ void var_cut::set_parent_flag(var_flag *parent_flag, const bool call_add_cut) {
     parent_flag->add_cut(this, false);
 }
 
-var_base *var_base::get_cut_var() {
+var_base *var_base::cut_var() {
   if (op_ == "cut")
     return cut_var_;
   else
@@ -403,21 +401,21 @@ bool var_flag::passes() {
 
   std::map<const var_base *, std::vector<bool> > passes0, passes1;
   for (const auto &cut : cuts_) {
-    if (cut->get_op() != "cut")
+    if (cut->op() != "cut")
       continue;
     const var_cut *const cast_cut = (var_cut *)cut;
     cast_cut->local_passes(passes0);
   }
   for (const auto &cut : cuts_) {
-    if (cut->get_op() != "cut")
+    if (cut->op() != "cut")
       cut->passes(passes1, &passes0);
     else {
-      if (cut->get_cut_var()->get_p1())
-        cut->get_cut_var()->get_p1()->passes(passes1, &passes0);
-      if (cut->get_cut_var()->get_p2())
-        cut->get_cut_var()->get_p2()->passes(passes1, &passes0);
-      if (cut->get_cut_var()->get_p3())
-        cut->get_cut_var()->get_p3()->passes(passes1, &passes0);
+      if (cut->cut_var()->p1())
+        cut->cut_var()->p1()->passes(passes1, &passes0);
+      if (cut->cut_var()->p2())
+        cut->cut_var()->p2()->passes(passes1, &passes0);
+      if (cut->cut_var()->p3())
+        cut->cut_var()->p3()->passes(passes1, &passes0);
     }
   }
 

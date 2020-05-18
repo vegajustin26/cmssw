@@ -235,6 +235,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
     }
   }
 
+  delete globals_->tmttKFParamsComb();
   for (const tmtt::Stub* s : TMTTstubs) {
     delete s;
   }

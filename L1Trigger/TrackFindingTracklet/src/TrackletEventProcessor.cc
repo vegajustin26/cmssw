@@ -29,15 +29,15 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   globals_ = new Globals(settings_);
   
   //Verify consistency
-  if (settings_->kphi0pars() != globals_->ITC_L1L2()->phi0_final.get_K()){
+  if (settings_->kphi0pars() != globals_->ITC_L1L2()->phi0_final.K()){
     throw cms::Exception("Inconsistency") << "phi0 conversion parameter inconsistency\n";
   }
 
-  if (settings_->krinvpars() != globals_->ITC_L1L2()->rinv_final.get_K()){
+  if (settings_->krinvpars() != globals_->ITC_L1L2()->rinv_final.K()){
     throw cms::Exception("Inconsistency") << "ring conversion parameter inconsistency\n";
   }
   
-  if (settings_->ktpars() != globals_->ITC_L1L2()->t_final.get_K()){
+  if (settings_->ktpars() != globals_->ITC_L1L2()->t_final.K()){
     throw cms::Exception("Inconsistency") << "t conversion parameter inconsistency\n";
   }
   

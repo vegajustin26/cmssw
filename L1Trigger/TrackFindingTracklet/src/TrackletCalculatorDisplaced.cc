@@ -508,8 +508,8 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
   double phicritapprox = phi0approx - asin(0.5 * settings_->rcrit() * rinvapprox);
   int phicrit = iphi0 - 2 * irinv;
 
-  int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.get_K();
-  int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.get_K();
+  int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.K();
+  int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.K();
   
   bool keepapprox = (phicritapprox > settings_->phicritminmc()) && (phicritapprox < settings_->phicritmaxmc()),
        keep = (phicrit > iphicritmincut) && (phicrit < iphicritmaxcut);
@@ -853,8 +853,8 @@ bool TrackletCalculatorDisplaced::DDLSeeding(const Stub* innerFPGAStub,
   double phicritapprox = phi0approx - asin(0.5 * settings_->rcrit() * rinvapprox);
   int phicrit = iphi0 - 2 * irinv;
 
-  int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.get_K();
-  int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.get_K();
+  int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.K();
+  int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.K();
 
   bool keepapprox = (phicritapprox > settings_->phicritminmc()) && (phicritapprox < settings_->phicritmaxmc()),
        keep = (phicrit > iphicritmincut) && (phicrit < iphicritmaxcut);
@@ -1183,8 +1183,8 @@ bool TrackletCalculatorDisplaced::LLDSeeding(const Stub* innerFPGAStub,
   double phicritapprox = phi0approx - asin(0.5 * settings_->rcrit() * rinvapprox);
   int phicrit = iphi0 - 2 * irinv;
 
-  int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.get_K();
-  int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.get_K();
+  int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.K();
+  int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.K();
   
   bool keepapprox = (phicritapprox > settings_->phicritminmc()) && (phicritapprox < settings_->phicritmaxmc()),
        keep = (phicrit > iphicritmincut) && (phicrit < iphicritmaxcut);

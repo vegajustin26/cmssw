@@ -288,8 +288,8 @@ bool TrackletCalculatorBase::inSector(int iphi0, int irinv, double phi0approx, d
   int ifactor = 0.5 * settings_->rcrit() * settings_->krinvpars() / settings_->kphi0pars() * (1 << 8);
   int iphicrit = iphi0 - (irinv >> 8) * ifactor;
 
-  int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.get_K();
-  int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.get_K();
+  int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.K();
+  int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.K();
 
   bool keepapprox = (phicritapprox > settings_->phicritminmc()) && (phicritapprox < settings_->phicritmaxmc()),
        keep = (iphicrit > iphicritmincut) && (iphicrit < iphicritmaxcut);
@@ -432,32 +432,32 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   ITC->der_rD_final.calculate();
 
   //store the approximate results
-  rinvapprox = ITC->rinv_final.get_fval();
-  phi0approx = ITC->phi0_final.get_fval();
-  tapprox = ITC->t_final.get_fval();
-  z0approx = ITC->z0_final.get_fval();
+  rinvapprox = ITC->rinv_final.fval();
+  phi0approx = ITC->phi0_final.fval();
+  tapprox = ITC->t_final.fval();
+  z0approx = ITC->z0_final.fval();
 
-  phiprojapprox[0] = ITC->phiL_0_final.get_fval();
-  phiprojapprox[1] = ITC->phiL_1_final.get_fval();
-  phiprojapprox[2] = ITC->phiL_2_final.get_fval();
-  phiprojapprox[3] = ITC->phiL_3_final.get_fval();
+  phiprojapprox[0] = ITC->phiL_0_final.fval();
+  phiprojapprox[1] = ITC->phiL_1_final.fval();
+  phiprojapprox[2] = ITC->phiL_2_final.fval();
+  phiprojapprox[3] = ITC->phiL_3_final.fval();
 
-  zprojapprox[0] = ITC->zL_0_final.get_fval();
-  zprojapprox[1] = ITC->zL_1_final.get_fval();
-  zprojapprox[2] = ITC->zL_2_final.get_fval();
-  zprojapprox[3] = ITC->zL_3_final.get_fval();
+  zprojapprox[0] = ITC->zL_0_final.fval();
+  zprojapprox[1] = ITC->zL_1_final.fval();
+  zprojapprox[2] = ITC->zL_2_final.fval();
+  zprojapprox[3] = ITC->zL_3_final.fval();
 
-  phiprojdiskapprox[0] = ITC->phiD_0_final.get_fval();
-  phiprojdiskapprox[1] = ITC->phiD_1_final.get_fval();
-  phiprojdiskapprox[2] = ITC->phiD_2_final.get_fval();
-  phiprojdiskapprox[3] = ITC->phiD_3_final.get_fval();
-  phiprojdiskapprox[4] = ITC->phiD_4_final.get_fval();
+  phiprojdiskapprox[0] = ITC->phiD_0_final.fval();
+  phiprojdiskapprox[1] = ITC->phiD_1_final.fval();
+  phiprojdiskapprox[2] = ITC->phiD_2_final.fval();
+  phiprojdiskapprox[3] = ITC->phiD_3_final.fval();
+  phiprojdiskapprox[4] = ITC->phiD_4_final.fval();
 
-  rprojdiskapprox[0] = ITC->rD_0_final.get_fval();
-  rprojdiskapprox[1] = ITC->rD_1_final.get_fval();
-  rprojdiskapprox[2] = ITC->rD_2_final.get_fval();
-  rprojdiskapprox[3] = ITC->rD_3_final.get_fval();
-  rprojdiskapprox[4] = ITC->rD_4_final.get_fval();
+  rprojdiskapprox[0] = ITC->rD_0_final.fval();
+  rprojdiskapprox[1] = ITC->rD_1_final.fval();
+  rprojdiskapprox[2] = ITC->rD_2_final.fval();
+  rprojdiskapprox[3] = ITC->rD_3_final.fval();
+  rprojdiskapprox[4] = ITC->rD_4_final.fval();
 
   //now binary
 
@@ -523,20 +523,20 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   ITC->der_rD_final.calculate();
 
   //store the binary results
-  irinv = ITC->rinv_final.get_ival();
-  iphi0 = ITC->phi0_final.get_ival();
-  it = ITC->t_final.get_ival();
-  iz0 = ITC->z0_final.get_ival();
+  irinv = ITC->rinv_final.ival();
+  iphi0 = ITC->phi0_final.ival();
+  it = ITC->t_final.ival();
+  iz0 = ITC->z0_final.ival();
 
-  iphiproj[0] = ITC->phiL_0_final.get_ival();
-  iphiproj[1] = ITC->phiL_1_final.get_ival();
-  iphiproj[2] = ITC->phiL_2_final.get_ival();
-  iphiproj[3] = ITC->phiL_3_final.get_ival();
+  iphiproj[0] = ITC->phiL_0_final.ival();
+  iphiproj[1] = ITC->phiL_1_final.ival();
+  iphiproj[2] = ITC->phiL_2_final.ival();
+  iphiproj[3] = ITC->phiL_3_final.ival();
 
-  izproj[0] = ITC->zL_0_final.get_ival();
-  izproj[1] = ITC->zL_1_final.get_ival();
-  izproj[2] = ITC->zL_2_final.get_ival();
-  izproj[3] = ITC->zL_3_final.get_ival();
+  izproj[0] = ITC->zL_0_final.ival();
+  izproj[1] = ITC->zL_1_final.ival();
+  izproj[2] = ITC->zL_2_final.ival();
+  izproj[3] = ITC->zL_3_final.ival();
 
   if (!goodTrackPars(ITC->rinv_final.local_passes(), ITC->z0_final.local_passes()))
     return false;
@@ -569,38 +569,38 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
                        settings_->rmean(settings_->projlayers(iSeed_,i)-1),
                        iphiproj[i],
                        izproj[i],
-                       ITC->der_phiL_final.get_ival(),
-                       ITC->der_zL_final.get_ival(),
+                       ITC->der_phiL_final.ival(),
+                       ITC->der_zL_final.ival(),
                        phiproj[i],
                        zproj[i],
                        phider[i],
                        zder[i],
                        phiprojapprox[i],
                        zprojapprox[i],
-                       ITC->der_phiL_final.get_fval(),
-                       ITC->der_zL_final.get_fval());
+                       ITC->der_phiL_final.fval(),
+                       ITC->der_zL_final.fval());
   }
 
-  iphiprojdisk[0] = ITC->phiD_0_final.get_ival();
-  iphiprojdisk[1] = ITC->phiD_1_final.get_ival();
-  iphiprojdisk[2] = ITC->phiD_2_final.get_ival();
-  iphiprojdisk[3] = ITC->phiD_3_final.get_ival();
-  iphiprojdisk[4] = ITC->phiD_4_final.get_ival();
+  iphiprojdisk[0] = ITC->phiD_0_final.ival();
+  iphiprojdisk[1] = ITC->phiD_1_final.ival();
+  iphiprojdisk[2] = ITC->phiD_2_final.ival();
+  iphiprojdisk[3] = ITC->phiD_3_final.ival();
+  iphiprojdisk[4] = ITC->phiD_4_final.ival();
 
-  irprojdisk[0] = ITC->rD_0_final.get_ival();
-  irprojdisk[1] = ITC->rD_1_final.get_ival();
-  irprojdisk[2] = ITC->rD_2_final.get_ival();
-  irprojdisk[3] = ITC->rD_3_final.get_ival();
-  irprojdisk[4] = ITC->rD_4_final.get_ival();
+  irprojdisk[0] = ITC->rD_0_final.ival();
+  irprojdisk[1] = ITC->rD_1_final.ival();
+  irprojdisk[2] = ITC->rD_2_final.ival();
+  irprojdisk[3] = ITC->rD_3_final.ival();
+  irprojdisk[4] = ITC->rD_4_final.ival();
 
-  if (std::abs(it * ITC->t_final.get_K()) > 1.0) {
+  if (std::abs(it * ITC->t_final.K()) > 1.0) {
     for (int i = 0; i < 5; ++i) {
       if (iphiprojdisk[i] <= 0)
         continue;
       if (iphiprojdisk[i] >= (1 << settings_->nphibitsstub(0)) - 1)
         continue;
 
-      if (irprojdisk[i] < 20. / ITC->rD_0_final.get_K() || irprojdisk[i] > 120. / ITC->rD_0_final.get_K())
+      if (irprojdisk[i] < 20. / ITC->rD_0_final.K() || irprojdisk[i] > 120. / ITC->rD_0_final.K())
         continue;
 
       
@@ -609,24 +609,24 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
                         settings_->zmean(i),
                         iphiprojdisk[i],
                         irprojdisk[i],
-                        ITC->der_phiD_final.get_ival(),
-                        ITC->der_rD_final.get_ival(),
+                        ITC->der_phiD_final.ival(),
+                        ITC->der_rD_final.ival(),
                         phiprojdisk[i],
                         rprojdisk[i],
                         phiderdisk[i],
                         rderdisk[i],
                         phiprojdiskapprox[i],
                         rprojdiskapprox[i],
-                        ITC->der_phiD_final.get_fval(),
-                        ITC->der_rD_final.get_fval());
+                        ITC->der_phiD_final.fval(),
+                        ITC->der_rD_final.fval());
     }
   }
 
   if (settings_->writeMonitorData("TPars")) {
     globals_->ofstream("trackletpars.txt")
-        << "Trackpars " << layerdisk1_+1 << "   " << rinv << " " << rinvapprox << " " << ITC->rinv_final.get_fval() << "   "
-        << phi0 << " " << phi0approx << " " << ITC->phi0_final.get_fval() << "   " << t << " " << tapprox << " "
-        << ITC->t_final.get_fval() << "   " << z0 << " " << z0approx << " " << ITC->z0_final.get_fval() << endl;
+        << "Trackpars " << layerdisk1_+1 << "   " << rinv << " " << rinvapprox << " " << ITC->rinv_final.fval() << "   "
+        << phi0 << " " << phi0approx << " " << ITC->phi0_final.fval() << "   " << t << " " << tapprox << " "
+        << ITC->t_final.fval() << "   " << z0 << " " << z0approx << " " << ITC->z0_final.fval() << endl;
   }
 
   Tracklet* tracklet = new Tracklet(settings_,
@@ -678,13 +678,13 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
                               iSeed_,
                               iSector_,
                               rinvapprox,
-                              irinv * ITC->rinv_final.get_K(),
+                              irinv * ITC->rinv_final.K(),
                               phi0approx,
-                              iphi0 * ITC->phi0_final.get_K(),
+                              iphi0 * ITC->phi0_final.K(),
                               asinh(tapprox),
-                              asinh(it * ITC->t_final.get_K()),
+                              asinh(it * ITC->t_final.K()),
                               z0approx,
-                              iz0 * ITC->z0_final.get_K(),
+                              iz0 * ITC->z0_final.K(),
                               tp);
   }
 
@@ -853,26 +853,26 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   ITC->der_rD_final.calculate();
 
   //store the approximate results
-  rinvapprox = ITC->rinv_final.get_fval();
-  phi0approx = ITC->phi0_final.get_fval();
-  tapprox = ITC->t_final.get_fval();
-  z0approx = ITC->z0_final.get_fval();
+  rinvapprox = ITC->rinv_final.fval();
+  phi0approx = ITC->phi0_final.fval();
+  tapprox = ITC->t_final.fval();
+  z0approx = ITC->z0_final.fval();
 
-  phiprojapprox[0] = ITC->phiL_0_final.get_fval();
-  phiprojapprox[1] = ITC->phiL_1_final.get_fval();
-  phiprojapprox[2] = ITC->phiL_2_final.get_fval();
+  phiprojapprox[0] = ITC->phiL_0_final.fval();
+  phiprojapprox[1] = ITC->phiL_1_final.fval();
+  phiprojapprox[2] = ITC->phiL_2_final.fval();
 
-  zprojapprox[0] = ITC->zL_0_final.get_fval();
-  zprojapprox[1] = ITC->zL_1_final.get_fval();
-  zprojapprox[2] = ITC->zL_2_final.get_fval();
+  zprojapprox[0] = ITC->zL_0_final.fval();
+  zprojapprox[1] = ITC->zL_1_final.fval();
+  zprojapprox[2] = ITC->zL_2_final.fval();
 
-  phiprojdiskapprox[0] = ITC->phiD_0_final.get_fval();
-  phiprojdiskapprox[1] = ITC->phiD_1_final.get_fval();
-  phiprojdiskapprox[2] = ITC->phiD_2_final.get_fval();
+  phiprojdiskapprox[0] = ITC->phiD_0_final.fval();
+  phiprojdiskapprox[1] = ITC->phiD_1_final.fval();
+  phiprojdiskapprox[2] = ITC->phiD_2_final.fval();
 
-  rprojdiskapprox[0] = ITC->rD_0_final.get_fval();
-  rprojdiskapprox[1] = ITC->rD_1_final.get_fval();
-  rprojdiskapprox[2] = ITC->rD_2_final.get_fval();
+  rprojdiskapprox[0] = ITC->rD_0_final.fval();
+  rprojdiskapprox[1] = ITC->rD_1_final.fval();
+  rprojdiskapprox[2] = ITC->rD_2_final.fval();
 
   //now binary
 
@@ -927,18 +927,18 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   ITC->der_rD_final.calculate();
 
   //store the binary results
-  irinv = ITC->rinv_final.get_ival();
-  iphi0 = ITC->phi0_final.get_ival();
-  it = ITC->t_final.get_ival();
-  iz0 = ITC->z0_final.get_ival();
+  irinv = ITC->rinv_final.ival();
+  iphi0 = ITC->phi0_final.ival();
+  it = ITC->t_final.ival();
+  iz0 = ITC->z0_final.ival();
 
-  iphiproj[0] = ITC->phiL_0_final.get_ival();
-  iphiproj[1] = ITC->phiL_1_final.get_ival();
-  iphiproj[2] = ITC->phiL_2_final.get_ival();
+  iphiproj[0] = ITC->phiL_0_final.ival();
+  iphiproj[1] = ITC->phiL_1_final.ival();
+  iphiproj[2] = ITC->phiL_2_final.ival();
 
-  izproj[0] = ITC->zL_0_final.get_ival();
-  izproj[1] = ITC->zL_1_final.get_ival();
-  izproj[2] = ITC->zL_2_final.get_ival();
+  izproj[0] = ITC->zL_0_final.ival();
+  izproj[1] = ITC->zL_1_final.ival();
+  izproj[2] = ITC->zL_2_final.ival();
 
   if (!goodTrackPars(ITC->rinv_final.local_passes(), ITC->z0_final.local_passes()))
     return false;
@@ -970,25 +970,25 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
                        settings_->rmean(i),
                        iphiproj[i],
                        izproj[i],
-                       ITC->der_phiL_final.get_ival(),
-                       ITC->der_zL_final.get_ival(),
+                       ITC->der_phiL_final.ival(),
+                       ITC->der_zL_final.ival(),
                        phiproj[i],
                        zproj[i],
                        phider[i],
                        zder[i],
                        phiprojapprox[i],
                        zprojapprox[i],
-                       ITC->der_phiL_final.get_fval(),
-                       ITC->der_zL_final.get_fval());
+                       ITC->der_phiL_final.fval(),
+                       ITC->der_zL_final.fval());
   }
 
-  iphiprojdisk[0] = ITC->phiD_0_final.get_ival();
-  iphiprojdisk[1] = ITC->phiD_1_final.get_ival();
-  iphiprojdisk[2] = ITC->phiD_2_final.get_ival();
+  iphiprojdisk[0] = ITC->phiD_0_final.ival();
+  iphiprojdisk[1] = ITC->phiD_1_final.ival();
+  iphiprojdisk[2] = ITC->phiD_2_final.ival();
 
-  irprojdisk[0] = ITC->rD_0_final.get_ival();
-  irprojdisk[1] = ITC->rD_1_final.get_ival();
-  irprojdisk[2] = ITC->rD_2_final.get_ival();
+  irprojdisk[0] = ITC->rD_0_final.ival();
+  irprojdisk[1] = ITC->rD_1_final.ival();
+  irprojdisk[2] = ITC->rD_2_final.ival();
 
   for (int i = 0; i < 3; ++i) {
     //check that phi projection in range
@@ -998,7 +998,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
       continue;
 
     //check that r projection in range
-    if (irprojdisk[i] <= 0 || irprojdisk[i] > 120. / ITC->rD_0_final.get_K())
+    if (irprojdisk[i] <= 0 || irprojdisk[i] > 120. / ITC->rD_0_final.K())
       continue;
 
     diskprojs[i].init(settings_,
@@ -1006,23 +1006,23 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
                       settings_->zmean(settings_->projdisks(iSeed_,i)-1),
                       iphiprojdisk[i],
                       irprojdisk[i],
-                      ITC->der_phiD_final.get_ival(),
-                      ITC->der_rD_final.get_ival(),
+                      ITC->der_phiD_final.ival(),
+                      ITC->der_rD_final.ival(),
                       phiprojdisk[i],
                       rprojdisk[i],
                       phiderdisk[i],
                       rderdisk[i],
                       phiprojdiskapprox[i],
                       rprojdiskapprox[i],
-                      ITC->der_phiD_final.get_fval(),
-                      ITC->der_rD_final.get_fval());
+                      ITC->der_phiD_final.fval(),
+                      ITC->der_rD_final.fval());
   }
 
   if (settings_->writeMonitorData("TPars")) {
     globals_->ofstream("trackletparsdisk.txt")
-        << "Trackpars         " << layerdisk1_-5 << "   " << rinv << " " << rinvapprox << " " << ITC->rinv_final.get_fval()
-        << "   " << phi0 << " " << phi0approx << " " << ITC->phi0_final.get_fval() << "   " << t << " " << tapprox
-        << " " << ITC->t_final.get_fval() << "   " << z0 << " " << z0approx << " " << ITC->z0_final.get_fval() << endl;
+        << "Trackpars         " << layerdisk1_-5 << "   " << rinv << " " << rinvapprox << " " << ITC->rinv_final.fval()
+        << "   " << phi0 << " " << phi0approx << " " << ITC->phi0_final.fval() << "   " << t << " " << tapprox
+        << " " << ITC->t_final.fval() << "   " << z0 << " " << z0approx << " " << ITC->z0_final.fval() << endl;
   }
 
   Tracklet* tracklet = new Tracklet(settings_,
@@ -1211,28 +1211,28 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   ITC->der_rD_final.calculate();
 
   //store the approximate results
-  rinvapprox = ITC->rinv_final.get_fval();
-  phi0approx = ITC->phi0_final.get_fval();
-  tapprox = ITC->t_final.get_fval();
-  z0approx = ITC->z0_final.get_fval();
+  rinvapprox = ITC->rinv_final.fval();
+  phi0approx = ITC->phi0_final.fval();
+  tapprox = ITC->t_final.fval();
+  z0approx = ITC->z0_final.fval();
 
-  phiprojapprox[0] = ITC->phiL_0_final.get_fval();
-  phiprojapprox[1] = ITC->phiL_1_final.get_fval();
-  phiprojapprox[2] = ITC->phiL_2_final.get_fval();
+  phiprojapprox[0] = ITC->phiL_0_final.fval();
+  phiprojapprox[1] = ITC->phiL_1_final.fval();
+  phiprojapprox[2] = ITC->phiL_2_final.fval();
 
-  zprojapprox[0] = ITC->zL_0_final.get_fval();
-  zprojapprox[1] = ITC->zL_1_final.get_fval();
-  zprojapprox[2] = ITC->zL_2_final.get_fval();
+  zprojapprox[0] = ITC->zL_0_final.fval();
+  zprojapprox[1] = ITC->zL_1_final.fval();
+  zprojapprox[2] = ITC->zL_2_final.fval();
 
-  phiprojdiskapprox[0] = ITC->phiD_0_final.get_fval();
-  phiprojdiskapprox[1] = ITC->phiD_1_final.get_fval();
-  phiprojdiskapprox[2] = ITC->phiD_2_final.get_fval();
-  phiprojdiskapprox[3] = ITC->phiD_3_final.get_fval();
+  phiprojdiskapprox[0] = ITC->phiD_0_final.fval();
+  phiprojdiskapprox[1] = ITC->phiD_1_final.fval();
+  phiprojdiskapprox[2] = ITC->phiD_2_final.fval();
+  phiprojdiskapprox[3] = ITC->phiD_3_final.fval();
 
-  rprojdiskapprox[0] = ITC->rD_0_final.get_fval();
-  rprojdiskapprox[1] = ITC->rD_1_final.get_fval();
-  rprojdiskapprox[2] = ITC->rD_2_final.get_fval();
-  rprojdiskapprox[3] = ITC->rD_3_final.get_fval();
+  rprojdiskapprox[0] = ITC->rD_0_final.fval();
+  rprojdiskapprox[1] = ITC->rD_1_final.fval();
+  rprojdiskapprox[2] = ITC->rD_2_final.fval();
+  rprojdiskapprox[3] = ITC->rD_3_final.fval();
 
   //now binary
 
@@ -1290,28 +1290,28 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   ITC->der_rD_final.calculate();
 
   //store the binary results
-  irinv = ITC->rinv_final.get_ival();
-  iphi0 = ITC->phi0_final.get_ival();
-  it = ITC->t_final.get_ival();
-  iz0 = ITC->z0_final.get_ival();
+  irinv = ITC->rinv_final.ival();
+  iphi0 = ITC->phi0_final.ival();
+  it = ITC->t_final.ival();
+  iz0 = ITC->z0_final.ival();
 
-  iphiproj[0] = ITC->phiL_0_final.get_ival();
-  iphiproj[1] = ITC->phiL_1_final.get_ival();
-  iphiproj[2] = ITC->phiL_2_final.get_ival();
+  iphiproj[0] = ITC->phiL_0_final.ival();
+  iphiproj[1] = ITC->phiL_1_final.ival();
+  iphiproj[2] = ITC->phiL_2_final.ival();
 
-  izproj[0] = ITC->zL_0_final.get_ival();
-  izproj[1] = ITC->zL_1_final.get_ival();
-  izproj[2] = ITC->zL_2_final.get_ival();
+  izproj[0] = ITC->zL_0_final.ival();
+  izproj[1] = ITC->zL_1_final.ival();
+  izproj[2] = ITC->zL_2_final.ival();
 
-  iphiprojdisk[0] = ITC->phiD_0_final.get_ival();
-  iphiprojdisk[1] = ITC->phiD_1_final.get_ival();
-  iphiprojdisk[2] = ITC->phiD_2_final.get_ival();
-  iphiprojdisk[3] = ITC->phiD_3_final.get_ival();
+  iphiprojdisk[0] = ITC->phiD_0_final.ival();
+  iphiprojdisk[1] = ITC->phiD_1_final.ival();
+  iphiprojdisk[2] = ITC->phiD_2_final.ival();
+  iphiprojdisk[3] = ITC->phiD_3_final.ival();
 
-  irprojdisk[0] = ITC->rD_0_final.get_ival();
-  irprojdisk[1] = ITC->rD_1_final.get_ival();
-  irprojdisk[2] = ITC->rD_2_final.get_ival();
-  irprojdisk[3] = ITC->rD_3_final.get_ival();
+  irprojdisk[0] = ITC->rD_0_final.ival();
+  irprojdisk[1] = ITC->rD_1_final.ival();
+  irprojdisk[2] = ITC->rD_2_final.ival();
+  irprojdisk[3] = ITC->rD_3_final.ival();
 
   if (!goodTrackPars(ITC->rinv_final.local_passes(), ITC->z0_final.local_passes()))
     return false;
@@ -1343,16 +1343,16 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
                        settings_->rmean(i),
                        iphiproj[i],
                        izproj[i],
-                       ITC->der_phiL_final.get_ival(),
-                       ITC->der_zL_final.get_ival(),
+                       ITC->der_phiL_final.ival(),
+                       ITC->der_zL_final.ival(),
                        phiproj[i],
                        zproj[i],
                        phider[i],
                        zder[i],
                        phiprojapprox[i],
                        zprojapprox[i],
-                       ITC->der_phiL_final.get_fval(),
-                       ITC->der_zL_final.get_fval());
+                       ITC->der_phiL_final.fval(),
+                       ITC->der_zL_final.fval());
   }
 
   for (int i = 0; i < 4; ++i) {
@@ -1363,7 +1363,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
       continue;
 
     //check that r projection in range
-    if (irprojdisk[i] <= 0 || irprojdisk[i] > 120. / ITC->rD_0_final.get_K())
+    if (irprojdisk[i] <= 0 || irprojdisk[i] > 120. / ITC->rD_0_final.K())
       continue;
 
     diskprojs[i].init(settings_,
@@ -1371,23 +1371,23 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
                       settings_->zmean(i),
                       iphiprojdisk[i],
                       irprojdisk[i],
-                      ITC->der_phiD_final.get_ival(),
-                      ITC->der_rD_final.get_ival(),
+                      ITC->der_phiD_final.ival(),
+                      ITC->der_rD_final.ival(),
                       phiprojdisk[i],
                       rprojdisk[i],
                       phiderdisk[i],
                       rderdisk[i],
                       phiprojdiskapprox[i],
                       rprojdiskapprox[i],
-                      ITC->der_phiD_final.get_fval(),
-                      ITC->der_rD_final.get_fval());
+                      ITC->der_phiD_final.fval(),
+                      ITC->der_rD_final.fval());
   }
 
   if (settings_->writeMonitorData("TPars")) {
     globals_->ofstream("trackletparsoverlap.txt")
-        << "Trackpars " << layerdisk1_-5 << "   " << rinv << " " << irinv << " " << ITC->rinv_final.get_fval() << "   " << phi0
-        << " " << iphi0 << " " << ITC->phi0_final.get_fval() << "   " << t << " " << it << " "
-        << ITC->t_final.get_fval() << "   " << z0 << " " << iz0 << " " << ITC->z0_final.get_fval() << endl;
+        << "Trackpars " << layerdisk1_-5 << "   " << rinv << " " << irinv << " " << ITC->rinv_final.fval() << "   " << phi0
+        << " " << iphi0 << " " << ITC->phi0_final.fval() << "   " << t << " " << it << " "
+        << ITC->t_final.fval() << "   " << z0 << " " << iz0 << " " << ITC->z0_final.fval() << endl;
   }
 
   Tracklet* tracklet = new Tracklet(settings_,

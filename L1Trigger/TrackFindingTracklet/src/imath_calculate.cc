@@ -33,7 +33,7 @@ bool var_base::calculate(int debug_level) {
         h_precision_ = 0.5 * h_nbins_ * K_;
         std::string st = name_ + ";fval;fval-ival*K";
         h_ = new TH2F(
-            hname.c_str(), name_.c_str(), h_nbins_, -get_range(), get_range(), h_nbins_, -h_precision_, h_precision_);
+            hname.c_str(), name_.c_str(), h_nbins_, -range(), range(), h_nbins_, -h_precision_, h_precision_);
         if (debug_level == 3)
           edm::LogVerbatim("Tracklet") << " booking histogram " << hname;
       }
@@ -81,10 +81,10 @@ bool var_base::calculate(int debug_level) {
 void var_flag::calculate_step() {
   int max_step = 0;
   for (const auto &cut : cuts_) {
-    if (!cut->get_cut_var())
+    if (!cut->cut_var())
       continue;
-    if (cut->get_cut_var()->get_latency() + cut->get_cut_var()->get_step() > max_step)
-      max_step = cut->get_cut_var()->get_latency() + cut->get_cut_var()->get_step();
+    if (cut->cut_var()->latency() + cut->cut_var()->step() > max_step)
+      max_step = cut->cut_var()->latency() + cut->cut_var()->step();
   }
   step_ = max_step;
 }
@@ -94,8 +94,8 @@ void var_flag::calculate_step() {
 //
 
 void var_adjustK::local_calculate() {
-  fval_ = p1_->get_fval();
-  ival_ = p1_->get_ival();
+  fval_ = p1_->fval();
+  ival_ = p1_->ival();
   if (lr_ > 0)
     ival_ = ival_ >> lr_;
   else if (lr_ < 0)
@@ -103,8 +103,8 @@ void var_adjustK::local_calculate() {
 }
 
 void var_adjustKR::local_calculate() {
-  fval_ = p1_->get_fval();
-  ival_ = p1_->get_ival();
+  fval_ = p1_->fval();
+  ival_ = p1_->ival();
   if (lr_ > 0)
     ival_ = ((ival_ >> (lr_ - 1)) + 1) >> 1;  //rounding
   else if (lr_ < 0)
@@ -112,9 +112,9 @@ void var_adjustKR::local_calculate() {
 }
 
 void var_add::local_calculate() {
-  fval_ = p1_->get_fval() + p2_->get_fval();
-  long int i1 = p1_->get_ival();
-  long int i2 = p2_->get_ival();
+  fval_ = p1_->fval() + p2_->fval();
+  long int i1 = p1_->ival();
+  long int i2 = p2_->ival();
   if (shift1 > 0)
     i1 = i1 << shift1;
   if (shift2 > 0)
@@ -125,9 +125,9 @@ void var_add::local_calculate() {
 }
 
 void var_subtract::local_calculate() {
-  fval_ = p1_->get_fval() - p2_->get_fval();
-  long int i1 = p1_->get_ival();
-  long int i2 = p2_->get_ival();
+  fval_ = p1_->fval() - p2_->fval();
+  long int i1 = p1_->ival();
+  long int i2 = p2_->ival();
   if (shift1 > 0)
     i1 = i1 << shift1;
   if (shift2 > 0)
@@ -138,23 +138,23 @@ void var_subtract::local_calculate() {
 }
 
 void var_nounits::local_calculate() {
-  fval_ = p1_->get_fval();
-  ival_ = (p1_->get_ival() * cI_) >> ps_;
+  fval_ = p1_->fval();
+  ival_ = (p1_->ival() * cI_) >> ps_;
 }
 
 void var_timesC::local_calculate() {
-  fval_ = p1_->get_fval() * cF_;
-  ival_ = (p1_->get_ival() * cI_) >> ps_;
+  fval_ = p1_->fval() * cF_;
+  ival_ = (p1_->ival() * cI_) >> ps_;
 }
 
 void var_neg::local_calculate() {
-  fval_ = -p1_->get_fval();
-  ival_ = -p1_->get_ival();
+  fval_ = -p1_->fval();
+  ival_ = -p1_->ival();
 }
 
 void var_shift::local_calculate() {
-  fval_ = p1_->get_fval() * pow(2, -shift_);
-  ival_ = p1_->get_ival();
+  fval_ = p1_->fval() * pow(2, -shift_);
+  ival_ = p1_->ival();
   if (shift_ > 0)
     ival_ = ival_ >> shift_;
   if (shift_ < 0)
@@ -162,8 +162,8 @@ void var_shift::local_calculate() {
 }
 
 void var_shiftround::local_calculate() {
-  fval_ = p1_->get_fval() * pow(2, -shift_);
-  ival_ = p1_->get_ival();
+  fval_ = p1_->fval() * pow(2, -shift_);
+  ival_ = p1_->ival();
   if (shift_ > 0)
     ival_ = ((ival_ >> (shift_ - 1)) + 1) >> 1;
   if (shift_ < 0)
@@ -171,22 +171,22 @@ void var_shiftround::local_calculate() {
 }
 
 void var_mult::local_calculate() {
-  fval_ = p1_->get_fval() * p2_->get_fval();
-  ival_ = (p1_->get_ival() * p2_->get_ival()) >> ps_;
+  fval_ = p1_->fval() * p2_->fval();
+  ival_ = (p1_->ival() * p2_->ival()) >> ps_;
 }
 
 void var_DSP_postadd::local_calculate() {
-  fval_ = p1_->get_fval() * p2_->get_fval() + p3_->get_fval();
-  ival_ = p3_->get_ival();
+  fval_ = p1_->fval() * p2_->fval() + p3_->fval();
+  ival_ = p3_->ival();
   if (shift3_ > 0)
     ival_ = ival_ << shift3_;
   if (shift3_ < 0)
     ival_ = ival_ >> (-shift3_);
-  ival_ += p1_->get_ival() * p2_->get_ival();
+  ival_ += p1_->ival() * p2_->ival();
   ival_ = ival_ >> ps_;
 }
 
 void var_inv::local_calculate() {
-  fval_ = 1. / (offset_ + p1_->get_fval());
-  ival_ = LUT[ival_to_addr(p1_->get_ival())];
+  fval_ = 1. / (offset_ + p1_->fval());
+  ival_ = LUT[ival_to_addr(p1_->ival())];
 }

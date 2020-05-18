@@ -224,9 +224,9 @@ public:
   var_mult x22_1{globals_, "x22_1", &x8_1, &x10_1, 4 * x22_max};
   var_mult x22_2{globals_, "x22_2", &x8_2, &x10_2, 4 * x22_max};
 
-  var_subtract phiL_0{globals_, "phiL_0", &phi0_final, &x22_0, -1, phi0_final.get_nbits() + 1};
-  var_subtract phiL_1{globals_, "phiL_1", &phi0_final, &x22_1, -1, phi0_final.get_nbits() + 1};
-  var_subtract phiL_2{globals_, "phiL_2", &phi0_final, &x22_2, -1, phi0_final.get_nbits() + 1};
+  var_subtract phiL_0{globals_, "phiL_0", &phi0_final, &x22_0, -1, phi0_final.nbits() + 1};
+  var_subtract phiL_1{globals_, "phiL_1", &phi0_final, &x22_1, -1, phi0_final.nbits() + 1};
+  var_subtract phiL_2{globals_, "phiL_2", &phi0_final, &x22_2, -1, phi0_final.nbits() + 1};
 
   var_shift x3{globals_, "x3", &rinv, 1};
   var_neg der_phiL{globals_, "der_phiL", &x3};

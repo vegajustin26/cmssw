@@ -23,10 +23,10 @@ void var_cut::print(std::map<const var_base*, std::set<std::string> >& cut_strin
                     HLS,
                     const std::map<const var_base*, std::set<std::string> >* const previous_cut_strings) const {
   assert(step > -1);
-  std::string name = cut_var_->get_name();
+  std::string name = cut_var_->name();
 
-  const int lower_cut = lower_cut_ / cut_var_->get_K();
-  const int upper_cut = upper_cut_ / cut_var_->get_K();
+  const int lower_cut = lower_cut_ / cut_var_->K();
+  const int upper_cut = upper_cut_ / cut_var_->K();
   if (!previous_cut_strings || (previous_cut_strings && !previous_cut_strings->count(cut_var_))) {
     if (!cut_strings.count(cut_var_))
       cut_strings[cut_var_];
@@ -49,8 +49,8 @@ void var_base::print_cuts(std::map<const var_base*, std::set<std::string> >& cut
 
   for (const auto& cut : cuts_) {
     const var_cut* const cast_cut = (var_cut*)cut;
-    const int lower_cut = cast_cut->get_lower_cut() / K_;
-    const int upper_cut = cast_cut->get_upper_cut() / K_;
+    const int lower_cut = cast_cut->lower_cut() / K_;
+    const int upper_cut = cast_cut->upper_cut() / K_;
     if (!previous_cut_strings || (previous_cut_strings && !previous_cut_strings->count(this))) {
       if (!cut_strings.count(this))
         cut_strings[this];
@@ -71,9 +71,9 @@ void var_adjustK::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   else if (lr_ < 0)
     shift = " << " + itos(-lr_);
 
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
 
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n";
   fs << "const ap_int<" << nbits_ << "> " << name_ << " = " << n1 << shift << ";\n";
 }
 
@@ -83,7 +83,7 @@ void var_adjustKR::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l2 == 0);
   assert(l3 == 0);
 
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
 
   std::string o1 = n1;
   if (lr_ == 1)
@@ -93,7 +93,7 @@ void var_adjustKR::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   if (lr_ < 0)
     o1 = "ap_int<" + itos(nbits_) + ">(" + o1 + ")<<" + itos(-lr_);
 
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n";
   fs << "const ap_int<" << nbits_ << "> " << name_ << " = " << o1 << ";\n";
 }
 
@@ -102,7 +102,7 @@ void var_def::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l2 == 0);
   assert(l3 == 0);
 
-  fs << "// units " << get_kstring() << "\t" << K_ << "\n";
+  fs << "// units " << kstring() << "\t" << K_ << "\n";
   fs << "const ap_int<" << nbits_ << "> " << name_ << " = " << name_ << "_wire;\n";
 }
 
@@ -111,7 +111,7 @@ void var_param::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l2 == 0);
   assert(l3 == 0);
 
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n";
   fs << "static const ap_int<" << nbits_ << "> " << name_ << " = " << ival_ << ";\n";
 }
 
@@ -121,14 +121,14 @@ void var_add::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string o1 = p1_->get_name();
+  std::string o1 = p1_->name();
   if (shift1 > 0) {
     o1 = "ap_int<" + itos(nbits_ + ps_) + ">(" + o1 + ")";
     o1 += "<<" + itos(shift1);
     o1 = "(" + o1 + ")";
   }
 
-  std::string o2 = p2_->get_name();
+  std::string o2 = p2_->name();
   if (shift2 > 0) {
     o2 = "ap_int<" + itos(nbits_ + ps_) + ">(" + o2 + ")";
     o2 += "<<" + itos(shift2);
@@ -139,7 +139,7 @@ void var_add::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
 
   std::string t = "";
   print_truncation(t, o1, ps_, hls);
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t;
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
 void var_subtract::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
@@ -148,14 +148,14 @@ void var_subtract::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string o1 = p1_->get_name();
+  std::string o1 = p1_->name();
   if (shift1 > 0) {
     o1 = "ap_int<" + itos(nbits_ + ps_) + ">(" + o1 + ")";
     o1 += "<<" + itos(shift1);
     o1 = "(" + o1 + ")";
   }
 
-  std::string o2 = p2_->get_name();
+  std::string o2 = p2_->name();
   if (shift2 > 0) {
     o2 = "ap_int<" + itos(nbits_ + ps_) + ">(" + o2 + ")";
     o2 += "<<" + itos(shift2);
@@ -166,7 +166,7 @@ void var_subtract::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
 
   std::string t = "";
   print_truncation(t, o1, ps_, hls);
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t;
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
 void var_nounits::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
@@ -174,12 +174,12 @@ void var_nounits::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   std::string o1 = "(" + n1 + " * " + itos(cI_) + ")";
 
   std::string t = "";
   print_truncation(t, o1, ps_, hls);
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t;
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
 void var_timesC::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
@@ -187,12 +187,12 @@ void var_timesC::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   std::string o1 = "(" + n1 + " * " + itos(cI_) + ")";
 
   std::string t = "";
   print_truncation(t, o1, ps_, hls);
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t;
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
 void var_neg::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
@@ -200,10 +200,10 @@ void var_neg::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
 
   std::string t = "const ap_int<" + itos(nbits_) + "> " + name_ + " = -" + n1 + ";\n";
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t << ";\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
 void var_shiftround::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
@@ -211,7 +211,7 @@ void var_shiftround::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   std::string o1 = n1;
   if (shift_ == 1)
     o1 = "(" + o1 + "+1)>>1";
@@ -221,7 +221,7 @@ void var_shiftround::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
     o1 = "ap_int<" + itos(nbits_) + ">(" + o1 + ")<<" + itos(-shift_);
 
   std::string t = "const ap_int<" + itos(nbits_) + "> " + name_ + " = " + o1 + ";\n";
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t << ";\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
 void var_shift::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
@@ -229,7 +229,7 @@ void var_shift::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   std::string o1 = n1;
   if (shift_ > 0)
     o1 = o1 + ">>" + itos(shift_);
@@ -237,7 +237,7 @@ void var_shift::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
     o1 = "ap_int<" + itos(nbits_) + ">(" + o1 + ")<<" + itos(-shift_);
 
   std::string t = "const ap_int<" + itos(nbits_) + "> " + name_ + " = " + o1 + ";\n";
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t << ";\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
 void var_mult::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
@@ -245,14 +245,14 @@ void var_mult::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l2 == 0);
   assert(l3 == 0);
   assert(p1_);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   assert(p2_);
-  std::string n2 = p2_->get_name();
+  std::string n2 = p2_->name();
   std::string o1 = n1 + " * " + n2;
 
   std::string t = "";
   print_truncation(t, o1, ps_, hls);
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t;
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
 void var_inv::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
@@ -265,7 +265,7 @@ void var_inv::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "#include \"LUT_" << name_ << ".h\"\n";
   fs << "};\n";
 
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   //first calculate address
   std::string t1 = "addr_" + name_;
   std::string t = "const ap_uint<" + itos(nbaddr_) + "> " + t1 + " = ";
@@ -287,21 +287,21 @@ void var_flag::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "const ap_int<1> " << name_ << " = (";
   std::map<const var_base*, std::set<std::string> > cut_strings0, cut_strings1;
   for (const auto& cut : cuts_) {
-    if (cut->get_op() != "cut")
+    if (cut->op() != "cut")
       continue;
     const var_cut* const cast_cut = (var_cut*)cut;
     cast_cut->print(cut_strings0, step_, hls);
   }
   for (const auto& cut : cuts_) {
-    if (cut->get_op() != "cut")
+    if (cut->op() != "cut")
       cut->print_cuts(cut_strings1, step_, hls, &cut_strings0);
     else {
-      if (cut->get_cut_var()->get_p1())
-        cut->get_cut_var()->get_p1()->print_cuts(cut_strings1, step_, hls, &cut_strings1);
-      if (cut->get_cut_var()->get_p2())
-        cut->get_cut_var()->get_p2()->print_cuts(cut_strings1, step_, hls, &cut_strings1);
-      if (cut->get_cut_var()->get_p3())
-        cut->get_cut_var()->get_p3()->print_cuts(cut_strings1, step_, hls, &cut_strings1);
+      if (cut->cut_var()->p1())
+        cut->cut_var()->p1()->print_cuts(cut_strings1, step_, hls, &cut_strings1);
+      if (cut->cut_var()->p2())
+        cut->cut_var()->p2()->print_cuts(cut_strings1, step_, hls, &cut_strings1);
+      if (cut->cut_var()->p3())
+        cut->cut_var()->p3()->print_cuts(cut_strings1, step_, hls, &cut_strings1);
     }
   }
 
@@ -358,7 +358,7 @@ void var_base::design_print(std::vector<var_base*> v, std::ofstream& fs, HLS) {
   vd.clear();
   int imax = v.size();
   for (int i = 0; i < imax; ++i)
-    (v[i])->get_inputs(&vd);
+    (v[i])->inputs(&vd);
 
   //print header
   fs << "#include \"ap_int.h\"\n\n";
@@ -366,14 +366,14 @@ void var_base::design_print(std::vector<var_base*> v, std::ofstream& fs, HLS) {
 
   imax = vd.size();
   for (int i = 0; i < imax; ++i)
-    fs << "  const ap_int<" << (vd[i])->get_nbits() << "> " << (vd[i])->get_name() << "_wire,\n";
+    fs << "  const ap_int<" << (vd[i])->nbits() << "> " << (vd[i])->name() << "_wire,\n";
   fs << "\n";
 
   imax = v.size() - 1;
   for (int i = 0; i < imax; ++i)
-    fs << "  ap_int<" << (v[i])->get_nbits() << "> * const " << (v[i])->get_name() << "_wire,\n";
+    fs << "  ap_int<" << (v[i])->nbits() << "> * const " << (v[i])->name() << "_wire,\n";
   if (imax >= 0)
-    fs << "  ap_int<" << (v[imax])->get_nbits() << "> * const " << (v[imax])->get_name() << "_wire\n";
+    fs << "  ap_int<" << (v[imax])->nbits() << "> * const " << (v[imax])->name() << "_wire\n";
   fs << ")\n{\n";
   fs << "#pragma HLS pipeline II=1\n";
   fs << "#pragma HLS latency max=25\n";
@@ -382,7 +382,7 @@ void var_base::design_print(std::vector<var_base*> v, std::ofstream& fs, HLS) {
   imax = v.size();
   for (int i = 0; i < imax; ++i) {
     fs << "\n//\n";
-    fs << "// calculating " << (v[i])->get_name() << "\n";
+    fs << "// calculating " << (v[i])->name() << "\n";
     fs << "//\n";
     (v[i])->print_all(fs, hls);
   }
@@ -394,8 +394,8 @@ void var_base::design_print(std::vector<var_base*> v, std::ofstream& fs, HLS) {
   fs << "// wiring the outputs \n";
   fs << "//\n";
   for (int i = 0; i < imax; ++i) {
-    std::string n = v[i]->get_name() + "_wire";
-    fs << "*" << n << " = " << (v[i])->get_name() << ";\n";
+    std::string n = v[i]->name() + "_wire";
+    fs << "*" << n << " = " << (v[i])->name() << ";\n";
   }
 
   fs << "}\n";

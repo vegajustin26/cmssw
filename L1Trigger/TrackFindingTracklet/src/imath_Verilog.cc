@@ -25,13 +25,13 @@ void var_cut::print(std::map<const var_base*, std::set<std::string> >& cut_strin
                     const int step,
                     Verilog,
                     const std::map<const var_base*, std::set<std::string> >* const previous_cut_strings) const {
-  int l = step - cut_var_->get_latency() - cut_var_->get_step();
-  std::string name = cut_var_->get_name();
+  int l = step - cut_var_->latency() - cut_var_->step();
+  std::string name = cut_var_->name();
   if (l > 0)
     name += "_delay" + itos(l);
 
-  const int lower_cut = lower_cut_ / cut_var_->get_K();
-  const int upper_cut = upper_cut_ / cut_var_->get_K();
+  const int lower_cut = lower_cut_ / cut_var_->K();
+  const int upper_cut = upper_cut_ / cut_var_->K();
   if (!previous_cut_strings || (previous_cut_strings && !previous_cut_strings->count(cut_var_))) {
     if (!cut_strings.count(cut_var_))
       cut_strings[cut_var_];
@@ -57,8 +57,8 @@ void var_base::print_cuts(std::map<const var_base*, std::set<std::string> >& cut
 
   for (const auto& cut : cuts_) {
     const var_cut* const cast_cut = (var_cut*)cut;
-    const int lower_cut = cast_cut->get_lower_cut() / K_;
-    const int upper_cut = cast_cut->get_upper_cut() / K_;
+    const int lower_cut = cast_cut->lower_cut() / K_;
+    const int upper_cut = cast_cut->upper_cut() / K_;
     if (!previous_cut_strings || (previous_cut_strings && !previous_cut_strings->count(this))) {
       if (!cut_strings.count(this))
         cut_strings[this];
@@ -78,11 +78,11 @@ void var_adjustK::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   else if (lr_ < 0)
     shift = " << " + itos(-lr_);
 
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   if (l1 > 0)
     n1 = n1 + "_delay" + itos(l1);
 
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n";
   std::string t = "wire signed [" + itos(nbits_ - 1) + ":0]" + name_ + ";\n";
   t += "assign " + name_ + " = " + n1 + shift;
   fs << t << "; \n";
@@ -93,7 +93,7 @@ void var_adjustKR::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(l2 == 0);
   assert(l3 == 0);
 
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   if (l1 > 0)
     n1 = n1 + "_delay" + itos(l1);
 
@@ -107,7 +107,7 @@ void var_adjustKR::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
 
   std::string t = "reg signed [" + itos(nbits_ - 1) + ":0]" + name_ + ";\n";
   t += "always @(posedge clk) " + name_ + " <= " + o1;
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t << ";\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
 void var_def::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
@@ -117,7 +117,7 @@ void var_def::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
 
   std::string t = "reg signed  [" + itos(nbits_ - 1) + ":0]" + name_ + ";\n";
   t = t + "always @(posedge clk) " + name_ + " <= " + name_ + "_wire;\n";
-  fs << "// units " << get_kstring() << "\t" << K_ << "\n" << t;
+  fs << "// units " << kstring() << "\t" << K_ << "\n" << t;
 }
 
 void var_param::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
@@ -129,14 +129,14 @@ void var_param::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
     t = t + "- " + itos(nbits_) + "\'sd" + itos(-ival_);
   else
     t = t + itos(nbits_) + "\'sd" + itos(ival_);
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t << ";\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
 void var_add::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(p2_);
   assert(l3 == 0);
-  std::string o1 = p1_->get_name();
+  std::string o1 = p1_->name();
   if (l1 > 0)
     o1 += "_delay" + itos(l1);
   if (shift1 > 0) {
@@ -144,7 +144,7 @@ void var_add::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
     o1 = "(" + o1 + ")";
   }
 
-  std::string o2 = p2_->get_name();
+  std::string o2 = p2_->name();
   if (l2 > 0)
     o2 += "_delay" + itos(l2);
   if (shift2 > 0) {
@@ -156,14 +156,14 @@ void var_add::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
 
   std::string t = "";
   print_truncation(t, o1, ps_, verilog);
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t;
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
 void var_subtract::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(p2_);
   assert(l3 == 0);
-  std::string o1 = p1_->get_name();
+  std::string o1 = p1_->name();
   if (l1 > 0)
     o1 += "_delay" + itos(l1);
   if (shift1 > 0) {
@@ -171,7 +171,7 @@ void var_subtract::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
     o1 = "(" + o1 + ")";
   }
 
-  std::string o2 = p2_->get_name();
+  std::string o2 = p2_->name();
   if (l2 > 0)
     o2 += "_delay" + itos(l2);
   if (shift2 > 0) {
@@ -183,55 +183,55 @@ void var_subtract::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
 
   std::string t = "";
   print_truncation(t, o1, ps_, verilog);
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t;
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
 void var_nounits::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   if (l1 > 0)
     n1 = n1 + "_delay" + itos(l1);
   std::string o1 = "(" + n1 + " * " + itos(cI_) + ")";
 
   std::string t = "";
   print_truncation(t, o1, ps_, verilog);
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t;
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
 void var_timesC::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   if (l1 > 0)
     n1 = n1 + "_delay" + itos(l1);
   std::string o1 = "(" + n1 + " * " + itos(cI_) + ")";
 
   std::string t = "";
   print_truncation(t, o1, ps_, verilog);
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t;
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
 void var_neg::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   if (l1 > 0)
     n1 = n1 + "_delay" + itos(l1);
 
   std::string t = "reg signed  [" + itos(nbits_ - 1) + ":0]" + name_ + ";\n";
   t += "always @(posedge clk) " + name_ + " <= - " + n1;
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t << ";\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
 void var_shiftround::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   if (l1 > 0)
     n1 = n1 + "_delay" + itos(l1);
   std::string o1 = n1;
@@ -244,14 +244,14 @@ void var_shiftround::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
 
   std::string t = "reg signed [" + itos(nbits_ - 1) + ":0]" + name_ + ";\n";
   t += "always @(posedge clk) " + name_ + " <= " + o1;
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t << ";\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
 void var_shift::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   if (l1 > 0)
     n1 = n1 + "_delay" + itos(l1);
   std::string o1 = n1;
@@ -262,31 +262,31 @@ void var_shift::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
 
   std::string t = "wire signed [" + itos(nbits_ - 1) + ":0]" + name_ + ";\n";
   t += "assign " + name_ + " = " + o1;
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t << ";\n";
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
 void var_mult::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(l3 == 0);
   assert(p1_);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   if (l1 > 0)
     n1 = n1 + "_delay" + itos(l1);
   assert(p2_);
-  std::string n2 = p2_->get_name();
+  std::string n2 = p2_->name();
   if (l2 > 0)
     n2 = n2 + "_delay" + itos(l2);
   std::string o1 = n1 + " * " + n2;
 
   std::string t = "";
   print_truncation(t, o1, ps_, verilog);
-  fs << "// " << nbits_ << " bits \t " << get_kstring() << "\t" << K_ << "\n" << t;
+  fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
 void var_inv::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   if (l1 > 0)
     n1 = n1 + "_delay" + itos(l1);
   //first calculate address
@@ -327,13 +327,13 @@ void var_DSP_postadd::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) 
   assert(p1_);
   assert(p2_);
   assert(p3_);
-  std::string n1 = p1_->get_name();
+  std::string n1 = p1_->name();
   if (l1 > 0)
     n1 = n1 + "_delay" + itos(l1);
-  std::string n2 = p2_->get_name();
+  std::string n2 = p2_->name();
   if (l2 > 0)
     n2 = n2 + "_delay" + itos(l2);
-  std::string n3 = p3_->get_name();
+  std::string n3 = p3_->name();
   if (l3 > 0)
     n3 = n3 + "_delay" + itos(l3);
 
@@ -358,21 +358,21 @@ void var_flag::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "assign " << name_ << " = (";
   std::map<const var_base*, std::set<std::string> > cut_strings0, cut_strings1;
   for (const auto& cut : cuts_) {
-    if (cut->get_op() != "cut")
+    if (cut->op() != "cut")
       continue;
     const var_cut* const cast_cut = (var_cut*)cut;
     cast_cut->print(cut_strings0, step_, verilog);
   }
   for (const auto& cut : cuts_) {
-    if (cut->get_op() != "cut")
+    if (cut->op() != "cut")
       cut->print_cuts(cut_strings1, step_, verilog, &cut_strings0);
     else {
-      if (cut->get_cut_var()->get_p1())
-        cut->get_cut_var()->get_p1()->print_cuts(cut_strings1, step_, verilog, &cut_strings1);
-      if (cut->get_cut_var()->get_p2())
-        cut->get_cut_var()->get_p2()->print_cuts(cut_strings1, step_, verilog, &cut_strings1);
-      if (cut->get_cut_var()->get_p3())
-        cut->get_cut_var()->get_p3()->print_cuts(cut_strings1, step_, verilog, &cut_strings1);
+      if (cut->cut_var()->p1())
+        cut->cut_var()->p1()->print_cuts(cut_strings1, step_, verilog, &cut_strings1);
+      if (cut->cut_var()->p2())
+        cut->cut_var()->p2()->print_cuts(cut_strings1, step_, verilog, &cut_strings1);
+      if (cut->cut_var()->p3())
+        cut->cut_var()->p3()->print_cuts(cut_strings1, step_, verilog, &cut_strings1);
     }
   }
 
@@ -407,46 +407,46 @@ void var_base::print_step(int step, std::ofstream& fs, Verilog) {
   int l3 = 0;
   if (p1_) {
     p1_->print_step(step, fs, verilog);
-    l1 = step_ - p1_->get_latency() - p1_->get_step();
+    l1 = step_ - p1_->latency() - p1_->step();
   }
   if (p2_) {
     p2_->print_step(step, fs, verilog);
-    l2 = step_ - p2_->get_latency() - p2_->get_step();
+    l2 = step_ - p2_->latency() - p2_->step();
   }
   if (p3_) {
     p3_->print_step(step, fs, verilog);
-    l3 = step_ - p3_->get_latency() - p3_->get_step();
+    l3 = step_ - p3_->latency() - p3_->step();
   }
   if (step == step_) {
     if (l1 < 0 || l2 < 0 || l3 < 0 || (l1 > 0 && l2 > 0 && l3 > 0)) {
       char slog[100];
       sprintf(slog, "%s::print_step(%i): something wrong with latencies! %i %i %i\n", name_.c_str(), step, l1, l2, l3);
       edm::LogVerbatim("Tracklet") << slog;
-      dump_cout();
+      dump_msg();
       assert(0);
     }
     if (l1 > 0) {
-      if (p1_->get_op() != "const")
-        fs << pipe_delay(p1_, p1_->get_nbits(), l1);
+      if (p1_->op() != "const")
+        fs << pipe_delay(p1_, p1_->nbits(), l1);
       else
         l1 = 0;
     }
     if (l2 > 0) {
-      if (p2_->get_op() != "const")
-        fs << pipe_delay(p2_, p2_->get_nbits(), l2);
+      if (p2_->op() != "const")
+        fs << pipe_delay(p2_, p2_->nbits(), l2);
       else
         l2 = 0;
     }
     if (l3 > 0) {
-      if (p3_->get_op() != "const")
-        fs << pipe_delay(p3_, p3_->get_nbits(), l3);
+      if (p3_->op() != "const")
+        fs << pipe_delay(p3_, p3_->nbits(), l3);
       else
         l3 = 0;
     }
 
     if (op_ == "flag") {
       for (const auto& cut : cuts_)
-        fs << cut->get_cut_var()->pipe_delays(step_);
+        fs << cut->cut_var()->pipe_delays(step_);
     }
 
     print(fs, verilog, l1, l2, l3);
@@ -472,8 +472,8 @@ void var_base::design_print(std::vector<var_base*> v, std::ofstream& fs, Verilog
   vd.clear();
   int imax = v.size();
   for (int i = 0; i < imax; ++i) {
-    (v[i])->get_inputs(&vd);
-    int step = v[i]->get_step() + v[i]->get_latency();
+    (v[i])->inputs(&vd);
+    int step = v[i]->step() + v[i]->latency();
     if (step > maxstep)
       maxstep = step;
   }
@@ -486,20 +486,20 @@ void var_base::design_print(std::vector<var_base*> v, std::ofstream& fs, Verilog
 
   imax = vd.size();
   for (int i = 0; i < imax; ++i)
-    fs << "   input [" << (vd[i])->get_nbits() - 1 << ":0] " << (vd[i])->get_name() << "_wire,\n";
+    fs << "   input [" << (vd[i])->nbits() - 1 << ":0] " << (vd[i])->name() << "_wire,\n";
   fs << "\n";
 
   imax = v.size() - 1;
   for (int i = 0; i < imax; ++i)
-    if (v[i]->get_nbits() > 1)
-      fs << "   output [" << (v[i])->get_nbits() - 1 << ":0] " << (v[i])->get_name() << "_wire,\n";
+    if (v[i]->nbits() > 1)
+      fs << "   output [" << (v[i])->nbits() - 1 << ":0] " << (v[i])->name() << "_wire,\n";
     else
-      fs << "   output " << (v[i])->get_name() << "_wire,\n";
+      fs << "   output " << (v[i])->name() << "_wire,\n";
   if (imax >= 0) {
-    if (v[imax]->get_nbits() > 1)
-      fs << "   output [" << (v[imax])->get_nbits() - 1 << ":0] " << (v[imax])->get_name() << "_wire\n";
+    if (v[imax]->nbits() > 1)
+      fs << "   output [" << (v[imax])->nbits() - 1 << ":0] " << (v[imax])->name() << "_wire\n";
     else
-      fs << "   output " << (v[imax])->get_name() << "_wire\n";
+      fs << "   output " << (v[imax])->name() << "_wire\n";
   }
   fs << ");\n\n";
 
@@ -507,7 +507,7 @@ void var_base::design_print(std::vector<var_base*> v, std::ofstream& fs, Verilog
   imax = v.size();
   for (int i = 0; i < imax; ++i) {
     fs << "\n//\n";
-    fs << "// calculating " << (v[i])->get_name() << "\n";
+    fs << "// calculating " << (v[i])->name() << "\n";
     fs << "//\n";
     (v[i])->print_all(fs, verilog);
   }
@@ -520,12 +520,12 @@ void var_base::design_print(std::vector<var_base*> v, std::ofstream& fs, Verilog
   fs << "// latency = " << maxstep << "\n";
   fs << "//\n";
   for (int i = 0; i < imax; ++i) {
-    std::string n = v[i]->get_name() + "_wire";
-    int delay = maxstep - v[i]->get_step() - v[i]->get_latency();
+    std::string n = v[i]->name() + "_wire";
+    int delay = maxstep - v[i]->step() - v[i]->latency();
     if (delay == 0)
-      fs << "assign " << n << " = " << (v[i])->get_name() << ";\n";
+      fs << "assign " << n << " = " << (v[i])->name() << ";\n";
     else
-      fs << pipe_delay_wire(v[i], n, v[i]->get_nbits(), delay);
+      fs << pipe_delay_wire(v[i], n, v[i]->nbits(), delay);
   }
 
   fs << "endmodule\n";
