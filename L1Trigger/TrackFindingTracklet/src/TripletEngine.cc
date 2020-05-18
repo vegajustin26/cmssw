@@ -3,6 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 #include <algorithm>
 
@@ -443,6 +444,9 @@ void TripletEngine::readTables() {
   tableName = "../data/table_TRE/table_" + name_ + ".txt";
 
   fin.open(tableName, ifstream::in);
+  if (!fin) {
+    throw cms::Exception("BadConfig") << "TripletEngine::readTables, file " << tableName << " not known";
+  }
   while (!fin.eof()) {
     fin >> word;
     num = atoi(word.c_str());

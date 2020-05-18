@@ -6,8 +6,8 @@
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 
-
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -401,6 +401,10 @@ void TrackletEngineDisplaced::readTables() {
   tableName = "../data/table_TED/table_" + name_ + ".txt";
 
   fin.open(tableName, ifstream::in);
+  if (!fin) {
+    throw cms::Exception("BadConfig") << "TripletEngine::readTables, file " << tableName << " not known";
+  }
+
   while (getline(fin, line)) {
     istringstream iss(line);
     table_.resize(table_.size() + 1);
