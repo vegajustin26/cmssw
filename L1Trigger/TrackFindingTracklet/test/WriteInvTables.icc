@@ -1,13 +1,13 @@
 edm::LogVerbatim("Tracklet") << " Writing Inverse Tables";
 
 ofstream finv;
-void (*writeLUT)(const var_inv&, ofstream&) = NULL;
+void (*writeLUT)(const VarInv&, ofstream&) = NULL;
 string extension = "";
 if (settings.writeInvTable()) {
-  writeLUT = [](const var_inv& x, ofstream& fs) -> void { return x.writeLUT(fs, var_base::verilog); };
+  writeLUT = [](const VarInv& x, ofstream& fs) -> void { return x.writeLUT(fs, VarBase::verilog); };
   extension = "h";
 } else {
-  writeLUT = [](const var_inv& x, ofstream& fs) -> void { return x.writeLUT(fs, var_base::hls); };
+  writeLUT = [](const VarInv& x, ofstream& fs) -> void { return x.writeLUT(fs, VarBase::hls); };
   extension = "tab";
 }
 

@@ -1,12 +1,12 @@
 #include "../interface/imath.h"
 
-void var_inv::writeLUT(std::ofstream& fs, HLS) const {
+void VarInv::writeLUT(std::ofstream& fs, HLS) const {
   for (int i = 0; i < Nelements_ - 1; ++i)
     fs << "0x" << std::hex << (LUT[i] & ((1 << nbits_) - 1)) << std::dec << ",\n";
   fs << "0x" << std::hex << (LUT[Nelements_ - 1] & ((1 << nbits_) - 1)) << std::dec << "\n";
 }
 
-void var_base::print_truncation(std::string& t, const std::string& o1, const int ps, HLS) const {
+void VarBase::print_truncation(std::string& t, const std::string& o1, const int ps, HLS) const {
   if (ps > 0) {
     t += "const ap_int<" + itos(nbits_ + ps) + "> " + name_ + "_tmp = " + o1 + ";\n";
     t += "const ap_int<" + itos(nbits_) + "> " + name_ + " = " + name_ + "_tmp >> " + itos(ps) + ";\n";
@@ -18,10 +18,10 @@ void var_base::print_truncation(std::string& t, const std::string& o1, const int
 // print functions
 //
 
-void var_cut::print(std::map<const var_base*, std::set<std::string> >& cut_strings,
+void VarCut::print(std::map<const VarBase*, std::set<std::string> >& cut_strings,
                     const int step,
                     HLS,
-                    const std::map<const var_base*, std::set<std::string> >* const previous_cut_strings) const {
+                    const std::map<const VarBase*, std::set<std::string> >* const previous_cut_strings) const {
   assert(step > -1);
   std::string name = cut_var_->name();
 
@@ -34,10 +34,10 @@ void var_cut::print(std::map<const var_base*, std::set<std::string> >& cut_strin
   }
 }
 
-void var_base::print_cuts(std::map<const var_base*, std::set<std::string> >& cut_strings,
+void VarBase::print_cuts(std::map<const VarBase*, std::set<std::string> >& cut_strings,
                           const int step,
                           HLS,
-                          const std::map<const var_base*, std::set<std::string> >* const previous_cut_strings) const {
+                          const std::map<const VarBase*, std::set<std::string> >* const previous_cut_strings) const {
   if (p1_)
     p1_->print_cuts(cut_strings, step, hls, previous_cut_strings);
   if (p2_)
@@ -48,7 +48,7 @@ void var_base::print_cuts(std::map<const var_base*, std::set<std::string> >& cut
   std::string name = name_;
 
   for (const auto& cut : cuts_) {
-    const var_cut* const cast_cut = (var_cut*)cut;
+    const VarCut* const cast_cut = (VarCut*)cut;
     const int lower_cut = cast_cut->lower_cut() / K_;
     const int upper_cut = cast_cut->upper_cut() / K_;
     if (!previous_cut_strings || (previous_cut_strings && !previous_cut_strings->count(this))) {
@@ -59,7 +59,7 @@ void var_base::print_cuts(std::map<const var_base*, std::set<std::string> >& cut
   }
 }
 
-void var_adjustK::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarAdjustK::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(p1_);
   assert(l1 == 0);
   assert(l2 == 0);
@@ -77,7 +77,7 @@ void var_adjustK::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "const ap_int<" << nbits_ << "> " << name_ << " = " << n1 << shift << ";\n";
 }
 
-void var_adjustKR::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarAdjustKR::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(p1_);
   assert(l1 == 0);
   assert(l2 == 0);
@@ -97,7 +97,7 @@ void var_adjustKR::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "const ap_int<" << nbits_ << "> " << name_ << " = " << o1 << ";\n";
 }
 
-void var_def::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarDef::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -106,7 +106,7 @@ void var_def::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "const ap_int<" << nbits_ << "> " << name_ << " = " << name_ << "_wire;\n";
 }
 
-void var_param::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarParam::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -115,7 +115,7 @@ void var_param::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "static const ap_int<" << nbits_ << "> " << name_ << " = " << ival_ << ";\n";
 }
 
-void var_add::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarAdd::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(p1_);
   assert(p2_);
   assert(l1 == 0);
@@ -142,7 +142,7 @@ void var_add::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
-void var_subtract::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarSubtract::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(p1_);
   assert(p2_);
   assert(l1 == 0);
@@ -169,7 +169,7 @@ void var_subtract::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
-void var_nounits::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarNounits::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(p1_);
   assert(l1 == 0);
   assert(l2 == 0);
@@ -182,7 +182,7 @@ void var_nounits::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
-void var_timesC::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarTimesC::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(p1_);
   assert(l1 == 0);
   assert(l2 == 0);
@@ -195,7 +195,7 @@ void var_timesC::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
-void var_neg::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarNeg::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(p1_);
   assert(l1 == 0);
   assert(l2 == 0);
@@ -206,7 +206,7 @@ void var_neg::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
-void var_shiftround::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarShiftround::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(p1_);
   assert(l1 == 0);
   assert(l2 == 0);
@@ -224,7 +224,7 @@ void var_shiftround::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
-void var_shift::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarShift::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(p1_);
   assert(l1 == 0);
   assert(l2 == 0);
@@ -240,7 +240,7 @@ void var_shift::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
-void var_mult::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarMult::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -255,7 +255,7 @@ void var_mult::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
-void var_inv::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarInv::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(p1_);
   assert(l1 == 0);
   assert(l2 == 0);
@@ -279,17 +279,17 @@ void var_inv::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << t;
 }
 
-void var_flag::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
+void VarFlag::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
 
   fs << "const ap_int<1> " << name_ << " = (";
-  std::map<const var_base*, std::set<std::string> > cut_strings0, cut_strings1;
+  std::map<const VarBase*, std::set<std::string> > cut_strings0, cut_strings1;
   for (const auto& cut : cuts_) {
     if (cut->op() != "cut")
       continue;
-    const var_cut* const cast_cut = (var_cut*)cut;
+    const VarCut* const cast_cut = (VarCut*)cut;
     cast_cut->print(cut_strings0, step_, hls);
   }
   for (const auto& cut : cuts_) {
@@ -326,7 +326,7 @@ void var_flag::print(std::ofstream& fs, HLS, int l1, int l2, int l3) {
   fs << ")));";
 }
 
-void var_base::print_step(int step, std::ofstream& fs, HLS) {
+void VarBase::print_step(int step, std::ofstream& fs, HLS) {
   if (!readytoprint_)
     return;
   if (step > step_)
@@ -343,18 +343,18 @@ void var_base::print_step(int step, std::ofstream& fs, HLS) {
   }
 }
 
-void var_base::print_all(std::ofstream& fs, HLS) {
+void VarBase::print_all(std::ofstream& fs, HLS) {
   for (int i = 0; i <= step_; ++i) {
     fs << "//\n// STEP " << i << "\n\n";
     print_step(i, fs, hls);
   }
 }
 
-void var_base::design_print(std::vector<var_base*> v, std::ofstream& fs, HLS) {
+void VarBase::design_print(std::vector<VarBase*> v, std::ofstream& fs, HLS) {
   //header of the module
 
   //inputs
-  std::vector<var_base*> vd;
+  std::vector<VarBase*> vd;
   vd.clear();
   int imax = v.size();
   for (int i = 0; i < imax; ++i)

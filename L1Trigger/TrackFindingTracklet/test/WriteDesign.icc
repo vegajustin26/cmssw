@@ -1,4 +1,4 @@
-std::map<std::string, std::vector<var_base *> > v;
+std::map<std::string, std::vector<VarBase *> > v;
 
 ////////////////////////////////////////////////////////////////////////////
 // L1L2
@@ -637,12 +637,12 @@ v.at("L2B1").push_back(&globals->ITC_L2B1()->valid_der_rD);
 
 for (const auto &calculator : v) {
   const std::string &layer = calculator.first;
-  const std::vector<var_base *> v = calculator.second;
+  const std::vector<VarBase *> v = calculator.second;
   ofstream fv("TC_" + layer + (settings.writeVerilog() ? ".v" : ".cpp"));
 
   if (settings.writeVerilog())
-    var_base::design_print(v, fv, var_base::verilog);
+    VarBase::design_print(v, fv, VarBase::verilog);
   else
-    var_base::design_print(v, fv, var_base::hls);
+    VarBase::design_print(v, fv, VarBase::hls);
   fv.close();
 }

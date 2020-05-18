@@ -19,48 +19,48 @@
 // the maximum and minimum values that the variable assumes are stored and updated each time calculate() is called
 // if IMATH_ROOT is defined, all values are also stored in a histogram
 //
-// var_def     (string name, string units, double fmax, double K):
+// VarDef     (string name, string units, double fmax, double K):
 //                   define variable with bit value fval = K*ival, and maximum absolute value fmax.
 //                   calculates nbins on its own
 //                   one can assign value to it using set_ methods
 //
-// var_param   (string name, string units, double fval, int nbits):
+// VarParam   (string name, string units, double fval, int nbits):
 //                   define a parameter. K is calculated based on the fval and nbits
 //
-//         or  (string name, std::string units, double fval, double K):
+//         or (string name, std::string units, double fval, double K):
 //                   define a parameer with bit value fval = K*ival.
 //                   calculates nbins on its own
 //
-// var_add     (string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18):
-// var_subtract(string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18):
+// VarAdd     (string name, VarBase *p1, VarBase *p2, double range = -1, int nmax = 18):
+// VarSubtract(string name, VarBase *p1, VarBase *p2, double range = -1, int nmax = 18):
 //                   add/subtract variables. Bit length increases by 1, but capped at nmax
 //                   if range>0 specified, bit length is decreased to drop unnecessary high bits
 //
-// var_mult    (string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18):
+// VarMult    (string name, VarBase *p1, VarBase *p2, double range = -1, int nmax = 18):
 //                   multiplication. Bit length is a sum of the lengths of the operads, but capped at nmax
 //                   if range>0 specified, bit length is decreased to drop unnecessary high bits or post-shift is reduced
 //
-// var_timesC  (string name, var_base *p1, double cF, int ps = 17):
+// VarTimesC  (string name, VarBase *p1, double cF, int ps = 17):
 //                   multiplication by a constant. Bit length stays the same
 //                   ps defines number of bits used to represent the constant
 //
-// var_DSP_postadd (string name, var_base *p1, var_base *p2, var_base *p3, double range = -1, int nmax = 18):
+// VarDSPPostadd (string name, VarBase *p1, VarBase *p2, VarBase *p3, double range = -1, int nmax = 18):
 //                   explicit instantiation of the 3-clock DSP postaddition: p1*p2+p3
-//                   range and nmax have the same meaning as for the var_mult.
+//                   range and nmax have the same meaning as for the VarMult.
 //
-// var_shift  (string name, var_base *p1, int shift):
+// VarShift  (string name, VarBase *p1, int shift):
 //                   shifts the variable right by shift (equivalent to multiplication by pow(2, -shift));
 //                   Units stay the same, nbits are adjusted.
 //
-// var_shiftround  (string name, var_base *p1, int shift):
+// VarShiftround  (string name, VarBase *p1, int shift):
 //                   shifts the variable right by shift, but doing rounding, i.e.
 //                   (p>>(shift-1)+1)>>1;
 //                   Units stay the same, nbits are adjusted.
 //
-// var_neg    (string name, var_base *p1):
+// VarNeg    (string name, VarBase *p1):
 //                   multiplies the variable by -1
 //
-// var_inv     (string name, var_base *p1, double offset, int nbits, int n, unsigned int shift, mode m, int nbaddr=-1):
+// VarInv     (string name, VarBase *p1, double offset, int nbits, int n, unsigned int shift, mode m, int nbaddr=-1):
 //                   LUT-based inversion, f = 1./(offset + f1) and  i = 2^n / (offsetI + i1)
 //                   nbits is the width of the LUT (signed)
 //                   m is from enum mode {pos, neg, both} and refers to possible sign values of f
@@ -69,16 +69,16 @@
 //                   nbaddr: if not specified, it is taken to be equal to p1->nbits()
 //
 //
-// var_nounits (string name, var_base *p1, int ps = 17):
+// VarNounits (string name, VarBase *p1, int ps = 17):
 //                   convert a number with units to a number - needed for trig function expansion (i.e. 1 - 0.5*phi^2)
 //                   ps is a number of bits to represent the unit conversion constant
 //
-// var_adjustK (string name, var_base *p1, double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1)
+// VarAdjustK (string name, VarBase *p1, double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1)
 //                   adjust variable shift so the K is as close to Knew as possible (needed for bit length adjustments)
 //                   if do_assert is true, throw an exeption if Knew/Kold is not a power of two
 //                   epsilon is a comparison precision, nbits forces the bit length (possibly discarding MSBs)
 //
-// var_adjustKR (string name, var_base *p1, double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1)
+// VarAdjustKR (string name, VarBase *p1, double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1)
 //                   - same as adjustK(), but with rounding, and therefore latency=1
 //
 // bool calculate(int debug_level) runs through the entire formula tree recalculating both ineteger and floating point values
@@ -90,19 +90,19 @@
 //                                   2 - as 1, but also include explicit warnings when LUT was used out of its range
 //                                   3 - maximum complaints level
 //
-// var_flag (string name, var_base *cut_var, var_base *...)
+// VarFlag (string name, VarBase *cut_var, VarBase *...)
 //
 //                    flag to apply cuts defined for any variable. When output as Verilog, the flag
 //                    is true if and only if the following conditions are all true:
-//                       1) the cut defined by each var_cut pointer in the argument list must be passed
+//                       1) the cut defined by each VarCut pointer in the argument list must be passed
 //                       by the associated variable
-//                       2) each var_base pointer in the argument list that is not also a var_cut
+//                       2) each VarBase pointer in the argument list that is not also a VarCut
 //                       pointer must pass all of its associated cuts
 //                       3) all children of the variables in the argument list must pass all of their
 //                       associated cuts
-//                    The var_flag::passes() method replicates the behavior of the output Verilog,
+//                    The VarFlag::passes() method replicates the behavior of the output Verilog,
 //                    returning true if and only if the above conditions are all true. The
-//                    var_base::local_passes() method can be used to query if a given variable passes
+//                    VarBase::local_passes() method can be used to query if a given variable passes
 //                    its associated cuts, regardless of whether its children do.
 //
 #ifndef L1Trigger_TrackFindingTracklet_interface_imath_h
@@ -150,12 +150,12 @@ struct imathGlobals {
 #endif
 };
 
-class var_cut;
-class var_flag;
+class VarCut;
+class VarFlag;
 
-class var_base {
+class VarBase {
 public:
-  var_base(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, var_base *p3, int l) {
+  VarBase(imathGlobals *globals, std::string name, VarBase *p1, VarBase *p2, VarBase *p3, int l) {
     globals_ = globals;
     p1_ = p1;
     p2_ = p2;
@@ -189,7 +189,7 @@ public:
     }
 #endif
   }
-  virtual ~var_base() {
+  virtual ~VarBase() {
 #ifdef IMATH_ROOT
     if (globals_->h_file_) {
       globals_->h_file_->ls();
@@ -207,25 +207,25 @@ public:
   std::string kstring() const;
   std::string name() const { return name_; }
   std::string op() const { return op_; }
-  var_base *p1() const { return p1_; }
-  var_base *p2() const { return p2_; }
-  var_base *p3() const { return p3_; }
+  VarBase *p1() const { return p1_; }
+  VarBase *p2() const { return p2_; }
+  VarBase *p3() const { return p3_; }
   double fval() const { return fval_; }
   long int ival() const { return ival_; }
 
   bool local_passes() const;
-  void passes(std::map<const var_base *, std::vector<bool> > &passes,
-              const std::map<const var_base *, std::vector<bool> > *const previous_passes = NULL) const;
-  void print_cuts(std::map<const var_base *, std::set<std::string> > &cut_strings,
+  void passes(std::map<const VarBase *, std::vector<bool> > &passes,
+              const std::map<const VarBase *, std::vector<bool> > *const previous_passes = NULL) const;
+  void print_cuts(std::map<const VarBase *, std::set<std::string> > &cut_strings,
                   const int step,
                   Verilog,
-                  const std::map<const var_base *, std::set<std::string> > *const previous_cut_strings = NULL) const;
-  void print_cuts(std::map<const var_base *, std::set<std::string> > &cut_strings,
+                  const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = NULL) const;
+  void print_cuts(std::map<const VarBase *, std::set<std::string> > &cut_strings,
                   const int step,
                   HLS,
-                  const std::map<const var_base *, std::set<std::string> > *const previous_cut_strings = NULL) const;
-  void add_cut(var_cut *cut, const bool call_set_cut_var = true);
-  var_base *cut_var();
+                  const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = NULL) const;
+  void add_cut(VarCut *cut, const bool call_set_cut_var = true);
+  VarBase *cut_var();
 
   double minval() const { return minval_; }
   double maxval() const { return maxval_; }
@@ -255,10 +255,10 @@ public:
   bool calculate() { return calculate(0); }
   virtual void local_calculate() {}
   virtual void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) {
-    fs << "// var_base here. Soemthing is wrong!! " << l1 << ", " << l2 << ", " << l3 << "\n";
+    fs << "// VarBase here. Soemthing is wrong!! " << l1 << ", " << l2 << ", " << l3 << "\n";
   }
   virtual void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) {
-    fs << "// var_base here. Soemthing is wrong!! " << l1 << ", " << l2 << ", " << l3 << "\n";
+    fs << "// VarBase here. Soemthing is wrong!! " << l1 << ", " << l2 << ", " << l3 << "\n";
   }
   void print_step(int step, std::ofstream &fs, Verilog);
   void print_step(int step, std::ofstream &fs, HLS);
@@ -266,22 +266,22 @@ public:
   void print_all(std::ofstream &fs, HLS);
   void print_truncation(std::string &t, const std::string &o1, const int ps, Verilog) const;
   void print_truncation(std::string &t, const std::string &o1, const int ps, HLS) const;
-  void inputs(std::vector<var_base *> *vd);  //collect all inputs
+  void inputs(std::vector<VarBase *> *vd);  //collect all inputs
 
   int pipe_counter() { return pipe_counter_; }
   void pipe_increment() { pipe_counter_++; }
   void add_delay(int i) { pipe_delays_.push_back(i); }
   bool has_delay(int i);  //returns true if already have this variable delayed.
-  static void verilog_print(std::vector<var_base *> v, std::ofstream &fs) { design_print(v, fs, verilog); }
-  static void hls_print(std::vector<var_base *> v, std::ofstream &fs) { design_print(v, fs, hls); }
-  static void design_print(std::vector<var_base *> v, std::ofstream &fs, Verilog);
-  static void design_print(std::vector<var_base *> v, std::ofstream &fs, HLS);
-  static std::string pipe_delay(var_base *v, int nbits, int delay);
+  static void verilog_print(std::vector<VarBase *> v, std::ofstream &fs) { design_print(v, fs, verilog); }
+  static void hls_print(std::vector<VarBase *> v, std::ofstream &fs) { design_print(v, fs, hls); }
+  static void design_print(std::vector<VarBase *> v, std::ofstream &fs, Verilog);
+  static void design_print(std::vector<VarBase *> v, std::ofstream &fs, HLS);
+  static std::string pipe_delay(VarBase *v, int nbits, int delay);
   std::string pipe_delays(const int step);
-  static std::string pipe_delay_wire(var_base *v, std::string name_delayed, int nbits, int delay);
+  static std::string pipe_delay_wire(VarBase *v, std::string name_delayed, int nbits, int delay);
 
 #ifdef IMATH_ROOT
-  static TTree *addToTree(imathGlobals *globals, var_base *v, char *s = 0);
+  static TTree *addToTree(imathGlobals *globals, VarBase *v, char *s = 0);
   static TTree *addToTree(imathGlobals *globals, int *v, char *s);
   static TTree *addToTree(imathGlobals *globals, double *v, char *s);
   static void fillTree(imathGlobals *globals);
@@ -295,9 +295,9 @@ public:
 protected:
   imathGlobals *globals_;
   std::string name_;
-  var_base *p1_;
-  var_base *p2_;
-  var_base *p3_;
+  VarBase *p1_;
+  VarBase *p2_;
+  VarBase *p3_;
   std::string op_;  // operation
   int latency_;     // number of clock cycles for the operation (for HDL output)
   int step_;        // step number in the calculation (for HDL output)
@@ -306,8 +306,8 @@ protected:
   long int ival_;  // integer calculation
   double val_;     // integer calculation converted to double, ival_*K
 
-  std::vector<var_base *> cuts_;
-  var_base *cut_var_;
+  std::vector<VarBase *> cuts_;
+  VarBase *cut_var_;
 
   int nbits_;
   double K_;
@@ -333,16 +333,16 @@ protected:
 #endif
 };
 
-class var_adjustK : public var_base {
+class VarAdjustK : public VarBase {
 public:
-  var_adjustK(imathGlobals *globals,
+  VarAdjustK(imathGlobals *globals,
               std::string name,
-              var_base *p1,
+              VarBase *p1,
               double Knew,
               double epsilon = 1e-5,
               bool do_assert = false,
               int nbits = -1)
-      : var_base(globals, name, p1, 0, 0, 0) {
+      : VarBase(globals, name, p1, 0, 0, 0) {
     op_ = "adjustK";
     K_ = p1->K();
     Kmap_ = p1->Kmap();
@@ -362,7 +362,7 @@ public:
     Kmap_["2"] = Kmap_["2"] + lr_;
   }
 
-  virtual ~var_adjustK() {}
+  virtual ~VarAdjustK() {}
 
   void adjust(double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1);
 
@@ -374,16 +374,16 @@ protected:
   int lr_;
 };
 
-class var_adjustKR : public var_base {
+class VarAdjustKR : public VarBase {
 public:
-  var_adjustKR(imathGlobals *globals,
+  VarAdjustKR(imathGlobals *globals,
                std::string name,
-               var_base *p1,
+               VarBase *p1,
                double Knew,
                double epsilon = 1e-5,
                bool do_assert = false,
                int nbits = -1)
-      : var_base(globals, name, p1, 0, 0, 1) {
+      : VarBase(globals, name, p1, 0, 0, 1) {
     op_ = "adjustKR";
     K_ = p1->K();
     Kmap_ = p1->Kmap();
@@ -403,7 +403,7 @@ public:
     Kmap_["2"] = Kmap_["2"] + lr_;
   }
 
-  virtual ~var_adjustKR() {}
+  virtual ~VarAdjustKR() {}
 
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -413,9 +413,9 @@ protected:
   int lr_;
 };
 
-class var_param : public var_base {
+class VarParam : public VarBase {
 public:
-  var_param(imathGlobals *globals, std::string name, double fval, int nbits) : var_base(globals, name, 0, 0, 0, 0) {
+  VarParam(imathGlobals *globals, std::string name, double fval, int nbits) : VarBase(globals, name, 0, 0, 0, 0) {
     op_ = "const";
     nbits_ = nbits;
     int l = log2(std::abs(fval)) + 1.9999999 - nbits;
@@ -424,8 +424,8 @@ public:
     fval_ = fval;
     ival_ = fval / K_;
   }
-  var_param(imathGlobals *globals, std::string name, std::string units, double fval, double K)
-      : var_base(globals, name, 0, 0, 0, 0) {
+  VarParam(imathGlobals *globals, std::string name, std::string units, double fval, double K)
+      : VarBase(globals, name, 0, 0, 0, 0) {
     op_ = "const";
     K_ = K;
     nbits_ = log2(fval / K) + 1.999999;  //plus one to round up
@@ -443,7 +443,7 @@ public:
     }
   }
 
-  virtual ~var_param() {}
+  virtual ~VarParam() {}
 
   void set_fval(double fval) {
     fval_ = fval;
@@ -462,11 +462,11 @@ public:
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
 };
 
-class var_def : public var_base {
+class VarDef : public VarBase {
 public:
   //construct from scratch
-  var_def(imathGlobals *globals, std::string name, std::string units, double fmax, double K)
-      : var_base(globals, name, 0, 0, 0, 1) {
+  VarDef(imathGlobals *globals, std::string name, std::string units, double fmax, double K)
+      : VarBase(globals, name, 0, 0, 0, 1) {
     op_ = "def";
     K_ = K;
     nbits_ = log2(fmax / K) + 1.999999;  //plus one to round up
@@ -484,7 +484,7 @@ public:
     }
   }
   //construct from abother variable (all provenance info is lost!)
-  var_def(imathGlobals *globals, std::string name, var_base *p) : var_base(globals, name, 0, 0, 0, 1) {
+  VarDef(imathGlobals *globals, std::string name, VarBase *p) : VarBase(globals, name, 0, 0, 0, 1) {
     op_ = "def";
     K_ = p->K();
     nbits_ = p->nbits();
@@ -503,15 +503,15 @@ public:
     fval_ = ival * K_;
     val_ = ival_ * K_;
   }
-  virtual ~var_def() {}
+  virtual ~VarDef() {}
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
 };
 
-class var_add : public var_base {
+class VarAdd : public VarBase {
 public:
-  var_add(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
-      : var_base(globals, name, p1, p2, 0, 1) {
+  VarAdd(imathGlobals *globals, std::string name, VarBase *p1, VarBase *p2, double range = -1, int nmax = 18)
+      : VarBase(globals, name, p1, p2, 0, 1) {
     op_ = "add";
 
     std::map<std::string, int> map1 = p1->Kmap();
@@ -534,7 +534,7 @@ public:
     for (const auto& it : map1) {
       if (it.second != 0) {
         if (it.first != "2") {
-          snprintf(slog, 100, "var_add: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
+          snprintf(slog, 100, "VarAdd: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
           edm::LogVerbatim("Tracklet") << slog;
           edm::LogVerbatim("Tracklet") << " *********************************************************";
           p1->dump_msg();
@@ -549,7 +549,7 @@ public:
     double ki2 = p2->K() / pow(2, s2);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
-      snprintf(slog, 100, "var_add: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
+      snprintf(slog, 100, "VarAdd: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
       edm::LogVerbatim("Tracklet") << slog;
       edm::LogVerbatim("Tracklet") << " *********************************************************";
       p1->dump_msg();
@@ -587,7 +587,7 @@ public:
 
     K_ = ki1 * pow(2, Kmap_["2"]);
   }
-  virtual ~var_add() {}
+  virtual ~VarAdd() {}
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -598,10 +598,10 @@ protected:
   int shift2;
 };
 
-class var_subtract : public var_base {
+class VarSubtract : public VarBase {
 public:
-  var_subtract(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
-      : var_base(globals, name, p1, p2, 0, 1) {
+  VarSubtract(imathGlobals *globals, std::string name, VarBase *p1, VarBase *p2, double range = -1, int nmax = 18)
+      : VarBase(globals, name, p1, p2, 0, 1) {
     op_ = "subtract";
 
     std::map<std::string, int> map1 = p1->Kmap();
@@ -624,7 +624,7 @@ public:
     for (const auto& it : map1) {
       if (it.second != 0) {
         if (it.first != "2") {
-          snprintf(slog, 100, "var_add: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
+          snprintf(slog, 100, "VarAdd: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
           edm::LogVerbatim("Tracklet") << slog;
           edm::LogVerbatim("Tracklet") << " *********************************************************";
           p1->dump_msg();
@@ -639,7 +639,7 @@ public:
     double ki2 = p2->K() / pow(2, s2);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
-      snprintf(slog, 100, "var_add: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
+      snprintf(slog, 100, "VarAdd: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
       edm::LogVerbatim("Tracklet") << slog;
       edm::LogVerbatim("Tracklet") << " *********************************************************";
       p1->dump_msg();
@@ -678,7 +678,7 @@ public:
     K_ = ki1 * pow(2, Kmap_["2"]);
   }
   
-  virtual ~var_subtract() {}
+  virtual ~VarSubtract() {}
 
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -690,10 +690,10 @@ protected:
   int shift2;
 };
 
-class var_nounits : public var_base {
+class VarNounits : public VarBase {
 public:
-  var_nounits(imathGlobals *globals, std::string name, var_base *p1, int ps = 17)
-      : var_base(globals, name, p1, 0, 0, MULT_LATENCY) {
+  VarNounits(imathGlobals *globals, std::string name, VarBase *p1, int ps = 17)
+      : VarBase(globals, name, p1, 0, 0, MULT_LATENCY) {
     op_ = "nounits";
     ps_ = ps;
     nbits_ = p1->nbits();
@@ -707,7 +707,7 @@ public:
     double c = ki * pow(2, -m);
     cI_ = c * pow(2, ps_);
   }
-  virtual ~var_nounits() {}
+  virtual ~VarNounits() {}
 
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -718,10 +718,10 @@ protected:
   int cI_;
 };
 
-class var_shiftround : public var_base {
+class VarShiftround : public VarBase {
 public:
-  var_shiftround(imathGlobals *globals, std::string name, var_base *p1, int shift)
-      : var_base(globals, name, p1, 0, 0, 1) {  // latency is one because there is an addition
+  VarShiftround(imathGlobals *globals, std::string name, VarBase *p1, int shift)
+      : VarBase(globals, name, p1, 0, 0, 1) {  // latency is one because there is an addition
     op_ = "shiftround";
     shift_ = shift;
 
@@ -729,7 +729,7 @@ public:
     Kmap_ = p1->Kmap();
     K_ = p1->K();
   }
-  virtual ~var_shiftround() {}
+  virtual ~VarShiftround() {}
   
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -739,9 +739,9 @@ protected:
   int shift_;
 };
 
-class var_shift : public var_base {
+class VarShift : public VarBase {
 public:
-  var_shift(imathGlobals *globals, std::string name, var_base *p1, int shift) : var_base(globals, name, p1, 0, 0, 0) {
+  VarShift(imathGlobals *globals, std::string name, VarBase *p1, int shift) : VarBase(globals, name, p1, 0, 0, 0) {
     op_ = "shift";
     shift_ = shift;
 
@@ -749,7 +749,7 @@ public:
     Kmap_ = p1->Kmap();
     K_ = p1->K();
   }
-  virtual ~var_shift() {}
+  virtual ~VarShift() {}
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -758,24 +758,24 @@ protected:
   int shift_;
 };
 
-class var_neg : public var_base {
+class VarNeg : public VarBase {
 public:
-  var_neg(imathGlobals *globals, std::string name, var_base *p1) : var_base(globals, name, p1, 0, 0, 1) {
+  VarNeg(imathGlobals *globals, std::string name, VarBase *p1) : VarBase(globals, name, p1, 0, 0, 1) {
     op_ = "neg";
     nbits_ = p1->nbits();
     Kmap_ = p1->Kmap();
     K_ = p1->K();
   }
-  virtual ~var_neg() {}
+  virtual ~VarNeg() {}
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
 };
 
-class var_timesC : public var_base {
+class VarTimesC : public VarBase {
 public:
-  var_timesC(imathGlobals *globals, std::string name, var_base *p1, double cF, int ps = 17)
-      : var_base(globals, name, p1, 0, 0, MULT_LATENCY) {
+  VarTimesC(imathGlobals *globals, std::string name, VarBase *p1, double cF, int ps = 17)
+      : VarBase(globals, name, p1, 0, 0, MULT_LATENCY) {
     op_ = "timesC";
     cF_ = cF;
     ps_ = ps;
@@ -794,7 +794,7 @@ public:
     K_ = K_ * pow(2, m);
     Kmap_["2"] = s1 + m;
   }
-  virtual ~var_timesC() {}
+  virtual ~VarTimesC() {}
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -805,10 +805,10 @@ protected:
   double cF_;
 };
 
-class var_mult : public var_base {
+class VarMult : public VarBase {
 public:
-  var_mult(imathGlobals *globals, std::string name, var_base *p1, var_base *p2, double range = -1, int nmax = 18)
-      : var_base(globals, name, p1, p2, 0, MULT_LATENCY) {
+  VarMult(imathGlobals *globals, std::string name, VarBase *p1, VarBase *p2, double range = -1, int nmax = 18)
+      : VarBase(globals, name, p1, p2, 0, MULT_LATENCY) {
     op_ = "mult";
 
     const std::map<std::string, int> map1 = p1->Kmap();
@@ -843,7 +843,7 @@ public:
       K_ = K_ * pow(2, ps_);
     }
   }
-  virtual ~var_mult() {}
+  virtual ~VarMult() {}
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -852,16 +852,16 @@ protected:
   int ps_;
 };
 
-class var_DSP_postadd : public var_base {
+class VarDSPPostadd : public VarBase {
 public:
-  var_DSP_postadd(imathGlobals *globals,
+  VarDSPPostadd(imathGlobals *globals,
                   std::string name,
-                  var_base *p1,
-                  var_base *p2,
-                  var_base *p3,
+                  VarBase *p1,
+                  VarBase *p2,
+                  VarBase *p3,
                   double range = -1,
                   int nmax = 18)
-      : var_base(globals, name, p1, p2, p3, DSP_LATENCY) {
+      : VarBase(globals, name, p1, p2, p3, DSP_LATENCY) {
     op_ = "DSP_postadd";
 
     //first, get constants for the p1*p2
@@ -896,7 +896,7 @@ public:
       if (it.second != 0) {
         if (it.first != "2") {
           snprintf(
-		   slog, 100, "var_DSP_postadd: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
+		   slog, 100, "VarDSPPostadd: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
           edm::LogVerbatim("Tracklet") << slog;
           edm::LogVerbatim("Tracklet") << " *********************************************************";
           p1->dump_msg();
@@ -913,7 +913,7 @@ public:
     double ki2 = p3->K() / pow(2, s3);
     //those should be the same
     if (std::abs(ki1 / ki2 - 1.) > 1e-6) {
-      snprintf(slog, 100, "var_DSP_postadd: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
+      snprintf(slog, 100, "VarDSPPostadd: bad constants! %f %f for variable %s", ki1, ki2, name_.c_str());
       edm::LogVerbatim("Tracklet") << slog;
       edm::LogVerbatim("Tracklet") << " *********************************************************";
       p1->dump_msg();
@@ -927,7 +927,7 @@ public:
 
     shift3_ = s3 - s0;
     if (shift3_ < 0) {
-      snprintf(slog, 100, "var_DSP_postadd: loosing precision on C in A*B+C: %i", shift3_);
+      snprintf(slog, 100, "VarDSPPostadd: loosing precision on C in A*B+C: %i", shift3_);
       edm::LogVerbatim("Tracklet") << slog;
       assert(0);
     }
@@ -956,10 +956,10 @@ public:
 
     K_ = ki2 * pow(2, Kmap_["2"]);
   }
-  virtual ~var_DSP_postadd() {}
+  virtual ~VarDSPPostadd() {}
 
   void local_calculate();
-  using var_base::print;
+  using VarBase::print;
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
 
 protected:
@@ -967,20 +967,20 @@ protected:
   int shift3_;
 };
 
-class var_inv : public var_base {
+class VarInv : public VarBase {
 public:
   enum mode { pos, neg, both };
 
-  var_inv(imathGlobals *globals,
+  VarInv(imathGlobals *globals,
           std::string name,
-          var_base *p1,
+          VarBase *p1,
           double offset,
           int nbits,
           int n,
           unsigned int shift,
           mode m,
           int nbaddr = -1)
-      : var_base(globals, name, p1, 0, 0, LUT_LATENCY) {
+      : VarBase(globals, name, p1, 0, 0, LUT_LATENCY) {
     op_ = "inv";
     offset_ = offset;
     nbits_ = nbits;
@@ -1009,7 +1009,7 @@ public:
       LUT[i] = gen_inv(offsetI + i1);
     }
   }
-  virtual ~var_inv() {
+  virtual ~VarInv() {
     delete[] LUT;
   }
 
@@ -1068,62 +1068,62 @@ protected:
   int *LUT;
 };
 
-class var_cut : public var_base {
+class VarCut : public VarBase {
 public:
-  var_cut(imathGlobals *globals, double lower_cut, double upper_cut)
-      : var_base(globals, "", 0, 0, 0, 0), lower_cut_(lower_cut), upper_cut_(upper_cut), parent_flag_(0) {
+  VarCut(imathGlobals *globals, double lower_cut, double upper_cut)
+      : VarBase(globals, "", 0, 0, 0, 0), lower_cut_(lower_cut), upper_cut_(upper_cut), parent_flag_(0) {
     op_ = "cut";
   }
 
-  var_cut(imathGlobals *globals, var_base *cut_var, double lower_cut, double upper_cut)
-      : var_cut(globals, lower_cut, upper_cut) {
+  VarCut(imathGlobals *globals, VarBase *cut_var, double lower_cut, double upper_cut)
+      : VarCut(globals, lower_cut, upper_cut) {
     set_cut_var(cut_var);
   }
-  virtual ~var_cut() {}
+  virtual ~VarCut() {}
 
   double lower_cut() const { return lower_cut_; }
   double upper_cut() const { return upper_cut_; }
 
-  void local_passes(std::map<const var_base *, std::vector<bool> > &passes,
-                    const std::map<const var_base *, std::vector<bool> > *const previous_passes = NULL) const;
-  using var_base::print;
-  void print(std::map<const var_base *, std::set<std::string> > &cut_strings,
+  void local_passes(std::map<const VarBase *, std::vector<bool> > &passes,
+                    const std::map<const VarBase *, std::vector<bool> > *const previous_passes = NULL) const;
+  using VarBase::print;
+  void print(std::map<const VarBase *, std::set<std::string> > &cut_strings,
              const int step,
              Verilog,
-             const std::map<const var_base *, std::set<std::string> > *const previous_cut_strings = NULL) const;
-  void print(std::map<const var_base *, std::set<std::string> > &cut_strings,
+             const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = NULL) const;
+  void print(std::map<const VarBase *, std::set<std::string> > &cut_strings,
              const int step,
              HLS,
-             const std::map<const var_base *, std::set<std::string> > *const previous_cut_strings = NULL) const;
+             const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = NULL) const;
 
-  void set_parent_flag(var_flag *parent_flag, const bool call_add_cut);
-  var_flag *parent_flag() { return parent_flag_; }
-  void set_cut_var(var_base *cut_var, const bool call_add_cut = true);
+  void set_parent_flag(VarFlag *parent_flag, const bool call_add_cut);
+  VarFlag *parent_flag() { return parent_flag_; }
+  void set_cut_var(VarBase *cut_var, const bool call_add_cut = true);
 
 protected:
   double lower_cut_;
   double upper_cut_;
-  var_flag *parent_flag_;
+  VarFlag *parent_flag_;
 };
 
-class var_flag : public var_base {
+class VarFlag : public VarBase {
 public:
   template <class... Args>
-  var_flag(imathGlobals *globals, std::string name, var_base *cut, Args... args) : var_base(globals, name, 0, 0, 0, 0) {
+  VarFlag(imathGlobals *globals, std::string name, VarBase *cut, Args... args) : VarBase(globals, name, 0, 0, 0, 0) {
     op_ = "flag";
     nbits_ = 1;
     add_cuts(cut, args...);
   }
 
   template <class... Args>
-  void add_cuts(var_base *cut, Args... args) {
+  void add_cuts(VarBase *cut, Args... args) {
     add_cut(cut);
     add_cuts(args...);
   }
 
-  void add_cuts(var_base *cut) { add_cut(cut); }
+  void add_cuts(VarBase *cut) { add_cut(cut); }
 
-  void add_cut(var_base *cut, const bool call_set_parent_flag = true);
+  void add_cut(VarBase *cut, const bool call_set_parent_flag = true);
 
   void calculate_step();
   bool passes();

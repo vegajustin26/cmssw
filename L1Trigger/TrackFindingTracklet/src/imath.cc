@@ -13,11 +13,11 @@
 
 using namespace trklet;
 
-std::string var_base::itos(int i) {
+std::string VarBase::itos(int i) {
   return std::to_string(i);
 }
 
-std::string var_base::kstring() const {
+std::string VarBase::kstring() const {
   char s[1024];
   std::string t = "";
   for (const auto &Kmap : Kmap_) {
@@ -28,7 +28,7 @@ std::string var_base::kstring() const {
   return t;
 }
 
-void var_base::analyze() {
+void VarBase::analyze() {
   if (!readytoanalyze_)
     return;
 
@@ -77,7 +77,7 @@ void var_base::analyze() {
   readytoanalyze_ = false;
 }
 
-std::string var_base::dump() {
+std::string VarBase::dump() {
   char s[1024];
   std::string u = kstring();
   sprintf(
@@ -95,7 +95,7 @@ std::string var_base::dump() {
   return t;
 }
 
-void var_base::dump_msg() {
+void VarBase::dump_msg() {
   char s[2048];
   std::string u = kstring();
   sprintf(s,
@@ -119,7 +119,7 @@ void var_base::dump_msg() {
     p2_->dump_msg();
 }
 
-void var_adjustK::adjust(double Knew, double epsilon, bool do_assert, int nbits) {
+void VarAdjustK::adjust(double Knew, double epsilon, bool do_assert, int nbits) {
   //WARNING!!!
   //THIS METHID CAN BE USED ONLY FOR THE FINAL ANSWER
   //THE CHANGE IN CONSTANT CAN NOT BE PROPAGATED UP THE CALCULATION TREE
@@ -141,7 +141,7 @@ void var_adjustK::adjust(double Knew, double epsilon, bool do_assert, int nbits)
   Kmap_["2"] = Kmap_["2"] + lr_;
 }
 
-void var_inv::initLUT(double offset) {
+void VarInv::initLUT(double offset) {
   offset_ = offset;
   double offsetI = lround(offset_ / p1_->K());
   for (int i = 0; i < Nelements_; ++i) {
@@ -150,7 +150,7 @@ void var_inv::initLUT(double offset) {
   }
 }
 
-void var_base::makeready() {
+void VarBase::makeready() {
   pipe_counter_ = 0;
   pipe_delays_.clear();
   readytoprint_ = true;
@@ -164,7 +164,7 @@ void var_base::makeready() {
     p3_->makeready();
 }
 
-bool var_base::has_delay(int i) {
+bool VarBase::has_delay(int i) {
   //dumb sequential search
   for (unsigned int j = 0; j < pipe_delays_.size(); ++j)
     if (pipe_delays_[j] == i)
@@ -172,7 +172,7 @@ bool var_base::has_delay(int i) {
   return false;
 }
 
-std::string var_base::pipe_delay(var_base *v, int nbits, int delay) {
+std::string VarBase::pipe_delay(VarBase *v, int nbits, int delay) {
   //have we been delayed by this much already?
   if (v->has_delay(delay))
     return "";
@@ -183,7 +183,7 @@ std::string var_base::pipe_delay(var_base *v, int nbits, int delay) {
   out = out + pipe_delay_wire(v, name_delayed, nbits, delay);
   return out;
 }
-std::string var_base::pipe_delays(const int step) {
+std::string VarBase::pipe_delays(const int step) {
   std::string out = "";
   if (p1_)
     out += p1_->pipe_delays(step);
@@ -195,7 +195,7 @@ std::string var_base::pipe_delays(const int step) {
   int l = step - latency_ - step_;
   return (out + pipe_delay(this, nbits(), l));
 }
-std::string var_base::pipe_delay_wire(var_base *v, std::string name_delayed, int nbits, int delay) {
+std::string VarBase::pipe_delay_wire(VarBase *v, std::string name_delayed, int nbits, int delay) {
   std::string name = v->name();
   std::string name_pipe = name + "_pipe" + itos(v->pipe_counter());
   v->pipe_increment();
@@ -204,7 +204,7 @@ std::string var_base::pipe_delay_wire(var_base *v, std::string name_delayed, int
   return out;
 }
 
-void var_base::inputs(std::vector<var_base *> *vd) {
+void VarBase::inputs(std::vector<VarBase *> *vd) {
   if (op_ == "def" && !usedasinput_) {
     usedasinput_ = true;
     vd->push_back(this);
@@ -219,7 +219,7 @@ void var_base::inputs(std::vector<var_base *> *vd) {
 }
 
 #ifdef IMATH_ROOT
-TTree *var_base::addToTree(imathGlobals *globals, var_base *v, char *s) {
+TTree *VarBase::addToTree(imathGlobals *globals, VarBase *v, char *s) {
   if (globals->h_file_ == 0) {
     globals->h_file_ = new TFile("imath.root", "RECREATE");
     edm::LogVerbatim("Tracklet") << "recreating file imath.root";
@@ -254,7 +254,7 @@ TTree *var_base::addToTree(imathGlobals *globals, var_base *v, char *s) {
 
   return tt;
 }
-TTree *var_base::addToTree(imathGlobals *globals, double *v, char *s) {
+TTree *VarBase::addToTree(imathGlobals *globals, double *v, char *s) {
   if (globals->h_file_ == 0) {
     globals->h_file_ = new TFile("imath.root", "RECREATE");
     edm::LogVerbatim("Tracklet") << "recreating file imath.root";
@@ -268,7 +268,7 @@ TTree *var_base::addToTree(imathGlobals *globals, double *v, char *s) {
   tt->Branch(s, v);
   return tt;
 }
-TTree *var_base::addToTree(imathGlobals *globals, int *v, char *s) {
+TTree *VarBase::addToTree(imathGlobals *globals, int *v, char *s) {
   if (globals->h_file_ == 0) {
     globals->h_file_ = new TFile("imath.root", "RECREATE");
     edm::LogVerbatim("Tracklet") << "recreating file imath.root";
@@ -282,7 +282,7 @@ TTree *var_base::addToTree(imathGlobals *globals, int *v, char *s) {
   tt->Branch(s, v);
   return tt;
 }
-void var_base::fillTree(imathGlobals *globals) {
+void VarBase::fillTree(imathGlobals *globals) {
   if (globals->h_file_ == 0)
     return;
   globals->h_file_->cd();
@@ -291,7 +291,7 @@ void var_base::fillTree(imathGlobals *globals) {
     return;
   tt->Fill();
 }
-void var_base::writeTree(imathGlobals *globals) {
+void VarBase::writeTree(imathGlobals *globals) {
   if (globals->h_file_ == 0)
     return;
   globals->h_file_->cd();
@@ -303,8 +303,8 @@ void var_base::writeTree(imathGlobals *globals) {
 
 #endif
 
-void var_cut::local_passes(std::map<const var_base *, std::vector<bool> > &passes,
-                           const std::map<const var_base *, std::vector<bool> > *const previous_passes) const {
+void VarCut::local_passes(std::map<const VarBase *, std::vector<bool> > &passes,
+                           const std::map<const VarBase *, std::vector<bool> > *const previous_passes) const {
   const int lower_cut = lower_cut_ / cut_var_->K();
   const int upper_cut = upper_cut_ / cut_var_->K();
   if (!previous_passes || (previous_passes && !previous_passes->count(cut_var_))) {
@@ -314,10 +314,10 @@ void var_cut::local_passes(std::map<const var_base *, std::vector<bool> > &passe
   }
 }
 
-bool var_base::local_passes() const {
+bool VarBase::local_passes() const {
   bool passes = false;
   for (const auto &cut : cuts_) {
-    const var_cut *const cast_cut = (var_cut *)cut;
+    const VarCut *const cast_cut = (VarCut *)cut;
     const int lower_cut = cast_cut->lower_cut() / K_;
     const int upper_cut = cast_cut->upper_cut() / K_;
     passes = passes || (ival_ > lower_cut && ival_ < upper_cut);
@@ -331,8 +331,8 @@ bool var_base::local_passes() const {
   return passes;
 }
 
-void var_base::passes(std::map<const var_base *, std::vector<bool> > &passes,
-                      const std::map<const var_base *, std::vector<bool> > *const previous_passes) const {
+void VarBase::passes(std::map<const VarBase *, std::vector<bool> > &passes,
+                      const std::map<const VarBase *, std::vector<bool> > *const previous_passes) const {
   if (p1_)
     p1_->passes(passes, previous_passes);
   if (p2_)
@@ -341,7 +341,7 @@ void var_base::passes(std::map<const var_base *, std::vector<bool> > &passes,
     p3_->passes(passes, previous_passes);
 
   for (const auto &cut : cuts_) {
-    const var_cut *const cast_cut = (var_cut *)cut;
+    const VarCut *const cast_cut = (VarCut *)cut;
     const int lower_cut = cast_cut->lower_cut() / K_;
     const int upper_cut = cast_cut->upper_cut() / K_;
     if (!previous_passes || (previous_passes && !previous_passes->count(this))) {
@@ -358,13 +358,13 @@ void var_base::passes(std::map<const var_base *, std::vector<bool> > &passes,
   }
 }
 
-void var_base::add_cut(var_cut *cut, const bool call_set_cut_var) {
+void VarBase::add_cut(VarCut *cut, const bool call_set_cut_var) {
   cuts_.push_back(cut);
   if (call_set_cut_var)
     cut->set_cut_var(this, false);
 }
 
-void var_cut::set_cut_var(var_base *cut_var, const bool call_add_cut) {
+void VarCut::set_cut_var(VarBase *cut_var, const bool call_add_cut) {
   cut_var_ = cut_var;
   if (call_add_cut)
     cut_var->add_cut(this, false);
@@ -372,38 +372,38 @@ void var_cut::set_cut_var(var_base *cut_var, const bool call_add_cut) {
     parent_flag_->calculate_step();
 }
 
-void var_flag::add_cut(var_base *cut, const bool call_set_parent_flag) {
+void VarFlag::add_cut(VarBase *cut, const bool call_set_parent_flag) {
   cuts_.push_back(cut);
   if (cut->op() == "cut" && call_set_parent_flag) {
-    var_cut *const cast_cut = (var_cut *)cut;
+    VarCut *const cast_cut = (VarCut *)cut;
     cast_cut->set_parent_flag(this, false);
   }
   calculate_step();
 }
 
-void var_cut::set_parent_flag(var_flag *parent_flag, const bool call_add_cut) {
+void VarCut::set_parent_flag(VarFlag *parent_flag, const bool call_add_cut) {
   parent_flag_ = parent_flag;
   if (call_add_cut)
     parent_flag->add_cut(this, false);
 }
 
-var_base *var_base::cut_var() {
+VarBase *VarBase::cut_var() {
   if (op_ == "cut")
     return cut_var_;
   else
     return this;
 }
 
-bool var_flag::passes() {
+bool VarFlag::passes() {
   if (globals_->printCutInfo_) {
     edm::LogVerbatim("Tracklet") << "Checking if " << name_ << " passes...";
   }
 
-  std::map<const var_base *, std::vector<bool> > passes0, passes1;
+  std::map<const VarBase *, std::vector<bool> > passes0, passes1;
   for (const auto &cut : cuts_) {
     if (cut->op() != "cut")
       continue;
-    const var_cut *const cast_cut = (var_cut *)cut;
+    const VarCut *const cast_cut = (VarCut *)cut;
     cast_cut->local_passes(passes0);
   }
   for (const auto &cut : cuts_) {

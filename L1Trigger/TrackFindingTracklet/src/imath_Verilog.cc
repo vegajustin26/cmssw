@@ -1,11 +1,11 @@
 #include "../interface/imath.h"
 
-void var_inv::writeLUT(std::ofstream& fs, Verilog) const {
+void VarInv::writeLUT(std::ofstream& fs, Verilog) const {
   for (int i = 0; i < Nelements_; ++i)
     fs << std::hex << (LUT[i] & ((1 << nbits_) - 1)) << std::dec << "\n";
 }
 
-void var_base::print_truncation(std::string& t, const std::string& o1, const int ps, Verilog) const {
+void VarBase::print_truncation(std::string& t, const std::string& o1, const int ps, Verilog) const {
   if (ps > 0) {
     t += "wire signed [" + itos(nbits_ - 1) + ":0]" + name_ + ";\n";
     t += "reg signed  [" + itos(nbits_ + ps - 1) + ":0]" + name_ + "_tmp;\n";
@@ -21,10 +21,10 @@ void var_base::print_truncation(std::string& t, const std::string& o1, const int
 // print functions
 //
 
-void var_cut::print(std::map<const var_base*, std::set<std::string> >& cut_strings,
+void VarCut::print(std::map<const VarBase*, std::set<std::string> >& cut_strings,
                     const int step,
                     Verilog,
-                    const std::map<const var_base*, std::set<std::string> >* const previous_cut_strings) const {
+                    const std::map<const VarBase*, std::set<std::string> >* const previous_cut_strings) const {
   int l = step - cut_var_->latency() - cut_var_->step();
   std::string name = cut_var_->name();
   if (l > 0)
@@ -39,10 +39,10 @@ void var_cut::print(std::map<const var_base*, std::set<std::string> >& cut_strin
   }
 }
 
-void var_base::print_cuts(std::map<const var_base*, std::set<std::string> >& cut_strings,
+void VarBase::print_cuts(std::map<const VarBase*, std::set<std::string> >& cut_strings,
                           const int step,
                           Verilog,
-                          const std::map<const var_base*, std::set<std::string> >* const previous_cut_strings) const {
+                          const std::map<const VarBase*, std::set<std::string> >* const previous_cut_strings) const {
   if (p1_)
     p1_->print_cuts(cut_strings, step, verilog, previous_cut_strings);
   if (p2_)
@@ -56,7 +56,7 @@ void var_base::print_cuts(std::map<const var_base*, std::set<std::string> >& cut
     name += "_delay" + itos(l);
 
   for (const auto& cut : cuts_) {
-    const var_cut* const cast_cut = (var_cut*)cut;
+    const VarCut* const cast_cut = (VarCut*)cut;
     const int lower_cut = cast_cut->lower_cut() / K_;
     const int upper_cut = cast_cut->upper_cut() / K_;
     if (!previous_cut_strings || (previous_cut_strings && !previous_cut_strings->count(this))) {
@@ -67,7 +67,7 @@ void var_base::print_cuts(std::map<const var_base*, std::set<std::string> >& cut
   }
 }
 
-void var_adjustK::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarAdjustK::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -88,7 +88,7 @@ void var_adjustK::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << t << "; \n";
 }
 
-void var_adjustKR::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarAdjustKR::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -110,7 +110,7 @@ void var_adjustKR::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
-void var_def::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarDef::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -120,7 +120,7 @@ void var_def::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "// units " << kstring() << "\t" << K_ << "\n" << t;
 }
 
-void var_param::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarParam::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -132,7 +132,7 @@ void var_param::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
-void var_add::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarAdd::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(p2_);
   assert(l3 == 0);
@@ -159,7 +159,7 @@ void var_add::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
-void var_subtract::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarSubtract::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(p2_);
   assert(l3 == 0);
@@ -186,7 +186,7 @@ void var_subtract::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
-void var_nounits::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarNounits::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -200,7 +200,7 @@ void var_nounits::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
-void var_timesC::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarTimesC::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -214,7 +214,7 @@ void var_timesC::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
-void var_neg::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarNeg::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -227,7 +227,7 @@ void var_neg::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
-void var_shiftround::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarShiftround::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -247,7 +247,7 @@ void var_shiftround::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
-void var_shift::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarShift::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -265,7 +265,7 @@ void var_shift::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t << ";\n";
 }
 
-void var_mult::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarMult::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(l3 == 0);
   assert(p1_);
   std::string n1 = p1_->name();
@@ -282,7 +282,7 @@ void var_mult::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "// " << nbits_ << " bits \t " << kstring() << "\t" << K_ << "\n" << t;
 }
 
-void var_inv::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarInv::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(l2 == 0);
   assert(l3 == 0);
@@ -323,7 +323,7 @@ void var_inv::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << "     ); \n";
 }
 
-void var_DSP_postadd::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarDSPPostadd::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(p1_);
   assert(p2_);
   assert(p3_);
@@ -349,18 +349,18 @@ void var_DSP_postadd::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) 
   fs << name_ + " = DSP_postadd(" + n1 + ", " + n2 + ", " + n3 + ")" + n4 + ";";
 }
 
-void var_flag::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
+void VarFlag::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   assert(l1 == 0);
   assert(l2 == 0);
   assert(l3 == 0);
 
   fs << "wire " << name_ << ";" << std::endl;
   fs << "assign " << name_ << " = (";
-  std::map<const var_base*, std::set<std::string> > cut_strings0, cut_strings1;
+  std::map<const VarBase*, std::set<std::string> > cut_strings0, cut_strings1;
   for (const auto& cut : cuts_) {
     if (cut->op() != "cut")
       continue;
-    const var_cut* const cast_cut = (var_cut*)cut;
+    const VarCut* const cast_cut = (VarCut*)cut;
     cast_cut->print(cut_strings0, step_, verilog);
   }
   for (const auto& cut : cuts_) {
@@ -397,7 +397,7 @@ void var_flag::print(std::ofstream& fs, Verilog, int l1, int l2, int l3) {
   fs << ")));";
 }
 
-void var_base::print_step(int step, std::ofstream& fs, Verilog) {
+void VarBase::print_step(int step, std::ofstream& fs, Verilog) {
   if (!readytoprint_)
     return;
   if (step > step_)
@@ -454,21 +454,21 @@ void var_base::print_step(int step, std::ofstream& fs, Verilog) {
   }
 }
 
-void var_base::print_all(std::ofstream& fs, Verilog) {
+void VarBase::print_all(std::ofstream& fs, Verilog) {
   for (int i = 0; i <= step_; ++i) {
     fs << "//\n// STEP " << i << "\n\n";
     print_step(i, fs, verilog);
   }
 }
 
-void var_base::design_print(std::vector<var_base*> v, std::ofstream& fs, Verilog) {
+void VarBase::design_print(std::vector<VarBase*> v, std::ofstream& fs, Verilog) {
   //step at which all the outputs should be valid
   int maxstep = 0;
 
   //header of the module
 
   //inputs
-  std::vector<var_base*> vd;
+  std::vector<VarBase*> vd;
   vd.clear();
   int imax = v.size();
   for (int i = 0; i < imax; ++i) {

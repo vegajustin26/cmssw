@@ -2,7 +2,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-bool var_base::calculate(int debug_level) {
+bool VarBase::calculate(int debug_level) {
   bool ok1 = true;
   bool ok2 = true;
   bool ok3 = true;
@@ -78,7 +78,7 @@ bool var_base::calculate(int debug_level) {
   return all_ok;
 }
 
-void var_flag::calculate_step() {
+void VarFlag::calculate_step() {
   int max_step = 0;
   for (const auto &cut : cuts_) {
     if (!cut->cut_var())
@@ -93,7 +93,7 @@ void var_flag::calculate_step() {
 //  local calculations
 //
 
-void var_adjustK::local_calculate() {
+void VarAdjustK::local_calculate() {
   fval_ = p1_->fval();
   ival_ = p1_->ival();
   if (lr_ > 0)
@@ -102,7 +102,7 @@ void var_adjustK::local_calculate() {
     ival_ = ival_ << (-lr_);
 }
 
-void var_adjustKR::local_calculate() {
+void VarAdjustKR::local_calculate() {
   fval_ = p1_->fval();
   ival_ = p1_->ival();
   if (lr_ > 0)
@@ -111,7 +111,7 @@ void var_adjustKR::local_calculate() {
     ival_ = ival_ << (-lr_);
 }
 
-void var_add::local_calculate() {
+void VarAdd::local_calculate() {
   fval_ = p1_->fval() + p2_->fval();
   long int i1 = p1_->ival();
   long int i2 = p2_->ival();
@@ -124,7 +124,7 @@ void var_add::local_calculate() {
     ival_ = ival_ >> ps_;
 }
 
-void var_subtract::local_calculate() {
+void VarSubtract::local_calculate() {
   fval_ = p1_->fval() - p2_->fval();
   long int i1 = p1_->ival();
   long int i2 = p2_->ival();
@@ -137,22 +137,22 @@ void var_subtract::local_calculate() {
     ival_ = ival_ >> ps_;
 }
 
-void var_nounits::local_calculate() {
+void VarNounits::local_calculate() {
   fval_ = p1_->fval();
   ival_ = (p1_->ival() * cI_) >> ps_;
 }
 
-void var_timesC::local_calculate() {
+void VarTimesC::local_calculate() {
   fval_ = p1_->fval() * cF_;
   ival_ = (p1_->ival() * cI_) >> ps_;
 }
 
-void var_neg::local_calculate() {
+void VarNeg::local_calculate() {
   fval_ = -p1_->fval();
   ival_ = -p1_->ival();
 }
 
-void var_shift::local_calculate() {
+void VarShift::local_calculate() {
   fval_ = p1_->fval() * pow(2, -shift_);
   ival_ = p1_->ival();
   if (shift_ > 0)
@@ -161,7 +161,7 @@ void var_shift::local_calculate() {
     ival_ = ival_ << (-shift_);
 }
 
-void var_shiftround::local_calculate() {
+void VarShiftround::local_calculate() {
   fval_ = p1_->fval() * pow(2, -shift_);
   ival_ = p1_->ival();
   if (shift_ > 0)
@@ -170,12 +170,12 @@ void var_shiftround::local_calculate() {
     ival_ = ival_ << (-shift_);
 }
 
-void var_mult::local_calculate() {
+void VarMult::local_calculate() {
   fval_ = p1_->fval() * p2_->fval();
   ival_ = (p1_->ival() * p2_->ival()) >> ps_;
 }
 
-void var_DSP_postadd::local_calculate() {
+void VarDSPPostadd::local_calculate() {
   fval_ = p1_->fval() * p2_->fval() + p3_->fval();
   ival_ = p3_->ival();
   if (shift3_ > 0)
@@ -186,7 +186,7 @@ void var_DSP_postadd::local_calculate() {
   ival_ = ival_ >> ps_;
 }
 
-void var_inv::local_calculate() {
+void VarInv::local_calculate() {
   fval_ = 1. / (offset_ + p1_->fval());
   ival_ = LUT[ival_to_addr(p1_->ival())];
 }
