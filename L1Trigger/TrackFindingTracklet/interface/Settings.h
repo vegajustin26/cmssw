@@ -661,6 +661,9 @@ namespace trklet {
   constexpr unsigned int N_PSLAYER = 3;
   constexpr unsigned int N_LAYERDISK = 11;
 
+  constexpr int N_TILTED_RINGS = 12;          // number of tilted rings per half-layer in TBPS layers
+  constexpr std::array<int, N_PSLAYER> N_MOD_PLANK = {{7, 11, 15}}; // number of modules per plank in TBPS layers
+  
   constexpr unsigned int N_SEEDINDEX = 12; // number of tracklet+triplet seeds
   constexpr unsigned int N_PROJLAYER = 4;  // max number of layers to project to
   constexpr unsigned int N_PROJDISK = 5;   // max number of disks to project to

@@ -425,10 +425,8 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     const PixelGeomDetUnit* theGeomDet = dynamic_cast<const PixelGeomDetUnit*>(det0);
     const PixelTopology* topol = dynamic_cast<const PixelTopology*>(&(theGeomDet->specificTopology()));
 
-    unsigned int isPSmodule = 0;
-    if (topol->nrows() == 960)
-      isPSmodule = 1;
-
+    bool isPSmodule = theTrackerGeom->getDetectorType(detid) == TrackerGeometry::ModuleType::Ph2PSP;
+    
     // loop over stubs
     for (auto stubIter = stubs.begin(); stubIter != stubs.end(); ++stubIter) {
       edm::Ref<edmNew::DetSetVector<TTStub<Ref_Phase2TrackerDigi_> >, TTStub<Ref_Phase2TrackerDigi_> > tempStubPtr =
@@ -484,47 +482,28 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
         // tobSide = 1: ring- (tilted)
         // tobSide = 2: ring+ (tilted)
         // tobSide = 3: barrel (flat)
-        int tobSide = static_cast<int>(tTopo->tobSide(detid));
+	enum TypeBarrel { nonBarrel = 0, tiltedMinus = 1, tiltedPlus = 2, flat = 3 };
+	const TypeBarrel type = static_cast<TypeBarrel>(tTopo->tobSide(detid));
 
-        if (layer == 1) {
-          if (tobSide == 1) {
+	// modules in the flat part of barrel are mounted on planks, while modules in tilted part are on rings
+	// below, "module" is the module number in the z direction (from minus z to positive), 
+	// while "ladder" is the module number in the phi direction
+
+        if (layer > 0 && layer <= (int)trklet::N_PSLAYER) {
+	  if (type == tiltedMinus) {
             module = static_cast<int>(tTopo->tobRod(detid));
             ladder = static_cast<int>(tTopo->module(detid));
           }
-          if (tobSide == 2) {
-            module = 19 + static_cast<int>(tTopo->tobRod(detid));
+          if (type == tiltedPlus) {
+            module = trklet::N_TILTED_RINGS + trklet::N_MOD_PLANK.at(layer-1) + static_cast<int>(tTopo->tobRod(detid));
             ladder = static_cast<int>(tTopo->module(detid));
           }
-          if (tobSide == 3)
-            module = 12 + static_cast<int>(tTopo->module(detid));
+          if (type == flat) {
+            module = trklet::N_TILTED_RINGS + static_cast<int>(tTopo->module(detid));
+	  }
         }
-
-        if (layer == 2) {
-          if (tobSide == 1) {
-            module = static_cast<int>(tTopo->tobRod(detid));
-            ladder = static_cast<int>(tTopo->module(detid));
-          }
-          if (tobSide == 2) {
-            module = 23 + static_cast<int>(tTopo->tobRod(detid));
-            ladder = static_cast<int>(tTopo->module(detid));
-          }
-          if (tobSide == 3)
-            module = 12 + static_cast<int>(tTopo->module(detid));
-        }
-
-        if (layer == 3) {
-          if (tobSide == 1) {
-            module = static_cast<int>(tTopo->tobRod(detid));
-            ladder = static_cast<int>(tTopo->module(detid));
-          }
-          if (tobSide == 2) {
-            module = 27 + static_cast<int>(tTopo->tobRod(detid));
-            ladder = static_cast<int>(tTopo->module(detid));
-          }
-          if (tobSide == 3)
-            module = 12 + static_cast<int>(tTopo->module(detid));
-        }
-      } else if (detid.subdetId() == StripSubdetector::TID) {
+      }
+      else if (detid.subdetId() == StripSubdetector::TID) {
         layer = 1000 + static_cast<int>(tTopo->tidRing(detid));
         ladder = static_cast<int>(tTopo->module(detid));
         module = static_cast<int>(tTopo->tidWheel(detid));
