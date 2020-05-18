@@ -182,10 +182,10 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
             i = false;
           };
           for (const auto& st1 : stubsTrk1) {
-            for (const auto& st2 = stubsTrk2) {
-              if (st1->first == st2->first && st1->second == st2->second) {
+            for (const auto& st2 : stubsTrk2) {
+              if (st1.first == st2.first && st1.second == st2.second) {
                 // Converts region encoded in st1->first to an index in the Unique Region (UR) array
-                int i = st1->first;
+                int i = st1.first;
                 int reg = (i > 0 && i < 10) * (i - 1) + (i > 10) * (i - 5) - (i < 0) * i;
                 if (!URArray[reg]) {
                   nShareUR++;

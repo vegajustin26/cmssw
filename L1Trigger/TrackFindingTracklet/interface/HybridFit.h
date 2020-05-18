@@ -33,7 +33,7 @@ namespace trklet {
 
     ~HybridFit() = default;
     
-    void Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>& trackstublist);
+    void Fit(Tracklet* tracklet, std::vector<Stub*>& trackstublist);
 
   private:
     unsigned int iSector_;

@@ -15,7 +15,7 @@ HybridFit::HybridFit(unsigned int iSector, const Settings* settings, Globals* gl
   globals_ = globals;
 }
 
-void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>& trackstublist) {
+void HybridFit::Fit(Tracklet* tracklet, std::vector<Stub*>& trackstublist) {
   if (settings_->fakefit()) {
     tracklet->setFitPars(tracklet->rinvapprox(),
                          tracklet->phi0approx(),
@@ -55,7 +55,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
   int kf_phi_sec = iSector_;
 
   for (unsigned int k = 0; k < trackstublist.size(); k++) {
-    L1TStub* L1stubptr = trackstublist[k].second;
+    L1TStub* L1stubptr = trackstublist[k]->l1tstub();
 
     double kfphi = L1stubptr->phi();
     double kfr = L1stubptr->r();
@@ -65,7 +65,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
     unsigned int iphi = L1stubptr->iphi();
     double alpha = L1stubptr->alpha();
 
-    bool isBarrel = trackstublist[k].first->isBarrel();
+    bool isBarrel = trackstublist[k]->isBarrel();
     int kflayer;
 
     if (isBarrel) {  // Barrel-specific

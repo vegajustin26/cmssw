@@ -32,7 +32,7 @@ namespace trklet {
     double getPhiRes(Tracklet* curTracklet, Stub* curStub);
 
     std::vector<Track*> inputtracks_;
-    std::vector<std::vector<Stub*>> inputstublists_;
+    std::vector<std::vector<const Stub*>> inputstublists_;
     std::vector<std::vector<std::pair<int, int>>> inputstubidslists_;
     std::vector<std::vector<std::pair<int, int>>> mergedstubidslists_;
     std::vector<TrackFitMemory*> inputtrackfits_;
