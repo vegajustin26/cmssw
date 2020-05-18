@@ -3,6 +3,8 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
+#include <set>
+
 using namespace trklet;
 using namespace std;
 
@@ -40,17 +42,17 @@ void MemoryBase::initSpecialSeeding(unsigned int pos, bool& overlap, bool& extra
   extra = false;
   extended = false;
 
-  string subname = name_.substr(pos, 1);
+  char subname = name_[pos];
 
-  static const std::set<std::string> overlapset = {
-      "X", "Y", "W", "Q", "R", "S", "T", "Z", "x", "y", "w", "q", "r", "s", "t", "z"};
+  static const std::set<char> overlapset = {
+      'X', 'Y', 'W', 'Q', 'R', 'S', 'T', 'Z', 'x', 'y', 'w', 'q', 'r', 's', 't', 'z'};
   overlap = overlapset.find(subname) != overlapset.end();
 
-  static const std::set<std::string> extraset = {"I", "J", "K", "L"};
+  static const std::set<char> extraset = {'I', 'J', 'K', 'L'};
   extra = extraset.find(subname) != extraset.end();
 
-  static const std::set<std::string> extendedset = {
-      "a", "b", "c", "d", "e", "f", "g", "h", "x", "y", "z", "w", "q", "r", "s", "t"};
+  static const std::set<char> extendedset = {
+      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'x', 'y', 'z', 'w', 'q', 'r', 's', 't'};
   extended = extendedset.find(subname) != extendedset.end();
 }
 

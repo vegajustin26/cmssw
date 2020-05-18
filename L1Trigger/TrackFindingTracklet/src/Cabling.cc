@@ -133,8 +133,8 @@ void Cabling::writephirange() const {
 std::vector<string> Cabling::DTCs() const {
   std::vector<string> tmp;
 
-  for (auto it = dtcs_.begin(); it != dtcs_.end(); ++it) {
-    tmp.push_back(it->first);
+  for (const auto& it : dtcs_) {
+    tmp.push_back(it.first);
   }
 
   return tmp;

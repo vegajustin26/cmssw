@@ -1,3 +1,9 @@
+//
+// This class holdes the 'deriviatives' used in the linearized chi^2 fit.
+// This is also referred to as the weight matrix which is used to weight
+// the residuls when calculating the updated track parameters. 
+//
+//
 #ifndef L1Trigger_TrackFindingTracklet_interface_TrackDer_h
 #define L1Trigger_TrackFindingTracklet_interface_TrackDer_h
 

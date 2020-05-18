@@ -90,61 +90,33 @@ bool Sector::addStub(L1TStub stub, string dtc) {
 
 void Sector::addMem(string memType, string memName) {
   if (memType == "InputLink:") {
-    IL_.push_back(new InputLinkMemory(memName, settings_, isector_, phimin_, phimax_));
-    Memories_[memName].reset(IL_.back());
-    MemoriesV_.push_back(IL_.back());
+    addMemToVec(IL_,new InputLinkMemory(memName, settings_, isector_, phimin_, phimax_),memName);
   } else if (memType == "AllStubs:") {
-    AS_.push_back(new AllStubsMemory(memName, settings_, isector_));
-    Memories_[memName].reset(AS_.back());
-    MemoriesV_.push_back(AS_.back());
+    addMemToVec(AS_,new AllStubsMemory(memName, settings_, isector_),memName);
   } else if (memType == "VMStubsTE:") {
-    VMSTE_.push_back(new VMStubsTEMemory(memName, settings_, isector_));
-    Memories_[memName].reset(VMSTE_.back());
-    MemoriesV_.push_back(VMSTE_.back());
+    addMemToVec(VMSTE_,new VMStubsTEMemory(memName, settings_, isector_),memName);
   } else if (memType == "VMStubsME:") {
-    VMSME_.push_back(new VMStubsMEMemory(memName, settings_, isector_));
-    Memories_[memName].reset(VMSME_.back());
-    MemoriesV_.push_back(VMSME_.back());
+    addMemToVec(VMSME_,new VMStubsMEMemory(memName, settings_, isector_),memName);
   } else if (memType == "StubPairs:" || memType == "StubPairsDisplaced:") {
-    SP_.push_back(new StubPairsMemory(memName, settings_, isector_));
-    Memories_[memName].reset(SP_.back());
-    MemoriesV_.push_back(SP_.back());
+    addMemToVec(SP_,new StubPairsMemory(memName, settings_, isector_),memName);
   } else if (memType == "StubTriplets:") {
-    ST_.push_back(new StubTripletsMemory(memName, settings_, isector_));
-    Memories_[memName].reset(ST_.back());
-    MemoriesV_.push_back(ST_.back());
+    addMemToVec(ST_,new StubTripletsMemory(memName, settings_, isector_),memName);
   } else if (memType == "TrackletParameters:") {
-    TPAR_.push_back(new TrackletParametersMemory(memName, settings_, isector_));
-    Memories_[memName].reset(TPAR_.back());
-    MemoriesV_.push_back(TPAR_.back());
+    addMemToVec(TPAR_,new TrackletParametersMemory(memName, settings_, isector_),memName);
   } else if (memType == "TrackletProjections:") {
-    TPROJ_.push_back(new TrackletProjectionsMemory(memName, settings_, isector_));
-    Memories_[memName].reset(TPROJ_.back());
-    MemoriesV_.push_back(TPROJ_.back());
+    addMemToVec(TPROJ_,new TrackletProjectionsMemory(memName, settings_, isector_),memName);
   } else if (memType == "AllProj:") {
-    AP_.push_back(new AllProjectionsMemory(memName, settings_, isector_));
-    Memories_[memName].reset(AP_.back());
-    MemoriesV_.push_back(AP_.back());
+    addMemToVec(AP_,new AllProjectionsMemory(memName, settings_, isector_),memName);
   } else if (memType == "VMProjections:") {
-    VMPROJ_.push_back(new VMProjectionsMemory(memName, settings_, isector_));
-    Memories_[memName].reset(VMPROJ_.back());
-    MemoriesV_.push_back(VMPROJ_.back());
+    addMemToVec(VMPROJ_,new VMProjectionsMemory(memName, settings_, isector_),memName);
   } else if (memType == "CandidateMatch:") {
-    CM_.push_back(new CandidateMatchMemory(memName, settings_, isector_));
-    Memories_[memName].reset(CM_.back());
-    MemoriesV_.push_back(CM_.back());
+    addMemToVec(CM_,new CandidateMatchMemory(memName, settings_, isector_),memName);
   } else if (memType == "FullMatch:") {
-    FM_.push_back(new FullMatchMemory(memName, settings_, isector_));
-    Memories_[memName].reset(FM_.back());
-    MemoriesV_.push_back(FM_.back());
+    addMemToVec(FM_,new FullMatchMemory(memName, settings_, isector_),memName);
   } else if (memType == "TrackFit:") {
-    TF_.push_back(new TrackFitMemory(memName, settings_, isector_, phimin_, phimax_));
-    Memories_[memName].reset(TF_.back());
-    MemoriesV_.push_back(TF_.back());
+    addMemToVec(TF_,new TrackFitMemory(memName, settings_, isector_, phimin_, phimax_),memName);
   } else if (memType == "CleanTrack:") {
-    CT_.push_back(new CleanTrackMemory(memName, settings_, isector_, phimin_, phimax_));
-    Memories_[memName].reset(CT_.back());
-    MemoriesV_.push_back(CT_.back());
+    addMemToVec(CT_,new CleanTrackMemory(memName, settings_, isector_, phimin_, phimax_),memName);
   } else {
     edm::LogPrint("Tracklet") << "Don't know of memory type: " << memType;
     exit(0);
@@ -153,45 +125,32 @@ void Sector::addMem(string memType, string memName) {
 
 void Sector::addProc(string procType, string procName) {
   if (procType == "VMRouter:") {
-    VMR_.push_back(new VMRouter(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(VMR_.back());
+    addProcToVec(VMR_,new VMRouter(procName, settings_, globals_, isector_),procName);
   } else if (procType == "TrackletEngine:") {
-    TE_.push_back(new TrackletEngine(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(TE_.back());
+    addProcToVec(TE_,new TrackletEngine(procName, settings_, globals_, isector_),procName);
   } else if (procType == "TrackletEngineDisplaced:") {
-    TED_.push_back(new TrackletEngineDisplaced(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(TED_.back());
+    addProcToVec(TED_,new TrackletEngineDisplaced(procName, settings_, globals_, isector_),procName);
   } else if (procType == "TripletEngine:") {
-    TRE_.push_back(new TripletEngine(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(TRE_.back());
+    addProcToVec(TRE_,new TripletEngine(procName, settings_, globals_, isector_),procName);
   } else if (procType == "TrackletCalculator:") {
-    TC_.push_back(new TrackletCalculator(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(TC_.back());
+    addProcToVec(TC_,new TrackletCalculator(procName, settings_, globals_, isector_),procName);
   } else if (procType == "TrackletProcessor:") {
-    TP_.push_back(new TrackletProcessor(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(TP_.back());
+    addProcToVec(TP_,new TrackletProcessor(procName, settings_, globals_, isector_),procName);
   } else if (procType == "TrackletCalculatorDisplaced:") {
-    TCD_.push_back(new TrackletCalculatorDisplaced(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(TCD_.back());
+    addProcToVec(TCD_,new TrackletCalculatorDisplaced(procName, settings_, globals_, isector_),procName);
   } else if (procType == "ProjectionRouter:") {
-    PR_.push_back(new ProjectionRouter(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(PR_.back());
+    addProcToVec(PR_,new ProjectionRouter(procName, settings_, globals_, isector_),procName);
   } else if (procType == "MatchEngine:") {
-    ME_.push_back(new MatchEngine(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(ME_.back());
+    addProcToVec(ME_,new MatchEngine(procName, settings_, globals_, isector_),procName);
   } else if (procType == "MatchCalculator:" ||
              procType == "DiskMatchCalculator:") {  //TODO should not be used in configurations
-    MC_.push_back(new MatchCalculator(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(MC_.back());
+    addProcToVec(MC_,new MatchCalculator(procName, settings_, globals_, isector_),procName);
   } else if (procType == "MatchProcessor:") {
-    MP_.push_back(new MatchProcessor(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(MP_.back());
+    addProcToVec(MP_,new MatchProcessor(procName, settings_, globals_, isector_),procName);
   } else if (procType == "FitTrack:") {
-    FT_.push_back(new FitTrack(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(FT_.back());
+    addProcToVec(FT_,new FitTrack(procName, settings_, globals_, isector_),procName);
   } else if (procType == "PurgeDuplicate:") {
-    PD_.push_back(new PurgeDuplicate(procName, settings_, globals_, isector_));
-    Processes_[procName].reset(PD_.back());
+    addProcToVec(PD_,new PurgeDuplicate(procName, settings_, globals_, isector_),procName);
   } else {
     edm::LogPrint("Tracklet") << "Don't know of processing type: " << procType;
     exit(0);

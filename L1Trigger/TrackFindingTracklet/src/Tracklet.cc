@@ -122,23 +122,22 @@ int Tracklet::tpseed() {
   set<int> tpsetstubouter;
 
   vector<int> tps = innerStub_->tps();
-  for (unsigned int i = 0; i < tps.size(); i++) {
-    if (tps[i] != 0) {
-      tpsetstubinner.insert(tps[i]);
-      tpset.insert(abs(tps[i]));
+  for (auto tp : tps) {
+    if (tp != 0) {
+      tpsetstubinner.insert(tp);
+      tpset.insert(abs(tp));
     }
   }
 
   tps = outerStub_->tps();
-  for (unsigned int i = 0; i < tps.size(); i++) {
-    if (tps[i] != 0) {
-      tpsetstubouter.insert(tps[i]);
-      tpset.insert(abs(tps[i]));
+  for (auto tp : tps) {
+    if (tp != 0) {
+      tpsetstubouter.insert(tp);
+      tpset.insert(abs(tp));
     }
   }
 
-  for (auto seti = tpset.begin(); seti != tpset.end(); seti++) {
-    int tp = *seti;
+  for (auto& tp : tpset) {
     if (tpsetstubinner.find(tp) != tpsetstubinner.end() && tpsetstubinner.find(-tp) != tpsetstubinner.end() &&
         tpsetstubouter.find(tp) != tpsetstubouter.end() && tpsetstubouter.find(-tp) != tpsetstubouter.end()) {
       return tp;
@@ -154,29 +153,28 @@ bool Tracklet::stubtruthmatch(const L1TStub* stub) {
   set<int> tpsetstubouter;
 
   vector<int> tps = stub->tps();
-  for (unsigned int i = 0; i < tps.size(); i++) {
-    if (tps[i] != 0) {
-      tpsetstub.insert(tps[i]);
-      tpset.insert(abs(tps[i]));
+  for (auto tp : tps) {
+    if (tp != 0) {
+      tpsetstub.insert(tp);
+      tpset.insert(abs(tp));
     }
   }
   tps = innerStub_->tps();
-  for (unsigned int i = 0; i < tps.size(); i++) {
-    if (tps[i] != 0) {
-      tpsetstubinner.insert(tps[i]);
-      tpset.insert(abs(tps[i]));
+  for (auto tp : tps) {
+    if (tp != 0) {
+      tpsetstubinner.insert(tp);
+      tpset.insert(abs(tp));
     }
   }
   tps = outerStub_->tps();
-  for (unsigned int i = 0; i < tps.size(); i++) {
-    if (tps[i] != 0) {
-      tpsetstubouter.insert(tps[i]);
-      tpset.insert(abs(tps[i]));
+  for (auto tp : tps) {
+    if (tp != 0) {
+      tpsetstubouter.insert(tp);
+      tpset.insert(abs(tp));
     }
   }
 
-  for (auto seti = tpset.begin(); seti != tpset.end(); seti++) {
-    int tp = *seti;
+  for (auto tp : tpset) {
     if (tpsetstub.find(tp) != tpsetstub.end() && tpsetstub.find(-tp) != tpsetstub.end() &&
         tpsetstubinner.find(tp) != tpsetstubinner.end() && tpsetstubinner.find(-tp) != tpsetstubinner.end() &&
         tpsetstubouter.find(tp) != tpsetstubouter.end() && tpsetstubouter.find(-tp) != tpsetstubouter.end()) {

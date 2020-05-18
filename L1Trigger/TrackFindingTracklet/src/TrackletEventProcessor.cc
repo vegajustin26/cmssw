@@ -241,8 +241,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
       if (settings_->writeMem()) {
         vector<string> dtcs = cabling_->DTCs();
-        for (auto it = dtcs.begin(); it != dtcs.end(); ++it) {
-          string dtc = *it;
+        for (const auto& dtc : dtcs) {
           string dtcbase = dtc.substr(2, dtc.size() - 2);
           if (dtc[0] == 'n') {
             dtcbase = dtc.substr(0, 4) + dtc.substr(6, dtc.size() - 6);
