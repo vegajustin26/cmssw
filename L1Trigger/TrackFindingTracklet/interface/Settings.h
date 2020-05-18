@@ -98,8 +98,6 @@ namespace trklet {
     double bendcutme(unsigned int layerdisk) const { return bendcutme_[layerdisk]; }
     double nfinephi(unsigned int inner, unsigned int iSeed) const { return nfinephi_[inner][iSeed]; }
     double nphireg(unsigned int inner, unsigned int iSeed) const { return nphireg_[inner][iSeed]; }
-    double zbitstab(unsigned int inner, unsigned int iSeed) const { return zbitstab_[inner][iSeed]; }
-    double rbitstab(unsigned int inner, unsigned int iSeed) const { return rbitstab_[inner][iSeed]; }
     double lutwidthtab(unsigned int inner, unsigned int iSeed) const { return lutwidthtab_[inner][iSeed]; }
     double lutwidthtabextended(unsigned int inner, unsigned int iSeed) const {
       return lutwidthtabextended_[inner][iSeed];
@@ -442,14 +440,6 @@ namespace trklet {
     std::array<std::array<unsigned int, 12>, 3> nphireg_{{{{5, 4, 4, 4, 4, 4, 4, 3, 4, 4, 5, 4}},    //inner
                                                           {{5, 4, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4}},    //outer
                                                           {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4}}}};  //outermost
-
-    std::array<std::array<unsigned int, 12>, 3> zbitstab_{{{{7, 7, 7, 7, 3, 3, 7, 7, 0, 0, 7, 0}},
-                                                           {{7, 7, 7, 7, 3, 3, 3, 3, 0, 0, 7, 0}},
-                                                           {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 7}}}};
-
-    std::array<std::array<unsigned int, 12>, 3> rbitstab_{{{{4, 4, 4, 4, 8, 8, 3, 3, 0, 0, 4, 0}},
-                                                           {{4, 4, 4, 4, 7, 7, 7, 7, 0, 0, 4, 0}},
-                                                           {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 4}}}};
 
     std::array<std::array<unsigned int, 12>, 3> lutwidthtab_{{{{10, 11, 11, 11, 11, 11, 11, 11, 0, 0, 11, 0}},
                                                               {{6, 6, 6, 6, 10, 10, 10, 10, 0, 0, 6, 0}},

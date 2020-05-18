@@ -164,16 +164,16 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
   double z[N_DISK];
   unsigned int ndisks = 0; // disks with found stub-projections
 
-  // residuals (# stub-projections x 2 measurements for each)
-  double phiresid[N_PROJMEAS];
-  double zresid[N_PROJMEAS];
-  double phiresidexact[N_PROJMEAS];
-  double zresidexact[N_PROJMEAS];
-  int iphiresid[N_PROJMEAS];
-  int izresid[N_PROJMEAS];
-  double alpha[N_PROJMEAS];
+  // residuals for each stub
+  double phiresid[N_FITSTUB];
+  double zresid[N_FITSTUB];
+  double phiresidexact[N_FITSTUB];
+  double zresidexact[N_FITSTUB];
+  int iphiresid[N_FITSTUB];
+  int izresid[N_FITSTUB];
+  double alpha[N_FITSTUB];
 
-  for (unsigned int i = 0; i < N_PROJMEAS; i++) {
+  for (unsigned int i = 0; i < N_FITSTUB; i++) {
     iphiresid[i] = 0;
     izresid[i] = 0;
     alpha[i] = 0.0;
@@ -182,12 +182,10 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
     zresid[i] = 0.0;
     phiresidexact[i] = 0.0;
     zresidexact[i] = 0.0;
-    iphiresid[i] = 0;
-    izresid[i] = 0;
   }
 
   std::bitset<N_LAYER> lmatches;    //layer matches
-  std::bitset<N_DISK * 2> dmatches; //disk matches
+  std::bitset<N_DISK * 2> dmatches; //disk matches (2 per disk to separate 2S from PS)
   
   int mult = 1;
 
@@ -410,6 +408,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
     }
   }
 
+
   int rinvindex = (1 << (settings_->nrinvBitsTable() - 1)) * rinv / settings_->rinvmax() + (1 << (settings_->nrinvBitsTable() - 1));
   if (rinvindex < 0)
     rinvindex = 0;
@@ -540,11 +539,11 @@ void FitTrack::trackFitChisq(Tracklet* tracklet,
   double chisqseed = 0.0;
   double chisqseedexact = 0.0;
 
-  double delta[12];
-  double deltaexact[12];
-  int idelta[12];
+  double delta[2*N_FITSTUB];
+  double deltaexact[2*N_FITSTUB];
+  int idelta[2*N_FITSTUB];
 
-  for (unsigned int i = 0; i < 12; i++) {
+  for (unsigned int i = 0; i < 2*N_FITSTUB; i++) {
     delta[i] = 0.0;
     deltaexact[i] = 0.0;
     idelta[i] = 0;
