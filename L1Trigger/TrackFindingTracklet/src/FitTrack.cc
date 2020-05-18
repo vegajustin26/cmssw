@@ -78,10 +78,10 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
     // From full match lists, collect all the stubs associated with the tracklet seed
 
     // Get seed stubs first
-    trackstublist.emplace_back(tracklet->innerFPGAStub(), tracklet->innerStub());
+    trackstublist.emplace_back(tracklet->innerFPGAStub());
     if (tracklet->getISeed() >= 8)
-      trackstublist.emplace_back(tracklet->middleFPGAStub(), tracklet->middleStub());
-    trackstublist.emplace_back(tracklet->outerFPGAStub(), tracklet->outerStub());
+      trackstublist.emplace_back(tracklet->middleFPGAStub());
+    trackstublist.emplace_back(tracklet->outerFPGAStub());
 
     // Now get ALL matches (can have multiple per layer)
     for (const auto& i : fullmatch1_ ) {
