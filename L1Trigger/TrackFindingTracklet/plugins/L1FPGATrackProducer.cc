@@ -105,7 +105,6 @@
 // NAMESPACES
 using namespace edm;
 using namespace std;
-using namespace trklet;
 
 //////////////////////////////
 //                          //
@@ -321,7 +320,8 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   iSetup.get<IdealMagneticFieldRecord>().get(magneticFieldHandle);
   const MagneticField* theMagneticField = magneticFieldHandle.product();
   double mMagneticFieldStrength = theMagneticField->inTesla(GlobalPoint(0, 0, 0)).z();
-
+  settings.setBfield(mMagneticFieldStrength);
+  
   ////////////
   // GET BS //
   edm::Handle<reco::BeamSpot> beamSpotHandle;
@@ -367,12 +367,10 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     ////////////////////////////////////////////////
     /// LOOP OVER TRACKING PARTICLES & GET SIMTRACKS
 
-    int this_tp = 0;
-    std::vector<TrackingParticle>::const_iterator iterTP;
-
     int ntps = 1;  //count from 1 ; 0 will mean invalid
 
-    for (iterTP = TrackingParticleHandle->begin(); iterTP != TrackingParticleHandle->end(); ++iterTP) {
+    int this_tp = 0;
+    for (auto iterTP : *TrackingParticleHandle) {
       edm::Ptr<TrackingParticle> tp_ptr(TrackingParticleHandle, this_tp);
       this_tp++;
 
@@ -380,19 +378,19 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
       if (MCTruthTTClusterHandle->findTTClusterRefs(tp_ptr).size() < 1)
         continue;
 
-      if (iterTP->g4Tracks().size() == 0) {
+      if (iterTP.g4Tracks().size() == 0) {
         continue;
       }
 
-      int sim_eventid = iterTP->g4Tracks().at(0).eventId().event();
-      int sim_type = iterTP->pdgId();
-      float sim_pt = iterTP->pt();
-      float sim_eta = iterTP->eta();
-      float sim_phi = iterTP->phi();
+      int sim_eventid = iterTP.g4Tracks().at(0).eventId().event();
+      int sim_type = iterTP.pdgId();
+      float sim_pt = iterTP.pt();
+      float sim_eta = iterTP.eta();
+      float sim_phi = iterTP.phi();
 
-      float vx = iterTP->vertex().x();
-      float vy = iterTP->vertex().y();
-      float vz = iterTP->vertex().z();
+      float vx = iterTP.vertex().x();
+      float vy = iterTP.vertex().y();
+      float vz = iterTP.vertex().z();
 
       if (sim_pt < 1.0 || std::abs(vz) > 100.0 || hypot(vx, vy) > 50.0)
         continue;
@@ -410,8 +408,8 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   /// COLLECT STUB INFORMATION ///
   ////////////////////////////////
 
-  for (auto gd = theTrackerGeom->dets().begin(); gd != theTrackerGeom->dets().end(); gd++) {
-    DetId detid = (*gd)->geographicalId();
+  for (const auto& gd : theTrackerGeom->dets()) {
+    DetId detid = (*gd).geographicalId();
     if (detid.subdetId() != StripSubdetector::TOB && detid.subdetId() != StripSubdetector::TID)
       continue;  // only run on OT
     if (!tTopo->isLower(detid))
@@ -435,7 +433,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     for (auto stubIter = stubs.begin(); stubIter != stubs.end(); ++stubIter) {
       edm::Ref<edmNew::DetSetVector<TTStub<Ref_Phase2TrackerDigi_> >, TTStub<Ref_Phase2TrackerDigi_> > tempStubPtr =
           edmNew::makeRefTo(Phase2TrackerDigiTTStubHandle, stubIter);
-
+      
       vector<int> assocTPs;
 
       if (readMoreMcTruth_) {
@@ -571,9 +569,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
       LocalPoint clustlp_outer = topol_outer->localPosition(coords_outer);
       GlobalPoint posStub_outer = theGeomDet_outer->surface().toGlobal(clustlp_outer);
 
-      unsigned int isFlipped = 0;
-      if (posStub_outer.mag() < posStub_inner.mag())
-	isFlipped = 1;
+      bool isFlipped = !(posStub_outer.mag() < posStub_inner.mag());
 
       // -----------------------------------------------------
       // correct sign for stubs in negative endcap
@@ -586,7 +582,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
         strip = irphi[0];
       }
 
-      //if module FE inefficiencies are calculated, a stub is thrown out is rawBend > 100 
+      //if module FE inefficiencies are calculated, a stub is thrown out if rawBend > 100 
       if ( (tempStubPtr->rawBend() < 100.) && (ev.addStub(layer,
 							  ladder,
 							  module,
@@ -680,10 +676,10 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     for (unsigned int i = 0; i < stubptrs.size(); i++) {
       stubs.push_back(*(stubptrs[i]));
     }
-
+    
     stubMapType::const_iterator it;
-    for (vector<trklet::L1TStub>::const_iterator itstubs = stubs.begin(); itstubs != stubs.end(); itstubs++) {
-      it = stubMap.find(*itstubs);
+    for (const auto& itstubs : stubs) {
+      it = stubMap.find(itstubs);
       if (it != stubMap.end()) {
         aTrack.addStubRef(it->second);
       } else {

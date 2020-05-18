@@ -158,7 +158,6 @@ namespace trklet {
     double rinvcut() const { return 0.01 * c_ * bfield_ / ptcut_; }  //0.01 to convert to cm-1
     
     double c() const { return c_; }
-    double bfield() const { return bfield_; }
 
     double rinvmax() const { return 0.01 * c_ * bfield_ / ptmin_; }
 
@@ -191,6 +190,9 @@ namespace trklet {
     bool extended() const { return extended_; }
     void setExtended(bool extended) { extended_ = extended; }
 
+    double bfield() const { return bfield_; }
+    void setBfield(double bfield) { bfield_ = bfield; }
+    
     std::string skimfile() const { return skimfile_; }
     void setSkimfile(std::string skimfile) { skimfile_ = skimfile; }
 
@@ -648,7 +650,7 @@ namespace trklet {
 
     std::string skimfile_{""};  //if not empty events will be written out in ascii format to this file
 
-    double bfield_{3.8};    //B-field in T
+    double bfield_{3.8112};    //B-field in T
     double c_{0.299792458}; //speed of light m/ns
     
   };
