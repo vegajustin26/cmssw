@@ -457,7 +457,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
   }
 }
 
-double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, Stub* curStub) {
+double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, const Stub* curStub) {
   double phiproj;
   double stubphi;
   double phires;

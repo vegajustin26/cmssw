@@ -15,7 +15,7 @@ HybridFit::HybridFit(unsigned int iSector, const Settings* settings, Globals* gl
   globals_ = globals;
 }
 
-void HybridFit::Fit(Tracklet* tracklet, std::vector<Stub*>& trackstublist) {
+void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist) {
   if (settings_->fakefit()) {
     tracklet->setFitPars(tracklet->rinvapprox(),
                          tracklet->phi0approx(),
@@ -43,7 +43,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<Stub*>& trackstublist) {
   }
 
   std::vector<const tmtt::Stub*> TMTTstubs;
-  std::map<unsigned int, L1TStub*> L1StubIndices;
+  std::map<unsigned int, const L1TStub*> L1StubIndices;
   unsigned int L1stubID = 0;
 
   if (globals_->tmttSettings() == 0) {
@@ -55,7 +55,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<Stub*>& trackstublist) {
   int kf_phi_sec = iSector_;
 
   for (unsigned int k = 0; k < trackstublist.size(); k++) {
-    L1TStub* L1stubptr = trackstublist[k]->l1tstub();
+    const L1TStub* L1stubptr = trackstublist[k]->l1tstub();
 
     double kfphi = L1stubptr->phi();
     double kfr = L1stubptr->r();
@@ -212,10 +212,10 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<Stub*>& trackstublist) {
     int ichi2rzfit = trk.chi2rz() / 16;
 
     const vector<const tmtt::Stub*>& stubsFromFit = trk.stubs();
-    vector<L1TStub*> l1stubsFromFit;
+    vector<const L1TStub*> l1stubsFromFit;
     for (const tmtt::Stub* s : stubsFromFit) {
       unsigned int IDf = s->index();
-      L1TStub* l1s = L1StubIndices.at(IDf);
+      const L1TStub* l1s = L1StubIndices.at(IDf);
       l1stubsFromFit.push_back(l1s);
     }
 
