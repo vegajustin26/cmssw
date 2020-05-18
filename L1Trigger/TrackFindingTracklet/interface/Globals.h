@@ -9,6 +9,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculatorDisk.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculatorOverlap.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMRouterPhiCorrTable.h"
 
 namespace tmtt {
   class Settings;
@@ -20,7 +21,6 @@ namespace trklet {
   class TETableBase;
   class TrackDerTable;
   class ProjectionRouterBendTable;
-  class VMRouterPhiCorrTable;
   class SLHCEvent;
 
   class Globals {
@@ -50,7 +50,11 @@ namespace trklet {
       ITC_L2B1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 2, -1));
     }
 
-    ~Globals() = default;
+    ~Globals() {
+      for (auto i:thePhiCorr_) {
+	delete i;
+      }
+    };
 
     SLHCEvent*& event() { return theEvent_; }
 

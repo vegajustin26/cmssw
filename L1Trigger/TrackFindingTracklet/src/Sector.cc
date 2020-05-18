@@ -46,8 +46,8 @@ Sector::Sector(unsigned int i, const Settings* settings, Globals* globals) : set
   phimax_ = phimin_ + dphi + 2 * dphiHG;
   phimin_ -= M_PI / N_SECTOR;
   phimax_ -= M_PI / N_SECTOR;
-  phimin_ = trklet::phiRange(phimin_);
-  phimax_ = trklet::phiRange(phimax_);
+  phimin_ = phiRange(phimin_);
+  phimax_ = phiRange(phimax_);
   if (phimin_ > phimax_)
     phimin_ -= 2 * M_PI;
 }
@@ -55,14 +55,6 @@ Sector::Sector(unsigned int i, const Settings* settings, Globals* globals) : set
 Sector::~Sector() {
   for (unsigned int i = 0; i < MemoriesV_.size(); i++) {
     MemoriesV_[i]->clean();
-  }
-  for (const auto& p : Processes_) {
-    ProcessBase* proc = p.second;
-    delete proc;
-  }
-  for (const auto& m : Memories_) {
-    MemoryBase* mem = m.second;
-    delete mem;
   }
 }
 
@@ -99,59 +91,59 @@ bool Sector::addStub(L1TStub stub, string dtc) {
 void Sector::addMem(string memType, string memName) {
   if (memType == "InputLink:") {
     IL_.push_back(new InputLinkMemory(memName, settings_, isector_, phimin_, phimax_));
-    Memories_[memName] = IL_.back();
+    Memories_[memName].reset(IL_.back());
     MemoriesV_.push_back(IL_.back());
   } else if (memType == "AllStubs:") {
     AS_.push_back(new AllStubsMemory(memName, settings_, isector_));
-    Memories_[memName] = AS_.back();
+    Memories_[memName].reset(AS_.back());
     MemoriesV_.push_back(AS_.back());
   } else if (memType == "VMStubsTE:") {
     VMSTE_.push_back(new VMStubsTEMemory(memName, settings_, isector_));
-    Memories_[memName] = VMSTE_.back();
+    Memories_[memName].reset(VMSTE_.back());
     MemoriesV_.push_back(VMSTE_.back());
   } else if (memType == "VMStubsME:") {
     VMSME_.push_back(new VMStubsMEMemory(memName, settings_, isector_));
-    Memories_[memName] = VMSME_.back();
+    Memories_[memName].reset(VMSME_.back());
     MemoriesV_.push_back(VMSME_.back());
   } else if (memType == "StubPairs:" || memType == "StubPairsDisplaced:") {
     SP_.push_back(new StubPairsMemory(memName, settings_, isector_));
-    Memories_[memName] = SP_.back();
+    Memories_[memName].reset(SP_.back());
     MemoriesV_.push_back(SP_.back());
   } else if (memType == "StubTriplets:") {
     ST_.push_back(new StubTripletsMemory(memName, settings_, isector_));
-    Memories_[memName] = ST_.back();
+    Memories_[memName].reset(ST_.back());
     MemoriesV_.push_back(ST_.back());
   } else if (memType == "TrackletParameters:") {
     TPAR_.push_back(new TrackletParametersMemory(memName, settings_, isector_));
-    Memories_[memName] = TPAR_.back();
+    Memories_[memName].reset(TPAR_.back());
     MemoriesV_.push_back(TPAR_.back());
   } else if (memType == "TrackletProjections:") {
     TPROJ_.push_back(new TrackletProjectionsMemory(memName, settings_, isector_));
-    Memories_[memName] = TPROJ_.back();
+    Memories_[memName].reset(TPROJ_.back());
     MemoriesV_.push_back(TPROJ_.back());
   } else if (memType == "AllProj:") {
     AP_.push_back(new AllProjectionsMemory(memName, settings_, isector_));
-    Memories_[memName] = AP_.back();
+    Memories_[memName].reset(AP_.back());
     MemoriesV_.push_back(AP_.back());
   } else if (memType == "VMProjections:") {
     VMPROJ_.push_back(new VMProjectionsMemory(memName, settings_, isector_));
-    Memories_[memName] = VMPROJ_.back();
+    Memories_[memName].reset(VMPROJ_.back());
     MemoriesV_.push_back(VMPROJ_.back());
   } else if (memType == "CandidateMatch:") {
     CM_.push_back(new CandidateMatchMemory(memName, settings_, isector_));
-    Memories_[memName] = CM_.back();
+    Memories_[memName].reset(CM_.back());
     MemoriesV_.push_back(CM_.back());
   } else if (memType == "FullMatch:") {
     FM_.push_back(new FullMatchMemory(memName, settings_, isector_));
-    Memories_[memName] = FM_.back();
+    Memories_[memName].reset(FM_.back());
     MemoriesV_.push_back(FM_.back());
   } else if (memType == "TrackFit:") {
     TF_.push_back(new TrackFitMemory(memName, settings_, isector_, phimin_, phimax_));
-    Memories_[memName] = TF_.back();
+    Memories_[memName].reset(TF_.back());
     MemoriesV_.push_back(TF_.back());
   } else if (memType == "CleanTrack:") {
     CT_.push_back(new CleanTrackMemory(memName, settings_, isector_, phimin_, phimax_));
-    Memories_[memName] = CT_.back();
+    Memories_[memName].reset(CT_.back());
     MemoriesV_.push_back(CT_.back());
   } else {
     edm::LogPrint("Tracklet") << "Don't know of memory type: " << memType;
@@ -162,44 +154,44 @@ void Sector::addMem(string memType, string memName) {
 void Sector::addProc(string procType, string procName) {
   if (procType == "VMRouter:") {
     VMR_.push_back(new VMRouter(procName, settings_, globals_, isector_));
-    Processes_[procName] = VMR_.back();
+    Processes_[procName].reset(VMR_.back());
   } else if (procType == "TrackletEngine:") {
     TE_.push_back(new TrackletEngine(procName, settings_, globals_, isector_));
-    Processes_[procName] = TE_.back();
+    Processes_[procName].reset(TE_.back());
   } else if (procType == "TrackletEngineDisplaced:") {
     TED_.push_back(new TrackletEngineDisplaced(procName, settings_, globals_, isector_));
-    Processes_[procName] = TED_.back();
+    Processes_[procName].reset(TED_.back());
   } else if (procType == "TripletEngine:") {
     TRE_.push_back(new TripletEngine(procName, settings_, globals_, isector_));
-    Processes_[procName] = TRE_.back();
+    Processes_[procName].reset(TRE_.back());
   } else if (procType == "TrackletCalculator:") {
     TC_.push_back(new TrackletCalculator(procName, settings_, globals_, isector_));
-    Processes_[procName] = TC_.back();
+    Processes_[procName].reset(TC_.back());
   } else if (procType == "TrackletProcessor:") {
     TP_.push_back(new TrackletProcessor(procName, settings_, globals_, isector_));
-    Processes_[procName] = TP_.back();
+    Processes_[procName].reset(TP_.back());
   } else if (procType == "TrackletCalculatorDisplaced:") {
     TCD_.push_back(new TrackletCalculatorDisplaced(procName, settings_, globals_, isector_));
-    Processes_[procName] = TCD_.back();
+    Processes_[procName].reset(TCD_.back());
   } else if (procType == "ProjectionRouter:") {
     PR_.push_back(new ProjectionRouter(procName, settings_, globals_, isector_));
-    Processes_[procName] = PR_.back();
+    Processes_[procName].reset(PR_.back());
   } else if (procType == "MatchEngine:") {
     ME_.push_back(new MatchEngine(procName, settings_, globals_, isector_));
-    Processes_[procName] = ME_.back();
+    Processes_[procName].reset(ME_.back());
   } else if (procType == "MatchCalculator:" ||
              procType == "DiskMatchCalculator:") {  //TODO should not be used in configurations
     MC_.push_back(new MatchCalculator(procName, settings_, globals_, isector_));
-    Processes_[procName] = MC_.back();
+    Processes_[procName].reset(MC_.back());
   } else if (procType == "MatchProcessor:") {
     MP_.push_back(new MatchProcessor(procName, settings_, globals_, isector_));
-    Processes_[procName] = MP_.back();
+    Processes_[procName].reset(MP_.back());
   } else if (procType == "FitTrack:") {
     FT_.push_back(new FitTrack(procName, settings_, globals_, isector_));
-    Processes_[procName] = FT_.back();
+    Processes_[procName].reset(FT_.back());
   } else if (procType == "PurgeDuplicate:") {
     PD_.push_back(new PurgeDuplicate(procName, settings_, globals_, isector_));
-    Processes_[procName] = PD_.back();
+    Processes_[procName].reset(PD_.back());
   } else {
     edm::LogPrint("Tracklet") << "Don't know of processing type: " << procType;
     exit(0);
@@ -231,25 +223,25 @@ void Sector::addWire(string mem, string procinfull, string procoutfull) {
 }
 
 ProcessBase* Sector::getProc(string procName) {
-  map<string, ProcessBase*>::iterator it = Processes_.find(procName);
+  auto it = Processes_.find(procName);
 
   if (it != Processes_.end()) {
-    return it->second;
+    return it->second.get();
   }
   edm::LogPrint("Tracklet") << "Could not find process with name : " << procName;
   assert(0);
-  return 0;
+  return nullptr;
 }
 
 MemoryBase* Sector::getMem(string memName) {
-  map<string, MemoryBase*>::iterator it = Memories_.find(memName);
+  auto it = Memories_.find(memName);
 
   if (it != Memories_.end()) {
-    return it->second;
+    return it->second.get();
   }
   edm::LogPrint("Tracklet") << "Could not find memory with name : " << memName;
   assert(0);
-  return 0;
+  return nullptr;
 }
 
 void Sector::writeInputStubs(bool first) {

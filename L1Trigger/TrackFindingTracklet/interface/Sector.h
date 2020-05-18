@@ -120,7 +120,7 @@ namespace trklet {
     double phimin_;
     double phimax_;
 
-    std::map<std::string, MemoryBase*> Memories_;
+    std::map<std::string, std::unique_ptr<MemoryBase> > Memories_;
     std::vector<MemoryBase*> MemoriesV_;
     std::vector<InputLinkMemory*> IL_;
     std::vector<AllStubsMemory*> AS_;
@@ -137,7 +137,7 @@ namespace trklet {
     std::vector<TrackFitMemory*> TF_;
     std::vector<CleanTrackMemory*> CT_;
 
-    std::map<std::string, ProcessBase*> Processes_;
+    std::map<std::string, std::unique_ptr<ProcessBase> > Processes_;
     std::vector<VMRouter*> VMR_;
     std::vector<TrackletEngine*> TE_;
     std::vector<TrackletEngineDisplaced*> TED_;

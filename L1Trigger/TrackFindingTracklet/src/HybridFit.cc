@@ -123,12 +123,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
   }
 
   // KF wants global phi0, not phi0 measured with respect to lower edge of sector (Tracklet convention).
-  kfphi0 = kfphi0 + iSector_ * 2 * M_PI / N_SECTOR - 0.5 * settings_->dphisectorHG();
-
-  if (kfphi0 > M_PI)
-    kfphi0 -= 2 * M_PI;
-  if (kfphi0 < -M_PI)
-    kfphi0 += 2 * M_PI;
+  kfphi0 = phiRange(kfphi0 + iSector_ * settings_->dphisector() - 0.5 * settings_->dphisectorHG());
 
   std::pair<float, float> helixrphi(kfrinv / (0.01 * settings_->c() * settings_->bfield()), kfphi0);
   std::pair<float, float> helixrz(kfz0, kft);

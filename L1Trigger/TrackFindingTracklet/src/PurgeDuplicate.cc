@@ -164,10 +164,10 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
     for (unsigned int itrk = 0; itrk < numStublists - 1; itrk++) { 
       for (unsigned int jtrk = itrk + 1; jtrk < numStublists; jtrk++) {
         // Get primary track stubids
-        std::vector<std::pair<int, int>> stubsTrk1 = inputstubidslists_[itrk];
+        const std::vector<std::pair<int, int>>& stubsTrk1 = inputstubidslists_[itrk];
 
         // Get and count secondary track stubids
-        std::vector<std::pair<int, int>> stubsTrk2 = inputstubidslists_[jtrk];
+        const std::vector<std::pair<int, int>>& stubsTrk2 = inputstubidslists_[jtrk];
 
         // Count number of Unique Regions (UR) that share stubs, and the number of UR that each track hits
         unsigned int nShareUR = 0;
@@ -175,11 +175,11 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         unsigned int nURStubTrk2 = 0;
         if (settings_->mergeComparison() == "CompareAll") {
           bool URArray[16];
-          for (int i = 0; i < 16; i++) {
-            URArray[i] = false;
+          for (auto& i:URArray) {
+            i = false;
           };
-          for (std::vector<std::pair<int, int>>::iterator st1 = stubsTrk1.begin(); st1 != stubsTrk1.end(); st1++) {
-            for (std::vector<std::pair<int, int>>::iterator st2 = stubsTrk2.begin(); st2 != stubsTrk2.end(); st2++) {
+          for (const auto& st1 : stubsTrk1) {
+            for (const auto& st2 = stubsTrk2) {
               if (st1->first == st2->first && st1->second == st2->second) {
                 // Converts region encoded in st1->first to an index in the Unique Region (UR) array
                 int i = st1->first;
@@ -302,7 +302,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
     // Make the final track objects, fit with KF, and send to output
     for (unsigned int itrk = 0; itrk < numStublists; itrk++) {
       Tracklet* tracklet = inputtracklets_[itrk];
-      std::vector<std::pair<Stub*, L1TStub*>> trackstublist = inputstublists_[itrk];
+      std::vector<Stub*> trackstublist = inputstublists_[itrk];
 
       HybridFit hybridFitter(iSector_, settings_, globals_);
       hybridFitter.Fit(tracklet, trackstublist);
