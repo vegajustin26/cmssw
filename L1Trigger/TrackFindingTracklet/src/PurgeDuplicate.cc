@@ -195,8 +195,8 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
             }
           }
         } else if (settings_->mergeComparison() == "CompareBest") {
-          std::vector<Stub*> fullStubslistsTrk1 = inputstublists_[itrk];
-          std::vector<Stub*> fullStubslistsTrk2 = inputstublists_[jtrk];
+          std::vector<const Stub*> fullStubslistsTrk1 = inputstublists_[itrk];
+          std::vector<const Stub*> fullStubslistsTrk2 = inputstublists_[jtrk];
 
           // Arrays to store the index of the best stub in each region
           int URStubidsTrk1[16];
@@ -272,9 +272,9 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
           }
 
           // Get a merged stub list
-          std::vector<Stub*> newStubList;
-          std::vector<Stub*> stubsTrk1 = inputstublists_[rejetrk];
-          std::vector<Stub*> stubsTrk2 = inputstublists_[preftrk];
+          std::vector<const Stub*> newStubList;
+          std::vector<const Stub*> stubsTrk1 = inputstublists_[rejetrk];
+          std::vector<const Stub*> stubsTrk2 = inputstublists_[preftrk];
           newStubList = stubsTrk1;
           for (unsigned int stub2it = 0; stub2it < stubsTrk2.size(); stub2it++) {
             if (find(stubsTrk1.begin(), stubsTrk1.end(), stubsTrk2[stub2it]) == stubsTrk1.end()) {
@@ -305,7 +305,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
     // Make the final track objects, fit with KF, and send to output
     for (unsigned int itrk = 0; itrk < numStublists; itrk++) {
       Tracklet* tracklet = inputtracklets_[itrk];
-      std::vector<Stub*> trackstublist = inputstublists_[itrk];
+      std::vector<const Stub*> trackstublist = inputstublists_[itrk];
 
       HybridFit hybridFitter(iSector_, settings_, globals_);
       hybridFitter.Fit(tracklet, trackstublist);
@@ -457,7 +457,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
   }
 }
 
-double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, Stub* curStub) {
+double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, const Stub* curStub) {
   double phiproj;
   double stubphi;
   double phires;
