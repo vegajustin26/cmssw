@@ -83,26 +83,44 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
         edm::LogVerbatim("L1track") << "Will create disk stub with : ";
     }
 
+    // LS FIXME - take these from geometry in EDProducer instead
+    float stripPitch = psmodule  ?  0.01  :  0.009;
+    float stripLength = psmodule  ?  0.1467  :  5.0250;
+    unsigned int nStrips = psmodule  ?  960  :  1016;
+    // max |z| at which non-tilted modules found in barrel PS layers 1-3. (Entry 0 not used).
+    const vector<float> zMaxNonTilted = {0, 15.3, 24.6, 33.9};
+    bool tiltedBarrel;
+    if (isBarrel && psmodule) {
+      tiltedBarrel = (std::abs(kfz) > zMaxNonTilted[kflayer]);
+    } else {
+      tiltedBarrel = false;
+    }
+
     if (settings_->printDebugKF()) {
       edm::LogVerbatim("L1track") << kfphi << " " << kfr << " " << kfz << " " << kfbend << " " << kflayer << " "
                                   << isBarrel << " " << psmodule;
     }
-    unsigned int uniqueIndex = 1000 * L1stubID + L1stubptr->allStubIndex();
-    tmtt::Stub* TMTTstubptr = new tmtt::Stub(kfphi,
+
+
+    unsigned int uniqueStubIndex = 1000 * L1stubID + L1stubptr->allStubIndex();
+    tmtt::Stub* TMTTstubptr = new tmtt::Stub(&TMTTsettings,
+                                             uniqueStubIndex,
+					     kfphi,
                                              kfr,
                                              kfz,
                                              kfbend,
-                                             kflayer,
-                                             psmodule,
-                                             isBarrel,
                                              iphi,
                                              -alpha,
-                                             &TMTTsettings,
-                                             nullptr,
-                                             uniqueIndex,
-                                             kf_phi_sec);
+                                             kflayer,
+                                             kf_phi_sec,
+                                             psmodule,
+                                             isBarrel,
+					     tiltedBarrel,
+					     stripPitch,
+					     stripLength,
+					     nStrips);
     TMTTstubs.push_back(TMTTstubptr);
-    L1StubIndices[uniqueIndex] = L1stubptr;
+    L1StubIndices[uniqueStubIndex] = L1stubptr;
     L1stubID++;
   }
 
@@ -193,7 +211,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
     int ichi2rphifit = trk.chi2rphi() / 16;
     int ichi2rzfit = trk.chi2rz() / 16;
 
-    const vector<const tmtt::Stub*>& stubsFromFit = trk.getStubs();
+    const vector<const tmtt::Stub*>& stubsFromFit = trk.stubs();
     vector<L1TStub*> l1stubsFromFit;
     for (const tmtt::Stub* s : stubsFromFit) {
       unsigned int IDf = s->index();
@@ -227,7 +245,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<std::pair<Stub*, L1TStub*>>&
                          iz0fit,
                          ichi2rphifit,
                          ichi2rzfit,
-                         trk.getHitPattern(),
+                         trk.hitPattern(),
                          l1stubsFromFit);
   } else {
     if (settings_->printDebugKF()) {
