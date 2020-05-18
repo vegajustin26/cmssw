@@ -106,7 +106,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         Tracklet* aTrack = inputtrackfits_[i]->getTrack(j);
         inputtracklets_.push_back(inputtrackfits_[i]->getTrack(j));
 
-        std::vector<std::pair<const Stub*, const L1TStub*>> stublist = inputtrackfits_[i]->getStublist(j);
+        std::vector<const Stub*> stublist = inputtrackfits_[i]->getStublist(j);
 
         inputstublists_.push_back(stublist);
 
@@ -195,8 +195,8 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
             }
           }
         } else if (settings_->mergeComparison() == "CompareBest") {
-          std::vector<std::pair<Stub*, L1TStub*>> fullStubslistsTrk1 = inputstublists_[itrk];
-          std::vector<std::pair<Stub*, L1TStub*>> fullStubslistsTrk2 = inputstublists_[jtrk];
+          std::vector<Stub*> fullStubslistsTrk1 = inputstublists_[itrk];
+          std::vector<Stub*> fullStubslistsTrk2 = inputstublists_[jtrk];
 
           // Arrays to store the index of the best stub in each region
           int URStubidsTrk1[16];
@@ -272,9 +272,9 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
           }
 
           // Get a merged stub list
-          std::vector<std::pair<Stub*, L1TStub*>> newStubList;
-          std::vector<std::pair<Stub*, L1TStub*>> stubsTrk1 = inputstublists_[rejetrk];
-          std::vector<std::pair<Stub*, L1TStub*>> stubsTrk2 = inputstublists_[preftrk];
+          std::vector<Stub*> newStubList;
+          std::vector<Stub*> stubsTrk1 = inputstublists_[rejetrk];
+          std::vector<Stub*> stubsTrk2 = inputstublists_[preftrk];
           newStubList = stubsTrk1;
           for (unsigned int stub2it = 0; stub2it < stubsTrk2.size(); stub2it++) {
             if (find(stubsTrk1.begin(), stubsTrk1.end(), stubsTrk2[stub2it]) == stubsTrk1.end()) {
@@ -457,15 +457,15 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
   }
 }
 
-double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, std::pair<Stub*, L1TStub*> curStub) {
+double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, Stub* curStub) {
   double phiproj;
   double stubphi;
   double phires;
   // Get phi position of stub
-  stubphi = curStub.second->phi();
+  stubphi = curStub->l1tstub()->phi();
   // Get region that the stub is in (Layer 1->6, Disk 1->5)
-  int Layer = curStub.first->layer().value() + 1;
-  int Disk = curStub.first->disk().value();
+  int Layer = curStub->layer().value() + 1;
+  int Disk = curStub->disk().value();
   // Get phi projection of tracklet
   int seedindex = curTracklet->seedIndex();
   // If this stub is a seed stub, set projection=phi, so that res=0
