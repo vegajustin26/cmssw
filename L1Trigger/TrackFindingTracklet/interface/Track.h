@@ -10,7 +10,7 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
-#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
+#include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackPars.h"
 
 namespace trklet {

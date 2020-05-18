@@ -23,7 +23,7 @@
 #include "../interface/IMATH_TrackletCalculatorDisk.h"
 #include "../interface/IMATH_TrackletCalculatorOverlap.h"
 
-#include "../interface/slhcevent.h"
+#include "../interface/SLHCEvent.h"
 #include "../interface/Track.h"
 #include "../interface/Settings.h"
 #include "../interface/TrackletEventProcessor.h"

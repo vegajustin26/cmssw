@@ -10,7 +10,6 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
-//#include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackPars.h"
@@ -19,7 +18,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/LayerResidual.h"
 #include "L1Trigger/TrackFindingTracklet/interface/DiskResidual.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
-//#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
 
 namespace trklet {
 

@@ -1,6 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/CleanTrackMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
-#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
+#include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 #include <iomanip>
 
 using namespace std;

@@ -30,7 +30,7 @@
 #include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
 #include "DataFormats/Common/interface/DetSetVector.h"
 //
-#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
+#include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 
 #include "SimDataFormats/TrackingHit/interface/PSimHitContainer.h"

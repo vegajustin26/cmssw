@@ -3,7 +3,7 @@
 #define L1Trigger_TrackFindingTracklet_interface_Sector_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
-#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
+#include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 
 #include <string>
 #include <map>

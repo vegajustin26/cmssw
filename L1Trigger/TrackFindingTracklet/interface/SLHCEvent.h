@@ -1,6 +1,6 @@
 // This holds two classes: L1SimTrack (truth level simulated track), and SLHCEvent (support for maintaining standalone running)
-#ifndef L1Trigger_TrackFindingTracklet_interface_slhcevent_h
-#define L1Trigger_TrackFindingTracklet_interface_slhcevent_h
+#ifndef L1Trigger_TrackFindingTracklet_interface_SLHCEvent_h
+#define L1Trigger_TrackFindingTracklet_interface_SLHCEvent_h
 
 #include <iostream>
 #include <fstream>

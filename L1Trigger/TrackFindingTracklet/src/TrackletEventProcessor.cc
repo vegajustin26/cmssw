@@ -1,7 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEventProcessor.h"
 
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
-#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
+#include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
 #include "L1Trigger/TrackFindingTracklet/interface/HistBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"

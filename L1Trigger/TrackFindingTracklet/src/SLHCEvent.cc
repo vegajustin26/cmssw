@@ -1,4 +1,4 @@
-#include "L1Trigger/TrackFindingTracklet/interface/slhcevent.h"
+#include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
