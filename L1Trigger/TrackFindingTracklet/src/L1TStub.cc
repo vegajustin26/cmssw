@@ -117,9 +117,13 @@ bool L1TStub::tpmatch(int tp) const {
 }
 
 bool L1TStub::isTilted() const {
-  if (layer_ > N_PSLAYER) //disk modules and outer barrel modules are not tilted by construction 
+  //here layer_ runs 0-5 for barrel, >1000 for disk
+  //disk modules and outer barrel modules are not tilted by construction 
+  if (layer_ >= N_PSLAYER) 
     return false; 
-  if ( (module_ <= N_TILTED_RINGS) || (module_ >= N_TILTED_RINGS + N_MOD_PLANK.at(layer_-1)) )
+
+  assert(layer_ < N_PSLAYER); // safety for acccessing # modules/plank
+  if ( (module_ <= N_TILTED_RINGS) || (module_ >= N_TILTED_RINGS + N_MOD_PLANK.at(layer_)) )
     return true;
   return false;
 }

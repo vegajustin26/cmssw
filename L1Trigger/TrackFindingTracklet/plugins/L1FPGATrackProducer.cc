@@ -435,11 +435,13 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
       settings.setNStrips_PS(topol->nrows());
       settings.setStripPitch_PS(topol->pitch().first);
       settings.setStripLength_PS(topol->pitch().second);
+      firstPS = false;
     }
     if (!isPSmodule && first2S) {
       settings.setNStrips_2S(topol->nrows());
       settings.setStripPitch_2S(topol->pitch().first);
       settings.setStripLength_2S(topol->pitch().second);
+      first2S = false;
     }
     
     // loop over stubs
