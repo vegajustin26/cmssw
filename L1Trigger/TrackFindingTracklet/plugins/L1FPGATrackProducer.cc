@@ -432,15 +432,11 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
     // set constants that are common for all modules/stubs of a given type (PS vs 2S)
     if (isPSmodule && firstPS) {
-      cout << "PS module, nstrip = " << topol->nrows()
-	   << " pitch = " << topol->pitch().first << " length = " << topol->pitch().second << endl;
       settings.setNStrips_PS(topol->nrows());
       settings.setStripPitch_PS(topol->pitch().first);
       settings.setStripLength_PS(topol->pitch().second);
     }
     if (!isPSmodule && first2S) {
-      cout << "2S module, nstrip = " << topol->nrows()
-	   << " pitch = " << topol->pitch().first << " length = " << topol->pitch().second << endl;
       settings.setNStrips_2S(topol->nrows());
       settings.setStripPitch_2S(topol->pitch().first);
       settings.setStripLength_2S(topol->pitch().second);
