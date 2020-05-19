@@ -91,7 +91,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
 
     if (settings_->printDebugKF()) {
       edm::LogVerbatim("L1track") << kfphi << " " << kfr << " " << kfz << " " << kfbend << " " << kflayer << " "
-                                  << isBarrel << " " << psmodule << " " << isTilted " \n"
+                                  << isBarrel << " " << psmodule << " " << isTilted << " \n"
 				  << stripPitch << " " << stripLength << " " << nStrips;
     }
 
