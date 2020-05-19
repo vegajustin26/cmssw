@@ -314,13 +314,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   /// Set pointers to Stacked Modules
   iSetup.get<TrackerDigiGeometryRecord>().get(geometryHandle);
-
-  ////////////////////////
-  // GET MAGNETIC FIELD //
-  edm::ESHandle<MagneticField> magneticFieldHandle;
-  iSetup.get<IdealMagneticFieldRecord>().get(magneticFieldHandle);
-  const MagneticField* theMagneticField = magneticFieldHandle.product();
-  double mMagneticFieldStrength = theMagneticField->inTesla(GlobalPoint(0, 0, 0)).z();
   
   ////////////
   // GET BS //
@@ -644,7 +637,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     double tmp_chi2rphi = track->chisqrphi();
     double tmp_chi2rz = track->chisqrz();
     unsigned int tmp_hit = track->hitpattern();
-    double tmp_Bfield = mMagneticFieldStrength;
 
     TTTrack<Ref_Phase2TrackerDigi_> aTrack(tmp_rinv,
                                            tmp_phi,
@@ -658,7 +650,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
                                            0,
                                            tmp_hit,
                                            settings.nHelixPar(),
-                                           tmp_Bfield);
+                                           settings.bfield());
 
     unsigned int trksector = track->sector();
     unsigned int trkseed = (unsigned int)abs(track->seed());
@@ -684,7 +676,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     }
 
     // pt consistency
-    aTrack.setStubPtConsistency(StubPtConsistency::getConsistency(aTrack, theTrackerGeom, tTopo, mMagneticFieldStrength, settings.nHelixPar()));
+    aTrack.setStubPtConsistency(StubPtConsistency::getConsistency(aTrack, theTrackerGeom, tTopo, settings.bfield(), settings.nHelixPar()));
 
     // set TTTrack word
     aTrack.setTrackWordBits();
