@@ -225,7 +225,7 @@ void TrackletCalculatorDisplaced::execute() {
       const L1TStub* middleStub = middleFPGAStub->l1tstub();
 
       const Stub* outerFPGAStub = stubtriplets_[l]->getFPGAStub3(i);
-      const L1TStub* outerStub = middleFPGAStub->l1tstub();
+      const L1TStub* outerStub = outerFPGAStub->l1tstub();
 
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced execute " << getName() << "[" << iSector_ << "]";
