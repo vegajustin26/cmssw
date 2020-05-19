@@ -65,7 +65,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
     bool psmodule = L1stubptr->isPSmodule();
     unsigned int iphi = L1stubptr->iphi();
     double alpha = L1stubptr->alpha(settings_->stripPitch(psmodule));
-    bool istilted = L1stubptr->isTilted();
+    bool isTilted = L1stubptr->isTilted();
 
     bool isBarrel = trackstublist[k]->isBarrel();
     int kflayer;
