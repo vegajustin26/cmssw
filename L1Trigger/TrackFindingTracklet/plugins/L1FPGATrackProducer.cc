@@ -167,8 +167,6 @@ private:
 
   string geometryType_;
 
-  trklet::Sector** sectors;
-
   // settings containing various constants for the tracklet processing
   trklet::Settings settings;
 
@@ -261,8 +259,6 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   settings.setMemoryModulesFile(memoryModulesFile.fullPath());
   settings.setWiresFile(wiresFile.fullPath());
 
-  // initialize the tracklet event processing (this sets all the processing & memory modules, wiring, etc)
-  eventProcessor.init(&settings);
 
   eventnum = 0;
   if (not asciiEventOutName_.empty()) {
@@ -290,7 +286,20 @@ L1FPGATrackProducer::~L1FPGATrackProducer() {
 
 ////////////
 // BEGIN JOB
-void L1FPGATrackProducer::beginRun(const edm::Run& run, const edm::EventSetup& iSetup) {}
+void L1FPGATrackProducer::beginRun(const edm::Run& run, const edm::EventSetup& iSetup) {
+
+  ////////////////////////
+  // GET MAGNETIC FIELD //
+  edm::ESHandle<MagneticField> magneticFieldHandle;
+  iSetup.get<IdealMagneticFieldRecord>().get(magneticFieldHandle);
+  const MagneticField* theMagneticField = magneticFieldHandle.product();
+  double mMagneticFieldStrength = theMagneticField->inTesla(GlobalPoint(0, 0, 0)).z();
+  settings.setBfield(mMagneticFieldStrength);
+
+  // initialize the tracklet event processing (this sets all the processing & memory modules, wiring, etc)
+  eventProcessor.init(&settings);
+
+}
 
     
 //////////
@@ -320,7 +329,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   iSetup.get<IdealMagneticFieldRecord>().get(magneticFieldHandle);
   const MagneticField* theMagneticField = magneticFieldHandle.product();
   double mMagneticFieldStrength = theMagneticField->inTesla(GlobalPoint(0, 0, 0)).z();
-  settings.setBfield(mMagneticFieldStrength);
   
   ////////////
   // GET BS //
