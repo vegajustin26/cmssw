@@ -10,11 +10,8 @@ StubPairsMemory::StubPairsMemory(string name, const Settings* const settings, un
 
 void StubPairsMemory::writeSP(bool first) {
   std::ostringstream oss;
-  oss << "../data/MemPrints/StubPairs/StubPairs_"
-      << getName()
-      << "_"
-      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
-      << ".dat";
+  oss << "../data/MemPrints/StubPairs/StubPairs_" << getName() << "_" << std::setfill('0') << std::setw(2)
+      << (iSector_ + 1) << ".dat";
   auto const& fname = oss.str();
 
   if (first) {

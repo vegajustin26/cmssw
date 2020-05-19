@@ -25,10 +25,8 @@ namespace trklet {
 
   class Globals {
   public:
-    
     Globals(const Settings* settings) {
-
-      imathGlobals *imathGlobs=new imathGlobals();
+      imathGlobals* imathGlobs = new imathGlobals();
 
       //takes owernship of globals pointer
       imathGlobals_.reset(imathGlobs);
@@ -43,7 +41,7 @@ namespace trklet {
       ITC_F3F4_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, 3, 4));
       ITC_B1B2_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, -1, -2));
       ITC_B3B4_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, -3, -4));
-      
+
       ITC_L1F1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 1, 1));
       ITC_L2F1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 2, 1));
       ITC_L1B1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 1, -1));
@@ -51,8 +49,8 @@ namespace trklet {
     }
 
     ~Globals() {
-      for (auto i:thePhiCorr_) {
-	delete i;
+      for (auto i : thePhiCorr_) {
+        delete i;
       }
     };
 
@@ -102,7 +100,7 @@ namespace trklet {
     std::map<std::string, std::ofstream*> ofstreams_;
 
     std::unique_ptr<imathGlobals> imathGlobals_;
-    
+
     // tracklet calculators
     std::unique_ptr<IMATH_TrackletCalculator> ITC_L1L2_;
     std::unique_ptr<IMATH_TrackletCalculator> ITC_L2L3_;
@@ -136,7 +134,6 @@ namespace trklet {
     std::map<std::string, std::vector<int> > ILindex_;
 
     std::map<std::string, int> layerdiskmap_;
-
   };
 };  // namespace trklet
 

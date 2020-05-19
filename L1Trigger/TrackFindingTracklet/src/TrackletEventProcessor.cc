@@ -17,7 +17,7 @@ TrackletEventProcessor::~TrackletEventProcessor() {
   }
   delete globals_;
   delete cabling_;
-  
+
   if (settings_->bookHistos()) {
     histbase_->close();
   }
@@ -25,39 +25,39 @@ TrackletEventProcessor::~TrackletEventProcessor() {
 
 void TrackletEventProcessor::init(const Settings* theSettings) {
   settings_ = theSettings;
-  
+
   globals_ = new Globals(settings_);
-  
+
   //Verify consistency
-  if (settings_->kphi0pars() != globals_->ITC_L1L2()->phi0_final.K()){
+  if (settings_->kphi0pars() != globals_->ITC_L1L2()->phi0_final.K()) {
     throw cms::Exception("Inconsistency") << "phi0 conversion parameter inconsistency\n";
   }
 
-  if (settings_->krinvpars() != globals_->ITC_L1L2()->rinv_final.K()){
+  if (settings_->krinvpars() != globals_->ITC_L1L2()->rinv_final.K()) {
     throw cms::Exception("Inconsistency") << "ring conversion parameter inconsistency\n";
   }
-  
-  if (settings_->ktpars() != globals_->ITC_L1L2()->t_final.K()){
+
+  if (settings_->ktpars() != globals_->ITC_L1L2()->t_final.K()) {
     throw cms::Exception("Inconsistency") << "t conversion parameter inconsistency\n";
   }
-  
+
   if (settings_->debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "========================================================= \n"
-				 << "Conversion factors for global coordinates: \n"
-				 << "z    kz            = " << settings_->kz() << "\n"
-				 << "r    kr            = " << settings_->kr() << "\n"
-				 << "phi  kphi1         = " << settings_->kphi1() << "\n"
-				 << "========================================================= \n"
-				 << "Conversion factors for track(let) parameters: \n"
-				 << "rinv krinvpars     = " << settings_->krinvpars() << "\n"
-				 << "phi0 kphi0pars     = " << settings_->kphi0pars() << "\n"
-				 << "d0   kd0pars       = " << settings_->kd0pars() << "\n"
-				 << "t    ktpars        = " << settings_->ktpars() << "\n"
-				 << "z0   kz0pars       = " << settings_->kz0pars() << "\n"
-				 << "========================================================= \n"
-				 << "phi0bitshift = " << settings_->phi0bitshift() << "\n"
-				 << "d0bitshift   = ??? \n"
-				 << "=========================================================";
+                                 << "Conversion factors for global coordinates: \n"
+                                 << "z    kz            = " << settings_->kz() << "\n"
+                                 << "r    kr            = " << settings_->kr() << "\n"
+                                 << "phi  kphi1         = " << settings_->kphi1() << "\n"
+                                 << "========================================================= \n"
+                                 << "Conversion factors for track(let) parameters: \n"
+                                 << "rinv krinvpars     = " << settings_->krinvpars() << "\n"
+                                 << "phi0 kphi0pars     = " << settings_->kphi0pars() << "\n"
+                                 << "d0   kd0pars       = " << settings_->kd0pars() << "\n"
+                                 << "t    ktpars        = " << settings_->ktpars() << "\n"
+                                 << "z0   kz0pars       = " << settings_->kz0pars() << "\n"
+                                 << "========================================================= \n"
+                                 << "phi0bitshift = " << settings_->phi0bitshift() << "\n"
+                                 << "d0bitshift   = ??? \n"
+                                 << "=========================================================";
   }
 
   //option to write out tables for HLS code, not used in production
@@ -70,7 +70,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
 #include "../test/WriteDesign.icc"
   }
   */
-  
+
   if (settings_->bookHistos()) {
     histbase_ = new HistBase;
     histbase_->open();
@@ -213,21 +213,20 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
     cabling_->addphi(dtc, stub.phi(), layer, module);
 
-    double phi = phiRange2PI(stub.phi()+ 0.5 * settings_->dphisectorHG());
-    
+    double phi = phiRange2PI(stub.phi() + 0.5 * settings_->dphisectorHG());
+
     unsigned int isector = N_SECTOR * phi / (2 * M_PI);
-    
+
     for (unsigned int k = 0; k < N_SECTOR; k++) {
       int diff = k - isector;
       if (diff > (int)N_SECTOR / 2)
         diff -= (int)N_SECTOR;
-      if (diff < (-1)*(int)N_SECTOR / 2)
+      if (diff < (-1) * (int)N_SECTOR / 2)
         diff += (int)N_SECTOR;
       if (abs(diff) > 1)
         continue;
-      double phiminsect = k * 2 * M_PI / N_SECTOR -
-                          0.5 * (settings_->dphisectorHG() - 2 * M_PI / N_SECTOR) -
-                          M_PI / N_SECTOR;
+      double phiminsect =
+          k * 2 * M_PI / N_SECTOR - 0.5 * (settings_->dphisectorHG() - 2 * M_PI / N_SECTOR) - M_PI / N_SECTOR;
       double dphi = stub.phi() - phiminsect;
       if (dphi > M_PI)
         dphi -= 2 * M_PI;
@@ -315,7 +314,6 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
         sectors_[k]->writeInputStubs(first);
     }
   }
-
 
   addStubTimer_.stop();
 
@@ -509,47 +507,34 @@ void TrackletEventProcessor::printSummary() {
     globals_->histograms()->close();
   }
 
-  edm::LogVerbatim("Tracklet") << "Process             Times called   Average time (ms)      Total time (s) \n"
-			       << "Cleaning              " << setw(10) << cleanTimer_.ntimes() << setw(20)
-                               << setprecision(3) << cleanTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << cleanTimer_.tottime() << "\n"
-			       << "Add Stubs             " << setw(10) << addStubTimer_.ntimes() << setw(20)
-                               << setprecision(3) << addStubTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << addStubTimer_.tottime() << "\n"
-			       << "VMRouter              " << setw(10) << VMRouterTimer_.ntimes() << setw(20)
-                               << setprecision(3) << VMRouterTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << VMRouterTimer_.tottime() << "\n"
-			       << "TrackletEngine        " << setw(10) << TETimer_.ntimes() << setw(20)
-                               << setprecision(3) << TETimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << TETimer_.tottime() << "\n"
-			       << "TrackletEngineDisplaced" << setw(10) << TEDTimer_.ntimes() << setw(20)
-                               << setprecision(3) << TEDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << TEDTimer_.tottime() << "\n"
-			       << "TripletEngine         " << setw(10) << TRETimer_.ntimes() << setw(20)
-                               << setprecision(3) << TRETimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << TRETimer_.tottime() << "\n"
-			       << "TrackletCalculator    " << setw(10) << TCTimer_.ntimes() << setw(20)
-                               << setprecision(3) << TCTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << TCTimer_.tottime() << "\n"
-			       << "TrackletCalculatorDisplaced" << setw(10) << TCDTimer_.ntimes() << setw(20)
-                               << setprecision(3) << TCDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << TCDTimer_.tottime() << "\n"
-			       << "ProjectionRouter      " << setw(10) << PRTimer_.ntimes() << setw(20)
-                               << setprecision(3) << PRTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << PRTimer_.tottime() << "\n"
-			       << "MatchEngine           " << setw(10) << METimer_.ntimes() << setw(20)
-                               << setprecision(3) << METimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << METimer_.tottime() << "\n"
-			       << "MatchCalculator       " << setw(10) << MCTimer_.ntimes() << setw(20)
-                               << setprecision(3) << MCTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << MCTimer_.tottime() << "\n"
-			       << "MatchProcessor        " << setw(10) << MPTimer_.ntimes() << setw(20)
-                               << setprecision(3) << MPTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << MPTimer_.tottime() << "\n"
-			       << "FitTrack              " << setw(10) << FTTimer_.ntimes() << setw(20)
-                               << setprecision(3) << FTTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << FTTimer_.tottime() << "\n"
-			       << "PurgeDuplicate        " << setw(10) << PDTimer_.ntimes() << setw(20)
-                               << setprecision(3) << PDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << PDTimer_.tottime();
+  edm::LogVerbatim("Tracklet")
+      << "Process             Times called   Average time (ms)      Total time (s) \n"
+      << "Cleaning              " << setw(10) << cleanTimer_.ntimes() << setw(20) << setprecision(3)
+      << cleanTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << cleanTimer_.tottime() << "\n"
+      << "Add Stubs             " << setw(10) << addStubTimer_.ntimes() << setw(20) << setprecision(3)
+      << addStubTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << addStubTimer_.tottime() << "\n"
+      << "VMRouter              " << setw(10) << VMRouterTimer_.ntimes() << setw(20) << setprecision(3)
+      << VMRouterTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << VMRouterTimer_.tottime() << "\n"
+      << "TrackletEngine        " << setw(10) << TETimer_.ntimes() << setw(20) << setprecision(3)
+      << TETimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << TETimer_.tottime() << "\n"
+      << "TrackletEngineDisplaced" << setw(10) << TEDTimer_.ntimes() << setw(20) << setprecision(3)
+      << TEDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << TEDTimer_.tottime() << "\n"
+      << "TripletEngine         " << setw(10) << TRETimer_.ntimes() << setw(20) << setprecision(3)
+      << TRETimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << TRETimer_.tottime() << "\n"
+      << "TrackletCalculator    " << setw(10) << TCTimer_.ntimes() << setw(20) << setprecision(3)
+      << TCTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << TCTimer_.tottime() << "\n"
+      << "TrackletCalculatorDisplaced" << setw(10) << TCDTimer_.ntimes() << setw(20) << setprecision(3)
+      << TCDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << TCDTimer_.tottime() << "\n"
+      << "ProjectionRouter      " << setw(10) << PRTimer_.ntimes() << setw(20) << setprecision(3)
+      << PRTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << PRTimer_.tottime() << "\n"
+      << "MatchEngine           " << setw(10) << METimer_.ntimes() << setw(20) << setprecision(3)
+      << METimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << METimer_.tottime() << "\n"
+      << "MatchCalculator       " << setw(10) << MCTimer_.ntimes() << setw(20) << setprecision(3)
+      << MCTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << MCTimer_.tottime() << "\n"
+      << "MatchProcessor        " << setw(10) << MPTimer_.ntimes() << setw(20) << setprecision(3)
+      << MPTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << MPTimer_.tottime() << "\n"
+      << "FitTrack              " << setw(10) << FTTimer_.ntimes() << setw(20) << setprecision(3)
+      << FTTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << FTTimer_.tottime() << "\n"
+      << "PurgeDuplicate        " << setw(10) << PDTimer_.ntimes() << setw(20) << setprecision(3)
+      << PDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << PDTimer_.tottime();
 }

@@ -12,7 +12,7 @@ MatchProcessor::MatchProcessor(string name, const Settings* settings, Globals* g
     : ProcessBase(name, settings, global, iSector), fullmatches_(12), inputProjBuffer_(3) {
   phioffset_ = phimin_;
 
-  phiregion_ = name[8]-'A';
+  phiregion_ = name[8] - 'A';
 
   initLayerDisk(3, layer_, disk_);
 
@@ -86,7 +86,8 @@ MatchProcessor::MatchProcessor(string name, const Settings* settings, Globals* g
 
     for (unsigned int irinv = 0; irinv < 32; irinv++) {
       double rinv = (irinv - 15.5) * (1 << (settings_->nbitsrinv() - 5)) * settings_->krinvpars();
-      double stripPitch = (settings_->rmean(layer_ - 1) < settings_->rcrit()) ? settings_->stripPitch(true) : settings_->stripPitch(false);
+      double stripPitch = (settings_->rmean(layer_ - 1) < settings_->rcrit()) ? settings_->stripPitch(true)
+                                                                              : settings_->stripPitch(false);
       double projbend = bend(settings_->rmean(layer_ - 1), rinv, stripPitch);
       for (unsigned int ibend = 0; ibend < (unsigned int)(1 << nbits); ibend++) {
         double stubbend = benddecode(ibend, layer_ <= (int)N_PSLAYER);
@@ -342,7 +343,7 @@ void MatchProcessor::execute() {
     }
 
     if (iMEbest != nMatchEngines_ && (!bestInPipeline)) {
-      std::pair<Tracklet*, const Stub* > candmatch = matchengines_[iMEbest].read();
+      std::pair<Tracklet*, const Stub*> candmatch = matchengines_[iMEbest].read();
 
       const Stub* fpgastub = candmatch.second;
       Tracklet* tracklet = candmatch.first;
@@ -368,9 +369,8 @@ void MatchProcessor::execute() {
 }
 
 bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
+  const L1TStub* stub = fpgastub->l1tstub();
 
-  const L1TStub* stub=fpgastub->l1tstub();
-  
   if (layer_ != 0) {
     int ir = fpgastub->r().value();
     int iphi = tracklet->fpgaphiproj(layer_).value();
@@ -460,7 +460,6 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     assert(std::abs(dphiapprox) < 0.2);
 
     if (imatch) {
-
       tracklet->addMatch(layer_,
                          ideltaphi,
                          ideltaz,
@@ -613,13 +612,11 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
 
     if (settings_->debugTracklet()) {
       edm::LogVerbatim("Tracklet") << "imatch match disk: " << imatch << " " << match << " " << std::abs(ideltaphi)
-                                   << " " << drphicut / (settings_->kphi() * stub->r()) << " "
-                                   << std::abs(ideltar) << " " << drcut / settings_->krprojshiftdisk()
-                                   << " r = " << stub->r();
+                                   << " " << drphicut / (settings_->kphi() * stub->r()) << " " << std::abs(ideltar)
+                                   << " " << drcut / settings_->krprojshiftdisk() << " r = " << stub->r();
     }
 
     if (imatch) {
-
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "MatchCalculator found match in disk " << getName();
       }

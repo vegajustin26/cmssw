@@ -126,8 +126,6 @@ namespace trklet {
     //First index is layer/disk second is phi region
     std::vector<std::vector<TrackletProjectionsMemory*> > trackletprojlayers_;
     std::vector<std::vector<TrackletProjectionsMemory*> > trackletprojdisks_;
-    
-
   };
 
 };  // namespace trklet

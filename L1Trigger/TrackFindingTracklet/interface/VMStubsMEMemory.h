@@ -56,8 +56,8 @@ namespace trklet {
     void writeStubs(bool first);
 
   private:
-    std::vector<VMStubME> stubs_; //TODO - not used and should be removed
-    std::vector<std::vector<VMStubME> >binnedstubs_;
+    std::vector<VMStubME> stubs_;  //TODO - not used and should be removed
+    std::vector<std::vector<VMStubME> > binnedstubs_;
   };
 
 };  // namespace trklet

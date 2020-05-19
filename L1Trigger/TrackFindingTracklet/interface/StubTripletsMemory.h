@@ -17,9 +17,7 @@ namespace trklet {
 
     ~StubTripletsMemory() = default;
 
-    void addStubs(const Stub* stub1,
-                  const Stub* stub2,
-                  const Stub* stub3) {
+    void addStubs(const Stub* stub1, const Stub* stub2, const Stub* stub3) {
       stubs1_.push_back(stub1);
       stubs2_.push_back(stub2);
       stubs3_.push_back(stub3);
@@ -45,9 +43,9 @@ namespace trklet {
     void writeST(bool first);
 
   private:
-    std::vector<const Stub* > stubs1_;
-    std::vector<const Stub* > stubs2_;
-    std::vector<const Stub* > stubs3_;
+    std::vector<const Stub*> stubs1_;
+    std::vector<const Stub*> stubs2_;
+    std::vector<const Stub*> stubs3_;
   };
 
 };  // namespace trklet

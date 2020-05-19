@@ -17,7 +17,6 @@ namespace trklet {
 
   class Track {
   public:
-
     Track(TrackPars<int> ipars,
           int ichisqrphi,
           int ichisqrz,
@@ -28,7 +27,6 @@ namespace trklet {
           const std::vector<const L1TStub*>& l1stub,
           int seed);
 
-    
     ~Track() = default;
 
     void setDuplicate(bool flag) { duplicate_ = flag; }
@@ -37,7 +35,7 @@ namespace trklet {
     void setStubIDprefit(std::vector<std::pair<int, int>> stubIDprefit) { stubIDprefit_ = stubIDprefit; }
 
     const TrackPars<int>& pars() const { return ipars_; }
-    
+
     int ichisq() const { return ichisqrphi_ + ichisqrz_; }
 
     const std::map<int, int>& stubID() const { return stubID_; }
@@ -78,7 +76,6 @@ namespace trklet {
     }
 
   private:
-
     TrackPars<int> ipars_;
     int ichisqrphi_;
     int ichisqrz_;

@@ -92,13 +92,13 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
     if (settings_->printDebugKF()) {
       edm::LogVerbatim("L1track") << kfphi << " " << kfr << " " << kfz << " " << kfbend << " " << kflayer << " "
                                   << isBarrel << " " << psmodule << " " << isTilted << " \n"
-				  << stripPitch << " " << stripLength << " " << nStrips;
+                                  << stripPitch << " " << stripLength << " " << nStrips;
     }
 
     unsigned int uniqueStubIndex = 1000 * L1stubID + L1stubptr->allStubIndex();
     tmtt::Stub* TMTTstubptr = new tmtt::Stub(&TMTTsettings,
                                              uniqueStubIndex,
-					     kfphi,
+                                             kfphi,
                                              kfr,
                                              kfz,
                                              kfbend,
@@ -108,10 +108,10 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
                                              kf_phi_sec,
                                              psmodule,
                                              isBarrel,
-					     isTilted,
-					     stripPitch,
-					     stripLength,
-					     nStrips);
+                                             isTilted,
+                                             stripPitch,
+                                             stripLength,
+                                             nStrips);
     TMTTstubs.push_back(TMTTstubptr);
     L1StubIndices[uniqueStubIndex] = L1stubptr;
     L1stubID++;
@@ -182,9 +182,9 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
 
     if (settings_->printDebugKF())
       edm::LogVerbatim("L1track") << "Done with Kalman fit. Pars: pt = " << trk.pt()
-                                  << ", 1/2R = " << settings_->bfield() * 3 * trk.qOverPt() / 2000 << ", phi0 = " << trk.phi0()
-                                  << ", eta = " << trk.eta() << ", z0 = " << trk.z0() << ", chi2 = " << trk.chi2()
-                                  << ", accepted = " << trk.accepted();
+                                  << ", 1/2R = " << settings_->bfield() * 3 * trk.qOverPt() / 2000
+                                  << ", phi0 = " << trk.phi0() << ", eta = " << trk.eta() << ", z0 = " << trk.z0()
+                                  << ", chi2 = " << trk.chi2() << ", accepted = " << trk.accepted();
 
     // Tracklet wants phi0 with respect to lower edge of sector, not global phi0.
     double phi0fit = trk.phi0() - iSector_ * 2 * M_PI / N_SECTOR + 0.5 * settings_->dphisectorHG();

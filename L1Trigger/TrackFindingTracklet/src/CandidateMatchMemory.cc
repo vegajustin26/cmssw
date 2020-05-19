@@ -13,15 +13,14 @@ CandidateMatchMemory::CandidateMatchMemory(string name, const Settings* const se
     : MemoryBase(name, settings, iSector) {}
 
 void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, const Stub* stub) {
-  std::pair<std::pair<Tracklet*, int>, const Stub* > tmp(tracklet, stub);
+  std::pair<std::pair<Tracklet*, int>, const Stub*> tmp(tracklet, stub);
 
   //Check for consistency
   for (unsigned int i = 0; i < matches_.size(); i++) {
     if (tracklet.first->TCID() < matches_[i].first.first->TCID()) {
-      throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__
-					 << " In " << getName() << " adding tracklet " << tracklet.first
-					 << " with lower TCID : " << tracklet.first->TCID() << " than earlier TCID "
-					 << matches_[i].first.first->TCID();
+      throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " In " << getName() << " adding tracklet "
+                                         << tracklet.first << " with lower TCID : " << tracklet.first->TCID()
+                                         << " than earlier TCID " << matches_[i].first.first->TCID();
     }
   }
   matches_.push_back(tmp);
@@ -29,11 +28,8 @@ void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, const St
 
 void CandidateMatchMemory::writeCM(bool first) {
   std::ostringstream oss;
-  oss << "../data/MemPrints/Matches/CandidateMatches_"
-      << getName()
-      << "_"
-      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
-      << ".dat";
+  oss << "../data/MemPrints/Matches/CandidateMatches_" << getName() << "_" << std::setfill('0') << std::setw(2)
+      << (iSector_ + 1) << ".dat";
   auto const& fname = oss.str();
 
   if (first) {

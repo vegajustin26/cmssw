@@ -26,9 +26,9 @@ namespace trklet {
     virtual void bookDiskResidual() {}
     virtual void bookTrackletParams() {}
     virtual void bookSeedEff() {}
-    
+
     virtual void FillLayerResidual(int, int, double, double, double, double, bool) {}
-    
+
     virtual void FillDiskResidual(int, int, double, double, double, double, bool) {}
 
     //arguments are

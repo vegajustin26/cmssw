@@ -31,29 +31,32 @@ public:
       edm::LogVerbatim("Tracklet") << s;
       snprintf(s, 1024, "      stub Ks: kr, kphi1, kz = %g, %g, %g", settings->kr(), settings->kphi1(), settings->kz());
       edm::LogVerbatim("Tracklet") << s;
-      snprintf(s, 1024,
-	      "  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g",
-	      settings->kphi1() / settings->kr() * pow(2, settings->rinv_shift()),
-	      settings->kphi1() * pow(2, settings->phi0_shift()),
-	      settings->kz() / settings->kr() * pow(2, settings->t_shift()),
-	      settings->kz() * pow(2, settings->z0_shift()));
+      snprintf(s,
+               1024,
+               "  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g",
+               settings->kphi1() / settings->kr() * pow(2, settings->rinv_shift()),
+               settings->kphi1() * pow(2, settings->phi0_shift()),
+               settings->kz() / settings->kr() * pow(2, settings->t_shift()),
+               settings->kz() * pow(2, settings->z0_shift()));
       edm::LogVerbatim("Tracklet") << s;
-      snprintf(s, 1024,
-	      "layer proj Ks: kphiproj456, kphider, kzproj, kzder = %g, %g, %g, %g",
-	      settings->kphi1() * pow(2, settings->SS_phiL_shift()),
-	      settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderL_shift()),
-	      settings->kz() * pow(2, settings->PS_zL_shift()),
-	      settings->kz() / settings->kr() * pow(2, settings->PS_zderL_shift()));
+      snprintf(s,
+               1024,
+               "layer proj Ks: kphiproj456, kphider, kzproj, kzder = %g, %g, %g, %g",
+               settings->kphi1() * pow(2, settings->SS_phiL_shift()),
+               settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderL_shift()),
+               settings->kz() * pow(2, settings->PS_zL_shift()),
+               settings->kz() / settings->kr() * pow(2, settings->PS_zderL_shift()));
       edm::LogVerbatim("Tracklet") << s;
-      snprintf(s, 1024,
-	      " disk proj Ks: kphiprojdisk, kphiprojderdisk, krprojdisk, krprojderdisk = %g, %g, %g, %g",
-	      settings->kphi1() * pow(2, settings->SS_phiD_shift()),
-	      settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderD_shift()),
-	      settings->kr() * pow(2, settings->PS_rD_shift()),
-	      settings->kr() / settings->kz() * pow(2, settings->PS_rderD_shift()));
+      snprintf(s,
+               1024,
+               " disk proj Ks: kphiprojdisk, kphiprojderdisk, krprojdisk, krprojderdisk = %g, %g, %g, %g",
+               settings->kphi1() * pow(2, settings->SS_phiD_shift()),
+               settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderD_shift()),
+               settings->kr() * pow(2, settings->PS_rD_shift()),
+               settings->kr() / settings->kz() * pow(2, settings->PS_rderD_shift()));
       edm::LogVerbatim("Tracklet") << s;
       edm::LogVerbatim("Tracklet") << "=============================================";
-      
+
       snprintf(s, 1024, "initializing 1/dr LUT %f %f", settings->rmean(i1 - 1), settings->rmean(i2 - 1));
       edm::LogVerbatim("Tracklet") << s;
     }
@@ -138,15 +141,15 @@ public:
   const double t_disk_min = 1;
   const double t_disk_max = 4;
   const double t_layer_max = 2.5;
-  
+
   //constants
   VarParam plus1{globals_, "plus1", 1., 10};
   VarParam plus2{globals_, "plus2", 2., 10};
   VarParam minus1{globals_, "minus1", -1., 10};
-  
-  VarParam r1mean{globals_, "r1mean", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
-  VarParam r2mean{globals_, "r2mean", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
-  VarParam r12mean{globals_, "r12mean", "Kr", 2 * settings_->rmax(trklet::N_DISK-1), settings_->kr()};
+
+  VarParam r1mean{globals_, "r1mean", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
+  VarParam r2mean{globals_, "r2mean", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
+  VarParam r12mean{globals_, "r12mean", "Kr", 2 * settings_->rmax(trklet::N_DISK - 1), settings_->kr()};
 
   //inputs
   VarDef r1{globals_, "r1", "Kr", settings_->drmax(), settings_->kr()};
@@ -158,22 +161,22 @@ public:
   VarDef phi1{globals_, "phi1", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
   VarDef phi2{globals_, "phi2", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
 
-  VarDef rproj0{globals_, "rproj0", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
-  VarDef rproj1{globals_, "rproj1", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
-  VarDef rproj2{globals_, "rproj2", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
-  VarDef rproj3{globals_, "rproj3", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
+  VarDef rproj0{globals_, "rproj0", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
+  VarDef rproj1{globals_, "rproj1", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
+  VarDef rproj2{globals_, "rproj2", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
+  VarDef rproj3{globals_, "rproj3", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
 
-  VarDef zproj0{globals_, "zproj0", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
-  VarDef zproj1{globals_, "zproj1", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
-  VarDef zproj2{globals_, "zproj2", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
-  VarDef zproj3{globals_, "zproj3", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
-  VarDef zproj4{globals_, "zproj4", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
+  VarDef zproj0{globals_, "zproj0", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
+  VarDef zproj1{globals_, "zproj1", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
+  VarDef zproj2{globals_, "zproj2", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
+  VarDef zproj3{globals_, "zproj3", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
+  VarDef zproj4{globals_, "zproj4", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
 
   //calculations
 
   //tracklet
-  VarAdd r1abs{globals_, "r1abs", &r1, &r1mean, settings_->rmax(trklet::N_LAYER-1)};
-  VarAdd r2abs{globals_, "r2abs", &r2, &r2mean, settings_->rmax(trklet::N_LAYER-1)};
+  VarAdd r1abs{globals_, "r1abs", &r1, &r1mean, settings_->rmax(trklet::N_LAYER - 1)};
+  VarAdd r2abs{globals_, "r2abs", &r2, &r2mean, settings_->rmax(trklet::N_LAYER - 1)};
 
   VarSubtract dr{globals_, "dr", &r2, &r1};
 
@@ -268,9 +271,9 @@ public:
   VarAdjustK phiL_3_final{globals_, "phiL_3_final", &phiL_3, settings_->kphi1() * pow(2, settings_->SS_phiL_shift())};
 
   VarAdjustK der_phiL_final{globals_,
-                             "der_phiL_final",
-                             &der_phiL,
-                             settings_->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderL_shift())};
+                            "der_phiL_final",
+                            &der_phiL,
+                            settings_->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderL_shift())};
 
   VarMult x11_0{globals_, "x11_0", &rproj0, &t};
   VarMult x11_1{globals_, "x11_1", &rproj1, &t};
@@ -334,9 +337,9 @@ public:
   VarMult der_phiD{globals_, "der_phiD", &x7, &invt, 4 * der_phiD_max};
 
   VarAdjustK der_phiD_final{globals_,
-                             "der_phiD_final",
-                             &der_phiD,
-                             settings_->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderD_shift())};
+                            "der_phiD_final",
+                            &der_phiD,
+                            settings_->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderD_shift())};
 
   VarMult x26_0{globals_, "x26_0", &x25_0, &x25_0};
   VarMult x26_1{globals_, "x26_1", &x25_1, &x25_1};
@@ -393,7 +396,7 @@ public:
   VarCut x6a_cut{globals_, &x6a, -x6a_max, x6a_max};
   VarCut x6m_cut{globals_, &x6m, -x6m_max, x6m_max};
   VarCut phi0a_cut{globals_, &phi0a, -settings_->dphisector(), settings_->dphisector()};
-  VarCut z0a_cut{globals_, &z0a, (-1)*settings_->zlength(), settings_->zlength()};
+  VarCut z0a_cut{globals_, &z0a, (-1) * settings_->zlength(), settings_->zlength()};
   VarCut phi0_cut{globals_, &phi0, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
   VarCut rinv_cut{globals_, &rinv, -settings_->maxrinv(), settings_->maxrinv()};
   VarCut t_cut{globals_, &t, -t_max, t_max};

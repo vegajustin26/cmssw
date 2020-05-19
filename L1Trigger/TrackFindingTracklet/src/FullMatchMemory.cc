@@ -26,7 +26,7 @@ void FullMatchMemory::addMatch(Tracklet* tracklet, const Stub* stub) {
       }
     }
   }
-  std::pair<Tracklet*, const Stub* > tmp(tracklet, stub);
+  std::pair<Tracklet*, const Stub*> tmp(tracklet, stub);
   //Check that we have the right TCID order
   if (matches_.size() > 0) {
     if ((!settings_->doKF() && matches_[matches_.size() - 1].first->TCID() >= tracklet->TCID()) ||
@@ -42,11 +42,8 @@ void FullMatchMemory::addMatch(Tracklet* tracklet, const Stub* stub) {
 
 void FullMatchMemory::writeMC(bool first) {
   std::ostringstream oss;
-  oss << "../data/MemPrints/Matches/FullMatches_"
-      << getName()
-      << "_"
-      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
-      << ".dat";
+  oss << "../data/MemPrints/Matches/FullMatches_" << getName() << "_" << std::setfill('0') << std::setw(2)
+      << (iSector_ + 1) << ".dat";
   auto const& fname = oss.str();
 
   if (first) {

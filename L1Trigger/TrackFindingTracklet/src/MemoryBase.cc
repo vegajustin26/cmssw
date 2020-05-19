@@ -8,7 +8,8 @@
 using namespace trklet;
 using namespace std;
 
-MemoryBase::MemoryBase(string name, const Settings* const settings, unsigned int iSector) : name_(name), settings_(settings) {
+MemoryBase::MemoryBase(string name, const Settings* const settings, unsigned int iSector)
+    : name_(name), settings_(settings) {
   iSector_ = iSector;
   bx_ = 0;
   event_ = 0;
@@ -18,14 +19,14 @@ void MemoryBase::initLayerDisk(unsigned int pos, int& layer, int& disk) {
   string subname = name_.substr(pos, 2);
   layer = 0;
   disk = 0;
-  
-  if (subname.substr(0,1)=="L")
-    layer = stoi(subname.substr(1,1));
-  else if (subname.substr(0,1)=="D")
-    disk = stoi(subname.substr(1,1));
+
+  if (subname.substr(0, 1) == "L")
+    layer = stoi(subname.substr(1, 1));
+  else if (subname.substr(0, 1) == "D")
+    disk = stoi(subname.substr(1, 1));
   else
-    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
-				      << " name = " << name_ << " subname = " << subname << " " << layer << " " << disk;
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " name = " << name_ << " subname = " << subname
+                                      << " " << layer << " " << disk;
 }
 
 unsigned int MemoryBase::initLayerDisk(unsigned int pos) {

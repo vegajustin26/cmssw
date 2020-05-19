@@ -38,8 +38,8 @@ namespace trklet {
 
     std::string strbare() const { return bend_.str() + r_.str() + z_.str() + phi_.str(); }
 
-    unsigned int phiregionaddress() const;  
-    std::string phiregionaddressstr() const;  
+    unsigned int phiregionaddress() const;
+    std::string phiregionaddressstr() const;
 
     void setAllStubIndex(int nstub);  //should migrate away from using this method
 
@@ -61,16 +61,16 @@ namespace trklet {
     bool isBarrel() const { return layer_.value() != -1; }
     bool isDisk() const { return disk_.value() != 0; }
 
-    bool isPSmodule() const { return isBarrel()?(layer_.value()<3):(r_.value()>10); }
+    bool isPSmodule() const { return isBarrel() ? (layer_.value() < 3) : (r_.value() > 10); }
 
     double rapprox() const;
     double zapprox() const;
     double phiapprox(double phimin, double) const;
 
-    L1TStub* l1tstub() { return l1tstub_; } 
+    L1TStub* l1tstub() { return l1tstub_; }
     const L1TStub* l1tstub() const { return l1tstub_; }
-    void setl1tstub(L1TStub* l1tstub)  { l1tstub_=l1tstub; }
-    
+    void setl1tstub(L1TStub* l1tstub) { l1tstub_ = l1tstub; }
+
   private:
     FPGAWord layer_;
     FPGAWord disk_;

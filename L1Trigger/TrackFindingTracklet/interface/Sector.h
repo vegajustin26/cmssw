@@ -114,17 +114,19 @@ namespace trklet {
     double phimin() const { return phimin_; }
     double phimax() const { return phimax_; }
 
-    template<typename TV> void addMemToVec(std::vector<TV*>& memvec, TV* mem, const std::string& memName) {
+    template <typename TV>
+    void addMemToVec(std::vector<TV*>& memvec, TV* mem, const std::string& memName) {
       memvec.push_back(mem);
       Memories_[memName].reset(mem);
       MemoriesV_.push_back(mem);
     }
 
-    template<typename TV> void addProcToVec(std::vector<TV*>& procvec, TV* proc, const std::string& procName) {
+    template <typename TV>
+    void addProcToVec(std::vector<TV*>& procvec, TV* proc, const std::string& procName) {
       procvec.push_back(proc);
       Processes_[procName].reset(proc);
     }
-    
+
   private:
     int isector_;
     const Settings* const settings_;

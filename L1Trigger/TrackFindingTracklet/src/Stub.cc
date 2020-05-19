@@ -9,14 +9,13 @@ using namespace trklet;
 
 Stub::Stub(const trklet::Settings* const settings) : settings_(settings) {}
 
-Stub::Stub(L1TStub& stub, const trklet::Settings* const settings, double phiminsec, double phimaxsec):
-  settings_(settings) {
-
+Stub::Stub(L1TStub& stub, const trklet::Settings* const settings, double phiminsec, double phimaxsec)
+    : settings_(settings) {
   double r = stub.r();
   double z = stub.z();
   double sbend = stub.bend();
 
-  l1tstub_=&stub;
+  l1tstub_ = &stub;
 
   int bendbits = 4;
   if (stub.isPSmodule())
@@ -176,7 +175,7 @@ FPGAWord Stub::iphivmFineBins(int VMbits, int finebits) const {
 
 unsigned int Stub::phiregionaddress() const {
   int iphi = (phicorr_.value() >> (phicorr_.nbits() - settings_->nbitsallstubs(layerdisk())));
-  return (iphi<<7) + stubindex_.value();
+  return (iphi << 7) + stubindex_.value();
 }
 
 std::string Stub::phiregionaddressstr() const {

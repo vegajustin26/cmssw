@@ -8,7 +8,7 @@ namespace trklet {
 
   class Timer {
   public:
-    Timer(){}
+    Timer() {}
 
     ~Timer() = default;
 

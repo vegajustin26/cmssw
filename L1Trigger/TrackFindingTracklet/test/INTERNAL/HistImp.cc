@@ -165,8 +165,8 @@ void HistImp::fillTrackletParams(const Settings* settings,
       h_z0_matched_L1L2_->Fill(z0);
       h_iz0_matched_L1L2_->Fill(iz0);
       L1SimTrack simtrk = globals->event()->simtrack(tp - 1);
-      h_rinvres_L1L2_->Fill(rinv - (simtrk.charge()*0.01*0.3*3.8/simtrk.pt()));
-      h_irinvres_L1L2_->Fill(irinv - (simtrk.charge()*0.01*0.3*3.8/simtrk.pt()));
+      h_rinvres_L1L2_->Fill(rinv - (simtrk.charge() * 0.01 * 0.3 * 3.8 / simtrk.pt()));
+      h_irinvres_L1L2_->Fill(irinv - (simtrk.charge() * 0.01 * 0.3 * 3.8 / simtrk.pt()));
       double simtrkphi0 = simtrk.phi();
       double dphiHG = 0.5 * settings->dphisectorHG() - M_PI / N_SECTOR;
       double phimin = +dphiHG - M_PI / N_SECTOR;

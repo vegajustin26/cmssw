@@ -193,8 +193,8 @@ void TrackDerTable::fillTable(const Settings* settings) {
     int alphamask = der.alphaMask();
     int irinv = der.irinv();
 
-    double rinv =
-        (irinv - ((1 << (settings_->nrinvBitsTable() - 1)) - 0.5)) * settings_->rinvmax() / (1 << (settings_->nrinvBitsTable() - 1));
+    double rinv = (irinv - ((1 << (settings_->nrinvBitsTable() - 1)) - 0.5)) * settings_->rinvmax() /
+                  (1 << (settings_->nrinvBitsTable() - 1));
 
     bool print = false;
 
@@ -305,13 +305,13 @@ void TrackDerTable::fillTable(const Settings* settings) {
       std::string oss = "alpha :";
       for (int iii = 0; iii < ndisks; iii++) {
         oss += " ";
-	oss += std::to_string(alpha[iii]);
+        oss += std::to_string(alpha[iii]);
       }
       edm::LogVerbatim("Tracklet") << oss;
       oss = "z :";
       for (int iii = 0; iii < ndisks; iii++) {
         oss += " ";
-	oss += std::to_string(z[iii]);
+        oss += std::to_string(z[iii]);
       }
       edm::LogVerbatim("Tracklet") << oss;
     }
@@ -965,10 +965,10 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
 
         int fact = (1 << (settings->nzbitsstub(0) - settings->nzbitsstub(5)));
 
-        iMinvDt[0][2 * i + 1] = (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * fact * settings->kz() /
-                                settings->krinvpars();
-        iMinvDt[1][2 * i + 1] = (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * fact * settings->kz() /
-                                settings->kphi0pars();
+        iMinvDt[0][2 * i + 1] =
+            (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i + 1] * fact * settings->kz() / settings->krinvpars();
+        iMinvDt[1][2 * i + 1] =
+            (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i + 1] * fact * settings->kz() / settings->kphi0pars();
         iMinvDt[2][2 * i + 1] =
             (1 << settings->fittbitshift()) * MinvDt[2][2 * i + 1] * fact * settings->kz() / settings->ktpars();
         iMinvDt[3][2 * i + 1] =
@@ -991,10 +991,8 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
           (1 << settings->fitrinvbitshift()) * MinvDt[0][2 * i] * settings->kphi() / settings->krinvpars();
       iMinvDt[1][2 * i] =
           (1 << settings->fitphi0bitshift()) * MinvDt[1][2 * i] * settings->kphi() / settings->kphi0pars();
-      iMinvDt[2][2 * i] =
-          (1 << settings->fittbitshift()) * MinvDt[2][2 * i] * settings->kphi() / settings->ktpars();
-      iMinvDt[3][2 * i] =
-          (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i] * settings->kphi() / settings->kz();
+      iMinvDt[2][2 * i] = (1 << settings->fittbitshift()) * MinvDt[2][2 * i] * settings->kphi() / settings->ktpars();
+      iMinvDt[3][2 * i] = (1 << settings->fitz0bitshift()) * MinvDt[3][2 * i] * settings->kphi() / settings->kz();
 
       denom = (std::abs(alpha[i - nlayers]) < 1e-10) ? sigmazpsdisk : sigmaz2sdisk;
 
@@ -1014,7 +1012,6 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
     }
   }
 }
-
 
 double TrackDerTable::tpar(const Settings* settings, int diskmask, int layermask) {
   if (diskmask == 0)

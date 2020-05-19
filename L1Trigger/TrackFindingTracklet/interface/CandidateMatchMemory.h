@@ -24,16 +24,14 @@ namespace trklet {
 
     unsigned int nMatches() const { return matches_.size(); }
 
-    std::pair<std::pair<Tracklet*, int>, const Stub* > getMatch(unsigned int i) {
-      return matches_[i];
-    }
+    std::pair<std::pair<Tracklet*, int>, const Stub*> getMatch(unsigned int i) { return matches_[i]; }
 
     void clean() override { matches_.clear(); }
 
     void writeCM(bool first);
 
   private:
-    std::vector<std::pair<std::pair<Tracklet*, int>, const Stub* > > matches_;
+    std::vector<std::pair<std::pair<Tracklet*, int>, const Stub*> > matches_;
   };
 
 };  // namespace trklet

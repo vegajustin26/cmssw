@@ -13,7 +13,7 @@ using namespace std;
 using namespace trklet;
 
 VMRouter::VMRouter(string name, const Settings* settings, Globals* global, unsigned int iSector)
-  : ProcessBase(name, settings, global, iSector), vmrtable_(settings) {
+    : ProcessBase(name, settings, global, iSector), vmrtable_(settings) {
   layerdisk_ = initLayerDisk(4);
 
   vmstubsMEPHI_.resize(settings_->nvmme(layerdisk_), 0);
@@ -23,10 +23,8 @@ VMRouter::VMRouter(string name, const Settings* settings, Globals* global, unsig
 
   vmrtable_.init(layerdisk_);
 
-  nbitszfinebintable_=settings_->vmrlutzbits(layerdisk_);
-  nbitsrfinebintable_=settings_->vmrlutrbits(layerdisk_);
-
-  
+  nbitszfinebintable_ = settings_->vmrlutzbits(layerdisk_);
+  nbitsrfinebintable_ = settings_->vmrlutrbits(layerdisk_);
 }
 
 void VMRouter::addOutput(MemoryBase* memory, string output) {
@@ -168,9 +166,9 @@ void VMRouter::execute() {
       FPGAWord allStubIndex(allStubCounter & 127, 7, true, __LINE__, __FILE__);
 
       //TODO - should not be needed - but need to migrate some other pieces of code before removing
-      stub->setAllStubIndex(allStubCounter);  
+      stub->setAllStubIndex(allStubCounter);
       //TODO - should not be needed - but need to migrate some other pieces of code before removing
-      stub->l1tstub()->setAllStubIndex(allStubCounter);  
+      stub->l1tstub()->setAllStubIndex(allStubCounter);
 
       allStubCounter++;
 
@@ -198,8 +196,7 @@ void VMRouter::execute() {
       //Calculate the z and r position for the vmstub
 
       //Take the top nbitszfinebintable_ bits of the z coordinate
-      int indexz = (((1 << (stub->z().nbits() - 1)) + stub->z().value()) >>
-                    (stub->z().nbits() - nbitszfinebintable_));
+      int indexz = (((1 << (stub->z().nbits() - 1)) + stub->z().value()) >> (stub->z().nbits() - nbitszfinebintable_));
       int indexr = -1;
       if (layerdisk_ > 5) {
         if (negdisk) {
@@ -211,8 +208,7 @@ void VMRouter::execute() {
         }
       } else {
         //Take the top nbitsfinebintable_ bits of the z coordinate. The & is to handle the negative z values.
-        indexr = (((1 << (stub->r().nbits() - 1)) + stub->r().value()) >>
-                  (stub->r().nbits() - nbitsrfinebintable_));
+        indexr = (((1 << (stub->r().nbits() - 1)) + stub->r().value()) >> (stub->r().nbits() - nbitsrfinebintable_));
       }
 
       assert(indexz >= 0);
@@ -220,8 +216,8 @@ void VMRouter::execute() {
       assert(indexz < (1 << nbitszfinebintable_));
       assert(indexr < (1 << nbitsrfinebintable_));
 
-      int melut=vmrtable_.lookup(indexz,indexr);
-      
+      int melut = vmrtable_.lookup(indexz, indexr);
+
       assert(melut >= 0);
 
       int vmbin = melut >> 3;
@@ -229,13 +225,13 @@ void VMRouter::execute() {
         vmbin += 8;
       int rzfine = melut & 7;
 
-      VMStubME vmstub(stub,
-                      stub->iphivmFineBins(
-                          iphi.nbits() - (settings_->nbitsallstubs(layerdisk_) + settings_->nbitsvmme(layerdisk_)),
-                          settings_->nbitsvmme(layerdisk_)),
-                      FPGAWord(rzfine, 3, true, __LINE__, __FILE__),
-                      stub->bend(),
-                      allStubIndex);
+      VMStubME vmstub(
+          stub,
+          stub->iphivmFineBins(iphi.nbits() - (settings_->nbitsallstubs(layerdisk_) + settings_->nbitsvmme(layerdisk_)),
+                               settings_->nbitsvmme(layerdisk_)),
+          FPGAWord(rzfine, 3, true, __LINE__, __FILE__),
+          stub->bend(),
+          allStubIndex);
 
       assert(vmstubsMEPHI_[ivmPlus] != 0);
       vmstubsMEPHI_[ivmPlus]->addStub(vmstub, vmbin);
@@ -254,49 +250,52 @@ void VMRouter::execute() {
         if ((iseed == 4 || iseed == 5 || iseed == 6 || iseed == 7) && (!stub->isPSmodule()))
           continue;
 
-	unsigned int lutwidth=settings_->lutwidthtab(inner,iseed);
-	if (settings_->extended()) {
-	  lutwidth=settings_->lutwidthtabextended(inner,iseed);
-	}
+        unsigned int lutwidth = settings_->lutwidthtab(inner, iseed);
+        if (settings_->extended()) {
+          lutwidth = settings_->lutwidthtabextended(inner, iseed);
+        }
 
-	int lutval=-999;
+        int lutval = -999;
 
-	if (inner>0) {
-	  if (layerdisk_<6) {
-	    lutval=melut;
-	  } else {
-	    if (inner==2&&iseed==10) {
-	      lutval=0;
-	      if (stub->r().value()<10){
-		lutval=8*(1+(stub->r().value()>>2));
-	      } else {
-		if (stub->r().value()< settings_->rmindiskl3overlapvm() / settings_->kr()) {
-		  lutval=-1;
-		}
-	      }
-	    } else {
-	      lutval=vmrtable_.lookupdisk(indexz,indexr);
-	    }
-	  }
-	  if (lutval==-1) continue;
-	} else {
-	  if (iseed<6||iseed>7) {
-	    lutval=vmrtable_.lookupinner(indexz,indexr);
-	  } else {
-	    lutval=vmrtable_.lookupinneroverlap(indexz,indexr);
-	  }
-	  if (lutval==-1) continue;
-	  if (settings_->extended()&&(iseed==2||iseed==3||iseed==10||iseed==4)) {
-	    int lutval2=vmrtable_.lookupinnerThird(indexz,indexr);
-	    if (lutval2==-1) continue;
-	    lutval+=(lutval2<<10);
-	  }
-	}
+        if (inner > 0) {
+          if (layerdisk_ < 6) {
+            lutval = melut;
+          } else {
+            if (inner == 2 && iseed == 10) {
+              lutval = 0;
+              if (stub->r().value() < 10) {
+                lutval = 8 * (1 + (stub->r().value() >> 2));
+              } else {
+                if (stub->r().value() < settings_->rmindiskl3overlapvm() / settings_->kr()) {
+                  lutval = -1;
+                }
+              }
+            } else {
+              lutval = vmrtable_.lookupdisk(indexz, indexr);
+            }
+          }
+          if (lutval == -1)
+            continue;
+        } else {
+          if (iseed < 6 || iseed > 7) {
+            lutval = vmrtable_.lookupinner(indexz, indexr);
+          } else {
+            lutval = vmrtable_.lookupinneroverlap(indexz, indexr);
+          }
+          if (lutval == -1)
+            continue;
+          if (settings_->extended() && (iseed == 2 || iseed == 3 || iseed == 10 || iseed == 4)) {
+            int lutval2 = vmrtable_.lookupinnerThird(indexz, indexr);
+            if (lutval2 == -1)
+              continue;
+            lutval += (lutval2 << 10);
+          }
+        }
 
-	assert(lutval>=0);
+        assert(lutval >= 0);
 
-	FPGAWord binlookup(lutval,lutwidth,true,__LINE__,__FILE__);
-	
+        FPGAWord binlookup(lutval, lutwidth, true, __LINE__, __FILE__);
+
         if (binlookup.value() < 0)
           continue;
 
@@ -311,8 +310,7 @@ void VMRouter::execute() {
           binlookup.set(tmp, 3, true, __LINE__, __FILE__);
         }
 
-        FPGAWord finephi =
-            stub->iphivmFineBins(settings_->nphireg(inner, iseed), settings_->nfinephi(inner, iseed));
+        FPGAWord finephi = stub->iphivmFineBins(settings_->nphireg(inner, iseed), settings_->nfinephi(inner, iseed));
 
         VMStubTE tmpstub(stub, finephi, stub->bend(), binlookup, allStubIndex);
 
@@ -336,5 +334,3 @@ void VMRouter::execute() {
     }
   }
 }
-
-

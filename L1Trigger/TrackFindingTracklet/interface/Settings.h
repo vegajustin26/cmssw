@@ -17,22 +17,19 @@ namespace trklet {
   // constants used within Settings
   constexpr unsigned int N_SECTOR = 9;
 
-  
   class Settings {
   public:
-    Settings(){
-//Comment out to run tracklet-only algorithm
-#ifdef CMSSW_GIT_HASH
-#define USEHYBRID
-#endif
+    Settings() {
+      //Comment out to run tracklet-only algorithm
+      //#ifdef CMSSW_GIT_HASH
+      //#define USEHYBRID
+      //#endif
     }
-    
+
     ~Settings() = default;
 
     // processing & memory modules, wiring, etc.
-    std::string DTCLinkFile() const {
-      return DTCLinkFile_;
-    }
+    std::string DTCLinkFile() const { return DTCLinkFile_; }
     std::string const& moduleCablingFile() const { return moduleCablingFile_; }
     std::string const& DTCLinkLayerDiskFile() const { return DTCLinkLayerDiskFile_; }
     std::string const& fitPatternFile() const { return fitPatternFile_; }
@@ -74,14 +71,15 @@ namespace trklet {
 
     bool writeMonitorData(std::string module) const {
       if (writeMonitorData_.find(module) == writeMonitorData_.end()) {
-	throw cms::Exception("BadConfig") << "Settings::writeMonitorData module = " << module << " not known";
+        throw cms::Exception("BadConfig") << "Settings::writeMonitorData module = " << module << " not known";
       }
       return writeMonitorData_.at(module);
     }
 
     unsigned int maxStep(std::string module) const {
       if (maxstep_.find(module) == maxstep_.end()) {
-	throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " maxStep module = " << module << " not known";
+        throw cms::Exception("BadConfig")
+            << __FILE__ << " " << __LINE__ << " maxStep module = " << module << " not known";
       }
       return maxstep_.at(module) + maxstepoffset_;
     }
@@ -126,9 +124,9 @@ namespace trklet {
       return rDSSouter_mod_[iBin / 2] + halfstrip_ * ((iBin % 2 == 0) ? -1 : 1);
     }
 
-    unsigned int vmrlutzbits(unsigned int layerdisk) const {return vmrlutzbits_[layerdisk];}
-    unsigned int vmrlutrbits(unsigned int layerdisk) const {return vmrlutrbits_[layerdisk];}
-    
+    unsigned int vmrlutzbits(unsigned int layerdisk) const { return vmrlutzbits_[layerdisk]; }
+    unsigned int vmrlutrbits(unsigned int layerdisk) const { return vmrlutrbits_[layerdisk]; }
+
     bool printDebugKF() const { return printDebugKF_; }
     bool debugTracklet() const { return debugTracklet_; }
     bool writetrace() const { return writetrace_; }
@@ -154,7 +152,7 @@ namespace trklet {
 
     double ptcut() const { return ptcut_; }
     double rinvcut() const { return 0.01 * c_ * bfield_ / ptcut_; }  //0.01 to convert to cm-1
-    
+
     double c() const { return c_; }
 
     double rinvmax() const { return 0.01 * c_ * bfield_ / ptmin_; }
@@ -192,24 +190,24 @@ namespace trklet {
     void setBfield(double bfield) { bfield_ = bfield; }
 
     unsigned int nStrips(bool isPSmodule) const { return isPSmodule ? nStrips_PS_ : nStrips_2S_; }
-    void setNStrips_PS(unsigned int nStrips_PS ) { nStrips_PS_ = nStrips_PS; }
-    void setNStrips_2S(unsigned int nStrips_2S ) { nStrips_2S_ = nStrips_2S; }
+    void setNStrips_PS(unsigned int nStrips_PS) { nStrips_PS_ = nStrips_PS; }
+    void setNStrips_2S(unsigned int nStrips_2S) { nStrips_2S_ = nStrips_2S; }
 
     double stripPitch(bool isPSmodule) const { return isPSmodule ? stripPitch_PS_ : stripPitch_2S_; }
-    void setStripPitch_PS(double stripPitch_PS ) { stripPitch_PS_ = stripPitch_PS; }
-    void setStripPitch_2S(double stripPitch_2S ) { stripPitch_2S_ = stripPitch_2S; }
+    void setStripPitch_PS(double stripPitch_PS) { stripPitch_PS_ = stripPitch_PS; }
+    void setStripPitch_2S(double stripPitch_2S) { stripPitch_2S_ = stripPitch_2S; }
 
     double stripLength(bool isPSmodule) const { return isPSmodule ? stripLength_PS_ : stripLength_2S_; }
-    void setStripLength_PS(double stripLength_PS ) { stripLength_PS_ = stripLength_PS; }
-    void setStripLength_2S(double stripLength_2S ) { stripLength_2S_ = stripLength_2S; }
+    void setStripLength_PS(double stripLength_PS) { stripLength_PS_ = stripLength_PS; }
+    void setStripLength_2S(double stripLength_2S) { stripLength_2S_ = stripLength_2S; }
 
     std::string skimfile() const { return skimfile_; }
     void setSkimfile(std::string skimfile) { skimfile_ = skimfile; }
 
     double dphisectorHG() const {
       return 2 * M_PI / N_SECTOR +
-	2 * std::max(std::abs(asin(0.5 * rinvmax() * rmean(0)) - asin(0.5 * rinvmax() * rcrit_)),
-		     std::abs(asin(0.5 * rinvmax() * rmean(5)) - asin(0.5 * rinvmax() * rcrit_)));
+             2 * std::max(std::abs(asin(0.5 * rinvmax() * rmean(0)) - asin(0.5 * rinvmax() * rcrit_)),
+                          std::abs(asin(0.5 * rinvmax() * rmean(5)) - asin(0.5 * rinvmax() * rcrit_)));
     }
 
     double rcrit() const { return rcrit_; }
@@ -302,21 +300,20 @@ namespace trklet {
 
     //0.02 here is the maximum range in rinv values that can be represented
     double krinvpars() const {
-      int shift=ceil(-log2(0.02*rmaxdisk_/((1<<nbitsrinv_)*dphisectorHG())));
-      return dphisectorHG()/rmaxdisk_/(1<<shift);
-    } 
-    double kphi0pars() const { return 2*kphi1(); }
-    double ktpars() const { return maxt_ / (1<<nbitst_); }
+      int shift = ceil(-log2(0.02 * rmaxdisk_ / ((1 << nbitsrinv_) * dphisectorHG())));
+      return dphisectorHG() / rmaxdisk_ / (1 << shift);
+    }
+    double kphi0pars() const { return 2 * kphi1(); }
+    double ktpars() const { return maxt_ / (1 << nbitst_); }
     double kz0pars() const { return kz(); }
     double kd0pars() const { return kd0(); }
 
+    double kphider() const { return krinvpars() / (1 << phiderbitshift_); }
+    double kzder() const { return ktpars() / (1 << zderbitshift_); }
 
-    double kphider() const { return krinvpars()/(1<<phiderbitshift_); }
-    double kzder() const { return ktpars()/(1<<zderbitshift_); }
-    
     //This is a 'historical accident' and should be fixed so that we don't
     //have the factor if 2
-    double krprojshiftdisk() const { return 2*kr(); }
+    double krprojshiftdisk() const { return 2 * kr(); }
 
   private:
     std::string DTCLinkFile_;
@@ -327,14 +324,14 @@ namespace trklet {
     std::string memoryModulesFile_;
     std::string wiresFile_;
 
-    double rcrit_{55.0}; // critical radius for the hourglass configuration 
+    double rcrit_{55.0};  // critical radius for the hourglass configuration
 
     double dphicritmc_{0.005};
 
     //fraction of full r and z range that stubs can be located within layer/disk
     double deltarzfract_{32.0};
 
-    double maxt_{32.0}; //range in t that we must cover
+    double maxt_{32.0};  //range in t that we must cover
 
     std::array<unsigned int, 6> irmean_{{851, 1269, 1784, 2347, 2936, 3697}};
     std::array<unsigned int, 5> izmean_{{2239, 2645, 3163, 3782, 4523}};
@@ -439,15 +436,13 @@ namespace trklet {
     int chisqphifactbits_{14};
     int chisqzfactbits_{14};
 
-    std::array<unsigned int, 11> vmrlutzbits_{{7,7,7,7,7,7,3,3,3,3,3}}; // zbits used by LUT in VMR
-    std::array<unsigned int, 11> vmrlutrbits_{{4,4,4,4,4,4,8,8,8,8,8}}; // rbits used by LUT in VMR
+    std::array<unsigned int, 11> vmrlutzbits_{{7, 7, 7, 7, 7, 7, 3, 3, 3, 3, 3}};  // zbits used by LUT in VMR
+    std::array<unsigned int, 11> vmrlutrbits_{{4, 4, 4, 4, 4, 4, 8, 8, 8, 8, 8}};  // rbits used by LUT in VMR
 
-    
     std::array<std::array<unsigned int, 12>, 3> nfinephi_{{{{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}},    //inner
                                                            {{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}},    //outer
                                                            {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3}}}};  //outermost
 
-    
     //These are the number of bits used for the VM regions in the TE by seedindex
     std::array<std::array<unsigned int, 12>, 3> nphireg_{{{{5, 4, 4, 4, 4, 4, 4, 3, 4, 4, 5, 4}},    //inner
                                                           {{5, 4, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4}},    //outer
@@ -574,7 +569,7 @@ namespace trklet {
     std::array<double, 5> rDSSouter_mod_{{66.4903, 76.7750, 84.4562, 94.9920, 102.3160}};
 
     //we want the center of the two strip positions in a module, not just the center of a module
-    double halfstrip_{2.5};  
+    double halfstrip_{2.5};
 
     // various printouts for debugging and warnings
     bool printDebugKF_{false};   // if true print lots of debugging statements related to the KF fit
@@ -607,7 +602,7 @@ namespace trklet {
 
     // pt constants
     double ptcut_{1.91};  //Minimum pt cut
-    
+
     // Parameters for bit sizes
     int alphashift_{12};
     int nbitsalpha_{4};      //bits used to store alpha
@@ -645,47 +640,47 @@ namespace trklet {
 #endif
 
     // if true, run a dummy fit, producing TTracks directly from output of tracklet pattern reco stage
-    bool fakefit_{false}; 
+    bool fakefit_{false};
 
     unsigned int nHelixPar_{4};  // 4 or 5 param helix fit
     bool extended_{false};       // turn on displaced tracking
 
     std::string skimfile_{""};  //if not empty events will be written out in ascii format to this file
 
-    double bfield_{3.8112};    //B-field in T
-    double c_{0.299792458}; //speed of light m/ns
+    double bfield_{3.8112};  //B-field in T
+    double c_{0.299792458};  //speed of light m/ns
 
-    unsigned int nStrips_PS_{960}; 
-    unsigned int nStrips_2S_{1016}; 
-    
-    double stripPitch_PS_{0.01}; 
-    double stripPitch_2S_{0.009}; 
+    unsigned int nStrips_PS_{960};
+    unsigned int nStrips_2S_{1016};
 
-    double stripLength_PS_{0.1467}; 
-    double stripLength_2S_{5.0250}; 
-    
+    double stripPitch_PS_{0.01};
+    double stripPitch_2S_{0.009};
+
+    double stripLength_PS_{0.1467};
+    double stripLength_2S_{5.0250};
   };
-  
+
   // constants
   constexpr int N_LAYER = 6;
   constexpr int N_DISK = 5;
   constexpr unsigned int N_PSLAYER = 3;
   constexpr unsigned int N_LAYERDISK = 11;
 
-  constexpr unsigned int N_TILTED_RINGS = 12;          // number of tilted rings per half-layer in TBPS layers
-  constexpr std::array<unsigned int, N_PSLAYER> N_MOD_PLANK = {{7, 11, 15}}; // number of modules per plank in TBPS layers
-  
-  constexpr unsigned int N_SEEDINDEX = 12; // number of tracklet+triplet seeds
-  constexpr unsigned int N_PROJLAYER = 4;  // max number of layers to project to
-  constexpr unsigned int N_PROJDISK = 5;   // max number of disks to project to
+  constexpr unsigned int N_TILTED_RINGS = 12;  // number of tilted rings per half-layer in TBPS layers
+  constexpr std::array<unsigned int, N_PSLAYER> N_MOD_PLANK = {
+      {7, 11, 15}};  // number of modules per plank in TBPS layers
+
+  constexpr unsigned int N_SEEDINDEX = 12;  // number of tracklet+triplet seeds
+  constexpr unsigned int N_PROJLAYER = 4;   // max number of layers to project to
+  constexpr unsigned int N_PROJDISK = 5;    // max number of disks to project to
 
   // chi2 fitting
-  constexpr unsigned int N_FITSTUB = 6;    // maximum number of stubs used
-  constexpr unsigned int N_PROJ = 4;       // number of projections (beyond stubs from seed, i.e. N_FITSTUB-2)
-  
+  constexpr unsigned int N_FITSTUB = 6;  // maximum number of stubs used
+  constexpr unsigned int N_PROJ = 4;     // number of projections (beyond stubs from seed, i.e. N_FITSTUB-2)
+
   constexpr unsigned int N_TRACKDER_PTBIN = 4;
   constexpr unsigned int N_TRACKDER_INDEX = 1000;
-      
+
 }  // namespace trklet
 
 #endif

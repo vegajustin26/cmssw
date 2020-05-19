@@ -8,10 +8,9 @@
 using namespace std;
 using namespace trklet;
 
-Cabling::Cabling(string dtcconfig, string moduleconfig, const Settings *settings) {
+Cabling::Cabling(string dtcconfig, string moduleconfig, const Settings* settings) {
+  settings_ = settings;
 
-  settings_=settings;
-  
   ifstream indtc(dtcconfig.c_str());
   assert(indtc.good());
 
@@ -49,17 +48,16 @@ Cabling::Cabling(string dtcconfig, string moduleconfig, const Settings *settings
     // in the cabling module map, module# 300+ is flat part of barrel, 200-299 is tilted z-, 100-199 is tilted z+
     if (module > 300) {
       if (layer > 0 && layer <= (int)N_PSLAYER) {
-	module = (module - 300) + N_TILTED_RINGS;
-      }
-      else if (layer > (int)N_PSLAYER) {
-	module = (module - 300);
+        module = (module - 300) + N_TILTED_RINGS;
+      } else if (layer > (int)N_PSLAYER) {
+        module = (module - 300);
       }
     }
     if (module > 200) {
       module = (module - 200);
     }
-    if ( (module > 100) && (layer > 0 && layer <= (int)N_PSLAYER) ) {
-      module = (module - 100) + N_TILTED_RINGS + N_MOD_PLANK.at(layer-1);
+    if ((module > 100) && (layer > 0 && layer <= (int)N_PSLAYER)) {
+      module = (module - 100) + N_TILTED_RINGS + N_MOD_PLANK.at(layer - 1);
     }
     if (!inmodules.good())
       break;
@@ -83,7 +81,7 @@ const string& Cabling::dtc(int layer, int ladder, int module) const {
 void Cabling::addphi(const string& dtc, double phi, int layer, int module) {
   unsigned int layerdisk = layer - 1;
 
-  if (layer > 1000) 
+  if (layer > 1000)
     layerdisk = module + N_DISK;
 
   assert(layerdisk < N_LAYERDISK);

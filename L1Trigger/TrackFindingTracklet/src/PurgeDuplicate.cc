@@ -29,8 +29,18 @@ void PurgeDuplicate::addOutput(MemoryBase* memory, std::string output) {
     edm::LogVerbatim("Tracklet") << "In " << name_ << " adding output to " << memory->getName() << " to output "
                                  << output;
   }
-  unordered_set<string> outputs = { "trackout","trackout1","trackout2","trackout3","trackout4","trackout5",
-				    "trackout6","trackout7","trackout8","trackout9","trackout10","trackout11" };
+  unordered_set<string> outputs = {"trackout",
+                                   "trackout1",
+                                   "trackout2",
+                                   "trackout3",
+                                   "trackout4",
+                                   "trackout5",
+                                   "trackout6",
+                                   "trackout7",
+                                   "trackout8",
+                                   "trackout9",
+                                   "trackout10",
+                                   "trackout11"};
   if (outputs.find(output) != outputs.end()) {
     CleanTrackMemory* tmp = dynamic_cast<CleanTrackMemory*>(memory);
     assert(tmp != 0);
@@ -46,8 +56,18 @@ void PurgeDuplicate::addInput(MemoryBase* memory, std::string input) {
     edm::LogVerbatim("Tracklet") << "In " << name_ << " adding input from " << memory->getName() << " to input "
                                  << input;
   }
-  unordered_set<string> inputs = { "trackin","trackin1","trackin2","trackin3","trackin4","trackin5",
-				   "trackin6","trackin7","trackin8","trackin9","trackin10","trackin11" };
+  unordered_set<string> inputs = {"trackin",
+                                  "trackin1",
+                                  "trackin2",
+                                  "trackin3",
+                                  "trackin4",
+                                  "trackin5",
+                                  "trackin6",
+                                  "trackin7",
+                                  "trackin8",
+                                  "trackin9",
+                                  "trackin10",
+                                  "trackin11"};
   if (inputs.find(input) != inputs.end()) {
     TrackFitMemory* tmp = dynamic_cast<TrackFitMemory*>(memory);
     assert(tmp != 0);
@@ -90,7 +110,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
   if (settings_->removalType() == "merge") {
     std::vector<std::pair<int, bool>> trackInfo;  // Track seed & duplicate flag
     // Vector to store the relative rank of the track candidate for merging, based on seed type
-    std::vector<int> seedRank;  
+    std::vector<int> seedRank;
 
     // Get vectors from TrackFit and save them
     // inputtracklets: Tracklet objects from the FitTrack (not actually fit yet)
@@ -164,7 +184,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
 
     // Find duplicates; Fill dupMap by looping over all pairs of "tracks"
     // numStublists-1 since last track has no other to compare to
-    for (unsigned int itrk = 0; itrk < numStublists - 1; itrk++) { 
+    for (unsigned int itrk = 0; itrk < numStublists - 1; itrk++) {
       for (unsigned int jtrk = itrk + 1; jtrk < numStublists; jtrk++) {
         // Get primary track stubids
         const std::vector<std::pair<int, int>>& stubsTrk1 = inputstubidslists_[itrk];
@@ -178,7 +198,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         unsigned int nURStubTrk2 = 0;
         if (settings_->mergeComparison() == "CompareAll") {
           bool URArray[16];
-          for (auto& i:URArray) {
+          for (auto& i : URArray) {
             i = false;
           };
           for (const auto& st1 : stubsTrk1) {

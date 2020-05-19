@@ -22,9 +22,9 @@ void VarBase::print_truncation(std::string& t, const std::string& o1, const int 
 //
 
 void VarCut::print(std::map<const VarBase*, std::set<std::string> >& cut_strings,
-                    const int step,
-                    Verilog,
-                    const std::map<const VarBase*, std::set<std::string> >* const previous_cut_strings) const {
+                   const int step,
+                   Verilog,
+                   const std::map<const VarBase*, std::set<std::string> >* const previous_cut_strings) const {
   int l = step - cut_var_->latency() - cut_var_->step();
   std::string name = cut_var_->name();
   if (l > 0)
@@ -40,9 +40,9 @@ void VarCut::print(std::map<const VarBase*, std::set<std::string> >& cut_strings
 }
 
 void VarBase::print_cuts(std::map<const VarBase*, std::set<std::string> >& cut_strings,
-                          const int step,
-                          Verilog,
-                          const std::map<const VarBase*, std::set<std::string> >* const previous_cut_strings) const {
+                         const int step,
+                         Verilog,
+                         const std::map<const VarBase*, std::set<std::string> >* const previous_cut_strings) const {
   if (p1_)
     p1_->print_cuts(cut_strings, step, verilog, previous_cut_strings);
   if (p2_)

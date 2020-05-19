@@ -52,7 +52,15 @@ void TrackletCalculatorBase::exacttracklet(double r1,
   z0 = z1 - t * rhopsi1;
 
   for (int i = 0; i < 4; i++) {
-    exactproj(settings_->rmean(settings_->projlayers(iSeed_,i)-1), rinv, phi0, t, z0, phiproj[i], zproj[i], phider[i], zder[i]);
+    exactproj(settings_->rmean(settings_->projlayers(iSeed_, i) - 1),
+              rinv,
+              phi0,
+              t,
+              z0,
+              phiproj[i],
+              zproj[i],
+              phider[i],
+              zder[i]);
   }
 
   for (int i = 0; i < 5; i++) {
@@ -97,7 +105,15 @@ void TrackletCalculatorBase::exacttrackletdisk(double r1,
   z0 = z1 - t * rhopsi1;
 
   for (int i = 0; i < 3; i++) {
-    exactprojdisk(settings_->zmean(settings_->projdisks(iSeed_,i)-1), rinv, phi0, t, z0, phiproj[i], rproj[i], phider[i], rder[i]);
+    exactprojdisk(settings_->zmean(settings_->projdisks(iSeed_, i) - 1),
+                  rinv,
+                  phi0,
+                  t,
+                  z0,
+                  phiproj[i],
+                  rproj[i],
+                  phider[i],
+                  rder[i]);
   }
 
   for (int i = 0; i < 3; i++) {
@@ -145,7 +161,7 @@ void TrackletCalculatorBase::exacttrackletOverlap(double r1,
   z0 = z1 - t * rhopsi1;
 
   for (int i = 0; i < 4; i++) {
-    exactprojdisk(settings_->zmean(i+1), rinv, phi0, t, z0, phiproj[i], rproj[i], phider[i], rder[i]);
+    exactprojdisk(settings_->zmean(i + 1), rinv, phi0, t, z0, phiproj[i], rproj[i], phider[i], rder[i]);
   }
 
   for (int i = 0; i < 1; i++) {
@@ -312,14 +328,14 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
                                            const Stub* outerFPGAStub,
                                            const L1TStub* outerStub) {
   if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "TrackletCalculator " << getName() 
+    edm::LogVerbatim("Tracklet") << "TrackletCalculator " << getName()
                                  << " trying stub pair in layer (inner outer): " << innerFPGAStub->layer().value()
                                  << " " << outerFPGAStub->layer().value();
   }
 
   assert(outerFPGAStub->isBarrel());
-  assert(layerdisk1_ == (unsigned int) innerFPGAStub->layer().value());
-  assert(layerdisk1_<6&&layerdisk2_<6);
+  assert(layerdisk1_ == (unsigned int)innerFPGAStub->layer().value());
+  assert(layerdisk1_ < 6 && layerdisk2_ < 6);
 
   double r1 = innerStub->r();
   double z1 = innerStub->z();
@@ -387,12 +403,11 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   ITC->phi1.set_fval(sphi1);
   ITC->phi2.set_fval(sphi2);
 
-  ITC->rproj0.set_fval(settings_->rmean(settings_->projlayers(iSeed_,0)-1));
-  ITC->rproj1.set_fval(settings_->rmean(settings_->projlayers(iSeed_,1)-1));
-  ITC->rproj2.set_fval(settings_->rmean(settings_->projlayers(iSeed_,2)-1));
-  ITC->rproj3.set_fval(settings_->rmean(settings_->projlayers(iSeed_,3)-1));
+  ITC->rproj0.set_fval(settings_->rmean(settings_->projlayers(iSeed_, 0) - 1));
+  ITC->rproj1.set_fval(settings_->rmean(settings_->projlayers(iSeed_, 1) - 1));
+  ITC->rproj2.set_fval(settings_->rmean(settings_->projlayers(iSeed_, 2) - 1));
+  ITC->rproj3.set_fval(settings_->rmean(settings_->projlayers(iSeed_, 3) - 1));
 
-  
   ITC->zproj0.set_fval(t > 0 ? settings_->zmean(0) : -settings_->zmean(0));
   ITC->zproj1.set_fval(t > 0 ? settings_->zmean(1) : -settings_->zmean(1));
   ITC->zproj2.set_fval(t > 0 ? settings_->zmean(2) : -settings_->zmean(2));
@@ -558,15 +573,15 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
       continue;
 
     //Adjust bits for r and z projection depending on layer
-    if (settings_->projlayers(iSeed_,i) <= 3) {  //TODO clean up logic
-      iphiproj[i] >>= (settings_->nphibitsstub(5) - settings_->nphibitsstub(settings_->projlayers(iSeed_,i) - 1));
+    if (settings_->projlayers(iSeed_, i) <= 3) {  //TODO clean up logic
+      iphiproj[i] >>= (settings_->nphibitsstub(5) - settings_->nphibitsstub(settings_->projlayers(iSeed_, i) - 1));
     } else {
       izproj[i] >>= (settings_->nzbitsstub(0) - settings_->nzbitsstub(5));
     }
 
     layerprojs[i].init(settings_,
-                       settings_->projlayers(iSeed_,i),
-                       settings_->rmean(settings_->projlayers(iSeed_,i)-1),
+                       settings_->projlayers(iSeed_, i),
+                       settings_->rmean(settings_->projlayers(iSeed_, i) - 1),
                        iphiproj[i],
                        izproj[i],
                        ITC->der_phiL_final.ival(),
@@ -603,7 +618,6 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
       if (irprojdisk[i] < 20. / ITC->rD_0_final.K() || irprojdisk[i] > 120. / ITC->rD_0_final.K())
         continue;
 
-      
       diskprojs[i].init(settings_,
                         i + 1,
                         settings_->zmean(i),
@@ -624,8 +638,8 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
 
   if (settings_->writeMonitorData("TPars")) {
     globals_->ofstream("trackletpars.txt")
-        << "Trackpars " << layerdisk1_+1 << "   " << rinv << " " << rinvapprox << " " << ITC->rinv_final.fval() << "   "
-        << phi0 << " " << phi0approx << " " << ITC->phi0_final.fval() << "   " << t << " " << tapprox << " "
+        << "Trackpars " << layerdisk1_ + 1 << "   " << rinv << " " << rinvapprox << " " << ITC->rinv_final.fval()
+        << "   " << phi0 << " " << phi0approx << " " << ITC->phi0_final.fval() << "   " << t << " " << tapprox << " "
         << ITC->t_final.fval() << "   " << z0 << " " << z0approx << " " << ITC->z0_final.fval() << endl;
   }
 
@@ -693,7 +707,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   bool addL5 = false;
   bool addL6 = false;
   for (unsigned int j = 0; j < 4; j++) {
-    int lproj=settings_->projlayers(iSeed_,j);
+    int lproj = settings_->projlayers(iSeed_, j);
     bool added = false;
     if (tracklet->validProj(lproj)) {
       added = addLayerProj(tracklet, lproj);
@@ -811,8 +825,8 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   ITC->r1.set_fval(r1);
   ITC->r2.set_fval(r2);
   int signt = t > 0 ? 1 : -1;
-  ITC->z1.set_fval(z1 - signt * settings_->zmean(layerdisk1_-6));
-  ITC->z2.set_fval(z2 - signt * settings_->zmean(layerdisk2_-6));
+  ITC->z1.set_fval(z1 - signt * settings_->zmean(layerdisk1_ - 6));
+  ITC->z2.set_fval(z2 - signt * settings_->zmean(layerdisk2_ - 6));
   double sphi1 = phiRange2PI(phi1 - phioffset_);
   double sphi2 = phiRange2PI(phi2 - phioffset_);
   ITC->phi1.set_fval(sphi1);
@@ -822,9 +836,9 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   ITC->rproj1.set_fval(settings_->rmean(1));
   ITC->rproj2.set_fval(settings_->rmean(2));
 
-  ITC->zproj0.set_fval(signt*settings_->zmean(settings_->projdisks(iSeed_,0)-1));
-  ITC->zproj1.set_fval(signt*settings_->zmean(settings_->projdisks(iSeed_,1)-1));
-  ITC->zproj2.set_fval(signt*settings_->zmean(settings_->projdisks(iSeed_,2)-1));
+  ITC->zproj0.set_fval(signt * settings_->zmean(settings_->projdisks(iSeed_, 0) - 1));
+  ITC->zproj1.set_fval(signt * settings_->zmean(settings_->projdisks(iSeed_, 1) - 1));
+  ITC->zproj2.set_fval(signt * settings_->zmean(settings_->projdisks(iSeed_, 2) - 1));
 
   ITC->rinv_final.calculate();
   ITC->phi0_final.calculate();
@@ -1003,7 +1017,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
 
     diskprojs[i].init(settings_,
                       i + 1,
-                      settings_->zmean(settings_->projdisks(iSeed_,i)-1),
+                      settings_->zmean(settings_->projdisks(iSeed_, i) - 1),
                       iphiprojdisk[i],
                       irprojdisk[i],
                       ITC->der_phiD_final.ival(),
@@ -1020,9 +1034,10 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
 
   if (settings_->writeMonitorData("TPars")) {
     globals_->ofstream("trackletparsdisk.txt")
-        << "Trackpars         " << layerdisk1_-5 << "   " << rinv << " " << rinvapprox << " " << ITC->rinv_final.fval()
-        << "   " << phi0 << " " << phi0approx << " " << ITC->phi0_final.fval() << "   " << t << " " << tapprox
-        << " " << ITC->t_final.fval() << "   " << z0 << " " << z0approx << " " << ITC->z0_final.fval() << endl;
+        << "Trackpars         " << layerdisk1_ - 5 << "   " << rinv << " " << rinvapprox << " "
+        << ITC->rinv_final.fval() << "   " << phi0 << " " << phi0approx << " " << ITC->phi0_final.fval() << "   " << t
+        << " " << tapprox << " " << ITC->t_final.fval() << "   " << z0 << " " << z0approx << " " << ITC->z0_final.fval()
+        << endl;
   }
 
   Tracklet* tracklet = new Tracklet(settings_,
@@ -1074,8 +1089,8 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   }
 
   for (unsigned int j = 0; j < 3; j++) {
-    if (tracklet->validProjDisk(sign * settings_->projdisks(iSeed_,j))) {
-      addDiskProj(tracklet, sign * settings_->projdisks(iSeed_,j));
+    if (tracklet->validProjDisk(sign * settings_->projdisks(iSeed_, j))) {
+      addDiskProj(tracklet, sign * settings_->projdisks(iSeed_, j));
     }
   }
 
@@ -1167,7 +1182,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   ITC->r2.set_fval(r1);
   int signt = t > 0 ? 1 : -1;
   ITC->z1.set_fval(z2);
-  ITC->z2.set_fval(z1 - signt * settings_->zmean(layerdisk2_-6));
+  ITC->z2.set_fval(z1 - signt * settings_->zmean(layerdisk2_ - 6));
   double sphi1 = phiRange2PI(phi1 - phioffset_);
   double sphi2 = phiRange2PI(phi2 - phioffset_);
   ITC->phi1.set_fval(sphi2);
@@ -1177,10 +1192,10 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   ITC->rproj1.set_fval(settings_->rmean(1));
   ITC->rproj2.set_fval(settings_->rmean(2));
 
-  ITC->zproj0.set_fval(signt*settings_->zmean(1));
-  ITC->zproj1.set_fval(signt*settings_->zmean(2));
-  ITC->zproj2.set_fval(signt*settings_->zmean(3));
-  ITC->zproj3.set_fval(signt*settings_->zmean(4));
+  ITC->zproj0.set_fval(signt * settings_->zmean(1));
+  ITC->zproj1.set_fval(signt * settings_->zmean(2));
+  ITC->zproj2.set_fval(signt * settings_->zmean(3));
+  ITC->zproj3.set_fval(signt * settings_->zmean(4));
 
   ITC->rinv_final.calculate();
   ITC->phi0_final.calculate();
@@ -1385,8 +1400,8 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
 
   if (settings_->writeMonitorData("TPars")) {
     globals_->ofstream("trackletparsoverlap.txt")
-        << "Trackpars " << layerdisk1_-5 << "   " << rinv << " " << irinv << " " << ITC->rinv_final.fval() << "   " << phi0
-        << " " << iphi0 << " " << ITC->phi0_final.fval() << "   " << t << " " << it << " "
+        << "Trackpars " << layerdisk1_ - 5 << "   " << rinv << " " << irinv << " " << ITC->rinv_final.fval() << "   "
+        << phi0 << " " << iphi0 << " " << ITC->phi0_final.fval() << "   " << t << " " << it << " "
         << ITC->t_final.fval() << "   " << z0 << " " << iz0 << " " << ITC->z0_final.fval() << endl;
   }
 
@@ -1418,8 +1433,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
                                     true);
 
   if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "Found tracklet in overlap seed = " << iSeed_ << " " << tracklet << " "
-                                 << iSector_;
+    edm::LogVerbatim("Tracklet") << "Found tracklet in overlap seed = " << iSeed_ << " " << tracklet << " " << iSector_;
   }
 
   tracklet->setTrackletIndex(trackletpars_->nTracklets());

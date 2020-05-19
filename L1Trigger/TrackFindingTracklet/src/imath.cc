@@ -13,9 +13,7 @@
 
 using namespace trklet;
 
-std::string VarBase::itos(int i) {
-  return std::to_string(i);
-}
+std::string VarBase::itos(int i) { return std::to_string(i); }
 
 std::string VarBase::kstring() const {
   char s[1024];
@@ -304,7 +302,7 @@ void VarBase::writeTree(imathGlobals *globals) {
 #endif
 
 void VarCut::local_passes(std::map<const VarBase *, std::vector<bool> > &passes,
-                           const std::map<const VarBase *, std::vector<bool> > *const previous_passes) const {
+                          const std::map<const VarBase *, std::vector<bool> > *const previous_passes) const {
   const int lower_cut = lower_cut_ / cut_var_->K();
   const int upper_cut = upper_cut_ / cut_var_->K();
   if (!previous_passes || (previous_passes && !previous_passes->count(cut_var_))) {
@@ -332,7 +330,7 @@ bool VarBase::local_passes() const {
 }
 
 void VarBase::passes(std::map<const VarBase *, std::vector<bool> > &passes,
-                      const std::map<const VarBase *, std::vector<bool> > *const previous_passes) const {
+                     const std::map<const VarBase *, std::vector<bool> > *const previous_passes) const {
   if (p1_)
     p1_->passes(passes, previous_passes);
   if (p2_)

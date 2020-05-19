@@ -54,7 +54,7 @@ namespace trklet {
     double x() const { return x_; }
     double y() const { return y_; }
     double z() const { return z_; }
-    double r() const { return std::hypot(x_,y_); }
+    double r() const { return std::hypot(x_, y_); }
     double pt() const { return pt_; }
     double r2() const { return x_ * x_ + y_ * y_; }
     double bend() const { return bend_; }

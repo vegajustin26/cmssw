@@ -27,18 +27,18 @@ namespace trklet {
     void bookSeedEff() override;
 
     void fillTrackletParams(const Settings *settings,
-			    Globals *globals,
-			    int seedIndex,
-			    int iSector,
-			    double rinv,
-			    double irinv,
-			    double phi0,
-			    double iphi0,
-			    double eta,
-			    double ieta,
-			    double z0,
-			    double iz0,
-			    int tp) override;
+                            Globals *globals,
+                            int seedIndex,
+                            int iSector,
+                            double rinv,
+                            double irinv,
+                            double phi0,
+                            double iphi0,
+                            double eta,
+                            double ieta,
+                            double z0,
+                            double iz0,
+                            int tp) override;
 
     void FillLayerResidual(
         int layer, int seed, double phiresid, double iphiresid, double zresid, double izresid, bool match) override;

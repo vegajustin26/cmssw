@@ -15,11 +15,8 @@ TrackFitMemory::TrackFitMemory(
 
 void TrackFitMemory::writeTF(bool first) {
   std::ostringstream oss;
-  oss << "../data/MemPrints/FitTrack/TrackFit_"
-      << getName()
-      << "_"
-      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
-      << ".dat";
+  oss << "../data/MemPrints/FitTrack/TrackFit_" << getName() << "_" << std::setfill('0') << std::setw(2)
+      << (iSector_ + 1) << ".dat";
   auto const& fname = oss.str();
 
   if (first) {

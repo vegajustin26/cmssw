@@ -27,26 +27,29 @@ public:
       edm::LogVerbatim("Tracklet") << s;
       snprintf(s, 1024, "      stub Ks: kr, kphi1, kz = %g, %g, %g", settings->kr(), settings->kphi1(), settings->kz());
       edm::LogVerbatim("Tracklet") << s;
-      snprintf(s, 1024,
-	      "  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g",
-	      settings->kphi1() / settings->kr() * pow(2, settings->rinv_shift()),
-	      settings->kphi1() * pow(2, settings->phi0_shift()),
-	      settings->kz() / settings->kr() * pow(2, settings->t_shift()),
-	      settings->kz() * pow(2, settings->z0_shift()));
+      snprintf(s,
+               1024,
+               "  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g",
+               settings->kphi1() / settings->kr() * pow(2, settings->rinv_shift()),
+               settings->kphi1() * pow(2, settings->phi0_shift()),
+               settings->kz() / settings->kr() * pow(2, settings->t_shift()),
+               settings->kz() * pow(2, settings->z0_shift()));
       edm::LogVerbatim("Tracklet") << s;
-      snprintf(s, 1024,
-	      "layer proj Ks: kphiproj456, kphider, kzproj, kzder = %g, %g, %g, %g",
-	      settings->kphi1() * pow(2, settings->SS_phiL_shift()),
-	      settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderL_shift()),
-	      settings->kz() * pow(2, settings->PS_zL_shift()),
-	      settings->kz() / settings->kr() * pow(2, settings->PS_zderL_shift()));
+      snprintf(s,
+               1024,
+               "layer proj Ks: kphiproj456, kphider, kzproj, kzder = %g, %g, %g, %g",
+               settings->kphi1() * pow(2, settings->SS_phiL_shift()),
+               settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderL_shift()),
+               settings->kz() * pow(2, settings->PS_zL_shift()),
+               settings->kz() / settings->kr() * pow(2, settings->PS_zderL_shift()));
       edm::LogVerbatim("Tracklet") << s;
-      snprintf(s, 1024,
-	      " disk proj Ks: kphiprojdisk, kphiprojderdisk, krprojdisk, krprojderdisk = %g, %g, %g, %g",
-	      settings->kphi1() * pow(2, settings->SS_phiD_shift()),
-	      settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderD_shift()),
-	      settings->kr() * pow(2, settings->PS_rD_shift()),
-	      settings->kr() / settings->kz() * pow(2, settings->PS_rderD_shift()));
+      snprintf(s,
+               1024,
+               " disk proj Ks: kphiprojdisk, kphiprojderdisk, krprojdisk, krprojderdisk = %g, %g, %g, %g",
+               settings->kphi1() * pow(2, settings->SS_phiD_shift()),
+               settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderD_shift()),
+               settings->kr() * pow(2, settings->PS_rD_shift()),
+               settings->kr() / settings->kz() * pow(2, settings->PS_rderD_shift()));
       edm::LogVerbatim("Tracklet") << s;
       edm::LogVerbatim("Tracklet") << "=============================================";
     }
@@ -101,7 +104,7 @@ public:
   ~IMATH_TrackletCalculatorDisk() = default;
 
   const trklet::Settings* settings_;
-  
+
   imathGlobals* globals_;
 
   //max values
@@ -124,37 +127,37 @@ public:
   const double t_layer_max = 2.5;
   const double z0_max = 20.;
   const double z0a_max = 205.;
-  
+
   //constants
   VarParam plus2{globals_, "plus2", 2., 10};
   VarParam plus1{globals_, "plus1", 1., 10};
   VarParam minus1{globals_, "minus1", -1, 10};
-  
-  VarParam z1mean{globals_, "z1mean", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
-  VarParam z2mean{globals_, "z2mean", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
+
+  VarParam z1mean{globals_, "z1mean", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
+  VarParam z2mean{globals_, "z2mean", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
 
   //inputs
-  VarDef r1{globals_, "r1", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
-  VarDef r2{globals_, "r2", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
+  VarDef r1{globals_, "r1", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
+  VarDef r2{globals_, "r2", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
   VarDef z1{globals_, "z1", "Kz", settings_->dzmax(), settings_->kz()};
   VarDef z2{globals_, "z2", "Kz", settings_->dzmax(), settings_->kz()};
 
   VarDef phi1{globals_, "phi1", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
   VarDef phi2{globals_, "phi2", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
 
-  VarDef rproj0{globals_, "rproj0", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
-  VarDef rproj1{globals_, "rproj1", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
-  VarDef rproj2{globals_, "rproj2", "Kr", settings_->rmax(trklet::N_LAYER-1), settings_->kr()};
+  VarDef rproj0{globals_, "rproj0", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
+  VarDef rproj1{globals_, "rproj1", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
+  VarDef rproj2{globals_, "rproj2", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
 
-  VarDef zproj0{globals_, "zproj0", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
-  VarDef zproj1{globals_, "zproj1", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
-  VarDef zproj2{globals_, "zproj2", "Kz", settings_->zmax(trklet::N_DISK-1), settings_->kz()};
+  VarDef zproj0{globals_, "zproj0", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
+  VarDef zproj1{globals_, "zproj1", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
+  VarDef zproj2{globals_, "zproj2", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
 
   //calculations
 
   //tracklet
-  VarAdd z1abs{globals_, "z1abs", &z1, &z1mean, settings_->zmax(trklet::N_DISK-1)};
-  VarAdd z2abs{globals_, "z2abs", &z2, &z2mean, settings_->zmax(trklet::N_DISK-1)};
+  VarAdd z1abs{globals_, "z1abs", &z1, &z1mean, settings_->zmax(trklet::N_DISK - 1)};
+  VarAdd z2abs{globals_, "z2abs", &z2, &z2mean, settings_->zmax(trklet::N_DISK - 1)};
 
   VarSubtract dr{globals_, "dr", &r2, &r1, dr_max};
 
@@ -240,9 +243,9 @@ public:
   VarAdjustK phiL_2_final{globals_, "phiL_2_final", &phiL_2, settings_->kphi1() * pow(2, settings_->SS_phiL_shift())};
 
   VarAdjustK der_phiL_final{globals_,
-                             "der_phiL_final",
-                             &der_phiL,
-                             settings_->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderL_shift())};
+                            "der_phiL_final",
+                            &der_phiL,
+                            settings_->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderL_shift())};
 
   VarMult x11_0{globals_, "x11_0", &rproj0, &t};
   VarMult x11_1{globals_, "x11_1", &rproj1, &t};
@@ -291,9 +294,9 @@ public:
   VarMult der_phiD{globals_, "der_phiD", &x7, &invt, 2 * der_phiD_max};
 
   VarAdjustK der_phiD_final{globals_,
-                             "der_phiD_final",
-                             &der_phiD,
-                             settings_->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderD_shift())};
+                            "der_phiD_final",
+                            &der_phiD,
+                            settings_->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderD_shift())};
 
   VarMult x26_0{globals_, "x26_0", &x25_0, &x25_0};
   VarMult x26_1{globals_, "x26_1", &x25_1, &x25_1};

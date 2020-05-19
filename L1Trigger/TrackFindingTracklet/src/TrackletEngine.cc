@@ -81,8 +81,7 @@ void TrackletEngine::execute() {
     int start = lookupbits.bits(4, nbits - 4);
     int next = lookupbits.bits(3, 1);
 
-    if ((iSeed_ == 4 || iSeed_ == 5) &&
-        innervmstub.stub()->disk().value() < 0) {  //TODO - need to store negative disk
+    if ((iSeed_ == 4 || iSeed_ == 5) && innervmstub.stub()->disk().value() < 0) {  //TODO - need to store negative disk
       start += 4;
     }
     int last = start + next;
@@ -212,8 +211,10 @@ void TrackletEngine::setVMPhiBin() {
                 rinner = settings_->rmean(layerdisk1_);
               }
               double rinv1 = rinv(phiinner[i1], phiouter[i2], rinner, router[i3]);
-	      double pitchinner = (rinner < settings_->rcrit()) ? settings_->stripPitch(true) : settings_->stripPitch(false);
-	      double pitchouter = (router[i3] < settings_->rcrit()) ? settings_->stripPitch(true) : settings_->stripPitch(false);
+              double pitchinner =
+                  (rinner < settings_->rcrit()) ? settings_->stripPitch(true) : settings_->stripPitch(false);
+              double pitchouter =
+                  (router[i3] < settings_->rcrit()) ? settings_->stripPitch(true) : settings_->stripPitch(false);
               double abendinner = -bend(rinner, rinv1, pitchinner);
               double abendouter = -bend(router[i3], rinv1, pitchouter);
               if (abendinner < bendinnermin)

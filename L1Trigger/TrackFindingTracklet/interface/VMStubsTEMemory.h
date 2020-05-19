@@ -16,7 +16,7 @@ namespace trklet {
   class VMStubsTEMemory : public MemoryBase {
   public:
     VMStubsTEMemory(std::string name, const Settings* const settings, unsigned int iSector);
-    
+
     ~VMStubsTEMemory() = default;
 
     bool addVMStub(VMStubTE vmstub, int bin);

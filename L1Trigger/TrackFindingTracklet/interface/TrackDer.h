@@ -1,7 +1,7 @@
 //
 // This class holdes the 'deriviatives' used in the linearized chi^2 fit.
 // This is also referred to as the weight matrix which is used to weight
-// the residuls when calculating the updated track parameters. 
+// the residuls when calculating the updated track parameters.
 //
 //
 #ifndef L1Trigger_TrackFindingTracklet_interface_TrackDer_h
@@ -16,7 +16,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 namespace trklet {
-  
+
   class TrackDer {
   public:
     TrackDer();

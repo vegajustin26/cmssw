@@ -14,13 +14,10 @@ AllProjectionsMemory::AllProjectionsMemory(string name, const Settings* const se
 
 void AllProjectionsMemory::writeAP(bool first) {
   std::ostringstream oss;
-  oss << "../data/MemPrints/TrackletProjections/AllProj_"
-      << getName()
-      << "_"
-      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
-      << ".dat";
+  oss << "../data/MemPrints/TrackletProjections/AllProj_" << getName() << "_" << std::setfill('0') << std::setw(2)
+      << (iSector_ + 1) << ".dat";
   auto const& fname = oss.str();
-   
+
   if (first) {
     bx_ = 0;
     event_ = 1;

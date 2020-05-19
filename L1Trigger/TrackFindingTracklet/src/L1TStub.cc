@@ -40,10 +40,9 @@ L1TStub::L1TStub(int eventid,
   bend_ = bend;
   isPSmodule_ = isPSmodule;
   isFlipped_ = isFlipped;
-  
+
   allstubindex_ = 999;
 }
-
 
 void L1TStub::write(ofstream& out) {
   out << "Stub: " << layer_ + 1 << "\t" << ladder_ << "\t" << module_ << "\t" << strip_ << "\t" << eventid_ << "\t"
@@ -65,9 +64,9 @@ void L1TStub::write(ostream& out) {
   out << endl;
 }
 
-
 bool L1TStub::operator==(const L1TStub& other) const {
-  return (other.iphi() == iphi_ && other.iz() == iz_ && other.layer() == layer_ && other.ladder() == ladder_ && other.module() == module_);
+  return (other.iphi() == iphi_ && other.iz() == iz_ && other.layer() == layer_ && other.ladder() == ladder_ &&
+          other.module() == module_);
 }
 
 void L1TStub::lorentzcor(double shift) {
@@ -101,7 +100,6 @@ double L1TStub::alphanorm() const {
   return -((int)strip_ - 509.5) * flip / 510.0;
 }
 
-
 void L1TStub::setXY(double x, double y) {
   x_ = x;
   y_ = y;
@@ -118,12 +116,12 @@ bool L1TStub::tpmatch(int tp) const {
 
 bool L1TStub::isTilted() const {
   //here layer_ runs 0-5 for barrel, >1000 for disk
-  //disk modules and outer barrel modules are not tilted by construction 
-  if (layer_ >= N_PSLAYER) 
-    return false; 
+  //disk modules and outer barrel modules are not tilted by construction
+  if (layer_ >= N_PSLAYER)
+    return false;
 
-  assert(layer_ < N_PSLAYER); // safety for acccessing # modules/plank
-  if ( (module_ <= N_TILTED_RINGS) || (module_ >= N_TILTED_RINGS + N_MOD_PLANK.at(layer_)) )
+  assert(layer_ < N_PSLAYER);  // safety for acccessing # modules/plank
+  if ((module_ <= N_TILTED_RINGS) || (module_ >= N_TILTED_RINGS + N_MOD_PLANK.at(layer_)))
     return true;
   return false;
 }

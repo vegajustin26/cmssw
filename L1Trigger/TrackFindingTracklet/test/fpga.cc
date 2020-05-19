@@ -73,7 +73,7 @@ int main(const int argc, const char **argv) {
   //}
 
   // ---------------------------------------------------------
-  
+
   TrackletEventProcessor eventProcessor;
 
   eventProcessor.init(&settings);
@@ -101,7 +101,7 @@ int main(const int argc, const char **argv) {
     outres.open("trackres.txt");
     outeff.open("trackeff.txt");
   }
-  
+
   ofstream outpars;
   if (settings.writeMonitorData("Pars"))
     outpars.open("trackpars.txt");
@@ -269,7 +269,7 @@ int main(const int argc, const char **argv) {
           bool effloose = false;
           int itrackmatch = -1;
           for (unsigned int itrack = 0; itrack < tracks.size(); itrack++) {
-            const std::vector<const L1TStub *>& stubs = tracks[itrack]->stubs();
+            const std::vector<const L1TStub *> &stubs = tracks[itrack]->stubs();
             if (seed == -1) {
               if (tracks[itrack]->duplicate())
                 continue;
@@ -327,9 +327,9 @@ int main(const int argc, const char **argv) {
     int ntrack = 0;
     for (unsigned int l = 0; l < tracks.size(); l++) {
       if (settings.writeMonitorData("Pars")) {
-        outpars << tracks[l]->duplicate() << " " << tracks[l]->eta(&settings) << " " << tracks[l]->phi0(&settings) << " "
-                << tracks[l]->z0(&settings) << " " << phiRange2PI(tracks[l]->phi0(&settings)) / (2 * M_PI / N_SECTOR) << " "
-                << tracks[l]->rinv(&settings);
+        outpars << tracks[l]->duplicate() << " " << tracks[l]->eta(&settings) << " " << tracks[l]->phi0(&settings)
+                << " " << tracks[l]->z0(&settings) << " "
+                << phiRange2PI(tracks[l]->phi0(&settings)) / (2 * M_PI / N_SECTOR) << " " << tracks[l]->rinv(&settings);
       }
       if (!tracks[l]->duplicate()) {
         ntrack++;

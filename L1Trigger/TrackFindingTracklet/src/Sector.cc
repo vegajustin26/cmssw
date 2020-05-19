@@ -90,33 +90,33 @@ bool Sector::addStub(L1TStub stub, string dtc) {
 
 void Sector::addMem(string memType, string memName) {
   if (memType == "InputLink:") {
-    addMemToVec(IL_,new InputLinkMemory(memName, settings_, isector_, phimin_, phimax_),memName);
+    addMemToVec(IL_, new InputLinkMemory(memName, settings_, isector_, phimin_, phimax_), memName);
   } else if (memType == "AllStubs:") {
-    addMemToVec(AS_,new AllStubsMemory(memName, settings_, isector_),memName);
+    addMemToVec(AS_, new AllStubsMemory(memName, settings_, isector_), memName);
   } else if (memType == "VMStubsTE:") {
-    addMemToVec(VMSTE_,new VMStubsTEMemory(memName, settings_, isector_),memName);
+    addMemToVec(VMSTE_, new VMStubsTEMemory(memName, settings_, isector_), memName);
   } else if (memType == "VMStubsME:") {
-    addMemToVec(VMSME_,new VMStubsMEMemory(memName, settings_, isector_),memName);
+    addMemToVec(VMSME_, new VMStubsMEMemory(memName, settings_, isector_), memName);
   } else if (memType == "StubPairs:" || memType == "StubPairsDisplaced:") {
-    addMemToVec(SP_,new StubPairsMemory(memName, settings_, isector_),memName);
+    addMemToVec(SP_, new StubPairsMemory(memName, settings_, isector_), memName);
   } else if (memType == "StubTriplets:") {
-    addMemToVec(ST_,new StubTripletsMemory(memName, settings_, isector_),memName);
+    addMemToVec(ST_, new StubTripletsMemory(memName, settings_, isector_), memName);
   } else if (memType == "TrackletParameters:") {
-    addMemToVec(TPAR_,new TrackletParametersMemory(memName, settings_, isector_),memName);
+    addMemToVec(TPAR_, new TrackletParametersMemory(memName, settings_, isector_), memName);
   } else if (memType == "TrackletProjections:") {
-    addMemToVec(TPROJ_,new TrackletProjectionsMemory(memName, settings_, isector_),memName);
+    addMemToVec(TPROJ_, new TrackletProjectionsMemory(memName, settings_, isector_), memName);
   } else if (memType == "AllProj:") {
-    addMemToVec(AP_,new AllProjectionsMemory(memName, settings_, isector_),memName);
+    addMemToVec(AP_, new AllProjectionsMemory(memName, settings_, isector_), memName);
   } else if (memType == "VMProjections:") {
-    addMemToVec(VMPROJ_,new VMProjectionsMemory(memName, settings_, isector_),memName);
+    addMemToVec(VMPROJ_, new VMProjectionsMemory(memName, settings_, isector_), memName);
   } else if (memType == "CandidateMatch:") {
-    addMemToVec(CM_,new CandidateMatchMemory(memName, settings_, isector_),memName);
+    addMemToVec(CM_, new CandidateMatchMemory(memName, settings_, isector_), memName);
   } else if (memType == "FullMatch:") {
-    addMemToVec(FM_,new FullMatchMemory(memName, settings_, isector_),memName);
+    addMemToVec(FM_, new FullMatchMemory(memName, settings_, isector_), memName);
   } else if (memType == "TrackFit:") {
-    addMemToVec(TF_,new TrackFitMemory(memName, settings_, isector_, phimin_, phimax_),memName);
+    addMemToVec(TF_, new TrackFitMemory(memName, settings_, isector_, phimin_, phimax_), memName);
   } else if (memType == "CleanTrack:") {
-    addMemToVec(CT_,new CleanTrackMemory(memName, settings_, isector_, phimin_, phimax_),memName);
+    addMemToVec(CT_, new CleanTrackMemory(memName, settings_, isector_, phimin_, phimax_), memName);
   } else {
     edm::LogPrint("Tracklet") << "Don't know of memory type: " << memType;
     exit(0);
@@ -125,32 +125,32 @@ void Sector::addMem(string memType, string memName) {
 
 void Sector::addProc(string procType, string procName) {
   if (procType == "VMRouter:") {
-    addProcToVec(VMR_,new VMRouter(procName, settings_, globals_, isector_),procName);
+    addProcToVec(VMR_, new VMRouter(procName, settings_, globals_, isector_), procName);
   } else if (procType == "TrackletEngine:") {
-    addProcToVec(TE_,new TrackletEngine(procName, settings_, globals_, isector_),procName);
+    addProcToVec(TE_, new TrackletEngine(procName, settings_, globals_, isector_), procName);
   } else if (procType == "TrackletEngineDisplaced:") {
-    addProcToVec(TED_,new TrackletEngineDisplaced(procName, settings_, globals_, isector_),procName);
+    addProcToVec(TED_, new TrackletEngineDisplaced(procName, settings_, globals_, isector_), procName);
   } else if (procType == "TripletEngine:") {
-    addProcToVec(TRE_,new TripletEngine(procName, settings_, globals_, isector_),procName);
+    addProcToVec(TRE_, new TripletEngine(procName, settings_, globals_, isector_), procName);
   } else if (procType == "TrackletCalculator:") {
-    addProcToVec(TC_,new TrackletCalculator(procName, settings_, globals_, isector_),procName);
+    addProcToVec(TC_, new TrackletCalculator(procName, settings_, globals_, isector_), procName);
   } else if (procType == "TrackletProcessor:") {
-    addProcToVec(TP_,new TrackletProcessor(procName, settings_, globals_, isector_),procName);
+    addProcToVec(TP_, new TrackletProcessor(procName, settings_, globals_, isector_), procName);
   } else if (procType == "TrackletCalculatorDisplaced:") {
-    addProcToVec(TCD_,new TrackletCalculatorDisplaced(procName, settings_, globals_, isector_),procName);
+    addProcToVec(TCD_, new TrackletCalculatorDisplaced(procName, settings_, globals_, isector_), procName);
   } else if (procType == "ProjectionRouter:") {
-    addProcToVec(PR_,new ProjectionRouter(procName, settings_, globals_, isector_),procName);
+    addProcToVec(PR_, new ProjectionRouter(procName, settings_, globals_, isector_), procName);
   } else if (procType == "MatchEngine:") {
-    addProcToVec(ME_,new MatchEngine(procName, settings_, globals_, isector_),procName);
+    addProcToVec(ME_, new MatchEngine(procName, settings_, globals_, isector_), procName);
   } else if (procType == "MatchCalculator:" ||
              procType == "DiskMatchCalculator:") {  //TODO should not be used in configurations
-    addProcToVec(MC_,new MatchCalculator(procName, settings_, globals_, isector_),procName);
+    addProcToVec(MC_, new MatchCalculator(procName, settings_, globals_, isector_), procName);
   } else if (procType == "MatchProcessor:") {
-    addProcToVec(MP_,new MatchProcessor(procName, settings_, globals_, isector_),procName);
+    addProcToVec(MP_, new MatchProcessor(procName, settings_, globals_, isector_), procName);
   } else if (procType == "FitTrack:") {
-    addProcToVec(FT_,new FitTrack(procName, settings_, globals_, isector_),procName);
+    addProcToVec(FT_, new FitTrack(procName, settings_, globals_, isector_), procName);
   } else if (procType == "PurgeDuplicate:") {
-    addProcToVec(PD_,new PurgeDuplicate(procName, settings_, globals_, isector_),procName);
+    addProcToVec(PD_, new PurgeDuplicate(procName, settings_, globals_, isector_), procName);
   } else {
     edm::LogPrint("Tracklet") << "Don't know of processing type: " << procType;
     exit(0);

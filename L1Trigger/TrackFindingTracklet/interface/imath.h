@@ -165,7 +165,7 @@ public:
     int step1 = (p1) ? p1->step() + p1->latency() : 0;
     int step2 = (p2) ? p2->step() + p2->latency() : 0;
     step_ = std::max(step1, step2);
-    
+
     cuts_.clear();
     cut_var_ = NULL;
 
@@ -336,12 +336,12 @@ protected:
 class VarAdjustK : public VarBase {
 public:
   VarAdjustK(imathGlobals *globals,
-              std::string name,
-              VarBase *p1,
-              double Knew,
-              double epsilon = 1e-5,
-              bool do_assert = false,
-              int nbits = -1)
+             std::string name,
+             VarBase *p1,
+             double Knew,
+             double epsilon = 1e-5,
+             bool do_assert = false,
+             int nbits = -1)
       : VarBase(globals, name, p1, 0, 0, 0) {
     op_ = "adjustK";
     K_ = p1->K();
@@ -377,12 +377,12 @@ protected:
 class VarAdjustKR : public VarBase {
 public:
   VarAdjustKR(imathGlobals *globals,
-               std::string name,
-               VarBase *p1,
-               double Knew,
-               double epsilon = 1e-5,
-               bool do_assert = false,
-               int nbits = -1)
+              std::string name,
+              VarBase *p1,
+              double Knew,
+              double epsilon = 1e-5,
+              bool do_assert = false,
+              int nbits = -1)
       : VarBase(globals, name, p1, 0, 0, 1) {
     op_ = "adjustKR";
     K_ = p1->K();
@@ -521,7 +521,7 @@ public:
 
     //first check if the constants are all lined up
     //go over the two maps subtracting the units
-    for (const auto& it : map2) {
+    for (const auto &it : map2) {
       if (map1.find(it.first) == map1.end())
         map1[it.first] = -it.second;
       else
@@ -531,7 +531,7 @@ public:
     char slog[100];
 
     //assert if different
-    for (const auto& it : map1) {
+    for (const auto &it : map1) {
       if (it.second != 0) {
         if (it.first != "2") {
           snprintf(slog, 100, "VarAdd: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
@@ -611,7 +611,7 @@ public:
 
     //first check if the constants are all lined up
     //go over the two maps subtracting the units
-    for (const auto& it : map2) {
+    for (const auto &it : map2) {
       if (map1.find(it.first) == map1.end())
         map1[it.first] = -it.second;
       else
@@ -621,7 +621,7 @@ public:
     char slog[100];
 
     //assert if different
-    for (const auto& it : map1) {
+    for (const auto &it : map1) {
       if (it.second != 0) {
         if (it.first != "2") {
           snprintf(slog, 100, "VarAdd: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
@@ -677,7 +677,7 @@ public:
 
     K_ = ki1 * pow(2, Kmap_["2"]);
   }
-  
+
   virtual ~VarSubtract() {}
 
   void local_calculate();
@@ -730,7 +730,7 @@ public:
     K_ = p1->K();
   }
   virtual ~VarShiftround() {}
-  
+
   void local_calculate();
   void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
   void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
@@ -813,13 +813,13 @@ public:
 
     const std::map<std::string, int> map1 = p1->Kmap();
     const std::map<std::string, int> map2 = p2->Kmap();
-    for (const auto& it : map1) {
+    for (const auto &it : map1) {
       if (Kmap_.find(it.first) == Kmap_.end())
         Kmap_[it.first] = it.second;
       else
         Kmap_[it.first] = Kmap_[it.first] + it.second;
     }
-    for (const auto& it : map2) {
+    for (const auto &it : map2) {
       if (Kmap_.find(it.first) == Kmap_.end())
         Kmap_[it.first] = it.second;
       else
@@ -854,20 +854,15 @@ protected:
 
 class VarDSPPostadd : public VarBase {
 public:
-  VarDSPPostadd(imathGlobals *globals,
-                  std::string name,
-                  VarBase *p1,
-                  VarBase *p2,
-                  VarBase *p3,
-                  double range = -1,
-                  int nmax = 18)
+  VarDSPPostadd(
+      imathGlobals *globals, std::string name, VarBase *p1, VarBase *p2, VarBase *p3, double range = -1, int nmax = 18)
       : VarBase(globals, name, p1, p2, p3, DSP_LATENCY) {
     op_ = "DSP_postadd";
 
     //first, get constants for the p1*p2
     std::map<std::string, int> map1 = p1->Kmap();
     std::map<std::string, int> map2 = p2->Kmap();
-    for (const auto& it : map2) {
+    for (const auto &it : map2) {
       if (map1.find(it.first) == map1.end())
         map1[it.first] = it.second;
       else
@@ -882,7 +877,7 @@ public:
 
     //first check if the constants are all lined up
     //go over the two maps subtracting the units
-    for (const auto& it : map3) {
+    for (const auto &it : map3) {
       if (map1.find(it.first) == map1.end())
         map1[it.first] = -it.second;
       else
@@ -892,11 +887,15 @@ public:
     char slog[100];
 
     //assert if different
-    for (const auto& it : map1) {
+    for (const auto &it : map1) {
       if (it.second != 0) {
         if (it.first != "2") {
-          snprintf(
-		   slog, 100, "VarDSPPostadd: bad units! %s^%i for variable %s", (it.first).c_str(), it.second, name_.c_str());
+          snprintf(slog,
+                   100,
+                   "VarDSPPostadd: bad units! %s^%i for variable %s",
+                   (it.first).c_str(),
+                   it.second,
+                   name_.c_str());
           edm::LogVerbatim("Tracklet") << slog;
           edm::LogVerbatim("Tracklet") << " *********************************************************";
           p1->dump_msg();
@@ -972,14 +971,14 @@ public:
   enum mode { pos, neg, both };
 
   VarInv(imathGlobals *globals,
-          std::string name,
-          VarBase *p1,
-          double offset,
-          int nbits,
-          int n,
-          unsigned int shift,
-          mode m,
-          int nbaddr = -1)
+         std::string name,
+         VarBase *p1,
+         double offset,
+         int nbits,
+         int n,
+         unsigned int shift,
+         mode m,
+         int nbaddr = -1)
       : VarBase(globals, name, p1, 0, 0, LUT_LATENCY) {
     op_ = "inv";
     offset_ = offset;
@@ -997,7 +996,7 @@ public:
     ashift_ = sizeof(int) * 8 - nbaddr_;
 
     const std::map<std::string, int> map1 = p1->Kmap();
-    for (const auto& it : map1) 
+    for (const auto &it : map1)
       Kmap_[it.first] = -it.second;
     Kmap_["2"] = Kmap_["2"] - n;
     K_ = pow(2, -n) / p1->K();
@@ -1009,9 +1008,7 @@ public:
       LUT[i] = gen_inv(offsetI + i1);
     }
   }
-  virtual ~VarInv() {
-    delete[] LUT;
-  }
+  virtual ~VarInv() { delete[] LUT; }
 
   void set_mode(mode m) { m_ = m; }
   void initLUT(double offset);

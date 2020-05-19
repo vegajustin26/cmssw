@@ -22,7 +22,7 @@ void VMProjectionsMemory::addTracklet(Tracklet* tracklet, unsigned int allprojin
 
 void VMProjectionsMemory::writeVMPROJ(bool first) {
   std::ostringstream oss;
-  oss << "../data/MemPrints/VMProjections/VMProjections_"<< getName();
+  oss << "../data/MemPrints/VMProjections/VMProjections_" << getName();
   //get rid of duplicates
   auto const& tmp = oss.str();
   int len = tmp.size();

@@ -26,7 +26,7 @@ namespace trklet {
 
     Tracklet* getTracklet(unsigned int i) { return matches_[i].first; }
 
-    std::pair<Tracklet*, const Stub* > getMatch(unsigned int i) { return matches_[i]; }
+    std::pair<Tracklet*, const Stub*> getMatch(unsigned int i) { return matches_[i]; }
 
     void clean() override { matches_.clear(); }
 
@@ -36,7 +36,7 @@ namespace trklet {
     int disk() const { return disk_; }
 
   private:
-    std::vector<std::pair<Tracklet*, const Stub* > > matches_;
+    std::vector<std::pair<Tracklet*, const Stub*> > matches_;
 
     int layer_;
     int disk_;

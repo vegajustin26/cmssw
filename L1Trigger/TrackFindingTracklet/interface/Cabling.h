@@ -14,12 +14,11 @@ namespace trklet {
 
   class Cabling {
   public:
-
-    Cabling(std::string dtcconfig, std::string moduleconfig, const Settings *settings);
+    Cabling(std::string dtcconfig, std::string moduleconfig, const Settings* settings);
 
     ~Cabling() = default;
-    
-    const std::string& dtc(int layer, int ladder, int module) const ;
+
+    const std::string& dtc(int layer, int ladder, int module) const;
 
     void addphi(const std::string& dtc, double phi, int layer, int module);
 
@@ -28,7 +27,7 @@ namespace trklet {
     std::vector<std::string> DTCs() const;
 
   private:
-    const Settings *settings_;
+    const Settings* settings_;
     std::vector<DTCLink> links_;
     std::map<std::string, DTC> dtcranges_;
     std::map<std::string, DTC> dtcs_;

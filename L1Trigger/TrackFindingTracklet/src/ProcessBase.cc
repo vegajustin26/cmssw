@@ -12,7 +12,7 @@ using namespace trklet;
 using namespace std;
 
 ProcessBase::ProcessBase(string name, const Settings* const settings, Globals* global, unsigned int iSector)
-  : name_(name), settings_(settings), globals_(global) {
+    : name_(name), settings_(settings), globals_(global) {
   iSector_ = iSector;
   double dphi = 2 * M_PI / N_SECTOR;
   double dphiHG = 0.5 * settings_->dphisectorHG() - M_PI / N_SECTOR;
@@ -46,13 +46,13 @@ void ProcessBase::initLayerDisk(unsigned int pos, int& layer, int& disk) {
   string subname = name_.substr(pos, 2);
   layer = 0;
   disk = 0;
-  if (subname.substr(0,1)=="L")
-    layer = stoi(subname.substr(1,1));
-  else if (subname.substr(0,1)=="D")
-    disk = stoi(subname.substr(1,1));
+  if (subname.substr(0, 1) == "L")
+    layer = stoi(subname.substr(1, 1));
+  else if (subname.substr(0, 1) == "D")
+    disk = stoi(subname.substr(1, 1));
   else
-    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
-				      << " " << name_ << " subname = " << subname << " " << layer << " " << disk;
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " " << name_ << " subname = " << subname << " "
+                                      << layer << " " << disk;
 }
 
 void ProcessBase::initLayerDisk(unsigned int pos, int& layer, int& disk, int& layerdisk) {
@@ -76,42 +76,36 @@ void ProcessBase::initLayerDisksandISeed(unsigned int& layerdisk1, unsigned int&
   layerdisk1 = 99;
   layerdisk2 = 99;
 
-  if (name_.substr(0,3)=="TE_") {
+  if (name_.substr(0, 3) == "TE_") {
     if (name_[3] == 'L') {
       layerdisk1 = name_[4] - '1';
-    }
-    else if (name_[3] == 'D') {
+    } else if (name_[3] == 'D') {
       layerdisk1 = 6 + name_[4] - '1';
     }
     if (name_[11] == 'L') {
       layerdisk2 = name_[12] - '1';
-    }
-    else if (name_[11] == 'D') {
+    } else if (name_[11] == 'D') {
       layerdisk2 = 6 + name_[12] - '1';
-    }
-    else if (name_[12] == 'L') {
+    } else if (name_[12] == 'L') {
       layerdisk2 = name_[13] - '1';
-    }
-    else if (name_[12] == 'D') {
+    } else if (name_[12] == 'D') {
       layerdisk2 = 6 + name_[13] - '1';
-    }  
+    }
   }
-  
-  if (name_.substr(0,3)=="TC_") {
+
+  if (name_.substr(0, 3) == "TC_") {
     if (name_[3] == 'L') {
       layerdisk1 = name_[4] - '1';
-    }
-    else if (name_[3] == 'D') {
+    } else if (name_[3] == 'D') {
       layerdisk1 = 6 + name_[4] - '1';
     }
     if (name_[5] == 'L') {
       layerdisk2 = name_[6] - '1';
-    }
-    else if (name_[5] == 'D') {
+    } else if (name_[5] == 'D') {
       layerdisk2 = 6 + name_[6] - '1';
     }
   }
-  
+
   if (layerdisk1 == 0 && layerdisk2 == 1)
     iSeed = 0;
   else if (layerdisk1 == 1 && layerdisk2 == 2)
@@ -131,26 +125,23 @@ void ProcessBase::initLayerDisksandISeed(unsigned int& layerdisk1, unsigned int&
   else {
     assert(0);
   }
-    
 }
 
 unsigned int ProcessBase::getISeed(std::string name) {
-
   std::size_t pos = name.find("_");
   std::string name1 = name.substr(pos + 1);
   pos = name1.find("_");
   std::string name2 = name1.substr(0, pos);
 
-  unordered_map<string,unsigned int> seedmap = { {"L1L2",0},{"L2L3",1},{"L3L4",2},{"L5L6",3},
-						 {"D1D2",4},{"D3D4",5},{"L1D1",6},{"L2D1",7},
-						 {"L1L2XX",0},{"L2L3XX",1},{"L3L4XX",2},{"L5L6XX",3},
-						 {"D1D2XX",4},{"D3D4XX",5},{"L1D1XX",6},{"L2D1XX",7},
-						 {"L3L4L2",8},{"L5L6L4",9},{"L2L3D1",10},{"D1D2L2",11} };
-  unordered_map<string,unsigned int>::const_iterator found = seedmap.find(name2);
+  unordered_map<string, unsigned int> seedmap = {
+      {"L1L2", 0},   {"L2L3", 1},   {"L3L4", 2},   {"L5L6", 3},   {"D1D2", 4},    {"D3D4", 5},   {"L1D1", 6},
+      {"L2D1", 7},   {"L1L2XX", 0}, {"L2L3XX", 1}, {"L3L4XX", 2}, {"L5L6XX", 3},  {"D1D2XX", 4}, {"D3D4XX", 5},
+      {"L1D1XX", 6}, {"L2D1XX", 7}, {"L3L4L2", 8}, {"L5L6L4", 9}, {"L2L3D1", 10}, {"D1D2L2", 11}};
+  unordered_map<string, unsigned int>::const_iterator found = seedmap.find(name2);
   if (found != seedmap.end())
     return found->second;
 
-  throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " " << getName()
-				     << " name name1 name2 " << name << " - " << name1 << " - " << name2;
+  throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " " << getName() << " name name1 name2 " << name
+                                     << " - " << name1 << " - " << name2;
   return 0;
 }

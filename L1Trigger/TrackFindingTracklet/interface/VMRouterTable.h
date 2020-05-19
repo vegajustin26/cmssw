@@ -23,7 +23,7 @@ namespace trklet {
     void init(unsigned int layerdisk);
 
     // negative return means that seed can not be formed
-    int getLookup(unsigned int layerdisk, double z, double r, int iseed=-1);
+    int getLookup(unsigned int layerdisk, double z, double r, int iseed = -1);
 
     int lookup(int zbin, int rbin);
     int lookupdisk(int zbin, int rbin);
@@ -32,8 +32,7 @@ namespace trklet {
     int lookupinnerThird(int zbin, int rbin);
 
   private:
-
-    const Settings *settings_;
+    const Settings* settings_;
 
     double rmin_;
     double rmax_;
@@ -51,12 +50,11 @@ namespace trklet {
     int rbins_;
 
     //int layer_;
-    std::vector<int> vmrtable_; //used for ME and outer TE
-    std::vector<int> vmrtabletedisk_; //outer disk used by D1, D2, and D4
-    std::vector<int> vmrtableteinner_; //projection to next layer/disk
-    std::vector<int> vmrtableteinneroverlap_; //projection to disk
-    std::vector<int> vmrtableteinnerThird_; //projection to disk1 for extended - iseed=10
-    
+    std::vector<int> vmrtable_;                //used for ME and outer TE
+    std::vector<int> vmrtabletedisk_;          //outer disk used by D1, D2, and D4
+    std::vector<int> vmrtableteinner_;         //projection to next layer/disk
+    std::vector<int> vmrtableteinneroverlap_;  //projection to disk
+    std::vector<int> vmrtableteinnerThird_;    //projection to disk1 for extended - iseed=10
   };
 };  // namespace trklet
 #endif

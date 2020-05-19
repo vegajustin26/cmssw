@@ -27,10 +27,10 @@ TrackletCalculator::TrackletCalculator(string name,
     trackletprojdisks_.push_back(tmp);
   }
 
-  initLayerDisksandISeed(layerdisk1_,layerdisk2_,iSeed_);
-  
+  initLayerDisksandISeed(layerdisk1_, layerdisk2_, iSeed_);
+
   // set TC index
-  iTC_=name_[7]-'A';
+  iTC_ = name_[7] - 'A';
 
   TCIndex_ = (iSeed_ << 4) + iTC_;
   assert(TCIndex_ >= 0 && TCIndex_ < 128);

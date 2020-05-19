@@ -20,14 +20,14 @@ namespace trklet {
       phi -= 2 * M_PI;
     return phi;
   }
-  
+
   //method return phi in the 0 to +2pi range
   inline double phiRange2PI(double phi) {
     //catch if phi is very out of range, not a number etc
     assert(std::abs(phi) < 100.0);
-    while (phi < 0.0 )
+    while (phi < 0.0)
       phi += 2 * M_PI;
-    while (phi > 2*M_PI)
+    while (phi > 2 * M_PI)
       phi -= 2 * M_PI;
     return phi;
   }
@@ -42,11 +42,11 @@ namespace trklet {
       unsigned int slot = binary.size() - i - 1;
       if (!(binary[slot] == '0' || binary[slot] == '1'))
         continue;
-      value = value + (binary[slot] - '0'); 
+      value = value + (binary[slot] - '0');
     }
 
     std::stringstream ss;
-    ss << "0x"<<std::hex<<value;
+    ss << "0x" << std::hex << value;
 
     return ss.str();
   }
@@ -75,7 +75,9 @@ namespace trklet {
       if (ibend <= -7)
         return 7;
 
-      throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Unknown bendencode for PS module for bend = " << bend << " ibend = " << ibend;
+      throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+                                        << " Unknown bendencode for PS module for bend = " << bend
+                                        << " ibend = " << ibend;
     }
 
     if (ibend == 0 || ibend == 1)
@@ -111,7 +113,9 @@ namespace trklet {
     if (ibend <= -15)
       return 15;
 
-    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Unknown bendencode for 2S module for bend = " << bend << " ibend = " << ibend;
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+                                      << " Unknown bendencode for 2S module for bend = " << bend
+                                      << " ibend = " << ibend;
   }
 
   //Should be optimized by layer - now first implementation to make sure it works OK
@@ -134,7 +138,8 @@ namespace trklet {
       if (ibend == 7)
         return -3.75;
 
-      throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Unknown benddecode for PS module for ibend = " << ibend;
+      throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+                                        << " Unknown benddecode for PS module for ibend = " << ibend;
     }
 
     if (ibend == 0)
@@ -170,7 +175,8 @@ namespace trklet {
     if (ibend == 15)
       return -7.75;
 
-    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Unknown benddecode for 2S module for ibend = " << ibend;
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+                                      << " Unknown benddecode for 2S module for ibend = " << ibend;
   }
 
   inline double bend(double r, double rinv, double stripPitch) {

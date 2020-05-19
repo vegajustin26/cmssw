@@ -164,7 +164,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub) {
             bin = 0;
           } else {
             bin = vmstub.stub()->r().value();  // 0 to 9
-            bin = bin >> 2;                          // 0 to 2
+            bin = bin >> 2;                    // 0 to 2
             bin += 1;
           }
         }

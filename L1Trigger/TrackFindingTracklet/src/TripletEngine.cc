@@ -66,7 +66,6 @@ TripletEngine::TripletEngine(string name, const Settings *settings, Globals *glo
     thirdphibits_ = settings_->nfinephi(2, iSeed_);
   }
   readTables();
-
 }
 
 TripletEngine::~TripletEngine() {
@@ -165,10 +164,8 @@ void TripletEngine::execute() {
         int start = (bin >> 1);
         int last = start + (bin & 1);
 
-	
         for (int ibin = start; ibin <= last; ibin++) {
           for (unsigned int k = 0; k < thirdvmstubs_.size(); k++) {
-
             string vmsteSuffix = thirdvmstubs_.at(k)->getLastPartOfName();
             vmsteSuffix = vmsteSuffix.substr(0, vmsteSuffix.find_last_of('n'));
             if (stubpairs_.at(i)->getLastPartOfName() != vmsteSuffix)
@@ -178,12 +175,11 @@ void TripletEngine::execute() {
                 edm::LogVerbatim("Tracklet") << "In " << getName() << " have third stub";
               }
 
-
               if (countall >= settings_->maxStep("TRE"))
                 break;
               countall++;
 
-	      const VMStubTE& thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
+              const VMStubTE &thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
 
               assert(secondphibits_ != -1);
               assert(thirdphibits_ != -1);
@@ -204,7 +200,6 @@ void TripletEngine::execute() {
 
               index = (index << secondbend.nbits()) + secondbend.value();
               index = (index << thirdbend.nbits()) + thirdbend.value();
-
 
               if (index >= table_.size())
                 table_.resize(index + 1, false);
@@ -237,8 +232,9 @@ void TripletEngine::execute() {
                 fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                 fout.close();
               }
-              stubtriplets_->addStubs(
-				      thirdvmstub.stub(), (stubpairs_.at(i))->getVMStub1(j).stub(), (stubpairs_.at(i))->getVMStub2(j).stub());
+              stubtriplets_->addStubs(thirdvmstub.stub(),
+                                      (stubpairs_.at(i))->getVMStub1(j).stub(),
+                                      (stubpairs_.at(i))->getVMStub2(j).stub());
 
               countpass++;
             }
@@ -254,7 +250,7 @@ void TripletEngine::execute() {
 
         int start = (bin >> 1);
         int last = start + (bin & 1);
-	
+
         if (firstvmstub.stub()->disk().value() < 0) {  //TODO - negative disk should come from memory
           start = settings_->NLONGVMBINS() - last - 1;
           last = settings_->NLONGVMBINS() - start - 1;
@@ -271,7 +267,7 @@ void TripletEngine::execute() {
                 break;
               countall++;
 
-              const VMStubTE& thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
+              const VMStubTE &thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
 
               assert(secondphibits_ != -1);
               assert(thirdphibits_ != -1);
@@ -318,8 +314,9 @@ void TripletEngine::execute() {
                 fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                 fout.close();
               }
-              stubtriplets_->addStubs(
-				      thirdvmstub.stub(), (stubpairs_.at(i))->getVMStub1(j).stub(), (stubpairs_.at(i))->getVMStub2(j).stub());
+              stubtriplets_->addStubs(thirdvmstub.stub(),
+                                      (stubpairs_.at(i))->getVMStub1(j).stub(),
+                                      (stubpairs_.at(i))->getVMStub2(j).stub());
               countpass++;
             }
           }
@@ -347,7 +344,7 @@ void TripletEngine::execute() {
                 break;
               countall++;
 
-              const VMStubTE& thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
+              const VMStubTE &thirdvmstub = thirdvmstubs_.at(k)->getVMStubTEBinned(ibin, l);
 
               assert(secondphibits_ != -1);
               assert(thirdphibits_ != -1);
@@ -402,8 +399,9 @@ void TripletEngine::execute() {
                 fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                 fout.close();
               }
-              stubtriplets_->addStubs(
-				      thirdvmstub.stub(), (stubpairs_.at(i))->getVMStub1(j).stub(), (stubpairs_.at(i))->getVMStub2(j).stub());
+              stubtriplets_->addStubs(thirdvmstub.stub(),
+                                      (stubpairs_.at(i))->getVMStub1(j).stub(),
+                                      (stubpairs_.at(i))->getVMStub2(j).stub());
               countpass++;
             }
           }

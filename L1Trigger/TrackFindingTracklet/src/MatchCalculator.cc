@@ -18,7 +18,7 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
     : ProcessBase(name, settings, global, iSector) {
   phioffset_ = phimin_;
 
-  phiregion_ = name[8]-'A';
+  phiregion_ = name[8] - 'A';
   layerdisk_ = initLayerDisk(3);
 
   fullMatches_.resize(12, 0);
@@ -144,8 +144,7 @@ void MatchCalculator::addOutput(MemoryBase* memory, string output) {
     fullMatches_[iSeed] = tmp;
     return;
   }
-  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
-				    << " could not find output " << output;
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find output " << output;
 }
 
 void MatchCalculator::addInput(MemoryBase* memory, string input) {
@@ -171,8 +170,7 @@ void MatchCalculator::addInput(MemoryBase* memory, string input) {
     matches_.push_back(tmp);
     return;
   }
-  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
-				    << " could not find input " << input;
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find input " << input;
 }
 
 void MatchCalculator::execute() {
@@ -181,8 +179,7 @@ void MatchCalculator::execute() {
 
   Tracklet* oldTracklet = 0;
 
-  std::vector<std::pair<std::pair<Tracklet*, int>, const Stub* > > mergedMatches =
-      mergeMatches(matches_);
+  std::vector<std::pair<std::pair<Tracklet*, int>, const Stub*> > mergedMatches = mergeMatches(matches_);
 
   for (unsigned int j = 0; j < mergedMatches.size(); j++) {
     if (settings_->debugTracklet() && j == 0) {
@@ -193,8 +190,8 @@ void MatchCalculator::execute() {
 
     const Stub* fpgastub = mergedMatches[j].second;
     Tracklet* tracklet = mergedMatches[j].first.first;
-    const L1TStub* stub=fpgastub->l1tstub();
-    
+    const L1TStub* stub = fpgastub->l1tstub();
+
     //check that the matches are orderd correctly
     //allow equal here since we can have more than one cadidate match per tracklet projection
     if (oldTracklet != 0) {
@@ -385,9 +382,9 @@ void MatchCalculator::execute() {
       double dz = z - sign * settings_->zmean(layerdisk_ - 6);
 
       if (std::abs(dz) > settings_->dzmax()) {
-	throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__
-					   << " " << name_ << "_" << iSector_ << " "<< tracklet->getISeed()
-					   << "\n stub " << stub->z() << " disk " << disk << " " << dz;
+        throw cms::Exception("LogicError")
+            << __FILE__ << " " << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed()
+            << "\n stub " << stub->z() << " disk " << disk << " " << dz;
       }
 
       double phiproj = tracklet->phiprojdisk(disk) + dz * tracklet->phiprojderdisk(disk);
@@ -434,8 +431,8 @@ void MatchCalculator::execute() {
 
         globals_->ofstream("diskresiduals.txt")
             << disk << " " << stub->isPSmodule() << " " << tracklet->layer() << " " << abs(tracklet->disk()) << " "
-            << pt << " " << ideltaphi * settings_->kphi() * stub->r() << " " << drphiapprox << " " << drphicut
-            << " " << ideltar * settings_->krprojshiftdisk() << " " << deltar << " " << drcut << " " << endl;
+            << pt << " " << ideltaphi * settings_->kphi() * stub->r() << " " << drphiapprox << " " << drphicut << " "
+            << ideltar * settings_->krprojshiftdisk() << " " << deltar << " " << drcut << " " << endl;
       }
 
       bool match = (std::abs(drphi) < drphicut) && (std::abs(deltar) < drcut);
@@ -444,13 +441,11 @@ void MatchCalculator::execute() {
 
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "imatch match disk: " << imatch << " " << match << " " << std::abs(ideltaphi)
-                                     << " " << drphicut / (settings_->kphi() * stub->r()) << " "
-                                     << std::abs(ideltar) << " " << drcut / settings_->krprojshiftdisk()
-                                     << " r = " << stub->r();
+                                     << " " << drphicut / (settings_->kphi() * stub->r()) << " " << std::abs(ideltar)
+                                     << " " << drcut / settings_->krprojshiftdisk() << " r = " << stub->r();
       }
 
       if (imatch) {
-
         countsel++;
 
         if (settings_->debugTracklet()) {
@@ -491,9 +486,9 @@ void MatchCalculator::execute() {
   }
 }
 
-std::vector<std::pair<std::pair<Tracklet*, int>, const Stub* > > MatchCalculator::mergeMatches(
+std::vector<std::pair<std::pair<Tracklet*, int>, const Stub*> > MatchCalculator::mergeMatches(
     vector<CandidateMatchMemory*>& candmatch) {
-  std::vector<std::pair<std::pair<Tracklet*, int>, const Stub* > > tmp;
+  std::vector<std::pair<std::pair<Tracklet*, int>, const Stub*> > tmp;
 
   std::vector<unsigned int> indexArray;
   indexArray.reserve(candmatch.size());

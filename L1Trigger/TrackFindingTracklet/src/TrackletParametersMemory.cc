@@ -35,11 +35,8 @@ void TrackletParametersMemory::writeMatches(Globals* globals, int& matchesL1, in
 
 void TrackletParametersMemory::writeTPAR(bool first) {
   std::ostringstream oss;
-  oss << "../data/MemPrints/TrackletParameters/TrackletParameters_"
-      << getName()
-      << "_"
-      << std::setfill('0') << std::setw(2) << (iSector_ + 1)
-      << ".dat";
+  oss << "../data/MemPrints/TrackletParameters/TrackletParameters_" << getName() << "_" << std::setfill('0')
+      << std::setw(2) << (iSector_ + 1) << ".dat";
   auto const& fname = oss.str();
 
   if (first) {

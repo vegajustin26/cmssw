@@ -15,7 +15,6 @@ TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name,
                                                          Globals* global,
                                                          unsigned int iSector)
     : ProcessBase(name, settings, global, iSector) {
-
   for (unsigned int ilayer = 0; ilayer < 6; ilayer++) {
     vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(ilayer), 0);
     trackletprojlayers_.push_back(tmp);
@@ -25,8 +24,6 @@ TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name,
     vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(idisk + 6), 0);
     trackletprojdisks_.push_back(tmp);
   }
-
-  
 
   layer_ = 0;
   disk_ = 0;
@@ -40,7 +37,7 @@ TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name,
   // set TC index
   int iSeed = -1;
 
-  int iTC=name1[9]-'A';
+  int iTC = name1[9] - 'A';
 
   if (name1.substr(3, 6) == "L3L4L2")
     iSeed = 8;
@@ -169,7 +166,6 @@ void TrackletCalculatorDisplaced::addOutput(MemoryBase* memory, string output) {
     }
   }
 
-
   edm::LogPrint("Tracklet") << "Could not find output : " << output;
   assert(0);
 }
@@ -279,7 +275,6 @@ void TrackletCalculatorDisplaced::execute() {
   }
 }
 
-
 void TrackletCalculatorDisplaced::addDiskProj(Tracklet* tracklet, int disk) {
   FPGAWord fpgar = tracklet->fpgarprojdisk(disk);
 
@@ -353,7 +348,6 @@ void TrackletCalculatorDisplaced::addProjectionDisk(int disk,
   assert(trackletprojs != 0);
   trackletprojs->addProj(tracklet);
 }
-
 
 bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
                                              const L1TStub* innerStub,
@@ -510,10 +504,10 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
 
   int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.K();
   int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.K();
-  
+
   bool keepapprox = (phicritapprox > settings_->phicritminmc()) && (phicritapprox < settings_->phicritmaxmc()),
        keep = (phicrit > iphicritmincut) && (phicrit < iphicritmaxcut);
-  
+
   if (settings_->debugTracklet())
     if (keep && !keepapprox)
       edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced::LLLSeeding tracklet kept with exact phicrit cut "
@@ -1185,10 +1179,10 @@ bool TrackletCalculatorDisplaced::LLDSeeding(const Stub* innerFPGAStub,
 
   int iphicritmincut = settings_->phicritminmc() / globals_->ITC_L1L2()->phi0_final.K();
   int iphicritmaxcut = settings_->phicritmaxmc() / globals_->ITC_L1L2()->phi0_final.K();
-  
+
   bool keepapprox = (phicritapprox > settings_->phicritminmc()) && (phicritapprox < settings_->phicritmaxmc()),
        keep = (phicrit > iphicritmincut) && (phicrit < iphicritmaxcut);
-  
+
   if (settings_->debugTracklet())
     if (keep && !keepapprox)
       edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced::LLDSeeding tracklet kept with exact phicrit cut "
@@ -1407,8 +1401,8 @@ void TrackletCalculatorDisplaced::exactprojdisk(double zproj,
                                                 double& phider,
                                                 double& rder) {
   //protect against t=0
-  if (std::abs(t)<0.1)
-    t=0.1;
+  if (std::abs(t) < 0.1)
+    t = 0.1;
   if (t < 0)
     zproj = -zproj;
   double rho = std::abs(1 / rinv);
@@ -1483,7 +1477,7 @@ void TrackletCalculatorDisplaced::exacttracklet(double r1,
 
   //results
   rinv = 1. / R1;
-  phi0 = 0.5*M_PI + atan2(y0, x0);
+  phi0 = 0.5 * M_PI + atan2(y0, x0);
 
   phi0 += -phimin_ + (phimax_ - phimin_) / 6.0;
   d0 = -R1 + sqrt(x0 * x0 + y0 * y0);
@@ -1494,7 +1488,7 @@ void TrackletCalculatorDisplaced::exacttracklet(double r1,
     d0 = -d0;
     phi0 = phi0 + M_PI;
   }
-  phi0=phiRange2PI(phi0);
+  phi0 = phiRange2PI(phi0);
 
   //now in RZ:
   //turning angle

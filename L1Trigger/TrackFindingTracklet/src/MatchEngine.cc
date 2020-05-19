@@ -18,13 +18,13 @@ MatchEngine::MatchEngine(string name, const Settings* settings, Globals* global,
   layer_ = 0;
   disk_ = 0;
   string subname = name.substr(3, 2);
-  if (subname.substr(0,1)=="L")
-    layer_ = stoi(subname.substr(1,1));
-  else if (subname.substr(0,1)=="D")
-    disk_ = stoi(subname.substr(1,1));
+  if (subname.substr(0, 1) == "L")
+    layer_ = stoi(subname.substr(1, 1));
+  else if (subname.substr(0, 1) == "D")
+    disk_ = stoi(subname.substr(1, 1));
   else
-    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
-				      << " " << name << " subname = " << subname << " " << layer_ << " " << disk_;
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " " << name << " subname = " << subname << " "
+                                      << layer_ << " " << disk_;
 
   if (layer_ > 0) {
     unsigned int nbits = 3;
@@ -34,7 +34,8 @@ MatchEngine::MatchEngine(string name, const Settings* settings, Globals* global,
     for (unsigned int irinv = 0; irinv < 32; irinv++) {
       double rinv = (irinv - 15.5) * (1 << (settings_->nbitsrinv() - 5)) * settings_->krinvpars();
 
-      double stripPitch = (settings_->rmean(layer_ - 1) < settings_->rcrit()) ? settings_->stripPitch(true) : settings_->stripPitch(false);
+      double stripPitch = (settings_->rmean(layer_ - 1) < settings_->rcrit()) ? settings_->stripPitch(true)
+                                                                              : settings_->stripPitch(false);
       double projbend = bend(settings_->rmean(layer_ - 1), rinv, stripPitch);
       for (unsigned int ibend = 0; ibend < (unsigned int)(1 << nbits); ibend++) {
         double stubbend = benddecode(ibend, layer_ <= 3);
@@ -236,8 +237,8 @@ void MatchEngine::execute() {
         assert(projrinv >= 0);
         if (settings_->extended() && projrinv == 32) {
           if (settings_->debugTracklet()) {
-	    edm::LogVerbatim("Tracklet") << "Extended tracking, projrinv:" << projrinv;
-	  }
+            edm::LogVerbatim("Tracklet") << "Extended tracking, projrinv:" << projrinv;
+          }
           projrinv = 31;
         }
         assert(projrinv < 32);

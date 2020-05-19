@@ -32,8 +32,7 @@ bool VarBase::calculate(int debug_level) {
       if (h_ == 0) {
         h_precision_ = 0.5 * h_nbins_ * K_;
         std::string st = name_ + ";fval;fval-ival*K";
-        h_ = new TH2F(
-            hname.c_str(), name_.c_str(), h_nbins_, -range(), range(), h_nbins_, -h_precision_, h_precision_);
+        h_ = new TH2F(hname.c_str(), name_.c_str(), h_nbins_, -range(), range(), h_nbins_, -h_precision_, h_precision_);
         if (debug_level == 3)
           edm::LogVerbatim("Tracklet") << " booking histogram " << hname;
       }
