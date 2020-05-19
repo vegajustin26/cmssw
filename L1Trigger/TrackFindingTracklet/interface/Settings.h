@@ -661,7 +661,6 @@ namespace trklet {
   // chi2 fitting
   constexpr unsigned int N_FITSTUB = 6;    // maximum number of stubs used
   constexpr unsigned int N_PROJ = 4;       // number of projections (beyond stubs from seed, i.e. N_FITSTUB-2)
-  constexpr unsigned int N_PROJMEAS = 10;  // projection measurements for track fitting
   
   constexpr unsigned int N_TRACKDER_PTBIN = 4;
   constexpr unsigned int N_TRACKDER_INDEX = 1000;

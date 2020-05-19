@@ -108,14 +108,24 @@ public:
   imathGlobals* globals_;
 
   //max values
+  const double dz_max = 50.;
   const double dr_max = 40;
   const double delta0_max = 0.005;
+  const double a2_max = 3.;
   const double a2a_max = 0.1;
+  const double x6a_max = 0.02;
+  const double x6m_max = 2.;
   const double x8_max = 1.;
-  const double x22_max = 0.3;
   const double x13_max = 300.;
+  const double x22_max = 0.3;
+  const double x23_max = 200.;
   const double deltaZ_max = 8.;
   const double der_phiD_max = 0.002;
+  const double t_max = 7.9;
+  const double t_disk_min = 1.;
+  const double t_disk_max = 7.9;
+  const double t_layer_max = 2.5;
+  const double z0_max = 20.;
 
   // constants
   //
@@ -148,8 +158,8 @@ public:
   //calculations
 
   //tracklet
-  VarAdd r1abs{globals_, "r1abs", &r1, &r1mean, settings_->rmax(5)};
-  VarAdd z2abs{globals_, "z2abs", &z2, &z2mean, settings_->zmax(4)};
+  VarAdd r1abs{globals_, "r1abs", &r1, &r1mean, settings_->rmax(trklet::N_LAYER-1)};
+  VarAdd z2abs{globals_, "z2abs", &z2, &z2mean, settings_->zmax(trklet::N_DISK-1)};
 
   VarSubtract dr{globals_, "dr", &r2, &r1abs, dr_max};
 
@@ -157,7 +167,7 @@ public:
   VarInv drinv{globals_, "drinv", &dr, 0, 18, 23, 0, VarInv::mode::pos};
 
   VarSubtract dphi{globals_, "dphi", &phi2, &phi1, settings_->dphisector() / 4.};
-  VarSubtract dz{globals_, "dz", &z2abs, &z1, 100.};
+  VarSubtract dz{globals_, "dz", &z2abs, &z1, 2 * dz_max};
 
   VarMult delta0{globals_, "delta0", &dphi, &drinv, 8 * delta0_max};
   VarMult deltaZ{globals_, "deltaZ", &dz, &drinv, deltaZ_max};
@@ -165,7 +175,7 @@ public:
   VarMult delta2{globals_, "delta2", &r2, &delta0};
   VarMult a2a{globals_, "a2a", &delta1, &delta2, 32 * a2a_max};
   VarNounits a2b{globals_, "a2b", &a2a};
-  VarSubtract a2{globals_, "a2", &plus2, &a2b, 3.};
+  VarSubtract a2{globals_, "a2", &plus2, &a2b, a2_max};
   VarNeg a2n{globals_, "a2n", &a2};
   VarShift a{globals_, "a", &a2, 1};
 
@@ -173,18 +183,18 @@ public:
   VarTimesC R6{globals_, "R6", &Rabs, 1. / 6., 12};
 
   VarMult x4{globals_, "x4", &R6, &delta0};
-  VarMult x6a{globals_, "x6a", &delta2, &x4, 0.64};
+  VarMult x6a{globals_, "x6a", &delta2, &x4, 32 * x6a_max};
   VarNounits x6b{globals_, "x6b", &x6a};
-  VarAdd x6m{globals_, "x6m", &minus1, &x6b, 2.};
+  VarAdd x6m{globals_, "x6m", &minus1, &x6b, x6m_max};
   VarMult phi0a{globals_, "phi0a", &delta1, &x6m, settings_->dphisector()};
 
-  VarMult z0a{globals_, "z0a", &r1abs, &deltaZ, 240.};
-  VarMult z0b{globals_, "z0b", &z0a, &x6m, 240.};
+  VarMult z0a{globals_, "z0a", &r1abs, &deltaZ, 2 * settings_->zlength()};
+  VarMult z0b{globals_, "z0b", &z0a, &x6m, 2 * settings_->zlength()};
 
   VarAdd phi0{globals_, "phi0", &phi1, &phi0a, 2 * settings_->dphisector()};
   VarMult rinv{globals_, "rinv", &a2n, &delta0, 8 * settings_->maxrinv()};
-  VarMult t{globals_, "t", &a, &deltaZ, 7.9};
-  VarAdd z0{globals_, "z0", &z1, &z0b, 320.};
+  VarMult t{globals_, "t", &a, &deltaZ, t_max};
+  VarAdd z0{globals_, "z0", &z1, &z0b, 16 * z0_max};
 
   VarAdjustK rinv_final{
       globals_, "rinv_final", &rinv, settings_->kphi1() / settings_->kr() * pow(2, settings_->rinv_shift())};
@@ -193,7 +203,6 @@ public:
   VarAdjustK z0_final{globals_, "z0_final", &z0, settings_->kz() * pow(2, settings_->z0_shift())};
 
   //projection to r
-  //
   VarShift x2{globals_, "x2", &delta0, 1};
 
   VarMult x1_0{globals_, "x1_0", &x2, &rproj0};
@@ -244,9 +253,9 @@ public:
   VarMult x11_1{globals_, "x11_1", &rproj1, &t};
   VarMult x11_2{globals_, "x11_2", &rproj2, &t};
 
-  VarMult x23_0{globals_, "x23_0", &x11_0, &x10_0, 400};
-  VarMult x23_1{globals_, "x23_1", &x11_1, &x10_1, 400};
-  VarMult x23_2{globals_, "x23_2", &x11_2, &x10_2, 400};
+  VarMult x23_0{globals_, "x23_0", &x11_0, &x10_0, 2 * x23_max};
+  VarMult x23_1{globals_, "x23_1", &x11_1, &x10_1, 2 * x23_max};
+  VarMult x23_2{globals_, "x23_2", &x11_2, &x10_2, 2 * x23_max};
 
   VarAdd zL_0{globals_, "zL_0", &z0, &x23_0};
   VarAdd zL_1{globals_, "zL_1", &z0, &x23_1};
@@ -260,7 +269,6 @@ public:
       globals_, "der_zL_final", &t_final, settings_->kz() / settings_->kr() * pow(2, settings_->PS_zderL_shift())};
 
   //projection to z
-  //
   VarInv invt{globals_, "invt", &t_final, 0., 18, 26, 1, VarInv::mode::pos, 13};
 
   VarMult x7{globals_, "x7", &x2, &a2};
@@ -338,28 +346,28 @@ public:
   VarCut z2abs_cut{globals_, &z2abs, -settings_->zmax(4), settings_->zmax(4)};
   VarCut dr_cut{globals_, &dr, -dr_max, dr_max};
   VarCut dphi_cut{globals_, &dphi, -settings_->dphisector() / 4., settings_->dphisector() / 4.};
-  VarCut dz_cut{globals_, &dz, -50., 50.};
+  VarCut dz_cut{globals_, &dz, -dz_max, dz_max};
   VarCut delta0_cut{globals_, &delta0, -delta0_max, delta0_max};
   VarCut deltaZ_cut{globals_, &deltaZ, -deltaZ_max, deltaZ_max};
   VarCut a2a_cut{globals_, &a2a, -a2a_max, a2a_max};
-  VarCut a2_cut{globals_, &a2, -3., 3.};
-  VarCut x6a_cut{globals_, &x6a, -0.02, 0.02};
-  VarCut x6m_cut{globals_, &x6m, -2., 2.};
+  VarCut a2_cut{globals_, &a2, -a2_max, a2_max};
+  VarCut x6a_cut{globals_, &x6a, -x6a_max, x6a_max};
+  VarCut x6m_cut{globals_, &x6m, -x6m_max, x6m_max};
   VarCut phi0a_cut{globals_, &phi0a, -settings_->dphisector(), settings_->dphisector()};
-  VarCut z0a_cut{globals_, &z0a, -240., 240.};
+  VarCut z0a_cut{globals_, &z0a, -2 * settings_->zlength(), 2 * settings_->zlength()};
   VarCut phi0_cut{globals_, &phi0, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
   VarCut rinv_cut{globals_, &rinv, -settings_->maxrinv(), settings_->maxrinv()};
-  VarCut t_cut{globals_, &t, -7.9, 7.9};
-  VarCut z0_cut{globals_, &z0, -20., 20.};
+  VarCut t_cut{globals_, &t, -t_max, t_max};
+  VarCut z0_cut{globals_, &z0, -z0_max, z0_max};
   VarCut x8_0_cut{globals_, &x8_0, -x8_max, x8_max};
   VarCut x8_1_cut{globals_, &x8_1, -x8_max, x8_max};
   VarCut x8_2_cut{globals_, &x8_2, -x8_max, x8_max};
   VarCut x22_0_cut{globals_, &x22_0, -x22_max, x22_max};
   VarCut x22_1_cut{globals_, &x22_1, -x22_max, x22_max};
   VarCut x22_2_cut{globals_, &x22_2, -x22_max, x22_max};
-  VarCut x23_0_cut{globals_, &x23_0, -200, 200};
-  VarCut x23_1_cut{globals_, &x23_1, -200, 200};
-  VarCut x23_2_cut{globals_, &x23_2, -200, 200};
+  VarCut x23_0_cut{globals_, &x23_0, -x23_max, x23_max};
+  VarCut x23_1_cut{globals_, &x23_1, -x23_max, x23_max};
+  VarCut x23_2_cut{globals_, &x23_2, -x23_max, x23_max};
   VarCut x13_0_cut{globals_, &x13_0, -x13_max, x13_max};
   VarCut x13_1_cut{globals_, &x13_1, -x13_max, x13_max};
   VarCut x13_2_cut{globals_, &x13_2, -x13_max, x13_max};
@@ -378,9 +386,9 @@ public:
   VarCut rD_2_cut{globals_, &rD_2, -settings_->rmaxdisk(), settings_->rmaxdisk()};
   VarCut rD_3_cut{globals_, &rD_3, -settings_->rmaxdisk(), settings_->rmaxdisk()};
 
-  VarCut t_disk_cut_left{globals_, &t, -7.9, -1};
-  VarCut t_disk_cut_right{globals_, &t, 1, 7.9};
-  VarCut t_layer_cut{globals_, &t, -2.5, 2.5};
+  VarCut t_disk_cut_left{globals_, &t, -t_disk_max, -t_disk_min};
+  VarCut t_disk_cut_right{globals_, &t, t_disk_min, t_disk_max};
+  VarCut t_layer_cut{globals_, &t, -t_layer_max, t_layer_max};
 
   // the following flags are used to apply the cuts in TrackletCalculator
   // and in the output Verilog
