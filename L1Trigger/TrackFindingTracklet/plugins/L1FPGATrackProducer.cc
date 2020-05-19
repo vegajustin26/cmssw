@@ -118,21 +118,13 @@ using namespace std;
 struct L1TStubCompare {
 public:
   bool operator()(const trklet::L1TStub& x, const trklet::L1TStub& y) const {
-    if (x.layer() != y.layer())
-      return (y.layer() > x.layer());
+    if (x.x() != y.x())
+      return (y.x() > x.x());
     else {
-      if (x.ladder() != y.ladder())
-        return (y.ladder() > x.ladder());
-      else {
-        if (x.module() != y.module())
-          return (y.module() > x.module());
-        else {
-          if (x.iz() != y.iz())
-            return (y.iz() > x.iz());
-          else
-            return (x.iphi() > y.iphi());
-        }
-      }
+      if (x.y() != y.y())
+	return (y.y() > x.y());
+      else
+	return (x.z() > y.z());
     }
   }
 };
