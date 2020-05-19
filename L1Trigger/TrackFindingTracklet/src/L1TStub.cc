@@ -1,4 +1,5 @@
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 using namespace std;
 using namespace trklet;
@@ -76,16 +77,16 @@ void L1TStub::lorentzcor(double shift) {
   this->y_ = r * sin(phi);
 }
 
-double L1TStub::alpha() const {
+double L1TStub::alpha(double pitch) const {
   if (isPSmodule())
     return 0.0;
   int flip = 1;
   if (isFlipped())
     flip = -1;
   if (z_ > 0.0) {
-    return ((int)strip_ - 509.5) * 0.009 * flip / r2();
+    return ((int)strip_ - 509.5) * pitch * flip / r2();
   }
-  return -((int)strip_ - 509.5) * 0.009 * flip / r2();
+  return -((int)strip_ - 509.5) * pitch * flip / r2();
 }
 
 double L1TStub::alphanorm() const {
@@ -112,5 +113,13 @@ bool L1TStub::tpmatch(int tp) const {
       return true;
   }
 
+  return false;
+}
+
+bool L1TStub::isTilted() const {
+  if (layer_ > N_PSLAYER) //disk modules and outer barrel modules are not tilted by construction 
+    return false; 
+  if ( (module_ <= N_TILTED_RINGS) || (module_ >= N_TILTED_RINGS + N_MOD_PLANK.at(layer_-1)) )
+    return true;
   return false;
 }

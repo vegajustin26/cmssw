@@ -64,7 +64,8 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
     double kfbend = L1stubptr->bend();
     bool psmodule = L1stubptr->isPSmodule();
     unsigned int iphi = L1stubptr->iphi();
-    double alpha = L1stubptr->alpha();
+    double alpha = L1stubptr->alpha(settings_->stripPitch(psmodule));
+    bool istilted = L1stubptr->isTilted();
 
     bool isBarrel = trackstublist[k]->isBarrel();
     int kflayer;
@@ -84,24 +85,14 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
         edm::LogVerbatim("L1track") << "Will create disk stub with : ";
     }
 
-    // LS FIXME - take these from geometry in EDProducer instead
-    float stripPitch = psmodule  ?  0.01  :  0.009;
-    float stripLength = psmodule  ?  0.1467  :  5.0250;
-    unsigned int nStrips = psmodule  ?  960  :  1016;
-    // max |z| at which non-tilted modules found in barrel PS layers 1-3. (Entry 0 not used).
-    const vector<float> zMaxNonTilted = {0, 15.3, 24.6, 33.9};
-    bool tiltedBarrel;
-    if (isBarrel && psmodule) {
-      tiltedBarrel = (std::abs(kfz) > zMaxNonTilted[kflayer]);
-    } else {
-      tiltedBarrel = false;
-    }
+    float stripPitch = settings_->stripPitch(psmodule);
+    float stripLength = settings_->stripLength(psmodule);
+    unsigned int nStrips = settings_->nStrips(psmodule);
 
     if (settings_->printDebugKF()) {
       edm::LogVerbatim("L1track") << kfphi << " " << kfr << " " << kfz << " " << kfbend << " " << kflayer << " "
                                   << isBarrel << " " << psmodule;
     }
-
 
     unsigned int uniqueStubIndex = 1000 * L1stubID + L1stubptr->allStubIndex();
     tmtt::Stub* TMTTstubptr = new tmtt::Stub(&TMTTsettings,
@@ -116,7 +107,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
                                              kf_phi_sec,
                                              psmodule,
                                              isBarrel,
-					     tiltedBarrel,
+					     isTilted,
 					     stripPitch,
 					     stripLength,
 					     nStrips);

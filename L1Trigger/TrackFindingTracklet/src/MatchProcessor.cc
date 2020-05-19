@@ -86,9 +86,10 @@ MatchProcessor::MatchProcessor(string name, const Settings* settings, Globals* g
 
     for (unsigned int irinv = 0; irinv < 32; irinv++) {
       double rinv = (irinv - 15.5) * (1 << (settings_->nbitsrinv() - 5)) * settings_->krinvpars();
-      double projbend = bend(settings_->rmean(layer_ - 1), rinv, settings_->rcrit());
+      double stripPitch = (settings_->rmean(layer_ - 1) < settings_->rcrit()) ? settings_->stripPitch(true) : settings_->stripPitch(false);
+      double projbend = bend(settings_->rmean(layer_ - 1), rinv, stripPitch);
       for (unsigned int ibend = 0; ibend < (unsigned int)(1 << nbits); ibend++) {
-        double stubbend = benddecode(ibend, layer_ <= 3);
+        double stubbend = benddecode(ibend, layer_ <= (int)N_PSLAYER);
         bool pass = std::abs(stubbend - projbend) < settings_->bendcutme(layer_ - 1);
         table_.push_back(pass);
       }
@@ -636,7 +637,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
                              dr,
                              drphiapprox / stub->r(),
                              drapprox,
-                             stub->alpha(),
+                             stub->alpha(settings_->stripPitch(stub->isPSmodule())),
                              (phiregion_ << 7) + fpgastub->stubindex().value(),
                              stub->z(),
                              fpgastub);

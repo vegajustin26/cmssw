@@ -190,7 +190,19 @@ namespace trklet {
 
     double bfield() const { return bfield_; }
     void setBfield(double bfield) { bfield_ = bfield; }
-    
+
+    unsigned int nStrips(bool isPSmodule) const { return isPSmodule ? nStrips_PS_ : nStrips_2S_; }
+    void setNStrips_PS(unsigned int nStrips_PS ) { nStrips_PS_ = nStrips_PS; }
+    void setNStrips_2S(unsigned int nStrips_2S ) { nStrips_2S_ = nStrips_2S; }
+
+    double stripPitch(bool isPSmodule) const { return isPSmodule ? stripPitch_PS_ : stripPitch_2S_; }
+    void setStripPitch_PS(double stripPitch_PS ) { stripPitch_PS_ = stripPitch_PS; }
+    void setStripPitch_2S(double stripPitch_2S ) { stripPitch_2S_ = stripPitch_2S; }
+
+    double stripLength(bool isPSmodule) const { return isPSmodule ? stripLength_PS_ : stripLength_2S_; }
+    void setStripLength_PS(double stripLength_PS ) { stripLength_PS_ = stripLength_PS; }
+    void setStripLength_2S(double stripLength_2S ) { stripLength_2S_ = stripLength_2S; }
+
     std::string skimfile() const { return skimfile_; }
     void setSkimfile(std::string skimfile) { skimfile_ = skimfile; }
 
@@ -642,17 +654,26 @@ namespace trklet {
 
     double bfield_{3.8112};    //B-field in T
     double c_{0.299792458}; //speed of light m/ns
+
+    unsigned int nStrips_PS_{960}; 
+    unsigned int nStrips_2S_{1016}; 
+    
+    double stripPitch_PS_{0.01}; 
+    double stripPitch_2S_{0.009}; 
+
+    double stripLength_PS_{0.1467}; 
+    double stripLength_2S_{5.0250}; 
     
   };
-
+  
   // constants
   constexpr int N_LAYER = 6;
   constexpr int N_DISK = 5;
   constexpr unsigned int N_PSLAYER = 3;
   constexpr unsigned int N_LAYERDISK = 11;
 
-  constexpr int N_TILTED_RINGS = 12;          // number of tilted rings per half-layer in TBPS layers
-  constexpr std::array<int, N_PSLAYER> N_MOD_PLANK = {{7, 11, 15}}; // number of modules per plank in TBPS layers
+  constexpr unsigned int N_TILTED_RINGS = 12;          // number of tilted rings per half-layer in TBPS layers
+  constexpr std::array<unsigned int, N_PSLAYER> N_MOD_PLANK = {{7, 11, 15}}; // number of modules per plank in TBPS layers
   
   constexpr unsigned int N_SEEDINDEX = 12; // number of tracklet+triplet seeds
   constexpr unsigned int N_PROJLAYER = 4;  // max number of layers to project to

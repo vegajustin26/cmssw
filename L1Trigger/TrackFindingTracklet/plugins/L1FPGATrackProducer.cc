@@ -408,6 +408,9 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   /// COLLECT STUB INFORMATION ///
   ////////////////////////////////
 
+  bool firstPS=true;
+  bool first2S=true;
+  
   for (const auto& gd : theTrackerGeom->dets()) {
     DetId detid = (*gd).geographicalId();
     if (detid.subdetId() != StripSubdetector::TOB && detid.subdetId() != StripSubdetector::TID)
@@ -426,6 +429,22 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     const PixelTopology* topol = dynamic_cast<const PixelTopology*>(&(theGeomDet->specificTopology()));
 
     bool isPSmodule = theTrackerGeom->getDetectorType(detid) == TrackerGeometry::ModuleType::Ph2PSP;
+
+    // set constants that are common for all modules/stubs of a given type (PS vs 2S)
+    if (isPSmodule && firstPS) {
+      cout << "PS module, nstrip = " << topol->nrows()
+	   << " pitch = " << topol->pitch().first << " length = " << topol->pitch().second << endl;
+      settings.setNStrips_PS(topol->nrows());
+      settings.setStripPitch_PS(topol->pitch().first);
+      settings.setStripLength_PS(topol->pitch().second);
+    }
+    if (!isPSmodule && first2S) {
+      cout << "2S module, nstrip = " << topol->nrows()
+	   << " pitch = " << topol->pitch().first << " length = " << topol->pitch().second << endl;
+      settings.setNStrips_2S(topol->nrows());
+      settings.setStripPitch_2S(topol->pitch().first);
+      settings.setStripLength_2S(topol->pitch().second);
+    }
     
     // loop over stubs
     for (auto stubIter = stubs.begin(); stubIter != stubs.end(); ++stubIter) {

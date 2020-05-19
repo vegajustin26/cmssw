@@ -173,14 +173,10 @@ namespace trklet {
     throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Unknown benddecode for 2S module for ibend = " << ibend;
   }
 
-  inline double bend(double r, double rinv, double rcrit) {
+  inline double bend(double r, double rinv, double stripPitch) {
     constexpr double dr = 0.18;
-
     double delta = r * dr * 0.5 * rinv;
-
-    double stripPitch = (r < rcrit) ? 0.01 : 0.009;
     double bend = -delta / stripPitch;
-
     return bend;
   }
 

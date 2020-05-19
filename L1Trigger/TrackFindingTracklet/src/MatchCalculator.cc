@@ -470,7 +470,7 @@ void MatchCalculator::execute() {
                                dr,
                                drphiapprox / stub->r(),
                                drapprox,
-                               stub->alpha(),
+                               stub->alpha(settings_->stripPitch(stub->isPSmodule())),
                                (phiregion_ << 7) + fpgastub->stubindex().value(),
                                stub->z(),
                                fpgastub);

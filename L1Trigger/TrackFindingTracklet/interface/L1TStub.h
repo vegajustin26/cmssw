@@ -35,8 +35,6 @@ namespace trklet {
     void write(std::ofstream& out);
     void write(std::ostream& out);
 
-    //int ptsign();
-
     double diphi();
 
     double iphiouter();
@@ -85,7 +83,7 @@ namespace trklet {
 
     unsigned int strip() const { return strip_; }
 
-    double alpha() const;
+    double alpha(double pitch) const;
 
     //Scaled to go between -1 and +1
     double alphanorm() const;
@@ -94,6 +92,8 @@ namespace trklet {
 
     unsigned int isPSmodule() const { return isPSmodule_; }
     unsigned int isFlipped() const { return isFlipped_; }
+
+    bool isTilted() const;
 
     bool tpmatch(int tp) const;
 

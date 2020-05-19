@@ -38,17 +38,17 @@ void VMRouterPhiCorrTable::init(const Settings* settings, int layer, int bendbit
 }
 
 int VMRouterPhiCorrTable::getphiCorrValue(int ibend, int irbin) const {
-  double bend = trklet::benddecode(ibend, layer_ <= 3);
+  double bend = trklet::benddecode(ibend, layer_ <= (int)N_PSLAYER);
 
   //for the rbin - calculate the distance to the nominal layer radius
   double Delta = (irbin + 0.5) * dr_ - settings_->drmax();
 
   //calculate the phi correction - this is a somewhat approximate formula
-  double dphi = (Delta / 0.18) * (bend * 0.009) / rmean_;
+  double dphi = (Delta / 0.18) * (bend * settings_->stripPitch(false)) / rmean_;
 
   int idphi = 0;
 
-  if (layer_ <= 3) {
+  if (layer_ <= (int)N_PSLAYER) {
     idphi = dphi / settings_->kphi();
   } else {
     idphi = dphi / settings_->kphi1();

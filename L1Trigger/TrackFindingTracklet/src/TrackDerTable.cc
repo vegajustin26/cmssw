@@ -204,44 +204,44 @@ void TrackDerTable::fillTable(const Settings* settings) {
     }
 
     int nlayers = 0;
-    double r[6];
+    double r[N_LAYER];
 
-    for (unsigned l = 0; l < 6; l++) {
-      if (layermask & (1 << (5 - l))) {
+    for (unsigned l = 0; l < N_LAYER; l++) {
+      if (layermask & (1 << (N_LAYER - 1 - l))) {
         r[nlayers] = settings_->rmean(l);
         nlayers++;
       }
     }
 
     int ndisks = 0;
-    double z[5];
-    double alpha[5];
+    double z[N_DISK];
+    double alpha[N_DISK];
 
     double t = tpar(settings, diskmask, layermask);
 
-    for (unsigned d = 0; d < 5; d++) {
-      if (diskmask & (3 << (2 * (4 - d)))) {
+    for (unsigned d = 0; d < N_DISK; d++) {
+      if (diskmask & (3 << (2 * (N_DISK - 1 - d)))) {
         z[ndisks] = settings_->zmean(d);
         alpha[ndisks] = 0.0;
         double r = settings_->zmean(d) / t;
         double r2 = r * r;
-        if (diskmask & (1 << (2 * (4 - d)))) {
+        if (diskmask & (1 << (2 * (N_DISK - 1 - d)))) {
           if (alphaBits_ == 3) {
             int ialpha = alphamask & 7;
             alphamask = alphamask >> 3;
-            alpha[ndisks] = 4.57 * (ialpha - 3.5) / 4.0 / r2;
+            alpha[ndisks] = settings_->half2SmoduleWidth() * (ialpha - 3.5) / 4.0 / r2;
             if (print)
               edm::LogVerbatim("Tracklet") << "PRINT 3 alpha ialpha : " << alpha[ndisks] << " " << ialpha;
           }
           if (alphaBits_ == 2) {
             int ialpha = alphamask & 3;
             alphamask = alphamask >> 2;
-            alpha[ndisks] = 4.57 * (ialpha - 1.5) / 2.0 / r2;
+            alpha[ndisks] = settings_->half2SmoduleWidth() * (ialpha - 1.5) / 2.0 / r2;
           }
           if (alphaBits_ == 1) {
             int ialpha = alphamask & 1;
             alphamask = alphamask >> 1;
-            alpha[ndisks] = 4.57 * (ialpha - 0.5) / r2;
+            alpha[ndisks] = settings_->half2SmoduleWidth() * (ialpha - 0.5) / r2;
             if (print)
               edm::LogVerbatim("Tracklet") << "PRINT 1 alpha ialpha : " << alpha[ndisks] << " " << ialpha;
           }
@@ -770,9 +770,9 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
                                          int iMinvDt[4][12],
                                          double sigma[12],
                                          double kfactor[12]) {
-  double sigmax = 0.01 / sqrt(12.0);
-  double sigmaz = 0.15 / sqrt(12.0);
-  double sigmaz2 = 5.0 / sqrt(12.0);
+  double sigmax = settings->stripPitch(true) / sqrt(12.0);
+  double sigmaz = settings->stripLength(true) / sqrt(12.0);
+  double sigmaz2 = settings->stripLength(false) / sqrt(12.0);
 
   double sigmazpsbarrel = sigmaz;  //This is a bit of a hack - these weights should be properly determined
   if (std::abs(t) > 2.0)
@@ -780,17 +780,17 @@ void TrackDerTable::calculateDerivatives(const Settings* settings,
   if (std::abs(t) > 3.8)
     sigmazpsbarrel = sigmaz * std::abs(t);
 
-  double sigmax2sdisk = 0.009 / sqrt(12.0);
-  double sigmaz2sdisk = 5.0 / sqrt(12.0);
+  double sigmax2sdisk = settings->stripPitch(false) / sqrt(12.0);
+  double sigmaz2sdisk = settings->stripLength(false) / sqrt(12.0);
 
-  double sigmaxpsdisk = 0.01 / sqrt(12.0);
-  double sigmazpsdisk = 0.15 / sqrt(12.0);
+  double sigmaxpsdisk = settings->stripPitch(true) / sqrt(12.0);
+  double sigmazpsdisk = settings->stripLength(true) / sqrt(12.0);
 
   unsigned int n = nlayers + ndisks;
 
-  assert(n <= 6);
+  assert(n <= N_FITSTUB);
 
-  double rnew[6];
+  double rnew[N_FITSTUB];
 
   int j = 0;
 

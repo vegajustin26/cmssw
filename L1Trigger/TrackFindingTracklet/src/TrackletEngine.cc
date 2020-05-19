@@ -212,8 +212,10 @@ void TrackletEngine::setVMPhiBin() {
                 rinner = settings_->rmean(layerdisk1_);
               }
               double rinv1 = rinv(phiinner[i1], phiouter[i2], rinner, router[i3]);
-              double abendinner = -bend(rinner, rinv1, settings_->rcrit());
-              double abendouter = -bend(router[i3], rinv1, settings_->rcrit());
+	      double pitchinner = (rinner < settings_->rcrit()) ? settings_->stripPitch(true) : settings_->stripPitch(false);
+	      double pitchouter = (router[i3] < settings_->rcrit()) ? settings_->stripPitch(true) : settings_->stripPitch(false);
+              double abendinner = -bend(rinner, rinv1, pitchinner);
+              double abendouter = -bend(router[i3], rinv1, pitchouter);
               if (abendinner < bendinnermin)
                 bendinnermin = abendinner;
               if (abendinner > bendinnermax)
