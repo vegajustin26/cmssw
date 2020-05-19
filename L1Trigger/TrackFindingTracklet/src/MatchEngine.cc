@@ -192,12 +192,12 @@ void MatchEngine::execute() {
         writeindex = writeindexplus;
       }
 
-      if (savefirst) {  //TODO - make code logic simpler
+      if (savefirst) {  //TODO for HLS (make code logic simpler)
         std::pair<int, int> tmp(iprojtmp, rzfirst);
         projbuffer[writeindextmp] = tmp;
       }
       if (savelast) {
-        std::pair<int, int> tmp(iprojtmp, rzlast + 100);  //TODO remove hack to flag that this is second bin
+        std::pair<int, int> tmp(iprojtmp, rzlast + 100);  //TODO for HLS (fix flagging that this is second bin)
         if (savefirst) {
           projbuffer[writeindextmpplus] = tmp;
         } else {
