@@ -185,14 +185,14 @@ void TrackletEngineDisplaced::execute() {
 
             if (settings_->debugTracklet())
               edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " << getName();
-	    for (auto& stubpair : stubpairs_) {
-              if (settings_->writeTripletTables() || table_.at(index).count(stubpair->getName())) {
+	    for (unsigned int isp = 0; isp < stubpairs_.size(); ++isp) {
+              if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                 if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                   fout.close();
                 }
-                stubpair->addStubPair(firstvmstub, secondvmstub, index, getName());
+                stubpairs_.at(isp)->addStubPair(firstvmstub, secondvmstub, index, getName());
               }
             }
 
@@ -267,14 +267,14 @@ void TrackletEngineDisplaced::execute() {
 
             if (settings_->debugTracklet())
               edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " << getName();
-	    for (auto& stubpair : stubpairs_) {
-              if (settings_->writeTripletTables() || table_.at(index).count(stubpair->getName())) {
+	    for (unsigned int isp = 0; isp < stubpairs_.size(); ++isp) {
+              if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                 if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                   fout.close();
                 }
-                stubpair->addStubPair(firstvmstub, secondvmstub, index, getName());
+                stubpairs_.at(isp)->addStubPair(firstvmstub, secondvmstub, index, getName());
               }
             }
 
@@ -350,14 +350,14 @@ void TrackletEngineDisplaced::execute() {
             if (settings_->debugTracklet())
               edm::LogVerbatim("Tracklet") << "Adding disk-disk pair in " << getName();
 
-            for (auto& stubpair : stubpairs_) {
-              if (settings_->writeTripletTables() || table_.at(index).count(stubpair->getName())) {
+            for (unsigned int isp = 0; isp < stubpairs_.size(); ++isp) {
+              if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                 if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                   fout.close();
                 }
-                stubpair->addStubPair(firstvmstub, secondvmstub, index, getName());
+                stubpairs_.at(isp)->addStubPair(firstvmstub, secondvmstub, index, getName());
               }
             }
             countpass++;
