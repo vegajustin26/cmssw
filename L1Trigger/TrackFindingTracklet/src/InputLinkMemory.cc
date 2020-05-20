@@ -27,7 +27,7 @@ InputLinkMemory::InputLinkMemory(
 bool InputLinkMemory::addStub(
     const Settings* settings, Globals* globals, L1TStub& al1stub, Stub& stub, const string& dtc = "") {
   if (layerdisk_ < N_LAYER && globals->phiCorr(layerdisk_) == nullptr) {
-    globals->phiCorr(layerdisk_) = new VMRouterPhiCorrTable();
+     globals->phiCorr(layerdisk_) = new VMRouterPhiCorrTable();
     int nbits = 3;
     if (layerdisk_ >= N_PSLAYER)
       nbits = 4;

@@ -801,16 +801,16 @@ Track Tracklet::makeTrack(const vector<const L1TStub*>& l1stubs) {
                        fpgafitpars_.t().value(),
                        fpgafitpars_.z0().value());
 
-  Track tmpTrack(
-      ipars,
-      ichisqrphifit_.value(),
-      ichisqrzfit_.value(),
-      chisqrphifit_,
-      chisqrzfit_,
-      hitpattern_,
-      getStubIDs(),
-      (l1stubs.empty()) ? getL1Stubs() : l1stubs,  // If fitter produced no stub list, take it from original tracklet.
-      getISeed());
+  Track tmpTrack(ipars,
+                 ichisqrphifit_.value(),
+                 ichisqrzfit_.value(),
+                 chisqrphifit_,
+                 chisqrzfit_,
+                 hitpattern_,
+                 getStubIDs(),
+                 (l1stubs.empty()) ? getL1Stubs()
+                                   : l1stubs,  // If fitter produced no stub list, take it from original tracklet.
+                 getISeed());
 
   return tmpTrack;
 }

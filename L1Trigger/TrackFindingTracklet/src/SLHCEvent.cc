@@ -285,7 +285,7 @@ unsigned int SLHCEvent::layersHit(int tpid, int& nlayers, int& ndisks) {
         d5 = 1;
     }
   }
-
+  
   nlayers = l1 + l2 + l3 + l4 + l5 + l6;
   ndisks = d1 + d2 + d3 + d4 + d5;
 
