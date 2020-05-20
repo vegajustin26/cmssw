@@ -615,7 +615,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   int ntracks = 0;
 
   for (auto track : tracks) {
-    trklet::Track* track = tracks[itrack];
 
     if (track->duplicate())
       continue;
