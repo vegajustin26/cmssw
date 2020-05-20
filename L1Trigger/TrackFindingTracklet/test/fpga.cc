@@ -152,28 +152,28 @@ int main(const int argc, const char **argv) {
 
         vector<string> hitPattern;
         for (int i = 0; i < ev.nstubs(); i++) {
-          const L1TStub stub = ev.stub(i);
+          const L1TStub &stub = ev.stub(i);
           if (!stub.tpmatch(simtrk.trackid()))
             continue;
           if (stub.layer() < 999) {
             switch (stub.layer()) {
               case 0:
-                hitPattern.push_back("L1");
+                hitPattern.emplace_back("L1");
                 break;
               case 1:
-                hitPattern.push_back("L2");
+                hitPattern.emplace_back("L2");
                 break;
               case 2:
-                hitPattern.push_back("L3");
+                hitPattern.emplace_back("L3");
                 break;
               case 3:
-                hitPattern.push_back("L4");
+                hitPattern.emplace_back("L4");
                 break;
               case 4:
-                hitPattern.push_back("L5");
+                hitPattern.emplace_back("L5");
                 break;
               case 5:
-                hitPattern.push_back("L6");
+                hitPattern.emplace_back("L6");
                 break;
               default:
                 edm::LogVerbatim("Tracklet") << "Stub layer: " << stub.layer();
@@ -279,8 +279,8 @@ int main(const int argc, const char **argv) {
             }
 
             unsigned int nmatch = 0;
-            for (unsigned int istub = 0; istub < stubs.size(); istub++) {
-              if (stubs[istub]->tpmatch(simtrackid)) {
+            for (auto stub : stubs) {
+              if (stub->tpmatch(simtrackid)) {
                 nmatch++;
               }
             }
@@ -325,13 +325,13 @@ int main(const int argc, const char **argv) {
     }
 
     int ntrack = 0;
-    for (unsigned int l = 0; l < tracks.size(); l++) {
+    for (auto &track : tracks) {
       if (settings.writeMonitorData("Pars")) {
-        outpars << tracks[l]->duplicate() << " " << tracks[l]->eta(&settings) << " " << tracks[l]->phi0(&settings)
-                << " " << tracks[l]->z0(&settings) << " "
-                << phiRange2PI(tracks[l]->phi0(&settings)) / (2 * M_PI / N_SECTOR) << " " << tracks[l]->rinv(&settings);
+        outpars << track->duplicate() << " " << track->eta(&settings) << " " << track->phi0(&settings) << " "
+                << track->z0(&settings) << " " << phiRange2PI(track->phi0(&settings)) / (2 * M_PI / N_SECTOR) << " "
+                << track->rinv(&settings);
       }
-      if (!tracks[l]->duplicate()) {
+      if (!track->duplicate()) {
         ntrack++;
       }
     }

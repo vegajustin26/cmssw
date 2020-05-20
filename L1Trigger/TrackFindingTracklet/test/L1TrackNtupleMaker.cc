@@ -88,12 +88,12 @@ class L1TrackNtupleMaker : public edm::EDAnalyzer {
 public:
   // Constructor/destructor
   explicit L1TrackNtupleMaker(const edm::ParameterSet& iConfig);
-  virtual ~L1TrackNtupleMaker();
+  ~L1TrackNtupleMaker() override;
 
   // Mandatory methods
-  virtual void beginJob();
-  virtual void endJob();
-  virtual void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup);
+  void beginJob() override;
+  void endJob() override;
+  void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) override;
 
 protected:
 private:
@@ -685,7 +685,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
       // Get the DetSets of the Clusters
       edmNew::DetSet<TTStub<Ref_Phase2TrackerDigi_> > stubs = (*TTStubHandle)[stackDetid];
       const GeomDetUnit* det0 = theTrackerGeom->idToDetUnit(detid);
-      const PixelGeomDetUnit* theGeomDet = dynamic_cast<const PixelGeomDetUnit*>(det0);
+      const auto* theGeomDet = dynamic_cast<const PixelGeomDetUnit*>(det0);
       const PixelTopology* topol = dynamic_cast<const PixelTopology*>(&(theGeomDet->specificTopology()));
 
       // loop over stubs
@@ -807,7 +807,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
         if (myJet.pt() > 200.0)
           isveryhighpt = true;
 
-        math::XYZTLorentzVector jetP4 = myJet.p4();
+        const math::XYZTLorentzVector& jetP4 = myJet.p4();
         v_jets.push_back(jetP4);
         if (ishighpt)
           v_jets_highpt.push_back(1);
@@ -880,7 +880,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
       int tmp_trk_dhits = 0;
       int tmp_trk_lhits = 0;
 
-      if (1) {
+      if (true) {
         // loop over stubs
         for (int is = 0; is < tmp_trk_nstub; is++) {
           //detID of stub
@@ -1146,7 +1146,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
     // ----------------------------------------------------------------------------------------------
     // only consider TPs associated with >= 1 cluster, or >= X stubs, or have stubs in >= X layers (configurable options)
 
-    if (MCTruthTTClusterHandle->findTTClusterRefs(tp_ptr).size() < 1) {
+    if (MCTruthTTClusterHandle->findTTClusterRefs(tp_ptr).empty()) {
       if (DebugMode)
         edm::LogVerbatim("Tracklet") << "No matching TTClusters for TP, continuing...";
       continue;
@@ -1158,8 +1158,8 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
 
     // how many layers/disks have stubs?
     int hasStubInLayer[11] = {0};
-    for (unsigned int is = 0; is < theStubRefs.size(); is++) {
-      DetId detid(theStubRefs.at(is)->getDetId());
+    for (auto& theStubRef : theStubRefs) {
+      DetId detid(theStubRef->getDetId());
 
       int layer = -1;
       if (detid.subdetId() == StripSubdetector::TOB) {
@@ -1171,7 +1171,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
       //bool isPS = (theTrackerGeom->getDetectorType(detid)==TrackerGeometry::ModuleType::Ph2PSP);
 
       //treat genuine stubs separately (==2 is genuine, ==1 is not)
-      if (MCTruthTTStubHandle->findTrackingParticlePtr(theStubRefs.at(is)).isNull() && hasStubInLayer[layer] < 2)
+      if (MCTruthTTStubHandle->findTrackingParticlePtr(theStubRef).isNull() && hasStubInLayer[layer] < 2)
         hasStubInLayer[layer] = 1;
       else
         hasStubInLayer[layer] = 2;
@@ -1179,10 +1179,10 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
 
     int nStubLayerTP = 0;
     int nStubLayerTP_g = 0;
-    for (int isum = 0; isum < 11; isum++) {
-      if (hasStubInLayer[isum] >= 1)
+    for (int isum : hasStubInLayer) {
+      if (isum >= 1)
         nStubLayerTP += 1;
-      if (hasStubInLayer[isum] == 2)
+      if (isum == 2)
         nStubLayerTP_g += 1;
     }
 
