@@ -14,7 +14,7 @@ namespace trklet {
 
   class Cabling {
   public:
-    Cabling(const std::string& dtcconfig, const std::string& moduleconfig, const Settings* settings);
+    Cabling(std::string dtcconfig, std::string moduleconfig, const Settings* settings);
 
     ~Cabling() = default;
 

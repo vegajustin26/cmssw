@@ -57,7 +57,7 @@ void MemoryBase::initSpecialSeeding(unsigned int pos, bool& overlap, bool& extra
   extended = extendedset.find(subname) != extendedset.end();
 }
 
-void MemoryBase::findAndReplaceAll(std::string& data, const std::string& toSearch, const std::string& replaceStr) {
+void MemoryBase::findAndReplaceAll(std::string& data, std::string toSearch, std::string replaceStr) {
   // Get the first occurrence
   size_t pos = data.find(toSearch);
 

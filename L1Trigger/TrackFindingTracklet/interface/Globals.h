@@ -87,7 +87,7 @@ namespace trklet {
     IMATH_TrackletCalculatorOverlap* ITC_L2F1() { return ITC_L2F1_.get(); }
     IMATH_TrackletCalculatorOverlap* ITC_L2B1() { return ITC_L2B1_.get(); }
 
-    std::ofstream& ofstream(const std::string& fname) {
+    std::ofstream& ofstream(std::string fname) {
       if (ofstreams_.find(fname) != ofstreams_.end()) {
         return *(ofstreams_[fname]);
       }

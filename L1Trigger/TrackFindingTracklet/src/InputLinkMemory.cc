@@ -14,8 +14,7 @@
 using namespace trklet;
 using namespace std;
 
-InputLinkMemory::InputLinkMemory(
-    const string& name, const Settings* const settings, unsigned int iSector, double, double)
+InputLinkMemory::InputLinkMemory(string name, const Settings* const settings, unsigned int iSector, double, double)
     : MemoryBase(name, settings, iSector) {
   string subname = name.substr(5, 7);
   phiregion_ = subname[3] - 'A';
@@ -25,11 +24,11 @@ InputLinkMemory::InputLinkMemory(
 }
 
 bool InputLinkMemory::addStub(
-    const Settings* settings, Globals* globals, L1TStub& al1stub, Stub& stub, const string& dtc = "") {
-  if (layerdisk_ < N_LAYER && globals->phiCorr(layerdisk_) == nullptr) {
-     globals->phiCorr(layerdisk_) = new VMRouterPhiCorrTable();
+    const Settings* settings, Globals* globals, L1TStub& al1stub, Stub& stub, string dtc = "") {
+  if (layerdisk_ < 6 && globals->phiCorr(layerdisk_) == nullptr) {
+    globals->phiCorr(layerdisk_) = new VMRouterPhiCorrTable();
     int nbits = 3;
-    if (layerdisk_ >= N_PSLAYER)
+    if (layerdisk_ >= 3)
       nbits = 4;
     globals->phiCorr(layerdisk_)->init(settings, layerdisk_ + 1, nbits, 3);
   }
@@ -40,7 +39,7 @@ bool InputLinkMemory::addStub(
   if (stublayerdisk != layerdisk_)
     return false;
 
-  if (layerdisk_ < N_LAYER) {
+  if (layerdisk_ < 6) {
     FPGAWord r = stub.r();
     int bendbin = stub.bend().value();
     int rbin = (r.value() + (1 << (r.nbits() - 1))) >> (r.nbits() - 3);

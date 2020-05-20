@@ -32,7 +32,7 @@ namespace trklet {
 
     void addEntry(unsigned int layermask, unsigned int diskmask, int multiplicity, int nrinv);
 
-    void readPatternFile(const std::string& fileName);
+    void readPatternFile(std::string fileName);
 
     int getEntries() const { return nextLayerDiskValue_; }
 

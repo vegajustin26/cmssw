@@ -15,7 +15,7 @@ namespace trklet {
 
   class VMStubsMEMemory : public MemoryBase {
   public:
-    VMStubsMEMemory(const std::string& name, const Settings* const settings, unsigned int iSector);
+    VMStubsMEMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
     ~VMStubsMEMemory() override = default;
 
@@ -48,8 +48,8 @@ namespace trklet {
 
     void clean() override {
       stubs_.clear();
-      for (auto& binnedstub : binnedstubs_) {
-        binnedstub.clear();
+      for (unsigned int i = 0; i < binnedstubs_.size(); i++) {
+        binnedstubs_[i].clear();
       }
     }
 

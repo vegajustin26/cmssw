@@ -15,7 +15,7 @@ namespace trklet {
 
   class MatchEngine : public ProcessBase {
   public:
-    MatchEngine(const std::string& name, const Settings* settings, Globals* global, unsigned int iSector);
+    MatchEngine(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
     ~MatchEngine() override = default;
 

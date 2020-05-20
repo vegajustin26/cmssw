@@ -138,7 +138,7 @@ void TrackDerTable::addEntry(unsigned int layermask, unsigned int diskmask, int 
   }
 }
 
-void TrackDerTable::readPatternFile(const std::string& fileName) {
+void TrackDerTable::readPatternFile(std::string fileName) {
   ifstream in(fileName.c_str());
   if (settings_->debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "reading fit pattern file " << fileName;
