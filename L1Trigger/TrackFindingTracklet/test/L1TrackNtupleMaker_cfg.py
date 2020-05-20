@@ -104,7 +104,7 @@ elif (L1TRKALGO == 'HYBRID_DISPLACED'):
     
 # LEGACY ALGORITHM (EXPERTS ONLY): TRACKLET  
 elif (L1TRKALGO == 'TRACKLET'):
-    print "WARNING - this is not a recommended algorithm! Please use HYBRID (HYBRID_DISPLACED)!"
+    print "\n WARNING - this is not a recommended algorithm! Please use HYBRID (HYBRID_DISPLACED)!"
     print "\n To run the tracklet-only algorithm, please ensure you have commented out #define USEHYBRID in interface/Settings.h + recompiled! \n"
     process.TTTracksEmulation = cms.Path(process.L1HybridTracks)
     process.TTTracksEmulationWithTruth = cms.Path(process.L1HybridTracksWithAssociators)
@@ -114,7 +114,7 @@ elif (L1TRKALGO == 'TRACKLET'):
 
 # LEGACY ALGORITHM (EXPERTS ONLY): TMTT  
 elif (L1TRKALGO == 'TMTT'):
-    print "WARNING - this is not a recommended algorithm! Please use HYBRID (HYBRID_DISPLACED)!"
+    print "\n WARNING - this is not a recommended algorithm! Please use HYBRID (HYBRID_DISPLACED)! \n"
     process.load("L1Trigger.TrackFindingTMTT.TMTrackProducer_Ultimate_cff")
     L1TRK_PROC  =  process.TMTrackProducer
     L1TRK_NAME  = "TMTrackProducer"
@@ -126,6 +126,7 @@ elif (L1TRKALGO == 'TMTT'):
     process.TTTrackAssociatorFromPixelDigis.TTTracks = cms.VInputTag( cms.InputTag(L1TRK_NAME, L1TRK_LABEL) )
     process.TTTracksEmulation = cms.Path(process.offlineBeamSpot*L1TRK_PROC)
     process.TTTracksEmulationWithTruth = cms.Path(process.offlineBeamSpot*L1TRK_PROC*process.TrackTriggerAssociatorTracks)
+    NHELIXPAR = 4
 
 else:
     print "ERROR: Unknown L1TRKALGO option"

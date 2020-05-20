@@ -21,9 +21,9 @@ namespace trklet {
   public:
     Settings() {
       //Comment out to run tracklet-only algorithm
-      //#ifdef CMSSW_GIT_HASH
-      //#define USEHYBRID
-      //#endif
+      #ifdef CMSSW_GIT_HASH
+      #define USEHYBRID
+      #endif
     }
 
     ~Settings() = default;
