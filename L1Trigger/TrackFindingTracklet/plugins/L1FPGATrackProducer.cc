@@ -133,7 +133,7 @@ class L1FPGATrackProducer : public edm::stream::EDProducer<> {
 public:
   /// Constructor/destructor
   explicit L1FPGATrackProducer(const edm::ParameterSet& iConfig);
-  virtual ~L1FPGATrackProducer();
+  ~L1FPGATrackProducer() override;
 
 private:
   int eventnum;
@@ -190,8 +190,8 @@ private:
 
   /// ///////////////// ///
   /// MANDATORY METHODS ///
-  virtual void beginRun(const edm::Run& run, const edm::EventSetup& iSetup);
-  virtual void produce(edm::Event& iEvent, const edm::EventSetup& iSetup);
+  void beginRun(const edm::Run& run, const edm::EventSetup& iSetup) override;
+  void produce(edm::Event& iEvent, const edm::EventSetup& iSetup) override;
 };
 
 //////////////
@@ -359,7 +359,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     int ntps = 1;  //count from 1 ; 0 will mean invalid
 
     int this_tp = 0;
-    for (auto iterTP : *TrackingParticleHandle) {
+    for (const auto& iterTP : *TrackingParticleHandle) {
       edm::Ptr<TrackingParticle> tp_ptr(TrackingParticleHandle, this_tp);
       this_tp++;
 
@@ -448,7 +448,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
           // Now identify all TP's contributing to either cluster in stub.
           vector<edm::Ptr<TrackingParticle>> vecTpPtr = MCTruthTTClusterHandle->findTrackingParticlePtrs(ttClusterRef);
 
-          for (edm::Ptr<TrackingParticle> tpPtr : vecTpPtr) {
+          for (const edm::Ptr<TrackingParticle>& tpPtr : vecTpPtr) {
             if (translateTP.find(tpPtr) != translateTP.end()) {
               if (iClus == 0) {
                 assocTPs.push_back(translateTP.at(tpPtr));
@@ -523,12 +523,12 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
       std::vector<int> irphi;
       std::vector<int> innerrows = innerCluster->getRows();
-      for (unsigned int ihit = 0; ihit < innerrows.size(); ihit++) {
-        irphi.push_back(innerrows[ihit]);
+      for (int innerrow : innerrows) {
+        irphi.push_back(innerrow);
       }
       std::vector<int> outerrows = outerCluster->getRows();
-      for (unsigned int ihit = 0; ihit < outerrows.size(); ihit++) {
-        irphi.push_back(outerrows[ihit]);
+      for (int outerrow : outerrows) {
+        irphi.push_back(outerrow);
       }
 
       // -----------------------------------------------------
@@ -580,7 +580,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
                                                          posStub.z(),
                                                          isPSmodule,
                                                          isFlipped))) {
-        trklet::L1TStub lastStub = ev.lastStub();
+        const trklet::L1TStub lastStub = ev.lastStub();
         stubMap[lastStub] = tempStubPtr;
       }
     }
@@ -589,7 +589,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   //////////////////////////
   // NOW RUN THE L1 tracking
 
-  if (asciiEventOutName_ != "") {
+  if (!asciiEventOutName_.empty()) {
     ev.write(asciiEventOut_);
   }
 
@@ -614,7 +614,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   int ntracks = 0;
 
-  for (unsigned itrack = 0; itrack < tracks.size(); itrack++) {
+  for (auto track : tracks) {
     trklet::Track* track = tracks[itrack];
 
     if (track->duplicate())
@@ -655,8 +655,8 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     const vector<const trklet::L1TStub*>& stubptrs = track->stubs();
     vector<trklet::L1TStub> stubs;
 
-    for (unsigned int i = 0; i < stubptrs.size(); i++) {
-      stubs.push_back(*(stubptrs[i]));
+    for (auto stubptr : stubptrs) {
+      stubs.push_back(*stubptr);
     }
 
     stubMapType::const_iterator it;
