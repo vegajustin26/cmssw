@@ -163,7 +163,7 @@ void TrackletCalculator::execute() {
           if (accept)
             countsel++;
         } else {
-	  throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " invalid seeding";
+          throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " invalid seeding";
         }
       }
 

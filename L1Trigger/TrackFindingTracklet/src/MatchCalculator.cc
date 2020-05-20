@@ -316,7 +316,7 @@ void MatchCalculator::execute() {
       assert(stub->z() * tracklet->t() > 0.0);
 
       int sign = (tracklet->t() > 0.0) ? 1 : -1;
-      int disk = sign * (layerdisk_ - (N_LAYER-1));
+      int disk = sign * (layerdisk_ - (N_LAYER - 1));
       assert(disk != 0);
 
       //Perform integer calculations here

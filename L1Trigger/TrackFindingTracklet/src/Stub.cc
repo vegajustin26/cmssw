@@ -141,9 +141,8 @@ Stub::Stub(L1TStub& stub, const trklet::Settings* const settings, double phimins
         }
       }
       if (irSS < 0) {
-	throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
-					  << " didn't find rDSS value! r = " << r
-					  << " Check that correct geometry is used!";
+        throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " didn't find rDSS value! r = " << r
+                                          << " Check that correct geometry is used!";
       }
     }
     if (irSS < 0) {

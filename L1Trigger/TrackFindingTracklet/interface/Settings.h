@@ -670,11 +670,11 @@ namespace trklet {
   constexpr std::array<unsigned int, N_PSLAYER> N_MOD_PLANK = {
       {7, 11, 15}};  // number of modules per plank in TBPS layers
 
-  constexpr unsigned int N_SEEDINDEX = 12;  // number of tracklet+triplet seeds
+  constexpr unsigned int N_SEEDINDEX = 12;      // number of tracklet+triplet seeds
   constexpr unsigned int N_SEEDINDEX_TRKL = 7;  // number of tracklet seeds
-  constexpr unsigned int N_PROJLAYER = 4;   // max number of layers to project to
-  constexpr unsigned int N_PROJDISK = 5;    // max number of disks to project to
-  constexpr unsigned int N_DPROJMAX = 3;    // max number of projections (layers/disks) for disk seeds
+  constexpr unsigned int N_PROJLAYER = 4;       // max number of layers to project to
+  constexpr unsigned int N_PROJDISK = 5;        // max number of disks to project to
+  constexpr unsigned int N_DPROJMAX = 3;        // max number of projections (layers/disks) for disk seeds
 
   // chi2 fitting
   constexpr unsigned int N_FITSTUB = 6;  // maximum number of stubs used

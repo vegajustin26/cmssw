@@ -24,7 +24,7 @@ void TrackletProjectionsMemory::addProj(Tracklet* tracklet) {
     assert(tracklet->validProj(layer_) || tracklet->validProjDisk(disk_));
 
   for (auto& itracklet : tracklets_) {
-    if (itracklet == tracklet) {  
+    if (itracklet == tracklet) {
       edm::LogPrint("Tracklet") << "Adding same tracklet " << tracklet << " twice in " << getName();
     }
     assert(itracklet != tracklet);

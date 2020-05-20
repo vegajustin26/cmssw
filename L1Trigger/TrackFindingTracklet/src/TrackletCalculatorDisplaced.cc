@@ -233,7 +233,7 @@ void TrackletCalculatorDisplaced::execute() {
         if (accept)
           countsel++;
       } else if (innerFPGAStub->isDisk() && middleFPGAStub->isDisk() && outerFPGAStub->isDisk()) {
-	throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
+        throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
       } else {
         //layer+disk seeding
         if (innerFPGAStub->isBarrel() && middleFPGAStub->isDisk() && outerFPGAStub->isDisk()) {  //D1D2L2
@@ -245,7 +245,7 @@ void TrackletCalculatorDisplaced::execute() {
           if (accept)
             countsel++;
         } else {
-            throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
+          throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
         }
       }
 

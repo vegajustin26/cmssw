@@ -185,7 +185,7 @@ void TrackletEngineDisplaced::execute() {
 
             if (settings_->debugTracklet())
               edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " << getName();
-	    for (unsigned int isp = 0; isp < stubpairs_.size(); ++isp) {
+            for (unsigned int isp = 0; isp < stubpairs_.size(); ++isp) {
               if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                 if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
@@ -267,7 +267,7 @@ void TrackletEngineDisplaced::execute() {
 
             if (settings_->debugTracklet())
               edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " << getName();
-	    for (unsigned int isp = 0; isp < stubpairs_.size(); ++isp) {
+            for (unsigned int isp = 0; isp < stubpairs_.size(); ++isp) {
               if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
                 if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);

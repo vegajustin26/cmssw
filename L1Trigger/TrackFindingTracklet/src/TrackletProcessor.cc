@@ -620,7 +620,7 @@ void TrackletProcessor::execute() {
         //layer+disk seeding
         accept = overlapSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
       } else {
-	throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
+        throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
       }
     }
 

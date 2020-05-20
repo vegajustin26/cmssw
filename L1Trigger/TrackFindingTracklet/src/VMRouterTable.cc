@@ -42,7 +42,7 @@ void VMRouterTable::init(unsigned int layerdisk) {
       double r = rmin_ + (irbin + 0.5) * dr_;
       double z = zmin_ + (izbin + 0.5) * dz_;
 
-      if (layerdisk > (N_LAYER-1) && irbin < 10)  //special case for the tabulated radii in 2S disks
+      if (layerdisk > (N_LAYER - 1) && irbin < 10)  //special case for the tabulated radii in 2S disks
         r = (layerdisk <= 7) ? settings_->rDSSinner(irbin) : settings_->rDSSouter(irbin);
 
       int bin;

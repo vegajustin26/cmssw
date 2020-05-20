@@ -73,8 +73,8 @@ const string& Cabling::dtc(int layer, int ladder, int module) const {
   assert(it2 != it1->second.end());
   auto it3 = it2->second.find(module);
   if (it3 == it2->second.end()) {
-    throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__
-				       << "Could not find stub " << layer << " " << ladder << " " << module;
+    throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << "Could not find stub " << layer << " "
+                                       << ladder << " " << module;
   }
   return it3->second;
 }

@@ -415,7 +415,8 @@ protected:
 
 class VarParam : public VarBase {
 public:
-  VarParam(imathGlobals *globals, std::string name, double fval, int nbits) : VarBase(globals, name, nullptr, nullptr, nullptr, 0) {
+  VarParam(imathGlobals *globals, std::string name, double fval, int nbits)
+      : VarBase(globals, name, nullptr, nullptr, nullptr, 0) {
     op_ = "const";
     nbits_ = nbits;
     int l = log2(std::abs(fval)) + 1.9999999 - nbits;
@@ -741,7 +742,8 @@ protected:
 
 class VarShift : public VarBase {
 public:
-  VarShift(imathGlobals *globals, std::string name, VarBase *p1, int shift) : VarBase(globals, name, p1, nullptr, nullptr, 0) {
+  VarShift(imathGlobals *globals, std::string name, VarBase *p1, int shift)
+      : VarBase(globals, name, p1, nullptr, nullptr, 0) {
     op_ = "shift";
     shift_ = shift;
 
@@ -1068,7 +1070,10 @@ protected:
 class VarCut : public VarBase {
 public:
   VarCut(imathGlobals *globals, double lower_cut, double upper_cut)
-      : VarBase(globals, "", nullptr, nullptr, nullptr, 0), lower_cut_(lower_cut), upper_cut_(upper_cut), parent_flag_(nullptr) {
+      : VarBase(globals, "", nullptr, nullptr, nullptr, 0),
+        lower_cut_(lower_cut),
+        upper_cut_(upper_cut),
+        parent_flag_(nullptr) {
     op_ = "cut";
   }
 
@@ -1106,7 +1111,8 @@ protected:
 class VarFlag : public VarBase {
 public:
   template <class... Args>
-  VarFlag(imathGlobals *globals, std::string name, VarBase *cut, Args... args) : VarBase(globals, name, nullptr, nullptr, nullptr, 0) {
+  VarFlag(imathGlobals *globals, std::string name, VarBase *cut, Args... args)
+      : VarBase(globals, name, nullptr, nullptr, nullptr, 0) {
     op_ = "flag";
     nbits_ = 1;
     add_cuts(cut, args...);

@@ -157,8 +157,8 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         } else if (settings_->extended()) {
           seedRank.push_back(9);
         } else {
-	  throw cms::Exception("LogError") << __FILE__ << " " << __LINE__ << " Seed " << curSeed
-					   << " not found in list, and settings->extended() not set.";
+          throw cms::Exception("LogError") << __FILE__ << " " << __LINE__ << " Seed " << curSeed
+                                           << " not found in list, and settings->extended() not set.";
         }
 
         if (stublist.size() != stubidslist.size())
@@ -408,7 +408,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         nStubS[jtrk] = stubsTrk2.size();
 
         // Count shared stubs
-	for (auto& st : stubsTrk1) {
+        for (auto& st : stubsTrk1) {
           if (stubsTrk2.find(st.first) != stubsTrk2.end()) {
             if (st.second == stubsTrk2[st.first])
               nShare[jtrk]++;
@@ -503,9 +503,8 @@ double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, const Stub* curStub) {
   } else if (Disk != 0) {
     phiproj = curTracklet->phiprojdisk(Disk);
   } else {
-    throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__
-				       << " Layer: " << Layer << "  --  Disk: " << Disk
-				       << " Stub is not layer or disk in getPhiRes";
+    throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Layer: " << Layer << "  --  Disk: " << Disk
+                                       << " Stub is not layer or disk in getPhiRes";
   }
   // Calculate residual
   phires = std::abs(stubphi - phiproj);

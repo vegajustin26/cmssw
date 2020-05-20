@@ -68,25 +68,26 @@ void TrackletCalculatorBase::exacttracklet(double r1,
   }
 }
 
-void TrackletCalculatorBase::exacttrackletdisk(double r1,
-                                               double z1,
-                                               double phi1,
-                                               double r2,
-                                               double z2,
-                                               double phi2,
-                                               double,
-                                               double& rinv,
-                                               double& phi0,
-                                               double& t,
-                                               double& z0,
-                                               double phiprojLayer[N_DPROJMAX], //N_DPROJMAX=3, max possible for either layer/disk
-                                               double zprojLayer[N_DPROJMAX],
-                                               double phiderLayer[N_DPROJMAX],
-                                               double zderLayer[N_DPROJMAX],
-                                               double phiproj[N_DPROJMAX],
-                                               double rproj[N_DPROJMAX],
-                                               double phider[N_DPROJMAX],
-                                               double rder[N_DPROJMAX]) {
+void TrackletCalculatorBase::exacttrackletdisk(
+    double r1,
+    double z1,
+    double phi1,
+    double r2,
+    double z2,
+    double phi2,
+    double,
+    double& rinv,
+    double& phi0,
+    double& t,
+    double& z0,
+    double phiprojLayer[N_DPROJMAX],  //N_DPROJMAX=3, max possible for either layer/disk
+    double zprojLayer[N_DPROJMAX],
+    double phiderLayer[N_DPROJMAX],
+    double zderLayer[N_DPROJMAX],
+    double phiproj[N_DPROJMAX],
+    double rproj[N_DPROJMAX],
+    double phider[N_DPROJMAX],
+    double rder[N_DPROJMAX]) {
   double deltaphi = trklet::phiRange(phi1 - phi2);
 
   double dist = sqrt(r2 * r2 + r1 * r1 - 2 * r1 * r2 * cos(deltaphi));

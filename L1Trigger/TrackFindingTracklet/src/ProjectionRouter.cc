@@ -91,7 +91,7 @@ void ProjectionRouter::execute() {
       if (layerdisk_ < N_LAYER) {
         fpgaphi = tracklet->fpgaphiproj(layerdisk_ + 1);
       } else {
-        int disk = layerdisk_ - (N_LAYER-1);
+        int disk = layerdisk_ - (N_LAYER - 1);
         fpgaphi = tracklet->fpgaphiprojdisk(disk);
 
         //The next lines looks up the predicted bend based on:

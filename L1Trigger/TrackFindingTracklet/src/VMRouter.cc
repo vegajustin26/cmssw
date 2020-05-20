@@ -95,7 +95,7 @@ void VMRouter::addOutput(MemoryBase* memory, string output) {
           iseed = 10;
         inner = 2;
       } else {
-	throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
+        throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
       }
       assert(iseed != -1);
       int seedindex = -1;
@@ -197,7 +197,7 @@ void VMRouter::execute() {
       //Take the top nbitszfinebintable_ bits of the z coordinate
       int indexz = (((1 << (stub->z().nbits() - 1)) + stub->z().value()) >> (stub->z().nbits() - nbitszfinebintable_));
       int indexr = -1;
-      if (layerdisk_ > (N_LAYER-1)) {
+      if (layerdisk_ > (N_LAYER - 1)) {
         if (negdisk) {
           indexz = (1 << nbitszfinebintable_) - indexz;
         }
@@ -243,7 +243,7 @@ void VMRouter::execute() {
       //Fill the TE VM memories
 
       for (auto& ivmstubTEPHI : vmstubsTEPHI_) {
-	unsigned int iseed = ivmstubTEPHI.first.first;
+        unsigned int iseed = ivmstubTEPHI.first.first;
         unsigned int inner = ivmstubTEPHI.first.second;
         if ((iseed == 4 || iseed == 5 || iseed == 6 || iseed == 7) && (!stub->isPSmodule()))
           continue;
