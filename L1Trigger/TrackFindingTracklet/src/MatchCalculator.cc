@@ -26,14 +26,14 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
   //TODO - need to sort out constants here
   icorrshift_ = 7;
 
-  if (layerdisk_ < 3) {
+  if (layerdisk_ < N_PSLAYER) {
     icorzshift_ = -1 - settings_->PS_zderL_shift();
   } else {
     icorzshift_ = -1 - settings_->SS_zderL_shift();
   }
   phi0shift_ = 3;
   fact_ = 1;
-  if (layerdisk_ >= 3 && layerdisk_ < 6) {
+  if (layerdisk_ >= N_PSLAYER && layerdisk_ < N_LAYER) {
     fact_ = (1 << (settings_->nzbitsstub(0) - settings_->nzbitsstub(5)));
     icorrshift_ -= (10 - settings_->nrbitsstub(layerdisk_));
     icorzshift_ += (settings_->nzbitsstub(0) - settings_->nzbitsstub(5) + settings_->nrbitsstub(layerdisk_) -
@@ -41,24 +41,24 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
     phi0shift_ = 0;
   }
 
-  for (unsigned int iSeed = 0; iSeed < 12; iSeed++) {
-    if (layerdisk_ < 6) {
+  for (unsigned int iSeed = 0; iSeed < N_SEEDINDEX; iSeed++) {
+    if (layerdisk_ < N_LAYER) {
       phimatchcut_[iSeed] =
           settings_->rphimatchcut(iSeed, layerdisk_) / (settings_->kphi1() * settings_->rmean(layerdisk_));
       zmatchcut_[iSeed] = settings_->zmatchcut(iSeed, layerdisk_) / settings_->kz();
     } else {
-      rphicutPS_[iSeed] = settings_->rphicutPS(iSeed, layerdisk_ - 6) / (settings_->kphi() * settings_->kr());
-      rphicut2S_[iSeed] = settings_->rphicut2S(iSeed, layerdisk_ - 6) / (settings_->kphi() * settings_->kr());
-      rcut2S_[iSeed] = settings_->rcut2S(iSeed, layerdisk_ - 6) / settings_->krprojshiftdisk();
-      rcutPS_[iSeed] = settings_->rcutPS(iSeed, layerdisk_ - 6) / settings_->krprojshiftdisk();
+      rphicutPS_[iSeed] = settings_->rphicutPS(iSeed, layerdisk_ - N_LAYER) / (settings_->kphi() * settings_->kr());
+      rphicut2S_[iSeed] = settings_->rphicut2S(iSeed, layerdisk_ - N_LAYER) / (settings_->kphi() * settings_->kr());
+      rcut2S_[iSeed] = settings_->rcut2S(iSeed, layerdisk_ - N_LAYER) / settings_->krprojshiftdisk();
+      rcutPS_[iSeed] = settings_->rcutPS(iSeed, layerdisk_ - N_LAYER) / settings_->krprojshiftdisk();
     }
   }
 
-  if (iSector_ == 0 && layerdisk_ < 6 && settings_->writeTable()) {
+  if (iSector_ == 0 && layerdisk_ < N_LAYER && settings_->writeTable()) {
     ofstream outphicut;
     outphicut.open(getName() + "_phicut.tab");
     outphicut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < 12; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
       if (seedindex != 0)
         outphicut << "," << endl;
       outphicut << phimatchcut_[seedindex];
@@ -69,7 +69,7 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
     ofstream outzcut;
     outzcut.open(getName() + "_zcut.tab");
     outzcut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < 12; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
       if (seedindex != 0)
         outzcut << "," << endl;
       outzcut << zmatchcut_[seedindex];
@@ -78,11 +78,11 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
     outzcut.close();
   }
 
-  if (iSector_ == 0 && layerdisk_ >= 6 && settings_->writeTable()) {
+  if (iSector_ == 0 && layerdisk_ >= N_LAYER && settings_->writeTable()) {
     ofstream outphicut;
     outphicut.open(getName() + "_PSphicut.tab");
     outphicut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < 12; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
       if (seedindex != 0)
         outphicut << "," << endl;
       outphicut << rphicutPS_[seedindex];
@@ -92,7 +92,7 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
 
     outphicut.open(getName() + "_2Sphicut.tab");
     outphicut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < 12; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
       if (seedindex != 0)
         outphicut << "," << endl;
       outphicut << rphicut2S_[seedindex];
@@ -103,7 +103,7 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
     ofstream outzcut;
     outzcut.open(getName() + "_PSrcut.tab");
     outzcut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < 12; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
       if (seedindex != 0)
         outzcut << "," << endl;
       outzcut << rcutPS_[seedindex];
@@ -113,7 +113,7 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
 
     outzcut.open(getName() + "_2Srcut.tab");
     outzcut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < 12; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
       if (seedindex != 0)
         outzcut << "," << endl;
       outzcut << rcut2S_[seedindex];
@@ -199,7 +199,7 @@ void MatchCalculator::execute() {
     }
     oldTracklet = tracklet;
 
-    if (layerdisk_ < 6) {
+    if (layerdisk_ < N_LAYER) {
       //Integer calculation
 
       int ir = fpgastub->r().value();
@@ -316,7 +316,7 @@ void MatchCalculator::execute() {
       assert(stub->z() * tracklet->t() > 0.0);
 
       int sign = (tracklet->t() > 0.0) ? 1 : -1;
-      int disk = sign * (layerdisk_ - 5);
+      int disk = sign * (layerdisk_ - (N_LAYER-1));
       assert(disk != 0);
 
       //Perform integer calculations here
@@ -379,7 +379,7 @@ void MatchCalculator::execute() {
       if (phi < 0)
         phi += 2 * M_PI;
 
-      double dz = z - sign * settings_->zmean(layerdisk_ - 6);
+      double dz = z - sign * settings_->zmean(layerdisk_ - N_LAYER);
 
       if (std::abs(dz) > settings_->dzmax()) {
         throw cms::Exception("LogicError")
@@ -533,7 +533,7 @@ std::vector<std::pair<std::pair<Tracklet*, int>, const Stub*> > MatchCalculator:
     }
   } while (bestIndex != -1);
 
-  if (layerdisk_ < 6) {
+  if (layerdisk_ < N_LAYER) {
     int lastTCID = -1;
     bool error = false;
 

@@ -396,54 +396,54 @@ void TrackDerTable::fillTable(const Settings* settings) {
     unsigned int nderivatives = derivatives_.size();
     edm::LogVerbatim("Tracklet") << "nderivatives = " << nderivatives;
 
-    const std::array<string, 7> seedings = {{"L1L2", "L3L4", "L5L6", "D1D2", "D3D4", "D1L1", "D1L2"}};
+    const std::array<string, N_SEEDINDEX_TRKL> seedings = {{"L1L2", "L3L4", "L5L6", "D1D2", "D3D4", "D1L1", "D1L2"}};
     const string prefix = "FitDerTableNew_";
 
     // open files for derivative tables
-    ofstream outrinvdphi[7];
-    for (unsigned int i = 0; i < 7; ++i) {
+    ofstream outrinvdphi[N_SEEDINDEX_TRKL];
+    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
       const string fname = prefix + "Rinvdphi_" + seedings[i] + ".txt";
       outrinvdphi[i].open(fname.c_str());
     }
 
-    ofstream outrinvdzordr[7];
-    for (unsigned int i = 0; i < 7; ++i) {
+    ofstream outrinvdzordr[N_SEEDINDEX_TRKL];
+    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
       const string fname = prefix + "Rinvdzordr_" + seedings[i] + ".txt";
       outrinvdzordr[i].open(fname.c_str());
     }
 
-    ofstream outphi0dphi[7];
-    for (unsigned int i = 0; i < 7; ++i) {
+    ofstream outphi0dphi[N_SEEDINDEX_TRKL];
+    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
       const string fname = prefix + "Phi0dphi_" + seedings[i] + ".txt";
       outphi0dphi[i].open(fname.c_str());
     }
 
-    ofstream outphi0dzordr[7];
-    for (unsigned int i = 0; i < 7; ++i) {
+    ofstream outphi0dzordr[N_SEEDINDEX_TRKL];
+    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
       const string fname = prefix + "Phi0dzordr_" + seedings[i] + ".txt";
       outphi0dzordr[i].open(fname.c_str());
     }
 
-    ofstream outtdphi[7];
-    for (unsigned int i = 0; i < 7; ++i) {
+    ofstream outtdphi[N_SEEDINDEX_TRKL];
+    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
       const string fname = prefix + "Tdphi_" + seedings[i] + ".txt";
       outtdphi[i].open(fname.c_str());
     }
 
-    ofstream outtdzordr[7];
-    for (unsigned int i = 0; i < 7; ++i) {
+    ofstream outtdzordr[N_SEEDINDEX_TRKL];
+    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
       const string fname = prefix + "Tdzordr_" + seedings[i] + ".txt";
       outtdzordr[i].open(fname.c_str());
     }
 
-    ofstream outz0dphi[7];
-    for (unsigned int i = 0; i < 7; ++i) {
+    ofstream outz0dphi[N_SEEDINDEX_TRKL];
+    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
       const string fname = prefix + "Z0dphi_" + seedings[i] + ".txt";
       outz0dphi[i].open(fname.c_str());
     }
 
-    ofstream outz0dzordr[7];
-    for (unsigned int i = 0; i < 7; ++i) {
+    ofstream outz0dzordr[N_SEEDINDEX_TRKL];
+    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
       string fname = prefix + "Z0dzordr_" + seedings[i] + ".txt";
       outz0dzordr[i].open(fname.c_str());
     }
@@ -758,10 +758,10 @@ void TrackDerTable::invert(std::vector<std::vector<double> >& M, unsigned int n)
 
 void TrackDerTable::calculateDerivatives(const Settings* settings,
                                          unsigned int nlayers,
-                                         double r[6],
+                                         double r[N_LAYER],
                                          unsigned int ndisks,
-                                         double z[5],
-                                         double alpha[5],
+                                         double z[N_DISK],
+                                         double alpha[N_DISK],
                                          double t,
                                          double rinv,
                                          double D[4][12],

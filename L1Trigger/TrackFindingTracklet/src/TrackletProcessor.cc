@@ -22,12 +22,12 @@ TrackletProcessor::TrackletProcessor(string name, const Settings* const settings
     phimin_ -= 2 * M_PI;
   phioffset_ = phimin_;
 
-  for (unsigned int ilayer = 0; ilayer < 6; ilayer++) {
+  for (unsigned int ilayer = 0; ilayer < N_LAYER; ilayer++) {
     vector<TrackletProjectionsMemory*> tmp(settings_->nallstubs(ilayer), nullptr);
     trackletprojlayers_.push_back(tmp);
   }
 
-  for (unsigned int idisk = 0; idisk < 5; idisk++) {
+  for (unsigned int idisk = 0; idisk < N_DISK; idisk++) {
     vector<TrackletProjectionsMemory*> tmp(settings_->nallstubs(idisk + N_LAYER), nullptr);
     trackletprojdisks_.push_back(tmp);
   }
@@ -216,7 +216,7 @@ void TrackletProcessor::addOutput(MemoryBase* memory, string output) {
     unsigned int phiregion = output[12] - 'A';  //phiregion counting from 0
 
     if (output[7] == 'L') {
-      assert(layerdisk < 6);
+      assert(layerdisk < N_LAYER);
       assert(phiregion < trackletprojlayers_[layerdisk].size());
       //check that phiregion not already initialized
       assert(trackletprojlayers_[layerdisk][phiregion] == nullptr);

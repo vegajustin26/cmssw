@@ -8,7 +8,7 @@ using namespace trklet;
 VMStubsMEMemory::VMStubsMEMemory(string name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
   unsigned int layerdisk = initLayerDisk(6);
-  if (layerdisk < 6) {
+  if (layerdisk < N_LAYER) {
     binnedstubs_.resize(settings_->NLONGVMBINS());
   } else {
     //For disks we have NLONGVMBITS on each disk

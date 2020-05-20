@@ -198,7 +198,7 @@ void VMRouter::execute() {
       //Take the top nbitszfinebintable_ bits of the z coordinate
       int indexz = (((1 << (stub->z().nbits() - 1)) + stub->z().value()) >> (stub->z().nbits() - nbitszfinebintable_));
       int indexr = -1;
-      if (layerdisk_ > 5) {
+      if (layerdisk_ > (N_LAYER-1)) {
         if (negdisk) {
           indexz = (1 << nbitszfinebintable_) - indexz;
         }
@@ -258,7 +258,7 @@ void VMRouter::execute() {
         int lutval = -999;
 
         if (inner > 0) {
-          if (layerdisk_ < 6) {
+          if (layerdisk_ < N_LAYER) {
             lutval = melut;
           } else {
             if (inner == 2 && iseed == 10) {
