@@ -31,7 +31,7 @@ void FPGAWord::set(int value, int nbits, bool positive, int line, const char* fi
   assert(nbits > 0);
   if (positive) {
     if (value >= (1 << nbits)) {
-      if (file != 0) {
+      if (file != nullptr) {
         edm::LogProblem("Tracklet") << "value too large:" << value << " " << (1 << nbits) << " (" << file << ":" << line
                                     << ")";
       }

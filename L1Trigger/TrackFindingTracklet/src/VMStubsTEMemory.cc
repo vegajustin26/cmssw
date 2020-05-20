@@ -11,7 +11,7 @@ VMStubsTEMemory::VMStubsTEMemory(string name, const Settings* const settings, un
   initLayerDisk(6, layer_, disk_);
 
   //Pointer to other VMStub memory for creating stub pairs
-  other_ = 0;
+  other_ = nullptr;
 
   //What type of seeding is this memory used for
   initSpecialSeeding(11, overlap_, extra_, extended_);

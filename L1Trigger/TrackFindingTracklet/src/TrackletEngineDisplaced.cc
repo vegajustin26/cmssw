@@ -19,7 +19,7 @@ TrackletEngineDisplaced::TrackletEngineDisplaced(string name,
     : ProcessBase(name, settings, global, iSector) {
   stubpairs_.clear();
   firstvmstubs_.clear();
-  secondvmstubs_ = 0;
+  secondvmstubs_ = nullptr;
   layer1_ = 0;
   layer2_ = 0;
   disk1_ = 0;
@@ -69,7 +69,7 @@ void TrackletEngineDisplaced::addOutput(MemoryBase* memory, string output) {
   }
   if (output == "stubpairout") {
     StubPairsMemory* tmp = dynamic_cast<StubPairsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     stubpairs_.push_back(tmp);
     return;
   }
@@ -83,13 +83,13 @@ void TrackletEngineDisplaced::addInput(MemoryBase* memory, string input) {
   }
   if (input == "firstvmstubin") {
     VMStubsTEMemory* tmp = dynamic_cast<VMStubsTEMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     firstvmstubs_.push_back(tmp);
     return;
   }
   if (input == "secondvmstubin") {
     VMStubsTEMemory* tmp = dynamic_cast<VMStubsTEMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     secondvmstubs_ = tmp;
     return;
   }
@@ -110,7 +110,7 @@ void TrackletEngineDisplaced::execute() {
     ;
 
   assert(!firstvmstubs_.empty());
-  assert(secondvmstubs_ != 0);
+  assert(secondvmstubs_ != nullptr);
 
   for (unsigned int iInnerMem = 0; iInnerMem < firstvmstubs_.size(); iInnerMem++) {
     assert(firstvmstubs_.at(iInnerMem)->nVMStubs() == firstvmstubs_.at(iInnerMem)->nVMStubs());

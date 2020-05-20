@@ -49,7 +49,7 @@ Tracklet::Tracklet(const trklet::Settings* settings,
 
   assert(disk_ || barrel_ || overlap_);
 
-  if (barrel_ && middleStub == NULL)
+  if (barrel_ && middleStub == nullptr)
     assert(innerStub->layer() < N_LAYER);
 
   innerStub_ = innerStub;
@@ -69,7 +69,7 @@ Tracklet::Tracklet(const trklet::Settings* settings,
   fpgapars_.z0().set(iz0, settings_->nbitsz0(), false, __LINE__, __FILE__);
   fpgapars_.t().set(it, settings_->nbitst(), false, __LINE__, __FILE__);
 
-  fpgatrack_ = NULL;
+  fpgatrack_ = nullptr;
 
   if (innerStub_)
     assert(innerStub_->layer() < N_LAYER || innerStub_->disk() < N_DISK);
@@ -884,8 +884,8 @@ unsigned int Tracklet::calcSeedIndex() const {
     seedindex = 8;  // L3L4L2
   if (middleFPGAStub_ && seedlayer == 4 && seeddisk == 0)
     seedindex = 9;  // L5L6L4
-  assert(innerFPGAStub_ != 0);
-  assert(outerFPGAStub_ != 0);
+  assert(innerFPGAStub_ != nullptr);
+  assert(outerFPGAStub_ != nullptr);
   if (middleFPGAStub_ && seedlayer == 2 && abs(seeddisk) == 1) {
     int l1 = (innerFPGAStub_ && innerFPGAStub_->isBarrel()) ? innerStub_->layer() + 1 : 999,
         l2 = (middleFPGAStub_ && middleFPGAStub_->isBarrel()) ? middleStub_->layer() + 1 : 999,

@@ -21,7 +21,7 @@ MatchCalculator::MatchCalculator(string name, const Settings* settings, Globals*
   phiregion_ = name[8] - 'A';
   layerdisk_ = initLayerDisk(3);
 
-  fullMatches_.resize(12, 0);
+  fullMatches_.resize(12, nullptr);
 
   //TODO - need to sort out constants here
   icorrshift_ = 7;
@@ -139,7 +139,7 @@ void MatchCalculator::addOutput(MemoryBase* memory, string output) {
   }
   if (output.substr(0, 8) == "matchout") {
     FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     unsigned int iSeed = getISeed(memory->getName());
     fullMatches_[iSeed] = tmp;
     return;
@@ -154,19 +154,19 @@ void MatchCalculator::addInput(MemoryBase* memory, string input) {
   }
   if (input == "allstubin") {
     AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     allstubs_ = tmp;
     return;
   }
   if (input == "allprojin") {
     AllProjectionsMemory* tmp = dynamic_cast<AllProjectionsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     allprojs_ = tmp;
     return;
   }
   if (input.substr(0, 5) == "match" && input.substr(input.size() - 2, 2) == "in") {
     CandidateMatchMemory* tmp = dynamic_cast<CandidateMatchMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     matches_.push_back(tmp);
     return;
   }
@@ -177,7 +177,7 @@ void MatchCalculator::execute() {
   unsigned int countall = 0;
   unsigned int countsel = 0;
 
-  Tracklet* oldTracklet = 0;
+  Tracklet* oldTracklet = nullptr;
 
   std::vector<std::pair<std::pair<Tracklet*, int>, const Stub*> > mergedMatches = mergeMatches(matches_);
 
@@ -194,7 +194,7 @@ void MatchCalculator::execute() {
 
     //check that the matches are orderd correctly
     //allow equal here since we can have more than one cadidate match per tracklet projection
-    if (oldTracklet != 0) {
+    if (oldTracklet != nullptr) {
       assert(oldTracklet->TCID() <= tracklet->TCID());
     }
     oldTracklet = tracklet;

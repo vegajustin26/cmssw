@@ -12,9 +12,9 @@ using namespace std;
 
 TrackletEngine::TrackletEngine(string name, const Settings* const settings, Globals* global, unsigned int iSector)
     : ProcessBase(name, settings, global, iSector) {
-  stubpairs_ = 0;
-  innervmstubs_ = 0;
-  outervmstubs_ = 0;
+  stubpairs_ = nullptr;
+  innervmstubs_ = nullptr;
+  outervmstubs_ = nullptr;
 
   initLayerDisksandISeed(layerdisk1_, layerdisk2_, iSeed_);
 
@@ -29,7 +29,7 @@ void TrackletEngine::addOutput(MemoryBase* memory, string output) {
   }
   if (output == "stubpairout") {
     StubPairsMemory* tmp = dynamic_cast<StubPairsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     stubpairs_ = tmp;
     return;
   }
@@ -43,14 +43,14 @@ void TrackletEngine::addInput(MemoryBase* memory, string input) {
   }
   if (input == "innervmstubin") {
     VMStubsTEMemory* tmp = dynamic_cast<VMStubsTEMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     innervmstubs_ = tmp;
     setVMPhiBin();
     return;
   }
   if (input == "outervmstubin") {
     VMStubsTEMemory* tmp = dynamic_cast<VMStubsTEMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     outervmstubs_ = tmp;
     setVMPhiBin();
     return;
@@ -66,8 +66,8 @@ void TrackletEngine::execute() {
   unsigned int countall = 0;
   unsigned int countpass = 0;
 
-  assert(innervmstubs_ != 0);
-  assert(outervmstubs_ != 0);
+  assert(innervmstubs_ != nullptr);
+  assert(outervmstubs_ != nullptr);
 
   for (unsigned int i = 0; i < innervmstubs_->nVMStubs(); i++) {
     const VMStubTE& innervmstub = innervmstubs_->getVMStubTE(i);
@@ -141,7 +141,7 @@ void TrackletEngine::execute() {
 }
 
 void TrackletEngine::setVMPhiBin() {
-  if (innervmstubs_ == 0 || outervmstubs_ == 0)
+  if (innervmstubs_ == nullptr || outervmstubs_ == nullptr)
     return;
 
   innervmstubs_->setother(outervmstubs_);

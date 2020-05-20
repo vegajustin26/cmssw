@@ -80,7 +80,7 @@ void TripletEngine::addOutput(MemoryBase *memory, string output) {
   }
   if (output == "stubtripout") {
     StubTripletsMemory *tmp = dynamic_cast<StubTripletsMemory *>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     stubtriplets_ = tmp;
     return;
   }
@@ -94,13 +94,13 @@ void TripletEngine::addInput(MemoryBase *memory, string input) {
   }
   if (input == "thirdvmstubin") {
     VMStubsTEMemory *tmp = dynamic_cast<VMStubsTEMemory *>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     thirdvmstubs_.push_back(tmp);
     return;
   }
   if (input.substr(0, 8) == "stubpair") {
     StubPairsMemory *tmp = dynamic_cast<StubPairsMemory *>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     stubpairs_.push_back(tmp);
     return;
   }

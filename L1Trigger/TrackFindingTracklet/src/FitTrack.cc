@@ -21,7 +21,7 @@ void FitTrack::addOutput(MemoryBase* memory, string output) {
   }
   if (output == "trackout") {
     TrackFitMemory* tmp = dynamic_cast<TrackFitMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     trackfit_ = tmp;
     return;
   }
@@ -36,31 +36,31 @@ void FitTrack::addInput(MemoryBase* memory, string input) {
   }
   if (input.substr(0, 4) == "tpar") {
     TrackletParametersMemory* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     seedtracklet_.push_back(tmp);
     return;
   }
   if (input.substr(0, 10) == "fullmatch1") {
     FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     fullmatch1_.push_back(tmp);
     return;
   }
   if (input.substr(0, 10) == "fullmatch2") {
     FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     fullmatch2_.push_back(tmp);
     return;
   }
   if (input.substr(0, 10) == "fullmatch3") {
     FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     fullmatch3_.push_back(tmp);
     return;
   }
   if (input.substr(0, 10) == "fullmatch4") {
     FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     fullmatch4_.push_back(tmp);
     return;
   }
@@ -136,7 +136,7 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
 #endif
 
 void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std::vector<std::pair<int, int>>&) {
-  if (globals_->trackDerTable() == 0) {
+  if (globals_->trackDerTable() == nullptr) {
     TrackDerTable* derTablePtr = new TrackDerTable(settings_);
 
     derTablePtr->readPatternFile(settings_->fitPatternFile());
@@ -413,7 +413,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
 
   const TrackDer* derivatives = derTable.getDerivatives(layermask, diskmask, alphaindex, rinvindex);
 
-  if (derivatives == 0) {
+  if (derivatives == nullptr) {
     if (settings_->warnNoDer()) {
       FPGAWord tmpl, tmpd;
       tmpl.set(layermask, 6);
@@ -882,13 +882,13 @@ void FitTrack::execute() {
   int countAll = 0;
   int countFit = 0;
 
-  Tracklet* bestTracklet = 0;
+  Tracklet* bestTracklet = nullptr;
   do {
     countAll++;
-    bestTracklet = 0;
+    bestTracklet = nullptr;
 
     if (indexArray[0] < matches1.size()) {
-      if (bestTracklet == 0) {
+      if (bestTracklet == nullptr) {
         bestTracklet = matches1[indexArray[0]];
       } else {
         if (matches1[indexArray[0]]->TCID() < bestTracklet->TCID())
@@ -897,7 +897,7 @@ void FitTrack::execute() {
     }
 
     if (indexArray[1] < matches2.size()) {
-      if (bestTracklet == 0) {
+      if (bestTracklet == nullptr) {
         bestTracklet = matches2[indexArray[1]];
       } else {
         if (matches2[indexArray[1]]->TCID() < bestTracklet->TCID())
@@ -906,7 +906,7 @@ void FitTrack::execute() {
     }
 
     if (indexArray[2] < matches3.size()) {
-      if (bestTracklet == 0) {
+      if (bestTracklet == nullptr) {
         bestTracklet = matches3[indexArray[2]];
       } else {
         if (matches3[indexArray[2]]->TCID() < bestTracklet->TCID())
@@ -915,7 +915,7 @@ void FitTrack::execute() {
     }
 
     if (indexArray[3] < matches4.size()) {
-      if (bestTracklet == 0) {
+      if (bestTracklet == nullptr) {
         bestTracklet = matches4[indexArray[3]];
       } else {
         if (matches4[indexArray[3]]->TCID() < bestTracklet->TCID())
@@ -923,7 +923,7 @@ void FitTrack::execute() {
       }
     }
 
-    if (bestTracklet == 0)
+    if (bestTracklet == nullptr)
       break;
 
     //Counts total number of matched hits
@@ -1005,7 +1005,7 @@ void FitTrack::execute() {
         trackfit_->addStubidsList(stubidslist);
         trackfit_->addTrack(bestTracklet);
       } else if (bestTracklet->fit()) {
-        assert(trackfit_ != 0);
+        assert(trackfit_ != nullptr);
         if (settings_->writeMonitorData("Seeds")) {
           ofstream fout("seeds.txt", ofstream::app);
           fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << bestTracklet->getISeed()
@@ -1016,7 +1016,7 @@ void FitTrack::execute() {
       }
     }
 
-  } while (bestTracklet != 0);
+  } while (bestTracklet != nullptr);
 
   if (settings_->writeMonitorData("FT")) {
     globals_->ofstream("fittrack.txt") << getName() << " " << countAll << " " << countFit << endl;

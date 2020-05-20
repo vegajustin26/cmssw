@@ -43,7 +43,7 @@ void PurgeDuplicate::addOutput(MemoryBase* memory, std::string output) {
                                    "trackout11"};
   if (outputs.find(output) != outputs.end()) {
     CleanTrackMemory* tmp = dynamic_cast<CleanTrackMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     outputtracklets_.push_back(tmp);
     return;
   }
@@ -70,7 +70,7 @@ void PurgeDuplicate::addInput(MemoryBase* memory, std::string input) {
                                   "trackin11"};
   if (inputs.find(input) != inputs.end()) {
     TrackFitMemory* tmp = dynamic_cast<TrackFitMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     inputtrackfits_.push_back(tmp);
     return;
   }

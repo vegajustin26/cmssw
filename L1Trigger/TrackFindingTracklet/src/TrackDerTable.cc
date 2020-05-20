@@ -43,7 +43,7 @@ const TrackDer* TrackDerTable::getDerivatives(unsigned int layermask,
                                               unsigned int rinvindex) const {
   int index = getIndex(layermask, diskmask);
   if (index < 0) {
-    return 0;
+    return nullptr;
   }
   return &derivatives_[index + alphaindex * (1 << settings_->nrinvBitsTable()) + rinvindex];
 }
@@ -174,7 +174,7 @@ void TrackDerTable::readPatternFile(std::string fileName) {
     if (!in.good())
       continue;
 
-    char** tmpptr = 0;
+    char** tmpptr = nullptr;
 
     int layers = strtol(layerstr.c_str(), tmpptr, 2);
     int disks = strtol(diskstr.c_str(), tmpptr, 2);

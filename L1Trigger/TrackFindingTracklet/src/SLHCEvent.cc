@@ -118,12 +118,12 @@ SLHCEvent::SLHCEvent(istream& in) {
     double vy;
     double vz;
     in >> eventid >> trackid >> type >> pt_str >> eta_str >> phi_str >> vx_str >> vy_str >> vz_str;
-    pt = strtod(pt_str.c_str(), NULL);
-    eta = strtod(eta_str.c_str(), NULL);
-    phi = strtod(phi_str.c_str(), NULL);
-    vx = strtod(vx_str.c_str(), NULL);
-    vy = strtod(vy_str.c_str(), NULL);
-    vz = strtod(vz_str.c_str(), NULL);
+    pt = strtod(pt_str.c_str(), nullptr);
+    eta = strtod(eta_str.c_str(), nullptr);
+    phi = strtod(phi_str.c_str(), nullptr);
+    vx = strtod(vx_str.c_str(), nullptr);
+    vy = strtod(vy_str.c_str(), nullptr);
+    vz = strtod(vz_str.c_str(), nullptr);
     vx -= x_offset_;
     vy -= y_offset_;
     L1SimTrack simtrack(eventid, trackid, type, pt, eta, phi, vx, vy, vz);

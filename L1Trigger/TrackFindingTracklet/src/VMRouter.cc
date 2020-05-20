@@ -16,7 +16,7 @@ VMRouter::VMRouter(string name, const Settings* settings, Globals* global, unsig
     : ProcessBase(name, settings, global, iSector), vmrtable_(settings) {
   layerdisk_ = initLayerDisk(4);
 
-  vmstubsMEPHI_.resize(settings_->nvmme(layerdisk_), 0);
+  vmstubsMEPHI_.resize(settings_->nvmme(layerdisk_), nullptr);
 
   overlapbits_ = 7;
   nextrabits_ = overlapbits_ - (settings_->nbitsallstubs(layerdisk_) + settings_->nbitsvmme(layerdisk_));
@@ -35,7 +35,7 @@ void VMRouter::addOutput(MemoryBase* memory, string output) {
 
   if (output.substr(0, 10) == "allstubout") {
     AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     allstubs_.push_back(tmp);
     return;
   }
@@ -56,7 +56,7 @@ void VMRouter::addOutput(MemoryBase* memory, string output) {
     unsigned int inner = 1;
     if (memory->getName().substr(3, 2) == "TE") {
       VMStubsTEMemory* tmp = dynamic_cast<VMStubsTEMemory*>(memory);
-      assert(tmp != 0);
+      assert(tmp != nullptr);
       if (seedtype < 'I') {
         if (layerdisk_ == 0 || layerdisk_ == 1)
           iseed = 0;
@@ -115,7 +115,7 @@ void VMRouter::addOutput(MemoryBase* memory, string output) {
 
     } else if (memory->getName().substr(3, 2) == "ME") {
       VMStubsMEMemory* tmp = dynamic_cast<VMStubsMEMemory*>(memory);
-      assert(tmp != 0);
+      assert(tmp != nullptr);
       vmstubsMEPHI_[(vmbin - 1) & (settings_->nvmme(layerdisk_) - 1)] = tmp;
     } else {
       assert(0);
@@ -135,8 +135,8 @@ void VMRouter::addInput(MemoryBase* memory, string input) {
   }
   if (input == "stubin") {
     InputLinkMemory* tmp1 = dynamic_cast<InputLinkMemory*>(memory);
-    assert(tmp1 != 0);
-    if (tmp1 != 0) {
+    assert(tmp1 != nullptr);
+    if (tmp1 != nullptr) {
       stubinputs_.push_back(tmp1);
     }
     return;
@@ -233,11 +233,11 @@ void VMRouter::execute() {
           stub->bend(),
           allStubIndex);
 
-      assert(vmstubsMEPHI_[ivmPlus] != 0);
+      assert(vmstubsMEPHI_[ivmPlus] != nullptr);
       vmstubsMEPHI_[ivmPlus]->addStub(vmstub, vmbin);
 
       if (ivmMinus != ivmPlus) {
-        assert(vmstubsMEPHI_[ivmMinus] != 0);
+        assert(vmstubsMEPHI_[ivmMinus] != nullptr);
         vmstubsMEPHI_[ivmMinus]->addStub(vmstub, vmbin);
       }
 

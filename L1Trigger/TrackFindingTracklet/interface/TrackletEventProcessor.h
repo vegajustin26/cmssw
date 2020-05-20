@@ -33,7 +33,7 @@ namespace trklet {
     std::vector<Track*>& tracks() { return tracks_; }
 
   private:
-    const Settings* settings_{0};
+    const Settings* settings_{nullptr};
 
     Globals* globals_{};
 

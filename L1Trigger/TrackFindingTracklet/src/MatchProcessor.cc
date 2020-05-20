@@ -166,10 +166,10 @@ void MatchProcessor::addOutput(MemoryBase* memory, string output) {
   }
   if (output.find("matchout") != std::string::npos) {
     FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     unsigned int iSeed = getISeed(tmp->getName());
     assert(iSeed < fullmatches_.size());
-    assert(fullmatches_[iSeed] == 0);
+    assert(fullmatches_[iSeed] == nullptr);
     fullmatches_[iSeed] = tmp;
     return;
   }
@@ -184,19 +184,19 @@ void MatchProcessor::addInput(MemoryBase* memory, string input) {
   }
   if (input == "allstubin") {
     AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     allstubs_ = tmp;
     return;
   }
   if (input == "vmstubin") {
     VMStubsMEMemory* tmp = dynamic_cast<VMStubsMEMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     vmstubs_.push_back(tmp);  //to allow more than one stub in?  vmstubs_=tmp;
     return;
   }
   if (input == "projin") {
     TrackletProjectionsMemory* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     inputprojs_.push_back(tmp);
     return;
   }
@@ -205,7 +205,7 @@ void MatchProcessor::addInput(MemoryBase* memory, string input) {
 }
 
 void MatchProcessor::execute() {
-  if (globals_->projectionRouterBendTable() == 0) {  // move to constructor?!
+  if (globals_->projectionRouterBendTable() == nullptr) {  // move to constructor?!
     ProjectionRouterBendTable* bendTablePtr = new ProjectionRouterBendTable();
     bendTablePtr->init(settings_, globals_, nrbits_, nphiderbits_);
     globals_->projectionRouterBendTable() = bendTablePtr;
@@ -225,7 +225,7 @@ void MatchProcessor::execute() {
 
      */
 
-  Tracklet* oldTracklet = 0;
+  Tracklet* oldTracklet = nullptr;
 
   unsigned int countall = 0;
   unsigned int countsel = 0;
@@ -348,7 +348,7 @@ void MatchProcessor::execute() {
       const Stub* fpgastub = candmatch.second;
       Tracklet* tracklet = candmatch.first;
 
-      if (oldTracklet != 0) {
+      if (oldTracklet != nullptr) {
         //allow equal here since we can have more than one cadidate match per tracklet projection
         assert(oldTracklet->TCID() <= tracklet->TCID());
       }
@@ -477,7 +477,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       }
 
       int iSeed = tracklet->getISeed();
-      assert(fullmatches_[iSeed] != 0);
+      assert(fullmatches_[iSeed] != nullptr);
       fullmatches_[iSeed]->addMatch(tracklet, fpgastub);
 
       return true;
@@ -644,7 +644,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       }
 
       int iSeed = tracklet->getISeed();
-      assert(fullmatches_[iSeed] != 0);
+      assert(fullmatches_[iSeed] != nullptr);
       fullmatches_[iSeed]->addMatch(tracklet, fpgastub);
 
       return true;

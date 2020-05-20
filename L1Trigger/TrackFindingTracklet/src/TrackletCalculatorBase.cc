@@ -251,14 +251,14 @@ void TrackletCalculatorBase::addProjection(int layer,
                                            int iphi,
                                            TrackletProjectionsMemory* trackletprojs,
                                            Tracklet* tracklet) {
-  if (trackletprojs == 0) {
+  if (trackletprojs == nullptr) {
     if (settings_->warnNoMem()) {
       edm::LogVerbatim("Tracklet") << "No projection memory exists in " << getName() << " for layer = " << layer
                                    << " iphi = " << iphi + 1;
     }
     return;
   }
-  assert(trackletprojs != 0);
+  assert(trackletprojs != nullptr);
   trackletprojs->addProj(tracklet);
 }
 
@@ -268,7 +268,7 @@ void TrackletCalculatorBase::addProjectionDisk(int disk,
                                                Tracklet* tracklet) {
   if (iSeed_ == 2 && abs(disk) == 4)
     return;  //L3L4 projections to D3 are not used. Should be in configuration
-  if (trackletprojs == 0) {
+  if (trackletprojs == nullptr) {
     if (iSeed_ == 2 && abs(disk) == 3)
       return;  //L3L4 projections to D3 are not used.
     if (settings_->warnNoMem()) {
@@ -277,7 +277,7 @@ void TrackletCalculatorBase::addProjectionDisk(int disk,
     }
     return;
   }
-  assert(trackletprojs != 0);
+  assert(trackletprojs != nullptr);
   trackletprojs->addProj(tracklet);
 }
 
@@ -645,10 +645,10 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
 
   Tracklet* tracklet = new Tracklet(settings_,
                                     innerStub,
-                                    NULL,
+                                    nullptr,
                                     outerStub,
                                     innerFPGAStub,
-                                    NULL,
+                                    nullptr,
                                     outerFPGAStub,
                                     rinv,
                                     phi0,
@@ -1042,10 +1042,10 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
 
   Tracklet* tracklet = new Tracklet(settings_,
                                     innerStub,
-                                    NULL,
+                                    nullptr,
                                     outerStub,
                                     innerFPGAStub,
-                                    NULL,
+                                    nullptr,
                                     outerFPGAStub,
                                     rinv,
                                     phi0,
@@ -1407,10 +1407,10 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
 
   Tracklet* tracklet = new Tracklet(settings_,
                                     innerStub,
-                                    NULL,
+                                    nullptr,
                                     outerStub,
                                     innerFPGAStub,
-                                    NULL,
+                                    nullptr,
                                     outerFPGAStub,
                                     rinv,
                                     phi0,

@@ -16,12 +16,12 @@ TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name,
                                                          unsigned int iSector)
     : ProcessBase(name, settings, global, iSector) {
   for (unsigned int ilayer = 0; ilayer < 6; ilayer++) {
-    vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(ilayer), 0);
+    vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(ilayer), nullptr);
     trackletprojlayers_.push_back(tmp);
   }
 
   for (unsigned int idisk = 0; idisk < 5; idisk++) {
-    vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(idisk + 6), 0);
+    vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(idisk + 6), nullptr);
     trackletprojdisks_.push_back(tmp);
   }
 
@@ -124,7 +124,7 @@ TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name,
 
 void TrackletCalculatorDisplaced::addOutputProjection(TrackletProjectionsMemory*& outputProj, MemoryBase* memory) {
   outputProj = dynamic_cast<TrackletProjectionsMemory*>(memory);
-  assert(outputProj != 0);
+  assert(outputProj != nullptr);
 }
 
 void TrackletCalculatorDisplaced::addOutput(MemoryBase* memory, string output) {
@@ -134,7 +134,7 @@ void TrackletCalculatorDisplaced::addOutput(MemoryBase* memory, string output) {
   }
   if (output == "trackpar") {
     TrackletParametersMemory* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     trackletpars_ = tmp;
     return;
   }
@@ -142,7 +142,7 @@ void TrackletCalculatorDisplaced::addOutput(MemoryBase* memory, string output) {
   if (output.substr(0, 7) == "projout") {
     //output is on the form 'projoutL2PHIC' or 'projoutD3PHIB'
     TrackletProjectionsMemory* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
 
     unsigned int layerdisk = output[8] - '1';   //layer or disk counting from 0
     unsigned int phiregion = output[12] - 'A';  //phiregion counting from 0
@@ -151,7 +151,7 @@ void TrackletCalculatorDisplaced::addOutput(MemoryBase* memory, string output) {
       assert(layerdisk < 6);
       assert(phiregion < trackletprojlayers_[layerdisk].size());
       //check that phiregion not already initialized
-      assert(trackletprojlayers_[layerdisk][phiregion] == 0);
+      assert(trackletprojlayers_[layerdisk][phiregion] == nullptr);
       trackletprojlayers_[layerdisk][phiregion] = tmp;
       return;
     }
@@ -160,7 +160,7 @@ void TrackletCalculatorDisplaced::addOutput(MemoryBase* memory, string output) {
       assert(layerdisk < 5);
       assert(phiregion < trackletprojdisks_[layerdisk].size());
       //check that phiregion not already initialized
-      assert(trackletprojdisks_[layerdisk][phiregion] == 0);
+      assert(trackletprojdisks_[layerdisk][phiregion] == nullptr);
       trackletprojdisks_[layerdisk][phiregion] = tmp;
       return;
     }
@@ -177,25 +177,25 @@ void TrackletCalculatorDisplaced::addInput(MemoryBase* memory, string input) {
   }
   if (input == "thirdallstubin") {
     AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     innerallstubs_.push_back(tmp);
     return;
   }
   if (input == "firstallstubin") {
     AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     middleallstubs_.push_back(tmp);
     return;
   }
   if (input == "secondallstubin") {
     AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     outerallstubs_.push_back(tmp);
     return;
   }
   if (input.find("stubtriplet") == 0) {
     StubTripletsMemory* tmp = dynamic_cast<StubTripletsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     stubtriplets_.push_back(tmp);
     return;
   }
@@ -321,14 +321,14 @@ void TrackletCalculatorDisplaced::addProjection(int layer,
                                                 int iphi,
                                                 TrackletProjectionsMemory* trackletprojs,
                                                 Tracklet* tracklet) {
-  if (trackletprojs == 0) {
+  if (trackletprojs == nullptr) {
     if (settings_->warnNoMem()) {
       edm::LogVerbatim("Tracklet") << "No projection memory exists in " << getName() << " for layer = " << layer
                                    << " iphi = " << iphi + 1;
     }
     return;
   }
-  assert(trackletprojs != 0);
+  assert(trackletprojs != nullptr);
   trackletprojs->addProj(tracklet);
 }
 
@@ -336,7 +336,7 @@ void TrackletCalculatorDisplaced::addProjectionDisk(int disk,
                                                     int iphi,
                                                     TrackletProjectionsMemory* trackletprojs,
                                                     Tracklet* tracklet) {
-  if (trackletprojs == 0) {
+  if (trackletprojs == nullptr) {
     if (layer_ == 3 && abs(disk) == 3)
       return;  //L3L4 projections to D3 are not used.
     if (settings_->warnNoMem()) {
@@ -345,7 +345,7 @@ void TrackletCalculatorDisplaced::addProjectionDisk(int disk,
     }
     return;
   }
-  assert(trackletprojs != 0);
+  assert(trackletprojs != nullptr);
   trackletprojs->addProj(tracklet);
 }
 

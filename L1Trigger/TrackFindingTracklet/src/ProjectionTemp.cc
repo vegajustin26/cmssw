@@ -20,7 +20,7 @@ ProjectionTemp::ProjectionTemp(Tracklet* proj,
 }
 
 ProjectionTemp::ProjectionTemp() {
-  proj_ = 0;
+  proj_ = nullptr;
   slot_ = 0;
   projrinv_ = 0;
   projfinerz_ = 0;

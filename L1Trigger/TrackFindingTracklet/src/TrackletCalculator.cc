@@ -18,12 +18,12 @@ TrackletCalculator::TrackletCalculator(string name,
   phioffset_ = phimin_;
 
   for (unsigned int ilayer = 0; ilayer < 6; ilayer++) {
-    vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(ilayer), 0);
+    vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(ilayer), nullptr);
     trackletprojlayers_.push_back(tmp);
   }
 
   for (unsigned int idisk = 0; idisk < 5; idisk++) {
-    vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(idisk + 6), 0);
+    vector<TrackletProjectionsMemory*> tmp(settings->nallstubs(idisk + 6), nullptr);
     trackletprojdisks_.push_back(tmp);
   }
 
@@ -46,7 +46,7 @@ TrackletCalculator::TrackletCalculator(string name,
 
 void TrackletCalculator::addOutputProjection(TrackletProjectionsMemory*& outputProj, MemoryBase* memory) {
   outputProj = dynamic_cast<TrackletProjectionsMemory*>(memory);
-  assert(outputProj != 0);
+  assert(outputProj != nullptr);
 }
 
 void TrackletCalculator::addOutput(MemoryBase* memory, string output) {
@@ -56,7 +56,7 @@ void TrackletCalculator::addOutput(MemoryBase* memory, string output) {
   }
   if (output == "trackpar") {
     TrackletParametersMemory* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     trackletpars_ = tmp;
     return;
   }
@@ -64,7 +64,7 @@ void TrackletCalculator::addOutput(MemoryBase* memory, string output) {
   if (output.substr(0, 7) == "projout") {
     //output is on the form 'projoutL2PHIC' or 'projoutD3PHIB'
     TrackletProjectionsMemory* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
 
     unsigned int layerdisk = output[8] - '1';   //layer or disk counting from 0
     unsigned int phiregion = output[12] - 'A';  //phiregion counting from 0
@@ -73,7 +73,7 @@ void TrackletCalculator::addOutput(MemoryBase* memory, string output) {
       assert(layerdisk < 6);
       assert(phiregion < trackletprojlayers_[layerdisk].size());
       //check that phiregion not already initialized
-      assert(trackletprojlayers_[layerdisk][phiregion] == 0);
+      assert(trackletprojlayers_[layerdisk][phiregion] == nullptr);
       trackletprojlayers_[layerdisk][phiregion] = tmp;
       return;
     }
@@ -82,7 +82,7 @@ void TrackletCalculator::addOutput(MemoryBase* memory, string output) {
       assert(layerdisk < 5);
       assert(phiregion < trackletprojdisks_[layerdisk].size());
       //check that phiregion not already initialized
-      assert(trackletprojdisks_[layerdisk][phiregion] == 0);
+      assert(trackletprojdisks_[layerdisk][phiregion] == nullptr);
       trackletprojdisks_[layerdisk][phiregion] = tmp;
       return;
     }
@@ -99,19 +99,19 @@ void TrackletCalculator::addInput(MemoryBase* memory, string input) {
   }
   if (input == "innerallstubin") {
     AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     innerallstubs_.push_back(tmp);
     return;
   }
   if (input == "outerallstubin") {
     AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     outerallstubs_.push_back(tmp);
     return;
   }
   if (input.substr(0, 8) == "stubpair") {
     StubPairsMemory* tmp = dynamic_cast<StubPairsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     stubpairs_.push_back(tmp);
     return;
   }

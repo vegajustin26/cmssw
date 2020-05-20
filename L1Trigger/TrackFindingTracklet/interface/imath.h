@@ -167,7 +167,7 @@ public:
     step_ = std::max(step1, step2);
 
     cuts_.clear();
-    cut_var_ = NULL;
+    cut_var_ = nullptr;
 
     pipe_counter_ = 0;
     pipe_delays_.clear();
@@ -215,15 +215,15 @@ public:
 
   bool local_passes() const;
   void passes(std::map<const VarBase *, std::vector<bool> > &passes,
-              const std::map<const VarBase *, std::vector<bool> > *const previous_passes = NULL) const;
+              const std::map<const VarBase *, std::vector<bool> > *const previous_passes = nullptr) const;
   void print_cuts(std::map<const VarBase *, std::set<std::string> > &cut_strings,
                   const int step,
                   Verilog,
-                  const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = NULL) const;
+                  const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = nullptr) const;
   void print_cuts(std::map<const VarBase *, std::set<std::string> > &cut_strings,
                   const int step,
                   HLS,
-                  const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = NULL) const;
+                  const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = nullptr) const;
   void add_cut(VarCut *cut, const bool call_set_cut_var = true);
   VarBase *cut_var();
 
@@ -342,7 +342,7 @@ public:
              double epsilon = 1e-5,
              bool do_assert = false,
              int nbits = -1)
-      : VarBase(globals, name, p1, 0, 0, 0) {
+      : VarBase(globals, name, p1, nullptr, nullptr, 0) {
     op_ = "adjustK";
     K_ = p1->K();
     Kmap_ = p1->Kmap();
@@ -383,7 +383,7 @@ public:
               double epsilon = 1e-5,
               bool do_assert = false,
               int nbits = -1)
-      : VarBase(globals, name, p1, 0, 0, 1) {
+      : VarBase(globals, name, p1, nullptr, nullptr, 1) {
     op_ = "adjustKR";
     K_ = p1->K();
     Kmap_ = p1->Kmap();
@@ -415,7 +415,7 @@ protected:
 
 class VarParam : public VarBase {
 public:
-  VarParam(imathGlobals *globals, std::string name, double fval, int nbits) : VarBase(globals, name, 0, 0, 0, 0) {
+  VarParam(imathGlobals *globals, std::string name, double fval, int nbits) : VarBase(globals, name, nullptr, nullptr, nullptr, 0) {
     op_ = "const";
     nbits_ = nbits;
     int l = log2(std::abs(fval)) + 1.9999999 - nbits;
@@ -425,7 +425,7 @@ public:
     ival_ = fval / K_;
   }
   VarParam(imathGlobals *globals, std::string name, std::string units, double fval, double K)
-      : VarBase(globals, name, 0, 0, 0, 0) {
+      : VarBase(globals, name, nullptr, nullptr, nullptr, 0) {
     op_ = "const";
     K_ = K;
     nbits_ = log2(fval / K) + 1.999999;  //plus one to round up
@@ -466,7 +466,7 @@ class VarDef : public VarBase {
 public:
   //construct from scratch
   VarDef(imathGlobals *globals, std::string name, std::string units, double fmax, double K)
-      : VarBase(globals, name, 0, 0, 0, 1) {
+      : VarBase(globals, name, nullptr, nullptr, nullptr, 1) {
     op_ = "def";
     K_ = K;
     nbits_ = log2(fmax / K) + 1.999999;  //plus one to round up
@@ -484,7 +484,7 @@ public:
     }
   }
   //construct from abother variable (all provenance info is lost!)
-  VarDef(imathGlobals *globals, std::string name, VarBase *p) : VarBase(globals, name, 0, 0, 0, 1) {
+  VarDef(imathGlobals *globals, std::string name, VarBase *p) : VarBase(globals, name, nullptr, nullptr, nullptr, 1) {
     op_ = "def";
     K_ = p->K();
     nbits_ = p->nbits();
@@ -511,7 +511,7 @@ public:
 class VarAdd : public VarBase {
 public:
   VarAdd(imathGlobals *globals, std::string name, VarBase *p1, VarBase *p2, double range = -1, int nmax = 18)
-      : VarBase(globals, name, p1, p2, 0, 1) {
+      : VarBase(globals, name, p1, p2, nullptr, 1) {
     op_ = "add";
 
     std::map<std::string, int> map1 = p1->Kmap();
@@ -601,7 +601,7 @@ protected:
 class VarSubtract : public VarBase {
 public:
   VarSubtract(imathGlobals *globals, std::string name, VarBase *p1, VarBase *p2, double range = -1, int nmax = 18)
-      : VarBase(globals, name, p1, p2, 0, 1) {
+      : VarBase(globals, name, p1, p2, nullptr, 1) {
     op_ = "subtract";
 
     std::map<std::string, int> map1 = p1->Kmap();
@@ -693,7 +693,7 @@ protected:
 class VarNounits : public VarBase {
 public:
   VarNounits(imathGlobals *globals, std::string name, VarBase *p1, int ps = 17)
-      : VarBase(globals, name, p1, 0, 0, MULT_LATENCY) {
+      : VarBase(globals, name, p1, nullptr, nullptr, MULT_LATENCY) {
     op_ = "nounits";
     ps_ = ps;
     nbits_ = p1->nbits();
@@ -721,7 +721,7 @@ protected:
 class VarShiftround : public VarBase {
 public:
   VarShiftround(imathGlobals *globals, std::string name, VarBase *p1, int shift)
-      : VarBase(globals, name, p1, 0, 0, 1) {  // latency is one because there is an addition
+      : VarBase(globals, name, p1, nullptr, nullptr, 1) {  // latency is one because there is an addition
     op_ = "shiftround";
     shift_ = shift;
 
@@ -741,7 +741,7 @@ protected:
 
 class VarShift : public VarBase {
 public:
-  VarShift(imathGlobals *globals, std::string name, VarBase *p1, int shift) : VarBase(globals, name, p1, 0, 0, 0) {
+  VarShift(imathGlobals *globals, std::string name, VarBase *p1, int shift) : VarBase(globals, name, p1, nullptr, nullptr, 0) {
     op_ = "shift";
     shift_ = shift;
 
@@ -760,7 +760,7 @@ protected:
 
 class VarNeg : public VarBase {
 public:
-  VarNeg(imathGlobals *globals, std::string name, VarBase *p1) : VarBase(globals, name, p1, 0, 0, 1) {
+  VarNeg(imathGlobals *globals, std::string name, VarBase *p1) : VarBase(globals, name, p1, nullptr, nullptr, 1) {
     op_ = "neg";
     nbits_ = p1->nbits();
     Kmap_ = p1->Kmap();
@@ -775,7 +775,7 @@ public:
 class VarTimesC : public VarBase {
 public:
   VarTimesC(imathGlobals *globals, std::string name, VarBase *p1, double cF, int ps = 17)
-      : VarBase(globals, name, p1, 0, 0, MULT_LATENCY) {
+      : VarBase(globals, name, p1, nullptr, nullptr, MULT_LATENCY) {
     op_ = "timesC";
     cF_ = cF;
     ps_ = ps;
@@ -808,7 +808,7 @@ protected:
 class VarMult : public VarBase {
 public:
   VarMult(imathGlobals *globals, std::string name, VarBase *p1, VarBase *p2, double range = -1, int nmax = 18)
-      : VarBase(globals, name, p1, p2, 0, MULT_LATENCY) {
+      : VarBase(globals, name, p1, p2, nullptr, MULT_LATENCY) {
     op_ = "mult";
 
     const std::map<std::string, int> map1 = p1->Kmap();
@@ -979,7 +979,7 @@ public:
          unsigned int shift,
          mode m,
          int nbaddr = -1)
-      : VarBase(globals, name, p1, 0, 0, LUT_LATENCY) {
+      : VarBase(globals, name, p1, nullptr, nullptr, LUT_LATENCY) {
     op_ = "inv";
     offset_ = offset;
     nbits_ = nbits;
@@ -1082,16 +1082,16 @@ public:
   double upper_cut() const { return upper_cut_; }
 
   void local_passes(std::map<const VarBase *, std::vector<bool> > &passes,
-                    const std::map<const VarBase *, std::vector<bool> > *const previous_passes = NULL) const;
+                    const std::map<const VarBase *, std::vector<bool> > *const previous_passes = nullptr) const;
   using VarBase::print;
   void print(std::map<const VarBase *, std::set<std::string> > &cut_strings,
              const int step,
              Verilog,
-             const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = NULL) const;
+             const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = nullptr) const;
   void print(std::map<const VarBase *, std::set<std::string> > &cut_strings,
              const int step,
              HLS,
-             const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = NULL) const;
+             const std::map<const VarBase *, std::set<std::string> > *const previous_cut_strings = nullptr) const;
 
   void set_parent_flag(VarFlag *parent_flag, const bool call_add_cut);
   VarFlag *parent_flag() { return parent_flag_; }
@@ -1106,7 +1106,7 @@ protected:
 class VarFlag : public VarBase {
 public:
   template <class... Args>
-  VarFlag(imathGlobals *globals, std::string name, VarBase *cut, Args... args) : VarBase(globals, name, 0, 0, 0, 0) {
+  VarFlag(imathGlobals *globals, std::string name, VarBase *cut, Args... args) : VarBase(globals, name, nullptr, nullptr, nullptr, 0) {
     op_ = "flag";
     nbits_ = 1;
     add_cuts(cut, args...);

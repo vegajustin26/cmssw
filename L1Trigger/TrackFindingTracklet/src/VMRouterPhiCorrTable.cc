@@ -5,7 +5,7 @@
 using namespace std;
 using namespace trklet;
 
-VMRouterPhiCorrTable::VMRouterPhiCorrTable() : TETableBase(0) { nbits_ = 14; }
+VMRouterPhiCorrTable::VMRouterPhiCorrTable() : TETableBase(nullptr) { nbits_ = 14; }
 
 void VMRouterPhiCorrTable::init(const Settings* settings, int layer, int bendbits, int rbits) {
   assert(bendbits == 3 || bendbits == 4);

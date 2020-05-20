@@ -26,7 +26,7 @@ void ProjectionRouter::addOutput(MemoryBase* memory, string output) {
   }
   if (output == "allprojout") {
     AllProjectionsMemory* tmp = dynamic_cast<AllProjectionsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     allproj_ = tmp;
     return;
   }
@@ -41,7 +41,7 @@ void ProjectionRouter::addOutput(MemoryBase* memory, string output) {
       name += std::to_string(iproj * nprojvm + iprojvm + 1);
       if (output == name) {
         VMProjectionsMemory* tmp = dynamic_cast<VMProjectionsMemory*>(memory);
-        assert(tmp != 0);
+        assert(tmp != nullptr);
         vmprojs_[iprojvm] = tmp;
         return;
       }
@@ -59,7 +59,7 @@ void ProjectionRouter::addInput(MemoryBase* memory, string input) {
   }
   if (input.substr(0, 4) == "proj" && input.substr(input.size() - 2, 2) == "in") {
     TrackletProjectionsMemory* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
-    assert(tmp != 0);
+    assert(tmp != nullptr);
     inputproj_.push_back(tmp);
     return;
   }
@@ -68,7 +68,7 @@ void ProjectionRouter::addInput(MemoryBase* memory, string input) {
 }
 
 void ProjectionRouter::execute() {
-  if (globals_->projectionRouterBendTable() == 0) {
+  if (globals_->projectionRouterBendTable() == nullptr) {
     ProjectionRouterBendTable* bendTablePtr = new ProjectionRouterBendTable();
     bendTablePtr->init(settings_, globals_, nrbits_, nphiderbits_);
     globals_->projectionRouterBendTable() = bendTablePtr;
@@ -141,7 +141,7 @@ void ProjectionRouter::execute() {
   if (settings_->writeMonitorData("VMP")) {
     ofstream& out = globals_->ofstream("chisq.txt");
     for (unsigned int i = 0; i < 8; i++) {
-      if (vmprojs_[i] != 0) {
+      if (vmprojs_[i] != nullptr) {
         out << vmprojs_[i]->getName() << " " << vmprojs_[i]->nTracklets() << endl;
       }
     }
