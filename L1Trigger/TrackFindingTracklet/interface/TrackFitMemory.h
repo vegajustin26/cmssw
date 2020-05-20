@@ -19,8 +19,8 @@ namespace trklet {
     ~TrackFitMemory() override = default;
 
     void addTrack(Tracklet* tracklet) { tracks_.push_back(tracklet); }
-    void addStubList(std::vector<const Stub*> stublist) { stublists_.push_back(stublist); }
-    void addStubidsList(std::vector<std::pair<int, int>> stubidslist) { stubidslists_.push_back(stubidslist); }
+    void addStubList(const std::vector<const Stub*>& stublist) { stublists_.push_back(stublist); }
+    void addStubidsList(const std::vector<std::pair<int, int>>& stubidslist) { stubidslists_.push_back(stubidslist); }
 
     unsigned int nTracks() const { return tracks_.size(); }
     unsigned int nStublists() const { return stublists_.size(); }

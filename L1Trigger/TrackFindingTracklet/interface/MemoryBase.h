@@ -33,7 +33,7 @@ namespace trklet {
     void initSpecialSeeding(unsigned int pos, bool& overlap, bool& extra, bool& extended);
 
     //Used for a hack below due to MAC OS case sensitiviy problem for files
-    void findAndReplaceAll(std::string& data, std::string toSearch, std::string replaceStr);
+    void findAndReplaceAll(std::string& data, const std::string& toSearch, const std::string& replaceStr);
 
     void openFile(bool first, std::string filebase);
 

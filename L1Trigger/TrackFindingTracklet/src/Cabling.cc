@@ -8,7 +8,7 @@
 using namespace std;
 using namespace trklet;
 
-Cabling::Cabling(string dtcconfig, string moduleconfig, const Settings* settings) {
+Cabling::Cabling(const string& dtcconfig, const string& moduleconfig, const Settings* settings) {
   settings_ = settings;
 
   ifstream indtc(dtcconfig.c_str());

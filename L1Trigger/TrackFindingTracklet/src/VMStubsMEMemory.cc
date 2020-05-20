@@ -5,7 +5,7 @@
 using namespace std;
 using namespace trklet;
 
-VMStubsMEMemory::VMStubsMEMemory(string name, const Settings* const settings, unsigned int iSector)
+VMStubsMEMemory::VMStubsMEMemory(const string& name, const Settings* const settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
   unsigned int layerdisk = initLayerDisk(6);
   if (layerdisk < 6) {

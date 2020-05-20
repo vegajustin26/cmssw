@@ -12,7 +12,7 @@
 using namespace std;
 using namespace trklet;
 
-TrackletEngineDisplaced::TrackletEngineDisplaced(string name,
+TrackletEngineDisplaced::TrackletEngineDisplaced(const string& name,
                                                  const Settings* settings,
                                                  Globals* global,
                                                  unsigned int iSector)

@@ -10,7 +10,7 @@
 using namespace std;
 using namespace trklet;
 
-TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name,
+TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(const string& name,
                                                          const Settings* settings,
                                                          Globals* global,
                                                          unsigned int iSector)

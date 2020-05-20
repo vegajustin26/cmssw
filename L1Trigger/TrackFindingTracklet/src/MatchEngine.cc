@@ -13,7 +13,7 @@
 using namespace std;
 using namespace trklet;
 
-MatchEngine::MatchEngine(string name, const Settings* settings, Globals* global, unsigned int iSector)
+MatchEngine::MatchEngine(const string& name, const Settings* settings, Globals* global, unsigned int iSector)
     : ProcessBase(name, settings, global, iSector) {
   layer_ = 0;
   disk_ = 0;
