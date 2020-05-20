@@ -11,8 +11,8 @@ TrackletParametersMemory::TrackletParametersMemory(string name, const Settings* 
     : MemoryBase(name, settings, iSector) {}
 
 void TrackletParametersMemory::clean() {
-  for (unsigned int i = 0; i < tracklets_.size(); i++) {
-    delete tracklets_[i];
+  for (auto& tracklet : tracklets_) {
+    delete tracklet;
   }
   tracklets_.clear();
 }
