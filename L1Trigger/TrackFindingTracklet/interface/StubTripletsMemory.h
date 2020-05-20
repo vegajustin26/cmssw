@@ -15,7 +15,7 @@ namespace trklet {
   public:
     StubTripletsMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
-    ~StubTripletsMemory() = default;
+    ~StubTripletsMemory() override = default;
 
     void addStubs(const Stub* stub1, const Stub* stub2, const Stub* stub3) {
       stubs1_.push_back(stub1);
@@ -26,13 +26,8 @@ namespace trklet {
     unsigned int nStubTriplets() const { return stubs1_.size(); }
 
     const Stub* getFPGAStub1(unsigned int i) const { return stubs1_[i]; }
-    //const L1TStub* getL1TStub1(unsigned int i) const { return stubs1_[i]->l1tstub(); }
-
     const Stub* getFPGAStub2(unsigned int i) const { return stubs2_[i]; }
-    //const L1TStub* getL1TStub2(unsigned int i) const { return stubs2_[i]->l1tstub(); }
-
     const Stub* getFPGAStub3(unsigned int i) const { return stubs3_[i]; }
-    //const L1TStub* getL1TStub3(unsigned int i) const { return stubs3_[i]->l1tstub(); }
 
     void clean() override {
       stubs1_.clear();

@@ -19,7 +19,7 @@ namespace trklet {
   public:
     FitTrack(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    ~FitTrack() = default;
+    ~FitTrack() override = default;
 
     void addOutput(MemoryBase* memory, std::string output) override;
 

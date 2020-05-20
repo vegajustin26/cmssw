@@ -46,7 +46,7 @@ void CleanTrackMemory::writeCT(bool first) {
     else
       out_.open(fnameAll.c_str(), std::ofstream::app);
 
-    if (tracks_.size() > 0)
+    if (!tracks_.empty())
       out_ << "BX= " << (bitset<3>)bx_ << " event= " << event_ << " seed= " << getName()
            << " phisector= " << iSector_ + 1 << endl;
 

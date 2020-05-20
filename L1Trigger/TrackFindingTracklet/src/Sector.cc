@@ -66,7 +66,7 @@ bool Sector::addStub(L1TStub stub, string dtc) {
 
   std::map<string, std::vector<int> >& ILindex = globals_->ILindex();
   std::vector<int>& tmp = ILindex[dtc];
-  if (tmp.size() == 0) {
+  if (tmp.empty()) {
     for (unsigned int i = 0; i < IL_.size(); i++) {
       if (IL_[i]->getName().find("_" + dtc) != string::npos) {
         tmp.push_back(i);

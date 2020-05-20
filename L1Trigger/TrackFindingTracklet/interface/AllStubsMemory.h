@@ -17,7 +17,7 @@ namespace trklet {
   public:
     AllStubsMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
-    ~AllStubsMemory() = default;
+    ~AllStubsMemory() override = default;
 
     void addStub(const Stub* stub) { stubs_.push_back(stub); }
 

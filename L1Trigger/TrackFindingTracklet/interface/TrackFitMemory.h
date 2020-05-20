@@ -16,7 +16,7 @@ namespace trklet {
   public:
     TrackFitMemory(std::string name, const Settings* const settings, unsigned int iSector, double phimin, double phimax);
 
-    ~TrackFitMemory() = default;
+    ~TrackFitMemory() override = default;
 
     void addTrack(Tracklet* tracklet) { tracks_.push_back(tracklet); }
     void addStubList(std::vector<const Stub*> stublist) { stublists_.push_back(stublist); }

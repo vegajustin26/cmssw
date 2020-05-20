@@ -475,7 +475,7 @@ namespace trklet {
     Track makeTrack(const std::vector<const L1TStub*>& l1stubs);
 
     Track* getTrack() {
-      assert(fpgatrack_ != 0);
+      assert(fpgatrack_ != nullptr);
       return fpgatrack_.get();
     }
 

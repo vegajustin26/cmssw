@@ -18,7 +18,7 @@ namespace trklet {
   public:
     TripletEngine(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    ~TripletEngine();
+    ~TripletEngine() override;
 
     void addOutput(MemoryBase* memory, std::string output) override;
     void addInput(MemoryBase* memory, std::string input) override;

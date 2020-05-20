@@ -21,7 +21,7 @@ namespace trklet {
   public:
     TrackletEngineDisplaced(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    ~TrackletEngineDisplaced();
+    ~TrackletEngineDisplaced() override;
 
     void addOutput(MemoryBase* memory, std::string output) override;
     void addInput(MemoryBase* memory, std::string input) override;

@@ -19,11 +19,11 @@ namespace trklet {
   public:
     TrackletCalculator(std::string name, const Settings* const settings, Globals* globals, unsigned int iSector);
 
-    ~TrackletCalculator() = default;
+    ~TrackletCalculator() override = default;
 
     void addOutputProjection(TrackletProjectionsMemory*& outputProj, MemoryBase* memory);
-    void addOutput(MemoryBase* memory, std::string output);
-    void addInput(MemoryBase* memory, std::string input);
+    void addOutput(MemoryBase* memory, std::string output) override;
+    void addInput(MemoryBase* memory, std::string input) override;
 
     void execute();
 

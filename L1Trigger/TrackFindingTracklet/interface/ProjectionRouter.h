@@ -17,7 +17,7 @@ namespace trklet {
   public:
     ProjectionRouter(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    ~ProjectionRouter() = default;
+    ~ProjectionRouter() override = default;
 
     void addOutput(MemoryBase* memory, std::string output) override;
     void addInput(MemoryBase* memory, std::string input) override;

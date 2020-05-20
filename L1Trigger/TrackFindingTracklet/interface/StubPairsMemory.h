@@ -14,7 +14,7 @@ namespace trklet {
   public:
     StubPairsMemory(std::string name, const Settings* const settings, unsigned int iSector);
 
-    ~StubPairsMemory() = default;
+    ~StubPairsMemory() override = default;
 
     void addStubPair(const VMStubTE& stub1,
                      const VMStubTE& stub2,
@@ -28,7 +28,6 @@ namespace trklet {
     unsigned int nStubPairs() const { return stubs_.size(); }
 
     const VMStubTE& getVMStub1(unsigned int i) const { return stubs_[i].first; }
-
     const VMStubTE& getVMStub2(unsigned int i) const { return stubs_[i].second; }
 
     unsigned getIndex(const unsigned i) const { return indices_.at(i); }

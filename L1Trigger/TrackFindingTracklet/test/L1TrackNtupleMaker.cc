@@ -1220,7 +1220,7 @@ void L1TrackNtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup
     int i_track = -1;
     float i_chi2dof = 99999;
 
-    if (matchedTracks.size() > 0) {
+    if (!matchedTracks.empty()) {
       if (DebugMode && (matchedTracks.size() > 1))
         edm::LogVerbatim("Tracklet") << "TrackingParticle has more than one matched L1 track!";
 

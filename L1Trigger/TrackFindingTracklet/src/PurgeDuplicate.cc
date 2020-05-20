@@ -96,7 +96,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         inputtracks_.push_back(aTrack);
       }
     }
-    if (inputtracks_.size() == 0)
+    if (inputtracks_.empty())
       return;
   }
 
@@ -170,7 +170,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
       }
     }
 
-    if (inputtracklets_.size() == 0)
+    if (inputtracklets_.empty())
       return;
     unsigned int numStublists = inputstublists_.size();
 

@@ -21,7 +21,7 @@ namespace trklet {
   public:
     TrackletCalculatorDisplaced(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    ~TrackletCalculatorDisplaced() = default;
+    ~TrackletCalculatorDisplaced() override = default;
 
     void addOutputProjection(TrackletProjectionsMemory*& outputProj, MemoryBase* memory);
 

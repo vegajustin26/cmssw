@@ -25,7 +25,7 @@ namespace trklet {
   public:
     MatchProcessor(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    ~MatchProcessor() = default;
+    ~MatchProcessor() override = default;
 
     void addOutput(MemoryBase* memory, std::string output) override;
     void addInput(MemoryBase* memory, std::string input) override;

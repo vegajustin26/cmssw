@@ -808,8 +808,8 @@ Track Tracklet::makeTrack(const vector<const L1TStub*>& l1stubs) {
                  chisqrzfit_,
                  hitpattern_,
                  getStubIDs(),
-                 (l1stubs.size() == 0) ? getL1Stubs()
-                                       : l1stubs,  // If fitter produced no stub list, take it from original tracklet.
+                 (l1stubs.empty()) ? getL1Stubs()
+                                   : l1stubs,  // If fitter produced no stub list, take it from original tracklet.
                  getISeed());
 
   return tmpTrack;

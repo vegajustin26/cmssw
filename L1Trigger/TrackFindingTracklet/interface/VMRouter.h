@@ -24,7 +24,7 @@ namespace trklet {
   public:
     VMRouter(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    ~VMRouter() = default;
+    ~VMRouter() override = default;
 
     void addOutput(MemoryBase* memory, std::string output) override;
     void addInput(MemoryBase* memory, std::string input) override;

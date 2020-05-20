@@ -18,7 +18,7 @@ namespace trklet {
   public:
     TrackletEngine(std::string name, const Settings* const settings, Globals* global, unsigned int iSector);
 
-    ~TrackletEngine() = default;
+    ~TrackletEngine() override = default;
 
     void addOutput(MemoryBase* memory, std::string output) override;
     void addInput(MemoryBase* memory, std::string input) override;

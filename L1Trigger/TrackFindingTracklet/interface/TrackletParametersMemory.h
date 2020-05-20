@@ -18,7 +18,7 @@ namespace trklet {
   public:
     TrackletParametersMemory(std::string name, const Settings *const settings, unsigned int iSector);
 
-    ~TrackletParametersMemory() = default;
+    ~TrackletParametersMemory() override = default;
 
     void addTracklet(Tracklet *tracklet) { tracklets_.push_back(tracklet); }
 

@@ -28,7 +28,7 @@ void FullMatchMemory::addMatch(Tracklet* tracklet, const Stub* stub) {
   }
   std::pair<Tracklet*, const Stub*> tmp(tracklet, stub);
   //Check that we have the right TCID order
-  if (matches_.size() > 0) {
+  if (!matches_.empty()) {
     if ((!settings_->doKF() && matches_[matches_.size() - 1].first->TCID() >= tracklet->TCID()) ||
         (settings_->doKF() && matches_[matches_.size() - 1].first->TCID() > tracklet->TCID())) {
       edm::LogPrint("Tracklet") << "Wrong TCID ordering in " << getName() << " : "

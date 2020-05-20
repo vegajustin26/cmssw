@@ -22,7 +22,7 @@ namespace trklet {
   public:
     MatchCalculator(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
 
-    ~MatchCalculator() = default;
+    ~MatchCalculator() override = default;
 
     void addOutput(MemoryBase* memory, std::string output) override;
     void addInput(MemoryBase* memory, std::string input) override;
