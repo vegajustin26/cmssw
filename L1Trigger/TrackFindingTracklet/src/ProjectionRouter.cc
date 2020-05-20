@@ -14,7 +14,7 @@ ProjectionRouter::ProjectionRouter(string name, const Settings* settings, Global
     : ProcessBase(name, settings, global, iSector) {
   layerdisk_ = initLayerDisk(3);
 
-  vmprojs_.resize(settings_->nvmme(layerdisk_), 0);
+  vmprojs_.resize(settings_->nvmme(layerdisk_), nullptr);
 
   nrbits_ = 5;
   nphiderbits_ = 6;
@@ -26,7 +26,7 @@ void ProjectionRouter::addOutput(MemoryBase* memory, string output) {
                                  << output;
   }
   if (output == "allprojout") {
-    AllProjectionsMemory* tmp = dynamic_cast<AllProjectionsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllProjectionsMemory*>(memory);
     assert(tmp != nullptr);
     allproj_ = tmp;
     return;
@@ -41,7 +41,7 @@ void ProjectionRouter::addOutput(MemoryBase* memory, string output) {
       name += char(iproj + 'A');
       name += std::to_string(iproj * nprojvm + iprojvm + 1);
       if (output == name) {
-        VMProjectionsMemory* tmp = dynamic_cast<VMProjectionsMemory*>(memory);
+        auto* tmp = dynamic_cast<VMProjectionsMemory*>(memory);
         assert(tmp != nullptr);
         vmprojs_[iprojvm] = tmp;
         return;
@@ -58,7 +58,7 @@ void ProjectionRouter::addInput(MemoryBase* memory, string input) {
                                  << input;
   }
   if (input.substr(0, 4) == "proj" && input.substr(input.size() - 2, 2) == "in") {
-    TrackletProjectionsMemory* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
+    auto* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
     assert(tmp != nullptr);
     inputproj_.push_back(tmp);
     return;
@@ -68,7 +68,7 @@ void ProjectionRouter::addInput(MemoryBase* memory, string input) {
 
 void ProjectionRouter::execute() {
   if (globals_->projectionRouterBendTable() == nullptr) {
-    ProjectionRouterBendTable* bendTablePtr = new ProjectionRouterBendTable();
+    auto* bendTablePtr = new ProjectionRouterBendTable();
     bendTablePtr->init(settings_, globals_, nrbits_, nphiderbits_);
     globals_->projectionRouterBendTable() = bendTablePtr;
   }
@@ -79,12 +79,12 @@ void ProjectionRouter::execute() {
 
   int lastTCID = -1;
 
-  for (unsigned int j = 0; j < inputproj_.size(); j++) {
-    for (unsigned int i = 0; i < inputproj_[j]->nTracklets(); i++) {
+  for (auto& iproj : inputproj_) {
+    for (unsigned int i = 0; i < iproj->nTracklets(); i++) {
       if (allprojcount > settings_->maxStep("PR"))
         continue;
 
-      Tracklet* tracklet = inputproj_[j]->getTracklet(i);
+      Tracklet* tracklet = iproj->getTracklet(i);
 
       FPGAWord fpgaphi;
 

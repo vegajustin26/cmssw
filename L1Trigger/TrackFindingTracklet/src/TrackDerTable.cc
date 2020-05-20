@@ -372,8 +372,7 @@ void TrackDerTable::fillTable(const Settings* settings) {
     outL.close();
 
     ofstream outD("FitDerTableNew_DiskMem.txt");
-    for (unsigned int i = 0; i < DiskMem_.size(); i++) {
-      int tmp1 = DiskMem_[i];
+    for (int tmp1 : DiskMem_) {
       if (tmp1 < 0)
         tmp1 = (1 << 7) - 1;
       FPGAWord tmp;
@@ -383,8 +382,7 @@ void TrackDerTable::fillTable(const Settings* settings) {
     outD.close();
 
     ofstream outLD("FitDerTableNew_LayerDiskMem.txt");
-    for (unsigned int i = 0; i < LayerDiskMem_.size(); i++) {
-      int tmp1 = LayerDiskMem_[i];
+    for (int tmp1 : LayerDiskMem_) {
       if (tmp1 < 0)
         tmp1 = (1 << 10) - 1;
       FPGAWord tmp;

@@ -148,13 +148,13 @@ void VMRouter::execute() {
   unsigned int allStubCounter = 0;
 
   //Loop over the input stubs
-  for (unsigned int j = 0; j < stubinputs_.size(); j++) {
-    for (unsigned int i = 0; i < stubinputs_[j]->nStubs(); i++) {
+  for (auto& stubinput : stubinputs_) {
+    for (unsigned int i = 0; i < stubinput->nStubs(); i++) {
       if (allStubCounter > settings_->maxStep("VMR"))
         continue;
       if (allStubCounter > 127)
         continue;
-      Stub* stub = stubinputs_[j]->getStub(i);
+      Stub* stub = stubinput->getStub(i);
 
       bool negdisk =
           (stub->disk().value() <
@@ -172,8 +172,8 @@ void VMRouter::execute() {
       allStubCounter++;
 
       //Fill allstubs memories - in HLS this is the same write to multiple memories
-      for (unsigned int l = 0; l < allstubs_.size(); l++) {
-        allstubs_[l]->addStub(stub);
+      for (auto& allstub : allstubs_) {
+        allstub->addStub(stub);
       }
 
       //Fill all the ME VM memories
@@ -242,10 +242,9 @@ void VMRouter::execute() {
 
       //Fill the TE VM memories
 
-      for (unsigned int i = 0; i < vmstubsTEPHI_.size(); i++) {
-        unsigned int iseed = vmstubsTEPHI_[i].first.first;
-        unsigned int inner = vmstubsTEPHI_[i].first.second;
-
+      for (auto& ivmstubTEPHI : vmstubsTEPHI_) {
+	unsigned int iseed = ivmstubTEPHI.first.first;
+        unsigned int inner = ivmstubTEPHI.first.second;
         if ((iseed == 4 || iseed == 5 || iseed == 6 || iseed == 7) && (!stub->isPSmodule()))
           continue;
 
@@ -313,20 +312,20 @@ void VMRouter::execute() {
 
         VMStubTE tmpstub(stub, finephi, stub->bend(), binlookup, allStubIndex);
 
-        unsigned int nmem = vmstubsTEPHI_[i].second[ivmte].size();
+        unsigned int nmem = ivmstubTEPHI.second[ivmte].size();
 
         assert(nmem > 0);
 
         for (unsigned int l = 0; l < nmem; l++) {
           if (settings_->debugTracklet()) {
             edm::LogVerbatim("Tracklet") << getName() << " try adding stub to "
-                                         << vmstubsTEPHI_[i].second[ivmte][l]->getName() << " inner=" << inner
+                                         << ivmstubTEPHI.second[ivmte][l]->getName() << " inner=" << inner
                                          << " bin=" << bin;
           }
           if (inner == 0) {
-            vmstubsTEPHI_[i].second[ivmte][l]->addVMStub(tmpstub);
+            ivmstubTEPHI.second[ivmte][l]->addVMStub(tmpstub);
           } else {
-            vmstubsTEPHI_[i].second[ivmte][l]->addVMStub(tmpstub, bin);
+            ivmstubTEPHI.second[ivmte][l]->addVMStub(tmpstub, bin);
           }
         }
       }

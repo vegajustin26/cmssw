@@ -85,7 +85,7 @@ SLHCEvent::SLHCEvent(istream& in) {
   }
   if (tmp != "Event:") {
     edm::LogVerbatim("Tracklet") << "Expected to read 'Event:' but found:" << tmp;
-    if (tmp == "") {
+    if (tmp.empty()) {
       edm::LogVerbatim("Tracklet") << "WARNING: fewer events to process than specified!";
       return;
     } else {

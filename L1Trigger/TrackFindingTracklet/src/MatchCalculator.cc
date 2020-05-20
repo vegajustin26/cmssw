@@ -138,7 +138,7 @@ void MatchCalculator::addOutput(MemoryBase* memory, string output) {
                                  << output;
   }
   if (output.substr(0, 8) == "matchout") {
-    FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
+    auto* tmp = dynamic_cast<FullMatchMemory*>(memory);
     assert(tmp != nullptr);
     unsigned int iSeed = getISeed(memory->getName());
     fullMatches_[iSeed] = tmp;
@@ -153,19 +153,19 @@ void MatchCalculator::addInput(MemoryBase* memory, string input) {
                                  << input;
   }
   if (input == "allstubin") {
-    AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllStubsMemory*>(memory);
     assert(tmp != nullptr);
     allstubs_ = tmp;
     return;
   }
   if (input == "allprojin") {
-    AllProjectionsMemory* tmp = dynamic_cast<AllProjectionsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllProjectionsMemory*>(memory);
     assert(tmp != nullptr);
     allprojs_ = tmp;
     return;
   }
   if (input.substr(0, 5) == "match" && input.substr(input.size() - 2, 2) == "in") {
-    CandidateMatchMemory* tmp = dynamic_cast<CandidateMatchMemory*>(memory);
+    auto* tmp = dynamic_cast<CandidateMatchMemory*>(memory);
     assert(tmp != nullptr);
     matches_.push_back(tmp);
     return;

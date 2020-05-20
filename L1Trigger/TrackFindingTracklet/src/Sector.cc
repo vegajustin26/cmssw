@@ -79,7 +79,7 @@ bool Sector::addStub(L1TStub stub, string dtc) {
       ((phi > 2 * M_PI + phimin_ - dphi) && (phi < 2 * M_PI + phimax_ + dphi))) {
     Stub fpgastub(stub, settings_, phimin_, phimax_);
     std::vector<int>& tmp = ILindex[dtc];
-    assert(tmp.size() != 0);
+    assert(!tmp.empty());
     for (int i : tmp) {
       if (IL_[i]->addStub(settings_, globals_, stub, fpgastub, dtc))
         add = true;
@@ -171,12 +171,12 @@ void Sector::addWire(string mem, string procinfull, string procoutfull) {
 
   MemoryBase* memory = getMem(mem);
 
-  if (procin != "") {
+  if (!procin.empty()) {
     ProcessBase* inProc = getProc(procin);
     inProc->addOutput(memory, output);
   }
 
-  if (procout != "") {
+  if (!procout.empty()) {
     ProcessBase* outProc = getProc(procout);
     outProc->addInput(memory, input);
   }
@@ -309,8 +309,8 @@ void Sector::executeVMR() {
       out << i->getName() << " " << i->nStubs() << endl;
     }
   }
-  for (unsigned int i = 0; i < VMR_.size(); i++) {
-    VMR_[i]->execute();
+  for (auto& i : VMR_) {
+    i->execute();
   }
 }
 
@@ -417,11 +417,11 @@ std::vector<const Stub*> Sector::getStubs() const {
 
 std::unordered_set<int> Sector::seedMatch(int itp) const {
   std::unordered_set<int> tmpSeeds;
-  for (unsigned int i = 0; i < TPAR_.size(); i++) {
-    unsigned int nTracklet = TPAR_[i]->nTracklets();
+  for (auto i : TPAR_) {
+    unsigned int nTracklet = i->nTracklets();
     for (unsigned int j = 0; j < nTracklet; j++) {
-      if (TPAR_[i]->getTracklet(j)->tpseed() == itp) {
-        tmpSeeds.insert(TPAR_[i]->getTracklet(j)->getISeed());
+      if (i->getTracklet(j)->tpseed() == itp) {
+        tmpSeeds.insert(i->getTracklet(j)->getISeed());
       }
     }
   }

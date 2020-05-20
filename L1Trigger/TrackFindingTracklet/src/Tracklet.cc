@@ -349,8 +349,8 @@ void Tracklet::addMatchDisk(int disk,
 int Tracklet::nMatches() {
   int nmatches = 0;
 
-  for (int i = 0; i < N_LAYER; i++) {
-    if (layerresid_[i].valid()) {
+  for (const auto& ilayerresid : layerresid_) {
+    if (ilayerresid.valid()) {
       nmatches++;
     }
   }
@@ -361,8 +361,8 @@ int Tracklet::nMatches() {
 int Tracklet::nMatchesDisk() {
   int nmatches = 0;
 
-  for (int i = 0; i < N_DISK; i++) {
-    if (diskresid_[i].valid()) {
+  for (const auto& idiskresid : diskresid_) {
+    if (idiskresid.valid()) {
       nmatches++;
     }
   }
@@ -370,7 +370,7 @@ int Tracklet::nMatchesDisk() {
 }
 
 std::string Tracklet::fullmatchstr(int layer) {
-  assert(layer >= 1 && layer <= 6);
+  assert(layer > 0 && layer <= N_LAYER);
 
   FPGAWord tmp;
   if (trackletIndex_ < 0 || trackletIndex_ > 127) {
@@ -417,15 +417,14 @@ std::vector<const L1TStub*> Tracklet::getL1Stubs() {
   if (outerStub_)
     tmp.push_back(outerStub_);
 
-  for (unsigned int i = 0; i < N_LAYER; i++) {
-    if (layerresid_[i].valid()) {
-      tmp.push_back(layerresid_[i].stubptr()->l1tstub());
-    }
+  for (const auto& ilayerresid : layerresid_) {
+    if (ilayerresid.valid())
+      tmp.push_back(ilayerresid.stubptr()->l1tstub());
   }
-
-  for (unsigned int i = 0; i < N_DISK; i++) {
-    if (diskresid_[i].valid())
-      tmp.push_back(diskresid_[i].stubptr()->l1tstub());
+  
+  for (const auto& idiskresid : diskresid_) {
+    if (idiskresid.valid())
+      tmp.push_back(idiskresid.stubptr()->l1tstub());
   }
 
   return tmp;

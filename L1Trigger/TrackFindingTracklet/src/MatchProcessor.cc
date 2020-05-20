@@ -166,7 +166,7 @@ void MatchProcessor::addOutput(MemoryBase* memory, string output) {
                                  << output;
   }
   if (output.find("matchout") != std::string::npos) {
-    FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
+    auto* tmp = dynamic_cast<FullMatchMemory*>(memory);
     assert(tmp != nullptr);
     unsigned int iSeed = getISeed(tmp->getName());
     assert(iSeed < fullmatches_.size());
@@ -183,19 +183,19 @@ void MatchProcessor::addInput(MemoryBase* memory, string input) {
                                  << input;
   }
   if (input == "allstubin") {
-    AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllStubsMemory*>(memory);
     assert(tmp != nullptr);
     allstubs_ = tmp;
     return;
   }
   if (input == "vmstubin") {
-    VMStubsMEMemory* tmp = dynamic_cast<VMStubsMEMemory*>(memory);
+    auto* tmp = dynamic_cast<VMStubsMEMemory*>(memory);
     assert(tmp != nullptr);
     vmstubs_.push_back(tmp);  //to allow more than one stub in?  vmstubs_=tmp;
     return;
   }
   if (input == "projin") {
-    TrackletProjectionsMemory* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
+    auto* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
     assert(tmp != nullptr);
     inputprojs_.push_back(tmp);
     return;
@@ -205,7 +205,7 @@ void MatchProcessor::addInput(MemoryBase* memory, string input) {
 
 void MatchProcessor::execute() {
   if (globals_->projectionRouterBendTable() == nullptr) {  // move to constructor?!
-    ProjectionRouterBendTable* bendTablePtr = new ProjectionRouterBendTable();
+    auto* bendTablePtr = new ProjectionRouterBendTable();
     bendTablePtr->init(settings_, globals_, nrbits_, nphiderbits_);
     globals_->projectionRouterBendTable() = bendTablePtr;
   }

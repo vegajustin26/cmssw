@@ -134,7 +134,7 @@ void TrackletCalculatorDisplaced::addOutput(MemoryBase* memory, string output) {
                                  << output;
   }
   if (output == "trackpar") {
-    TrackletParametersMemory* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
+    auto* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
     assert(tmp != nullptr);
     trackletpars_ = tmp;
     return;
@@ -142,7 +142,7 @@ void TrackletCalculatorDisplaced::addOutput(MemoryBase* memory, string output) {
 
   if (output.substr(0, 7) == "projout") {
     //output is on the form 'projoutL2PHIC' or 'projoutD3PHIB'
-    TrackletProjectionsMemory* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
+    auto* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
     assert(tmp != nullptr);
 
     unsigned int layerdisk = output[8] - '1';   //layer or disk counting from 0
@@ -176,25 +176,25 @@ void TrackletCalculatorDisplaced::addInput(MemoryBase* memory, string input) {
                                  << input;
   }
   if (input == "thirdallstubin") {
-    AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllStubsMemory*>(memory);
     assert(tmp != nullptr);
     innerallstubs_.push_back(tmp);
     return;
   }
   if (input == "firstallstubin") {
-    AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllStubsMemory*>(memory);
     assert(tmp != nullptr);
     middleallstubs_.push_back(tmp);
     return;
   }
   if (input == "secondallstubin") {
-    AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllStubsMemory*>(memory);
     assert(tmp != nullptr);
     outerallstubs_.push_back(tmp);
     return;
   }
   if (input.find("stubtriplet") == 0) {
-    StubTripletsMemory* tmp = dynamic_cast<StubTripletsMemory*>(memory);
+    auto* tmp = dynamic_cast<StubTripletsMemory*>(memory);
     assert(tmp != nullptr);
     stubtriplets_.push_back(tmp);
     return;
@@ -206,21 +206,21 @@ void TrackletCalculatorDisplaced::execute() {
   unsigned int countall = 0;
   unsigned int countsel = 0;
 
-  for (unsigned int l = 0; l < stubtriplets_.size(); l++) {
+  for (auto& stubtriplet : stubtriplets_) {
     if (trackletpars_->nTracklets() >= settings_->ntrackletmax()) {
       edm::LogVerbatim("Tracklet") << "Will break on too many tracklets in " << getName();
       break;
     }
-    for (unsigned int i = 0; i < stubtriplets_[l]->nStubTriplets(); i++) {
+    for (unsigned int i = 0; i < stubtriplet->nStubTriplets(); i++) {
       countall++;
 
-      const Stub* innerFPGAStub = stubtriplets_[l]->getFPGAStub1(i);
+      const Stub* innerFPGAStub = stubtriplet->getFPGAStub1(i);
       const L1TStub* innerStub = innerFPGAStub->l1tstub();
 
-      const Stub* middleFPGAStub = stubtriplets_[l]->getFPGAStub2(i);
+      const Stub* middleFPGAStub = stubtriplet->getFPGAStub2(i);
       const L1TStub* middleStub = middleFPGAStub->l1tstub();
 
-      const Stub* outerFPGAStub = stubtriplets_[l]->getFPGAStub3(i);
+      const Stub* outerFPGAStub = stubtriplet->getFPGAStub3(i);
       const L1TStub* outerStub = outerFPGAStub->l1tstub();
 
       if (settings_->debugTracklet()) {

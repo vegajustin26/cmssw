@@ -202,7 +202,7 @@ void TrackletProcessor::addOutput(MemoryBase* memory, string output) {
                                  << output;
   }
   if (output == "trackpar") {
-    TrackletParametersMemory* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
+    auto* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
     assert(tmp != nullptr);
     trackletpars_ = tmp;
     return;
@@ -210,7 +210,7 @@ void TrackletProcessor::addOutput(MemoryBase* memory, string output) {
 
   if (output.substr(0, 7) == "projout") {
     //output is on the form 'projoutL2PHIC' or 'projoutD3PHIB'
-    TrackletProjectionsMemory* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
+    auto* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
     assert(tmp != nullptr);
 
     unsigned int layerdisk = output[8] - '1';   //layer or disk counting from 0
@@ -245,27 +245,27 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
   }
 
   if (input == "innervmstubin") {
-    VMStubsTEMemory* tmp = dynamic_cast<VMStubsTEMemory*>(memory);
+    auto* tmp = dynamic_cast<VMStubsTEMemory*>(memory);
     assert(tmp != nullptr);
     innervmstubs_.push_back(tmp);
     setVMPhiBin();
     return;
   }
   if (input == "outervmstubin") {
-    VMStubsTEMemory* tmp = dynamic_cast<VMStubsTEMemory*>(memory);
+    auto* tmp = dynamic_cast<VMStubsTEMemory*>(memory);
     assert(tmp != nullptr);
     outervmstubs_.push_back(tmp);
     setVMPhiBin();
     return;
   }
   if (input == "innerallstubin") {
-    AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllStubsMemory*>(memory);
     assert(tmp != nullptr);
     innerallstubs_.push_back(tmp);
     return;
   }
   if (input == "outerallstubin") {
-    AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllStubsMemory*>(memory);
     assert(tmp != nullptr);
     outerallstubs_.push_back(tmp);
     return;

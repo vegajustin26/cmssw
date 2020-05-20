@@ -98,9 +98,9 @@ void InputLinkMemory::writeStubs(bool first) {
 }
 
 void InputLinkMemory::clean() {
-  for (unsigned int i = 0; i < stubs_.size(); i++) {
-    delete stubs_[i]->l1tstub();
-    delete stubs_[i];
+  for (auto& stub : stubs_) {
+    delete stub->l1tstub();
+    delete stub;
   }
   stubs_.clear();
 }

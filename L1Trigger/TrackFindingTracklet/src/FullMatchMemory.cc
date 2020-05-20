@@ -19,9 +19,9 @@ FullMatchMemory::FullMatchMemory(string name, const Settings* const settings, un
 
 void FullMatchMemory::addMatch(Tracklet* tracklet, const Stub* stub) {
   if (!settings_->doKF()) {  //When using KF we allow multiple matches
-    for (unsigned int i = 0; i < matches_.size(); i++) {
-      if (matches_[i].first == tracklet) {  //Better match, replace
-        matches_[i].second = stub;
+    for (auto& match : matches_) {
+      if (match.first == tracklet) {  //Better match, replace
+        match.second = stub;
         return;
       }
     }

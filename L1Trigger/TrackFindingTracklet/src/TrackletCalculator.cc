@@ -56,7 +56,7 @@ void TrackletCalculator::addOutput(MemoryBase* memory, string output) {
                                  << output;
   }
   if (output == "trackpar") {
-    TrackletParametersMemory* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
+    auto* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
     assert(tmp != nullptr);
     trackletpars_ = tmp;
     return;
@@ -64,7 +64,7 @@ void TrackletCalculator::addOutput(MemoryBase* memory, string output) {
 
   if (output.substr(0, 7) == "projout") {
     //output is on the form 'projoutL2PHIC' or 'projoutD3PHIB'
-    TrackletProjectionsMemory* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
+    auto* tmp = dynamic_cast<TrackletProjectionsMemory*>(memory);
     assert(tmp != nullptr);
 
     unsigned int layerdisk = output[8] - '1';   //layer or disk counting from 0
@@ -98,19 +98,19 @@ void TrackletCalculator::addInput(MemoryBase* memory, string input) {
                                  << input;
   }
   if (input == "innerallstubin") {
-    AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllStubsMemory*>(memory);
     assert(tmp != nullptr);
     innerallstubs_.push_back(tmp);
     return;
   }
   if (input == "outerallstubin") {
-    AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllStubsMemory*>(memory);
     assert(tmp != nullptr);
     outerallstubs_.push_back(tmp);
     return;
   }
   if (input.substr(0, 8) == "stubpair") {
-    StubPairsMemory* tmp = dynamic_cast<StubPairsMemory*>(memory);
+    auto* tmp = dynamic_cast<StubPairsMemory*>(memory);
     assert(tmp != nullptr);
     stubpairs_.push_back(tmp);
     return;
@@ -122,17 +122,17 @@ void TrackletCalculator::execute() {
   unsigned int countall = 0;
   unsigned int countsel = 0;
 
-  for (unsigned int l = 0; l < stubpairs_.size(); l++) {
+  for (auto& stubpair : stubpairs_) {
     if (trackletpars_->nTracklets() >= settings_->ntrackletmax()) {
       edm::LogVerbatim("Tracklet") << "Will break on too many tracklets in " << getName();
       break;
     }
-    for (unsigned int i = 0; i < stubpairs_[l]->nStubPairs(); i++) {
+    for (unsigned int i = 0; i < stubpair->nStubPairs(); i++) {
       countall++;
-      const Stub* innerFPGAStub = stubpairs_[l]->getVMStub1(i).stub();
+      const Stub* innerFPGAStub = stubpair->getVMStub1(i).stub();
       const L1TStub* innerStub = innerFPGAStub->l1tstub();
 
-      const Stub* outerFPGAStub = stubpairs_[l]->getVMStub2(i).stub();
+      const Stub* outerFPGAStub = stubpair->getVMStub2(i).stub();
       const L1TStub* outerStub = outerFPGAStub->l1tstub();
 
       if (settings_->debugTracklet()) {

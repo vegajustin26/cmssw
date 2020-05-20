@@ -35,31 +35,31 @@ void FitTrack::addInput(MemoryBase* memory, string input) {
                                  << input;
   }
   if (input.substr(0, 4) == "tpar") {
-    TrackletParametersMemory* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
+    auto* tmp = dynamic_cast<TrackletParametersMemory*>(memory);
     assert(tmp != nullptr);
     seedtracklet_.push_back(tmp);
     return;
   }
   if (input.substr(0, 10) == "fullmatch1") {
-    FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
+    auto* tmp = dynamic_cast<FullMatchMemory*>(memory);
     assert(tmp != nullptr);
     fullmatch1_.push_back(tmp);
     return;
   }
   if (input.substr(0, 10) == "fullmatch2") {
-    FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
+    auto* tmp = dynamic_cast<FullMatchMemory*>(memory);
     assert(tmp != nullptr);
     fullmatch2_.push_back(tmp);
     return;
   }
   if (input.substr(0, 10) == "fullmatch3") {
-    FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
+    auto* tmp = dynamic_cast<FullMatchMemory*>(memory);
     assert(tmp != nullptr);
     fullmatch3_.push_back(tmp);
     return;
   }
   if (input.substr(0, 10) == "fullmatch4") {
-    FullMatchMemory* tmp = dynamic_cast<FullMatchMemory*>(memory);
+    auto* tmp = dynamic_cast<FullMatchMemory*>(memory);
     assert(tmp != nullptr);
     fullmatch4_.push_back(tmp);
     return;
@@ -809,16 +809,16 @@ std::vector<Tracklet*> FitTrack::orderedMatches(vector<FullMatchMemory*>& fullma
   std::vector<Tracklet*> tmp;
 
   std::vector<unsigned int> indexArray;
-  for (unsigned int i = 0; i < fullmatch.size(); i++) {
-    //checks that we have correct order
-    if (fullmatch[i]->nMatches() > 1) {
-      for (unsigned int j = 0; j < fullmatch[i]->nMatches() - 1; j++) {
-        assert(fullmatch[i]->getTracklet(j)->TCID() <= fullmatch[i]->getTracklet(j + 1)->TCID());
+  for (auto& imatch : fullmatch) {
+    //check that we have correct order
+    if (imatch->nMatches() > 1) {
+      for (unsigned int j = 0; j < imatch->nMatches() - 1; j++) {
+        assert(imatch->getTracklet(j)->TCID() <= imatch->getTracklet(j + 1)->TCID());
       }
     }
 
-    if (settings_->debugTracklet() && fullmatch[i]->nMatches() != 0) {
-      edm::LogVerbatim("Tracklet") << "orderedMatches: " << fullmatch[i]->getName() << " " << fullmatch[i]->nMatches();
+    if (settings_->debugTracklet() && imatch->nMatches() != 0) {
+      edm::LogVerbatim("Tracklet") << "orderedMatches: " << imatch->getName() << " " << imatch->nMatches();
     }
 
     indexArray.push_back(0);
@@ -867,8 +867,8 @@ void FitTrack::execute() {
   const std::vector<Tracklet*>& matches4 = orderedMatches(fullmatch4_);
 
   if (settings_->debugTracklet() && (matches1.size() + matches2.size() + matches3.size() + matches4.size()) > 0) {
-    for (unsigned int i = 0; i < fullmatch1_.size(); i++) {
-      edm::LogVerbatim("Tracklet") << fullmatch1_[i]->getName() << " " << fullmatch1_[i]->nMatches();
+    for (auto& imatch : fullmatch1_) {
+      edm::LogVerbatim("Tracklet") << imatch->getName() << " " << imatch->nMatches();
     }
     edm::LogVerbatim("Tracklet") << getName() << "[" << iSector_ << "] matches : " << matches1.size() << " "
                                  << matches2.size() << " " << matches3.size() << " " << matches4.size();

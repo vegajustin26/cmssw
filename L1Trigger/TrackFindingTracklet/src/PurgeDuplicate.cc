@@ -43,7 +43,7 @@ void PurgeDuplicate::addOutput(MemoryBase* memory, std::string output) {
                                    "trackout10",
                                    "trackout11"};
   if (outputs.find(output) != outputs.end()) {
-    CleanTrackMemory* tmp = dynamic_cast<CleanTrackMemory*>(memory);
+    auto* tmp = dynamic_cast<CleanTrackMemory*>(memory);
     assert(tmp != nullptr);
     outputtracklets_.push_back(tmp);
     return;
@@ -69,7 +69,7 @@ void PurgeDuplicate::addInput(MemoryBase* memory, std::string input) {
                                   "trackin10",
                                   "trackin11"};
   if (inputs.find(input) != inputs.end()) {
-    TrackFitMemory* tmp = dynamic_cast<TrackFitMemory*>(memory);
+    auto* tmp = dynamic_cast<TrackFitMemory*>(memory);
     assert(tmp != nullptr);
     inputtrackfits_.push_back(tmp);
     return;
@@ -86,11 +86,11 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
   mergedstubidslists_.clear();
 
   if (settings_->removalType() != "merge") {
-    for (unsigned int i = 0; i < inputtrackfits_.size(); i++) {
-      if (inputtrackfits_[i]->nTracks() == 0)
+    for (auto& inputtrackfit : inputtrackfits_) {
+      if (inputtrackfit->nTracks() == 0)
         continue;
-      for (unsigned int j = 0; j < inputtrackfits_[i]->nTracks(); j++) {
-        Track* aTrack = inputtrackfits_[i]->getTrack(j)->getTrack();
+      for (unsigned int j = 0; j < inputtrackfit->nTracks(); j++) {
+        Track* aTrack = inputtrackfit->getTrack(j)->getTrack();
         aTrack->setSector(iSector_);
         inputtracks_.push_back(aTrack);
       }
@@ -408,9 +408,9 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         nStubS[jtrk] = stubsTrk2.size();
 
         // Count shared stubs
-        for (std::map<int, int>::iterator st = stubsTrk1.begin(); st != stubsTrk1.end(); st++) {
-          if (stubsTrk2.find(st->first) != stubsTrk2.end()) {
-            if (st->second == stubsTrk2[st->first])
+	for (auto& st : stubsTrk1) {
+          if (stubsTrk2.find(st.first) != stubsTrk2.end()) {
+            if (st.second == stubsTrk2[st.first])
               nShare[jtrk]++;
           }
         }

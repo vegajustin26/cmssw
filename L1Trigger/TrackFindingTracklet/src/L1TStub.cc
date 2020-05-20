@@ -48,8 +48,8 @@ void L1TStub::write(ofstream& out) {
   out << "Stub: " << layer_ + 1 << "\t" << ladder_ << "\t" << module_ << "\t" << strip_ << "\t" << eventid_ << "\t"
       << pt_ << "\t" << x_ << "\t" << y_ << "\t" << z_ << "\t" << bend_ << "\t" << isPSmodule_ << "\t" << isFlipped_
       << "\t" << tps_.size() << " \t";
-  for (unsigned itps = 0; itps < tps_.size(); itps++) {
-    out << tps_[itps] << " \t";
+  for (int itp : tps_) {
+    out << itp << " \t";
   }
   out << endl;
 }
@@ -58,8 +58,8 @@ void L1TStub::write(ostream& out) {
   out << "Stub: " << layer_ + 1 << "\t" << ladder_ << "\t" << module_ << "\t" << strip_ << "\t" << eventid_ << "\t"
       << pt_ << "\t" << x_ << "\t" << y_ << "\t" << z_ << "\t" << bend_ << "\t" << isPSmodule_ << "\t" << isFlipped_
       << "\t" << tps_.size() << " \t";
-  for (unsigned itps = 0; itps < tps_.size(); itps++) {
-    out << tps_[itps] << " \t";
+  for (int itp : tps_) {
+    out << itp << " \t";
   }
   out << endl;
 }
@@ -106,8 +106,8 @@ void L1TStub::setXY(double x, double y) {
 }
 
 bool L1TStub::tpmatch(int tp) const {
-  for (unsigned int i = 0; i < tps_.size(); i++) {
-    if (tp == tps_[i])
+  for (int itp : tps_) {
+    if (tp == itp)
       return true;
   }
 

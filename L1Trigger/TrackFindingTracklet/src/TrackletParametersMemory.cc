@@ -19,17 +19,17 @@ void TrackletParametersMemory::clean() {
 
 void TrackletParametersMemory::writeMatches(Globals* globals, int& matchesL1, int& matchesL3, int& matchesL5) {
   ofstream& out = globals->ofstream("nmatches.txt");
-  for (unsigned int i = 0; i < tracklets_.size(); i++) {
-    if ((tracklets_[i]->nMatches() + tracklets_[i]->nMatchesDisk()) > 0) {
-      if (tracklets_[i]->layer() == 1)
+  for (auto& tracklet : tracklets_) {
+    if ((tracklet->nMatches() + tracklet->nMatchesDisk()) > 0) {
+      if (tracklet->layer() == 1)
         matchesL1++;
-      if (tracklets_[i]->layer() == 3)
+      if (tracklet->layer() == 3)
         matchesL3++;
-      if (tracklets_[i]->layer() == 5)
+      if (tracklet->layer() == 5)
         matchesL5++;
     }
-    out << tracklets_[i]->layer() << " " << tracklets_[i]->disk() << " " << tracklets_[i]->nMatches() << " "
-        << tracklets_[i]->nMatchesDisk() << endl;
+    out << tracklet->layer() << " " << tracklet->disk() << " " << tracklet->nMatches() << " "
+        << tracklet->nMatchesDisk() << endl;
   }
 }
 

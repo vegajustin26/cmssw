@@ -86,7 +86,7 @@ void MatchEngine::addOutput(MemoryBase* memory, string output) {
                                  << output;
   }
   if (output == "matchout") {
-    CandidateMatchMemory* tmp = dynamic_cast<CandidateMatchMemory*>(memory);
+    auto* tmp = dynamic_cast<CandidateMatchMemory*>(memory);
     assert(tmp != nullptr);
     candmatches_ = tmp;
     return;
@@ -100,13 +100,13 @@ void MatchEngine::addInput(MemoryBase* memory, string input) {
                                  << input;
   }
   if (input == "vmstubin") {
-    VMStubsMEMemory* tmp = dynamic_cast<VMStubsMEMemory*>(memory);
+    auto* tmp = dynamic_cast<VMStubsMEMemory*>(memory);
     assert(tmp != nullptr);
     vmstubs_ = tmp;
     return;
   }
   if (input == "vmprojin") {
-    VMProjectionsMemory* tmp = dynamic_cast<VMProjectionsMemory*>(memory);
+    auto* tmp = dynamic_cast<VMProjectionsMemory*>(memory);
     assert(tmp != nullptr);
     vmprojs_ = tmp;
     return;

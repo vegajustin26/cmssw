@@ -164,8 +164,8 @@ void VarBase::makeready() {
 
 bool VarBase::has_delay(int i) {
   //dumb sequential search
-  for (unsigned int j = 0; j < pipe_delays_.size(); ++j)
-    if (pipe_delays_[j] == i)
+  for (int pipe_delay : pipe_delays_)
+    if (pipe_delay == i)
       return true;
   return false;
 }

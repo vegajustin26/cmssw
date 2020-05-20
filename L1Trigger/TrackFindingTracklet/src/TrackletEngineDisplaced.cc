@@ -111,10 +111,10 @@ void TrackletEngineDisplaced::execute() {
   assert(!firstvmstubs_.empty());
   assert(secondvmstubs_ != nullptr);
 
-  for (unsigned int iInnerMem = 0; iInnerMem < firstvmstubs_.size(); iInnerMem++) {
-    assert(firstvmstubs_.at(iInnerMem)->nVMStubs() == firstvmstubs_.at(iInnerMem)->nVMStubs());
-    for (unsigned int i = 0; i < firstvmstubs_.at(iInnerMem)->nVMStubs(); i++) {
-      const VMStubTE& firstvmstub = firstvmstubs_.at(iInnerMem)->getVMStubTE(i);
+  for (auto& iInnerMem : firstvmstubs_) {
+    assert(iInnerMem->nVMStubs() == iInnerMem->nVMStubs());
+    for (unsigned int i = 0; i < iInnerMem->nVMStubs(); i++) {
+      const VMStubTE& firstvmstub = iInnerMem->getVMStubTE(i);
       if (settings_->debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "In " << getName() << " have first stub";
       }
@@ -185,14 +185,14 @@ void TrackletEngineDisplaced::execute() {
 
             if (settings_->debugTracklet())
               edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " << getName();
-            for (unsigned int isp = 0; isp < stubpairs_.size(); ++isp) {
-              if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
+	    for (auto& stubpair : stubpairs_) {
+              if (settings_->writeTripletTables() || table_.at(index).count(stubpair->getName())) {
                 if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                   fout.close();
                 }
-                stubpairs_.at(isp)->addStubPair(firstvmstub, secondvmstub, index, getName());
+                stubpair->addStubPair(firstvmstub, secondvmstub, index, getName());
               }
             }
 
@@ -267,14 +267,14 @@ void TrackletEngineDisplaced::execute() {
 
             if (settings_->debugTracklet())
               edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " << getName();
-            for (unsigned int isp = 0; isp < stubpairs_.size(); ++isp) {
-              if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
+	    for (auto& stubpair : stubpairs_) {
+              if (settings_->writeTripletTables() || table_.at(index).count(stubpair->getName())) {
                 if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                   fout.close();
                 }
-                stubpairs_.at(isp)->addStubPair(firstvmstub, secondvmstub, index, getName());
+                stubpair->addStubPair(firstvmstub, secondvmstub, index, getName());
               }
             }
 
@@ -350,14 +350,14 @@ void TrackletEngineDisplaced::execute() {
             if (settings_->debugTracklet())
               edm::LogVerbatim("Tracklet") << "Adding disk-disk pair in " << getName();
 
-            for (unsigned int isp = 0; isp < stubpairs_.size(); ++isp) {
-              if (settings_->writeTripletTables() || table_.at(index).count(stubpairs_.at(isp)->getName())) {
+            for (auto& stubpair : stubpairs_) {
+              if (settings_->writeTripletTables() || table_.at(index).count(stubpair->getName())) {
                 if (settings_->writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
                   fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
                   fout.close();
                 }
-                stubpairs_.at(isp)->addStubPair(firstvmstub, secondvmstub, index, getName());
+                stubpair->addStubPair(firstvmstub, secondvmstub, index, getName());
               }
             }
             countpass++;
@@ -369,9 +369,9 @@ void TrackletEngineDisplaced::execute() {
   if (countall > 5000) {
     edm::LogVerbatim("Tracklet") << "In TrackletEngineDisplaced::execute : " << getName() << " " << nInnerStubs << " "
                                  << secondvmstubs_->nVMStubs() << " " << countall << " " << countpass;
-    for (unsigned int iInnerMem = 0; iInnerMem < firstvmstubs_.size(); iInnerMem++) {
-      for (unsigned int i = 0; i < firstvmstubs_.at(iInnerMem)->nVMStubs(); i++) {
-        const VMStubTE& firstvmstub = firstvmstubs_.at(iInnerMem)->getVMStubTE(i);
+    for (auto& iInnerMem : firstvmstubs_) {
+      for (unsigned int i = 0; i < iInnerMem->nVMStubs(); i++) {
+        const VMStubTE& firstvmstub = iInnerMem->getVMStubTE(i);
         edm::LogVerbatim("Tracklet") << "In TrackletEngineDisplaced::execute first stub : "
                                      << firstvmstub.stub()->l1tstub()->r() << " "
                                      << firstvmstub.stub()->l1tstub()->phi() << " "
