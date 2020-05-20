@@ -362,13 +362,13 @@ public:
     Kmap_["2"] = Kmap_["2"] + lr_;
   }
 
-  virtual ~VarAdjustK() {}
+  ~VarAdjustK() override = default;
 
   void adjust(double Knew, double epsilon = 1e-5, bool do_assert = false, int nbits = -1);
 
-  void local_calculate();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  void local_calculate() override;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 
 protected:
   int lr_;
@@ -403,11 +403,11 @@ public:
     Kmap_["2"] = Kmap_["2"] + lr_;
   }
 
-  virtual ~VarAdjustKR() {}
+  ~VarAdjustKR() override = default;
 
-  void local_calculate();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  void local_calculate() override;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 
 protected:
   int lr_;
@@ -444,7 +444,7 @@ public:
     }
   }
 
-  virtual ~VarParam() {}
+  ~VarParam() override = default;
 
   void set_fval(double fval) {
     fval_ = fval;
@@ -459,8 +459,8 @@ public:
     fval_ = ival * K_;
     val_ = fval_;
   }
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 };
 
 class VarDef : public VarBase {
@@ -504,9 +504,9 @@ public:
     fval_ = ival * K_;
     val_ = ival_ * K_;
   }
-  virtual ~VarDef() {}
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  ~VarDef() override = default;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 };
 
 class VarAdd : public VarBase {
@@ -588,10 +588,10 @@ public:
 
     K_ = ki1 * pow(2, Kmap_["2"]);
   }
-  virtual ~VarAdd() {}
-  void local_calculate();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  ~VarAdd() override = default;
+  void local_calculate() override;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 
 protected:
   int ps_;
@@ -679,11 +679,11 @@ public:
     K_ = ki1 * pow(2, Kmap_["2"]);
   }
 
-  virtual ~VarSubtract() {}
+  ~VarSubtract() override = default;
 
-  void local_calculate();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  void local_calculate() override;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 
 protected:
   int ps_;
@@ -708,11 +708,11 @@ public:
     double c = ki * pow(2, -m);
     cI_ = c * pow(2, ps_);
   }
-  virtual ~VarNounits() {}
+  ~VarNounits() override = default;
 
-  void local_calculate();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  void local_calculate() override;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 
 protected:
   int ps_;
@@ -730,11 +730,11 @@ public:
     Kmap_ = p1->Kmap();
     K_ = p1->K();
   }
-  virtual ~VarShiftround() {}
+  ~VarShiftround() override = default;
 
-  void local_calculate();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  void local_calculate() override;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 
 protected:
   int shift_;
@@ -751,10 +751,10 @@ public:
     Kmap_ = p1->Kmap();
     K_ = p1->K();
   }
-  virtual ~VarShift() {}
-  void local_calculate();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  ~VarShift() override = default;
+  void local_calculate() override;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 
 protected:
   int shift_;
@@ -768,10 +768,10 @@ public:
     Kmap_ = p1->Kmap();
     K_ = p1->K();
   }
-  virtual ~VarNeg() {}
-  void local_calculate();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  ~VarNeg() override = default;
+  void local_calculate() override;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 };
 
 class VarTimesC : public VarBase {
@@ -796,10 +796,10 @@ public:
     K_ = K_ * pow(2, m);
     Kmap_["2"] = s1 + m;
   }
-  virtual ~VarTimesC() {}
-  void local_calculate();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  ~VarTimesC() override = default;
+  void local_calculate() override;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 
 protected:
   int ps_;
@@ -845,10 +845,10 @@ public:
       K_ = K_ * pow(2, ps_);
     }
   }
-  virtual ~VarMult() {}
-  void local_calculate();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  ~VarMult() override = default;
+  void local_calculate() override;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 
 protected:
   int ps_;
@@ -957,11 +957,11 @@ public:
 
     K_ = ki2 * pow(2, Kmap_["2"]);
   }
-  virtual ~VarDSPPostadd() {}
+  ~VarDSPPostadd() override = default;
 
-  void local_calculate();
+  void local_calculate() override;
   using VarBase::print;
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
 
 protected:
   int ps_;
@@ -1010,16 +1010,16 @@ public:
       LUT[i] = gen_inv(offsetI + i1);
     }
   }
-  virtual ~VarInv() { delete[] LUT; }
+  ~VarInv() override { delete[] LUT; }
 
   void set_mode(mode m) { m_ = m; }
   void initLUT(double offset);
   double offset() { return offset_; }
   double Ioffset() { return offset_ / p1_->K(); }
 
-  void local_calculate();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  void local_calculate() override;
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
   void writeLUT(std::ofstream &fs) const { writeLUT(fs, verilog); }
   void writeLUT(std::ofstream &fs, Verilog) const;
   void writeLUT(std::ofstream &fs, HLS) const;
@@ -1081,7 +1081,7 @@ public:
       : VarCut(globals, lower_cut, upper_cut) {
     set_cut_var(cut_var);
   }
-  virtual ~VarCut() {}
+  ~VarCut() override = default;
 
   double lower_cut() const { return lower_cut_; }
   double upper_cut() const { return upper_cut_; }
@@ -1130,8 +1130,8 @@ public:
 
   void calculate_step();
   bool passes();
-  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0);
-  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0);
+  void print(std::ofstream &fs, Verilog, int l1 = 0, int l2 = 0, int l3 = 0) override;
+  void print(std::ofstream &fs, HLS, int l1 = 0, int l2 = 0, int l3 = 0) override;
 };
 
 #endif
