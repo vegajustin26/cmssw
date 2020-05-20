@@ -12,7 +12,7 @@ process = cms.Process("L1TrackNtuple")
 ############################################################
 
 GEOMETRY = "D49"
-L1TRKALGO = 'HYBRID'
+L1TRKALGO = 'HYBRID'  # L1 tracking algorithm: 'HYBRID' (baseline, 4par fit) or 'HYBRID_DISPLACED' (extended, 5par fit)
 
 WRITE_DATA = False
 
@@ -26,6 +26,7 @@ process.load('Configuration.StandardSequences.MagneticField_cff')
 
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.categories.append('Tracklet')
+process.MessageLogger.categories.append('L1track')
 process.MessageLogger.Tracklet = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 
 if GEOMETRY == "D49": 
@@ -79,14 +80,13 @@ process.Timing = cms.Service("Timing", summaryOnly = cms.untracked.bool(True))
 #process.TTClusterStub = cms.Path(process.TrackTriggerClustersStubs)
 #process.TTClusterStubTruth = cms.Path(process.TrackTriggerAssociatorClustersStubs) 
 
-
 ############################################################
-# L1 tracking: hybrid emulation 
+# L1 tracking
 ############################################################
 
 process.load("L1Trigger.TrackFindingTracklet.L1HybridEmulationTracks_cff")
 
-# prompt tracking
+# HYBRID: prompt tracking
 if (L1TRKALGO == 'HYBRID'):
     process.TTTracksEmulation = cms.Path(process.L1HybridTracks)
     process.TTTracksEmulationWithTruth = cms.Path(process.L1HybridTracksWithAssociators)
@@ -94,7 +94,7 @@ if (L1TRKALGO == 'HYBRID'):
     L1TRK_NAME  = "TTTracksFromTrackletEmulation"
     L1TRK_LABEL = "Level1TTTracks"
 
-# extended tracking
+# HYBRID: extended tracking
 elif (L1TRKALGO == 'HYBRID_DISPLACED'):
     process.TTTracksEmulation = cms.Path(process.L1ExtendedHybridTracks)
     process.TTTracksEmulationWithTruth = cms.Path(process.L1ExtendedHybridTracksWithAssociators)
@@ -102,6 +102,31 @@ elif (L1TRKALGO == 'HYBRID_DISPLACED'):
     L1TRK_NAME  = "TTTracksFromExtendedTrackletEmulation"
     L1TRK_LABEL = "Level1TTTracks"
     
+# LEGACY ALGORITHM (EXPERTS ONLY): TRACKLET  
+elif (L1TRKALGO == 'TRACKLET'):
+    print "WARNING - this is not a recommended algorithm! Please use HYBRID (HYBRID_DISPLACED)!"
+    print "\n To run the tracklet-only algorithm, please ensure you have commented out #define USEHYBRID in interface/Settings.h + recompiled! \n"
+    process.TTTracksEmulation = cms.Path(process.L1HybridTracks)
+    process.TTTracksEmulationWithTruth = cms.Path(process.L1HybridTracksWithAssociators)
+    NHELIXPAR = 4
+    L1TRK_NAME  = "TTTracksFromTrackletEmulation"
+    L1TRK_LABEL = "Level1TTTracks"
+
+# LEGACY ALGORITHM (EXPERTS ONLY): TMTT  
+elif (L1TRKALGO == 'TMTT'):
+    print "WARNING - this is not a recommended algorithm! Please use HYBRID (HYBRID_DISPLACED)!"
+    process.load("L1Trigger.TrackFindingTMTT.TMTrackProducer_Ultimate_cff")
+    L1TRK_PROC  =  process.TMTrackProducer
+    L1TRK_NAME  = "TMTrackProducer"
+    L1TRK_LABEL = "TML1TracksKF4ParamsComb"
+    L1TRK_PROC.EnableMCtruth = cms.bool(False) # Reduce CPU use by disabling internal histos.
+    L1TRK_PROC.EnableHistos  = cms.bool(False)
+    process.load("RecoVertex.BeamSpotProducer.BeamSpot_cfi")
+    process.load("SimTracker.TrackTriggerAssociation.TrackTriggerAssociator_cff")
+    process.TTTrackAssociatorFromPixelDigis.TTTracks = cms.VInputTag( cms.InputTag(L1TRK_NAME, L1TRK_LABEL) )
+    process.TTTracksEmulation = cms.Path(process.offlineBeamSpot*L1TRK_PROC)
+    process.TTTracksEmulationWithTruth = cms.Path(process.offlineBeamSpot*L1TRK_PROC*process.TrackTriggerAssociatorTracks)
+
 else:
     print "ERROR: Unknown L1TRKALGO option"
     exit(1)
@@ -137,7 +162,7 @@ process.L1TrackNtuple = cms.EDAnalyzer('L1TrackNtupleMaker',
                                        TrackingParticleInputTag = cms.InputTag("mix", "MergedTrackTruth"),
                                        TrackingVertexInputTag = cms.InputTag("mix", "MergedTrackTruth"),
                                        ## tracking in jets stuff (--> requires AK4 genjet collection present!)
-                                       TrackingInJets = cms.bool(True),
+                                       TrackingInJets = cms.bool(False),
                                        GenJetInputTag = cms.InputTag("ak4GenJets", ""),
                                        )
 
