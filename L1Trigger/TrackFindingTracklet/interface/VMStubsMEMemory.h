@@ -48,8 +48,8 @@ namespace trklet {
 
     void clean() override {
       stubs_.clear();
-      for (unsigned int i = 0; i < binnedstubs_.size(); i++) {
-        binnedstubs_[i].clear();
+      for (auto& binnedstub : binnedstubs_) {
+        binnedstub.clear();
       }
     }
 

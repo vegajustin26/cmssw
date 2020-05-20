@@ -53,8 +53,8 @@ Sector::Sector(unsigned int i, const Settings* settings, Globals* globals) : set
 }
 
 Sector::~Sector() {
-  for (unsigned int i = 0; i < MemoriesV_.size(); i++) {
-    MemoriesV_[i]->clean();
+  for (auto& mem : MemoriesV_) {
+    mem->clean();
   }
 }
 
@@ -79,8 +79,8 @@ bool Sector::addStub(L1TStub stub, string dtc) {
     Stub fpgastub(stub, settings_, phimin_, phimax_);
     std::vector<int>& tmp = ILindex[dtc];
     assert(tmp.size() != 0);
-    for (unsigned int i = 0; i < tmp.size(); i++) {
-      if (IL_[tmp[i]]->addStub(settings_, globals_, stub, fpgastub, dtc))
+    for (int i : tmp) {
+      if (IL_[i]->addStub(settings_, globals_, stub, fpgastub, dtc))
         add = true;
     }
   }
@@ -204,86 +204,86 @@ MemoryBase* Sector::getMem(string memName) {
 }
 
 void Sector::writeInputStubs(bool first) {
-  for (unsigned int i = 0; i < IL_.size(); i++) {
-    IL_[i]->writeStubs(first);
+  for (auto& i : IL_) {
+    i->writeStubs(first);
   }
 }
 
 void Sector::writeVMSTE(bool first) {
-  for (unsigned int i = 0; i < VMSTE_.size(); i++) {
-    VMSTE_[i]->writeStubs(first);
+  for (auto& i : VMSTE_) {
+    i->writeStubs(first);
   }
 }
 
 void Sector::writeVMSME(bool first) {
-  for (unsigned int i = 0; i < VMSME_.size(); i++) {
-    VMSME_[i]->writeStubs(first);
+  for (auto& i : VMSME_) {
+    i->writeStubs(first);
   }
 }
 
 void Sector::writeAS(bool first) {
-  for (unsigned int i = 0; i < AS_.size(); i++) {
-    AS_[i]->writeStubs(first);
+  for (auto& i : AS_) {
+    i->writeStubs(first);
   }
 }
 
 void Sector::writeSP(bool first) {
-  for (unsigned int i = 0; i < SP_.size(); i++) {
-    SP_[i]->writeSP(first);
+  for (auto& i : SP_) {
+    i->writeSP(first);
   }
 }
 
 void Sector::writeST(bool first) {
-  for (unsigned int i = 0; i < ST_.size(); i++) {
-    ST_[i]->writeST(first);
+  for (auto& i : ST_) {
+    i->writeST(first);
   }
 }
 
 void Sector::writeTPAR(bool first) {
-  for (unsigned int i = 0; i < TPAR_.size(); i++) {
-    TPAR_[i]->writeTPAR(first);
+  for (auto& i : TPAR_) {
+    i->writeTPAR(first);
   }
 }
 
 void Sector::writeTPROJ(bool first) {
-  for (unsigned int i = 0; i < TPROJ_.size(); i++) {
-    TPROJ_[i]->writeTPROJ(first);
+  for (auto& i : TPROJ_) {
+    i->writeTPROJ(first);
   }
 }
 
 void Sector::writeAP(bool first) {
-  for (unsigned int i = 0; i < AP_.size(); i++) {
-    AP_[i]->writeAP(first);
+  for (auto& i : AP_) {
+    i->writeAP(first);
   }
 }
 
 void Sector::writeVMPROJ(bool first) {
-  for (unsigned int i = 0; i < VMPROJ_.size(); i++) {
-    VMPROJ_[i]->writeVMPROJ(first);
+  for (auto& i : VMPROJ_) {
+    i->writeVMPROJ(first);
   }
 }
 
 void Sector::writeCM(bool first) {
-  for (unsigned int i = 0; i < CM_.size(); i++) {
-    CM_[i]->writeCM(first);
+  for (auto& i : CM_) {
+    i->writeCM(first);
   }
 }
 
 void Sector::writeMC(bool first) {
-  for (unsigned int i = 0; i < FM_.size(); i++) {
-    FM_[i]->writeMC(first);
+  for (auto& i : FM_) {
+    i->writeMC(first);
   }
 }
 
 void Sector::writeTF(bool first) {
-  for (unsigned int i = 0; i < TF_.size(); ++i) {
-    TF_[i]->writeTF(first);
+  for (auto& i : TF_) {
+    i->writeTF(first);
   }
 }
 
 void Sector::writeCT(bool first) {
-  for (unsigned int i = 0; i < CT_.size(); ++i) {
-    CT_[i]->writeCT(first);
+  for (auto& i : CT_) {
+    i->writeCT(first);
   }
 }
 
@@ -292,114 +292,113 @@ void Sector::clean() {
     int matchesL1 = 0;
     int matchesL3 = 0;
     int matchesL5 = 0;
-    for (unsigned int i = 0; i < TPAR_.size(); i++) {
-      TPAR_[i]->writeMatches(globals_, matchesL1, matchesL3, matchesL5);
+    for (auto& i : TPAR_) {
+      i->writeMatches(globals_, matchesL1, matchesL3, matchesL5);
     }
     globals_->ofstream("nmatchessector.txt") << matchesL1 << " " << matchesL3 << " " << matchesL5 << endl;
   }
 
-  for (unsigned int i = 0; i < MemoriesV_.size(); i++) {
-    MemoriesV_[i]->clean();
+  for (auto& mem : MemoriesV_) {
+    mem->clean();
   }
 }
 
 void Sector::executeVMR() {
   if (settings_->writeMonitorData("IL")) {
     ofstream& out = globals_->ofstream("inputlink.txt");
-    for (unsigned int i = 0; i < IL_.size(); i++) {
-      out << IL_[i]->getName() << " " << IL_[i]->nStubs() << endl;
+    for (auto& i : IL_) {
+      out << i->getName() << " " << i->nStubs() << endl;
     }
   }
-
   for (unsigned int i = 0; i < VMR_.size(); i++) {
     VMR_[i]->execute();
   }
 }
 
 void Sector::executeTE() {
-  for (unsigned int i = 0; i < TE_.size(); i++) {
-    TE_[i]->execute();
+  for (auto& i : TE_) {
+    i->execute();
   }
 }
 
 void Sector::executeTED() {
-  for (unsigned int i = 0; i < TED_.size(); i++) {
-    TED_[i]->execute();
+  for (auto& i : TED_) {
+    i->execute();
   }
 }
 
 void Sector::executeTRE() {
-  for (unsigned int i = 0; i < TRE_.size(); i++) {
-    TRE_[i]->execute();
+  for (auto& i : TRE_) {
+    i->execute();
   }
 }
 
 void Sector::executeTP() {
-  for (unsigned int i = 0; i < TP_.size(); i++) {
-    TP_[i]->execute();
+  for (auto& i : TP_) {
+    i->execute();
   }
 }
 
 void Sector::executeTC() {
-  for (unsigned int i = 0; i < TC_.size(); i++) {
-    TC_[i]->execute();
+  for (auto& i : TC_) {
+    i->execute();
   }
 
   if (settings_->writeMonitorData("TrackProjOcc")) {
     ofstream& out = globals_->ofstream("trackprojocc.txt");
-    for (unsigned int i = 0; i < TPROJ_.size(); i++) {
-      out << TPROJ_[i]->getName() << " " << TPROJ_[i]->nTracklets() << endl;
+    for (auto& i : TPROJ_) {
+      out << i->getName() << " " << i->nTracklets() << endl;
     }
   }
 }
 
 void Sector::executeTCD() {
-  for (unsigned int i = 0; i < TCD_.size(); i++) {
-    TCD_[i]->execute();
+  for (auto& i : TCD_) {
+    i->execute();
   }
 }
 
 void Sector::executePR() {
-  for (unsigned int i = 0; i < PR_.size(); i++) {
-    PR_[i]->execute();
+  for (auto& i : PR_) {
+    i->execute();
   }
 }
 
 void Sector::executeME() {
-  for (unsigned int i = 0; i < ME_.size(); i++) {
-    ME_[i]->execute();
+  for (auto& i : ME_) {
+    i->execute();
   }
 }
 
 void Sector::executeMC() {
-  for (unsigned int i = 0; i < MC_.size(); i++) {
-    MC_[i]->execute();
+  for (auto& i : MC_) {
+    i->execute();
   }
 }
 
 void Sector::executeMP() {
-  for (unsigned int i = 0; i < MP_.size(); i++) {
-    MP_[i]->execute();
+  for (auto& i : MP_) {
+    i->execute();
   }
 }
 
 void Sector::executeFT() {
-  for (unsigned int i = 0; i < FT_.size(); i++) {
-    FT_[i]->execute();
+  for (auto& i : FT_) {
+    i->execute();
   }
 }
 
 void Sector::executePD(std::vector<Track*>& tracks) {
-  for (unsigned int i = 0; i < PD_.size(); i++) {
-    PD_[i]->execute(tracks);
+  for (auto& i : PD_) {
+    i->execute(tracks);
   }
 }
 
 std::vector<Tracklet*> Sector::getAllTracklets() const {
   std::vector<Tracklet*> tmp;
-  for (unsigned int i = 0; i < TPAR_.size(); i++) {
-    for (unsigned int j = 0; j < TPAR_[i]->nTracklets(); j++) {
-      tmp.push_back(TPAR_[i]->getTracklet(j));
+  for (auto tpar : TPAR_) {
+    for (unsigned int j = 0; j < tpar->nTracklets(); j++) {
+      tmp.push_back(tpar->getTracklet(j));
     }
   }
   return tmp;
@@ -408,9 +407,9 @@ std::vector<Tracklet*> Sector::getAllTracklets() const {
 std::vector<const Stub*> Sector::getStubs() const {
   std::vector<const Stub*> tmp;
 
-  for (unsigned int imem = 0; imem < IL_.size(); imem++) {
-    for (unsigned int istub = 0; istub < IL_[imem]->nStubs(); istub++) {
-      tmp.push_back(IL_[imem]->getStub(istub));
+  for (auto imem : IL_) {
+    for (unsigned int istub = 0; istub < imem->nStubs(); istub++) {
+      tmp.push_back(imem->getStub(istub));
     }
   }
 

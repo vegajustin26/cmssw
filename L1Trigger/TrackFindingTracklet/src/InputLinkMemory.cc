@@ -25,10 +25,10 @@ InputLinkMemory::InputLinkMemory(string name, const Settings* const settings, un
 
 bool InputLinkMemory::addStub(
     const Settings* settings, Globals* globals, L1TStub& al1stub, Stub& stub, string dtc = "") {
-  if (layerdisk_ < 6 && globals->phiCorr(layerdisk_) == nullptr) {
+  if (layerdisk_ < N_LAYER && globals->phiCorr(layerdisk_) == nullptr) {
     globals->phiCorr(layerdisk_) = new VMRouterPhiCorrTable();
     int nbits = 3;
-    if (layerdisk_ >= 3)
+    if (layerdisk_ >= N_PSLAYER)
       nbits = 4;
     globals->phiCorr(layerdisk_)->init(settings, layerdisk_ + 1, nbits, 3);
   }
@@ -39,7 +39,7 @@ bool InputLinkMemory::addStub(
   if (stublayerdisk != layerdisk_)
     return false;
 
-  if (layerdisk_ < 6) {
+  if (layerdisk_ < N_LAYER) {
     FPGAWord r = stub.r();
     int bendbin = stub.bend().value();
     int rbin = (r.value() + (1 << (r.nbits() - 1))) >> (r.nbits() - 3);
