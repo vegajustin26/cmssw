@@ -219,13 +219,13 @@ SLHCEvent::SLHCEvent(istream& in) {
 void SLHCEvent::write(ofstream& out) {
   out << "Event: " << eventnum_ << endl;
 
-  for (auto& simtrack : simtracks_) {
-    simtrack.write(out);
+  for (unsigned int i = 0; i < simtracks_.size(); i++) {
+    simtracks_[i].write(out);
   }
   out << "SimTrackEnd" << endl;
 
-  for (auto& stub : stubs_) {
-    stub.write(out);
+  for (unsigned int i = 0; i < stubs_.size(); i++) {
+    stubs_[i].write(out);
   }
   out << "StubEnd" << endl;
 }
@@ -233,13 +233,13 @@ void SLHCEvent::write(ofstream& out) {
 void SLHCEvent::write(ostream& out) {
   out << "Event: " << eventnum_ << endl;
 
-  for (auto& simtrack : simtracks_) {
-    simtrack.write(out);
+  for (unsigned int i = 0; i < simtracks_.size(); i++) {
+    simtracks_[i].write(out);
   }
   out << "SimTrackEnd" << endl;
 
-  for (auto& stub : stubs_) {
-    stub.write(out);
+  for (unsigned int i = 0; i < stubs_.size(); i++) {
+    stubs_[i].write(out);
   }
   out << "StubEnd" << endl;
 }
@@ -258,34 +258,34 @@ unsigned int SLHCEvent::layersHit(int tpid, int& nlayers, int& ndisks) {
   int d4 = 0;
   int d5 = 0;
 
-  for (auto& stub : stubs_) {
-    if (stub.tpmatch(tpid)) {
-      if (stub.layer() == 0)
+  for (unsigned int istub = 0; istub < stubs_.size(); istub++) {
+    if (stubs_[istub].tpmatch(tpid)) {
+      if (stubs_[istub].layer() == 0)
         l1 = 1;
-      if (stub.layer() == 1)
+      if (stubs_[istub].layer() == 1)
         l2 = 1;
-      if (stub.layer() == 2)
+      if (stubs_[istub].layer() == 2)
         l3 = 1;
-      if (stub.layer() == 3)
+      if (stubs_[istub].layer() == 3)
         l4 = 1;
-      if (stub.layer() == 4)
+      if (stubs_[istub].layer() == 4)
         l5 = 1;
-      if (stub.layer() == 5)
+      if (stubs_[istub].layer() == 5)
         l6 = 1;
 
-      if (abs(stub.disk()) == 1)
+      if (abs(stubs_[istub].disk()) == 1)
         d1 = 1;
-      if (abs(stub.disk()) == 2)
+      if (abs(stubs_[istub].disk()) == 2)
         d2 = 1;
-      if (abs(stub.disk()) == 3)
+      if (abs(stubs_[istub].disk()) == 3)
         d3 = 1;
-      if (abs(stub.disk()) == 4)
+      if (abs(stubs_[istub].disk()) == 4)
         d4 = 1;
-      if (abs(stub.disk()) == 5)
+      if (abs(stubs_[istub].disk()) == 5)
         d5 = 1;
     }
   }
-  
+
   nlayers = l1 + l2 + l3 + l4 + l5 + l6;
   ndisks = d1 + d2 + d3 + d4 + d5;
 

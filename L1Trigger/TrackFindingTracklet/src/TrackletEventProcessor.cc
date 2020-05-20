@@ -268,10 +268,10 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
         static int oldevent = -1;
         if (eventnum_ != oldevent) {
           oldevent = eventnum_;
-          for (auto& dtcstub : dtcstubs) {
+          for (auto it = dtcstubs.begin(); it != dtcstubs.end(); ++it) {
             FPGAWord tmp;
             tmp.set(eventnum_ % 8, 3);
-            (*(dtcstub.second)) << "BX " << tmp.str() << " Event : " << eventnum_ + 1 << endl;
+            (*(it->second)) << "BX " << tmp.str() << " Event : " << eventnum_ + 1 << endl;
           }
         }
       }

@@ -34,17 +34,17 @@ int DTC::addStub(std::pair<Stub*, L1TStub*> stub) {
   double phi = trklet::phiRange(stub.second->phi());
   bool overlaplayer = ((stub.second->layer() + 1) % 2 == 0);
   int added = 0;
-  for (auto& link : links_) {
-    if (link.inRange(phi, overlaplayer)) {
+  for (unsigned int i = 0; i < links_.size(); i++) {
+    if (links_[i].inRange(phi, overlaplayer)) {
       added++;
-      link.addStub(stub);
+      links_[i].addStub(stub);
     }
   }
   return added;
 }
 
 void DTC::clean() {
-  for (auto& link : links_) {
-    link.clean();
+  for (unsigned int i = 0; i < links_.size(); i++) {
+    links_[i].clean();
   }
 }
