@@ -5,6 +5,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -48,8 +49,7 @@ void ProjectionRouter::addOutput(MemoryBase* memory, string output) {
     }
   }
 
-  edm::LogPrint("Tracklet") << getName() << " Did not find output : " << output;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find output: " << output;
 }
 
 void ProjectionRouter::addInput(MemoryBase* memory, string input) {
@@ -63,8 +63,7 @@ void ProjectionRouter::addInput(MemoryBase* memory, string input) {
     inputproj_.push_back(tmp);
     return;
   }
-  edm::LogPrint("Tracklet") << "Could not find input : " << input << " in " << getName();
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find input: " << input;
 }
 
 void ProjectionRouter::execute() {

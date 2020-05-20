@@ -4,6 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 #include <sstream>
 
@@ -268,8 +269,7 @@ std::string Tracklet::trackletprojstr(int layer) const {
   assert(layer >= 1 && layer <= 6);
   FPGAWord tmp;
   if (trackletIndex_ < 0 || trackletIndex_ > 127) {
-    edm::LogPrint("Tracklet") << "trackletIndex_ = " << trackletIndex_;
-    assert(0);
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " trackletIndex_ = " << trackletIndex_;
   }
   tmp.set(trackletIndex_, 7, true, __LINE__, __FILE__);
   FPGAWord tcid;
@@ -289,8 +289,7 @@ std::string Tracklet::trackletprojstrD(int disk) const {
   assert(abs(disk) <= N_DISK);
   FPGAWord tmp;
   if (trackletIndex_ < 0 || trackletIndex_ > 127) {
-    edm::LogPrint("Tracklet") << "trackletIndex_ = " << trackletIndex_;
-    assert(0);
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " trackletIndex_ = " << trackletIndex_;
   }
   tmp.set(trackletIndex_, 7, true, __LINE__, __FILE__);
   FPGAWord tcid;
@@ -375,8 +374,7 @@ std::string Tracklet::fullmatchstr(int layer) {
 
   FPGAWord tmp;
   if (trackletIndex_ < 0 || trackletIndex_ > 127) {
-    edm::LogPrint("Tracklet") << "trackletIndex_ = " << trackletIndex_;
-    assert(0);
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " trackletIndex_ = " << trackletIndex_;
   }
   tmp.set(trackletIndex_, 7, true, __LINE__, __FILE__);
   FPGAWord tcid;
@@ -395,8 +393,7 @@ std::string Tracklet::fullmatchdiskstr(int disk) {
 
   FPGAWord tmp;
   if (trackletIndex_ < 0 || trackletIndex_ > 127) {
-    edm::LogPrint("Tracklet") << "trackletIndex_ = " << trackletIndex_;
-    assert(0);
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " trackletIndex_ = " << trackletIndex_;
   }
   tmp.set(trackletIndex_, 7, true, __LINE__, __FILE__);
   FPGAWord tcid;
@@ -898,8 +895,8 @@ unsigned int Tracklet::calcSeedIndex() const {
   }
 
   if (seedindex < 0) {
-    edm::LogPrint("Tracklet") << "seedlayer abs(seeddisk) : " << seedlayer << " " << abs(seeddisk);
-    assert(0);
+    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+				      << " seedlayer abs(seeddisk) : " << seedlayer << " " << abs(seeddisk);
   }
 
   return seedindex;

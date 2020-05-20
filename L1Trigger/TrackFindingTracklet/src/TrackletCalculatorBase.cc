@@ -1,10 +1,10 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletCalculatorBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
-
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -104,7 +104,7 @@ void TrackletCalculatorBase::exacttrackletdisk(double r1,
 
   z0 = z1 - t * rhopsi1;
 
-  for (int i = 0; i < N_DPROJMAX; i++) {
+  for (unsigned int i = 0; i < N_DPROJMAX; i++) {
     exactprojdisk(settings_->zmean(settings_->projdisks(iSeed_, i) - 1),
                   rinv,
                   phi0,
@@ -116,7 +116,7 @@ void TrackletCalculatorBase::exacttrackletdisk(double r1,
                   rder[i]);
   }
 
-  for (int i = 0; i < N_DPROJMAX; i++) {
+  for (unsigned int i = 0; i < N_DPROJMAX; i++) {
     exactproj(settings_->rmean(i), rinv, phi0, t, z0, phiprojLayer[i], zprojLayer[i], phiderLayer[i], zderLayer[i]);
   }
 }
@@ -559,7 +559,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   if (!inSector(iphi0, irinv, phi0approx, rinvapprox))
     return false;
 
-  for (int i = 0; i < N_PROJLAYER; ++i) {
+  for (unsigned int i = 0; i < N_PROJLAYER; ++i) {
     //reject projection if z is out of range
     if (izproj[i] < -(1 << (settings_->nzbitsstub(0) - 1)))
       continue;
@@ -609,7 +609,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   irprojdisk[4] = ITC->rD_4_final.ival();
 
   if (std::abs(it * ITC->t_final.K()) > 1.0) {
-    for (int i = 0; i < N_PROJDISK; ++i) {
+    for (unsigned int i = 0; i < N_PROJDISK; ++i) {
       if (iphiprojdisk[i] <= 0)
         continue;
       if (iphiprojdisk[i] >= (1 << settings_->nphibitsstub(0)) - 1)
@@ -1176,7 +1176,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   else if (ll == 2 && disk == -1)
     ITC = globals_->ITC_L2B1();
   else
-    assert(0);
+    throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
 
   ITC->r1.set_fval(r2 - settings_->rmean(ll - 1));
   ITC->r2.set_fval(r1);

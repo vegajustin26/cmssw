@@ -123,7 +123,8 @@ void ProcessBase::initLayerDisksandISeed(unsigned int& layerdisk1, unsigned int&
   else if (layerdisk1 == 1 && layerdisk2 == 6)
     iSeed = 7;
   else {
-    assert(0);
+    throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__
+				       << " layerdisk1 " << layerdisk1 << " layerdisk2 " << layerdisk2;
   }
 }
 

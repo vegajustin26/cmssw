@@ -2,6 +2,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 #include <cmath>
 
 using namespace std;
@@ -140,9 +141,9 @@ Stub::Stub(L1TStub& stub, const trklet::Settings* const settings, double phimins
         }
       }
       if (irSS < 0) {
-        edm::LogProblem("Tracklet") << "WARNING! didn't find rDSS value! r = " << r
-                                    << " Check that correct geometry is used!";
-        assert(0);
+	throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
+					  << " didn't find rDSS value! r = " << r
+					  << " Check that correct geometry is used!";
       }
     }
     if (irSS < 0) {

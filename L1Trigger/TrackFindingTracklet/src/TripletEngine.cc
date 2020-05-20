@@ -55,7 +55,7 @@ TripletEngine::TripletEngine(string name, const Settings *settings, Globals *glo
     layer3_ = 2;
     iSeed_ = 11;
   } else
-    assert(0);
+    throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
 
   if ((layer2_ == 4 && layer3_ == 2) || (layer2_ == 6 && layer3_ == 4)) {
     secondphibits_ = settings_->nfinephi(1, iSeed_);
@@ -84,7 +84,7 @@ void TripletEngine::addOutput(MemoryBase *memory, string output) {
     stubtriplets_ = tmp;
     return;
   }
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find output : " << output;
 }
 
 void TripletEngine::addInput(MemoryBase *memory, string input) {
@@ -104,8 +104,7 @@ void TripletEngine::addInput(MemoryBase *memory, string input) {
     stubpairs_.push_back(tmp);
     return;
   }
-  edm::LogPrint("Tracklet") << "Could not find input : " << input;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find input : " << input;
 }
 
 void TripletEngine::execute() {

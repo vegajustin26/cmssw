@@ -91,7 +91,7 @@ void MatchEngine::addOutput(MemoryBase* memory, string output) {
     candmatches_ = tmp;
     return;
   }
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find output: " << output;
 }
 
 void MatchEngine::addInput(MemoryBase* memory, string input) {
@@ -111,8 +111,7 @@ void MatchEngine::addInput(MemoryBase* memory, string input) {
     vmprojs_ = tmp;
     return;
   }
-  edm::LogPrint("Tracklet") << "Could not find input : " << input;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find input: " << input;
 }
 
 void MatchEngine::execute() {

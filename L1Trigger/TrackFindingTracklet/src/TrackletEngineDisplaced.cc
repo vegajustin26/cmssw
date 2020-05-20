@@ -73,7 +73,7 @@ void TrackletEngineDisplaced::addOutput(MemoryBase* memory, string output) {
     stubpairs_.push_back(tmp);
     return;
   }
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find output : " << output;
 }
 
 void TrackletEngineDisplaced::addInput(MemoryBase* memory, string input) {
@@ -93,8 +93,7 @@ void TrackletEngineDisplaced::addInput(MemoryBase* memory, string input) {
     secondvmstubs_ = tmp;
     return;
   }
-  edm::LogPrint("Tracklet") << "Could not find input : " << input;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find input : " << input;
 }
 
 void TrackletEngineDisplaced::execute() {

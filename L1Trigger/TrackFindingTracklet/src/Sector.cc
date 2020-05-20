@@ -34,6 +34,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -187,8 +188,7 @@ ProcessBase* Sector::getProc(string procName) {
   if (it != Processes_.end()) {
     return it->second.get();
   }
-  edm::LogPrint("Tracklet") << "Could not find process with name : " << procName;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find process : " << procName;
   return nullptr;
 }
 
@@ -198,8 +198,7 @@ MemoryBase* Sector::getMem(string memName) {
   if (it != Memories_.end()) {
     return it->second.get();
   }
-  edm::LogPrint("Tracklet") << "Could not find memory with name : " << memName;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find memory : " << memName;
   return nullptr;
 }
 

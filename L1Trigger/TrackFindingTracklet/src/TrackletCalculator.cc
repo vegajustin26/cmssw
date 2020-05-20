@@ -6,6 +6,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -88,8 +89,7 @@ void TrackletCalculator::addOutput(MemoryBase* memory, string output) {
     }
   }
 
-  edm::LogProblem("Tracklet") << "Could not find output : " << output;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find output : " << output;
 }
 
 void TrackletCalculator::addInput(MemoryBase* memory, string input) {
@@ -115,7 +115,7 @@ void TrackletCalculator::addInput(MemoryBase* memory, string input) {
     stubpairs_.push_back(tmp);
     return;
   }
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find intput : " << input;
 }
 
 void TrackletCalculator::execute() {
@@ -163,7 +163,7 @@ void TrackletCalculator::execute() {
           if (accept)
             countsel++;
         } else {
-          assert(0);
+	  throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " invalid seeding";
         }
       }
 

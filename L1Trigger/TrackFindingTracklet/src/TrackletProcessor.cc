@@ -4,6 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -234,8 +235,7 @@ void TrackletProcessor::addOutput(MemoryBase* memory, string output) {
     }
   }
 
-  edm::LogPrint("Tracklet") << "Could not find output : " << output;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find output : " << output;
 }
 
 void TrackletProcessor::addInput(MemoryBase* memory, string input) {
@@ -270,7 +270,7 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
     outerallstubs_.push_back(tmp);
     return;
   }
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find input : " << input;
 }
 
 void TrackletProcessor::execute() {
@@ -620,7 +620,7 @@ void TrackletProcessor::execute() {
         //layer+disk seeding
         accept = overlapSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
       } else {
-        assert(0);
+	throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
       }
     }
 

@@ -6,6 +6,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -166,8 +167,7 @@ void TrackletCalculatorDisplaced::addOutput(MemoryBase* memory, string output) {
     }
   }
 
-  edm::LogPrint("Tracklet") << "Could not find output : " << output;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find output : " << output;
 }
 
 void TrackletCalculatorDisplaced::addInput(MemoryBase* memory, string input) {
@@ -199,7 +199,7 @@ void TrackletCalculatorDisplaced::addInput(MemoryBase* memory, string input) {
     stubtriplets_.push_back(tmp);
     return;
   }
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find input : " << input;
 }
 
 void TrackletCalculatorDisplaced::execute() {
@@ -233,7 +233,7 @@ void TrackletCalculatorDisplaced::execute() {
         if (accept)
           countsel++;
       } else if (innerFPGAStub->isDisk() && middleFPGAStub->isDisk() && outerFPGAStub->isDisk()) {
-        assert(0);
+	throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
       } else {
         //layer+disk seeding
         if (innerFPGAStub->isBarrel() && middleFPGAStub->isDisk() && outerFPGAStub->isDisk()) {  //D1D2L2
@@ -245,7 +245,7 @@ void TrackletCalculatorDisplaced::execute() {
           if (accept)
             countsel++;
         } else {
-          assert(0);
+            throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
         }
       }
 

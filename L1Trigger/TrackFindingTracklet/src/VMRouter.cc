@@ -8,6 +8,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -94,7 +95,7 @@ void VMRouter::addOutput(MemoryBase* memory, string output) {
           iseed = 10;
         inner = 2;
       } else {
-        assert(0);
+	throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
       }
       assert(iseed != -1);
       int seedindex = -1;
@@ -118,14 +119,13 @@ void VMRouter::addOutput(MemoryBase* memory, string output) {
       assert(tmp != nullptr);
       vmstubsMEPHI_[(vmbin - 1) & (settings_->nvmme(layerdisk_) - 1)] = tmp;
     } else {
-      assert(0);
+      throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " should never get here!";
     }
 
     return;
   }
 
-  edm::LogPrint("Tracklet") << "Could not find : " << output;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find output : " << output;
 }
 
 void VMRouter::addInput(MemoryBase* memory, string input) {
@@ -141,8 +141,7 @@ void VMRouter::addInput(MemoryBase* memory, string input) {
     }
     return;
   }
-  edm::LogPrint("Tracklet") << "Could not find input : " << input;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find input : " << input;
 }
 
 void VMRouter::execute() {

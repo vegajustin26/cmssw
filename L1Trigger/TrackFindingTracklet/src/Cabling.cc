@@ -4,6 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -72,8 +73,8 @@ const string& Cabling::dtc(int layer, int ladder, int module) const {
   assert(it2 != it1->second.end());
   auto it3 = it2->second.find(module);
   if (it3 == it2->second.end()) {
-    edm::LogPrint("Tracklet") << "Could not find stub " << layer << " " << ladder << " " << module;
-    assert(0);
+    throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__
+				       << "Could not find stub " << layer << " " << ladder << " " << module;
   }
   return it3->second;
 }

@@ -14,6 +14,7 @@
 #endif
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 #include <unordered_set>
 #include <algorithm>
@@ -47,8 +48,7 @@ void PurgeDuplicate::addOutput(MemoryBase* memory, std::string output) {
     outputtracklets_.push_back(tmp);
     return;
   }
-  edm::LogPrint("Tracklet") << "Did not find output : " << output;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find output: " << output;
 }
 
 void PurgeDuplicate::addInput(MemoryBase* memory, std::string input) {
@@ -74,8 +74,7 @@ void PurgeDuplicate::addInput(MemoryBase* memory, std::string input) {
     inputtrackfits_.push_back(tmp);
     return;
   }
-  edm::LogPrint("Tracklet") << "Did not find input : " << input;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find input: " << input;
 }
 
 void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
@@ -158,9 +157,8 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         } else if (settings_->extended()) {
           seedRank.push_back(9);
         } else {
-          edm::LogProblem("Tracklet") << "Error: Seed " << curSeed
-                                      << " not found in list, and settings->extended() not set.";
-          assert(0);
+	  throw cms::Exception("LogError") << __FILE__ << " " << __LINE__ << " Seed " << curSeed
+					   << " not found in list, and settings->extended() not set.";
         }
 
         if (stublist.size() != stubidslist.size())
@@ -505,9 +503,9 @@ double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, const Stub* curStub) {
   } else if (Disk != 0) {
     phiproj = curTracklet->phiprojdisk(Disk);
   } else {
-    edm::LogPrint("Tracklet") << "Layer: " << Layer << "  --  Disk: " << Disk;
-    edm::LogPrint("Tracklet") << "Stub is not layer or disk in getPhiRes";
-    assert(0);
+    throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__
+				       << " Layer: " << Layer << "  --  Disk: " << Disk
+				       << " Stub is not layer or disk in getPhiRes";
   }
   // Calculate residual
   phires = std::abs(stubphi - phiproj);

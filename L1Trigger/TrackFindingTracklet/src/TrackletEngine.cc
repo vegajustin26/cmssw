@@ -6,6 +6,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace trklet;
 using namespace std;
@@ -33,7 +34,7 @@ void TrackletEngine::addOutput(MemoryBase* memory, string output) {
     stubpairs_ = tmp;
     return;
   }
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find output : " << output;
 }
 
 void TrackletEngine::addInput(MemoryBase* memory, string input) {
@@ -55,8 +56,7 @@ void TrackletEngine::addInput(MemoryBase* memory, string input) {
     setVMPhiBin();
     return;
   }
-  edm::LogVerbatim("Tracklet") << "Could not find input : " << input;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find input : " << input;
 }
 
 void TrackletEngine::execute() {

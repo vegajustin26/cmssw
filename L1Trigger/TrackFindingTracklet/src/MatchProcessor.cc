@@ -4,6 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/ProjectionRouterBendTable.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
@@ -173,8 +174,7 @@ void MatchProcessor::addOutput(MemoryBase* memory, string output) {
     fullmatches_[iSeed] = tmp;
     return;
   }
-  edm::LogPrint("Tracklet") << "Could not find output = " << output;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find output: " << output;
 }
 
 void MatchProcessor::addInput(MemoryBase* memory, string input) {
@@ -200,8 +200,7 @@ void MatchProcessor::addInput(MemoryBase* memory, string input) {
     inputprojs_.push_back(tmp);
     return;
   }
-  edm::LogVerbatim("Tracklet") << "MatchProcessor input = " << input;
-  assert(0);
+  throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find input: " << input;
 }
 
 void MatchProcessor::execute() {
