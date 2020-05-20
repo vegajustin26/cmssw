@@ -5,6 +5,8 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
 #include "L1Trigger/TrackFindingTracklet/interface/HistBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
+#include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
+
 
 #include <iomanip>
 

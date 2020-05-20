@@ -2,6 +2,11 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Tracklet.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
+#include "L1Trigger/TrackFindingTracklet/interface/HistBase.h"
+#include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
+#include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculatorDisk.h"
+#include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculatorOverlap.h"
+
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"

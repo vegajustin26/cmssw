@@ -561,7 +561,7 @@ namespace trklet {
                                                   {"VMR", false},          {"Variance", false},
                                                   {"StubsLayer", false},   {"StubsLayerSector", false},
                                                   {"ResEff", false},       {"HitEff", false},
-                                                  {"MatchEff", false},     {"Cabling", false},
+                                                  {"MatchEff", true},     {"Cabling", false},
                                                   {"IFit", false},         {"AS", false}};
 
     std::array<double, 5> rDSSinner_mod_{{68.9391, 78.7750, 85.4550, 96.3150, 102.3160}};
