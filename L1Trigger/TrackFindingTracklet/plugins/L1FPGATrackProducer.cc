@@ -364,10 +364,10 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
       this_tp++;
 
       // only keep TPs producing a cluster
-      if (MCTruthTTClusterHandle->findTTClusterRefs(tp_ptr).size() < 1)
+      if (MCTruthTTClusterHandle->findTTClusterRefs(tp_ptr).empty())
         continue;
 
-      if (iterTP.g4Tracks().size() == 0) {
+      if (iterTP.g4Tracks().empty()) {
         continue;
       }
 
@@ -414,7 +414,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     // Get the DetSets of the Clusters
     edmNew::DetSet<TTStub<Ref_Phase2TrackerDigi_>> stubs = (*Phase2TrackerDigiTTStubHandle)[stackDetid];
     const GeomDetUnit* det0 = theTrackerGeom->idToDetUnit(detid);
-    const PixelGeomDetUnit* theGeomDet = dynamic_cast<const PixelGeomDetUnit*>(det0);
+    const auto* theGeomDet = dynamic_cast<const PixelGeomDetUnit*>(det0);
     const PixelTopology* topol = dynamic_cast<const PixelTopology*>(&(theGeomDet->specificTopology()));
 
     bool isPSmodule = theTrackerGeom->getDetectorType(detid) == TrackerGeometry::ModuleType::Ph2PSP;
@@ -523,6 +523,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
       std::vector<int> irphi;
       std::vector<int> innerrows = innerCluster->getRows();
+      irphi.reserve(innerrows.size());
       for (int innerrow : innerrows) {
         irphi.push_back(innerrow);
       }
@@ -537,7 +538,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
       const DetId innerDetId = innerCluster->getDetId();
       const GeomDetUnit* det_inner = theTrackerGeom->idToDetUnit(innerDetId);
-      const PixelGeomDetUnit* theGeomDet_inner = dynamic_cast<const PixelGeomDetUnit*>(det_inner);
+      const auto* theGeomDet_inner = dynamic_cast<const PixelGeomDetUnit*>(det_inner);
       const PixelTopology* topol_inner = dynamic_cast<const PixelTopology*>(&(theGeomDet_inner->specificTopology()));
 
       MeasurementPoint coords_inner = innerCluster->findAverageLocalCoordinatesCentered();
@@ -546,7 +547,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
       const DetId outerDetId = outerCluster->getDetId();
       const GeomDetUnit* det_outer = theTrackerGeom->idToDetUnit(outerDetId);
-      const PixelGeomDetUnit* theGeomDet_outer = dynamic_cast<const PixelGeomDetUnit*>(det_outer);
+      const auto* theGeomDet_outer = dynamic_cast<const PixelGeomDetUnit*>(det_outer);
       const PixelTopology* topol_outer = dynamic_cast<const PixelTopology*>(&(theGeomDet_outer->specificTopology()));
 
       MeasurementPoint coords_outer = outerCluster->findAverageLocalCoordinatesCentered();
@@ -562,7 +563,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
       if (layer > 999 && posStub.z() < 0.0) {
         stub_bend = -stub_bend;
       }
-      if (irphi.size() != 0) {
+      if (!irphi.empty()) {
         strip = irphi[0];
       }
 
@@ -580,7 +581,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
                                                          posStub.z(),
                                                          isPSmodule,
                                                          isFlipped))) {
-        const trklet::L1TStub lastStub = ev.lastStub();
+        const trklet::L1TStub& lastStub = ev.lastStub();
         stubMap[lastStub] = tempStubPtr;
       }
     }
@@ -654,6 +655,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     const vector<const trklet::L1TStub*>& stubptrs = track->stubs();
     vector<trklet::L1TStub> stubs;
 
+    stubs.reserve(stubptrs.size());
     for (auto stubptr : stubptrs) {
       stubs.push_back(*stubptr);
     }
