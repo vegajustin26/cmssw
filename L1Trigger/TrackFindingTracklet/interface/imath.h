@@ -429,7 +429,7 @@ public:
     op_ = "const";
     K_ = K;
     nbits_ = log2(fval / K) + 1.999999;  //plus one to round up
-    if (units != "")
+    if (!units.empty())
       Kmap_[units] = 1;
     else {
       //defining a constant, K should be a power of two
@@ -470,7 +470,7 @@ public:
     op_ = "def";
     K_ = K;
     nbits_ = log2(fmax / K) + 1.999999;  //plus one to round up
-    if (units != "")
+    if (!units.empty())
       Kmap_[units] = 1;
     else {
       //defining a constant, K should be a power of two
@@ -1068,7 +1068,7 @@ protected:
 class VarCut : public VarBase {
 public:
   VarCut(imathGlobals *globals, double lower_cut, double upper_cut)
-      : VarBase(globals, "", 0, 0, 0, 0), lower_cut_(lower_cut), upper_cut_(upper_cut), parent_flag_(0) {
+      : VarBase(globals, "", nullptr, nullptr, nullptr, 0), lower_cut_(lower_cut), upper_cut_(upper_cut), parent_flag_(nullptr) {
     op_ = "cut";
   }
 

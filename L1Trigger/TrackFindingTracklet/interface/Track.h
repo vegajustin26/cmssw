@@ -68,8 +68,8 @@ namespace trklet {
 
     int nPSstubs() const {
       int npsstubs = 0;
-      for (unsigned int i = 0; i < l1stub_.size(); i++) {
-        if (l1stub_[i]->layer() < N_PSLAYER)
+      for (auto istub : l1stub_) {
+        if (istub->layer() < N_PSLAYER)
           npsstubs++;
       }
       return npsstubs;
