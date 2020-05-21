@@ -16,9 +16,9 @@ namespace trklet {
 
   class Stub {
   public:
-    Stub(const Settings* const settings);
+    Stub(Settings const& settings);
 
-    Stub(L1TStub& stub, const Settings* const settings, double phiminsec, double phimaxsec);
+    Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phimaxsec);
 
     ~Stub() = default;
 
@@ -86,7 +86,7 @@ namespace trklet {
     FPGAWord stubindex_;
 
     L1TStub* l1tstub_;
-    const Settings* const settings_;
+    Settings const& settings_;
   };
 
 };  // namespace trklet

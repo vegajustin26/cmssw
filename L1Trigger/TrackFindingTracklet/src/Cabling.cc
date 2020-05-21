@@ -10,8 +10,7 @@
 using namespace std;
 using namespace trklet;
 
-Cabling::Cabling(string dtcconfig, string moduleconfig, const Settings* settings) {
-  settings_ = settings;
+Cabling::Cabling(string dtcconfig, string moduleconfig, Settings const& settings) : settings_(settings) {
 
   ifstream indtc(dtcconfig.c_str());
   assert(indtc.good());
@@ -96,7 +95,7 @@ void Cabling::addphi(const string& dtc, double phi, int layer, int module) {
     isec = dtc[4] - '0';
   }
 
-  double phisec = reco::reduceRange(phi - isec * settings_->dphisector());
+  double phisec = reco::reduceRange(phi - isec * settings_.dphisector());
 
   assert(dtcranges_.find(dtcbase) != dtcranges_.end());
 

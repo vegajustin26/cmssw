@@ -610,11 +610,11 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     ntracks++;
 
     // this is where we create the TTTrack object
-    double tmp_rinv = track->rinv(&settings);
-    double tmp_phi = track->phi0(&settings);
-    double tmp_tanL = track->tanL(&settings);
-    double tmp_z0 = track->z0(&settings);
-    double tmp_d0 = track->d0(&settings);
+    double tmp_rinv = track->rinv(settings);
+    double tmp_phi = track->phi0(settings);
+    double tmp_tanL = track->tanL(settings);
+    double tmp_z0 = track->z0(settings);
+    double tmp_d0 = track->d0(settings);
     double tmp_chi2rphi = track->chisqrphi();
     double tmp_chi2rz = track->chisqrz();
     unsigned int tmp_hit = track->hitpattern();

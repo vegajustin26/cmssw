@@ -17,7 +17,7 @@ namespace trklet {
 
   class TrackletCalculatorBase : public ProcessBase {
   public:
-    TrackletCalculatorBase(std::string name, const Settings* const settings, Globals* global, unsigned int iSector);
+    TrackletCalculatorBase(std::string name, Settings const& settings, Globals* global, unsigned int iSector);
 
     ~TrackletCalculatorBase() override = default;
 

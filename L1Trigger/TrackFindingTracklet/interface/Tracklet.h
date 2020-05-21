@@ -27,7 +27,7 @@ namespace trklet {
 
   class Tracklet {
   public:
-    Tracklet(const Settings* settings,
+    Tracklet(Settings const& settings,
              const L1TStub* innerStub,
              const L1TStub* middleStub,
              const L1TStub* outerStub,
@@ -560,7 +560,7 @@ namespace trklet {
     LayerResidual layerresid_[N_LAYER];
     DiskResidual diskresid_[N_DISK];
 
-    const Settings* settings_;
+    Settings const& settings_;
   };
 };  // namespace trklet
 #endif

@@ -33,7 +33,7 @@ namespace trklet {
   
   class Globals {
   public:
-    Globals(const Settings* settings) ;
+    Globals(Settings const& settings) ;
 
     ~Globals();
 

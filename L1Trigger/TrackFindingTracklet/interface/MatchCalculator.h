@@ -20,7 +20,7 @@ namespace trklet {
 
   class MatchCalculator : public ProcessBase {
   public:
-    MatchCalculator(std::string name, const Settings* settings, Globals* global, unsigned int iSector);
+    MatchCalculator(std::string name, Settings const& settings, Globals* global, unsigned int iSector);
 
     ~MatchCalculator() override = default;
 

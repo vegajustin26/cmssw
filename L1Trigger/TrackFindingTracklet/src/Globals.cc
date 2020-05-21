@@ -16,7 +16,7 @@ using namespace std;
 using namespace trklet;
 
 
-Globals::Globals(const Settings* settings) {
+Globals::Globals(Settings const& settings) {
   imathGlobals* imathGlobs = new imathGlobals();
 
   //takes owernship of globals pointer

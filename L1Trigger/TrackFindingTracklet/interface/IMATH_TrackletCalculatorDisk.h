@@ -18,50 +18,50 @@ namespace trklet{
 
   class IMATH_TrackletCalculatorDisk {
   public:
-  IMATH_TrackletCalculatorDisk(const trklet::Settings* settings, imathGlobals* globals, int i1, int i2)
+  IMATH_TrackletCalculatorDisk(Settings const& settings, imathGlobals* globals, int i1, int i2)
     : settings_(settings), globals_(globals) {
-      if (settings_->debugTracklet()) {
+      if (settings_.debugTracklet()) {
 	edm::LogVerbatim("Tracklet") << "=============================================";
 	char s[1024];
-	snprintf(s, 1024, "IMATH Tracklet Calculator for Disk %i %i dphisector = %f", i1, i2, settings->dphisector());
+	snprintf(s, 1024, "IMATH Tracklet Calculator for Disk %i %i dphisector = %f", i1, i2, settings_.dphisector());
 	edm::LogVerbatim("Tracklet") << s;
-	snprintf(s, 1024, "rmaxL6 = %f, zmaxD5 = %f", settings->rmax(5), settings->zmax(4));
+	snprintf(s, 1024, "rmaxL6 = %f, zmaxD5 = %f", settings_.rmax(5), settings_.zmax(4));
 	edm::LogVerbatim("Tracklet") << s;
-	snprintf(s, 1024, "      stub Ks: kr, kphi1, kz = %g, %g, %g", settings->kr(), settings->kphi1(), settings->kz());
+	snprintf(s, 1024, "      stub Ks: kr, kphi1, kz = %g, %g, %g", settings_.kr(), settings_.kphi1(), settings_.kz());
 	edm::LogVerbatim("Tracklet") << s;
 	snprintf(s,
 		 1024,
 		 "  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g",
-		 settings->kphi1() / settings->kr() * pow(2, settings->rinv_shift()),
-		 settings->kphi1() * pow(2, settings->phi0_shift()),
-		 settings->kz() / settings->kr() * pow(2, settings->t_shift()),
-		 settings->kz() * pow(2, settings->z0_shift()));
+		 settings_.kphi1() / settings_.kr() * pow(2, settings_.rinv_shift()),
+		 settings_.kphi1() * pow(2, settings_.phi0_shift()),
+		 settings_.kz() / settings_.kr() * pow(2, settings_.t_shift()),
+		 settings_.kz() * pow(2, settings_.z0_shift()));
 	edm::LogVerbatim("Tracklet") << s;
 	snprintf(s,
 		 1024,
 		 "layer proj Ks: kphiproj456, kphider, kzproj, kzder = %g, %g, %g, %g",
-		 settings->kphi1() * pow(2, settings->SS_phiL_shift()),
-		 settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderL_shift()),
-		 settings->kz() * pow(2, settings->PS_zL_shift()),
-		 settings->kz() / settings->kr() * pow(2, settings->PS_zderL_shift()));
+		 settings_.kphi1() * pow(2, settings_.SS_phiL_shift()),
+		 settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderL_shift()),
+		 settings_.kz() * pow(2, settings_.PS_zL_shift()),
+		 settings_.kz() / settings_.kr() * pow(2, settings_.PS_zderL_shift()));
 	edm::LogVerbatim("Tracklet") << s;
 	snprintf(s,
 		 1024,
 		 " disk proj Ks: kphiprojdisk, kphiprojderdisk, krprojdisk, krprojderdisk = %g, %g, %g, %g",
-		 settings->kphi1() * pow(2, settings->SS_phiD_shift()),
-		 settings->kphi1() / settings->kr() * pow(2, settings->SS_phiderD_shift()),
-		 settings->kr() * pow(2, settings->PS_rD_shift()),
-		 settings->kr() / settings->kz() * pow(2, settings->PS_rderD_shift()));
+		 settings_.kphi1() * pow(2, settings_.SS_phiD_shift()),
+		 settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderD_shift()),
+		 settings_.kr() * pow(2, settings_.PS_rD_shift()),
+		 settings_.kr() / settings_.kz() * pow(2, settings_.PS_rderD_shift()));
 	edm::LogVerbatim("Tracklet") << s;
 	edm::LogVerbatim("Tracklet") << "=============================================";
       }
 
-      z1mean.set_fval(settings->zmean(abs(i1) - 1));
-      z2mean.set_fval(settings->zmean(abs(i2) - 1));
+      z1mean.set_fval(settings_.zmean(abs(i1) - 1));
+      z2mean.set_fval(settings_.zmean(abs(i2) - 1));
 
       if (i2 < 0) {  //t is negative
-	z1mean.set_fval(-settings->zmean(abs(i1) - 1));
-	z2mean.set_fval(-settings->zmean(abs(i2) - 1));
+	z1mean.set_fval(-settings_.zmean(abs(i1) - 1));
+	z2mean.set_fval(-settings_.zmean(abs(i2) - 1));
 	invt.set_mode(VarInv::mode::neg);
 	invt.initLUT(0.);
       }
@@ -105,7 +105,7 @@ namespace trklet{
 
     ~IMATH_TrackletCalculatorDisk() = default;
 
-    const trklet::Settings* settings_;
+    Settings const& settings_;
 
     imathGlobals* globals_;
 
@@ -135,38 +135,38 @@ namespace trklet{
     VarParam plus1{globals_, "plus1", 1., 10};
     VarParam minus1{globals_, "minus1", -1, 10};
 
-    VarParam z1mean{globals_, "z1mean", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
-    VarParam z2mean{globals_, "z2mean", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
+    VarParam z1mean{globals_, "z1mean", "Kz", settings_.zmax(trklet::N_DISK - 1), settings_.kz()};
+    VarParam z2mean{globals_, "z2mean", "Kz", settings_.zmax(trklet::N_DISK - 1), settings_.kz()};
 
     //inputs
-    VarDef r1{globals_, "r1", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
-    VarDef r2{globals_, "r2", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
-    VarDef z1{globals_, "z1", "Kz", settings_->dzmax(), settings_->kz()};
-    VarDef z2{globals_, "z2", "Kz", settings_->dzmax(), settings_->kz()};
+    VarDef r1{globals_, "r1", "Kr", settings_.rmax(trklet::N_LAYER - 1), settings_.kr()};
+    VarDef r2{globals_, "r2", "Kr", settings_.rmax(trklet::N_LAYER - 1), settings_.kr()};
+    VarDef z1{globals_, "z1", "Kz", settings_.dzmax(), settings_.kz()};
+    VarDef z2{globals_, "z2", "Kz", settings_.dzmax(), settings_.kz()};
 
-    VarDef phi1{globals_, "phi1", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
-    VarDef phi2{globals_, "phi2", "Kphi", settings_->dphisector() / 0.75, settings_->kphi1()};
+    VarDef phi1{globals_, "phi1", "Kphi", settings_.dphisector() / 0.75, settings_.kphi1()};
+    VarDef phi2{globals_, "phi2", "Kphi", settings_.dphisector() / 0.75, settings_.kphi1()};
 
-    VarDef rproj0{globals_, "rproj0", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
-    VarDef rproj1{globals_, "rproj1", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
-    VarDef rproj2{globals_, "rproj2", "Kr", settings_->rmax(trklet::N_LAYER - 1), settings_->kr()};
+    VarDef rproj0{globals_, "rproj0", "Kr", settings_.rmax(trklet::N_LAYER - 1), settings_.kr()};
+    VarDef rproj1{globals_, "rproj1", "Kr", settings_.rmax(trklet::N_LAYER - 1), settings_.kr()};
+    VarDef rproj2{globals_, "rproj2", "Kr", settings_.rmax(trklet::N_LAYER - 1), settings_.kr()};
 
-    VarDef zproj0{globals_, "zproj0", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
-    VarDef zproj1{globals_, "zproj1", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
-    VarDef zproj2{globals_, "zproj2", "Kz", settings_->zmax(trklet::N_DISK - 1), settings_->kz()};
+    VarDef zproj0{globals_, "zproj0", "Kz", settings_.zmax(trklet::N_DISK - 1), settings_.kz()};
+    VarDef zproj1{globals_, "zproj1", "Kz", settings_.zmax(trklet::N_DISK - 1), settings_.kz()};
+    VarDef zproj2{globals_, "zproj2", "Kz", settings_.zmax(trklet::N_DISK - 1), settings_.kz()};
 
     //calculations
 
     //tracklet
-    VarAdd z1abs{globals_, "z1abs", &z1, &z1mean, settings_->zmax(trklet::N_DISK - 1)};
-    VarAdd z2abs{globals_, "z2abs", &z2, &z2mean, settings_->zmax(trklet::N_DISK - 1)};
+    VarAdd z1abs{globals_, "z1abs", &z1, &z1mean, settings_.zmax(trklet::N_DISK - 1)};
+    VarAdd z2abs{globals_, "z2abs", &z2, &z2mean, settings_.zmax(trklet::N_DISK - 1)};
 
     VarSubtract dr{globals_, "dr", &r2, &r1, dr_max};
 
     //R LUT
     VarInv drinv{globals_, "drinv", &dr, 0, 18, 23, 0, VarInv::mode::pos};
 
-    VarSubtract dphi{globals_, "dphi", &phi2, &phi1, settings_->dphisector() / 4.};
+    VarSubtract dphi{globals_, "dphi", &phi2, &phi1, settings_.dphisector() / 4.};
     VarSubtract dz{globals_, "dz", &z2abs, &z1abs, dz_max};
 
     VarMult delta0{globals_, "delta0", &dphi, &drinv, 4 * delta0_max};
@@ -186,21 +186,21 @@ namespace trklet{
     VarMult x6a{globals_, "x6a", &delta2, &x4, 8 * x6a_max};
     VarNounits x6b{globals_, "x6b", &x6a};
     VarAdd x6m{globals_, "x6m", &minus1, &x6b, 2.};
-    VarMult phi0a{globals_, "phi0a", &delta1, &x6m, settings_->dphisector()};
+    VarMult phi0a{globals_, "phi0a", &delta1, &x6m, settings_.dphisector()};
 
-    VarMult z0a{globals_, "z0a", &r1, &deltaZ, 2 * settings_->zlength()};
-    VarMult z0b{globals_, "z0b", &z0a, &x6m, 2 * settings_->zlength()};
+    VarMult z0a{globals_, "z0a", &r1, &deltaZ, 2 * settings_.zlength()};
+    VarMult z0b{globals_, "z0b", &z0a, &x6m, 2 * settings_.zlength()};
 
-    VarAdd phi0{globals_, "phi0", &phi1, &phi0a, 2 * settings_->dphisector()};
-    VarMult rinv{globals_, "rinv", &a2n, &delta0, 4 * settings_->maxrinv()};
+    VarAdd phi0{globals_, "phi0", &phi1, &phi0a, 2 * settings_.dphisector()};
+    VarMult rinv{globals_, "rinv", &a2n, &delta0, 4 * settings_.maxrinv()};
     VarMult t{globals_, "t", &a, &deltaZ, 2 * t_max};
     VarAdd z0{globals_, "z0", &z1abs, &z0b, 2 * z0_max};
 
     VarAdjustK rinv_final{
-      globals_, "rinv_final", &rinv, settings_->kphi1() / settings_->kr() * pow(2, settings_->rinv_shift())};
-    VarAdjustK phi0_final{globals_, "phi0_final", &phi0, settings_->kphi1() * pow(2, settings_->phi0_shift())};
-    VarAdjustK t_final{globals_, "t_final", &t, settings_->kz() / settings_->kr() * pow(2, settings_->t_shift())};
-    VarAdjustK z0_final{globals_, "z0_final", &z0, settings_->kz() * pow(2, settings_->z0_shift())};
+      globals_, "rinv_final", &rinv, settings_.kphi1() / settings_.kr() * pow(2, settings_.rinv_shift())};
+    VarAdjustK phi0_final{globals_, "phi0_final", &phi0, settings_.kphi1() * pow(2, settings_.phi0_shift())};
+    VarAdjustK t_final{globals_, "t_final", &t, settings_.kz() / settings_.kr() * pow(2, settings_.t_shift())};
+    VarAdjustK z0_final{globals_, "z0_final", &z0, settings_.kz() * pow(2, settings_.z0_shift())};
 
     //projection to r
     VarShift x2{globals_, "x2", &delta0, 1};
@@ -240,14 +240,14 @@ namespace trklet{
     VarShift x3{globals_, "x3", &rinv, 1};
     VarNeg der_phiL{globals_, "der_phiL", &x3};
 
-    VarAdjustK phiL_0_final{globals_, "phiL_0_final", &phiL_0, settings_->kphi1() * pow(2, settings_->SS_phiL_shift())};
-    VarAdjustK phiL_1_final{globals_, "phiL_1_final", &phiL_1, settings_->kphi1() * pow(2, settings_->SS_phiL_shift())};
-    VarAdjustK phiL_2_final{globals_, "phiL_2_final", &phiL_2, settings_->kphi1() * pow(2, settings_->SS_phiL_shift())};
+    VarAdjustK phiL_0_final{globals_, "phiL_0_final", &phiL_0, settings_.kphi1() * pow(2, settings_.SS_phiL_shift())};
+    VarAdjustK phiL_1_final{globals_, "phiL_1_final", &phiL_1, settings_.kphi1() * pow(2, settings_.SS_phiL_shift())};
+    VarAdjustK phiL_2_final{globals_, "phiL_2_final", &phiL_2, settings_.kphi1() * pow(2, settings_.SS_phiL_shift())};
 
     VarAdjustK der_phiL_final{globals_,
 	"der_phiL_final",
 	&der_phiL,
-	settings_->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderL_shift())};
+	settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderL_shift())};
 
     VarMult x11_0{globals_, "x11_0", &rproj0, &t};
     VarMult x11_1{globals_, "x11_1", &rproj1, &t};
@@ -261,12 +261,12 @@ namespace trklet{
     VarAdd zL_1{globals_, "zL_1", &z0, &x23_1};
     VarAdd zL_2{globals_, "zL_2", &z0, &x23_2};
 
-    VarAdjustK zL_0_final{globals_, "zL_0_final", &zL_0, settings_->kz() * pow(2, settings_->PS_zL_shift())};
-    VarAdjustK zL_1_final{globals_, "zL_1_final", &zL_1, settings_->kz() * pow(2, settings_->PS_zL_shift())};
-    VarAdjustK zL_2_final{globals_, "zL_2_final", &zL_2, settings_->kz() * pow(2, settings_->PS_zL_shift())};
+    VarAdjustK zL_0_final{globals_, "zL_0_final", &zL_0, settings_.kz() * pow(2, settings_.PS_zL_shift())};
+    VarAdjustK zL_1_final{globals_, "zL_1_final", &zL_1, settings_.kz() * pow(2, settings_.PS_zL_shift())};
+    VarAdjustK zL_2_final{globals_, "zL_2_final", &zL_2, settings_.kz() * pow(2, settings_.PS_zL_shift())};
 
     VarAdjustK der_zL_final{
-      globals_, "der_zL_final", &t_final, settings_->kz() / settings_->kr() * pow(2, settings_->PS_zderL_shift())};
+      globals_, "der_zL_final", &t_final, settings_.kz() / settings_.kr() * pow(2, settings_.PS_zderL_shift())};
 
     //projection to z
     VarInv invt{globals_, "invt", &t_final, 0., 18, 26, 1, VarInv::mode::pos, 13};
@@ -281,24 +281,24 @@ namespace trklet{
     VarMult x13_1{globals_, "x13_1", &x5_1, &invt, x13_max};
     VarMult x13_2{globals_, "x13_2", &x5_2, &invt, x13_max};
 
-    VarMult x25_0{globals_, "x25_0", &x13_0, &x7, settings_->dphisector()};
-    VarMult x25_1{globals_, "x25_1", &x13_1, &x7, settings_->dphisector()};
-    VarMult x25_2{globals_, "x25_2", &x13_2, &x7, settings_->dphisector()};
+    VarMult x25_0{globals_, "x25_0", &x13_0, &x7, settings_.dphisector()};
+    VarMult x25_1{globals_, "x25_1", &x13_1, &x7, settings_.dphisector()};
+    VarMult x25_2{globals_, "x25_2", &x13_2, &x7, settings_.dphisector()};
 
-    VarAdd phiD_0{globals_, "phiD_0", &phi0, &x25_0, 2 * settings_->dphisector()};
-    VarAdd phiD_1{globals_, "phiD_1", &phi0, &x25_1, 2 * settings_->dphisector()};
-    VarAdd phiD_2{globals_, "phiD_2", &phi0, &x25_2, 2 * settings_->dphisector()};
+    VarAdd phiD_0{globals_, "phiD_0", &phi0, &x25_0, 2 * settings_.dphisector()};
+    VarAdd phiD_1{globals_, "phiD_1", &phi0, &x25_1, 2 * settings_.dphisector()};
+    VarAdd phiD_2{globals_, "phiD_2", &phi0, &x25_2, 2 * settings_.dphisector()};
 
-    VarAdjustK phiD_0_final{globals_, "phiD_0_final", &phiD_0, settings_->kphi1() * pow(2, settings_->SS_phiD_shift())};
-    VarAdjustK phiD_1_final{globals_, "phiD_1_final", &phiD_1, settings_->kphi1() * pow(2, settings_->SS_phiD_shift())};
-    VarAdjustK phiD_2_final{globals_, "phiD_2_final", &phiD_2, settings_->kphi1() * pow(2, settings_->SS_phiD_shift())};
+    VarAdjustK phiD_0_final{globals_, "phiD_0_final", &phiD_0, settings_.kphi1() * pow(2, settings_.SS_phiD_shift())};
+    VarAdjustK phiD_1_final{globals_, "phiD_1_final", &phiD_1, settings_.kphi1() * pow(2, settings_.SS_phiD_shift())};
+    VarAdjustK phiD_2_final{globals_, "phiD_2_final", &phiD_2, settings_.kphi1() * pow(2, settings_.SS_phiD_shift())};
 
     VarMult der_phiD{globals_, "der_phiD", &x7, &invt, 2 * der_phiD_max};
 
     VarAdjustK der_phiD_final{globals_,
 	"der_phiD_final",
 	&der_phiD,
-	settings_->kphi1() / settings_->kr() * pow(2, settings_->SS_phiderD_shift())};
+	settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderD_shift())};
 
     VarMult x26_0{globals_, "x26_0", &x25_0, &x25_0};
     VarMult x26_1{globals_, "x26_1", &x25_1, &x25_1};
@@ -316,24 +316,24 @@ namespace trklet{
     VarSubtract x27_1{globals_, "x27_1", &plus1, &x9_1};
     VarSubtract x27_2{globals_, "x27_2", &plus1, &x9_2};
 
-    VarMult rD_0{globals_, "rD_0", &x13_0, &x27_0, settings_->rmaxdisk()};
-    VarMult rD_1{globals_, "rD_1", &x13_1, &x27_1, settings_->rmaxdisk()};
-    VarMult rD_2{globals_, "rD_2", &x13_2, &x27_2, settings_->rmaxdisk()};
+    VarMult rD_0{globals_, "rD_0", &x13_0, &x27_0, settings_.rmaxdisk()};
+    VarMult rD_1{globals_, "rD_1", &x13_1, &x27_1, settings_.rmaxdisk()};
+    VarMult rD_2{globals_, "rD_2", &x13_2, &x27_2, settings_.rmaxdisk()};
 
-    VarAdjustK rD_0_final{globals_, "rD_0_final", &rD_0, settings_->kr() * pow(2, settings_->PS_rD_shift())};
-    VarAdjustK rD_1_final{globals_, "rD_1_final", &rD_1, settings_->kr() * pow(2, settings_->PS_rD_shift())};
-    VarAdjustK rD_2_final{globals_, "rD_2_final", &rD_2, settings_->kr() * pow(2, settings_->PS_rD_shift())};
+    VarAdjustK rD_0_final{globals_, "rD_0_final", &rD_0, settings_.kr() * pow(2, settings_.PS_rD_shift())};
+    VarAdjustK rD_1_final{globals_, "rD_1_final", &rD_1, settings_.kr() * pow(2, settings_.PS_rD_shift())};
+    VarAdjustK rD_2_final{globals_, "rD_2_final", &rD_2, settings_.kr() * pow(2, settings_.PS_rD_shift())};
 
     VarAdjustK der_rD_final{
-      globals_, "der_rD_final", &invt, settings_->kr() / settings_->kz() * pow(2, settings_->PS_rderD_shift())};
+      globals_, "der_rD_final", &invt, settings_.kr() / settings_.kz() * pow(2, settings_.PS_rderD_shift())};
 
-    VarCut rinv_final_cut{globals_, &rinv_final, -settings_->rinvcut(), settings_->rinvcut()};
-    VarCut z0_final_cut{globals_, &z0_final, -settings_->z0cut(), settings_->z0cut()};
+    VarCut rinv_final_cut{globals_, &rinv_final, -settings_.rinvcut(), settings_.rinvcut()};
+    VarCut z0_final_cut{globals_, &z0_final, -settings_.z0cut(), settings_.z0cut()};
 
-    VarCut z1abs_cut{globals_, &z1abs, -settings_->zmax(4), settings_->zmax(4)};
-    VarCut z2abs_cut{globals_, &z2abs, -settings_->zmax(4), settings_->zmax(4)};
+    VarCut z1abs_cut{globals_, &z1abs, -settings_.zmax(4), settings_.zmax(4)};
+    VarCut z2abs_cut{globals_, &z2abs, -settings_.zmax(4), settings_.zmax(4)};
     VarCut dr_cut{globals_, &dr, -dr_max, dr_max};
-    VarCut dphi_cut{globals_, &dphi, -settings_->dphisector() / 4., settings_->dphisector() / 4.};
+    VarCut dphi_cut{globals_, &dphi, -settings_.dphisector() / 4., settings_.dphisector() / 4.};
     VarCut dz_cut{globals_, &dz, -dz_max, dz_max};
     VarCut delta0_cut{globals_, &delta0, -delta0_max, delta0_max};
     VarCut deltaZ_cut{globals_, &deltaZ, -deltaZ_max, deltaZ_max};
@@ -341,10 +341,10 @@ namespace trklet{
     VarCut a2_cut{globals_, &a2, -a2_max, a2_max};
     VarCut x6a_cut{globals_, &x6a, -x6a_max, x6a_max};
     VarCut x6m_cut{globals_, &x6m, -x6m_max, x6m_max};
-    VarCut phi0a_cut{globals_, &phi0a, -settings_->dphisector(), settings_->dphisector()};
+    VarCut phi0a_cut{globals_, &phi0a, -settings_.dphisector(), settings_.dphisector()};
     VarCut z0a_cut{globals_, &z0a, -z0a_max, z0a_max};
-    VarCut phi0_cut{globals_, &phi0, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
-    VarCut rinv_cut{globals_, &rinv, -settings_->maxrinv(), settings_->maxrinv()};
+    VarCut phi0_cut{globals_, &phi0, -2 * settings_.dphisector(), 2 * settings_.dphisector()};
+    VarCut rinv_cut{globals_, &rinv, -settings_.maxrinv(), settings_.maxrinv()};
     VarCut t_cut{globals_, &t, -t_max, t_max};
     VarCut z0_cut{globals_, &z0, -z0_max, z0_max};
     VarCut x8_0_cut{globals_, &x8_0, -x8_max, x8_max};
@@ -359,16 +359,16 @@ namespace trklet{
     VarCut x13_0_cut{globals_, &x13_0, -x13_max, x13_max};
     VarCut x13_1_cut{globals_, &x13_1, -x13_max, x13_max};
     VarCut x13_2_cut{globals_, &x13_2, -x13_max, x13_max};
-    VarCut x25_0_cut{globals_, &x25_0, -settings_->dphisector(), settings_->dphisector()};
-    VarCut x25_1_cut{globals_, &x25_1, -settings_->dphisector(), settings_->dphisector()};
-    VarCut x25_2_cut{globals_, &x25_2, -settings_->dphisector(), settings_->dphisector()};
-    VarCut phiD_0_cut{globals_, &phiD_0, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
-    VarCut phiD_1_cut{globals_, &phiD_1, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
-    VarCut phiD_2_cut{globals_, &phiD_2, -2 * settings_->dphisector(), 2 * settings_->dphisector()};
+    VarCut x25_0_cut{globals_, &x25_0, -settings_.dphisector(), settings_.dphisector()};
+    VarCut x25_1_cut{globals_, &x25_1, -settings_.dphisector(), settings_.dphisector()};
+    VarCut x25_2_cut{globals_, &x25_2, -settings_.dphisector(), settings_.dphisector()};
+    VarCut phiD_0_cut{globals_, &phiD_0, -2 * settings_.dphisector(), 2 * settings_.dphisector()};
+    VarCut phiD_1_cut{globals_, &phiD_1, -2 * settings_.dphisector(), 2 * settings_.dphisector()};
+    VarCut phiD_2_cut{globals_, &phiD_2, -2 * settings_.dphisector(), 2 * settings_.dphisector()};
     VarCut der_phiD_cut{globals_, &der_phiD, -der_phiD_max, der_phiD_max};
-    VarCut rD_0_cut{globals_, &rD_0, -settings_->rmaxdisk(), settings_->rmaxdisk()};
-    VarCut rD_1_cut{globals_, &rD_1, -settings_->rmaxdisk(), settings_->rmaxdisk()};
-    VarCut rD_2_cut{globals_, &rD_2, -settings_->rmaxdisk(), settings_->rmaxdisk()};
+    VarCut rD_0_cut{globals_, &rD_0, -settings_.rmaxdisk(), settings_.rmaxdisk()};
+    VarCut rD_1_cut{globals_, &rD_1, -settings_.rmaxdisk(), settings_.rmaxdisk()};
+    VarCut rD_2_cut{globals_, &rD_2, -settings_.rmaxdisk(), settings_.rmaxdisk()};
 
     VarCut t_disk_cut_left{globals_, &t, -t_disk_max, -t_disk_min};
     VarCut t_disk_cut_right{globals_, &t, t_disk_min, t_disk_max};

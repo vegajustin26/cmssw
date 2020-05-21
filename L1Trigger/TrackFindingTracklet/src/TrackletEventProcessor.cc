@@ -28,7 +28,7 @@ TrackletEventProcessor::~TrackletEventProcessor() {
 void TrackletEventProcessor::init(const Settings* theSettings) {
   settings_ = theSettings;
 
-  globals_ = new Globals(settings_);
+  globals_ = new Globals(*settings_);
 
   //Verify consistency
   if (settings_->kphi0pars() != globals_->ITC_L1L2()->phi0_final.K()) {
@@ -88,7 +88,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   sectors_ = new Sector*[N_SECTOR];
 
   for (unsigned int i = 0; i < N_SECTOR; i++) {
-    sectors_[i] = new Sector(i, settings_, globals_);
+    sectors_[i] = new Sector(i, *settings_, globals_);
   }
 
   // get the memory modules
@@ -181,7 +181,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
     indtc >> dtc;
   }
 
-  cabling_ = new Cabling(settings_->DTCLinkFile(), settings_->moduleCablingFile(), settings_);
+  cabling_ = new Cabling(settings_->DTCLinkFile(), settings_->moduleCablingFile(), *settings_);
 }
 
 void TrackletEventProcessor::event(SLHCEvent& ev) {
@@ -279,7 +279,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
       }
 
       if (add && settings_->writeMem() && k == settings_->writememsect()) {
-        Stub fpgastub(stub, settings_, sectors_[k]->phimin(), sectors_[k]->phimax());
+        Stub fpgastub(stub, *settings_, sectors_[k]->phimin(), sectors_[k]->phimax());
         FPGAWord phi = fpgastub.phi();
         int topbit = phi.value() >> (phi.nbits() - 1);
         std::vector<int> tmp = dtclayerdisk_[dtcbase];

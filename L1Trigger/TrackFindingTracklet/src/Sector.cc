@@ -40,10 +40,10 @@
 using namespace std;
 using namespace trklet;
 
-Sector::Sector(unsigned int i, const Settings* settings, Globals* globals) : settings_(settings), globals_(globals) {
+Sector::Sector(unsigned int i, Settings const& settings, Globals* globals) : settings_(settings), globals_(globals) {
   isector_ = i;
   double dphi = 2 * M_PI / N_SECTOR;
-  double dphiHG = 0.5 * settings_->dphisectorHG() - M_PI / N_SECTOR;
+  double dphiHG = 0.5 * settings_.dphisectorHG() - M_PI / N_SECTOR;
   phimin_ = isector_ * dphi - dphiHG;
   phimax_ = phimin_ + dphi + 2 * dphiHG;
   phimin_ -= M_PI / N_SECTOR;
@@ -64,7 +64,7 @@ bool Sector::addStub(L1TStub stub, string dtc) {
   bool add = false;
 
   double phi = stub.phi();
-  double dphi = 0.5 * settings_->dphisectorHG() - M_PI / N_SECTOR;
+  double dphi = 0.5 * settings_.dphisectorHG() - M_PI / N_SECTOR;
 
   std::map<string, std::vector<int> >& ILindex = globals_->ILindex();
   std::vector<int>& tmp = ILindex[dtc];
@@ -288,7 +288,7 @@ void Sector::writeCT(bool first) {
 }
 
 void Sector::clean() {
-  if (settings_->writeMonitorData("NMatches")) {
+  if (settings_.writeMonitorData("NMatches")) {
     int matchesL1 = 0;
     int matchesL3 = 0;
     int matchesL5 = 0;
@@ -304,7 +304,7 @@ void Sector::clean() {
 }
 
 void Sector::executeVMR() {
-  if (settings_->writeMonitorData("IL")) {
+  if (settings_.writeMonitorData("IL")) {
     ofstream& out = globals_->ofstream("inputlink.txt");
     for (auto& i : IL_) {
       out << i->getName() << " " << i->nStubs() << endl;
@@ -344,7 +344,7 @@ void Sector::executeTC() {
     i->execute();
   }
 
-  if (settings_->writeMonitorData("TrackProjOcc")) {
+  if (settings_.writeMonitorData("TrackProjOcc")) {
     ofstream& out = globals_->ofstream("trackprojocc.txt");
     for (auto& i : TPROJ_) {
       out << i->getName() << " " << i->nTracklets() << endl;

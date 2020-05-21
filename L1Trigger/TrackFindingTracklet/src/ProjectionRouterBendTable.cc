@@ -6,7 +6,7 @@
 
 using namespace trklet;
 
-void ProjectionRouterBendTable::init(const Settings* settings,
+void ProjectionRouterBendTable::init(Settings const& settings,
                                      Globals* globals,
                                      unsigned int nrbits,
                                      unsigned int nphiderbits) {
@@ -20,23 +20,23 @@ void ProjectionRouterBendTable::init(const Settings* settings,
         int ir = irbin;
         if (ir > (1 << (nrbits - 1)))
           ir -= (1 << nrbits);
-        ir = ir << (settings->nrbitsstub(6) - nrbits);
+        ir = ir << (settings.nrbitsstub(6) - nrbits);
         for (unsigned int iphiderbin = 0; iphiderbin < nphiderbins; iphiderbin++) {
           int iphider = iphiderbin;
           if (iphider > (1 << (nphiderbits - 1)))
             iphider -= (1 << nphiderbits);
-          iphider = iphider << (settings->nbitsphiprojderL123() - nphiderbits);
+          iphider = iphider << (settings.nbitsphiprojderL123() - nphiderbits);
 
-          double rproj = ir * settings->krprojshiftdisk();
+          double rproj = ir * settings.krprojshiftdisk();
           double phider = iphider * globals->ITC_L1L2()->der_phiD_final.K();
-          double t = settings->zmean(idisk) / rproj;
+          double t = settings.zmean(idisk) / rproj;
 
           if (isignbin)
             t = -t;
 
           double rinv = -phider * (2.0 * t);
 
-          double stripPitch = (rproj < settings->rcrit()) ? settings->stripPitch(true) : settings->stripPitch(false);
+          double stripPitch = (rproj < settings.rcrit()) ? settings.stripPitch(true) : settings.stripPitch(false);
           double bendproj = 0.5 * bend(rproj, rinv, stripPitch);
 
           int ibendproj = 2.0 * bendproj + 15.5;

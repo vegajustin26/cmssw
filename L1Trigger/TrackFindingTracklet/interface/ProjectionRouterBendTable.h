@@ -18,7 +18,7 @@ namespace trklet {
 
     ~ProjectionRouterBendTable() = default;
 
-    void init(const Settings* settings, Globals* globals, unsigned int nrbits, unsigned int nphiderbits);
+    void init(Settings const& settings, Globals* globals, unsigned int nrbits, unsigned int nphiderbits);
 
     int bendLoookup(int diskindex, int bendindex);
 

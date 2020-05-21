@@ -11,11 +11,11 @@
 using namespace trklet;
 using namespace std;
 
-ProcessBase::ProcessBase(string name, const Settings* const settings, Globals* global, unsigned int iSector)
+ProcessBase::ProcessBase(string name, Settings const& settings, Globals* global, unsigned int iSector)
     : name_(name), settings_(settings), globals_(global) {
   iSector_ = iSector;
   double dphi = 2 * M_PI / N_SECTOR;
-  double dphiHG = 0.5 * settings_->dphisectorHG() - M_PI / N_SECTOR;
+  double dphiHG = 0.5 * settings_.dphisectorHG() - M_PI / N_SECTOR;
   phimin_ = iSector_ * dphi - dphiHG;
   phimax_ = phimin_ + dphi + 2 * dphiHG;
   phimin_ -= M_PI / N_SECTOR;
