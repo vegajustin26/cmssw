@@ -188,12 +188,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
                                   << ", chi2 = " << trk.chi2() << ", accepted = " << trk.accepted();
 
     // Tracklet wants phi0 with respect to lower edge of sector, not global phi0.
-    double phi0fit = trk.phi0() - iSector_ * 2 * M_PI / N_SECTOR + 0.5 * settings_->dphisectorHG();
-
-    if (phi0fit > M_PI)
-      phi0fit -= 2 * M_PI;
-    if (phi0fit < -M_PI)
-      phi0fit += 2 * M_PI;
+    double phi0fit = reco::reduceRange(trk.phi0() - iSector_ * 2 * M_PI / N_SECTOR + 0.5 * settings_->dphisectorHG());
 
     double rinvfit = 0.01 * settings_->c() * settings_->bfield() * trk.qOverPt();
 
