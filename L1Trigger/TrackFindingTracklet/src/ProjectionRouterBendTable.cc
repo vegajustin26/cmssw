@@ -1,5 +1,4 @@
 #include "L1Trigger/TrackFindingTracklet/interface/ProjectionRouterBendTable.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
@@ -10,7 +9,7 @@ void ProjectionRouterBendTable::init(Settings const& settings,
                                      Globals* globals,
                                      unsigned int nrbits,
                                      unsigned int nphiderbits) {
-  for (unsigned int idisk = 0; idisk < 5; idisk++) {
+  for (unsigned int idisk = 0; idisk < N_DISK; idisk++) {
     unsigned int nsignbins = 2;
     unsigned int nrbins = 1 << (nrbits);
     unsigned int nphiderbins = 1 << (nphiderbits);

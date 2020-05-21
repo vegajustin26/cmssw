@@ -9,10 +9,9 @@
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 namespace trklet {
-
-  class Settings;
 
   class Stub {
   public:
@@ -61,7 +60,7 @@ namespace trklet {
     bool isBarrel() const { return layer_.value() != -1; }
     bool isDisk() const { return disk_.value() != 0; }
 
-    bool isPSmodule() const { return isBarrel() ? (layer_.value() < 3) : (r_.value() > 10); }
+    bool isPSmodule() const { return isBarrel() ? (layer_.value() < (int)N_PSLAYER) : (r_.value() > 10); }
 
     double rapprox() const;
     double zapprox() const;

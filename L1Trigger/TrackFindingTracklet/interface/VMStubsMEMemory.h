@@ -20,14 +20,8 @@ namespace trklet {
     ~VMStubsMEMemory() override = default;
 
     void addStub(VMStubME stub, unsigned int bin) {
-      stubs_.push_back(stub);
       binnedstubs_[bin].push_back(stub);
     }
-
-    unsigned int nStubs() const { return stubs_.size(); }
-
-    const VMStubME& getVMStubME(unsigned int i) const { return stubs_[i]; }
-    const Stub* getFPGAStub(unsigned int i) const { return stubs_[i].stub(); }
 
     unsigned int nStubsBin(unsigned int bin) const {
       assert(bin < binnedstubs_.size());
@@ -47,7 +41,6 @@ namespace trklet {
     }
 
     void clean() override {
-      stubs_.clear();
       for (auto& binnedstub : binnedstubs_) {
         binnedstub.clear();
       }
@@ -56,7 +49,6 @@ namespace trklet {
     void writeStubs(bool first);
 
   private:
-    std::vector<VMStubME> stubs_;  //TODO - not used and should be removed
     std::vector<std::vector<VMStubME> > binnedstubs_;
   };
 

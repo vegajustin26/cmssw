@@ -43,7 +43,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     phi0shift_ = 0;
   }
 
-  for (unsigned int iSeed = 0; iSeed < N_SEEDINDEX; iSeed++) {
+  for (unsigned int iSeed = 0; iSeed < N_SEED; iSeed++) {
     if (layerdisk_ < N_LAYER) {
       phimatchcut_[iSeed] =
           settings_.rphimatchcut(iSeed, layerdisk_) / (settings_.kphi1() * settings_.rmean(layerdisk_));
@@ -60,7 +60,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     ofstream outphicut;
     outphicut.open(getName() + "_phicut.tab");
     outphicut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
       if (seedindex != 0)
         outphicut << "," << endl;
       outphicut << phimatchcut_[seedindex];
@@ -71,7 +71,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     ofstream outzcut;
     outzcut.open(getName() + "_zcut.tab");
     outzcut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
       if (seedindex != 0)
         outzcut << "," << endl;
       outzcut << zmatchcut_[seedindex];
@@ -84,7 +84,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     ofstream outphicut;
     outphicut.open(getName() + "_PSphicut.tab");
     outphicut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
       if (seedindex != 0)
         outphicut << "," << endl;
       outphicut << rphicutPS_[seedindex];
@@ -94,7 +94,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
 
     outphicut.open(getName() + "_2Sphicut.tab");
     outphicut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
       if (seedindex != 0)
         outphicut << "," << endl;
       outphicut << rphicut2S_[seedindex];
@@ -105,7 +105,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     ofstream outzcut;
     outzcut.open(getName() + "_PSrcut.tab");
     outzcut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
       if (seedindex != 0)
         outzcut << "," << endl;
       outzcut << rcutPS_[seedindex];
@@ -115,7 +115,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
 
     outzcut.open(getName() + "_2Srcut.tab");
     outzcut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < N_SEEDINDEX; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
       if (seedindex != 0)
         outzcut << "," << endl;
       outzcut << rcut2S_[seedindex];
@@ -124,7 +124,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     outzcut.close();
   }
 
-  for (unsigned int i = 0; i < 10; i++) {
+  for (unsigned int i = 0; i < N_DSS_MOD*2; i++) {
     ialphafactinner_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() *
                           settings_.half2SmoduleWidth() / (1 << (settings_.nbitsalpha() - 1)) /
                           (settings_.rDSSinner(i) * settings_.rDSSinner(i)) / settings_.kphi();
@@ -345,7 +345,7 @@ void MatchCalculator::execute() {
       int irstub = fpgastub->r().value();
       int ialphafact = 0;
       if (!stub->isPSmodule()) {
-        assert(irstub < 10);
+        assert(irstub < (int)N_DSS_MOD*2);
         if (abs(disk) <= 2) {
           ialphafact = ialphafactinner_[irstub];
           irstub = settings_.rDSSinner(irstub) / settings_.kr();

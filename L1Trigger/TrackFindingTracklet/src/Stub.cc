@@ -1,5 +1,4 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
@@ -36,7 +35,7 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
   if (layer < 999) {
     disk_.set(0, 4, false, __LINE__, __FILE__);
 
-    assert(layer >= 1 && layer <= 6);
+    assert(layer > 0 && layer <= N_LAYER);
     double rmin = settings_.rmean(layer - 1) - settings_.drmax();
     double rmax = settings_.rmean(layer - 1) + settings_.drmax();
 
@@ -88,7 +87,7 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
     // Here we handle the hits on disks.
 
     int disk = stub.module();
-    assert(disk >= 1 && disk <= 5);
+    assert(disk > 0 && disk <= N_DISK);
     int sign = 1;
     if (z < 0.0)
       sign = -1;
@@ -100,7 +99,7 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
       edm::LogProblem("Tracklet") << "Error disk z, zmax, zmin: " << z << " " << zmax << " " << zmin;
     }
 
-    int iz = (1 << settings.nzbitsstub(disk + 5)) * ((z - sign * settings_.zmean(disk - 1)) / std::abs(zmax - zmin));
+    int iz = (1 << settings.nzbitsstub(disk + N_DISK)) * ((z - sign * settings_.zmean(disk - 1)) / std::abs(zmax - zmin));
 
     assert(phimaxsec - phiminsec > 0.0);
     if (stubphi < phiminsec - (phimaxsec - phiminsec) / 6.0) {

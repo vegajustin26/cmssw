@@ -392,54 +392,54 @@ void TrackDerTable::fillTable() {
     unsigned int nderivatives = derivatives_.size();
     edm::LogVerbatim("Tracklet") << "nderivatives = " << nderivatives;
 
-    const std::array<string, N_SEEDINDEX_TRKL> seedings = {{"L1L2", "L3L4", "L5L6", "D1D2", "D3D4", "D1L1", "D1L2"}};
+    const std::array<string, N_TRKLSEED> seedings = {{"L1L2", "L3L4", "L5L6", "D1D2", "D3D4", "D1L1", "D1L2"}};
     const string prefix = "FitDerTableNew_";
 
     // open files for derivative tables
-    ofstream outrinvdphi[N_SEEDINDEX_TRKL];
-    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
+    ofstream outrinvdphi[N_TRKLSEED];
+    for (unsigned int i = 0; i < N_TRKLSEED; ++i) {
       const string fname = prefix + "Rinvdphi_" + seedings[i] + ".txt";
       outrinvdphi[i].open(fname.c_str());
     }
 
-    ofstream outrinvdzordr[N_SEEDINDEX_TRKL];
-    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
+    ofstream outrinvdzordr[N_TRKLSEED];
+    for (unsigned int i = 0; i < N_TRKLSEED; ++i) {
       const string fname = prefix + "Rinvdzordr_" + seedings[i] + ".txt";
       outrinvdzordr[i].open(fname.c_str());
     }
 
-    ofstream outphi0dphi[N_SEEDINDEX_TRKL];
-    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
+    ofstream outphi0dphi[N_TRKLSEED];
+    for (unsigned int i = 0; i < N_TRKLSEED; ++i) {
       const string fname = prefix + "Phi0dphi_" + seedings[i] + ".txt";
       outphi0dphi[i].open(fname.c_str());
     }
 
-    ofstream outphi0dzordr[N_SEEDINDEX_TRKL];
-    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
+    ofstream outphi0dzordr[N_TRKLSEED];
+    for (unsigned int i = 0; i < N_TRKLSEED; ++i) {
       const string fname = prefix + "Phi0dzordr_" + seedings[i] + ".txt";
       outphi0dzordr[i].open(fname.c_str());
     }
 
-    ofstream outtdphi[N_SEEDINDEX_TRKL];
-    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
+    ofstream outtdphi[N_TRKLSEED];
+    for (unsigned int i = 0; i < N_TRKLSEED; ++i) {
       const string fname = prefix + "Tdphi_" + seedings[i] + ".txt";
       outtdphi[i].open(fname.c_str());
     }
 
-    ofstream outtdzordr[N_SEEDINDEX_TRKL];
-    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
+    ofstream outtdzordr[N_TRKLSEED];
+    for (unsigned int i = 0; i < N_TRKLSEED; ++i) {
       const string fname = prefix + "Tdzordr_" + seedings[i] + ".txt";
       outtdzordr[i].open(fname.c_str());
     }
 
-    ofstream outz0dphi[N_SEEDINDEX_TRKL];
-    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
+    ofstream outz0dphi[N_TRKLSEED];
+    for (unsigned int i = 0; i < N_TRKLSEED; ++i) {
       const string fname = prefix + "Z0dphi_" + seedings[i] + ".txt";
       outz0dphi[i].open(fname.c_str());
     }
 
-    ofstream outz0dzordr[N_SEEDINDEX_TRKL];
-    for (unsigned int i = 0; i < N_SEEDINDEX_TRKL; ++i) {
+    ofstream outz0dzordr[N_TRKLSEED];
+    for (unsigned int i = 0; i < N_TRKLSEED; ++i) {
       string fname = prefix + "Z0dzordr_" + seedings[i] + ".txt";
       outz0dzordr[i].open(fname.c_str());
     }

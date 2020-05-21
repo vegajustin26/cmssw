@@ -134,7 +134,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
     }
   }
 
-  for (unsigned int i = 0; i < 10; i++) {
+  for (unsigned int i = 0; i < N_DSS_MOD*2; i++) {
     ialphafactinner_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() *
                           settings_.half2SmoduleWidth() / (1 << (settings_.nbitsalpha() - 1)) /
                           (settings_.rDSSinner(i) * settings_.rDSSinner(i)) / settings_.kphi();
@@ -518,7 +518,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     int irstub = fpgastub->r().value();
     int ialphafact = 0;
     if (!stub->isPSmodule()) {
-      assert(irstub < 10);
+      assert(irstub < (int)N_DSS_MOD*2);
       if (disk_ <= 2) {
         ialphafact = ialphafactinner_[irstub];
         irstub = settings_.rDSSinner(irstub) / settings_.kr();

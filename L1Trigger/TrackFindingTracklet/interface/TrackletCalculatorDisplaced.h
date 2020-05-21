@@ -95,14 +95,14 @@ namespace trklet {
                        double& d0,
                        double& t,
                        double& z0,
-                       double phiproj[5],
-                       double zproj[5],
-                       double phiprojdisk[5],
-                       double rprojdisk[5],
-                       double phider[5],
-                       double zder[5],
-                       double phiderdisk[5],
-                       double rderdisk[5]);
+                       double phiproj[N_PROJLAYER],
+                       double zproj[N_PROJLAYER],
+                       double phiprojdisk[N_PROJDISK],
+                       double rprojdisk[N_PROJDISK],
+                       double phider[N_PROJLAYER],
+                       double zder[N_PROJLAYER],
+                       double phiderdisk[N_PROJDISK],
+                       double rderdisk[N_PROJDISK]);
 
   private:
     int TCIndex_;
