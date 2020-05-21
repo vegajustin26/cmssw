@@ -11,6 +11,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
 
 using namespace std;
 using namespace trklet;
@@ -222,7 +223,7 @@ void MatchCalculator::execute() {
       double z = stub->z();
 
       if (settings_->useapprox()) {
-        double dphi = trklet::phiRange(phi - fpgastub->phiapprox(0.0, 0.0));
+        double dphi = reco::reduceRange(phi - fpgastub->phiapprox(0.0, 0.0));
         assert(std::abs(dphi) < 0.001);
         phi = fpgastub->phiapprox(0.0, 0.0);
         z = fpgastub->zapprox();
@@ -236,11 +237,11 @@ void MatchCalculator::execute() {
       assert(std::abs(dr) < settings_->drmax());
 
       double dphi =
-          trklet::phiRange(phi - (tracklet->phiproj(layerdisk_ + 1) + dr * tracklet->phiprojder(layerdisk_ + 1)));
+          reco::reduceRange(phi - (tracklet->phiproj(layerdisk_ + 1) + dr * tracklet->phiprojder(layerdisk_ + 1)));
 
       double dz = z - (tracklet->zproj(layerdisk_ + 1) + dr * tracklet->zprojder(layerdisk_ + 1));
 
-      double dphiapprox = trklet::phiRange(
+      double dphiapprox = reco::reduceRange(
           phi - (tracklet->phiprojapprox(layerdisk_ + 1) + dr * tracklet->phiprojderapprox(layerdisk_ + 1)));
 
       double dzapprox = z - (tracklet->zprojapprox(layerdisk_ + 1) + dr * tracklet->zprojderapprox(layerdisk_ + 1));
@@ -370,7 +371,7 @@ void MatchCalculator::execute() {
       double r = stub->r();
 
       if (settings_->useapprox()) {
-        double dphi = trklet::phiRange(phi - fpgastub->phiapprox(0.0, 0.0));
+        double dphi = reco::reduceRange(phi - fpgastub->phiapprox(0.0, 0.0));
         assert(std::abs(dphi) < 0.001);
         phi = fpgastub->phiapprox(0.0, 0.0);
         z = fpgastub->zapprox();
@@ -396,10 +397,10 @@ void MatchCalculator::execute() {
 
       double dr = stub->r() - rproj;
 
-      double dphi = trklet::phiRange(phi - phiproj);
+      double dphi = reco::reduceRange(phi - phiproj);
 
       double dphiapprox =
-          trklet::phiRange(phi - (tracklet->phiprojapproxdisk(disk) + dz * tracklet->phiprojderapproxdisk(disk)));
+          reco::reduceRange(phi - (tracklet->phiprojapproxdisk(disk) + dz * tracklet->phiprojderapproxdisk(disk)));
 
       double drapprox = stub->r() - (tracklet->rprojapproxdisk(disk) + dz * tracklet->rprojderapproxdisk(disk));
 

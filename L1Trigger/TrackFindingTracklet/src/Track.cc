@@ -1,5 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 
+#include "DataFormats/Math/interface/deltaPhi.h"
+
 #include <algorithm>
 
 using namespace std;
@@ -40,8 +42,8 @@ double Track::phi0(const Settings* settings) const {
   double phimax = phimin + dphi + 2 * dphiHG;
   phimin -= M_PI / N_SECTOR;
   phimax -= M_PI / N_SECTOR;
-  phimin = trklet::phiRange(phimin);
-  phimax = trklet::phiRange(phimax);
+  phimin = reco::reduceRange(phimin);
+  phimax = reco::reduceRange(phimax);
   if (phimin > phimax)
     phimin -= 2 * M_PI;
   double phioffset = phimin;

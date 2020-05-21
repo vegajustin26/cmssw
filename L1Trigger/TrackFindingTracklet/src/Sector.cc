@@ -35,6 +35,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
 
 using namespace std;
 using namespace trklet;
@@ -47,8 +48,8 @@ Sector::Sector(unsigned int i, const Settings* settings, Globals* globals) : set
   phimax_ = phimin_ + dphi + 2 * dphiHG;
   phimin_ -= M_PI / N_SECTOR;
   phimax_ -= M_PI / N_SECTOR;
-  phimin_ = phiRange(phimin_);
-  phimax_ = phiRange(phimax_);
+  phimin_ = reco::reduceRange(phimin_);
+  phimax_ = reco::reduceRange(phimax_);
   if (phimin_ > phimax_)
     phimin_ -= 2 * M_PI;
 }

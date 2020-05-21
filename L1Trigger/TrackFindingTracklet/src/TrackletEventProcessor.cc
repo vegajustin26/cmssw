@@ -1,5 +1,4 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEventProcessor.h"
-
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
@@ -7,6 +6,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
 
+#include "DataFormats/Math/interface/deltaPhi.h"
 
 #include <iomanip>
 
@@ -215,7 +215,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
     cabling_->addphi(dtc, stub.phi(), layer, module);
 
-    double phi = phiRange2PI(stub.phi() + 0.5 * settings_->dphisectorHG());
+    double phi = angle0to2pi::make0To2pi(stub.phi() + 0.5 * settings_->dphisectorHG());
 
     unsigned int isector = N_SECTOR * phi / (2 * M_PI);
 

@@ -29,6 +29,7 @@
 #include "../interface/TrackletEventProcessor.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
 
 #include <iomanip>
 #include <fstream>
@@ -321,7 +322,7 @@ int main(const int argc, const char **argv) {
     for (auto &track : tracks) {
       if (settings.writeMonitorData("Pars")) {
         outpars << track->duplicate() << " " << track->eta(&settings) << " " << track->phi0(&settings) << " "
-                << track->z0(&settings) << " " << phiRange2PI(track->phi0(&settings)) / (2 * M_PI / N_SECTOR) << " "
+                << track->z0(&settings) << " " << angle0to2pi::make0To2pi(track->phi0(&settings)) / (2 * M_PI / N_SECTOR) << " "
                 << track->rinv(&settings);
       }
       if (!track->duplicate()) {

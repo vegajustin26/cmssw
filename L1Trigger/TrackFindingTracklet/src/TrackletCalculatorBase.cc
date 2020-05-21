@@ -7,9 +7,9 @@
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculatorDisk.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculatorOverlap.h"
 
-
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
 
 using namespace std;
 using namespace trklet;
@@ -39,15 +39,15 @@ void TrackletCalculatorBase::exacttracklet(double r1,
                                            double rprojdisk[N_PROJDISK],
                                            double phiderdisk[N_PROJDISK],
                                            double rderdisk[N_PROJDISK]) {
-  double deltaphi = trklet::phiRange(phi1 - phi2);
-
+  double deltaphi = reco::reduceRange(phi1 - phi2);
+  
   double dist = sqrt(r2 * r2 + r1 * r1 - 2 * r1 * r2 * cos(deltaphi));
 
   rinv = 2 * sin(deltaphi) / dist;
 
   double phi1tmp = phi1 - phimin_;
 
-  phi0 = trklet::phiRange(phi1tmp + asin(0.5 * r1 * rinv));
+  phi0 = reco::reduceRange(phi1tmp + asin(0.5 * r1 * rinv));
 
   double rhopsi1 = 2 * asin(0.5 * r1 * rinv) / rinv;
   double rhopsi2 = 2 * asin(0.5 * r2 * rinv) / rinv;
@@ -93,7 +93,7 @@ void TrackletCalculatorBase::exacttrackletdisk(
     double rproj[N_DPROJMAX],
     double phider[N_DPROJMAX],
     double rder[N_DPROJMAX]) {
-  double deltaphi = trklet::phiRange(phi1 - phi2);
+  double deltaphi = reco::reduceRange(phi1 - phi2);
 
   double dist = sqrt(r2 * r2 + r1 * r1 - 2 * r1 * r2 * cos(deltaphi));
 
@@ -101,7 +101,7 @@ void TrackletCalculatorBase::exacttrackletdisk(
 
   double phi1tmp = phi1 - phimin_;
 
-  phi0 = trklet::phiRange(phi1tmp + asin(0.5 * r1 * rinv));
+  phi0 = reco::reduceRange(phi1tmp + asin(0.5 * r1 * rinv));
 
   double rhopsi1 = 2 * asin(0.5 * r1 * rinv) / rinv;
   double rhopsi2 = 2 * asin(0.5 * r2 * rinv) / rinv;
@@ -146,7 +146,7 @@ void TrackletCalculatorBase::exacttrackletOverlap(double r1,
                                                   double rproj[N_DPROJMAX],
                                                   double phider[N_DPROJMAX],
                                                   double rder[N_DPROJMAX]) {
-  double deltaphi = trklet::phiRange(phi1 - phi2);
+  double deltaphi = reco::reduceRange(phi1 - phi2);
 
   double dist = sqrt(r2 * r2 + r1 * r1 - 2 * r1 * r2 * cos(deltaphi));
 
@@ -157,7 +157,7 @@ void TrackletCalculatorBase::exacttrackletOverlap(double r1,
 
   double phi1tmp = phi1 - phimin_;
 
-  phi0 = trklet::phiRange(phi1tmp + asin(0.5 * r1 * rinv));
+  phi0 = reco::reduceRange(phi1tmp + asin(0.5 * r1 * rinv));
 
   double rhopsi1 = 2 * asin(0.5 * r1 * rinv) / rinv;
   double rhopsi2 = 2 * asin(0.5 * r2 * rinv) / rinv;
@@ -404,8 +404,9 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   ITC->r2.set_fval(r2 - settings_->rmean(layerdisk2_));
   ITC->z1.set_fval(z1);
   ITC->z2.set_fval(z2);
-  double sphi1 = phiRange2PI(phi1 - phioffset_);
-  double sphi2 = phiRange2PI(phi2 - phioffset_);
+  double sphi1 = angle0to2pi::make0To2pi(phi1 - phioffset_);
+  double sphi2 = angle0to2pi::make0To2pi(phi2 - phioffset_);
+
   ITC->phi1.set_fval(sphi1);
   ITC->phi2.set_fval(sphi2);
 
@@ -833,8 +834,8 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   int signt = t > 0 ? 1 : -1;
   ITC->z1.set_fval(z1 - signt * settings_->zmean(layerdisk1_ - N_LAYER));
   ITC->z2.set_fval(z2 - signt * settings_->zmean(layerdisk2_ - N_LAYER));
-  double sphi1 = phiRange2PI(phi1 - phioffset_);
-  double sphi2 = phiRange2PI(phi2 - phioffset_);
+  double sphi1 = angle0to2pi::make0To2pi(phi1 - phioffset_);
+  double sphi2 = angle0to2pi::make0To2pi(phi2 - phioffset_);
   ITC->phi1.set_fval(sphi1);
   ITC->phi2.set_fval(sphi2);
 
@@ -1189,8 +1190,8 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   int signt = t > 0 ? 1 : -1;
   ITC->z1.set_fval(z2);
   ITC->z2.set_fval(z1 - signt * settings_->zmean(layerdisk2_ - 6));
-  double sphi1 = phiRange2PI(phi1 - phioffset_);
-  double sphi2 = phiRange2PI(phi2 - phioffset_);
+  double sphi1 = angle0to2pi::make0To2pi(phi1 - phioffset_);
+  double sphi2 = angle0to2pi::make0To2pi(phi2 - phioffset_);
   ITC->phi1.set_fval(sphi2);
   ITC->phi2.set_fval(sphi1);
 

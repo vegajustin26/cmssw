@@ -5,6 +5,7 @@
 
 #ifdef USEHYBRID
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
 
 using namespace std;
 using namespace trklet;
@@ -134,7 +135,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
   }
 
   // KF wants global phi0, not phi0 measured with respect to lower edge of sector (Tracklet convention).
-  kfphi0 = phiRange(kfphi0 + iSector_ * settings_->dphisector() - 0.5 * settings_->dphisectorHG());
+  kfphi0 = reco::reduceRange(kfphi0 + iSector_ * settings_->dphisector() - 0.5 * settings_->dphisectorHG());
 
   std::pair<float, float> helixrphi(kfrinv / (0.01 * settings_->c() * settings_->bfield()), kfphi0);
   std::pair<float, float> helixrz(kfz0, kft);

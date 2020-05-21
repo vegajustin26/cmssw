@@ -6,9 +6,9 @@
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
 
-
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
 
 using namespace std;
 using namespace trklet;
@@ -1417,7 +1417,7 @@ void TrackletCalculatorDisplaced::exactprojdisk(double zproj,
 
   phiproj = atan2(y, x);
 
-  phiproj = phiRange(phiproj - phimin_ + (phimax_ - phimin_) / 6.0);
+  phiproj = reco::reduceRange(phiproj - phimin_ + (phimax_ - phimin_) / 6.0);
   rproj = sqrt(x * x + y * y);
 
   phider = c / t / (x * x + y * y) * (rho + x0 * cos(phiV + c * beta) + y0 * sin(phiV + c * beta));
@@ -1484,19 +1484,19 @@ void TrackletCalculatorDisplaced::exacttracklet(double r1,
   phi0 += -phimin_ + (phimax_ - phimin_) / 6.0;
   d0 = -R1 + sqrt(x0 * x0 + y0 * y0);
   //sign of rinv:
-  double dphi = phiRange(phi3 - atan2(y0, x0));
+  double dphi = reco::reduceRange(phi3 - atan2(y0, x0));
   if (dphi < 0) {
     rinv = -rinv;
     d0 = -d0;
     phi0 = phi0 + M_PI;
   }
-  phi0 = phiRange2PI(phi0);
+  phi0 = angle0to2pi::make0To2pi(phi0);
 
   //now in RZ:
   //turning angle
-  double beta1 = phiRange(atan2(y1 - y0, x1 - x0) - atan2(-y0, -x0));
-  double beta2 = phiRange(atan2(y2 - y0, x2 - x0) - atan2(-y0, -x0));
-  double beta3 = phiRange(atan2(y3 - y0, x3 - x0) - atan2(-y0, -x0));
+  double beta1 = reco::reduceRange(atan2(y1 - y0, x1 - x0) - atan2(-y0, -x0));
+  double beta2 = reco::reduceRange(atan2(y2 - y0, x2 - x0) - atan2(-y0, -x0));
+  double beta3 = reco::reduceRange(atan2(y3 - y0, x3 - x0) - atan2(-y0, -x0));
 
   double t12 = (z2 - z1) / std::abs(beta2 - beta1) / R1;
   double z12 = (z1 * beta2 - z2 * beta1) / (beta2 - beta1);

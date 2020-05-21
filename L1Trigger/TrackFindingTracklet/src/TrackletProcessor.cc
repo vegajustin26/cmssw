@@ -4,9 +4,9 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
 
-
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
 
 using namespace std;
 using namespace trklet;
@@ -19,8 +19,8 @@ TrackletProcessor::TrackletProcessor(string name, const Settings* const settings
   phimax_ = phimin_ + dphi + 2 * dphiHG;
   phimin_ -= M_PI / N_SECTOR;
   phimax_ -= M_PI / N_SECTOR;
-  phimin_ = trklet::phiRange(phimin_);
-  phimax_ = trklet::phiRange(phimax_);
+  phimin_ = reco::reduceRange(phimin_);
+  phimax_ = reco::reduceRange(phimax_);
   if (phimin_ > phimax_)
     phimin_ -= 2 * M_PI;
   phioffset_ = phimin_;

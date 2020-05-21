@@ -3,6 +3,8 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
+
 #include <cmath>
 
 using namespace std;
@@ -71,7 +73,7 @@ Stub::Stub(L1TStub& stub, const trklet::Settings* const settings, double phimins
 
     int iphibits = settings_->nphibitsstub(layer - 1);
 
-    double deltaphi = trklet::phiRange(stubphi - phiminsec);
+    double deltaphi = reco::reduceRange(stubphi - phiminsec);
 
     int iphi = (1 << iphibits) * deltaphi / (phimaxsec - phiminsec);
 
@@ -112,7 +114,7 @@ Stub::Stub(L1TStub& stub, const trklet::Settings* const settings, double phimins
 
     int iphibits = settings_->nphibitsstub(disk + 5);
 
-    double deltaphi = trklet::phiRange(stubphi - phiminsec);
+    double deltaphi = reco::reduceRange(stubphi - phiminsec);
 
     int iphi = (1 << iphibits) * deltaphi / (phimaxsec - phiminsec);
 
@@ -239,7 +241,7 @@ double Stub::phiapprox(double phimin, double) const {
   if (layer_.value() >= 3) {
     lphi = 8;
   }
-  return trklet::phiRange(phimin + phi_.value() * settings_->kphi() / lphi);
+  return reco::reduceRange(phimin + phi_.value() * settings_->kphi() / lphi);
 }
 
 unsigned int Stub::layerdisk() const {

@@ -5,6 +5,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
 
 using namespace std;
 using namespace trklet;
@@ -95,7 +96,7 @@ void Cabling::addphi(const string& dtc, double phi, int layer, int module) {
     isec = dtc[4] - '0';
   }
 
-  double phisec = trklet::phiRange(phi - isec * settings_->dphisector());
+  double phisec = reco::reduceRange(phi - isec * settings_->dphisector());
 
   assert(dtcranges_.find(dtcbase) != dtcranges_.end());
 

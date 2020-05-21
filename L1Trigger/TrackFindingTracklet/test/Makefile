@@ -77,8 +77,6 @@ $(shell touch dummyIncl/ctime)
 $(shell touch dummyIncl/chrono)
 endif
 
-
-
 ifeq ("$(wildcard FWCore)","")
 $(shell mkdir FWCore)
 $(shell mkdir FWCore/MessageLogger)
@@ -150,7 +148,30 @@ $(shell echo "};" >> FWCore/MessageLogger/interface/MessageLogger.h)
 $(shell echo "#endif" >> FWCore/MessageLogger/interface/MessageLogger.h)
 endif
 
+# reduceRange for standalone
+ifeq ("$(wildcard DataFormats/Math/interface)","")
+$(shell mkdir DataFormats)
+$(shell mkdir DataFormats/Math)
+$(shell mkdir DataFormats/Math/interface)
+endif
 
+ifeq ("$(wildcard DataFormats/Math/interface/deltaPhi.h)","")
+$(shell echo "#ifndef DataFormats_Math_interface_deltaPhi_h" > DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "#define DataFormats_Math_interface_deltaPhi_h" >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "namespace reco {" >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "  inline double reduceRange(double phi) { assert(std::abs(phi) < 100.0); " >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "    while (phi < -M_PI) { phi += 2 * M_PI; }" >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "    while (phi > M_PI) { phi -= 2 * M_PI; }" >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "    return phi; } " >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "};" >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "namespace angle0to2pi {" >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "  inline double make0To2pi(double phi) { assert(std::abs(phi) < 100.0); " >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "    while (phi < 0.0) { phi += 2 * M_PI; }" >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "    while (phi > 2 * M_PI) { phi -= 2 * M_PI; }" >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "    return phi; } " >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "};" >> DataFormats/Math/interface/deltaPhi.h)
+$(shell echo "#endif" >> DataFormats/Math/interface/deltaPhi.h)
+endif
 
 #find out about the installed ROOT
 ROOTCONFIG   := $(ROOTSYS)/bin/root-config
@@ -215,6 +236,7 @@ clean:
 	@rm -f *.o
 	@rm -f fpga
 	@rm -f fpga.a
+	@rm -rf DataFormats/
 	@rm -rf FWCore/
 	@rm -rf lib/
 	@rm -rf dummyIncl/
