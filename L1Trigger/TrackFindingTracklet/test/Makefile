@@ -212,6 +212,9 @@ include $(wildcard $(DEPDIR)/fpga.d)
 
 
 clean:
+	@rm -f *.o
+	@rm -f fpga
+	@rm -f fpga.a
 	@rm -rf FWCore/
 	@rm -rf lib/
 	@rm -rf dummyIncl/

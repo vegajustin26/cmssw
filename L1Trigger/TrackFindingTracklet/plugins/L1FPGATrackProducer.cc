@@ -594,21 +594,9 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     ev.write(asciiEventOut_);
   }
 
-  if (settings.writeMonitorData("Seeds")) {
-    ofstream fout("seeds.txt", ofstream::out);
-    fout.close();
-  }
-
   std::vector<trklet::Track*>& tracks = eventProcessor.tracks();
 
   trklet::L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-  ofstream outres;
-  ofstream outeff;
-  if (settings.writeMonitorData("ResEff")) {
-    outres.open("trackres.txt");
-    outeff.open("trackeff.txt");
-  }
 
   // this performs the actual tracklet event processing
   eventProcessor.event(ev);

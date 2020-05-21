@@ -109,9 +109,9 @@
 #define L1Trigger_TrackFindingTracklet_interface_imath_h
 
 //use root if uncommented
-#ifndef CMSSW_GIT_HASH
-#define IMATH_ROOT
-#endif
+//#ifndef CMSSW_GIT_HASH
+//#define IMATH_ROOT
+//#endif
 
 #include <limits>
 #include <iostream>
@@ -147,7 +147,7 @@ namespace trklet {
   struct imathGlobals {
     bool printCutInfo_{false};
 #ifdef IMATH_ROOT
-    TFile *h_file_;
+    TFile *h_file_ = new TFile("imath.root", "RECREATE");
     bool use_root;
 #endif
   };
@@ -185,18 +185,14 @@ namespace trklet {
       h_ = 0;
       h_nbins_ = 1024;
       h_precision_ = 0.02;
-      if (globals_->h_file_ == 0) {
-      globals_->h_file_ = new TFile("imath.root", "RECREATE");
-      edm::LogVerbatim("Tracklet") << "recreating file imath.root";
-      }
 #endif
     }
     virtual ~VarBase() {
 #ifdef IMATH_ROOT
       if (globals_->h_file_) {
 	globals_->h_file_->ls();
-      globals_->h_file_->Close();
-      globals_->h_file_ = 0;
+	globals_->h_file_->Close();
+	globals_->h_file_ = 0;
       }
 #endif
     }

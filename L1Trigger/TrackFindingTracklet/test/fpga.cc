@@ -95,19 +95,12 @@ int main(const int argc, const char **argv) {
     in = &infile;
   }
 
-  ofstream outres;
-  ofstream outeff;
-  if (settings.writeMonitorData("ResEff")) {
-    outres.open("trackres.txt");
-    outeff.open("trackeff.txt");
-  }
-
   ofstream outpars;
   if (settings.writeMonitorData("Pars"))
     outpars.open("trackpars.txt");
 
-    // Open file to hold ROOT-Tree
-    // --------------------------
+  // Open file to hold ROOT-Tree
+  // --------------------------
 #ifdef USEROOT
   TFile *hfile = new TFile("myTest.root", "RECREATE", "Simple ROOT Ntuple");
   TTree *trackTree = new TTree("FPGAEvent", "L1Track Tree");
