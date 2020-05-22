@@ -282,9 +282,9 @@ void TrackletCalculatorDisplaced::execute() {
 void TrackletCalculatorDisplaced::addDiskProj(Tracklet* tracklet, int disk) {
   FPGAWord fpgar = tracklet->fpgarprojdisk(disk);
 
-  if (fpgar.value() * settings_.krprojshiftdisk() < 12.0)
+  if (fpgar.value() * settings_.krprojshiftdisk() < settings_.rmindiskvm())
     return;
-  if (fpgar.value() * settings_.krprojshiftdisk() > 112.0)
+  if (fpgar.value() * settings_.krprojshiftdisk() > settings_.rmaxdisk())
     return;
 
   FPGAWord fpgaphi = tracklet->fpgaphiprojdisk(disk);
@@ -599,7 +599,7 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
         continue;
 
       //check r projection in range
-      if (rprojdiskapprox[i] < 20. || rprojdiskapprox[i] > 120.)
+      if (rprojdiskapprox[i] < settings_.rmindisk() || rprojdiskapprox[i] > settings_.rmaxdisk())
         continue;
 
       diskprojs[i].init(settings_,
@@ -938,7 +938,7 @@ bool TrackletCalculatorDisplaced::DDLSeeding(const Stub* innerFPGAStub,
       if (iphiprojdisk[i] >= (1 << settings_.nphibitsstub(0)) - 1)
         continue;
 
-      if (irprojdisk[i] < 20. / krprojdisk || irprojdisk[i] > 120. / krprojdisk)
+      if (irprojdisk[i] < settings_.rmindisk() / krprojdisk || irprojdisk[i] > settings_.rmaxdisk() / krprojdisk)
         continue;
 
       diskprojs[i].init(settings_,
@@ -1269,7 +1269,7 @@ bool TrackletCalculatorDisplaced::LLDSeeding(const Stub* innerFPGAStub,
         continue;
 
       //Check r range of projection
-      if (irprojdisk[i] < 20. / krprojdisk || irprojdisk[i] > 120. / krprojdisk)
+      if (irprojdisk[i] < settings_.rmindisk() / krprojdisk || irprojdisk[i] > settings_.rmaxdisk() / krprojdisk)
         continue;
 
       diskprojs[i].init(settings_,

@@ -92,6 +92,7 @@ namespace trklet {
 
     double zlength() const { return zlength_; }
     double rmaxdisk() const { return rmaxdisk_; }
+    double rmindisk() const { return rmindisk_; }
 
     double drmax() const { return rmaxdisk_ / deltarzfract_; }
     double dzmax() const { return zlength_ / deltarzfract_; }
@@ -384,6 +385,7 @@ namespace trklet {
 
     double zlength_{120.0};
     double rmaxdisk_{120.0};
+    double rmindisk_{20.0};
 
     double half2SmoduleWidth_{4.57};
 

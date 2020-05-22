@@ -22,20 +22,20 @@ Globals::Globals(Settings const& settings) {
   imathGlobals_.reset(imathGlobs);
 
   // tracklet calculators
-  ITC_L1L2_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 1, 2));
-  ITC_L2L3_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 2, 3));
-  ITC_L3L4_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 3, 4));
-  ITC_L5L6_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 5, 6));
+  ITC_L1L2_ = make_unique<IMATH_TrackletCalculator>(settings, imathGlobs, 1, 2);
+  ITC_L2L3_ = make_unique<IMATH_TrackletCalculator>(settings, imathGlobs, 2, 3);
+  ITC_L3L4_ = make_unique<IMATH_TrackletCalculator>(settings, imathGlobs, 3, 4);
+  ITC_L5L6_ = make_unique<IMATH_TrackletCalculator>(settings, imathGlobs, 5, 6);
 
-  ITC_F1F2_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, 1, 2));
-  ITC_F3F4_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, 3, 4));
-  ITC_B1B2_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, -1, -2));
-  ITC_B3B4_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, -3, -4));
+  ITC_F1F2_ = make_unique<IMATH_TrackletCalculatorDisk>(settings, imathGlobs, 1, 2);
+  ITC_F3F4_ = make_unique<IMATH_TrackletCalculatorDisk>(settings, imathGlobs, 3, 4);
+  ITC_B1B2_ = make_unique<IMATH_TrackletCalculatorDisk>(settings, imathGlobs, -1, -2);
+  ITC_B3B4_ = make_unique<IMATH_TrackletCalculatorDisk>(settings, imathGlobs, -3, -4);
 
-  ITC_L1F1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 1, 1));
-  ITC_L2F1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 2, 1));
-  ITC_L1B1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 1, -1));
-  ITC_L2B1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 2, -1));
+  ITC_L1F1_ = make_unique<IMATH_TrackletCalculatorOverlap>(settings, imathGlobs, 1, 1);
+  ITC_L2F1_ = make_unique<IMATH_TrackletCalculatorOverlap>(settings, imathGlobs, 2, 1);
+  ITC_L1B1_ = make_unique<IMATH_TrackletCalculatorOverlap>(settings, imathGlobs, 1, -1);
+  ITC_L2B1_ = make_unique<IMATH_TrackletCalculatorOverlap>(settings, imathGlobs, 2, -1);
 }
 
 Globals::~Globals() {
