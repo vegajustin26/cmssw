@@ -3,6 +3,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
+#include <algorithm>
 #include <cassert>
 
 using namespace std;
