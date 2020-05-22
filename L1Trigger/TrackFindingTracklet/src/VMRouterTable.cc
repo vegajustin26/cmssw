@@ -238,7 +238,7 @@ int VMRouterTable::getLookup(unsigned int layerdisk, double z, double r, int ise
         value += 4;
     }
     value *= 2;
-    if (rbin1 / 8 - rbin2 / 8 > 0)
+    if (rbin2 / 8 - rbin1 / 8 > 0)
       value += 1;
     value *= 8;
     value += (rbin1 & 7);
