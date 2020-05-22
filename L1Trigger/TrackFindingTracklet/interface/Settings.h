@@ -676,7 +676,7 @@ namespace trklet {
   constexpr unsigned int N_PROJ = 4;      // number of projections (beyond stubs from tracklet seed)
   
   // chi2 fitting
-  constexpr unsigned int N_FITPARAM = 4; // number of fit parameters for the chi2 fit (not implemented currently for 5-parameter fitting) 
+  constexpr unsigned int N_FITPARAM = 4; // number of fit parameters for chi2 fit
   constexpr unsigned int N_FITSTUB = 6;  // maximum number of stubs used
 
   constexpr unsigned int N_TRACKDER_PTBIN = 4;
