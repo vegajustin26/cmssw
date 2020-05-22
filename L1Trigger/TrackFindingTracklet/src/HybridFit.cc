@@ -47,7 +47,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
   unsigned int L1stubID = 0;
 
   if (globals_->tmttSettings() == 0) {
-    globals_->tmttSettings() = new tmtt::Settings();
+    globals_->tmttSettings() = make_unique<tmtt::Settings>();
     globals_->tmttSettings()->setMagneticField(settings_.bfield());
   }
 

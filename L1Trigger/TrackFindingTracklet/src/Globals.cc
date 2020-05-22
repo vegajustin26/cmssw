@@ -44,12 +44,16 @@ Globals::~Globals() {
     i = nullptr;
   }
 #ifdef USEHYBRID
-  delete tmttSettings_;
-  tmttSettings_ = nullptr;
   delete tmttKFParamsComb_;
   tmttKFParamsComb_ = nullptr;
 #endif
 }
+
+#ifdef USEHYBRID
+std::unique_ptr<tmtt::Settings>& Globals::tmttSettings() {
+  return tmttSettings_;
+}
+#endif
 
 std::ofstream& Globals::ofstream(std::string fname) {
   if (ofstreams_.find(fname) != ofstreams_.end()) {

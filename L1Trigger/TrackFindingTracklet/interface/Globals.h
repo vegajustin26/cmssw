@@ -41,8 +41,10 @@ namespace trklet {
 
     TrackDerTable*& trackDerTable() { return trackDerTable_; }
 
-    tmtt::Settings*& tmttSettings() { return tmttSettings_; }
-
+#ifdef USEHYBRID
+    std::unique_ptr<tmtt::Settings>& tmttSettings();
+#endif
+    
     tmtt::KFParamsComb*& tmttKFParamsComb() { return tmttKFParamsComb_; }
 
     VMRouterPhiCorrTable*& phiCorr(unsigned int layer) { return thePhiCorr_[layer]; }
@@ -99,8 +101,10 @@ namespace trklet {
 
     ProjectionRouterBendTable* projectionRouterBendTable_{nullptr};
 
-    tmtt::Settings* tmttSettings_{nullptr};
-
+#ifdef USEHYBRID
+    std::unique_ptr<tmtt::Settings> tmttSettings_;
+#endif
+    
     tmtt::KFParamsComb* tmttKFParamsComb_{nullptr};
 
     std::array<VMRouterPhiCorrTable*, 6> thePhiCorr_{{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}};
