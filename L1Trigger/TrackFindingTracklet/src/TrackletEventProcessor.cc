@@ -18,7 +18,6 @@ TrackletEventProcessor::~TrackletEventProcessor() {
     delete sectors_[i];
   }
   delete globals_;
-  delete cabling_;
 
   if (settings_->bookHistos()) {
     histbase_->close();
@@ -29,7 +28,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   settings_ = theSettings;
 
   globals_ = new Globals(*settings_);
-
+ 
   //Verify consistency
   if (settings_->kphi0pars() != globals_->ITC_L1L2()->phi0_final.K()) {
     throw cms::Exception("Inconsistency") << "phi0 conversion parameter inconsistency\n";
@@ -181,7 +180,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
     indtc >> dtc;
   }
 
-  cabling_ = new Cabling(settings_->DTCLinkFile(), settings_->moduleCablingFile(), *settings_);
+  cabling_ = make_unique<Cabling>(settings_->DTCLinkFile(), settings_->moduleCablingFile(), *settings_);
 }
 
 void TrackletEventProcessor::event(SLHCEvent& ev) {

@@ -6,6 +6,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Cabling.h"
 
 #include <map>
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -43,7 +44,7 @@ namespace trklet {
 
     int eventnum_ = {0};
 
-    Cabling* cabling_{};
+    std::unique_ptr<Cabling> cabling_;
 
     Timer cleanTimer_;
     Timer addStubTimer_;
