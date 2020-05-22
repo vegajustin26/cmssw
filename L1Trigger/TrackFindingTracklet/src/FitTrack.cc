@@ -77,7 +77,7 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
 
     // Get seed stubs first
     trackstublist.emplace_back(tracklet->innerFPGAStub());
-    if (tracklet->getISeed() >= N_TRKLSEED+1)
+    if (tracklet->getISeed() >= (int)N_TRKLSEED+1)
       trackstublist.emplace_back(tracklet->middleFPGAStub());
     trackstublist.emplace_back(tracklet->outerFPGAStub());
 

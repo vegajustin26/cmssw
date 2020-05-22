@@ -10,9 +10,8 @@
 using namespace std;
 using namespace trklet;
 
-HybridFit::HybridFit(unsigned int iSector, Settings const& settings, Globals* globals) {
+HybridFit::HybridFit(unsigned int iSector, Settings const& settings, Globals* globals) : settings_(settings) {
   iSector_ = iSector;
-  settings_ = settings;
   globals_ = globals;
 }
 
