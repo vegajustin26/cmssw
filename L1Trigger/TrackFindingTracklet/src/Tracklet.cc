@@ -33,8 +33,8 @@ Tracklet::Tracklet(Settings const& settings,
                    int id0,
                    int iz0,
                    int it,
-                   LayerProjection layerprojs[4],
-                   DiskProjection diskprojs[4],
+                   LayerProjection layerprojs[N_PROJ],
+                   DiskProjection diskprojs[N_PROJ],
                    bool disk,
                    bool overlap) : settings_(settings) {
 
@@ -83,17 +83,17 @@ Tracklet::Tracklet(Settings const& settings,
   triplet_ = (seedIndex_ >= 8);
 
   //fill projection layers
-  for (unsigned int i = 0; i < N_PROJLAYER; i++) {
+  for (unsigned int i = 0; i < N_LAYER-2; i++) {
     projlayer_[i] = settings.projlayers(seedIndex_, i);
   }
 
   //fill projection disks
-  for (unsigned int i = 0; i < N_PROJDISK; i++) {
+  for (unsigned int i = 0; i < N_DISK; i++) {
     projdisk_[i] = settings.projdisks(seedIndex_, i);
   }
 
   //Handle projections to the layers
-  for (unsigned int i = 0; i < N_PROJLAYER; i++) {
+  for (unsigned int i = 0; i < N_LAYER-2; i++) {
     if (projlayer_[i] == 0)
       continue;
     if (!layerprojs[i].valid())
@@ -102,7 +102,7 @@ Tracklet::Tracklet(Settings const& settings,
     layerproj_[projlayer_[i] - 1] = layerprojs[i];
   }
   //Now handle projections to the disks
-  for (unsigned int i = 0; i < N_PROJDISK; i++) {
+  for (unsigned int i = 0; i < N_DISK; i++) {
     if (projdisk_[i] == 0)
       continue;
     if (!diskprojs[i].valid())
@@ -265,9 +265,9 @@ std::string Tracklet::vmstrdisk(int disk, unsigned int allstubindex) {
 }
 
 std::string Tracklet::trackletprojstr(int layer) const {
-  assert(layer >= 1 && layer <= 6);
+  assert(layer > 0 && layer <= N_LAYER);
   FPGAWord tmp;
-  if (trackletIndex_ < 0 || trackletIndex_ > 127) {
+  if (trackletIndex_ < 0 || trackletIndex_ > (int)settings_.ntrackletmax()) {
     throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " trackletIndex_ = " << trackletIndex_;
   }
   tmp.set(trackletIndex_, 7, true, __LINE__, __FILE__);
@@ -287,7 +287,7 @@ std::string Tracklet::trackletprojstr(int layer) const {
 std::string Tracklet::trackletprojstrD(int disk) const {
   assert(abs(disk) <= N_DISK);
   FPGAWord tmp;
-  if (trackletIndex_ < 0 || trackletIndex_ > 127) {
+  if (trackletIndex_ < 0 || trackletIndex_ > (int)settings_.ntrackletmax()) {
     throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " trackletIndex_ = " << trackletIndex_;
   }
   tmp.set(trackletIndex_, 7, true, __LINE__, __FILE__);
@@ -313,7 +313,7 @@ void Tracklet::addMatch(int layer,
                         int stubid,
                         double rstub,
                         const trklet::Stub* stubptr) {
-  assert(layer >= 1 && layer <= 6);
+  assert(layer > 0 && layer <= N_LAYER);
   layerresid_[layer - 1].init(
       settings_, layer, ideltaphi, ideltaz, stubid, dphi, dz, dphiapprox, dzapprox, rstub, stubptr);
 }
@@ -372,7 +372,7 @@ std::string Tracklet::fullmatchstr(int layer) {
   assert(layer > 0 && layer <= N_LAYER);
 
   FPGAWord tmp;
-  if (trackletIndex_ < 0 || trackletIndex_ > 127) {
+  if (trackletIndex_ < 0 || trackletIndex_ > (int)settings_.ntrackletmax()) {
     throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " trackletIndex_ = " << trackletIndex_;
   }
   tmp.set(trackletIndex_, 7, true, __LINE__, __FILE__);
@@ -391,7 +391,7 @@ std::string Tracklet::fullmatchdiskstr(int disk) {
   assert(disk > 0 && disk <= N_DISK);
 
   FPGAWord tmp;
-  if (trackletIndex_ < 0 || trackletIndex_ > 127) {
+  if (trackletIndex_ < 0 || trackletIndex_ > (int)settings_.ntrackletmax()) {
     throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " trackletIndex_ = " << trackletIndex_;
   }
   tmp.set(trackletIndex_, 7, true, __LINE__, __FILE__);
@@ -844,7 +844,7 @@ void Tracklet::setTrackletIndex(int index) {
 
 int Tracklet::getISeed() const {
   int iSeed = TCIndex_ >> 4;
-  assert(iSeed >= 0 && iSeed <= 11);
+  assert(iSeed >= 0 && iSeed <= (int)N_SEED);
   return iSeed;
 }
 

@@ -77,7 +77,7 @@ void FitTrack::trackFitKF(Tracklet* tracklet,
 
     // Get seed stubs first
     trackstublist.emplace_back(tracklet->innerFPGAStub());
-    if (tracklet->getISeed() >= 8)
+    if (tracklet->getISeed() >= N_TRKLSEED+1)
       trackstublist.emplace_back(tracklet->middleFPGAStub());
     trackstublist.emplace_back(tracklet->outerFPGAStub());
 
@@ -221,7 +221,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
       if (mult == 1 << (3 * settings_.alphaBitsTable()))
         continue;
 
-      if (ndisks + nlayers >= 6)
+      if (ndisks + nlayers >= N_FITSTUB)
         continue;
       if (tracklet->matchdisk(d)) {
         if (std::abs(tracklet->alphadisk(d)) < 1e-20) {
@@ -294,7 +294,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
         continue;
       }
 
-      if (ndisks + nlayers >= 6)
+      if (ndisks + nlayers >= N_FITSTUB)
         continue;
       if (tracklet->matchdisk(d)) {
         if (std::abs(tracklet->alphadisk(d)) < 1e-20) {
@@ -366,7 +366,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
         continue;
       }
 
-      if (ndisks + nlayers >= 6)
+      if (ndisks + nlayers >= N_FITSTUB)
         continue;
       if (tracklet->matchdisk(d)) {
         if (std::abs(tracklet->alphadisk(d)) < 1e-20) {
@@ -468,12 +468,12 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
     rstub[i + nlayers] = z[i] / ttabi;
   }
 
-  double D[4][12];
-  double MinvDt[4][12];
-  int iD[4][12];
-  int iMinvDt[4][12];
-  double sigma[12];
-  double kfactor[12];
+  double D[N_FITPARAM][N_FITSTUB*2];
+  double MinvDt[N_FITPARAM][N_FITSTUB*2];
+  int iD[N_FITPARAM][N_FITSTUB*2];
+  int iMinvDt[N_FITPARAM][N_FITSTUB*2];
+  double sigma[N_FITSTUB*2];
+  double kfactor[N_FITSTUB*2];
 
   unsigned int n = nlayers + ndisks;
 
@@ -485,7 +485,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
     if (settings_.exactderivativesforfloating()) {
       TrackDerTable::calculateDerivatives(settings_, nlayers, r, ndisks, z, alpha, t, rinv, D, iD, MinvDt, iMinvDt, sigma, kfactor);
 
-      double MinvDtDummy[4][12];
+      double MinvDtDummy[N_FITPARAM][N_FITSTUB*2];
       derivatives->fill(tracklet->fpgat().value(), MinvDtDummy, iMinvDt);
       ttab = t;
     } else {

@@ -21,8 +21,8 @@ void LayerProjection::init(Settings const& settings,
                            double zprojapprox,
                            double phiprojderapprox,
                            double zprojderapprox) {
-  assert(projlayer >= 1);
-  assert(projlayer <= 6);
+  assert(projlayer > 0);
+  assert(projlayer <= N_LAYER);
 
   valid_ = true;
 

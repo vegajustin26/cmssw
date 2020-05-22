@@ -188,7 +188,7 @@ void TripletEngine::execute() {
 
               FPGAWord iphisecondbin = secondvmstub.stub()->iphivmFineBins(nvmbitssecond, secondphibits_);
 
-              //TODO: not using same number of bits as in the TED?
+              //currently not using same number of bits as in the TED
               //assert(iphisecondbin==(int)secondvmstub.finephi());
               FPGAWord iphithirdbin = thirdvmstub.finephi();
 
@@ -355,7 +355,7 @@ void TripletEngine::execute() {
 
               FPGAWord iphisecondbin = secondvmstub.stub()->iphivmFineBins(nvmbitssecond, secondphibits_);
 
-              //TODO: not using same number of bits as in the TED?
+              //currentlty not using same number of bits as in the TED
               //assert(iphisecondbin==(int)secondvmstub.finephi());
               FPGAWord iphithirdbin = thirdvmstub.finephi();
 

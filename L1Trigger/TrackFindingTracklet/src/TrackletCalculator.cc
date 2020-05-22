@@ -36,7 +36,7 @@ TrackletCalculator::TrackletCalculator(string name,
   iTC_ = name_[7] - 'A';
 
   TCIndex_ = (iSeed_ << 4) + iTC_;
-  assert(TCIndex_ >= 0 && TCIndex_ < 128);
+  assert(TCIndex_ >= 0 && TCIndex_ <= (int)settings_.ntrackletmax());
 
   if (settings_.usephicritapprox()) {
     double phicritFactor =

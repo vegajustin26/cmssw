@@ -60,7 +60,7 @@ void ProcessBase::initLayerDisk(unsigned int pos, int& layer, int& disk, int& la
 
   layerdisk = layer - 1;
   if (disk > 0)
-    layerdisk = 5 + disk;
+    layerdisk = N_DISK + disk;
 }
 
 unsigned int ProcessBase::initLayerDisk(unsigned int pos) {
@@ -68,7 +68,7 @@ unsigned int ProcessBase::initLayerDisk(unsigned int pos) {
   initLayerDisk(pos, layer, disk);
 
   if (disk > 0)
-    return 5 + disk;
+    return N_DISK + disk;
   return layer - 1;
 }
 

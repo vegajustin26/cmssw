@@ -219,7 +219,7 @@ void VMStubsTEMemory::getPhiRange(double& phimin, double& phimax, unsigned int i
       nvm = settings_.nallstubs(layer_ - 1) * settings_.nvmte(inner, iSeed);
     }
     if (disk_ > 0) {
-      nvm = settings_.nallstubs(disk_ + 5) * settings_.nvmte(inner, iSeed);
+      nvm = settings_.nallstubs(disk_ + N_DISK) * settings_.nvmte(inner, iSeed);
     }
   } else {
     if (layer_ > 0) {
@@ -229,7 +229,7 @@ void VMStubsTEMemory::getPhiRange(double& phimin, double& phimax, unsigned int i
       }
     }
     if (disk_ > 0) {
-      nvm = settings_.nallstubs(disk_ + 5) * settings_.nvmte(inner, iSeed);
+      nvm = settings_.nallstubs(disk_ + N_DISK) * settings_.nvmte(inner, iSeed);
     }
   }
   assert(nvm > 0);

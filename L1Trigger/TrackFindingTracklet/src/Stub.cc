@@ -128,7 +128,7 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
     int irSS = -1;
     if (!stub.isPSmodule()) {
-      for (int i = 0; i < 10; ++i) {
+      for (unsigned int i = 0; i < N_DSS_MOD*2; ++i) {
         if (disk <= 2) {
           if (std::abs(r - settings_.rDSSinner(i)) < 0.2) {
             irSS = i;
@@ -148,7 +148,7 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
     }
     if (irSS < 0) {
       //PS modules
-      r_.set(ir, settings_.nrbitsstub(disk + 5), true, __LINE__, __FILE__);
+      r_.set(ir, settings_.nrbitsstub(disk + N_DISK), true, __LINE__, __FILE__);
     } else {
       //SS modules
       r_.set(irSS, 4, true, __LINE__, __FILE__);  // in case of SS modules, store index, not r itself
@@ -226,10 +226,8 @@ double Stub::zapprox() const {
   if (disk_.value() < 0)
     sign = -1;
   if (sign < 0) {
-    return (z_.value() + 1) * settings_.kz() +
-           sign *
-               settings_.zmean(abs(disk_.value()) -
-                                1);  //Should understand why this is needed to get agreement with integer calculations
+    //Should understand why this is needed to get agreement with integer calculations
+    return (z_.value() + 1) * settings_.kz() + sign * settings_.zmean(abs(disk_.value()) - 1);  
   } else {
     return z_.value() * settings_.kz() + sign * settings_.zmean(abs(disk_.value()) - 1);
   }

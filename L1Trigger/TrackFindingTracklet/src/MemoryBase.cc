@@ -34,7 +34,7 @@ unsigned int MemoryBase::initLayerDisk(unsigned int pos) {
   initLayerDisk(pos, layer, disk);
 
   if (disk > 0)
-    return 5 + disk;
+    return N_DISK + disk;
   return layer - 1;
 }
 

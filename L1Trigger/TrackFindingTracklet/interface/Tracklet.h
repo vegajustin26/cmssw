@@ -511,7 +511,7 @@ namespace trklet {
   private:
     unsigned int seedIndex_;
 
-    // three types of trackletss
+    // three types of tracklets + one triplet
     bool barrel_;
     bool disk_;
     bool overlap_;
@@ -534,8 +534,9 @@ namespace trklet {
     TrackPars<double> trackpars_;
     TrackPars<double> trackparsapprox_;
 
-    int projlayer_[N_PROJLAYER];
-    int projdisk_[N_PROJDISK];
+    // the layer/disk ids that we project to (never project to >4 barrel layers)
+    int projlayer_[N_LAYER-2];
+    int projdisk_[N_DISK];
 
     //Track parameters from track fit
     TrackPars<FPGAWord> fpgafitpars_;

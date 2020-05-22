@@ -15,8 +15,8 @@ void LayerResidual::init(Settings const& settings,
                          double zresidapprox,
                          double rstub,
                          const Stub* stubptr) {
-  assert(layer >= 1);
-  assert(layer <= 6);
+  assert(layer > 0);
+  assert(layer <= N_LAYER);
 
   if (valid_ && (std::abs(iphiresid) > std::abs(fpgaphiresid_.value())))
     return;

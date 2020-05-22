@@ -23,8 +23,8 @@ void DiskProjection::init(Settings const& settings,
                           double rprojapprox,
                           double phiprojderapprox,
                           double rprojderapprox) {
-  assert(abs(projdisk) >= 1);
-  assert(abs(projdisk) <= 5);
+  assert(abs(projdisk) >= 0);
+  assert(abs(projdisk) <= N_DISK);
 
   valid_ = true;
 

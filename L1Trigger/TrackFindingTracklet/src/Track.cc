@@ -25,7 +25,7 @@ Track::Track(TrackPars<int> ipars,
 
   hitpattern_ = hitpattern;
 
-  nstubs_ = std::max((int)l1stub.size(), 6);
+  nstubs_ = std::max((int)l1stub.size(), (int)N_FITSTUB);
 
   stubID_ = stubID;
   l1stub_ = l1stub;

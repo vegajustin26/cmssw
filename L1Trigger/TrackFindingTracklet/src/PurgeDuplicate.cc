@@ -266,7 +266,7 @@ void PurgeDuplicate::execute(std::vector<Track*>& outputtracks_) {
         }
 
         // Fill duplicate map
-        if (nShareUR >= 3) {  // For number of shared stub merge condition
+        if (nShareUR >= settings_.minIndStubs()) {  // For number of shared stub merge condition
           dupMap[itrk][jtrk] = true;
           dupMap[jtrk][itrk] = true;
         }

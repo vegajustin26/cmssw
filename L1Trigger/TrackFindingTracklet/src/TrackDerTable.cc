@@ -249,13 +249,13 @@ void TrackDerTable::fillTable() {
       }
     }
 
-    double D[4][12];
-    int iD[4][12];
-    double MinvDt[4][12];
-    double MinvDtDelta[4][12];
-    int iMinvDt[4][12];
-    double sigma[12];
-    double kfactor[12];
+    double D[N_FITPARAM][N_FITSTUB*2];
+    int iD[N_FITPARAM][N_FITSTUB*2];
+    double MinvDt[N_FITPARAM][N_FITSTUB*2];
+    double MinvDtDelta[N_FITPARAM][N_FITSTUB*2];
+    int iMinvDt[N_FITPARAM][N_FITSTUB*2];
+    double sigma[N_FITSTUB*2];
+    double kfactor[N_FITSTUB*2];
 
     if (print) {
       edm::LogVerbatim("Tracklet") << "PRINT ndisks alpha[0] z[0] t: " << ndisks << " " << alpha[0] << " " << z[0]
@@ -499,19 +499,19 @@ void TrackDerTable::fillTable() {
 
         bool goodseed = (hits & (1 << (11 - iseed1))) and (hits & (1 << (11 - iseed2)));
 
-        int itmprinvdphi[4] = {9999999, 9999999, 9999999, 9999999};
-        int itmprinvdzordr[4] = {9999999, 9999999, 9999999, 9999999};
-        int itmpphi0dphi[4] = {9999999, 9999999, 9999999, 9999999};
-        int itmpphi0dzordr[4] = {9999999, 9999999, 9999999, 9999999};
-        int itmptdphi[4] = {9999999, 9999999, 9999999, 9999999};
-        int itmptdzordr[4] = {9999999, 9999999, 9999999, 9999999};
-        int itmpz0dphi[4] = {9999999, 9999999, 9999999, 9999999};
-        int itmpz0dzordr[4] = {9999999, 9999999, 9999999, 9999999};
+        int itmprinvdphi[N_PROJ] = {9999999, 9999999, 9999999, 9999999};
+        int itmprinvdzordr[N_PROJ] = {9999999, 9999999, 9999999, 9999999};
+        int itmpphi0dphi[N_PROJ] = {9999999, 9999999, 9999999, 9999999};
+        int itmpphi0dzordr[N_PROJ] = {9999999, 9999999, 9999999, 9999999};
+        int itmptdphi[N_PROJ] = {9999999, 9999999, 9999999, 9999999};
+        int itmptdzordr[N_PROJ] = {9999999, 9999999, 9999999, 9999999};
+        int itmpz0dphi[N_PROJ] = {9999999, 9999999, 9999999, 9999999};
+        int itmpz0dzordr[N_PROJ] = {9999999, 9999999, 9999999, 9999999};
 
         // loop over bits in hit pattern
         int ider = 0;
         if (goodseed) {
-          for (unsigned int ihit = 1; ihit < 12; ++ihit) {
+          for (unsigned int ihit = 1; ihit < N_FITSTUB*2; ++ihit) {
             // skip seeding layers
             if (ihit == iseed1 or ihit == iseed2) {
               ider++;
@@ -577,7 +577,7 @@ void TrackDerTable::fillTable() {
               if (ihit == 11)
                 inputI = 3;  // D5
             }
-            if (inputI >= 0 and inputI < 4) {
+            if (inputI >= 0 and inputI < (int)N_PROJ) {
               itmprinvdphi[inputI] = der.irinvdphi(ider);
               itmprinvdzordr[inputI] = der.irinvdzordr(ider);
               itmpphi0dphi[inputI] = der.iphi0dphi(ider);
@@ -593,8 +593,8 @@ void TrackDerTable::fillTable() {
           }  // for (unsigned int ihit = 1; ihit < 12; ++ihit)
         }    // if (goodseed)
 
-        FPGAWord tmprinvdphi[4];
-        for (unsigned int j = 0; j < 4; ++j) {
+        FPGAWord tmprinvdphi[N_PROJ];
+        for (unsigned int j = 0; j < N_PROJ; ++j) {
           if (itmprinvdphi[j] > (1 << 13))
             itmprinvdphi[j] = (1 << 13) - 1;
           tmprinvdphi[j].set(itmprinvdphi[j], 14, false, __LINE__, __FILE__);
@@ -602,8 +602,8 @@ void TrackDerTable::fillTable() {
         outrinvdphi[i] << tmprinvdphi[0].str() << tmprinvdphi[1].str() << tmprinvdphi[2].str() << tmprinvdphi[3].str()
                        << endl;
 
-        FPGAWord tmprinvdzordr[4];
-        for (unsigned int j = 0; j < 4; ++j) {
+        FPGAWord tmprinvdzordr[N_PROJ];
+        for (unsigned int j = 0; j < N_PROJ; ++j) {
           if (itmprinvdzordr[j] > (1 << 15))
             itmprinvdzordr[j] = (1 << 15) - 1;
           tmprinvdzordr[j].set(itmprinvdzordr[j], 16, false, __LINE__, __FILE__);
@@ -611,8 +611,8 @@ void TrackDerTable::fillTable() {
         outrinvdzordr[i] << tmprinvdzordr[0].str() << tmprinvdzordr[1].str() << tmprinvdzordr[2].str()
                          << tmprinvdzordr[3].str() << endl;
 
-        FPGAWord tmpphi0dphi[4];
-        for (unsigned int j = 0; j < 4; ++j) {
+        FPGAWord tmpphi0dphi[N_PROJ];
+        for (unsigned int j = 0; j < N_PROJ; ++j) {
           if (itmpphi0dphi[j] > (1 << 13))
             itmpphi0dphi[j] = (1 << 13) - 1;
           tmpphi0dphi[j].set(itmpphi0dphi[j], 14, false, __LINE__, __FILE__);
@@ -620,8 +620,8 @@ void TrackDerTable::fillTable() {
         outphi0dphi[i] << tmpphi0dphi[0].str() << tmpphi0dphi[1].str() << tmpphi0dphi[2].str() << tmpphi0dphi[3].str()
                        << endl;
 
-        FPGAWord tmpphi0dzordr[4];
-        for (unsigned int j = 0; j < 4; ++j) {
+        FPGAWord tmpphi0dzordr[N_PROJ];
+        for (unsigned int j = 0; j < N_PROJ; ++j) {
           if (itmpphi0dzordr[j] > (1 << 15))
             itmpphi0dzordr[j] = (1 << 15) - 1;
           tmpphi0dzordr[j].set(itmpphi0dzordr[j], 16, false, __LINE__, __FILE__);
@@ -629,16 +629,16 @@ void TrackDerTable::fillTable() {
         outphi0dzordr[i] << tmpphi0dzordr[0].str() << tmpphi0dzordr[1].str() << tmpphi0dzordr[2].str()
                          << tmpphi0dzordr[3].str() << endl;
 
-        FPGAWord tmptdphi[4];
-        for (unsigned int j = 0; j < 4; ++j) {
+        FPGAWord tmptdphi[N_PROJ];
+        for (unsigned int j = 0; j < N_PROJ; ++j) {
           if (itmptdphi[j] > (1 << 13))
             itmptdphi[j] = (1 << 13) - 1;
           tmptdphi[j].set(itmptdphi[j], 14, false, __LINE__, __FILE__);
         }
         outtdphi[i] << tmptdphi[0].str() << tmptdphi[1].str() << tmptdphi[2].str() << tmptdphi[3].str() << endl;
 
-        FPGAWord tmptdzordr[4];
-        for (unsigned int j = 0; j < 4; ++j) {
+        FPGAWord tmptdzordr[N_PROJ];
+        for (unsigned int j = 0; j < N_PROJ; ++j) {
           if (itmptdzordr[j] > (1 << 15))
             itmptdzordr[j] = (1 << 15) - 1;
           tmptdzordr[j].set(itmptdzordr[j], 16, false, __LINE__, __FILE__);
@@ -646,16 +646,16 @@ void TrackDerTable::fillTable() {
         outtdzordr[i] << tmptdzordr[0].str() << tmptdzordr[1].str() << tmptdzordr[2].str() << tmptdzordr[3].str()
                       << endl;
 
-        FPGAWord tmpz0dphi[4];
-        for (unsigned int j = 0; j < 4; ++j) {
+        FPGAWord tmpz0dphi[N_PROJ];
+        for (unsigned int j = 0; j < N_PROJ; ++j) {
           if (itmpz0dphi[j] > (1 << 13))
             itmpz0dphi[j] = (1 << 13) - 1;
           tmpz0dphi[j].set(itmpz0dphi[j], 14, false, __LINE__, __FILE__);
         }
         outz0dphi[i] << tmpz0dphi[0].str() << tmpz0dphi[1].str() << tmpz0dphi[2].str() << tmpz0dphi[3].str() << endl;
 
-        FPGAWord tmpz0dzordr[4];
-        for (unsigned int j = 0; j < 4; ++j) {
+        FPGAWord tmpz0dzordr[N_PROJ];
+        for (unsigned int j = 0; j < N_PROJ; ++j) {
           if (itmpz0dzordr[j] > (1 << 15))
             itmpz0dzordr[j] = (1 << 15) - 1;
           tmpz0dzordr[j].set(itmpz0dzordr[j], 16, false, __LINE__, __FILE__);
@@ -669,7 +669,7 @@ void TrackDerTable::fillTable() {
     }  // for (auto & der : derivatives_)
 
     // close files
-    for (unsigned int i = 0; i < 6; ++i) {
+    for (unsigned int i = 0; i < N_TRKLSEED; ++i) {
       outrinvdphi[i].close();
       outrinvdzordr[i].close();
       outphi0dphi[i].close();
@@ -760,12 +760,12 @@ void TrackDerTable::calculateDerivatives(Settings const& settings,
                                          double alpha[N_DISK],
                                          double t,
                                          double rinv,
-                                         double D[4][12],
-                                         int iD[4][12],
-                                         double MinvDt[4][12],
-                                         int iMinvDt[4][12],
-                                         double sigma[12],
-                                         double kfactor[12]) {
+                                         double D[N_FITPARAM][N_FITSTUB*2],
+                                         int iD[N_FITPARAM][N_FITSTUB*2],
+                                         double MinvDt[N_FITPARAM][N_FITSTUB*2],
+                                         int iMinvDt[N_FITPARAM][N_FITSTUB*2],
+                                         double sigma[N_FITSTUB*2],
+                                         double kfactor[N_FITSTUB*2]) {
   double sigmax = settings.stripPitch(true) / sqrt(12.0);
   double sigmaz = settings.stripLength(true) / sqrt(12.0);
   double sigmaz2 = settings.stripLength(false) / sqrt(12.0);
@@ -891,8 +891,8 @@ void TrackDerTable::calculateDerivatives(Settings const& settings,
 
   invert(M, 4);
 
-  for (unsigned int j = 0; j < 12; j++) {
-    for (unsigned int i1 = 0; i1 < 4; i1++) {
+  for (unsigned int j = 0; j < N_FITSTUB*2; j++) {
+    for (unsigned int i1 = 0; i1 < N_FITPARAM; i1++) {
       MinvDt[i1][j] = 0.0;
       iMinvDt[i1][j] = 0;
     }

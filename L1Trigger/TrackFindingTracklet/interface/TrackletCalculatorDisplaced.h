@@ -95,23 +95,23 @@ namespace trklet {
                        double& d0,
                        double& t,
                        double& z0,
-                       double phiproj[N_PROJLAYER],
-                       double zproj[N_PROJLAYER],
-                       double phiprojdisk[N_PROJDISK],
-                       double rprojdisk[N_PROJDISK],
-                       double phider[N_PROJLAYER],
-                       double zder[N_PROJLAYER],
-                       double phiderdisk[N_PROJDISK],
-                       double rderdisk[N_PROJDISK]);
+                       double phiproj[N_LAYER-2],
+                       double zproj[N_LAYER-2],
+                       double phiprojdisk[N_DISK],
+                       double rprojdisk[N_DISK],
+                       double phider[N_LAYER-2],
+                       double zder[N_LAYER-2],
+                       double phiderdisk[N_DISK],
+                       double rderdisk[N_DISK]);
 
   private:
     int TCIndex_;
     int layer_;
     int disk_;
-    double rproj_[4];
-    int lproj_[4];
-    double zproj_[3];
-    int dproj_[3];
+    double rproj_[N_LAYER-2];
+    int lproj_[N_LAYER-2];
+    double zproj_[N_DISK-2];
+    int dproj_[N_DISK-2];
 
     std::vector<double> toR_;
     std::vector<double> toZ_;

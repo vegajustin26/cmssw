@@ -73,7 +73,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
     ofstream outzcut;
     outzcut.open(getName() + "_zcut.tab");
     outzcut << "{" << endl;
-    for (unsigned int seedindex = 0; seedindex < 12; seedindex++) {
+    for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
       if (seedindex != 0)
         outzcut << "," << endl;
       outzcut << zmatchcut_[seedindex];
@@ -213,18 +213,18 @@ void MatchProcessor::execute() {
   }
 
   /*
-      The code is organized in three 'steps' corresponding to the PR, ME, and MC functions. The output from
-      the PR step is buffered in a 'circular' buffer, and similarly the ME output is put in a circular buffer. 
-
-      The implementation is done in steps, emulating what can be done in firmware. One each step we do:
-
-       1) A projection is read and if there is space it is insert into the inputProjBuffer_
-
-       2) Process next match in the ME - if there is an idle ME the next projection is inserted
-
-       3) Readout match from ME and send to match calculator
-
-     */
+    The code is organized in three 'steps' corresponding to the PR, ME, and MC functions. The output from
+    the PR step is buffered in a 'circular' buffer, and similarly the ME output is put in a circular buffer. 
+    
+    The implementation is done in steps, emulating what can be done in firmware. One each step we do:
+    
+    1) A projection is read and if there is space it is insert into the inputProjBuffer_
+    
+    2) Process next match in the ME - if there is an idle ME the next projection is inserted
+    
+    3) Readout match from ME and send to match calculator
+    
+  */
 
   Tracklet* oldTracklet = nullptr;
 

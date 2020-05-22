@@ -17,8 +17,8 @@ void DiskResidual::init(Settings const& settings,
                         double alpha,
                         FPGAWord ialpha,
                         const Stub* stubptr) {
-  assert(abs(disk) >= 1);
-  assert(abs(disk) <= 5);
+  assert(abs(disk) > 0);
+  assert(abs(disk) <= N_DISK);
 
   if (valid_ && (std::abs(iphiresid) > std::abs(fpgaphiresid_.value())))
     return;
