@@ -5,9 +5,9 @@
 #include <string>
 #include <array>
 #include <set>
-#include <map>
 #include <cassert>
 #include <cmath>
+#include <unordered_map>
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
@@ -542,48 +542,47 @@ namespace trklet {
 
     unsigned int maxstepoffset_{10000};
 
-    std::map<std::string, unsigned int> maxstep_{{"Link", 108},
-                                                 {"MC", 108},
-                                                 {"ME", 108},
-                                                 {"MP", 108},
-                                                 {"PR", 108},
-                                                 {"TC", 108},
-                                                 {"TE", 108},
-                                                 {"TP", 108},
-                                                 {"TRE", 108},
-                                                 {"VMR", 108}};
+    std::unordered_map<std::string, unsigned int> maxstep_{{"Link", 108},
+                                                           {"MC", 108},
+                                                           {"ME", 108},
+                                                           {"MP", 108},
+                                                           {"PR", 108},
+                                                           {"TC", 108},
+                                                           {"TE", 108},
+                                                           {"TP", 108},
+                                                           {"TRE", 108},
+                                                           {"VMR", 108}};
 
-    std::map<std::string, bool> writeMonitorData_{{"IL", false},
-                                                  {"TE", false},
-                                                  {"CT", false},
-                                                  {"HitPattern", false},
-                                                  {"ChiSq", false},
-                                                  {"Seeds", false},
-                                                  {"FT", false},
-                                                  {"Residuals", false},
-                                                  {"MC", false},
-                                                  {"ME", false},
-                                                  {"AP", false},
-                                                  {"VMP", false},
-                                                  {"NMatches", false},
-                                                  {"TrackProjOcc", false},
-                                                  {"TC", false},
-                                                  {"Pars", false},
-                                                  {"TPars", false},
-                                                  {"TPD", false},
-                                                  {"TrackletPars", false},
-                                                  {"TED", false},
-                                                  {"TP", false},
-                                                  {"TRE", false},
-                                                  {"VMR", false},
-                                                  {"Variance", false},
-                                                  {"StubsLayer", false},
-                                                  {"StubsLayerSector", false},
-                                                  {"HitEff", false},
-                                                  {"MatchEff", false},
-                                                  {"Cabling", false},
-                                                  {"IFit", false},
-                                                  {"AS", false}};
+    std::unordered_map<std::string, bool> writeMonitorData_{{"IL", false},
+                                                            {"TE", false},
+                                                            {"CT", false},
+                                                            {"HitPattern", false},
+                                                            {"ChiSq", false},
+                                                            {"Seeds", false},
+                                                            {"FT", false},
+                                                            {"Residuals", false},
+                                                            {"MC", false},
+                                                            {"ME", false},
+                                                            {"AP", false},
+                                                            {"VMP", false},
+                                                            {"NMatches", false},
+                                                            {"TrackProjOcc", false},
+                                                            {"TC", false},
+                                                            {"Pars", false},
+                                                            {"TPars", false},
+                                                            {"TPD", false},
+                                                            {"TrackletPars", false},
+                                                            {"TED", false},
+                                                            {"TP", false},
+                                                            {"TRE", false},
+                                                            {"VMR", false},
+                                                            {"StubsLayer", false},
+                                                            {"StubsLayerSector", false},
+                                                            {"HitEff", false},
+                                                            {"MatchEff", false},
+                                                            {"Cabling", false},
+                                                            {"IFit", false},
+                                                            {"AS", false}};
 
     std::array<double, N_DSS_MOD> rDSSinner_mod_{{68.9391, 78.7750, 85.4550, 96.3150, 102.3160}};
 
