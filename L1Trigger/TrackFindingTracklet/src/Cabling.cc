@@ -11,7 +11,6 @@ using namespace std;
 using namespace trklet;
 
 Cabling::Cabling(string dtcconfig, string moduleconfig, Settings const& settings) : settings_(settings) {
-
   ifstream indtc(dtcconfig.c_str());
   assert(indtc.good());
 

@@ -11,8 +11,7 @@ using namespace trklet;
 
 Stub::Stub(Settings const& settings) : settings_(settings) {}
 
-Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phimaxsec)
-    : settings_(settings) {
+Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phimaxsec) : settings_(settings) {
   double r = stub.r();
   double z = stub.z();
   double sbend = stub.bend();
@@ -99,7 +98,8 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
       edm::LogProblem("Tracklet") << "Error disk z, zmax, zmin: " << z << " " << zmax << " " << zmin;
     }
 
-    int iz = (1 << settings.nzbitsstub(disk + N_DISK)) * ((z - sign * settings_.zmean(disk - 1)) / std::abs(zmax - zmin));
+    int iz =
+        (1 << settings.nzbitsstub(disk + N_DISK)) * ((z - sign * settings_.zmean(disk - 1)) / std::abs(zmax - zmin));
 
     assert(phimaxsec - phiminsec > 0.0);
     if (stubphi < phiminsec - (phimaxsec - phiminsec) / 6.0) {
@@ -128,7 +128,7 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
     int irSS = -1;
     if (!stub.isPSmodule()) {
-      for (unsigned int i = 0; i < N_DSS_MOD*2; ++i) {
+      for (unsigned int i = 0; i < N_DSS_MOD * 2; ++i) {
         if (disk <= 2) {
           if (std::abs(r - settings_.rDSSinner(i)) < 0.2) {
             irSS = i;
@@ -227,7 +227,7 @@ double Stub::zapprox() const {
     sign = -1;
   if (sign < 0) {
     //Should understand why this is needed to get agreement with integer calculations
-    return (z_.value() + 1) * settings_.kz() + sign * settings_.zmean(abs(disk_.value()) - 1);  
+    return (z_.value() + 1) * settings_.kz() + sign * settings_.zmean(abs(disk_.value()) - 1);
   } else {
     return z_.value() * settings_.kz() + sign * settings_.zmean(abs(disk_.value()) - 1);
   }

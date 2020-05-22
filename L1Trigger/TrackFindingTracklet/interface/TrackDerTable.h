@@ -43,19 +43,19 @@ namespace trklet {
     static void invert(std::vector<std::vector<double> >& M, unsigned int n);
 
     static void calculateDerivatives(Settings const& settings,
-				     unsigned int nlayers,
-				     double r[N_LAYER],
-				     unsigned int ndisks,
-				     double z[N_DISK],
-				     double alpha[N_DISK],
-				     double t,
-				     double rinv,
-				     double D[N_FITPARAM][N_FITSTUB*2],
-				     int iD[N_FITPARAM][N_FITSTUB*2],
-				     double MinvDt[N_FITPARAM][N_FITSTUB*2],
-				     int iMinvDt[N_FITPARAM][N_FITSTUB*2],
-				     double sigma[N_FITSTUB*2],
-				     double kfactor[N_FITSTUB*2]);
+                                     unsigned int nlayers,
+                                     double r[N_LAYER],
+                                     unsigned int ndisks,
+                                     double z[N_DISK],
+                                     double alpha[N_DISK],
+                                     double t,
+                                     double rinv,
+                                     double D[N_FITPARAM][N_FITSTUB * 2],
+                                     int iD[N_FITPARAM][N_FITSTUB * 2],
+                                     double MinvDt[N_FITPARAM][N_FITSTUB * 2],
+                                     int iMinvDt[N_FITPARAM][N_FITSTUB * 2],
+                                     double sigma[N_FITSTUB * 2],
+                                     double kfactor[N_FITSTUB * 2]);
 
     static double tpar(Settings const& settings, int diskmask, int layermask);
 

@@ -31,16 +31,16 @@ void TrackletCalculatorBase::exacttracklet(double r1,
                                            double& phi0,
                                            double& t,
                                            double& z0,
-                                           double phiproj[N_LAYER-2],
-                                           double zproj[N_LAYER-2],
-                                           double phider[N_LAYER-2],
-                                           double zder[N_LAYER-2],
+                                           double phiproj[N_LAYER - 2],
+                                           double zproj[N_LAYER - 2],
+                                           double phider[N_LAYER - 2],
+                                           double zder[N_LAYER - 2],
                                            double phiprojdisk[N_DISK],
                                            double rprojdisk[N_DISK],
                                            double phiderdisk[N_DISK],
                                            double rderdisk[N_DISK]) {
   double deltaphi = reco::reduceRange(phi1 - phi2);
-  
+
   double dist = sqrt(r2 * r2 + r1 * r1 - 2 * r1 * r2 * cos(deltaphi));
 
   rinv = 2 * sin(deltaphi) / dist;
@@ -56,7 +56,7 @@ void TrackletCalculatorBase::exacttracklet(double r1,
 
   z0 = z1 - t * rhopsi1;
 
-  for (unsigned int i = 0; i < N_LAYER-2; i++) {
+  for (unsigned int i = 0; i < N_LAYER - 2; i++) {
     exactproj(settings_.rmean(settings_.projlayers(iSeed_, i) - 1),
               rinv,
               phi0,
@@ -73,26 +73,25 @@ void TrackletCalculatorBase::exacttracklet(double r1,
   }
 }
 
-void TrackletCalculatorBase::exacttrackletdisk(
-    double r1,
-    double z1,
-    double phi1,
-    double r2,
-    double z2,
-    double phi2,
-    double,
-    double& rinv,
-    double& phi0,
-    double& t,
-    double& z0,
-    double phiprojLayer[N_PSLAYER], //=3 (project to PS barrel layers only) 
-    double zprojLayer[N_PSLAYER],
-    double phiderLayer[N_PSLAYER],
-    double zderLayer[N_PSLAYER],
-    double phiproj[N_DISK-2], //=3 (max project to 3 other disks)
-    double rproj[N_DISK-2],
-    double phider[N_DISK-2],
-    double rder[N_DISK-2]) {
+void TrackletCalculatorBase::exacttrackletdisk(double r1,
+                                               double z1,
+                                               double phi1,
+                                               double r2,
+                                               double z2,
+                                               double phi2,
+                                               double,
+                                               double& rinv,
+                                               double& phi0,
+                                               double& t,
+                                               double& z0,
+                                               double phiprojLayer[N_PSLAYER],  //=3 (project to PS barrel layers only)
+                                               double zprojLayer[N_PSLAYER],
+                                               double phiderLayer[N_PSLAYER],
+                                               double zderLayer[N_PSLAYER],
+                                               double phiproj[N_DISK - 2],  //=3 (max project to 3 other disks)
+                                               double rproj[N_DISK - 2],
+                                               double phider[N_DISK - 2],
+                                               double rder[N_DISK - 2]) {
   double deltaphi = reco::reduceRange(phi1 - phi2);
 
   double dist = sqrt(r2 * r2 + r1 * r1 - 2 * r1 * r2 * cos(deltaphi));
@@ -110,7 +109,7 @@ void TrackletCalculatorBase::exacttrackletdisk(
 
   z0 = z1 - t * rhopsi1;
 
-  for (unsigned int i = 0; i < N_DISK-2; i++) {
+  for (unsigned int i = 0; i < N_DISK - 2; i++) {
     exactprojdisk(settings_.zmean(settings_.projdisks(iSeed_, i) - 1),
                   rinv,
                   phi0,
@@ -122,7 +121,7 @@ void TrackletCalculatorBase::exacttrackletdisk(
                   rder[i]);
   }
 
-  for (unsigned int i = 0; i < N_DISK-2; i++) {
+  for (unsigned int i = 0; i < N_DISK - 2; i++) {
     exactproj(settings_.rmean(i), rinv, phi0, t, z0, phiprojLayer[i], zprojLayer[i], phiderLayer[i], zderLayer[i]);
   }
 }
@@ -142,10 +141,10 @@ void TrackletCalculatorBase::exacttrackletOverlap(double r1,
                                                   double zprojLayer[N_PSLAYER],
                                                   double phiderLayer[N_PSLAYER],
                                                   double zderLayer[N_PSLAYER],
-                                                  double phiproj[N_DISK-2],
-                                                  double rproj[N_DISK-2],
-                                                  double phider[N_DISK-2],
-                                                  double rder[N_DISK-2]) {
+                                                  double phiproj[N_DISK - 2],
+                                                  double rproj[N_DISK - 2],
+                                                  double phider[N_DISK - 2],
+                                                  double rder[N_DISK - 2]) {
   double deltaphi = reco::reduceRange(phi1 - phi2);
 
   double dist = sqrt(r2 * r2 + r1 * r1 - 2 * r1 * r2 * cos(deltaphi));
@@ -353,7 +352,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
 
   double rinv, phi0, t, z0;
 
-  double phiproj[N_LAYER-2], zproj[N_LAYER-2], phider[N_LAYER-2], zder[N_LAYER-2];
+  double phiproj[N_LAYER - 2], zproj[N_LAYER - 2], phider[N_LAYER - 2], zder[N_LAYER - 2];
   double phiprojdisk[N_DISK], rprojdisk[N_DISK], phiderdisk[N_DISK], rderdisk[N_DISK];
 
   exacttracklet(r1,
@@ -387,7 +386,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   }
 
   double rinvapprox, phi0approx, tapprox, z0approx;
-  double phiprojapprox[N_LAYER-2], zprojapprox[N_LAYER-2];
+  double phiprojapprox[N_LAYER - 2], zprojapprox[N_LAYER - 2];
   double phiprojdiskapprox[N_DISK], rprojdiskapprox[N_DISK];
 
   IMATH_TrackletCalculator* ITC;
@@ -484,10 +483,10 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   //now binary
 
   int irinv, iphi0, it, iz0;
-  LayerProjection layerprojs[N_LAYER-2];
+  LayerProjection layerprojs[N_LAYER - 2];
   DiskProjection diskprojs[N_DISK];
-  
-  int iphiproj[N_LAYER-2], izproj[N_LAYER-2];
+
+  int iphiproj[N_LAYER - 2], izproj[N_LAYER - 2];
   int iphiprojdisk[N_DISK], irprojdisk[N_DISK];
 
   int ir1 = innerFPGAStub->r().value();
@@ -567,7 +566,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   if (!inSector(iphi0, irinv, phi0approx, rinvapprox))
     return false;
 
-  for (unsigned int i = 0; i < N_LAYER-2; ++i) {
+  for (unsigned int i = 0; i < N_LAYER - 2; ++i) {
     //reject projection if z is out of range
     if (izproj[i] < -(1 << (settings_.nzbitsstub(0) - 1)))
       continue;
@@ -714,7 +713,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   bool addL4 = false;
   bool addL5 = false;
   bool addL6 = false;
-  for (unsigned int j = 0; j < N_LAYER-2; j++) {
+  for (unsigned int j = 0; j < N_LAYER - 2; j++) {
     int lproj = settings_.projlayers(iSeed_, j);
     bool added = false;
     if (tracklet->validProj(lproj)) {
@@ -730,7 +729,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
     }
   }
 
-  for (unsigned int j = 0; j < N_DISK-1; j++) {  //no projections to 5th disk!!
+  for (unsigned int j = 0; j < N_DISK - 1; j++) {  //no projections to 5th disk!!
     int disk = j + 1;
     if (disk == 4 && addL3)
       continue;
@@ -783,7 +782,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   double rinv, phi0, t, z0;
 
   double phiproj[N_PSLAYER], zproj[N_PSLAYER], phider[N_PSLAYER], zder[N_PSLAYER];
-  double phiprojdisk[N_DISK-2], rprojdisk[N_DISK-2], phiderdisk[N_DISK-2], rderdisk[N_DISK-2];
+  double phiprojdisk[N_DISK - 2], rprojdisk[N_DISK - 2], phiderdisk[N_DISK - 2], rderdisk[N_DISK - 2];
 
   exacttrackletdisk(r1,
                     z1,
@@ -818,7 +817,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
 
   double rinvapprox, phi0approx, tapprox, z0approx;
   double phiprojapprox[N_PSLAYER], zprojapprox[N_PSLAYER];
-  double phiprojdiskapprox[N_DISK-2], rprojdiskapprox[N_DISK-2];
+  double phiprojdiskapprox[N_DISK - 2], rprojdiskapprox[N_DISK - 2];
 
   IMATH_TrackletCalculatorDisk* ITC;
   if (disk == 1)
@@ -901,7 +900,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   int irinv, iphi0, it, iz0;
   int iphiproj[N_PSLAYER], izproj[N_PSLAYER];
 
-  int iphiprojdisk[N_DISK-2], irprojdisk[N_DISK-2];
+  int iphiprojdisk[N_DISK - 2], irprojdisk[N_DISK - 2];
 
   int ir1 = innerFPGAStub->r().value();
   int iphi1 = innerFPGAStub->phi().value();
@@ -968,10 +967,10 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   if (!inSector(iphi0, irinv, phi0approx, rinvapprox))
     return false;
 
-  LayerProjection layerprojs[N_LAYER-2];
-  DiskProjection diskprojs[N_DISK-2];
+  LayerProjection layerprojs[N_LAYER - 2];
+  DiskProjection diskprojs[N_DISK - 2];
 
-  for (unsigned int i = 0; i < N_DISK-2; ++i) {
+  for (unsigned int i = 0; i < N_DISK - 2; ++i) {
     //Check is outside z range
     if (izproj[i] < -(1 << (settings_.nzbitsstub(0) - 1)))
       continue;
@@ -1012,7 +1011,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   irprojdisk[1] = ITC->rD_1_final.ival();
   irprojdisk[2] = ITC->rD_2_final.ival();
 
-  for (unsigned int i = 0; i < N_DISK-2; ++i) {
+  for (unsigned int i = 0; i < N_DISK - 2; ++i) {
     //check that phi projection in range
     if (iphiprojdisk[i] <= 0)
       continue;
@@ -1096,7 +1095,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
     addLayerProj(tracklet, 2);
   }
 
-  for (unsigned int j = 0; j < N_DISK-2; j++) {
+  for (unsigned int j = 0; j < N_DISK - 2; j++) {
     if (tracklet->validProjDisk(sign * settings_.projdisks(iSeed_, j))) {
       addDiskProj(tracklet, sign * settings_.projdisks(iSeed_, j));
     }
@@ -1136,7 +1135,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   double rinv, phi0, t, z0;
 
   double phiproj[N_PSLAYER], zproj[N_PSLAYER], phider[N_PSLAYER], zder[N_PSLAYER];
-  double phiprojdisk[N_DISK-1], rprojdisk[N_DISK-1], phiderdisk[N_DISK-1], rderdisk[N_DISK-1];
+  double phiprojdisk[N_DISK - 1], rprojdisk[N_DISK - 1], phiderdisk[N_DISK - 1], rderdisk[N_DISK - 1];
 
   exacttrackletOverlap(r1,
                        z1,
@@ -1171,7 +1170,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
 
   double rinvapprox, phi0approx, tapprox, z0approx;
   double phiprojapprox[N_PSLAYER], zprojapprox[N_PSLAYER];
-  double phiprojdiskapprox[N_DISK-1], rprojdiskapprox[N_DISK-1];
+  double phiprojdiskapprox[N_DISK - 1], rprojdiskapprox[N_DISK - 1];
 
   IMATH_TrackletCalculatorOverlap* ITC;
   int ll = outerFPGAStub->layer().value() + 1;
@@ -1260,7 +1259,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   //now binary
 
   int irinv, iphi0, it, iz0;
-  int iphiproj[N_LAYER-2], izproj[N_LAYER-2];
+  int iphiproj[N_LAYER - 2], izproj[N_LAYER - 2];
   int iphiprojdisk[N_DISK], irprojdisk[N_DISK];
 
   int ir2 = innerFPGAStub->r().value();
@@ -1341,10 +1340,10 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   if (!inSector(iphi0, irinv, phi0approx, rinvapprox))
     return false;
 
-  LayerProjection layerprojs[N_LAYER-2];
+  LayerProjection layerprojs[N_LAYER - 2];
   DiskProjection diskprojs[N_DISK];
 
-  for (unsigned int i = 0; i < N_DISK-2; ++i) {
+  for (unsigned int i = 0; i < N_DISK - 2; ++i) {
     //check that zproj is in range
     if (izproj[i] < -(1 << (settings_.nzbitsstub(0) - 1)))
       continue;

@@ -19,45 +19,46 @@ namespace trklet {
 
   class IMATH_TrackletCalculator {
   public:
-  IMATH_TrackletCalculator(Settings const& settings, imathGlobals* globals, int i1, int i2)
-    : settings_(settings), globals_(globals) {
+    IMATH_TrackletCalculator(Settings const& settings, imathGlobals* globals, int i1, int i2)
+        : settings_(settings), globals_(globals) {
       if (settings_.debugTracklet()) {
-	edm::LogVerbatim("Tracklet") << "=============================================";
-	char s[1024];
-	snprintf(s, 1024, "IMATH Tracklet Calculator %i %i dphisector = %f", i1, i2, settings_.dphisector());
-	edm::LogVerbatim("Tracklet") << s;
-	snprintf(s, 1024, "rmaxL6 = %f, zmaxD5 = %f", settings_.rmax(5), settings_.zmax(4));
-	edm::LogVerbatim("Tracklet") << s;
-	snprintf(s, 1024, "      stub Ks: kr, kphi1, kz = %g, %g, %g", settings_.kr(), settings_.kphi1(), settings_.kz());
-	edm::LogVerbatim("Tracklet") << s;
-	snprintf(s,
-		 1024,
-		 "  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g",
-		 settings_.kphi1() / settings_.kr() * pow(2, settings_.rinv_shift()),
-		 settings_.kphi1() * pow(2, settings_.phi0_shift()),
-		 settings_.kz() / settings_.kr() * pow(2, settings_.t_shift()),
-		 settings_.kz() * pow(2, settings_.z0_shift()));
-	edm::LogVerbatim("Tracklet") << s;
-	snprintf(s,
-		 1024,
-		 "layer proj Ks: kphiproj456, kphider, kzproj, kzder = %g, %g, %g, %g",
-		 settings_.kphi1() * pow(2, settings_.SS_phiL_shift()),
-		 settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderL_shift()),
-		 settings_.kz() * pow(2, settings_.PS_zL_shift()),
-		 settings_.kz() / settings_.kr() * pow(2, settings_.PS_zderL_shift()));
-	edm::LogVerbatim("Tracklet") << s;
-	snprintf(s,
-		 1024,
-		 " disk proj Ks: kphiprojdisk, kphiprojderdisk, krprojdisk, krprojderdisk = %g, %g, %g, %g",
-		 settings_.kphi1() * pow(2, settings_.SS_phiD_shift()),
-		 settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderD_shift()),
-		 settings_.kr() * pow(2, settings_.PS_rD_shift()),
-		 settings_.kr() / settings_.kz() * pow(2, settings_.PS_rderD_shift()));
-	edm::LogVerbatim("Tracklet") << s;
-	edm::LogVerbatim("Tracklet") << "=============================================";
+        edm::LogVerbatim("Tracklet") << "=============================================";
+        char s[1024];
+        snprintf(s, 1024, "IMATH Tracklet Calculator %i %i dphisector = %f", i1, i2, settings_.dphisector());
+        edm::LogVerbatim("Tracklet") << s;
+        snprintf(s, 1024, "rmaxL6 = %f, zmaxD5 = %f", settings_.rmax(5), settings_.zmax(4));
+        edm::LogVerbatim("Tracklet") << s;
+        snprintf(
+            s, 1024, "      stub Ks: kr, kphi1, kz = %g, %g, %g", settings_.kr(), settings_.kphi1(), settings_.kz());
+        edm::LogVerbatim("Tracklet") << s;
+        snprintf(s,
+                 1024,
+                 "  tracklet Ks: krinvpars, kphi0pars, ktpars, kzpars = %g, %g, %g, %g",
+                 settings_.kphi1() / settings_.kr() * pow(2, settings_.rinv_shift()),
+                 settings_.kphi1() * pow(2, settings_.phi0_shift()),
+                 settings_.kz() / settings_.kr() * pow(2, settings_.t_shift()),
+                 settings_.kz() * pow(2, settings_.z0_shift()));
+        edm::LogVerbatim("Tracklet") << s;
+        snprintf(s,
+                 1024,
+                 "layer proj Ks: kphiproj456, kphider, kzproj, kzder = %g, %g, %g, %g",
+                 settings_.kphi1() * pow(2, settings_.SS_phiL_shift()),
+                 settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderL_shift()),
+                 settings_.kz() * pow(2, settings_.PS_zL_shift()),
+                 settings_.kz() / settings_.kr() * pow(2, settings_.PS_zderL_shift()));
+        edm::LogVerbatim("Tracklet") << s;
+        snprintf(s,
+                 1024,
+                 " disk proj Ks: kphiprojdisk, kphiprojderdisk, krprojdisk, krprojderdisk = %g, %g, %g, %g",
+                 settings_.kphi1() * pow(2, settings_.SS_phiD_shift()),
+                 settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderD_shift()),
+                 settings_.kr() * pow(2, settings_.PS_rD_shift()),
+                 settings_.kr() / settings_.kz() * pow(2, settings_.PS_rderD_shift()));
+        edm::LogVerbatim("Tracklet") << s;
+        edm::LogVerbatim("Tracklet") << "=============================================";
 
-	snprintf(s, 1024, "initializing 1/dr LUT %f %f", settings_.rmean(i1 - 1), settings_.rmean(i2 - 1));
-	edm::LogVerbatim("Tracklet") << s;
+        snprintf(s, 1024, "initializing 1/dr LUT %f %f", settings_.rmean(i1 - 1), settings_.rmean(i2 - 1));
+        edm::LogVerbatim("Tracklet") << s;
       }
 
       drinv.initLUT(settings_.rmean(i2 - 1) - settings_.rmean(i1 - 1));
@@ -66,9 +67,9 @@ namespace trklet {
       r12mean.set_fval(settings_.rmean(i1 - 1) + settings_.rmean(i2 - 1));
 
       if (i1 == 1)
-	z0_final.add_cut(&z0_final_L1_cut);
+        z0_final.add_cut(&z0_final_L1_cut);
       else
-	z0_final.add_cut(&z0_final_cut);
+        z0_final.add_cut(&z0_final_cut);
 
       valid_phiL_0.add_cut(&t_layer_cut);
       valid_phiL_1.add_cut(&t_layer_cut);
@@ -213,7 +214,7 @@ namespace trklet {
     VarAdd z0{globals_, "z0", &z1, &z0b, 2 * z0_max};
 
     VarAdjustK rinv_final{
-      globals_, "rinv_final", &rinv, settings_.kphi1() / settings_.kr() * pow(2, settings_.rinv_shift())};
+        globals_, "rinv_final", &rinv, settings_.kphi1() / settings_.kr() * pow(2, settings_.rinv_shift())};
     VarAdjustK phi0_final{globals_, "phi0_final", &phi0, settings_.kphi1() * pow(2, settings_.phi0_shift())};
     VarAdjustKR t_final{globals_, "t_final", &t, settings_.kz() / settings_.kr() * pow(2, settings_.t_shift())};
     VarAdjustKR z0_final{globals_, "z0_final", &z0, settings_.kz() * pow(2, settings_.z0_shift())};
@@ -270,9 +271,9 @@ namespace trklet {
     VarAdjustK phiL_3_final{globals_, "phiL_3_final", &phiL_3, settings_.kphi1() * pow(2, settings_.SS_phiL_shift())};
 
     VarAdjustK der_phiL_final{globals_,
-	"der_phiL_final",
-	&der_phiL,
-	settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderL_shift())};
+                              "der_phiL_final",
+                              &der_phiL,
+                              settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderL_shift())};
 
     VarMult x11_0{globals_, "x11_0", &rproj0, &t};
     VarMult x11_1{globals_, "x11_1", &rproj1, &t};
@@ -295,7 +296,7 @@ namespace trklet {
     VarAdjustKR zL_3_final{globals_, "zL_3_final", &zL_3, settings_.kz() * pow(2, settings_.PS_zL_shift())};
 
     VarAdjustK der_zL_final{
-      globals_, "der_zL_final", &t_final, settings_.kz() / settings_.kr() * pow(2, settings_.PS_zderL_shift())};
+        globals_, "der_zL_final", &t_final, settings_.kz() / settings_.kr() * pow(2, settings_.PS_zderL_shift())};
 
     //projection to z
     //
@@ -336,9 +337,9 @@ namespace trklet {
     VarMult der_phiD{globals_, "der_phiD", &x7, &invt, 4 * der_phiD_max};
 
     VarAdjustK der_phiD_final{globals_,
-	"der_phiD_final",
-	&der_phiD,
-	settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderD_shift())};
+                              "der_phiD_final",
+                              &der_phiD,
+                              settings_.kphi1() / settings_.kr() * pow(2, settings_.SS_phiderD_shift())};
 
     VarMult x26_0{globals_, "x26_0", &x25_0, &x25_0};
     VarMult x26_1{globals_, "x26_1", &x25_1, &x25_1};
@@ -377,7 +378,7 @@ namespace trklet {
     VarAdjustK rD_4_final{globals_, "rD_4_final", &rD_4, settings_.kr() * pow(2, settings_.PS_rD_shift())};
 
     VarAdjustK der_rD_final{
-      globals_, "der_rD_final", &invt, settings_.kr() / settings_.kz() * pow(2, settings_.PS_rderD_shift())};
+        globals_, "der_rD_final", &invt, settings_.kr() / settings_.kz() * pow(2, settings_.PS_rderD_shift())};
 
     VarCut rinv_final_cut{globals_, &rinv_final, -settings_.rinvcut(), settings_.rinvcut()};
     // the following two are not associated with any variable yet; this is done
@@ -470,6 +471,6 @@ namespace trklet {
     VarFlag valid_der_phiD{globals_, "valid_der_phiD", &der_phiD_final};
     VarFlag valid_der_rD{globals_, "valid_der_rD", &der_rD_final};
   };
-};
+};  // namespace trklet
 
 #endif

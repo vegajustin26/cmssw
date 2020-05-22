@@ -9,7 +9,6 @@
 #include <array>
 #include <fstream>
 
-
 namespace tmtt {
   class Settings;
   class KFParamsComb;
@@ -29,11 +28,9 @@ namespace trklet {
   class IMATH_TrackletCalculatorDisk;
   class IMATH_TrackletCalculatorOverlap;
 
-
-  
   class Globals {
   public:
-    Globals(Settings const& settings) ;
+    Globals(Settings const& settings);
 
     ~Globals();
 

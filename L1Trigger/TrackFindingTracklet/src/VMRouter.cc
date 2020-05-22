@@ -100,19 +100,19 @@ void VMRouter::addOutput(MemoryBase* memory, string output) {
       assert(iseed != -1);
       int seedindex = -1;
       for (unsigned int k = 0; k < vmstubsTEPHI_.size(); k++) {
-	if (vmstubsTEPHI_[k].seednumber == (unsigned int)iseed) {
+        if (vmstubsTEPHI_[k].seednumber == (unsigned int)iseed) {
           seedindex = k;
         }
       }
       if (seedindex == -1) {
-	seedindex = vmstubsTEPHI_.size();
+        seedindex = vmstubsTEPHI_.size();
         vector<VMStubsTEMemory*> avectmp;
         vector<vector<VMStubsTEMemory*> > vectmp(settings_.nvmte(inner, iseed), avectmp);
-	VMStubsTEPHI atmp(iseed, inner, vectmp);
+        VMStubsTEPHI atmp(iseed, inner, vectmp);
         vmstubsTEPHI_.push_back(atmp);
       }
       vmstubsTEPHI_[seedindex].vmstubmem[(vmbin - 1) & (settings_.nvmte(inner, iseed) - 1)].push_back(tmp);
- 
+
     } else if (memory->getName().substr(3, 2) == "ME") {
       VMStubsMEMemory* tmp = dynamic_cast<VMStubsMEMemory*>(memory);
       assert(tmp != nullptr);
@@ -154,9 +154,9 @@ void VMRouter::execute() {
       if (allStubCounter > 127)
         continue;
       Stub* stub = stubinput->getStub(i);
-      
+
       //Note - below information is not part of the stub, but rather from which input memory we are reading
-      bool negdisk = (stub->disk().value() < 0);  
+      bool negdisk = (stub->disk().value() < 0);
 
       //use &127 to make sure we fit into the number of bits -
       //though we should have protected against overflows above
@@ -241,9 +241,9 @@ void VMRouter::execute() {
       //Fill the TE VM memories
 
       for (auto& ivmstubTEPHI : vmstubsTEPHI_) {
-	unsigned int iseed = ivmstubTEPHI.seednumber;
+        unsigned int iseed = ivmstubTEPHI.seednumber;
         unsigned int inner = ivmstubTEPHI.stubposition;
-	if ((iseed == 4 || iseed == 5 || iseed == 6 || iseed == 7) && (!stub->isPSmodule()))
+        if ((iseed == 4 || iseed == 5 || iseed == 6 || iseed == 7) && (!stub->isPSmodule()))
           continue;
 
         unsigned int lutwidth = settings_.lutwidthtab(inner, iseed);
@@ -310,20 +310,20 @@ void VMRouter::execute() {
 
         VMStubTE tmpstub(stub, finephi, stub->bend(), binlookup, allStubIndex);
 
-	unsigned int nmem = ivmstubTEPHI.vmstubmem[ivmte].size();
+        unsigned int nmem = ivmstubTEPHI.vmstubmem[ivmte].size();
 
         assert(nmem > 0);
 
         for (unsigned int l = 0; l < nmem; l++) {
           if (settings_.debugTracklet()) {
             edm::LogVerbatim("Tracklet") << getName() << " try adding stub to "
-					 << ivmstubTEPHI.vmstubmem[ivmte][l]->getName() << " inner=" << inner
+                                         << ivmstubTEPHI.vmstubmem[ivmte][l]->getName() << " inner=" << inner
                                          << " bin=" << bin;
           }
           if (inner == 0) {
-	    ivmstubTEPHI.vmstubmem[ivmte][l]->addVMStub(tmpstub);
+            ivmstubTEPHI.vmstubmem[ivmte][l]->addVMStub(tmpstub);
           } else {
-	    ivmstubTEPHI.vmstubmem[ivmte][l]->addVMStub(tmpstub, bin);
+            ivmstubTEPHI.vmstubmem[ivmte][l]->addVMStub(tmpstub, bin);
           }
         }
       }

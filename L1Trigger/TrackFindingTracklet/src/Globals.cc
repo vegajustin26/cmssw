@@ -15,24 +15,23 @@
 using namespace std;
 using namespace trklet;
 
-
 Globals::Globals(Settings const& settings) {
   imathGlobals* imathGlobs = new imathGlobals();
 
   //takes owernship of globals pointer
   imathGlobals_.reset(imathGlobs);
-  
+
   // tracklet calculators
   ITC_L1L2_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 1, 2));
   ITC_L2L3_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 2, 3));
   ITC_L3L4_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 3, 4));
   ITC_L5L6_.reset(new IMATH_TrackletCalculator(settings, imathGlobs, 5, 6));
-  
+
   ITC_F1F2_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, 1, 2));
   ITC_F3F4_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, 3, 4));
   ITC_B1B2_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, -1, -2));
   ITC_B3B4_.reset(new IMATH_TrackletCalculatorDisk(settings, imathGlobs, -3, -4));
-  
+
   ITC_L1F1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 1, 1));
   ITC_L2F1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 2, 1));
   ITC_L1B1_.reset(new IMATH_TrackletCalculatorOverlap(settings, imathGlobs, 1, -1));
@@ -42,15 +41,14 @@ Globals::Globals(Settings const& settings) {
 Globals::~Globals() {
   for (auto i : thePhiCorr_) {
     delete i;
-    i=nullptr;
+    i = nullptr;
   }
 #ifdef USEHYBRID
   delete tmttSettings_;
-  tmttSettings_=nullptr;
+  tmttSettings_ = nullptr;
   delete tmttKFParamsComb_;
-  tmttKFParamsComb_=nullptr;
+  tmttKFParamsComb_ = nullptr;
 #endif
-  
 }
 
 std::ofstream& Globals::ofstream(std::string fname) {

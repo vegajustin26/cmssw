@@ -89,8 +89,8 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
 
     for (unsigned int irinv = 0; irinv < 32; irinv++) {
       double rinv = (irinv - 15.5) * (1 << (settings_.nbitsrinv() - 5)) * settings_.krinvpars();
-      double stripPitch = (settings_.rmean(layer_ - 1) < settings_.rcrit()) ? settings_.stripPitch(true)
-                                                                              : settings_.stripPitch(false);
+      double stripPitch =
+          (settings_.rmean(layer_ - 1) < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
       double projbend = bend(settings_.rmean(layer_ - 1), rinv, stripPitch);
       for (unsigned int ibend = 0; ibend < (unsigned int)(1 << nbits); ibend++) {
         double stubbend = benddecode(ibend, layer_ <= (int)N_PSLAYER);
@@ -134,13 +134,13 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
     }
   }
 
-  for (unsigned int i = 0; i < N_DSS_MOD*2; i++) {
-    ialphafactinner_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() *
-                          settings_.half2SmoduleWidth() / (1 << (settings_.nbitsalpha() - 1)) /
-                          (settings_.rDSSinner(i) * settings_.rDSSinner(i)) / settings_.kphi();
-    ialphafactouter_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() *
-                          settings_.half2SmoduleWidth() / (1 << (settings_.nbitsalpha() - 1)) /
-                          (settings_.rDSSouter(i) * settings_.rDSSouter(i)) / settings_.kphi();
+  for (unsigned int i = 0; i < N_DSS_MOD * 2; i++) {
+    ialphafactinner_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() * settings_.half2SmoduleWidth() /
+                          (1 << (settings_.nbitsalpha() - 1)) / (settings_.rDSSinner(i) * settings_.rDSSinner(i)) /
+                          settings_.kphi();
+    ialphafactouter_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() * settings_.half2SmoduleWidth() /
+                          (1 << (settings_.nbitsalpha() - 1)) / (settings_.rDSSouter(i) * settings_.rDSSouter(i)) /
+                          settings_.kphi();
   }
 
   barrel_ = layer_ > 0;
@@ -518,7 +518,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     int irstub = fpgastub->r().value();
     int ialphafact = 0;
     if (!stub->isPSmodule()) {
-      assert(irstub < (int)N_DSS_MOD*2);
+      assert(irstub < (int)N_DSS_MOD * 2);
       if (disk_ <= 2) {
         ialphafact = ialphafactinner_[irstub];
         irstub = settings_.rDSSinner(irstub) / settings_.kr();

@@ -739,8 +739,8 @@ void TrackletProcessor::setVMPhiBin() {
       for (int irouterbin = 0; irouterbin < outerrbins; irouterbin++) {
         router[0] =
             settings_.rmindiskvm() + irouterbin * (settings_.rmaxdiskvm() - settings_.rmindiskvm()) / outerrbins;
-        router[1] = settings_.rmindiskvm() +
-                    (irouterbin + 1) * (settings_.rmaxdiskvm() - settings_.rmindiskvm()) / outerrbins;
+        router[1] =
+            settings_.rmindiskvm() + (irouterbin + 1) * (settings_.rmaxdiskvm() - settings_.rmindiskvm()) / outerrbins;
         for (int iphiinnerbin = 0; iphiinnerbin < innerphibins; iphiinnerbin++) {
           phiinner[0] = innerphimin + iphiinnerbin * (innerphimax - innerphimin) / innerphibins;
           phiinner[1] = innerphimin + (iphiinnerbin + 1) * (innerphimax - innerphimin) / innerphibins;

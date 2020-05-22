@@ -2,7 +2,6 @@
 
 using namespace trklet;
 
-
 void VarInv::writeLUT(std::ofstream& fs, Verilog) const {
   for (int i = 0; i < Nelements_; ++i)
     fs << std::hex << (LUT[i] & ((1 << nbits_) - 1)) << std::dec << "\n";

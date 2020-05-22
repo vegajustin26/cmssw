@@ -99,8 +99,8 @@ int main(const int argc, const char **argv) {
   if (settings.writeMonitorData("Pars"))
     outpars.open("trackpars.txt");
 
-  // Open file to hold ROOT-Tree
-  // --------------------------
+    // Open file to hold ROOT-Tree
+    // --------------------------
 #ifdef USEROOT
   TFile *hfile = new TFile("myTest.root", "RECREATE", "Simple ROOT Ntuple");
   TTree *trackTree = new TTree("FPGAEvent", "L1Track Tree");
@@ -321,8 +321,8 @@ int main(const int argc, const char **argv) {
     for (auto &track : tracks) {
       if (settings.writeMonitorData("Pars")) {
         outpars << track->duplicate() << " " << track->eta(settings) << " " << track->phi0(settings) << " "
-                << track->z0(settings) << " " << angle0to2pi::make0To2pi(track->phi0(settings)) / (2 * M_PI / N_SECTOR) << " "
-                << track->rinv(settings);
+                << track->z0(settings) << " " << angle0to2pi::make0To2pi(track->phi0(settings)) / (2 * M_PI / N_SECTOR)
+                << " " << track->rinv(settings);
       }
       if (!track->duplicate()) {
         ntrack++;

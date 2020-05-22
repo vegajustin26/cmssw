@@ -70,8 +70,8 @@ namespace trklet {
     std::vector<VMStubsMEMemory*> vmstubs_;
     std::vector<TrackletProjectionsMemory*> inputprojs_;
 
-    int ialphafactinner_[N_DSS_MOD*2];
-    int ialphafactouter_[N_DSS_MOD*2];
+    int ialphafactinner_[N_DSS_MOD * 2];
+    int ialphafactouter_[N_DSS_MOD * 2];
 
     //Memory for the full matches
     std::vector<FullMatchMemory*> fullmatches_;

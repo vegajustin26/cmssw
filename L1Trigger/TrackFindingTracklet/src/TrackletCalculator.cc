@@ -6,17 +6,13 @@
 #include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
 
-
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
 using namespace std;
 using namespace trklet;
 
-TrackletCalculator::TrackletCalculator(string name,
-                                       Settings const& settings,
-                                       Globals* globals,
-                                       unsigned int iSector)
+TrackletCalculator::TrackletCalculator(string name, Settings const& settings, Globals* globals, unsigned int iSector)
     : TrackletCalculatorBase(name, settings, globals, iSector) {
   phioffset_ = phimin_;
 

@@ -124,13 +124,13 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     outzcut.close();
   }
 
-  for (unsigned int i = 0; i < N_DSS_MOD*2; i++) {
-    ialphafactinner_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() *
-                          settings_.half2SmoduleWidth() / (1 << (settings_.nbitsalpha() - 1)) /
-                          (settings_.rDSSinner(i) * settings_.rDSSinner(i)) / settings_.kphi();
-    ialphafactouter_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() *
-                          settings_.half2SmoduleWidth() / (1 << (settings_.nbitsalpha() - 1)) /
-                          (settings_.rDSSouter(i) * settings_.rDSSouter(i)) / settings_.kphi();
+  for (unsigned int i = 0; i < N_DSS_MOD * 2; i++) {
+    ialphafactinner_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() * settings_.half2SmoduleWidth() /
+                          (1 << (settings_.nbitsalpha() - 1)) / (settings_.rDSSinner(i) * settings_.rDSSinner(i)) /
+                          settings_.kphi();
+    ialphafactouter_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() * settings_.half2SmoduleWidth() /
+                          (1 << (settings_.nbitsalpha() - 1)) / (settings_.rDSSouter(i) * settings_.rDSSouter(i)) /
+                          settings_.kphi();
   }
 }
 
@@ -345,7 +345,7 @@ void MatchCalculator::execute() {
       int irstub = fpgastub->r().value();
       int ialphafact = 0;
       if (!stub->isPSmodule()) {
-        assert(irstub < (int)N_DSS_MOD*2);
+        assert(irstub < (int)N_DSS_MOD * 2);
         if (abs(disk) <= 2) {
           ialphafact = ialphafactinner_[irstub];
           irstub = settings_.rDSSinner(irstub) / settings_.kr();

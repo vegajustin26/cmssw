@@ -19,9 +19,7 @@ namespace trklet {
 
     ~VMStubsMEMemory() override = default;
 
-    void addStub(VMStubME stub, unsigned int bin) {
-      binnedstubs_[bin].push_back(stub);
-    }
+    void addStub(VMStubME stub, unsigned int bin) { binnedstubs_[bin].push_back(stub); }
 
     unsigned int nStubsBin(unsigned int bin) const {
       assert(bin < binnedstubs_.size());

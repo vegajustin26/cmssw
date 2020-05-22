@@ -535,7 +535,7 @@ namespace trklet {
     TrackPars<double> trackparsapprox_;
 
     // the layer/disk ids that we project to (never project to >4 barrel layers)
-    int projlayer_[N_LAYER-2];
+    int projlayer_[N_LAYER - 2];
     int projdisk_[N_DISK];
 
     //Track parameters from track fit

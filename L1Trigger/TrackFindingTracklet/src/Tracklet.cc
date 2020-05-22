@@ -36,8 +36,8 @@ Tracklet::Tracklet(Settings const& settings,
                    LayerProjection layerprojs[N_PROJ],
                    DiskProjection diskprojs[N_PROJ],
                    bool disk,
-                   bool overlap) : settings_(settings) {
-
+                   bool overlap)
+    : settings_(settings) {
   overlap_ = overlap;
   disk_ = disk;
   assert(!(disk && overlap));
@@ -83,7 +83,7 @@ Tracklet::Tracklet(Settings const& settings,
   triplet_ = (seedIndex_ >= 8);
 
   //fill projection layers
-  for (unsigned int i = 0; i < N_LAYER-2; i++) {
+  for (unsigned int i = 0; i < N_LAYER - 2; i++) {
     projlayer_[i] = settings.projlayers(seedIndex_, i);
   }
 
@@ -93,7 +93,7 @@ Tracklet::Tracklet(Settings const& settings,
   }
 
   //Handle projections to the layers
-  for (unsigned int i = 0; i < N_LAYER-2; i++) {
+  for (unsigned int i = 0; i < N_LAYER - 2; i++) {
     if (projlayer_[i] == 0)
       continue;
     if (!layerprojs[i].valid())

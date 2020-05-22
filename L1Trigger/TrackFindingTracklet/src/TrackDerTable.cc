@@ -8,7 +8,6 @@ using namespace std;
 using namespace trklet;
 
 TrackDerTable::TrackDerTable(Settings const& settings) : settings_(settings) {
-
   Nlay_ = N_LAYER;
   Ndisk_ = N_DISK;
 
@@ -249,13 +248,13 @@ void TrackDerTable::fillTable() {
       }
     }
 
-    double D[N_FITPARAM][N_FITSTUB*2];
-    int iD[N_FITPARAM][N_FITSTUB*2];
-    double MinvDt[N_FITPARAM][N_FITSTUB*2];
-    double MinvDtDelta[N_FITPARAM][N_FITSTUB*2];
-    int iMinvDt[N_FITPARAM][N_FITSTUB*2];
-    double sigma[N_FITSTUB*2];
-    double kfactor[N_FITSTUB*2];
+    double D[N_FITPARAM][N_FITSTUB * 2];
+    int iD[N_FITPARAM][N_FITSTUB * 2];
+    double MinvDt[N_FITPARAM][N_FITSTUB * 2];
+    double MinvDtDelta[N_FITPARAM][N_FITSTUB * 2];
+    int iMinvDt[N_FITPARAM][N_FITSTUB * 2];
+    double sigma[N_FITSTUB * 2];
+    double kfactor[N_FITSTUB * 2];
 
     if (print) {
       edm::LogVerbatim("Tracklet") << "PRINT ndisks alpha[0] z[0] t: " << ndisks << " " << alpha[0] << " " << z[0]
@@ -275,14 +274,15 @@ void TrackDerTable::fillTable() {
 
       r[i] += delta;
 
-      calculateDerivatives(settings_, nlayers, r, ndisks, z, alpha, t, rinv, D, iD, MinvDtDelta, iMinvDt, sigma, kfactor);
+      calculateDerivatives(
+          settings_, nlayers, r, ndisks, z, alpha, t, rinv, D, iD, MinvDtDelta, iMinvDt, sigma, kfactor);
 
       for (int ii = 0; ii < nlayers; ii++) {
         if (r[ii] > 60.0)
           continue;
         double tder = (MinvDtDelta[2][2 * ii + 1] - MinvDt[2][2 * ii + 1]) / delta;
-        int itder = (1 << (settings_.fittbitshift() + settings_.rcorrbits())) * tder * settings_.kr() *
-                    settings_.kz() / settings_.ktpars();
+        int itder = (1 << (settings_.fittbitshift() + settings_.rcorrbits())) * tder * settings_.kr() * settings_.kz() /
+                    settings_.ktpars();
         double zder = (MinvDtDelta[3][2 * ii + 1] - MinvDt[3][2 * ii + 1]) / delta;
         int izder = (1 << (settings_.fitz0bitshift() + settings_.rcorrbits())) * zder * settings_.kr() *
                     settings_.kz() / settings_.kz0pars();
@@ -511,7 +511,7 @@ void TrackDerTable::fillTable() {
         // loop over bits in hit pattern
         int ider = 0;
         if (goodseed) {
-          for (unsigned int ihit = 1; ihit < N_FITSTUB*2; ++ihit) {
+          for (unsigned int ihit = 1; ihit < N_FITSTUB * 2; ++ihit) {
             // skip seeding layers
             if (ihit == iseed1 or ihit == iseed2) {
               ider++;
@@ -753,19 +753,19 @@ void TrackDerTable::invert(std::vector<std::vector<double> >& M, unsigned int n)
 }
 
 void TrackDerTable::calculateDerivatives(Settings const& settings,
-					 unsigned int nlayers,
+                                         unsigned int nlayers,
                                          double r[N_LAYER],
                                          unsigned int ndisks,
                                          double z[N_DISK],
                                          double alpha[N_DISK],
                                          double t,
                                          double rinv,
-                                         double D[N_FITPARAM][N_FITSTUB*2],
-                                         int iD[N_FITPARAM][N_FITSTUB*2],
-                                         double MinvDt[N_FITPARAM][N_FITSTUB*2],
-                                         int iMinvDt[N_FITPARAM][N_FITSTUB*2],
-                                         double sigma[N_FITSTUB*2],
-                                         double kfactor[N_FITSTUB*2]) {
+                                         double D[N_FITPARAM][N_FITSTUB * 2],
+                                         int iD[N_FITPARAM][N_FITSTUB * 2],
+                                         double MinvDt[N_FITPARAM][N_FITSTUB * 2],
+                                         int iMinvDt[N_FITPARAM][N_FITSTUB * 2],
+                                         double sigma[N_FITSTUB * 2],
+                                         double kfactor[N_FITSTUB * 2]) {
   double sigmax = settings.stripPitch(true) / sqrt(12.0);
   double sigmaz = settings.stripLength(true) / sqrt(12.0);
   double sigmaz2 = settings.stripLength(false) / sqrt(12.0);
@@ -891,7 +891,7 @@ void TrackDerTable::calculateDerivatives(Settings const& settings,
 
   invert(M, 4);
 
-  for (unsigned int j = 0; j < N_FITSTUB*2; j++) {
+  for (unsigned int j = 0; j < N_FITSTUB * 2; j++) {
     for (unsigned int i1 = 0; i1 < N_FITPARAM; i1++) {
       MinvDt[i1][j] = 0.0;
       iMinvDt[i1][j] = 0;
@@ -916,10 +916,10 @@ void TrackDerTable::calculateDerivatives(Settings const& settings,
     iD[3][2 * i] =
         D[3][2 * i] * (1 << settings.chisqphifactbits()) * settings.kz0pars() / (1 << settings.fitz0bitshift());
 
-    iD[0][2 * i + 1] = D[0][2 * i + 1] * (1 << settings.chisqzfactbits()) * settings.krinvpars() /
-                       (1 << settings.fitrinvbitshift());
-    iD[1][2 * i + 1] = D[1][2 * i + 1] * (1 << settings.chisqzfactbits()) * settings.kphi0pars() /
-                       (1 << settings.fitphi0bitshift());
+    iD[0][2 * i + 1] =
+        D[0][2 * i + 1] * (1 << settings.chisqzfactbits()) * settings.krinvpars() / (1 << settings.fitrinvbitshift());
+    iD[1][2 * i + 1] =
+        D[1][2 * i + 1] * (1 << settings.chisqzfactbits()) * settings.kphi0pars() / (1 << settings.fitphi0bitshift());
     iD[2][2 * i + 1] =
         D[2][2 * i + 1] * (1 << settings.chisqzfactbits()) * settings.ktpars() / (1 << settings.fittbitshift());
     iD[3][2 * i + 1] =
@@ -983,10 +983,8 @@ void TrackDerTable::calculateDerivatives(Settings const& settings,
 
       assert(MinvDt[0][2 * i] == MinvDt[0][2 * i]);
 
-      iMinvDt[0][2 * i] =
-          (1 << settings.fitrinvbitshift()) * MinvDt[0][2 * i] * settings.kphi() / settings.krinvpars();
-      iMinvDt[1][2 * i] =
-          (1 << settings.fitphi0bitshift()) * MinvDt[1][2 * i] * settings.kphi() / settings.kphi0pars();
+      iMinvDt[0][2 * i] = (1 << settings.fitrinvbitshift()) * MinvDt[0][2 * i] * settings.kphi() / settings.krinvpars();
+      iMinvDt[1][2 * i] = (1 << settings.fitphi0bitshift()) * MinvDt[1][2 * i] * settings.kphi() / settings.kphi0pars();
       iMinvDt[2][2 * i] = (1 << settings.fittbitshift()) * MinvDt[2][2 * i] * settings.kphi() / settings.ktpars();
       iMinvDt[3][2 * i] = (1 << settings.fitz0bitshift()) * MinvDt[3][2 * i] * settings.kphi() / settings.kz();
 
@@ -997,10 +995,10 @@ void TrackDerTable::calculateDerivatives(Settings const& settings,
       MinvDt[2][2 * i + 1] /= denom;
       MinvDt[3][2 * i + 1] /= denom;
 
-      iMinvDt[0][2 * i + 1] = (1 << settings.fitrinvbitshift()) * MinvDt[0][2 * i + 1] * settings.krprojshiftdisk() /
-                              settings.krinvpars();
-      iMinvDt[1][2 * i + 1] = (1 << settings.fitphi0bitshift()) * MinvDt[1][2 * i + 1] * settings.krprojshiftdisk() /
-                              settings.kphi0pars();
+      iMinvDt[0][2 * i + 1] =
+          (1 << settings.fitrinvbitshift()) * MinvDt[0][2 * i + 1] * settings.krprojshiftdisk() / settings.krinvpars();
+      iMinvDt[1][2 * i + 1] =
+          (1 << settings.fitphi0bitshift()) * MinvDt[1][2 * i + 1] * settings.krprojshiftdisk() / settings.kphi0pars();
       iMinvDt[2][2 * i + 1] =
           (1 << settings.fittbitshift()) * MinvDt[2][2 * i + 1] * settings.krprojshiftdisk() / settings.ktpars();
       iMinvDt[3][2 * i + 1] =

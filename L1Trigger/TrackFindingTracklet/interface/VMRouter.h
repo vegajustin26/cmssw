@@ -21,13 +21,16 @@ namespace trklet {
   class VMStubsTEMemory;
 
   struct VMStubsTEPHI {
-  VMStubsTEPHI(unsigned int seednumber_, unsigned int stubposition_, std::vector<std::vector<VMStubsTEMemory*> > vmstubmem_) :
-    seednumber(seednumber_), stubposition(stubposition_), vmstubmem(vmstubmem_) {};
+    VMStubsTEPHI(unsigned int seednumber_,
+                 unsigned int stubposition_,
+                 std::vector<std::vector<VMStubsTEMemory*> > vmstubmem_)
+        : seednumber(seednumber_), stubposition(stubposition_), vmstubmem(vmstubmem_){};
 
-    unsigned int seednumber;   //seed number [0,11]
-    unsigned int stubposition; //stub position in the seed
-    std::vector<std::vector<VMStubsTEMemory*> > vmstubmem; // m_vmstubmem[iVM][n] is the VMStubsTEMemory for iVM and the nth copy
-  }; 
+    unsigned int seednumber;    //seed number [0,11]
+    unsigned int stubposition;  //stub position in the seed
+    std::vector<std::vector<VMStubsTEMemory*> >
+        vmstubmem;  // m_vmstubmem[iVM][n] is the VMStubsTEMemory for iVM and the nth copy
+  };
 
   class VMRouter : public ProcessBase {
   public:
@@ -65,7 +68,6 @@ namespace trklet {
 
     //The VM stubs memories used by the TEs (using structure defined above)
     std::vector<VMStubsTEPHI> vmstubsTEPHI_;
-    
   };
 };  // namespace trklet
 #endif

@@ -49,8 +49,8 @@ namespace trklet {
     unsigned int rcutPS_[N_SEED];
     unsigned int rcut2S_[N_SEED];
 
-    int ialphafactinner_[N_DSS_MOD*2];
-    int ialphafactouter_[N_DSS_MOD*2];
+    int ialphafactinner_[N_DSS_MOD * 2];
+    int ialphafactouter_[N_DSS_MOD * 2];
 
     AllStubsMemory* allstubs_;
     AllProjectionsMemory* allprojs_;
