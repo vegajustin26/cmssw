@@ -247,6 +247,8 @@ namespace trklet {
     double rmindiskl2overlapvm() const { return rmindiskl2overlapvm_; }
     double rmindiskl3overlapvm() const { return rmindiskl3overlapvm_; }
 
+    double rPS2S() const { return rPS2S_; }
+    
     double z0cut() const { return z0cut_; }
 
     unsigned int NLONGVMBITS() const { return NLONGVMBITS_; }
@@ -331,7 +333,7 @@ namespace trklet {
     std::string wiresFile_;
 
     double rcrit_{55.0};  // critical radius for the hourglass configuration
-
+    
     double dphicritmc_{0.005};
 
     //fraction of full r and z range that stubs can be located within layer/disk
@@ -374,6 +376,8 @@ namespace trklet {
     double rmindiskl2overlapvm_{40.0};
     double rmindiskl3overlapvm_{50.0};
 
+    double rPS2S_{60.0};
+    
     double z0cut_{15.0};
 
     unsigned int NLONGVMBITS_{3};
@@ -592,7 +596,6 @@ namespace trklet {
                                                             {"AS", false}};
 
     std::array<double, N_DSS_MOD> rDSSinner_mod_{{68.9391, 78.7750, 85.4550, 96.3150, 102.3160}};
-
     std::array<double, N_DSS_MOD> rDSSouter_mod_{{66.4903, 76.7750, 84.4562, 94.9920, 102.3160}};
 
     //we want the center of the two strip positions in a module, not just the center of a module
