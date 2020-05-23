@@ -21,7 +21,6 @@ namespace trklet {
 
   class TrackletEventProcessor {
   public:
-
     TrackletEventProcessor();
 
     ~TrackletEventProcessor();

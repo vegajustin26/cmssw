@@ -75,7 +75,7 @@ namespace trklet {
     std::unique_ptr<tmtt::Settings>& tmttSettings() { return tmttSettings_; }
     std::unique_ptr<tmtt::KFParamsComb>& tmttKFParamsComb() { return tmttKFParamsComb_; }
 #endif
-    
+
   private:
     std::unordered_map<std::string, std::ofstream*> ofstreams_;
 
@@ -109,7 +109,7 @@ namespace trklet {
     std::unique_ptr<tmtt::Settings> tmttSettings_;
     std::unique_ptr<tmtt::KFParamsComb> tmttKFParamsComb_;
 #endif
-    
+
     std::array<VMRouterPhiCorrTable*, 6> thePhiCorr_{{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}};
 
     std::map<std::string, std::vector<int> > ILindex_;

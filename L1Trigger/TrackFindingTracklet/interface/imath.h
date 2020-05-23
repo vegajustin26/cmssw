@@ -539,7 +539,7 @@ namespace trklet {
             edm::LogVerbatim("Tracklet") << slog;
             p1->dump_msg();
             p2->dump_msg();
-	    throw cms::Exception("BadConfig") << "imath units are different!";
+            throw cms::Exception("BadConfig") << "imath units are different!";
           }
         }
       }
@@ -552,7 +552,7 @@ namespace trklet {
         edm::LogVerbatim("Tracklet") << slog;
         p1->dump_msg();
         p2->dump_msg();
-	throw cms::Exception("BadConfig") << "imath constants are different!";
+        throw cms::Exception("BadConfig") << "imath constants are different!";
       }
       //everything checks out!
 
@@ -625,7 +625,7 @@ namespace trklet {
             edm::LogVerbatim("Tracklet") << slog;
             p1->dump_msg();
             p2->dump_msg();
-	    throw cms::Exception("BadConfig") << "imath units are different!";
+            throw cms::Exception("BadConfig") << "imath units are different!";
           }
         }
       }
@@ -638,7 +638,7 @@ namespace trklet {
         edm::LogVerbatim("Tracklet") << slog;
         p1->dump_msg();
         p2->dump_msg();
-	throw cms::Exception("BadConfig") << "imath constants are different!";
+        throw cms::Exception("BadConfig") << "imath constants are different!";
       }
       //everything checks out!
 
@@ -894,7 +894,7 @@ namespace trklet {
             p1->dump_msg();
             p2->dump_msg();
             p3->dump_msg();
-	    throw cms::Exception("BadConfig") << "imath units are different!";
+            throw cms::Exception("BadConfig") << "imath units are different!";
           }
         }
       }
@@ -908,13 +908,13 @@ namespace trklet {
         p1->dump_msg();
         p2->dump_msg();
         p3->dump_msg();
-	throw cms::Exception("BadConfig") << "imath constants are different!";
+        throw cms::Exception("BadConfig") << "imath constants are different!";
       }
       //everything checks out!
 
       shift3_ = s3 - s0;
       if (shift3_ < 0) {
-	throw cms::Exception("BadConfig") << "imath VarDSPPostadd: loosing precision on C in A*B+C: " << shift3_;
+        throw cms::Exception("BadConfig") << "imath VarDSPPostadd: loosing precision on C in A*B+C: " << shift3_;
       }
 
       Kmap_ = p3->Kmap();

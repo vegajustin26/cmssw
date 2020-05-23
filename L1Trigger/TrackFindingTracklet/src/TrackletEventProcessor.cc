@@ -26,7 +26,7 @@ void TrackletEventProcessor::init(const Settings* theSettings) {
   settings_ = theSettings;
 
   globals_ = make_unique<Globals>(*settings_);
- 
+
   //Verify consistency
   if (settings_->kphi0pars() != globals_->ITC_L1L2()->phi0_final.K()) {
     throw cms::Exception("Inconsistency") << "phi0 conversion parameter inconsistency\n";

@@ -47,12 +47,12 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
   unsigned int L1stubID = 0;
 
   if (globals_->tmttSettings() == nullptr) {
-    if (settings_.printDebugKF()) 
+    if (settings_.printDebugKF())
       edm::LogVerbatim("L1track") << "Creating TMTT::Settings in HybridFit::Fit";
     globals_->tmttSettings() = make_unique<tmtt::Settings>();
     globals_->tmttSettings()->setMagneticField(settings_.bfield());
   }
-  
+
   const tmtt::Settings& TMTTsettings = *globals_->tmttSettings();
 
   int kf_phi_sec = iSector_;
@@ -170,7 +170,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
   l1track3d.setSeedPS(numPS);
 
   if (globals_->tmttKFParamsComb() == nullptr) {
-    if (settings_.printDebugKF()) 
+    if (settings_.printDebugKF())
       edm::LogVerbatim("L1track") << "Will make KFParamsComb for " << settings_.nHelixPar() << " param fit";
     globals_->tmttKFParamsComb() = make_unique<tmtt::KFParamsComb>(&TMTTsettings, settings_.nHelixPar(), "KFfitter");
   }

@@ -26,10 +26,10 @@ namespace trklet {
   class Settings {
   public:
     Settings() {
-//Comment out to run tracklet-only algorithm
-#ifdef CMSSW_GIT_HASH
-#define USEHYBRID
-#endif
+      //Comment out to run tracklet-only algorithm
+      //#ifdef CMSSW_GIT_HASH
+      //#define USEHYBRID
+      //#endif
     }
 
     ~Settings() = default;
@@ -249,7 +249,7 @@ namespace trklet {
     double rmindiskl3overlapvm() const { return rmindiskl3overlapvm_; }
 
     double rPS2S() const { return rPS2S_; }
-    
+
     double z0cut() const { return z0cut_; }
 
     unsigned int NLONGVMBITS() const { return NLONGVMBITS_; }
@@ -334,7 +334,7 @@ namespace trklet {
     std::string wiresFile_;
 
     double rcrit_{55.0};  // critical radius for the hourglass configuration
-    
+
     double dphicritmc_{0.005};
 
     //fraction of full r and z range that stubs can be located within layer/disk
@@ -378,7 +378,7 @@ namespace trklet {
     double rmindiskl3overlapvm_{50.0};
 
     double rPS2S_{60.0};
-    
+
     double z0cut_{15.0};
 
     unsigned int NLONGVMBITS_{3};

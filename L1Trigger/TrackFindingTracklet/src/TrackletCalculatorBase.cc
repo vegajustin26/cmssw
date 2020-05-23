@@ -622,7 +622,8 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
       if (iphiprojdisk[i] >= (1 << settings_.nphibitsstub(0)) - 1)
         continue;
 
-      if (irprojdisk[i] < settings_.rmindisk() / ITC->rD_0_final.K() || irprojdisk[i] > settings_.rmaxdisk() / ITC->rD_0_final.K())
+      if (irprojdisk[i] < settings_.rmindisk() / ITC->rD_0_final.K() ||
+          irprojdisk[i] > settings_.rmaxdisk() / ITC->rD_0_final.K())
         continue;
 
       diskprojs[i].init(settings_,
