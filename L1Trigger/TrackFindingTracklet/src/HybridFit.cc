@@ -174,7 +174,7 @@ void HybridFit::Fit(Tracklet* tracklet, std::vector<const Stub*>& trackstublist)
 
   if (globals_->tmttKFParamsComb() == nullptr) {
     edm::LogVerbatim("L1track") << "Will make KFParamsComb for " << settings_.nHelixPar() << " param fit";
-    globals_->tmttSettings() = make_unique<tmtt::KFParamsComb>(&TMTTsettings, settings_.nHelixPar(), "KFfitter");
+    globals_->tmttKFParamsComb() = make_unique<tmtt::KFParamsComb>(&TMTTsettings, settings_.nHelixPar(), "KFfitter");
   }
 
   tmtt::KFParamsComb& fitterKF = *globals_->tmttKFParamsComb();
