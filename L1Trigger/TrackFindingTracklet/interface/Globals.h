@@ -10,11 +10,16 @@
 #include <fstream>
 #include <unordered_map>
 
+#ifdef USEHYBRID
+#include "L1Trigger/TrackFindingTMTT/interface/KFParamsComb.h"
+#include "L1Trigger/TrackFindingTMTT/interface/Settings.h"
+#endif
+/*
 namespace tmtt {
   class Settings;
   class KFParamsComb;
 }  // namespace tmtt
-
+*/
 namespace trklet {
 
   class TETableBase;
@@ -41,12 +46,6 @@ namespace trklet {
 
     TrackDerTable*& trackDerTable() { return trackDerTable_; }
 
-#ifdef USEHYBRID
-    std::unique_ptr<tmtt::Settings>& tmttSettings();
-#endif
-    
-    tmtt::KFParamsComb*& tmttKFParamsComb() { return tmttKFParamsComb_; }
-
     VMRouterPhiCorrTable*& phiCorr(unsigned int layer) { return thePhiCorr_[layer]; }
 
     ProjectionRouterBendTable*& projectionRouterBendTable() { return projectionRouterBendTable_; }
@@ -72,6 +71,11 @@ namespace trklet {
 
     std::ofstream& ofstream(std::string fname);
 
+#ifdef USEHYBRID
+    std::unique_ptr<tmtt::Settings>& tmttSettings() { return tmttSettings_; }
+    std::unique_ptr<tmtt::KFParamsComb>& tmttKFParamsComb() { return tmttKFParamsComb_; }
+#endif
+    
   private:
     std::unordered_map<std::string, std::ofstream*> ofstreams_;
 
@@ -103,10 +107,9 @@ namespace trklet {
 
 #ifdef USEHYBRID
     std::unique_ptr<tmtt::Settings> tmttSettings_;
+    std::unique_ptr<tmtt::KFParamsComb> tmttKFParamsComb_;
 #endif
     
-    tmtt::KFParamsComb* tmttKFParamsComb_{nullptr};
-
     std::array<VMRouterPhiCorrTable*, 6> thePhiCorr_{{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}};
 
     std::map<std::string, std::vector<int> > ILindex_;

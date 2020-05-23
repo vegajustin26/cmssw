@@ -8,11 +8,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMRouterPhiCorrTable.h"
 #include "L1Trigger/TrackFindingTracklet/interface/HistBase.h"
 
-#ifdef USEHYBRID
-#include "L1Trigger/TrackFindingTMTT/interface/KFParamsComb.h"
-#include "L1Trigger/TrackFindingTMTT/interface/Settings.h"
-#endif
-
 using namespace std;
 using namespace trklet;
 
@@ -44,17 +39,7 @@ Globals::~Globals() {
     delete i;
     i = nullptr;
   }
-#ifdef USEHYBRID
-  delete tmttKFParamsComb_;
-  tmttKFParamsComb_ = nullptr;
-#endif
 }
-
-#ifdef USEHYBRID
-std::unique_ptr<tmtt::Settings>& Globals::tmttSettings() {
-  return tmttSettings_;
-}
-#endif
 
 std::ofstream& Globals::ofstream(std::string fname) {
   if (ofstreams_.find(fname) != ofstreams_.end()) {
