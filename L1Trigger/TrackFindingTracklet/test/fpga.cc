@@ -248,7 +248,7 @@ int main(const int argc, const char **argv) {
         if (nlayers + ndisks < 4)
           continue;
         nsim++;
-        for (int seed = -1; seed < 8; seed++) {
+        for (int seed = -1; seed < 12; seed++) {
           bool eff = false;
           bool effloose = false;
           int itrackmatch = -1;
