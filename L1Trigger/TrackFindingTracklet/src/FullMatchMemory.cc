@@ -10,11 +10,10 @@ using namespace trklet;
 
 FullMatchMemory::FullMatchMemory(string name, Settings const& settings, unsigned int iSector)
     : MemoryBase(name, settings, iSector) {
-  if (settings_.extended()) {
-    initLayerDisk(10, layer_, disk_);
-  } else {
-    initLayerDisk(8, layer_, disk_);
-  }
+
+  size_t pos=find_nth(name,0,"_",1);
+  assert(pos!=string::npos);
+  initLayerDisk(pos+1, layer_, disk_);
 }
 
 void FullMatchMemory::addMatch(Tracklet* tracklet, const Stub* stub) {

@@ -261,6 +261,7 @@ void TripletEngine::execute() {
             vmsteSuffix = vmsteSuffix.substr(0, vmsteSuffix.find_last_of('n'));
             if (stubpairs_.at(i)->getLastPartOfName() != vmsteSuffix)
               continue;
+
             for (unsigned int l = 0; l < thirdvmstubs_.at(k)->nVMStubsBinned(ibin); l++) {
               if (countall >= settings_.maxStep("TRE"))
                 break;
@@ -288,12 +289,12 @@ void TripletEngine::execute() {
               if (!table_[index]) {
                 if (settings_.debugTracklet()) {
                   edm::LogVerbatim("Tracklet")
-                      << "Stub pair rejected because of stub pt cut bends : "
+                      << "Stub triplet rejected because of stub pt cut bends : "
                       << benddecode(secondvmstub.bend().value(), secondvmstub.isPSmodule()) << " "
                       << benddecode(thirdvmstub.bend().value(), thirdvmstub.isPSmodule());
                 }
-                if (!settings_.writeTripletTables())
-                  continue;
+                //if (!settings_.writeTripletTables())
+                //  continue;
               }
               if (settings_.writeTripletTables())
                 table_[index] = true;
@@ -337,7 +338,6 @@ void TripletEngine::execute() {
             vmsteSuffix = vmsteSuffix.substr(0, vmsteSuffix.find_last_of('n'));
             if (stubpairs_.at(i)->getLastPartOfName() != vmsteSuffix)
               continue;
-            assert(thirdvmstubs_.at(k)->nVMStubsBinned(ibin) == thirdvmstubs_.at(k)->nVMStubsBinned(ibin));
             for (unsigned int l = 0; l < thirdvmstubs_.at(k)->nVMStubsBinned(ibin); l++) {
               if (countall >= settings_.maxStep("TRE"))
                 break;
@@ -377,8 +377,8 @@ void TripletEngine::execute() {
                       << benddecode(secondvmstub.bend().value(), secondvmstub.isPSmodule()) << " "
                       << benddecode(thirdvmstub.bend().value(), thirdvmstub.isPSmodule());
                 }
-                if (!settings_.writeTripletTables())
-                  continue;
+                //if (!settings_.writeTripletTables())
+                //  continue;
               }
               if (settings_.writeTripletTables())
                 table_[index] = true;
