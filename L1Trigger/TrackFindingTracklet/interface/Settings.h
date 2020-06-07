@@ -173,7 +173,11 @@ namespace trklet {
     unsigned int MEBins() const { return 1u << MEBinsBits_; }
     unsigned int MEBinsDisks() const { return MEBinsDisks_; }
 
-    std::string geomext() const { return extended_ ? "hourglassExtended" : "hourglass"; }
+    std::string geomext() const {
+      if (combined_)
+	return "hourglassCombined";
+      return extended_ ? "hourglassExtended" : "hourglass";
+    }
 
     bool exactderivatives() const { return exactderivatives_; }
     bool exactderivativesforfloating() const { return exactderivativesforfloating_; }
@@ -192,6 +196,8 @@ namespace trklet {
 
     bool extended() const { return extended_; }
     void setExtended(bool extended) { extended_ = extended; }
+    bool combined() const { return combined_; }
+    void setCombined(bool combined) { combined_ = combined; }
 
     double bfield() const { return bfield_; }
     void setBfield(double bfield) { bfield_ = bfield; }
@@ -676,6 +682,7 @@ namespace trklet {
 
     unsigned int nHelixPar_{4};  // 4 or 5 param helix fit
     bool extended_{false};       // turn on displaced tracking
+    bool combined_{false};       // use combined TP (TE+TC) and MP (PR+ME+MC) configuration
 
     std::string skimfile_{""};  //if not empty events will be written out in ascii format to this file
 
