@@ -286,7 +286,7 @@ void TrackletCalculatorBase::addProjectionDisk(int disk,
   trackletprojs->addProj(tracklet);
 }
 
-bool TrackletCalculatorBase::goodTrackPars(bool goodrinv, bool goodz0) {
+bool TrackletCalculatorBase::goodTrackPars(bool goodrinv, bool goodz0, bool goodTrackPar) {
   bool success = true;
   if (!goodrinv) {
     if (settings_.debugTracklet()) {
@@ -300,6 +300,7 @@ bool TrackletCalculatorBase::goodTrackPars(bool goodrinv, bool goodz0) {
     }
     success = false;
   }
+  success = success && goodTrackPar;
   return success;
 }
 
@@ -560,7 +561,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   izproj[2] = ITC->zL_2_final.ival();
   izproj[3] = ITC->zL_3_final.ival();
 
-  if (!goodTrackPars(ITC->rinv_final.local_passes(), ITC->z0_final.local_passes()))
+  if (!goodTrackPars(ITC->rinv_final.local_passes(), ITC->z0_final.local_passes(), ITC->valid_trackpar.passes()))
     return false;
 
   if (!inSector(iphi0, irinv, phi0approx, rinvapprox))
@@ -962,7 +963,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   izproj[1] = ITC->zL_1_final.ival();
   izproj[2] = ITC->zL_2_final.ival();
 
-  if (!goodTrackPars(ITC->rinv_final.local_passes(), ITC->z0_final.local_passes()))
+  if (!goodTrackPars(ITC->rinv_final.local_passes(), ITC->z0_final.local_passes(), ITC->valid_trackpar.passes()))
     return false;
 
   if (!inSector(iphi0, irinv, phi0approx, rinvapprox))
@@ -1335,7 +1336,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   irprojdisk[2] = ITC->rD_2_final.ival();
   irprojdisk[3] = ITC->rD_3_final.ival();
 
-  if (!goodTrackPars(ITC->rinv_final.local_passes(), ITC->z0_final.local_passes()))
+  if (!goodTrackPars(ITC->rinv_final.local_passes(), ITC->z0_final.local_passes(), ITC->valid_trackpar.passes()))
     return false;
 
   if (!inSector(iphi0, irinv, phi0approx, rinvapprox))
