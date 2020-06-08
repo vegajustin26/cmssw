@@ -107,7 +107,7 @@ namespace trklet {
     void addProjection(int layer, int iphi, TrackletProjectionsMemory* trackletprojs, Tracklet* tracklet);
     void addProjectionDisk(int disk, int iphi, TrackletProjectionsMemory* trackletprojs, Tracklet* tracklet);
 
-    bool goodTrackPars(bool goodrinv, bool goodz0, bool goodTrackPar);
+    bool goodTrackPars(bool goodrinv, bool goodz0);
 
     bool inSector(int iphi0, int irinv, double phi0approx, double rinvapprox);
 
