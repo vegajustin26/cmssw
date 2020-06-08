@@ -158,15 +158,15 @@ process.L1TrackNtuple = cms.EDAnalyzer('L1TrackNtupleMaker',
                                        TP_minPt = cms.double(2.0),       # only save TPs with pt > X GeV
                                        TP_maxEta = cms.double(2.5),      # only save TPs with |eta| < X
                                        TP_maxZ0 = cms.double(30.0),      # only save TPs with |z0| < X cm
-                                       L1TrackInputTag = cms.InputTag(L1TRK_NAME, L1TRK_LABEL), # TTTrack input
-                                       MCTruthTrackInputTag = cms.InputTag("TTTrackAssociatorFromPixelDigis", L1TRK_LABEL),  ## MCTruth input 
+                                       L1TrackInputTag = cms.InputTag(L1TRK_NAME, L1TRK_LABEL),         # TTTrack input
+                                       MCTruthTrackInputTag = cms.InputTag(L1TRUTH_NAME, L1TRK_LABEL),  # MCTruth input 
                                        # other input collections
                                        L1StubInputTag = cms.InputTag("TTStubsFromPhase2TrackerDigis","StubAccepted"),
                                        MCTruthClusterInputTag = cms.InputTag("TTClusterAssociatorFromPixelDigis", "ClusterAccepted"),
                                        MCTruthStubInputTag = cms.InputTag("TTStubAssociatorFromPixelDigis", "StubAccepted"),
                                        TrackingParticleInputTag = cms.InputTag("mix", "MergedTrackTruth"),
                                        TrackingVertexInputTag = cms.InputTag("mix", "MergedTrackTruth"),
-                                       ## tracking in jets stuff (--> requires AK4 genjet collection present!)
+                                       # tracking in jets (--> requires AK4 genjet collection present!)
                                        TrackingInJets = cms.bool(False),
                                        GenJetInputTag = cms.InputTag("ak4GenJets", ""),
                                        )
