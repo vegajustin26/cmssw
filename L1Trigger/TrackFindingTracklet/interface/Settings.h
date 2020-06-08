@@ -42,6 +42,8 @@ namespace trklet {
     std::string const& processingModulesFile() const { return processingModulesFile_; }
     std::string const& memoryModulesFile() const { return memoryModulesFile_; }
     std::string const& wiresFile() const { return wiresFile_; }
+    std::string const& tableTEDFile() const { return tableTEDFile_; }
+    std::string const& tableTREFile() const { return tableTREFile_; }
 
     void setDTCLinkFile(std::string DTCLinkFileName) { DTCLinkFile_ = DTCLinkFileName; }
     void setModuleCablingFile(std::string moduleCablingFileName) { moduleCablingFile_ = moduleCablingFileName; }
@@ -54,6 +56,8 @@ namespace trklet {
     }
     void setMemoryModulesFile(std::string memoryModulesFileName) { memoryModulesFile_ = memoryModulesFileName; }
     void setWiresFile(std::string wiresFileName) { wiresFile_ = wiresFileName; }
+    void setTableTEDFile(std::string tableTEDFileName) { tableTEDFile_ = tableTEDFileName; }
+    void setTableTREFile(std::string tableTREFileName) { tableTREFile_ = tableTREFileName; }
 
     unsigned int nzbitsstub(unsigned int layerdisk) const { return nzbitsstub_[layerdisk]; }
     unsigned int nphibitsstub(unsigned int layerdisk) const { return nphibitsstub_[layerdisk]; }
@@ -338,6 +342,8 @@ namespace trklet {
     std::string processingModulesFile_;
     std::string memoryModulesFile_;
     std::string wiresFile_;
+    std::string tableTEDFile_;
+    std::string tableTREFile_;
 
     double rcrit_{55.0};  // critical radius for the hourglass configuration
 

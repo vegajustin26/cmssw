@@ -398,8 +398,10 @@ void TrackletEngineDisplaced::readTables() {
   ifstream fin;
   string tableName, line, word;
 
-  tableName = "../data/table_TED/table_" + name_ + ".txt";
-
+  string tablePath = settings_.tableTEDFile();
+  unsigned int finddir = tablePath.find("table_TED_");
+  tableName = tablePath.substr(0,finddir) + "table_" + name_ + ".txt";
+  
   fin.open(tableName, ifstream::in);
   if (!fin) {
     throw cms::Exception("BadConfig") << "TripletEngine::readTables, file " << tableName << " not known";
