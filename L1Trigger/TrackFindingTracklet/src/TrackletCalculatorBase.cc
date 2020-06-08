@@ -300,7 +300,6 @@ bool TrackletCalculatorBase::goodTrackPars(bool goodrinv, bool goodz0) {
     }
     success = false;
   }
-  success = success && goodTrackPar;
   return success;
 }
 
