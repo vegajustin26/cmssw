@@ -559,8 +559,11 @@ namespace trklet {
          {{3.6, 3.8, 0.0, 0.0, 3.6, 0.0, 3.5, 3.8, 0.0, 0.0, 3.0, 3.0}},    //disk 4
          {{0.0, 0.0, 0.0, 0.0, 3.6, 3.4, 3.7, 0.0, 0.0, 0.0, 0.0, 3.0}}}};  //disk 5
 
+    //Offset to the maximum number of steps in each processing step. Set to 0 for standard
+    //trunction. Set to large value, e.g. 10000 to remove truncation
     unsigned int maxstepoffset_{10000};
 
+    //Default number of processing steps for one event
     std::unordered_map<std::string, unsigned int> maxstep_{{"Link", 108},
                                                            {"MC", 108},
                                                            {"ME", 108},
@@ -572,6 +575,7 @@ namespace trklet {
                                                            {"TRE", 108},
                                                            {"VMR", 108}};
 
+    // If set to true this will generate debub printout in text files
     std::unordered_map<std::string, bool> writeMonitorData_{{"IL", false},
                                                             {"TE", false},
                                                             {"CT", false},
