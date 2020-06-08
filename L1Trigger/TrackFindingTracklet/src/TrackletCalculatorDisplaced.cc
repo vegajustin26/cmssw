@@ -299,11 +299,6 @@ bool TrackletCalculatorDisplaced::addLayerProj(Tracklet* tracklet, int layer) {
   FPGAWord fpgaz = tracklet->fpgazproj(layer);
   FPGAWord fpgaphi = tracklet->fpgaphiproj(layer);
 
-  if (fpgaphi.atExtreme())
-    edm::LogProblem("Tracklet") << "at extreme! " << fpgaphi.value();
-
-  assert(!fpgaphi.atExtreme());
-
   if (fpgaz.atExtreme())
     return false;
 
@@ -533,7 +528,7 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
       continue;
     if (izproj[i] >= (1 << (settings_.nzbitsstub(0) - 1)))
       continue;
-
+    
     //check that phi projection is in range
     if (iphiproj[i] >= (1 << settings_.nphibitsstub(N_LAYER - 1)) - 1)
       continue;
@@ -595,7 +590,7 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
         continue;
       if (iphiprojdisk[i] >= (1 << settings_.nphibitsstub(0)) - 1)
         continue;
-
+      
       //check r projection in range
       if (rprojdiskapprox[i] < settings_.rmindisk() || rprojdiskapprox[i] > settings_.rmaxdisk())
         continue;
