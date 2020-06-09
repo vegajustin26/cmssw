@@ -570,7 +570,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
       LocalPoint clustlp_outer = topol_outer->localPosition(coords_outer);
       GlobalPoint posStub_outer = theGeomDet_outer->surface().toGlobal(clustlp_outer);
 
-      bool isFlipped = !(posStub_outer.mag() < posStub_inner.mag());
+      bool isFlipped = (posStub_outer.mag() < posStub_inner.mag());
 
       // -----------------------------------------------------
       // correct sign for stubs in negative endcap
