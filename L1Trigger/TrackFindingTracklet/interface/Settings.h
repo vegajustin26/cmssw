@@ -69,6 +69,8 @@ namespace trklet {
     unsigned int nbitszprojderL123() const { return nbitszprojderL123_; }
     unsigned int nbitszprojderL456() const { return nbitszprojderL456_; }
 
+    unsigned int nbendbitsmedisk() const { return nbendbitsmedisk_; }
+
     bool useSeed(unsigned int iSeed) const { return useseeding_.find(iSeed) != useseeding_.end(); }
     unsigned int nbitsvmte(unsigned int inner, unsigned int iSeed) const { return nbitsvmte_[inner][iSeed]; }
     unsigned int nvmte(unsigned int inner, unsigned int iSeed) const { return (1 << nbitsvmte_[inner][iSeed]); }
@@ -176,6 +178,7 @@ namespace trklet {
     unsigned int MEBinsBits() const { return MEBinsBits_; }
     unsigned int MEBins() const { return 1u << MEBinsBits_; }
     unsigned int MEBinsDisks() const { return MEBinsDisks_; }
+    unsigned int maxStubsPerBin() const { return maxStubsPerBin_; }
 
     std::string geomext() const {
       if (combined_)
@@ -192,6 +195,7 @@ namespace trklet {
     std::string removalType() const { return removalType_; }
     std::string mergeComparison() const { return mergeComparison_; }
     bool doKF() const { return doKF_; }
+    bool doMultipleMatches() const { return doMultipleMatches_; }
     bool fakefit() const { return fakefit_; }
 
     // configurable
@@ -367,6 +371,8 @@ namespace trklet {
     unsigned int nbitszprojderL123_{10};
     unsigned int nbitszprojderL456_{9};
 
+    unsigned int nbendbitsmedisk_{4}; // Always 4 bits even for PS disk hits, for HLS compatibility
+
     std::set<unsigned int> useseeding_{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 
     std::array<unsigned int, N_LAYER + N_DISK> nbitsallstubs_{{3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}};
@@ -478,7 +484,7 @@ namespace trklet {
          {{5, 4, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4}},    //outer
          {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4}}}};  //outermost (triplets only)
 
-    std::array<std::array<unsigned int, N_SEED>, 3> lutwidthtab_{{{{10, 11, 11, 11, 11, 11, 11, 11, 0, 0, 11, 0}},
+    std::array<std::array<unsigned int, N_SEED>, 3> lutwidthtab_{{{{10, 10, 10, 10, 10, 10, 10, 10, 0, 0, 11, 0}},
                                                                   {{6, 6, 6, 6, 10, 10, 10, 10, 0, 0, 6, 0}},
                                                                   {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6}}}};
 
@@ -659,6 +665,7 @@ namespace trklet {
 
     unsigned int MEBinsBits_{3};
     unsigned int MEBinsDisks_{8};  //on each side
+    unsigned int maxStubsPerBin_{16};
 
     // Options for chisq fit
     bool exactderivatives_{false};
@@ -686,6 +693,12 @@ namespace trklet {
     std::string removalType_{"ichi"};
     std::string mergeComparison_{""};
 #endif
+
+    // When false, match calculator does not save multiple matches, even when doKF=true.
+    // This is a temporary fix for compatibilty with HLS. We will need to implement multiple match
+    // printing in emulator eventually, possibly after CMSSW-integration inspired rewrites
+    // Use false when generating HLS files, use true when doing full hybrid tracking
+    bool doMultipleMatches_{true};
 
     // if true, run a dummy fit, producing TTracks directly from output of tracklet pattern reco stage
     bool fakefit_{false};
