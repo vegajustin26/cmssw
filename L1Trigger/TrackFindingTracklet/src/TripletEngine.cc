@@ -243,7 +243,7 @@ void TripletEngine::execute() {
       }
 
       else if (disk2_ == 2 && layer3_ == 2) {
-        int lookupbits = (int)((firstvmstub.vmbits().value() >> 9) & 1023);
+        int lookupbits = (int)((firstvmstub.vmbits().value() >> 10) & 1023);
         int newbin = (lookupbits & 127);
         int bin = newbin / 8;
 
