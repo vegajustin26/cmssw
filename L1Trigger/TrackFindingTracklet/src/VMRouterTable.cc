@@ -98,6 +98,16 @@ void VMRouterTable::init(unsigned int layerdisk) {
       }
     }
   }
+  if (settings_.writeTable()) {
+    int ldnumber = layerdisk;
+    char ldchar = 'L';
+    if (ldnumber >= N_LAYER) {
+      ldnumber -= N_LAYER;
+      ldchar = 'D';
+    }
+    ldnumber ++;
+    writeVMTable(settings_.tablePath()+"VMR_"+ldchar+to_string(ldnumber)+"_finebin.tab");
+  }
 }
 
 int VMRouterTable::getLookup(unsigned int layerdisk, double z, double r, int iseed) {
@@ -285,4 +295,19 @@ int VMRouterTable::lookupinnerThird(int zbin, int rbin) {
   int index = zbin * rbins_ + rbin;
   assert(index >= 0 && index < (int)vmrtableteinnerThird_.size());
   return vmrtableteinnerThird_[index];
+}
+
+void VMRouterTable::writeVMTable(std::string name) {
+  ofstream out;
+  out.open(name.c_str());
+  out << "{" << endl;
+  for (unsigned int i = 0; i < vmrtable_.size(); i++) {
+    if (i != 0) {
+      out << "," << endl;
+    }
+    int itable = vmrtable_[i];
+    out << itable;
+  }
+  out << endl << "};" << endl;
+  out.close();
 }
