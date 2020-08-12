@@ -9,11 +9,11 @@ using namespace trklet;
 
 VMRouterTable::VMRouterTable(Settings const& settings) : settings_(settings) {}
 
-VMRouterTable::VMRouterTable(Settings const& settings, unsigned int layerdisk) : settings_(settings) {
-  init(layerdisk);
+VMRouterTable::VMRouterTable(Settings const& settings, unsigned int layerdisk, std::string name) : settings_(settings) {
+  init(layerdisk, name);
 }
 
-void VMRouterTable::init(unsigned int layerdisk) {
+void VMRouterTable::init(unsigned int layerdisk, std::string name) {
   zbits_ = settings_.vmrlutzbits(layerdisk);
   rbits_ = settings_.vmrlutrbits(layerdisk);
 
@@ -99,14 +99,7 @@ void VMRouterTable::init(unsigned int layerdisk) {
     }
   }
   if (settings_.writeTable()) {
-    int ldnumber = layerdisk;
-    char ldchar = 'L';
-    if (ldnumber >= N_LAYER) {
-      ldnumber -= N_LAYER;
-      ldchar = 'D';
-    }
-    ldnumber ++;
-    writeVMTable(settings_.tablePath()+"VMR_"+ldchar+to_string(ldnumber)+"_finebin.tab");
+    writeVMTable(settings_.tablePath()+name+"_finebin.tab");
   }
 }
 

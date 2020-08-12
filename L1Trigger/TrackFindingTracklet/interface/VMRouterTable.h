@@ -16,11 +16,11 @@ namespace trklet {
   class VMRouterTable {
   public:
     VMRouterTable(Settings const& settings);
-    VMRouterTable(Settings const& settings, unsigned int layerdisk);
+    VMRouterTable(Settings const& settings, unsigned int layerdisk, std::string name);
 
     ~VMRouterTable() = default;
 
-    void init(unsigned int layerdisk);
+    void init(unsigned int layerdisk, std::string name);
 
     // negative return means that seed can not be formed
     int getLookup(unsigned int layerdisk, double z, double r, int iseed = -1);
