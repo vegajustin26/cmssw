@@ -1,5 +1,4 @@
 #include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
-
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
