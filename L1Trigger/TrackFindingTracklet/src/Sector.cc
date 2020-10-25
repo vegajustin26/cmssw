@@ -37,6 +37,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMRouterPhiCorrTable.h"
 
 using namespace std;
 using namespace trklet;
@@ -51,8 +52,9 @@ Sector::Sector(unsigned int i, Settings const& settings, Globals* globals) : set
   phimax_ -= M_PI / N_SECTOR;
   phimin_ = reco::reduceRange(phimin_);
   phimax_ = reco::reduceRange(phimax_);
-  if (phimin_ > phimax_)
+  if (phimin_ > phimax_) {
     phimin_ -= 2 * M_PI;
+  }
 }
 
 Sector::~Sector() {
@@ -62,33 +64,62 @@ Sector::~Sector() {
 }
 
 bool Sector::addStub(L1TStub stub, string dtc) {
-  bool add = false;
 
-  double phi = stub.phi();
-  double dphi = 0.5 * settings_.dphisectorHG() - M_PI / N_SECTOR;
+  unsigned int layerdisk=stub.layerdisk();
 
-  std::map<string, std::vector<int> >& ILindex = globals_->ILindex();
-  std::vector<int>& tmp = ILindex[dtc];
-  if (tmp.empty()) {
-    for (unsigned int i = 0; i < IL_.size(); i++) {
-      if (IL_[i]->getName().find("_" + dtc) != string::npos) {
-        tmp.push_back(i);
+  double stubphi = stub.phi();
+  if (stubphi-phimin_>M_PI){
+    stubphi-=2*M_PI;
+  }
+
+  //FIXME - when input stubs are understood/fixed this block should not be needed
+  if (stubphi<phimin_ || stubphi>phimax_) {
+    static int count=0;
+    count++;
+    if (count<25) {
+      cout << "WARNING stub out of range: isector_ phimin_ phimax_ phi : "
+	   <<isector_<<" "<<phimin_<<" "<<phimax_<<"  "<<stub.phi()<<endl;
+    }
+    return false;
+  }
+    
+  if (layerdisk < N_LAYER && globals_->phiCorr(layerdisk) == nullptr) {
+    globals_->phiCorr(layerdisk) = new VMRouterPhiCorrTable(settings_);
+    int nbits = 3;
+    if (layerdisk >= N_PSLAYER)
+      nbits = 4;
+    globals_->phiCorr(layerdisk)->init(layerdisk + 1, nbits, 3);
+  }
+  
+  Stub fpgastub(stub, settings_, phimin_, phimax_);
+
+  if (layerdisk < N_LAYER) {
+    FPGAWord r = fpgastub.r();
+    int bendbin = fpgastub.bend().value();
+    int rbin = (r.value() + (1 << (r.nbits() - 1))) >> (r.nbits() - 3);
+    const VMRouterPhiCorrTable& phiCorrTable = *globals_->phiCorr(layerdisk);
+    int iphicorr = phiCorrTable.getphiCorrValue(bendbin, rbin);
+    fpgastub.setPhiCorr(iphicorr);
+  }
+  
+  FPGAWord phi=fpgastub.phicorr();
+  int ireg=phi.value()>>(phi.nbits()-settings_.nbitsallstubs(layerdisk));
+
+  int nadd=0;
+  for (unsigned int i = 0; i < IL_.size(); i++) {
+    const string& name=IL_[i]->getName();
+    if (name.find("_" + dtc) == string::npos) continue;
+    if ( (name[3]=='L' && name[4]-'1'==(int)layerdisk) ||  (name[3]=='D' && name[4]-'1'==(int)layerdisk-6) ) {
+      if (name[8]-'A'==ireg){
+	IL_[i]->addStub(stub, fpgastub);
+	nadd++;
       }
     }
   }
 
-  if (((phi > phimin_ - dphi) && (phi < phimax_ + dphi)) ||
-      ((phi > 2 * M_PI + phimin_ - dphi) && (phi < 2 * M_PI + phimax_ + dphi))) {
-    Stub fpgastub(stub, settings_, phimin_, phimax_);
-    std::vector<int>& tmp = ILindex[dtc];
-    assert(!tmp.empty());
-    for (int i : tmp) {
-      if (IL_[i]->addStub(settings_, globals_, stub, fpgastub, dtc))
-        add = true;
-    }
-  }
-
-  return add;
+  assert(nadd==1);
+  
+  return true;
 }
 
 void Sector::addMem(string memType, string memName) {

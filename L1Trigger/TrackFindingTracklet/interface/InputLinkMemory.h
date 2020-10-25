@@ -21,7 +21,7 @@ namespace trklet {
 
     ~InputLinkMemory() override = default;
 
-    bool addStub(Settings const& settings, Globals* globals, L1TStub& al1stub, Stub& stub, std::string dtc);
+    void addStub(const L1TStub& al1stub,const Stub& stub);
 
     unsigned int nStubs() const { return stubs_.size(); }
 

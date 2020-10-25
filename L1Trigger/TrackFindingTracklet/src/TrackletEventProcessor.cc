@@ -1,11 +1,11 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEventProcessor.h"
+#include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
 #include "L1Trigger/TrackFindingTracklet/interface/HistBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Cabling.h"
 
 #include "DataFormats/Math/interface/deltaPhi.h"
 
@@ -150,24 +150,6 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     }
   }
 
-  // get the DTC/cabling information
-  ifstream indtc(settings_->DTCLinkLayerDiskFile());
-  assert(indtc.good());
-  string dtc;
-  indtc >> dtc;
-  while (indtc.good()) {
-    vector<int> tmp;
-    dtclayerdisk_[dtc] = tmp;
-    int layerdisk;
-    indtc >> layerdisk;
-    while (layerdisk > 0) {
-      dtclayerdisk_[dtc].push_back(layerdisk);
-      indtc >> layerdisk;
-    }
-    indtc >> dtc;
-  }
-
-  cabling_ = make_unique<Cabling>(settings_->DTCLinkFile(), settings_->moduleCablingFile(), *settings_);
 }
 
 void TrackletEventProcessor::event(SLHCEvent& ev) {
@@ -189,80 +171,38 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   for (int j = 0; j < ev.nstubs(); j++) {
     L1TStub stub = ev.stub(j);
 
-    int layer = stub.layer() + 1;
-    int ladder = stub.ladder();
-    int module = stub.module();
-
-    string dtc = cabling_->dtc(layer, ladder, module);
+    string dtc=stub.DTClink();
     string dtcbase = dtc.substr(2, dtc.size() - 2);
+    
     if (dtc[0] == 'n') {
       dtcbase = dtc.substr(0, 4) + dtc.substr(6, dtc.size() - 6);
     }
 
-    cabling_->addphi(dtc, stub.phi(), layer, module);
+    unsigned int isector = stub.region();
 
-    double phi = angle0to2pi::make0To2pi(stub.phi() + 0.5 * settings_->dphisectorHG());
+    sectors_[isector]->addStub(stub, dtc);
 
-    unsigned int isector = N_SECTOR * phi / (2 * M_PI);
+    /* FIXME needs to be updated
+    static std::map<string, ofstream*> dtcstubs;
 
-    for (unsigned int k = 0; k < N_SECTOR; k++) {
-      int diff = k - isector;
-      if (diff > (int)N_SECTOR / 2)
-        diff -= (int)N_SECTOR;
-      if (diff < (-1) * (int)N_SECTOR / 2)
-        diff += (int)N_SECTOR;
-      if (abs(diff) > 1)
-        continue;
-      double phiminsect =
-          k * 2 * M_PI / N_SECTOR - 0.5 * (settings_->dphisectorHG() - 2 * M_PI / N_SECTOR) - M_PI / N_SECTOR;
-      double dphi = stub.phi() - phiminsect;
-      if (dphi > M_PI)
-        dphi -= 2 * M_PI;
-      while (dphi < 0.0)
-        dphi += 2 * M_PI;
-      if (dphi > settings_->dphisectorHG())
-        continue;
-      bool add = sectors_[k]->addStub(stub, dtcbase);
-
-      static std::map<string, ofstream*> dtcstubs;
-
-      if (settings_->writeMem()) {
-        vector<string> dtcs = cabling_->DTCs();
-        for (const auto& dtc : dtcs) {
-          string dtcbase = dtc.substr(2, dtc.size() - 2);
-          if (dtc[0] == 'n') {
-            dtcbase = dtc.substr(0, 4) + dtc.substr(6, dtc.size() - 6);
-          }
-
-          string fname = "../data/MemPrints/InputStubs/Link_";
-          fname += dtcbase;
-          if (dtcstubs.find(dtcbase + "A") != dtcstubs.end())
-            continue;
-          fname += "_A.dat";
-          ofstream* out = new ofstream;
-          out->open(fname.c_str());
-          dtcstubs[dtcbase + "A"] = out;
-
-          fname = "../data/MemPrints/InputStubs/Link_";
-          fname += dtcbase;
-          if (dtcstubs.find(dtcbase + "B") != dtcstubs.end())
-            continue;
-          fname += "_B.dat";
-          out = new ofstream;
-          out->open(fname.c_str());
-          dtcstubs[dtcbase + "B"] = out;
-        }
-
-        static int oldevent = -1;
-        if (eventnum_ != oldevent) {
-          oldevent = eventnum_;
-          for (auto& dtcstub : dtcstubs) {
-            FPGAWord tmp;
-            tmp.set(eventnum_ % 8, 3);
-            (*(dtcstub.second)) << "BX " << tmp.str() << " Event : " << eventnum_ + 1 << endl;
-          }
-        }
+    if (settings_->writeMem()) { //FIXME code is not correct
+      string fname = "../data/MemPrints/InputStubs/Link_";
+      fname += dtc+".dat";
+      if (dtcstubs.find(dtc) == dtcstubs.end()) {
+	ofstream* out = new ofstream;
+	out->open(fname.c_str());
+	dtcstubs[dtc] = out;
       }
+      static int oldevent = -1;
+      if (eventnum_ != oldevent) {
+	oldevent = eventnum_;
+	for (auto& dtcstub : dtcstubs) {
+	  FPGAWord tmp;
+	  tmp.set(eventnum_ % 8, 3);
+	  (*(dtcstub.second)) << "BX " << tmp.str() << " Event : " << eventnum_ + 1 << endl;
+	}
+      }
+    
 
       if (add && settings_->writeMem() && k == settings_->writememsect()) {
         Stub fpgastub(stub, *settings_, sectors_[k]->phimin(), sectors_[k]->phimax());
@@ -293,8 +233,9 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
           (*dtcstubs[dtcbase + "B"]) << dataword << " " << trklet::hexFormat(dataword) << endl;
         }
       }
-    }
+    */
   }
+
 
   addStubTimer_.stop();
 
@@ -483,9 +424,9 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 }
 
 void TrackletEventProcessor::printSummary() {
-  if (settings_->writeMonitorData("Cabling")) {
-    cabling_->writephirange();
-  }
+  //if (settings_->writeMonitorData("Cabling")) {
+  //  cabling_->writephirange();
+  //}
 
   if (settings_->bookHistos()) {
     globals_->histograms()->close();

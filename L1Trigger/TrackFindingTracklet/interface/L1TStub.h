@@ -12,6 +12,19 @@ namespace trklet {
   class L1TStub {
   public:
     L1TStub();
+
+    L1TStub(std::string DTClink,
+	    int region,
+	    int layerdisk,
+	    int isPSmodule,
+	    int isFlipped,
+	    double x,
+	    double y,
+	    double z,
+	    double bend,
+	    double strip,
+	    std::vector<int> tps);
+    
     L1TStub(int eventid,
             std::vector<int> tps,
             int iphi,
@@ -43,10 +56,18 @@ namespace trklet {
 
     unsigned int layer() const { return layer_; }
     int disk() const {
-      if (z_ < 0.0) {
-        return -module_;
+      if (layerdisk_<6) {
+	return 0;
       }
-      return module_;
+      int disk=layerdisk_-5;
+      if (z_ < 0.0 ) {
+	return -disk;
+      }
+      return disk;
+      //if (z_ < 0.0) {
+      //  return -module_;
+      //}
+      //return module_;
     }
     unsigned int ladder() const { return ladder_; }
     unsigned int module() const { return module_; }
@@ -97,7 +118,22 @@ namespace trklet {
 
     bool tpmatch(int tp) const;
 
+    const std::string& DTClink() const {
+      return DTClink_;
+    }
+
+    int layerdisk() const {
+      return layerdisk_;
+    }
+    
+    int region() const {
+      return region_;
+    }
+    
   private:
+    int layerdisk_;
+    std::string DTClink_;
+    int region_;
     int eventid_;
     std::vector<int> tps_;
     unsigned int iphi_;

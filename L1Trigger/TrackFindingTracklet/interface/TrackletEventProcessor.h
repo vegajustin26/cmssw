@@ -17,7 +17,6 @@ namespace trklet {
   class Sector;
   class HistBase;
   class Track;
-  class Cabling;
 
   class TrackletEventProcessor {
   public:
@@ -44,8 +43,6 @@ namespace trklet {
 
     int eventnum_ = {0};
 
-    std::unique_ptr<Cabling> cabling_;
-
     Timer cleanTimer_;
     Timer addStubTimer_;
     Timer VMRouterTimer_;
@@ -64,7 +61,7 @@ namespace trklet {
 
     std::vector<Track*> tracks_;
 
-    std::map<std::string, std::vector<int> > dtclayerdisk_;
+    //std::map<std::string, std::vector<int> > dtclayerdisk_;
   };
 
 };  // namespace trklet

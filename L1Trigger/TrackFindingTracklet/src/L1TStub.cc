@@ -6,6 +6,48 @@ using namespace trklet;
 
 L1TStub::L1TStub() {}
 
+L1TStub::L1TStub(std::string DTClink,
+		 int region,
+		 int layerdisk,
+		 int isPSmodule,
+		 int isFlipped,
+		 double x,
+		 double y,
+		 double z,
+		 double bend,
+		 double strip,
+		 std::vector<int> tps){
+  DTClink_=DTClink;
+  layerdisk_=layerdisk;
+  region_=region;
+  eventid_ = -1;
+  tps_ = tps;
+  iphi_ = -1;
+  iz_ = -1;
+  layer_ = layerdisk;
+  if (layerdisk>5) {
+    layer_=1000+layerdisk-5;
+    if (z<0.0) layer_+=1000;
+  }
+  
+  ladder_ = -1;
+  module_ = -1;
+  strip_ = strip;
+  x_ = x;
+  y_ = y;
+  z_ = z;
+  sigmax_ = -1.0;
+  sigmaz_ = -1.0;
+  pt_ = -1.0;
+  bend_ = bend;
+  isPSmodule_ = isPSmodule;
+  isFlipped_ = isFlipped;
+
+  allstubindex_ = 999;
+
+}
+
+
 L1TStub::L1TStub(int eventid,
                  vector<int> tps,
                  int iphi,

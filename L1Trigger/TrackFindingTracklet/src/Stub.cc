@@ -64,6 +64,10 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
     assert(phimaxsec - phiminsec > 0.0);
 
+    if (stubphi - phiminsec > M_PI) {
+      stubphi-=2*M_PI;
+    }
+    
     if (stubphi < phiminsec - (phimaxsec - phiminsec) / 6.0) {
       stubphi += 2 * M_PI;
     }
@@ -85,7 +89,7 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
   } else {
     // Here we handle the hits on disks.
 
-    int disk = stub.module();
+    int disk = stub.layerdisk()-5;
     assert(disk > 0 && disk <= N_DISK);
     int sign = 1;
     if (z < 0.0)
