@@ -729,7 +729,7 @@ namespace trklet {
     bool doMultipleMatches_{true};
 
     // if true, run a dummy fit, producing TTracks directly from output of tracklet pattern reco stage
-    bool fakefit_{false};
+    bool fakefit_{true};
 
     unsigned int nHelixPar_{4};  // 4 or 5 param helix fit
     bool extended_{false};       // turn on displaced tracking

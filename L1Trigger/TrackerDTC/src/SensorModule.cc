@@ -91,16 +91,15 @@ namespace trackerDTC {
       offsetR_ = 0.;
       offsetZ_ = side_ ? setup.hybridDiskZ(layer) : -setup.hybridDiskZ(layer);
     }
+    const TypeTilt typeTilt = static_cast<TypeTilt>(trackerTopology->tobSide(detId));
     // getting bend window size
     double windowSize(-1.);
     if (barrel_) {
-      enum TypeBarrel { nonBarrel = 0, tiltedMinus = 1, tiltedPlus = 2, flat = 3 };
-      const TypeBarrel type = static_cast<TypeBarrel>(trackerTopology->tobSide(detId));
-      if (type == flat)
+      if (typeTilt == flat)
         windowSize = setup.windowSizeBarrelLayer(layerId_);
       else {
         int ladder = trackerTopology->tobRod(detId);
-        if (type == tiltedMinus)
+        if (typeTilt == tiltedMinus)
           // Corrected ring number, bet 0 and barrelNTilt.at(layer), in ascending |z|
           ladder = 1 + setup.numTiltedLayerRing(layerId_) - ladder;
         windowSize = setup.windowSizeTiltedLayerRing(layerId_, ladder);
@@ -115,6 +114,13 @@ namespace trackerDTC {
     const vector<int>& encodingLayerId = setup.encodingLayerId(dtcId_);
     const auto pos = find(encodingLayerId.begin(), encodingLayerId.end(), layerId_);
     encodedLayerId_ = distance(encodingLayerId.begin(), pos);
+    //
+    tiltCorrectionSlope_ = barrel_ ? 0. : 1.;
+    tiltCorrectionIntercept_ = barrel_ ? 1. : 0.;
+    if (typeTilt == tiltedMinus || typeTilt == tiltedPlus) {
+      tiltCorrectionSlope_ = setup.tiltApproxSlope();
+      tiltCorrectionIntercept_ = setup.tiltApproxIntercept();
+    }
   }
 
 }  // namespace trackerDTC

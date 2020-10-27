@@ -22,6 +22,10 @@ namespace trackerTFP {
     State(State* state, const std::vector<double>& doubles);
     ~State(){}
 
+    void finish();
+    double chi2() const { return chi2_; }
+    int numSkippedLayers() const { return numSkippedLayers_; }
+    int numConsistentLayers() const { return numConsistentLayers_; }
     TrackKFin* track() const { return track_; }
     State* parent() const { return parent_; }
     StubKFin*  stub() const { return stub_; }
@@ -33,7 +37,6 @@ namespace trackerTFP {
     const TTBV& hitPattern() const { return hitPattern_; }
     int trackId() const { return track_->trackId(); }
     const std::vector<int>& layerMap() const { return layerMap_; }
-    double chi2() const { return chi20_ + chi21_; }
     bool barrel() const { return setup_->barrel(stub_->ttStubRef()); }
     bool psModule() const { return setup_->psModule(stub_->ttStubRef()); }
     int layer() const { return stub_->layer(); }
@@ -41,11 +44,6 @@ namespace trackerTFP {
     void x1(double d) { x1_ = d; }
     void x2(double d) { x2_ = d; }
     void x3(double d) { x3_ = d; }
-    void chi20(double d) { chi20_ = d; }
-    void chi21(double d) { chi21_ = d; }
-    //double quali() const { return (chi20_ / 8. + chi21_) * pow(2, (hitPattern_.count(0, hitPattern_.pmEncode(), false))); }
-    //double quali() const { return (chi20_ / 8. + chi21_); }
-    double quali() const { return (chi20_ + chi21_) * pow(2, (hitPattern_.count(0, hitPattern_.pmEncode(), false))); }
     double x0() const { return x0_; }
     double x1() const { return x1_; }
     double x2() const { return x2_; }
@@ -56,15 +54,13 @@ namespace trackerTFP {
     double C22() const { return C22_; }
     double C23() const { return C23_; }
     double C33() const { return C33_; }
-    double chi20() const { return chi20_; }
-    double chi21() const { return chi21_; }
     double H12() const { return r() + setup_->chosenRofPhi() - setup_->chosenRofZ(); }
     double H00() const { return -r(); }
     double m0() const { return stub_->phi(); }
     double m1() const { return stub_->z(); }
     double v0() const { return setup_->v0(stub_->ttStubRef(), track_->qOverPt()); }
-    //double v1() const { return setup_->v1(stub_->ttStubRef(), track_->cot()); }
-    double v1() const;
+    double v1() const { return setup_->v1(stub_->ttStubRef(), track_->cotGlobal()); }
+    int nPS() const { return nPS_; }
     FrameTrack frame() const;
 
   private:
@@ -92,8 +88,12 @@ namespace trackerTFP {
     double C22_;
     double C23_;
     double C33_;
-    double chi20_;
-    double chi21_;
+    std::vector<double> chi20_;
+    std::vector<double> chi21_;
+    double chi2_;
+    int nPS_;
+    int numSkippedLayers_;
+    int numConsistentLayers_;
   };
 
 }

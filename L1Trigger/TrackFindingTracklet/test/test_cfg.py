@@ -1,6 +1,6 @@
 ################################################################################################
 # To run execute do
-# cmsRun L1Trigger/L1TTrackerTFP/test/gp_cfg.py
+# cmsRun L1Trigger/TrackFindingTracklet/test/gp_cfg.py
 # where the arguments take default values if you don't specify them. You can change defaults below.
 #################################################################################################
 
@@ -22,26 +22,21 @@ process.load( 'SimTracker.TrackTriggerAssociation.StubAssociator_cff' )
 process.load( 'L1Trigger.TrackerDTC.ProducerED_cff' )
 # load code that analyzes DTCStubs
 process.load( 'L1Trigger.TrackerDTC.Analyzer_cff' )
-# cosutmize TT algorithm
-from L1Trigger.TrackerDTC.Customize_cff import *
-producerUseTMTT(process)
-analyzerUseTMTT(process)
-#--- Load code that produces tfp Stubs
-process.load( 'L1Trigger.TrackerTFP.Producer_cff' )
-#--- Load code that analyzes tfp Stubs
-process.load( 'L1Trigger.TrackerTFP.Analyzer_cff' )
+# L1 tracking => hybrid emulation 
+process.load("L1Trigger.TrackFindingTracklet.L1HybridEmulationTracks_cff")
+#--- Load code that analyzes hybrid emulation 
+process.load( 'L1Trigger.TrackFindingTracklet.Analyzer_cff' )
+# load code that fits hybrid tracks
+process.load( 'L1Trigger.TrackFindingTracklet.Producer_cff' )
 
 # build schedule
 process.mc = cms.Sequence( process.StubAssociator )
 process.dtc = cms.Sequence( process.TrackerDTCProducer + process.TrackerDTCAnalyzer )
-process.gp = cms.Sequence( process.TrackerTFPProducerGP + process.TrackerTFPAnalyzerGP )
-process.ht = cms.Sequence( process.TrackerTFPProducerHT + process.TrackerTFPAnalyzerHT )
-process.mht = cms.Sequence( process.TrackerTFPProducerMHT + process.TrackerTFPAnalyzerMHT )
-process.sf = cms.Sequence( process.TrackerTFPProducerSF + process.TrackerTFPAnalyzerSF )
-process.interIn = cms.Sequence( process.TrackerTFPProducerSFout + process.TrackerTFPProducerKFin + process.TrackerTFPAnalyzerKFin )
-process.kf = cms.Sequence( process.TrackerTFPProducerKF + process.TrackerTFPAnalyzerKF )
-process.interOut = cms.Sequence( process.TrackerTFPProducerTT + process.TrackerTFPProducerAS )#+ process.TrackerTFPAnalyzerTT )
-process.tt = cms.Path( process.mc + process.dtc + process.gp + process.ht + process.mht + process.sf + process.interIn + process.kf + process.interOut )
+process.tracklet = cms.Sequence( process.L1HybridTracks + process.TrackFindingTrackletAnalyzerTracklet )
+process.interIn = cms.Sequence( process.TrackFindingTrackletProducerKFin + process.TrackFindingTrackletAnalyzerKFin )
+process.kf = cms.Sequence( process.TrackFindingTrackletProducerKF + process.TrackFindingTrackletAnalyzerKF )
+process.interOut = cms.Sequence( process.TrackFindingTrackletProducerKFout + process.TrackFindingTrackletProducerAS )
+process.tt = cms.Path( process.mc + process.dtc + process.tracklet + process.interIn + process.kf + process.interOut )
 process.schedule = cms.Schedule( process.tt )
 
 # create options

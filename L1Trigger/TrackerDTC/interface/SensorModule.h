@@ -69,8 +69,11 @@ namespace trackerDTC {
     double offsetZ() const { return offsetZ_; }
     // bend window size in half strip units
     int windowSize() const { return windowSize_; }
+    //
+    double tiltCorrection(double cot) const { return abs(tiltCorrectionSlope_ * cot) + tiltCorrectionIntercept_; }
 
   private:
+    enum TypeTilt { nonBarrel = 0, tiltedMinus = 1, tiltedPlus = 2, flat = 3 };
     // cmssw det id
     DetId detId_;
     // dtc id [0-215]
@@ -127,6 +130,10 @@ namespace trackerDTC {
     double offsetZ_;
     // bend window size in half strip units
     int windowSize_;
+    //
+    double tiltCorrectionSlope_;
+    //
+    double tiltCorrectionIntercept_;
   };
 
 }  // namespace trackerDTC

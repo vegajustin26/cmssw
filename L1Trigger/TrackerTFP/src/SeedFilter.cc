@@ -50,38 +50,63 @@ namespace trackerTFP {
   }
 
   void SeedFilter::produce(TTDTC::Streams& accepted, TTDTC::Streams& lost) {
-    auto chi2 = [this](const vector<StubSF*>& stubs) {
-      double d(0.);
+    auto kill = [this](const vector<StubSF*>& stubs) {
       TTBV hitPattern(0, setup_->numLayers());
-      StubSF* stub = stubs.front();
-      const vector<int>& layerEncoding = layerEncoding_->layerEncoding(stub->sectorEta(), zT_.toUnsigned(stub->zT()), cot_.toUnsigned(stub->cot()));
+      set<int> psLayers;
+      TTBV psPattern(0, setup_->numLayers());
       for (StubSF* stub : stubs) {
-        hitPattern.set(distance(layerEncoding.begin(), find(layerEncoding.begin(), layerEncoding.end(), stub->layer())));
-        d += stub->chi2();
+        hitPattern.set(stub->layer());
+        if (setup_->psModule(stub->ttStubRef()))
+          psLayers.insert(stub->layer());
       }
-      return d / (hitPattern.count() - 2) * pow(2, hitPattern.count(0, hitPattern.pmEncode(), false));
+      // at least 4 layers
+      if (hitPattern.count() < setup_->kfMinLayers())
+        return true;
+      // at least 2 ps stubs (two stubs in first 3 layers?)
+      if ((int)psLayers.size() < 2)
+        return true;
+      // prepare cuts on skipped layers by taking maybe layers into account
+      StubSF* stub = stubs.front();
+      const vector<int>& maybeLayer = layerEncoding_->maybeLayer(stub->sectorEta(), zT_.toUnsigned(stub->zT()), cot_.toUnsigned(stub->cot()));
+      const int pos = hitPattern.encode(setup_->kfMinLayers());
+      for (int layer : maybeLayer)
+        hitPattern.set(layer);
+      // no more then 2 skipped layers
+      if (hitPattern.count(0, pos, false) > setup_->kfMaxSkippedLayers())
+        return true;
+      // no 2 skipped layers in a row
+      for (int layer = 0; layer < pos; layer++)
+        if (!hitPattern[layer] && !hitPattern[layer + 1])
+          return true;
+      return false;
     };
-    auto smallerChi2 = [this, chi2](const vector<StubSF*>& lhs, const vector<StubSF*>& rhs) {
+    auto lessSkippedLayers = [this](const vector<StubSF*>& lhs, const vector<StubSF*>& rhs) {
+      auto numSkippedLayers = [this](const vector<StubSF*>& stubs) {
+        TTBV hitPattern(0, setup_->numLayers());
+        for (StubSF* stub : stubs)
+          hitPattern.set(stub->layer());
+        return hitPattern.count(0, hitPattern.pmEncode(), false);
+      };
+      return numSkippedLayers(lhs) < numSkippedLayers(rhs);
+    };
+    auto smallerChi2 = [this](const vector<StubSF*>& lhs, const vector<StubSF*>& rhs) {
+      auto chi2 = [this](const vector<StubSF*>& stubs) {
+        double d(0.);
+        for (StubSF* stub : stubs)
+          d += stub->chi2();
+        return d / ((int)stubs.size() - 2);
+      };
       return chi2(lhs) < chi2(rhs);
     };
-    /*auto smallerChi = [](const vector<StubSF*>& lhs, const vector<StubSF*>& rhs) {
-      auto chi = [](const vector<StubSF*>& stubs) {
-        double c(0.);
+    auto moreLayers = [this](const vector<StubSF*>& lhs, const vector<StubSF*>& rhs) {
+      auto numLayers = [this](const vector<StubSF*>& stubs) {
+        TTBV hitPattern(0, setup_->numLayers());
         for (StubSF* stub : stubs)
-          c += abs(stub->z());
-        return c;
+          hitPattern.set(stub->layer());
+        return hitPattern.count();
       };
-      return chi(lhs) < chi(rhs);
+      return numLayers(lhs) > numLayers(rhs);
     };
-    auto moreLayer = [](const vector<StubSF*>& lhs, const vector<StubSF*>& rhs) {
-      auto nLayer = [](const vector<StubSF*>& stubs) {
-        set<int> layer;
-        for (StubSF* stub : stubs)
-          layer.insert(stub->layer());
-        return layer.size();
-      };
-      return nLayer(lhs) > nLayer(rhs);
-    };*/
     const int numLayers = 16;
     static const vector<pair<int, int>> seedingLayers = {{1, 2}, {1, 3}, {2, 3}, {1, 11}, {2, 11}, {1, 12}, {2, 12}, {11, 12}};
     const double dT = setup_->chosenRofPhi() - setup_->chosenRofZ();
@@ -106,19 +131,7 @@ namespace trackerTFP {
         track.reserve(distance(start, it));
         copy(start, it, back_inserter(track));
       }
-      int iTrack(0);
-      const int sectorPhi = 5;
-      const int trackId = 192;
-      const bool debug = true && region_ == sectorPhi / 2 && channel == trackId / setup_->sfMaxTracks() && iTrack++ == trackId % setup_->sfMaxTracks();
       for (const vector<StubMHT*>& track : tracks) {
-        if (debug) {
-          cout << "SF" << endl;
-          for (StubMHT* stub : track) {
-            const GlobalPoint& gp = setup_->stubPos(stub->ttStubRef());
-            cout << gp.perp() << " " << gp.phi() << " " << gp.z() << endl;
-          }
-          cout << endl;
-        }
         const int eta = track.front()->sectorEta();
         const double dZT = (sinh(setup_->boundarieEta(eta + 1)) - sinh(setup_->boundarieEta(eta))) * setup_->chosenRofZ();
         vector<vector<StubMHT*>> layerStubs(numLayers);
@@ -146,26 +159,29 @@ namespace trackerTFP {
           const double dr = (r2 - r1);
           const double dz = (z2 - z1);
           const double cot = cot_.digi(dz / dr);
+          const double cotGlobal = cot + setup_->sectorCot(eta);
           const double zT = zT_.digi(z - cot * r);
           const double z0 = zT - cot * setup_->chosenRofZ();
           if (abs(z0) > setup_->beamWindowZ() + cot_.base() * setup_->chosenRofZ())
-          //if (abs(z0) > setup_->beamWindowZ())
             continue;
           if (abs(zT) > dZT / 2. + zT_.base() / 2.)
-          //if (abs(zT) > dZT / 2.)
             continue;
+          //if (!cot_.inRange(cot))
+            //continue;
+          const vector<int>& layerEncoding = layerEncoding_->layerEncoding(eta, zT_.toUnsigned(zT_.integer(zT)), cot_.toUnsigned(cot_.integer(cot)));
           vector<StubSF*> stubsSF;
           stubsSF.reserve(track.size());
           for (StubMHT* stub : track) {
             const double sr = stub->r() + dT;
             const double sz = stub->z();
             const double chi = sz - (zT + sr * cot);
-            const double dZ = zT_.base() + cot_.base() * abs(sr) + setup_->dZ(stub->ttStubRef());
+            const double dZ = zT_.base() + cot_.base() * abs(sr) + setup_->dZ(stub->ttStubRef(), cotGlobal);
             if (abs(chi) < dZ / 2.) {
-              const double v = setup_->v1(stub->ttStubRef(), cot + setup_->sectorCot(stub->sectorEta()));
+              const int layer = distance(layerEncoding.begin(), find(layerEncoding.begin(), layerEncoding.end(), layerId(stub)));
+              const double v = setup_->v1(stub->ttStubRef(), cotGlobal);
               const double cov = pow(cot_.base() * stub->r(), 2) + pow(zT_.base(), 2);
               const double chi2 = pow(chi, 2) / (v + cov);
-              stubsSF_.emplace_back(*stub, zT_.integer(zT), cot_.integer(cot), chi2);
+              stubsSF_.emplace_back(*stub, layer, zT_.integer(zT), cot_.integer(cot), chi2);
               stubsSF.push_back(&stubsSF_.back());
             }
           }
@@ -177,35 +193,12 @@ namespace trackerTFP {
         }
         if (seedTracks.empty())
           continue;
+        seedTracks.erase(remove_if(seedTracks.begin(), seedTracks.end(), kill), seedTracks.end());
+        stable_sort(seedTracks.begin(), seedTracks.end(), lessSkippedLayers);
         stable_sort(seedTracks.begin(), seedTracks.end(), smallerChi2);
-        //stable_sort(seedTracks.begin(), seedTracks.end(), moreLayer);
+        stable_sort(seedTracks.begin(), seedTracks.end(), moreLayers);
         const vector<StubSF*>& stubs = seedTracks.front();
         copy(stubs.begin(), stubs.end(), back_inserter(output));
-        if (debug) {
-          cout << cot_.base() << " " << zT_.base() << endl;
-          StubSF* stub = stubs.front();
-          const double qOverPt = dataFormats_->format(Variable::qOverPt, Process::mht).floating(stub->qOverPt());
-          const double phiT = dataFormats_->format(Variable::phiT, Process::mht).floating(stub->phiT());
-          const double off = (stub->sectorPhi() + setup_->numSectorsPhi() * region_ - .5) * dataFormats_->format(Variable::phiT, Process::ht).range();
-          cout << "m0SF = " << " " << -qOverPt << endl;
-          cout << "c0SF = " << " " << deltaPhi(phiT + qOverPt * setup_->chosenRofPhi() + off) << endl;
-          cout << "m1SF = " << " " << cot_.floating(stub->cot()) + setup_->sectorCot(stub->sectorEta()) << endl;
-          cout << "c1SF = " << " " << zT_.floating(stub->zT()) - cot_.floating(stub->cot()) * setup_->chosenRofZ() << endl;
-          cout << endl;
-          for (const vector<StubSF*>& track : seedTracks) {
-            TTBV hitPattern(0, setup_->numLayers());
-            for (StubSF* stub : track)
-              hitPattern.set(stub->layer());
-            cout << hitPattern << " " << chi2(track) << " ";
-            double chi2(0.);
-            for (StubSF* stub : track) {
-              chi2 += stub->chi2();
-              cout << stub->chi2() << " ";
-            }
-            cout << chi2 << endl;
-          }
-          cout << endl;
-        }
       }
       if (enableTruncation_ && ((int)output.size() > setup_->numFrames())) {
         const auto limit = next(output.begin(), setup_->numFrames());

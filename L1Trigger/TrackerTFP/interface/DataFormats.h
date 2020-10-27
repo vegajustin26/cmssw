@@ -155,7 +155,9 @@ namespace trackerTFP {
     int numChannel(Process p) const { return numChannel_[+p]; }
     int numStreams(Process p) const { return numStreams_[+p]; }
     const DataFormat& format(Variable v, Process p) const { return *formats_[+v][+p]; }
+    double chosenRofPhi() const { return hybrid() ? setup_->hybridChosenRofPhi() : setup_->chosenRofPhi(); }
   private:
+    bool hybrid() const { return iConfig_.getParameter<bool>("UseHybrid"); }
     int numDataFormats_;
     template<Variable v = Variable::begin, Process p = Process::begin>
     void countFormats();
@@ -187,6 +189,7 @@ namespace trackerTFP {
     Stub(const TTDTC::Frame& frame, const DataFormats* dataFormats, Process p);
     template<typename ...Others>
     Stub(const Stub<Others...>& stub, Ts... data);
+    Stub(const TTStubRef& ttStubRef, const DataFormats* dataFormats, Process p, Ts... data);
     Stub() {}
     ~Stub() {}
     explicit operator bool() const { return frame_.first.isNonnull(); }
@@ -285,7 +288,7 @@ namespace trackerTFP {
   class StubSF : public Stub<double, double, double, int, int, int, int, int, int, int> {
   public:
     StubSF(const TTDTC::Frame& frame, const DataFormats* dataFormats);
-    StubSF(const StubMHT& stub, int zT, int cot, double chi2);
+    StubSF(const StubMHT& stub, int layer, int zT, int cot, double chi2);
     ~StubSF(){}
     double chi2() const {return chi2_;}
     double r() const { return std::get<0>(data_); }
@@ -307,6 +310,7 @@ namespace trackerTFP {
   public:
     StubKFin(const TTDTC::Frame& frame, const DataFormats* dataFormats, int layer);
     StubKFin(const StubSF& stub, int layer, int trackId);
+    StubKFin(const TTStubRef& ttStubRef, const DataFormats* dataFormats, double r, double phi, double z, int trackId, int layer);
     ~StubKFin(){}
     int layer() const { return layer_; }
     double r() const { return std::get<0>(data_); }
@@ -325,6 +329,7 @@ namespace trackerTFP {
     Track(const Track<Others...>& track, Ts... data);
     template<typename ...Others>
     Track(const Stub<Others...>& stub, const TTTrackRef& ttTrackRef, Ts... data);
+    Track(const TTTrackRef& ttTrackRef, const DataFormats* dataFormats, Process p, Ts... data);
     ~Track() {}
     explicit operator bool() const { return frame_.first.isNonnull(); }
     const DataFormats* dataFormats() const { return dataFormats_; }
@@ -349,6 +354,7 @@ namespace trackerTFP {
   public:
     TrackKFin(const FrameTrack& frame, const DataFormats* dataFormats, const std::vector<StubKFin*>& stubs);
     TrackKFin(const StubSF& stub, const TTTrackRef& ttTrackRef, const TTBV& hitPattern, const TTBV& layerMap);
+    TrackKFin(const TTTrackRef& ttTrackRef, const DataFormats* dataFormats, const TTBV& hitPattern, const TTBV& layerMap, double phiT, double qOverPt, double zT, double cot, int sectorPhi, int sectorEta, int trackId);
     ~TrackKFin(){}
     const TTBV& hitPattern() const { return std::get<0>(data_); }
     std::vector<int> layerMap() const { return setup()->layerMap(hitPattern(), std::get<1>(data_)); }
@@ -364,6 +370,7 @@ namespace trackerTFP {
     StubKFin* layerStub(int layer) const { return stubs_[layer].front(); }
     std::vector<TTStubRef> ttStubRefs(const TTBV& hitPattern, const std::vector<int>& layerMap) const;
     const std::vector<std::vector<StubKFin*>>& stubs() const { return stubs_; }
+    double cotGlobal() const { return cot() + setup()->sectorCot(sectorEta()); }
   private:
     std::vector<std::vector<StubKFin*>> stubs_;
   };

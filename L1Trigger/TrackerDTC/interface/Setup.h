@@ -106,13 +106,13 @@ namespace trackerDTC {
     //
     std::vector<int> layerMap(const TTBV& ttBV) const;
     //
-    double dZ(const TTStubRef& ttStubRef) const;
-    //
-    double dPhi(const TTStubRef& ttStubRef) const;
-    //
-    double v0(const TTStubRef& ttStubRef, double qOverPt) const;
+    double dZ(const TTStubRef& ttStubRef, double cot) const;
     //
     double v1(const TTStubRef& ttStubRef, double cot) const;
+    //
+    double dPhi(const TTStubRef& ttStubRef, double qOverPt) const;
+    //
+    double v0(const TTStubRef& ttStubRef, double qOverPt) const;
     //
     const std::vector<SensorModule>& sensorModules() const { return sensorModules_; }
 
@@ -132,6 +132,8 @@ namespace trackerDTC {
     double invPtToDphi() const { return invPtToDphi_; }
     // region size in rad
     double baseRegion() const { return baseRegion_; }
+    // pt cut
+    double tpMinPt() const { return tpMinPt_; }
     // TP eta cut
     double tpMaxEta() const { return tpMaxEta_; }
     // TP cut on vertex pos r in cm
@@ -181,6 +183,10 @@ namespace trackerDTC {
     double halfLength() const { return halfLength_; }
     // max strip/pixel length of outer tracker sensors in cm
     double maxLength() const { return maxLength_; }
+    //
+    double tiltApproxSlope() const { return tiltApproxSlope_; }
+    //
+    double tiltApproxIntercept() const { return tiltApproxIntercept_; }
 
     // Hybrid specific parameter
 
@@ -621,6 +627,8 @@ namespace trackerDTC {
 
     // Parameter specifying TrackingParticle used for Efficiency measurements
     edm::ParameterSet pSetTP_;
+    // pt cut
+    double tpMinPt_;
     // eta cut
     double tpMaxEta_;
     // cut on vertex pos r in cm
@@ -662,6 +670,10 @@ namespace trackerDTC {
     double maxPitch_;
     // max strip/pixel length of outer tracker sensors in cm
     double maxLength_;
+    //
+    double tiltApproxSlope_;
+    //
+    double tiltApproxIntercept_;
 
     // Parameter specifying front-end
     edm::ParameterSet pSetFE_;

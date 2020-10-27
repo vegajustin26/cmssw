@@ -18,11 +18,7 @@
 #include <TH1F.h>
 
 #include <vector>
-//#include <deque>
-//#include <set>
-//#include <cmath>
-//#include <numeric>
-//#include <sstream>
+#include <deque>
 
 using namespace std;
 using namespace edm;
@@ -59,6 +55,7 @@ namespace trackerDTC {
     TH1F* hisModules_;
     TProfile* profDTCs_;
     TH1F* hisDTCs_;
+    TH1F* hisTracker_;
   };
 
   AnalyzerDAQ::AnalyzerDAQ(const ParameterSet& iConfig) {
@@ -88,6 +85,9 @@ namespace trackerDTC {
     numChannels = setup_->numDTCs();
     hisDTCs_ = dir.make<TH1F>("His DTC Occupancy", ";", maxOcc / 16, -.5, maxOcc - .5);
     profDTCs_ = dir.make<TProfile>("Prof DTC Occupancy", ";", numChannels, -.5, numChannels - .5);
+    dir = fs->mkdir("Tracker");
+    maxOcc = pow(2, 29);
+    hisTracker_ = dir.make<TH1F>("His Tracker Occupancy", ";", maxOcc * pow(2., -12), -.5, maxOcc - .5);
   }
 
   void AnalyzerDAQ::analyze(const Event& iEvent, const EventSetup& iSetup) {
@@ -95,8 +95,8 @@ namespace trackerDTC {
     Handle<TTClusterDetSetVec> handle;
     iEvent.getByToken<TTClusterDetSetVec>(edGetToken_, handle);
     // apply cabling map, reorganise cluster collections
-    vector<vector<vector<TTClusterRef>>> dtcs(setup_->numDTCs(),
-                                              vector<vector<TTClusterRef>>(setup_->numModulesPerDTC()));
+    vector<vector<deque<TTClusterRef>>> dtcs(setup_->numDTCs(),
+                                              vector<deque<TTClusterRef>>(setup_->numModulesPerDTC()));
     for (auto itModule = handle->begin(); itModule != handle->end(); itModule++) {
       // DetSetVec->detId - 1 or + 0 = tk layout det id depending from which of both sensor planes the cluster has been constructed
       const DetId& detIdModule = itModule->detId();
@@ -105,24 +105,26 @@ namespace trackerDTC {
       // corresponding sensor module
       SensorModule* sm = setup_->sensorModule(detId);
       // empty cluster collection
-      vector<TTClusterRef>& module = dtcs[sm->dtcId()][sm->modId()];
-      module.reserve(itModule->size());
+      deque<TTClusterRef>& module = dtcs[sm->dtcId()][sm->modId()];
       for (TTClusterDetSet::const_iterator itCluster = itModule->begin(); itCluster != itModule->end(); itCluster++)
         module.emplace_back(makeRefTo(handle, itCluster));
     }
     // analyze organized TTCluster collections
     int iDTC(0);
     int iModule(0);
-    for (const vector<vector<TTClusterRef>>& dtc : dtcs) {
+    int nAll(0);
+    for (const vector<deque<TTClusterRef>>& dtc : dtcs) {
       int nCluster(0);
-      for (const vector<TTClusterRef>& module : dtc) {
+      for (const deque<TTClusterRef>& module : dtc) {
         nCluster += module.size();
         hisModules_->Fill(module.size());
         profModules_->Fill(iModule++, module.size());
       }
+      nAll += nCluster;
       hisDTCs_->Fill(nCluster);
       profDTCs_->Fill(iDTC++, nCluster);
     }
+    hisTracker_->Fill(nAll);
   }
 
 }  // namespace trackerDTC

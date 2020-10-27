@@ -83,6 +83,7 @@ namespace trackerTFP {
         continue;
       const TPPtr& tpPtr = tpPtrsFound.front();
       const double off = (found->phiSector() - .5) * 2. * M_PI / setup_->numRegions() / setup_->numSectorsPhi();
+      cout << setprecision(8);
       cout << found->phiSector() << " " << found->etaSector() << " " << endl;
       cout << "Found" << endl;
       for (const TTStubRef& ttStubRef : ttStubRefsFound) {
@@ -97,7 +98,7 @@ namespace trackerTFP {
       cout << "TP" << endl;
       for (const TTStubRef& ttStubRef : handleStubAssociation->findTTStubRefs(tpPtr)) {
         const GlobalPoint& gp = setup_->stubPos(ttStubRef);
-        cout << gp.perp() << " " << gp.phi() << " " << gp.z() << " " << setup_->layerId(ttStubRef) << " " << setup_->dPhi(ttStubRef) << " " << setup_->dZ(ttStubRef) << endl;
+        cout << gp.perp() << " " << gp.phi() << " " << gp.z() << " " << setup_->layerId(ttStubRef) << endl;
       }
       cout << found->hitPattern() << " " << found->trackSeedType() << endl;
       cout << "m0SF = " << " " << -found->rInv() << endl;

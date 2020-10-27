@@ -8,14 +8,12 @@
 
 #include <deque>
 
-#include <TH1F.h>
-
 namespace trackerTFP {
 
   // Class to fit in a region tracks
   class KalmanFilter {
   public:
-    KalmanFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, const KalmanFilterFormats* kalmanFilterFormats, int region, std::vector<TH1F*> histos);
+    KalmanFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, const KalmanFilterFormats* kalmanFilterFormats, int region);
     ~KalmanFilter(){}
 
     // read in and organize input stubs
@@ -33,8 +31,6 @@ namespace trackerTFP {
     template<class T>
     T* pop_front(std::vector<T*>& ts) const;
 
-    // hit pattern check
-    bool valid(TrackKFin* track) const;
     // adds a layer to states
     void layer(std::deque<State*>& stream);
     // repicks combinatoric stubs for state
@@ -81,8 +77,6 @@ namespace trackerTFP {
     DataFormatKF v1_;
     DataFormatKF r0_;
     DataFormatKF r1_;
-    DataFormatKF r02_;
-    DataFormatKF r12_;
     DataFormatKF S00_;
     DataFormatKF S01_;
     DataFormatKF S12_;
@@ -95,17 +89,12 @@ namespace trackerTFP {
     DataFormatKF R11_;
     DataFormatKF invR00_;
     DataFormatKF invR11_;
-    DataFormatKF chi20_;
-    DataFormatKF chi21_;
     DataFormatKF C00_;
     DataFormatKF C01_;
     DataFormatKF C11_;
     DataFormatKF C22_;
     DataFormatKF C23_;
     DataFormatKF C33_;
-    DataFormatKF chi2_;
-    //
-    std::vector<TH1F*> histos_;
  
   };
 

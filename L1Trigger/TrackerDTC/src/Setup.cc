@@ -81,6 +81,7 @@ namespace trackerDTC {
         hybridDisk2SRsSet_(pSetHybrid_.getParameter<vector<ParameterSet>>("Disk2SRsSet")),
         // Parameter specifying TrackingParticle used for Efficiency measurements
         pSetTP_(iConfig.getParameter<ParameterSet>("TrackingParticle")),
+        tpMinPt_(pSetTP_.getParameter<double>("MinPt")),
         tpMaxEta_(pSetTP_.getParameter<double>("MaxEta")),
         tpMaxVertR_(pSetTP_.getParameter<double>("MaxVertR")),
         tpMaxVertZ_(pSetTP_.getParameter<double>("MaxVertZ")),
@@ -102,6 +103,8 @@ namespace trackerDTC {
         halfLength_(pSetFW_.getParameter<double>("HalfLength")),
         maxPitch_(pSetFW_.getParameter<double>("MaxPitch")),
         maxLength_(pSetFW_.getParameter<double>("MaxLength")),
+        tiltApproxSlope_(pSetFW_.getParameter<double>("TiltApproxSlope")),
+        tiltApproxIntercept_(pSetFW_.getParameter<double>("TiltApproxIntercept")),
         // Parmeter specifying front-end
         pSetFE_(iConfig.getParameter<ParameterSet>("FrontEnd")),
         widthBend_(pSetFE_.getParameter<int>("WidthBend")),
@@ -506,7 +509,7 @@ namespace trackerDTC {
   // configure TPSelector
   void Setup::configureTPSelector() {
     // configure TrackingParticleSelector
-    const double ptMin = minPt_;
+    const double ptMin = tpMinPt_;
     constexpr double ptMax = 9.e9;
     const double etaMax = tpMaxEta_;
     const double tip = tpMaxVertR_;
@@ -581,24 +584,27 @@ namespace trackerDTC {
   }
 
   //
-  double Setup::dZ(const TTStubRef& ttStubRef) const {
+  double Setup::dZ(const TTStubRef& ttStubRef, double cot) const {
     const DetId& detId = ttStubRef->getDetId();
     SensorModule* sm = sensorModule(detId + 1);
-    static const double m_approx = 0.886;
-    static const double c_approx = 0.504;
-    const double m = sm->tilt() != 0. && sm->barrel() ? m_approx : sm->sin();
-    const double c = sm->tilt() != 0. && sm->barrel() ? c_approx : sm->cos();
-    const double cot = sm->z() / sm->r();
-    const double cor = abs(m * cot) + c;
-    return cor * sm->pitchCol();
+    return sm->pitchCol() * sm->tiltCorrection(cot);
   }
 
   //
-  double Setup::dPhi(const TTStubRef& ttStubRef) const {
+  double Setup::v1(const TTStubRef& ttStubRef, double cot) const {
+    return pow(dZ(ttStubRef, cot), 2) / 12.;
+  }
+
+  //
+  double Setup::dPhi(const TTStubRef& ttStubRef, double qOverPt) const {
     const DetId& detId = ttStubRef->getDetId();
     SensorModule* sm = sensorModule(detId + 1);
     const double r = stubPos(ttStubRef).perp();
-    return sm->pitchRow() / r;
+    const double sigma = sm->pitchRow() / r;
+    const double scat = 0.00075 * qOverPt / invPtToDphi_;
+    const double extra = sm->barrel() ? 0. : sm->pitchCol() * qOverPt;
+    const double digi = basePhi_;
+    return sigma + scat + extra + digi;
   }
 
   //
@@ -609,28 +615,9 @@ namespace trackerDTC {
     const double sigma = pow(sm->pitchRow() / r, 2) / 12.;
     const double scat = pow(0.00075 * qOverPt / invPtToDphi_, 2);
     const double extra = sm->barrel() ? 0. : pow(sm->pitchCol() * qOverPt, 2);
-    return sigma + scat + extra;
+    const double digi = pow(basePhi_, 2);
+    return sigma + scat + extra + digi;
 
-  }
-
-  //
-  double Setup::v1(const TTStubRef& ttStubRef, double cot) const {
-    return pow(dZ(ttStubRef), 2) / 12.;
-    /*const DetId& detId = ttStubRef->getDetId();
-    SensorModule* sm = sensorModule(detId + 1);
-    enum TypeBarrel { nonBarrel = 0, tiltedMinus = 1, tiltedPlus = 2, flat = 3 };
-    const TypeBarrel type = static_cast<TypeBarrel>(trackerTopology_->tobSide(detId + 1));
-    const bool tilt = type == tiltedMinus || type == tiltedPlus;
-    static const double m_approx = 0.886;
-    static const double c_approx = 0.504;
-    double m = 0.;
-    double c = 1.;
-    if (sm->barrel()) {
-      m = tilt? m_approx : 1.;
-      c = tilt? c_approx : 0.;
-    }
-    const double cor = abs(m * cot) + c;
-    return pow(cor * sm->pitchCol(), 2 ) / 12.;*/
   }
 
   // checks if stub collection is considered forming a reconstructable track 

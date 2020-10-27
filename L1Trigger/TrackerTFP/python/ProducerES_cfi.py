@@ -2,6 +2,8 @@ import FWCore.ParameterSet.Config as cms
 
 TrackTriggerDataFormats_params = cms.PSet (
 
+  UseHybrid = cms.bool( True ),
+
   SeedFilter = cms.PSet (
 
     WidthZT  = cms.int32( 5 ),

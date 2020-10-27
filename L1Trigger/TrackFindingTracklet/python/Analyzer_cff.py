@@ -1,0 +1,8 @@
+import FWCore.ParameterSet.Config as cms
+
+from L1Trigger.TrackFindingTracklet.Analyzer_cfi import TrackFindingTrackletAnalyzer_params
+from L1Trigger.TrackFindingTracklet.Producer_cfi import TrackFindingTrackletProducer_params
+
+TrackFindingTrackletAnalyzerTracklet = cms.EDAnalyzer( 'trackFindingTracklet::AnalyzerTracklet', TrackFindingTrackletAnalyzer_params, TrackFindingTrackletProducer_params )
+TrackFindingTrackletAnalyzerKFin = cms.EDAnalyzer( 'trackerTFP::AnalyzerKFin', TrackFindingTrackletAnalyzer_params, TrackFindingTrackletProducer_params )
+TrackFindingTrackletAnalyzerKF = cms.EDAnalyzer( 'trackFindingTracklet::AnalyzerKF', TrackFindingTrackletAnalyzer_params, TrackFindingTrackletProducer_params )

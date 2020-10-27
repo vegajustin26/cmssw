@@ -311,6 +311,19 @@ public:
     return size_;
   }
 
+  // position for n'th '1' or '0' counted from least to most significant bit
+  int encode(int n, bool b = true) const {
+    int sum(0);
+    for (int e = 0; e < size_; e++) {
+      if (bs_[e] == b) {
+        sum++;
+        if (sum == n)
+          return e;
+      }
+    }
+    return size_;
+  }
+
   std::vector<int> ids(bool b = true, bool singed = false) const {
     std::vector<int> v;
     v.reserve(bs_.count());

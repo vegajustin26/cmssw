@@ -64,29 +64,32 @@ TrackTrigger_params = cms.PSet (
 
   # Parameter specifying TrackingParticle used for Efficiency measurements
   TrackingParticle = cms.PSet (
-    MaxEta           = cms.double(  2.4 ), # eta cut
-    MaxVertR         = cms.double(  1.  ), # cut on vertex pos r in cm
-    MaxVertZ         = cms.double( 30.  ), # cut on vertex pos z in cm
-    MaxD0            = cms.double(  5.  ), # cut on impact parameter in cm
-    MinLayers        = cms.int32 (  4   ), # required number of associated layers to a TP to consider it reconstruct-able
-    MinLayersPS      = cms.int32 (  0   )  # required number of associated ps layers to a TP to consider it reconstruct-able
+    MinPt       = cms.double(  2.  ), # pt cut in GeV
+    MaxEta      = cms.double(  2.4 ), # eta cut
+    MaxVertR    = cms.double(  1.  ), # cut on vertex pos r in cm
+    MaxVertZ    = cms.double( 30.  ), # cut on vertex pos z in cm
+    MaxD0       = cms.double(  5.  ), # cut on impact parameter in cm
+    MinLayers   = cms.int32 (  4   ), # required number of associated layers to a TP to consider it reconstruct-able
+    MinLayersPS = cms.int32 (  0   )  # required number of associated ps layers to a TP to consider it reconstruct-able
   ),
 
   # Fimrware specific Parameter
   Firmware = cms.PSet (
-    NumFramesInfra = cms.int32 (   6                ), # needed gap between events of emp-infrastructure firmware
-    FreqLHC        = cms.double(  40.               ), # LHC bunch crossing rate in MHz
-    FreqBE         = cms.double( 360.               ), # processing Frequency of DTC & TFP in MHz, has to be integer multiple of FreqLHC
-    TMP_FE         = cms.int32 (   8                ), # number of events collected in front-end
-    TMP_TFP        = cms.int32 (  18                ), # time multiplexed period of track finding processor
-    SpeedOfLight   = cms.double(   2.99792458       ), # in e8 m/s
-    BField         = cms.double(   3.81120228767395 ), # in T
-    BFieldError    = cms.double(   1.e-6            ), # accepted difference to EventSetup in T
-    OuterRadius    = cms.double( 112.7              ), # outer radius of outer tracker in cm
-    InnerRadius    = cms.double(  21.8              ), # inner radius of outer tracker in cm
-    HalfLength     = cms.double( 270.               ), # half length of outer tracker in cm
-    MaxPitch       = cms.double(    .01             ), # max strip/pixel pitch of outer tracker sensors in cm
-    MaxLength      = cms.double(   2.5              )  # max strip/pixel length of outer tracker sensors in cm
+    NumFramesInfra      = cms.int32 (   6                ), # needed gap between events of emp-infrastructure firmware
+    FreqLHC             = cms.double(  40.               ), # LHC bunch crossing rate in MHz
+    FreqBE              = cms.double( 360.               ), # processing Frequency of DTC & TFP in MHz, has to be integer multiple of FreqLHC
+    TMP_FE              = cms.int32 (   8                ), # number of events collected in front-end
+    TMP_TFP             = cms.int32 (  18                ), # time multiplexed period of track finding processor
+    SpeedOfLight        = cms.double(   2.99792458       ), # in e8 m/s
+    BField              = cms.double(   3.81120228767395 ), # in T
+    BFieldError         = cms.double(   1.e-6            ), # accepted difference to EventSetup in T
+    OuterRadius         = cms.double( 112.7              ), # outer radius of outer tracker in cm
+    InnerRadius         = cms.double(  21.8              ), # inner radius of outer tracker in cm
+    HalfLength          = cms.double( 270.               ), # half length of outer tracker in cm
+    MaxPitch            = cms.double(    .01             ), # max strip/pixel pitch of outer tracker sensors in cm
+    MaxLength           = cms.double(   2.5              ), # max strip/pixel length of outer tracker sensors in cm
+    TiltApproxSlope     = cms.double(   0.886            ), # 
+    TiltApproxIntercept = cms.double(   0.504            )  # 
   ),
 
   # Parmeter specifying front-end
@@ -157,7 +160,7 @@ TrackTrigger_params = cms.PSet (
 
   # Parmeter specifying KalmanFilter
   KalmanFilter = cms.PSet (
-    NumWorker        = cms.int32(   2 ), # number of kf worker
+    NumWorker        = cms.int32(   1 ), # number of kf worker
     WidthLutInvPhi   = cms.int32(  10 ), # number of bits for internal reciprocal look up
     WidthLutInvZ     = cms.int32(  10 ), # number of bits for internal reciprocal look up
     NumTracks        = cms.int32(  16 ), # cut on number of input candidates

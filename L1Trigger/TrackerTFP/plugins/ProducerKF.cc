@@ -1,5 +1,4 @@
-//#include "FWCore/Framework/interface/stream/EDProducer.h"
-#include "FWCore/Framework/interface/one/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -19,10 +18,6 @@
 
 #include <string>
 
-#include "FWCore/ServiceRegistry/interface/Service.h"
-#include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include <TH1F.h>
-
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
@@ -35,17 +30,15 @@ namespace trackerTFP {
    *  \date   2020, July
    */
   //class ProducerKF : public stream::EDProducer<> {
-  class ProducerKF : public one::EDProducer<one::WatchRuns, one::SharedResources> {
+  class ProducerKF : public stream::EDProducer<> {
   public:
     explicit ProducerKF(const ParameterSet&);
     ~ProducerKF() override {}
 
   private:
-    void beginJob() override {}
     void beginRun(const Run&, const EventSetup&) override;
     void produce(Event&, const EventSetup&) override;
     void endJob() {}
-    void endRun(const Run& iEvent, const EventSetup& iSetup) override {}
 
     // ED input token of sf stubs and tracks
     EDGetTokenT<TTDTC::Streams> edGetTokenStubs_;
@@ -69,14 +62,10 @@ namespace trackerTFP {
     const DataFormats* dataFormats_;
     // helper class to
     const KalmanFilterFormats* kalmanFilterFormats_;
-    //
-    vector<TH1F*> histos_;
   };
 
-  ProducerKF::ProducerKF(const ParameterSet& iConfig) :
-    iConfig_(iConfig), histos_(12)
+  ProducerKF::ProducerKF(const ParameterSet& iConfig) : iConfig_(iConfig)
   {
-    usesResource("TFileService");
     const string& label = iConfig.getParameter<string>("LabelKFin");
     const string& branchAccepted = iConfig.getParameter<string>("BranchAccepted");
     const string& branchLost = iConfig.getParameter<string>("BranchLost");
@@ -108,21 +97,6 @@ namespace trackerTFP {
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
     // helper class to
     kalmanFilterFormats_ = &iSetup.getData(esGetTokenKalmanFilterFormats_);
-    Service<TFileService> fs;
-    TFileDirectory dir;
-    dir = fs->mkdir("KF");
-    histos_[0] = dir.make<TH1F>("C00", ";", 1000, 0., 1.e-9);
-    histos_[1] = dir.make<TH1F>("C01", ";", 1000, -1.e-7, 1.e-7);
-    histos_[2] = dir.make<TH1F>("C11", ";", 1000, 0., 1.e-7);
-    histos_[3] = dir.make<TH1F>("C22", ";", 1000, 0., 3.e-3);
-    histos_[4] = dir.make<TH1F>("C23", ";", 1000, -1.e-2, 1.e-2);
-    histos_[5] = dir.make<TH1F>("C33", ";", 1000, 0., 0.5e0);
-    histos_[6] = dir.make<TH1F>("chi2", ";", 1000, 0., 1.e2);
-    histos_[7] = dir.make<TH1F>("chi20", ";", 1000, 0., 1.e2);
-    histos_[8] = dir.make<TH1F>("chi21", ";", 1000, 0., 1.e2);
-    histos_[9] = dir.make<TH1F>("chi2KF", ";", 1000, 0., 1.e2);
-    histos_[10] = dir.make<TH1F>("chi20KF", ";", 1000, 0., 1.e2);
-    histos_[11] = dir.make<TH1F>("chi21KF", ";", 1000, 0., 1.e2);
   }
 
   void ProducerKF::produce(Event& iEvent, const EventSetup& iSetup) {
@@ -139,7 +113,7 @@ namespace trackerTFP {
       iEvent.getByToken<StreamsTrack>(edGetTokenTracks_, handleTracks);
       for (int region = 0; region < setup_->numRegions(); region++) {
         // object to find in a region finer rough candidates in r-z
-        KalmanFilter kf(iConfig_, setup_, dataFormats_, kalmanFilterFormats_, region, histos_);
+        KalmanFilter kf(iConfig_, setup_, dataFormats_, kalmanFilterFormats_, region);
         // read in and organize input stubs
         kf.consume(*handleStubs, *handleLost);
         // read in and organize input tracks

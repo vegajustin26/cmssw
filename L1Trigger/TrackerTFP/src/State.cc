@@ -25,7 +25,11 @@ namespace trackerTFP {
     C23_(state->C23_),
     C33_(state->C33_),
     chi20_(state->chi20_),
-    chi21_(state->chi21_)
+    chi21_(state->chi21_),
+    chi2_(state->chi2_),
+    nPS_(state->nPS_),
+    numSkippedLayers_(state->numSkippedLayers_),
+    numConsistentLayers_(state->numConsistentLayers_)
   {}
 
   // proto state constructor
@@ -36,7 +40,11 @@ namespace trackerTFP {
     parent_(nullptr),
     stub_(nullptr),
     layerMap_(setup_->numLayers()),
-    hitPattern_(0, setup_->numLayers())
+    hitPattern_(0, setup_->numLayers()),
+    chi2_(0.),
+    nPS_(0),
+    numSkippedLayers_(0),
+    numConsistentLayers_(0)
   {
     // initial track parameter residuals w.r.t. found track
     x0_ = 0.;
@@ -50,10 +58,22 @@ namespace trackerTFP {
     C33_  = pow(dataFormats_->base(Variable::zT, Process::sf), 2);
     C01_  = 0.;
     C23_  = 0.;
-    chi20_ = 0.;
-    chi21_ = 0.;
     // first stub
+    if (track->stubs()[track->hitPattern().plEncode()].empty()) {
+      cout << track->trackId() << endl;
+      cout << track->hitPattern() << " ";
+      for (int n : track->layerMap())
+        cout << n;
+      cout << " ";
+      for (const vector<StubKFin*>& layer : track->stubs())
+        cout << layer.size();
+      cout << endl;
+      throw cms::Exception("...");
+    }
     stub_ = track->layerStub(track->hitPattern().plEncode());
+    //
+    chi20_.reserve(setup_->kfMaxLayers());
+    chi21_.reserve(setup_->kfMaxLayers());
   }
 
   // combinatoric state constructor
@@ -78,13 +98,12 @@ namespace trackerTFP {
     C33_ = doubles[7];
     C01_ = doubles[8];
     C23_ = doubles[9];
-    chi20_ = doubles[10];
-    chi21_ = doubles[11];
     // update maps
     const int layer = stub_->layer();
     hitPattern_.set(layer);
     const vector<StubKFin*>& stubs = track_->layerStubs(layer);
     layerMap_[layer] = distance(stubs.begin(), find(stubs.begin(), stubs.end(), stub_));
+    nPS_ += setup_->psModule(stub_->ttStubRef()) ? 1 : 0;
     // pick next stub
     stub_ = nullptr;
     if (hitPattern_.count() != setup_->kfMaxLayers()) {
@@ -102,9 +121,27 @@ namespace trackerTFP {
     return track.frame();
   }
 
-  double State::v1() const {
-    const double cot = setup_->sectorCot(track_->sectorEta()) + track_->cot();
-    return setup_->v1(stub_->ttStubRef(), cot);
+  //
+  void State::finish() {
+    State* p = parent_;
+    while (p) {
+      const TTStubRef& ttStubRef = p->stub()->ttStubRef();
+      const double r0 = p->m0() - (x1_ + x0_ * p->H00());
+      const double r1 = p->m1() - (x3_ + x2_ * p->H12());
+      const double d0 = setup_->dPhi(ttStubRef, track_->qOverPt());
+      const double d1 = setup_->dZ(ttStubRef, track_->cotGlobal());
+      const double v0 = setup_->v0(ttStubRef, track_->qOverPt());
+      const double v1 = setup_->v1(ttStubRef, track_->cotGlobal());
+      if (abs(r0) < d0 / 2. && abs(r1) < d1 / 2.)
+        numConsistentLayers_++;
+      const double chi20 = pow(r0, 2) / v0;
+      const double chi21 = pow(r1, 2) / v1;
+      chi2_ += chi20 + chi21;
+      chi20_.push_back(chi20);
+      chi21_.push_back(chi21);
+      p = p->parent();
+    }
+    numSkippedLayers_ = hitPattern_.count(0, hitPattern_.pmEncode(), false);
   }
 
 } // namespace trackerTFP
