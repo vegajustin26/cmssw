@@ -333,12 +333,12 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
                                            const Stub* outerFPGAStub,
                                            const L1TStub* outerStub) {
   if (settings_.debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "TrackletCalculator " << getName()
+    edm::LogVerbatim("Tracklet") << "TrackletCalculatorBase " << getName()
                                  << " trying stub pair in layer (inner outer): " << innerFPGAStub->layer().value()
                                  << " " << outerFPGAStub->layer().value();
   }
 
-  assert(outerFPGAStub->isBarrel());
+  assert(outerFPGAStub->layerdisk()<N_LAYER);
   assert(layerdisk1_ == (unsigned int)innerFPGAStub->layer().value());
   assert(layerdisk1_ < N_LAYER && layerdisk2_ < N_LAYER);
 
@@ -561,11 +561,18 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   izproj[3] = ITC->zL_3_final.ival();
 
   if (!goodTrackPars(ITC->rinv_final.local_passes(), ITC->z0_final.local_passes())) {
+    if (settings_.debugTracklet()) {
+      edm::LogVerbatim("Tracklet") << getName() << " Failed rinv or z0 cut";
+    }
     return false;
   }
 
-  if (!inSector(iphi0, irinv, phi0approx, rinvapprox))
+  if (!inSector(iphi0, irinv, phi0approx, rinvapprox)) {
+    if (settings_.debugTracklet()) {
+      edm::LogVerbatim("Tracklet") << getName() << " Failed in sector check";
+    }
     return false;
+  }
 
   for (unsigned int i = 0; i < N_LAYER - 2; ++i) {
     //reject projection if z is out of range
@@ -1113,9 +1120,9 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
                                             const Stub* outerFPGAStub,
                                             const L1TStub* outerStub) {
   //Deal with overlap stubs here
-  assert(outerFPGAStub->isBarrel());
+  assert(outerFPGAStub->layerdisk()<N_LAYER);
 
-  assert(innerFPGAStub->isDisk());
+  assert(innerFPGAStub->layerdisk()>=N_LAYER);
 
   int disk = innerFPGAStub->disk().value();
 

@@ -122,21 +122,7 @@ void SLHCEvent::write(ofstream& out) {
   for (auto& stub : stubs_) {
     stub.write(out);
   }
-  out << "StubEnd" << endl;
-}
-
-void SLHCEvent::write(ostream& out) {
-  out << "Event: " << eventnum_ << endl;
-
-  for (auto& simtrack : simtracks_) {
-    simtrack.write(out);
-  }
-  out << "SimTrackEnd" << endl;
-
-  for (auto& stub : stubs_) {
-    stub.write(out);
-  }
-  out << "StubEnd" << endl;
+  out << "Stubend" << endl;
 }
 
 unsigned int SLHCEvent::layersHit(int tpid, int& nlayers, int& ndisks) {

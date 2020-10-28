@@ -12,6 +12,9 @@ using namespace trklet;
 Stub::Stub(Settings const& settings) : settings_(settings) {}
 
 Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phimaxsec) : settings_(settings) {
+
+  layerdisk_=stub.layerdisk();
+
   double r = stub.r();
   double z = stub.z();
   double sbend = stub.bend();

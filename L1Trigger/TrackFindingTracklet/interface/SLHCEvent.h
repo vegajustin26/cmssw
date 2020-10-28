@@ -43,7 +43,6 @@ namespace trklet {
     const L1TStub& lastStub() const { return stubs_.back(); }
 
     void write(std::ofstream& out);
-    void write(std::ostream& out);
 
     unsigned int layersHit(int tpid, int& nlayers, int& ndisks);
 

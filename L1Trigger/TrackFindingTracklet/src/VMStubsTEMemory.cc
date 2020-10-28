@@ -102,7 +102,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub, int bin) {
       stubsbinnedvm_[bin].push_back(vmstub);
     }
   } else {
-    if (vmstub.stub()->isBarrel()) {
+    if (vmstub.stub()->layerdisk()<N_LAYER) {
       if (!isinner_) {
         if (stubsbinnedvm_[bin].size() >= settings_.maxStubsPerBin())
           return false;
@@ -161,7 +161,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub) {
         }
       }
     } else {
-      if (vmstub.stub()->isBarrel()) {
+      if (vmstub.stub()->layerdisk()<N_LAYER) {
         if (!isinner_) {
           stubsbinnedvm_[bin].push_back(vmstub);
         }

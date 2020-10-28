@@ -87,19 +87,8 @@ L1TStub::L1TStub(int eventid,
 }
 
 void L1TStub::write(ofstream& out) {
-  out << "Stub: " << layer_ + 1 << "\t" << ladder_ << "\t" << module_ << "\t" << strip_ << "\t" << eventid_ << "\t"
-      << pt_ << "\t" << x_ << "\t" << y_ << "\t" << z_ << "\t" << bend_ << "\t" << isPSmodule_ << "\t" << isFlipped_
-      << "\t" << tps_.size() << " \t";
-  for (int itp : tps_) {
-    out << itp << " \t";
-  }
-  out << endl;
-}
-
-void L1TStub::write(ostream& out) {
-  out << "Stub: " << layer_ + 1 << "\t" << ladder_ << "\t" << module_ << "\t" << strip_ << "\t" << eventid_ << "\t"
-      << pt_ << "\t" << x_ << "\t" << y_ << "\t" << z_ << "\t" << bend_ << "\t" << isPSmodule_ << "\t" << isFlipped_
-      << "\t" << tps_.size() << " \t";
+  out << "Stub: " << DTClink_ << "\t" << region_ << "\t" << layerdisk_ << "\t" << isPSmodule_ << "\t" << isFlipped_ << "\t"
+      << x_ << "\t" << y_ << "\t" << z_ << "\t" << bend_ << "\t" << strip_ << "\t" << "\t" << tps_.size() << " \t";
   for (int itp : tps_) {
     out << itp << " \t";
   }

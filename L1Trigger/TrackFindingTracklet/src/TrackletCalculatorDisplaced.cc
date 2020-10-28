@@ -229,20 +229,20 @@ void TrackletCalculatorDisplaced::execute() {
         edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced execute " << getName() << "[" << iSector_ << "]";
       }
 
-      if (innerFPGAStub->isBarrel() && middleFPGAStub->isBarrel() && outerFPGAStub->isBarrel()) {
+      if (innerFPGAStub->layerdisk()<N_LAYER && middleFPGAStub->layerdisk()<N_LAYER && outerFPGAStub->layerdisk()<N_LAYER) {
         //barrel+barrel seeding
         bool accept = LLLSeeding(innerFPGAStub, innerStub, middleFPGAStub, middleStub, outerFPGAStub, outerStub);
         if (accept)
           countsel++;
-      } else if (innerFPGAStub->isDisk() && middleFPGAStub->isDisk() && outerFPGAStub->isDisk()) {
+      } else if (innerFPGAStub->layerdisk()>=N_LAYER && middleFPGAStub->layerdisk()>=N_LAYER && outerFPGAStub->layerdisk()>=N_LAYER) {
         throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
       } else {
         //layer+disk seeding
-        if (innerFPGAStub->isBarrel() && middleFPGAStub->isDisk() && outerFPGAStub->isDisk()) {  //D1D2L2
+        if (innerFPGAStub->layerdisk()<N_LAYER && middleFPGAStub->layerdisk()>=N_LAYER && outerFPGAStub->layerdisk()>=N_LAYER) {  //D1D2L2
           bool accept = DDLSeeding(innerFPGAStub, innerStub, middleFPGAStub, middleStub, outerFPGAStub, outerStub);
           if (accept)
             countsel++;
-        } else if (innerFPGAStub->isDisk() && middleFPGAStub->isBarrel() && outerFPGAStub->isBarrel()) {  //L2L3D1
+        } else if (innerFPGAStub->layerdisk()>=N_LAYER && middleFPGAStub->layerdisk()<N_LAYER && outerFPGAStub->layerdisk()<N_LAYER) {  //L2L3D1
           bool accept = LLDSeeding(innerFPGAStub, innerStub, middleFPGAStub, middleStub, outerFPGAStub, outerStub);
           if (accept)
             countsel++;
@@ -360,7 +360,7 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
                                  << middleFPGAStub->layer().value() << " " << outerFPGAStub->layer().value();
   }
 
-  assert(outerFPGAStub->isBarrel());
+  assert(outerFPGAStub->layerdisk()<N_LAYER);
 
   double r1 = innerStub->r();
   double z1 = innerStub->z();

@@ -483,8 +483,8 @@ double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, const Stub* curStub) {
   // Get phi position of stub
   stubphi = curStub->l1tstub()->phi();
   // Get region that the stub is in (Layer 1->6, Disk 1->5)
-  int Layer = curStub->layer().value() + 1;
-  int Disk = curStub->disk().value();
+  int Layer = curStub->layerdisk() + 1;
+  int Disk = curStub->layerdisk()-5;
   // Get phi projection of tracklet
   int seedindex = curTracklet->seedIndex();
   // If this stub is a seed stub, set projection=phi, so that res=0

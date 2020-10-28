@@ -160,7 +160,6 @@ void VMRouterCM::execute() {
           continue;
         if (memtype == 'D' && iphipos < 4)
           continue;
-        //cout << allstub.second->getName()<<endl;
         allstub.second->addStub(stub);
       }
 
@@ -243,15 +242,24 @@ void VMRouterCM::execute() {
         } else {
           lutval = vmrtable_.lookupdisk(indexz, indexr);
         }
-        if (lutval == -1)
+	
+        if (lutval == -1) {
+	  if (settings_.debugTracklet()) {
+            edm::LogVerbatim("Tracklet") << getName() << " rejected due to lutval";
+	  }
           continue;
+	}
 
         assert(lutval >= 0);
 
         FPGAWord binlookup(lutval, lutwidth, true, __LINE__, __FILE__);
 
-        if (binlookup.value() < 0)
+        if (binlookup.value() < 0){
+	  if (settings_.debugTracklet()) {
+            edm::LogVerbatim("Tracklet") << getName() << " rejected due to binlookup";
+	  }
           continue;
+	}
 
         unsigned int ivmte =
             iphi.bits(iphi.nbits() - (settings_.nbitsallstubs(layerdisk_) + settings_.nbitsvmte(1, iseed)),

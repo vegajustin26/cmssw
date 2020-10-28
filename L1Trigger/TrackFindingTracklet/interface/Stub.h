@@ -57,10 +57,7 @@ namespace trklet {
     const FPGAWord& disk() const { return disk_; }
     unsigned int layerdisk() const;
 
-    bool isBarrel() const { return layer_.value() != -1; }
-    bool isDisk() const { return disk_.value() != 0; }
-
-    bool isPSmodule() const { return isBarrel() ? (layer_.value() < (int)N_PSLAYER) : (r_.value() > 10); }
+    bool isPSmodule() const { return (layerdisk_<N_LAYER) ? (layerdisk_ < N_PSLAYER) : (r_.value() > 10); }
 
     double rapprox() const;
     double zapprox() const;
@@ -71,6 +68,8 @@ namespace trklet {
     void setl1tstub(L1TStub* l1tstub) { l1tstub_ = l1tstub; }
 
   private:
+    unsigned int layerdisk_;
+    
     FPGAWord layer_;
     FPGAWord disk_;
     FPGAWord r_;

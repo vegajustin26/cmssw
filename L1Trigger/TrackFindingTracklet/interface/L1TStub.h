@@ -46,7 +46,6 @@ namespace trklet {
     ~L1TStub() = default;
 
     void write(std::ofstream& out);
-    void write(std::ostream& out);
 
     double diphi();
 
@@ -64,10 +63,6 @@ namespace trklet {
 	return -disk;
       }
       return disk;
-      //if (z_ < 0.0) {
-      //  return -module_;
-      //}
-      //return module_;
     }
     unsigned int ladder() const { return ladder_; }
     unsigned int module() const { return module_; }

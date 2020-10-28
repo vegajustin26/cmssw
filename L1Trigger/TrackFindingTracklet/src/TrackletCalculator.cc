@@ -172,8 +172,8 @@ void TrackletCalculator::execute() {
         edm::LogVerbatim("Tracklet") << "TrackletCalculator execute " << getName() << "[" << iSector_ << "]";
       }
 
-      if (innerFPGAStub->isBarrel() && (getName() != "TC_D1L2A" && getName() != "TC_D1L2B")) {
-        if (outerFPGAStub->isDisk()) {
+      if (innerFPGAStub->layerdisk()<N_LAYER && (getName() != "TC_D1L2A" && getName() != "TC_D1L2B")) {
+        if (outerFPGAStub->layerdisk()>=N_LAYER) {
           //overlap seeding
           bool accept = overlapSeeding(outerFPGAStub, outerStub, innerFPGAStub, innerStub);
           if (accept)
@@ -185,12 +185,12 @@ void TrackletCalculator::execute() {
             countsel++;
         }
       } else {
-        if (outerFPGAStub->isDisk()) {
+        if (outerFPGAStub->layerdisk()>=N_LAYER) {
           //disk+disk seeding
           bool accept = diskSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
           if (accept)
             countsel++;
-        } else if (innerFPGAStub->isDisk()) {
+        } else if (innerFPGAStub->layerdisk()>=N_LAYER) {
           //layer+disk seeding
           bool accept = overlapSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
           if (accept)
