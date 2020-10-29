@@ -118,6 +118,20 @@ int main(const int argc, const char **argv) {
 
     L1SimTrack simtrk;
 
+    /*
+    if (ev.nsimtracks()==0) {
+      continue;
+    }
+
+    simtrk=ev.simtrack(0);
+
+    double eta=simtrk.eta();
+
+    if (abs((abs(eta)-2.2))>0.2) {
+      continue;		 
+    }
+    */
+
     // -----------------------------------------------------------------
     // setup ROOT Tree and Add Monte Carlo tracks to the ROOT-Tree Event
 #ifdef USEROOT

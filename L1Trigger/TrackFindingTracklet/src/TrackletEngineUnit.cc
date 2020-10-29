@@ -78,7 +78,7 @@ void TrackletEngineUnit::step() {
     rzbin += 8;
   if ((rzbin < tedata_.rzbinfirst_) || (rzbin - tedata_.rzbinfirst_ > tedata_.rzdiffmax_)) {
     if (settings_->debugTracklet()) {
-      edm::LogVerbatim("Tracklet") << " layer-disk stub pair rejected because rbin cut : " << rzbin << " "
+      edm::LogVerbatim("Tracklet") << " stub pair rejected because rzbin cut : " << rzbin << " "
                                    << tedata_.rzbinfirst_ << " " << tedata_.rzdiffmax_;
     }
   } else {
