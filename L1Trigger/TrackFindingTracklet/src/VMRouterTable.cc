@@ -252,7 +252,7 @@ int VMRouterTable::getLookup(unsigned int layerdisk, double z, double r, int ise
     if (rbin1 < 0)
       rbin1 = 0;
 
-    // This is a 9 bit word:
+    // This is a 9 bit word for disk seeding and same 10 bit as above for overlap:
     // xxx|yy|z|rrr
     // xxx is the delta r window
     // yy is the r bin yy is three bits for overlaps

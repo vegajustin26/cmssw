@@ -5,6 +5,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
 #include "L1Trigger/TrackFindingTracklet/interface/HistBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletConfigBuilder.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
 
 #include "DataFormats/Math/interface/deltaPhi.h"
@@ -77,13 +78,40 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     sectors_[i] = make_unique<Sector>(i, *settings_, globals_.get());
   }
 
+  if (settings_->extended()) {
+ 
+    ifstream inmem(settings_->memoryModulesFile().c_str());
+    assert(inmem.good());
+
+    ifstream inproc(settings_->processingModulesFile().c_str());
+    assert(inproc.good());
+
+    ifstream inwire(settings_->wiresFile().c_str());
+    assert(inwire.good());
+    
+    configure(inwire,inmem,inproc);
+
+  } else {
+
+    TrackletConfigBuilder config(settings_->combined());
+    
+    std::stringstream wires;
+    std::stringstream memories;
+    std::stringstream modules;
+
+    config.writeAll(wires,memories,modules);
+    configure(wires,memories,modules);
+    
+  }
+}
+
+
+void TrackletEventProcessor::configure(istream& inwire, istream& inmem, istream& inproc) {
+
   // get the memory modules
   if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "Will read memory modules file";
+    edm::LogVerbatim("Tracklet") << "Will read memory modules";
   }
-
-  ifstream inmem(settings_->memoryModulesFile().c_str());
-  assert(inmem.good());
 
   while (inmem.good()) {
     string memType, memName, size;
@@ -100,11 +128,9 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
 
   // get the processing modules
   if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "Will read processing modules file";
+    edm::LogVerbatim("Tracklet") << "Will read processing modules";
   }
 
-  ifstream inproc(settings_->processingModulesFile().c_str());
-  assert(inproc.good());
 
   while (inproc.good()) {
     string procType, procName;
@@ -124,8 +150,6 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     edm::LogVerbatim("Tracklet") << "Will read wiring information";
   }
 
-  ifstream inwire(settings_->wiresFile().c_str());
-  assert(inwire.good());
 
   while (inwire.good()) {
     string line;
@@ -151,6 +175,7 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
   }
 
 }
+
 
 void TrackletEventProcessor::event(SLHCEvent& ev) {
   globals_->event() = &ev;
