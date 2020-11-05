@@ -170,8 +170,9 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
 }
 
 void TrackletProcessor::execute() {
-  if (!settings_.useSeed(iSeed_))
+  if (!settings_.useSeed(iSeed_)) {
     return;
+  }
 
   //Consistency checks
   assert(iAllStub_ >= 0);
