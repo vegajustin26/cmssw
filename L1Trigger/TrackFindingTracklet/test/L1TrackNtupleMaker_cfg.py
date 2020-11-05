@@ -56,7 +56,7 @@ def getTxtFile(txtFileName):
 
 if GEOMETRY == "D49":
     inputMC = ["/store/relval/CMSSW_11_2_0_pre5/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_110X_mcRun4_realistic_v3_2026D49PU200-v1/20000/FDFA00CE-FA93-0142-B187-99CBD4A43944.root"]
-    
+    #inputMC = ["/store/relval/CMSSW_11_2_0_pre6/RelValSingleMuFlatPt1p5To8/GEN-SIM-DIGI-RAW/112X_mcRun4_realistic_v2_2026D49noPU_L1T-v1/20000/4E15C795-152F-A040-8AF4-5AF5F97EB996.root"]    
 else:
     print "this is not a valid geometry!!!"
     
@@ -70,7 +70,7 @@ process.Timing = cms.Service("Timing", summaryOnly = cms.untracked.bool(True))
 # L1 tracking: remake stubs?
 ############################################################
 
-#process.load('L1Trigger.TrackTrigger.TrackTrigger_cff')
+process.load('L1Trigger.TrackTrigger.TrackTrigger_cff')
 #from L1Trigger.TrackTrigger.TTStubAlgorithmRegister_cfi import *
 #process.load("SimTracker.TrackTriggerAssociation.TrackTriggerAssociator_cff")
 
@@ -79,6 +79,7 @@ process.Timing = cms.Service("Timing", summaryOnly = cms.untracked.bool(True))
 
 #process.TTClusterStub = cms.Path(process.TrackTriggerClustersStubs)
 #process.TTClusterStubTruth = cms.Path(process.TrackTriggerAssociatorClustersStubs) 
+
 
 ############################################################
 # L1 tracking
@@ -173,6 +174,23 @@ process.L1TrackNtuple = cms.EDAnalyzer('L1TrackNtupleMaker',
 
 process.ana = cms.Path(process.L1TrackNtuple)
 
+process.load( 'L1Trigger.TrackerDTC.ProducerED_cff' )
+process.load( 'L1Trigger.TrackerDTC.ProducerES_cff' )
+
+#--- Load code that produces DTCStubs
+# load Track Trigger Configuration
+process.load( 'L1Trigger.TrackerDTC.ProducerES_cff' )
+# load code that produces DTCStubs
+process.load( 'L1Trigger.TrackerDTC.ProducerED_cff' )
+# load code that analyzes DTCStubs
+process.load( 'L1Trigger.TrackerDTC.Analyzer_cff' )
+#process.TrackTriggerSetup.FrontEnd.BendCut=5.0
+#process.TrackTriggerSetup.Hybrid.MinPt=1.0
+process.dtc = cms.Path( process.TrackerDTCProducer )#* process.TrackerDTCAnalyzer )
+
+
+
+
 # use this if you want to re-run the stub making
 # process.schedule = cms.Schedule(process.TTClusterStub,process.TTClusterStubTruth,process.TTTracksEmulationWithTruth,process.ana)
 
@@ -180,7 +198,7 @@ process.ana = cms.Path(process.L1TrackNtuple)
 # process.schedule = cms.Schedule(process.TTClusterStubTruth,process.TTTracksEmulationWithTruth,process.ana)
 
 # use this to only run tracking + track associator
-process.schedule = cms.Schedule(process.TTTracksEmulationWithTruth,process.ana)
+process.schedule = cms.Schedule(process.dtc,process.TTTracksEmulationWithTruth,process.ana)
 
 
 ############################################################

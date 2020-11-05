@@ -2,13 +2,15 @@ import FWCore.ParameterSet.Config as cms
 
 TTTracksFromTrackletEmulation = cms.EDProducer("L1FPGATrackProducer",
                                                TTStubSource = cms.InputTag("TTStubsFromPhase2TrackerDigis","StubAccepted"),
+                                               InputTagTTDTC       = cms.InputTag  ( "TrackerDTCProducer", "StubAccepted" ), 
                                                readMoreMcTruth = cms.bool(True),
                                                MCTruthClusterInputTag = cms.InputTag("TTClusterAssociatorFromPixelDigis", "ClusterAccepted"),
                                                MCTruthStubInputTag = cms.InputTag("TTStubAssociatorFromPixelDigis", "StubAccepted"),
                                                TrackingParticleInputTag = cms.InputTag("mix", "MergedTrackTruth"),
                                                TrackingVertexInputTag = cms.InputTag("mix", "MergedTrackTruth"),
                                                BeamSpotSource = cms.InputTag("offlineBeamSpot"),
-                                               asciiFileName = cms.untracked.string(""),
+                                               asciiFileName = cms.untracked.string("old.txt"),
+                                               asciiFileName2 = cms.untracked.string("new.txt"),
                                                # (if running on CRAB use "../../fitpattern.txt" etc instead)
                                                Extended=cms.bool(False),
                                                Hnpar=cms.uint32(4),
