@@ -7,7 +7,6 @@ TTTracksFromTrackletEmulation = cms.EDProducer("L1FPGATrackProducer",
                                                MCTruthClusterInputTag = cms.InputTag("TTClusterAssociatorFromPixelDigis", "ClusterAccepted"),
                                                MCTruthStubInputTag = cms.InputTag("TTStubAssociatorFromPixelDigis", "StubAccepted"),
                                                TrackingParticleInputTag = cms.InputTag("mix", "MergedTrackTruth"),
-                                               TrackingVertexInputTag = cms.InputTag("mix", "MergedTrackTruth"),
                                                BeamSpotSource = cms.InputTag("offlineBeamSpot"),
                                                asciiFileName = cms.untracked.string("evtlist.txt"),
                                                # (if running on CRAB use "../../fitpattern.txt" etc instead)

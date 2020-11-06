@@ -40,7 +40,6 @@
 #include "SimDataFormats/Vertex/interface/SimVertex.h"
 #include "SimDataFormats/Vertex/interface/SimVertexContainer.h"
 #include "SimDataFormats/TrackingAnalysis/interface/TrackingParticle.h"
-#include "SimDataFormats/TrackingAnalysis/interface/TrackingVertex.h"
 #include "SimTracker/TrackTriggerAssociation/interface/TTStubAssociationMap.h"
 #include "SimTracker/TrackTriggerAssociation/interface/TTClusterAssociationMap.h"
 //
@@ -180,7 +179,6 @@ private:
   edm::InputTag MCTruthClusterInputTag;
   edm::InputTag MCTruthStubInputTag;
   edm::InputTag TrackingParticleInputTag;
-  edm::InputTag TrackingVertexInputTag;
   edm::InputTag ttStubSrc_;
   edm::InputTag bsSrc_;
 
@@ -190,7 +188,6 @@ private:
   edm::EDGetTokenT<TTClusterAssociationMap<Ref_Phase2TrackerDigi_>> ttClusterMCTruthToken_;
   edm::EDGetTokenT<TTStubAssociationMap<Ref_Phase2TrackerDigi_>> ttStubMCTruthToken_;
   edm::EDGetTokenT<std::vector<TrackingParticle>> TrackingParticleToken_;
-  edm::EDGetTokenT<std::vector<TrackingVertex>> TrackingVertexToken_;
   edm::EDGetTokenT<TTDTC> tokenDTC_;
 
   // helper class to store DTC configuration
@@ -218,8 +215,6 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 			: edm::InputTag()),
     TrackingParticleInputTag(readMoreMcTruth_ ? iConfig.getParameter<edm::InputTag>("TrackingParticleInputTag")
 			     : edm::InputTag()),
-    TrackingVertexInputTag(readMoreMcTruth_ ? iConfig.getParameter<edm::InputTag>("TrackingVertexInputTag")
-			   : edm::InputTag()),
   ttStubSrc_(config.getParameter<edm::InputTag>("TTStubSource")),
   bsSrc_(config.getParameter<edm::InputTag>("BeamSpotSource")),
   ttStubToken_(consumes<edmNew::DetSetVector<TTStub<Ref_Phase2TrackerDigi_>>>(ttStubSrc_)),
@@ -230,7 +225,6 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     ttClusterMCTruthToken_ = consumes<TTClusterAssociationMap<Ref_Phase2TrackerDigi_>>(MCTruthClusterInputTag);
     ttStubMCTruthToken_ = consumes<TTStubAssociationMap<Ref_Phase2TrackerDigi_>>(MCTruthStubInputTag);
     TrackingParticleToken_ = consumes<std::vector<TrackingParticle>>(TrackingParticleInputTag);
-    TrackingVertexToken_ = consumes<std::vector<TrackingVertex>>(TrackingVertexInputTag);
   }
 
   produces<std::vector<TTTrack<Ref_Phase2TrackerDigi_>>>("Level1TTTracks").setBranchAlias("Level1TTTracks");
@@ -363,11 +357,8 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   // tracking particles
   edm::Handle<std::vector<TrackingParticle>> TrackingParticleHandle;
-  edm::Handle<std::vector<TrackingVertex>> TrackingVertexHandle;
   if (readMoreMcTruth_)
     iEvent.getByToken(TrackingParticleToken_, TrackingParticleHandle);
-  if (readMoreMcTruth_)
-    iEvent.getByToken(TrackingVertexToken_, TrackingVertexHandle);
 
   // tracker topology
   const TrackerTopology* const tTopo = tTopoHandle.product();
@@ -433,216 +424,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   }  // end if (readMoreMcTruth_)
 
 
-
-  /*
-  ap_uint< IRProducer::linkWordNBits_ > IRProducer::getLinkWord( const unsigned int region, const unsigned int channel ) {
-
-    std::bitset<linkWordNBits_> linkWord{0};
-
-    const int thisDtcId{ setup_.dtcId( region, channel ) };
-
-    const std::vector<int>* thisDtcLayerEncodings{ &setup_.encodingLayerId( channel ) };
-
-    linkWord |= ( thisDtcLayerEncodings->size() << linkWord_nLayersOffset_ );
-
-    bool is2S = !setup_.psModule( thisDtcId );
-    linkWord |= ( is2S << ( linkWord_is2sBit_ ) );
-
-    size_t encodedLayer = 0;
-    for ( auto decodedLayer : *thisDtcLayerEncodings ) {
-      bool isBarrelLayer = decodedLayer < setup_.offsetLayerDisks();
-      if ( !isBarrelLayer ) {
-	decodedLayer -= setup_.offsetLayerDisks();
-      }
-      linkWord |= ( ( isBarrelLayer << linkWord_layerBarrelEndcapOffset_ ) ) << ( setup_.hybridNumLayers() * encodedLayer );
-      linkWord |= ( decodedLayer << linkWord_layerOrDiskNumberOffset_ ) << ( setup_.hybridNumLayers() * encodedLayer );
-      ++encodedLayer;
-    }
-
-    ap_uint< linkWordNBits_ > linkWord_ap = linkWord.to_ulong();
-
-    return linkWord_ap;
-  }
-  */
-
-  ////////////////////////////////
-  /// COLLECT STUB INFORMATION ///
-  ////////////////////////////////
-
-  bool firstPS = true;
-  bool first2S = true;
-
-  std::map<edm::Ref<edmNew::DetSetVector<TTStub<Ref_Phase2TrackerDigi_>>, TTStub<Ref_Phase2TrackerDigi_>>,
-	   std::pair<const PixelTopology*, const PixelGeomDetUnit*>> ttStubRefMap;
-
-  for (const auto& gd : theTrackerGeom->dets()) {
-    DetId detid = (*gd).geographicalId();
-    if (detid.subdetId() != StripSubdetector::TOB && detid.subdetId() != StripSubdetector::TID)
-      continue;  // only run on OT
-    if (!tTopo->isLower(detid))
-      continue;                              // loop on the stacks: choose the lower arbitrarily
-    DetId stackDetid = tTopo->stack(detid);  // Stub module detid
-
-    if (Phase2TrackerDigiTTStubHandle->find(stackDetid) == Phase2TrackerDigiTTStubHandle->end())
-      continue;
-
-    // Get the DetSets of the Clusters
-    edmNew::DetSet<TTStub<Ref_Phase2TrackerDigi_>> stubs = (*Phase2TrackerDigiTTStubHandle)[stackDetid];
-    const GeomDetUnit* det0 = theTrackerGeom->idToDetUnit(detid);
-    const auto* theGeomDet = dynamic_cast<const PixelGeomDetUnit*>(det0);
-    const PixelTopology* topol = dynamic_cast<const PixelTopology*>(&(theGeomDet->specificTopology()));
-
-    bool isPSmodule = theTrackerGeom->getDetectorType(detid) == TrackerGeometry::ModuleType::Ph2PSP;
-
-    // set constants that are common for all modules/stubs of a given type (PS vs 2S)
-    if (isPSmodule && firstPS) {
-      settings.setNStrips_PS(topol->nrows());
-      settings.setStripPitch_PS(topol->pitch().first);
-      settings.setStripLength_PS(topol->pitch().second);
-      firstPS = false;
-    }
-    if (!isPSmodule && first2S) {
-      settings.setNStrips_2S(topol->nrows());
-      settings.setStripPitch_2S(topol->pitch().first);
-      settings.setStripLength_2S(topol->pitch().second);
-      first2S = false;
-    }
-
-    // loop over stubs
-    for (auto stubIter = stubs.begin(); stubIter != stubs.end(); ++stubIter) {
-      edm::Ref<edmNew::DetSetVector<TTStub<Ref_Phase2TrackerDigi_>>, TTStub<Ref_Phase2TrackerDigi_>> tempStubPtr =
-          edmNew::makeRefTo(Phase2TrackerDigiTTStubHandle, stubIter);
-
-      ttStubRefMap[tempStubPtr]=std::pair<const PixelTopology*, const PixelGeomDetUnit*>(topol,theGeomDet);
-
-      vector<int> assocTPs;
-
-      if (readMoreMcTruth_) {
-        for (unsigned int iClus = 0; iClus <= 1; iClus++) {  // Loop over both clusters that make up stub.
-
-          const TTClusterRef& ttClusterRef = tempStubPtr->clusterRef(iClus);
-
-          // Now identify all TP's contributing to either cluster in stub.
-          vector<edm::Ptr<TrackingParticle>> vecTpPtr = MCTruthTTClusterHandle->findTrackingParticlePtrs(ttClusterRef);
-
-          for (const edm::Ptr<TrackingParticle>& tpPtr : vecTpPtr) {
-            if (translateTP.find(tpPtr) != translateTP.end()) {
-              if (iClus == 0) {
-                assocTPs.push_back(translateTP.at(tpPtr));
-              } else {
-                assocTPs.push_back(-translateTP.at(tpPtr));
-              }
-              // N.B. Since not all tracking particles are stored in InputData::vTPs_, sometimes no match will be found.
-            } else {
-              assocTPs.push_back(0);
-            }
-          }
-        }
-      }  // end if (readMoreMcTruth_)
-
-      /*
-      MeasurementPoint coords = tempStubPtr->clusterRef(0)->findAverageLocalCoordinatesCentered();
-      LocalPoint clustlp = topol->localPosition(coords);
-      GlobalPoint posStub = theGeomDet->surface().toGlobal(clustlp);
-
-      if (readMoreMcTruth_) {
-        edm::Ptr<TrackingParticle> my_tp = MCTruthTTStubHandle->findTrackingParticlePtr(tempStubPtr);
-      }
-
-      if (detid.subdetId() == StripSubdetector::TOB) {
-        layer = static_cast<int>(tTopo->layer(detid));
-        module = static_cast<int>(tTopo->module(detid));
-        ladder = static_cast<int>(tTopo->tobRod(detid));
-
-        // https://github.com/cms-sw/cmssw/tree/master/Geometry/TrackerNumberingBuilder
-        // tobSide = 1: ring- (tilted)
-        // tobSide = 2: ring+ (tilted)
-        // tobSide = 3: barrel (flat)
-        enum TypeBarrel { nonBarrel = 0, tiltedMinus = 1, tiltedPlus = 2, flat = 3 };
-        const TypeBarrel type = static_cast<TypeBarrel>(tTopo->tobSide(detid));
-
-        // modules in the flat part of barrel are mounted on planks, while modules in tilted part are on rings
-        // below, "module" is the module number in the z direction (from minus z to positive),
-        // while "ladder" is the module number in the phi direction
-
-        if (layer > 0 && layer <= (int)trklet::N_PSLAYER) {
-          if (type == tiltedMinus) {
-            module = static_cast<int>(tTopo->tobRod(detid));
-            ladder = static_cast<int>(tTopo->module(detid));
-          }
-          if (type == tiltedPlus) {
-            module =
-                trklet::N_TILTED_RINGS + trklet::N_MOD_PLANK.at(layer - 1) + static_cast<int>(tTopo->tobRod(detid));
-            ladder = static_cast<int>(tTopo->module(detid));
-          }
-          if (type == flat) {
-            module = trklet::N_TILTED_RINGS + static_cast<int>(tTopo->module(detid));
-          }
-        }
-      } else if (detid.subdetId() == StripSubdetector::TID) {
-        layer = 1000 + static_cast<int>(tTopo->tidRing(detid));
-        ladder = static_cast<int>(tTopo->module(detid));
-        module = static_cast<int>(tTopo->tidWheel(detid));
-      }
-
-      /// Get the Inner and Outer TTCluster
-      edm::Ref<edmNew::DetSetVector<TTCluster<Ref_Phase2TrackerDigi_>>, TTCluster<Ref_Phase2TrackerDigi_>> innerCluster =
-          tempStubPtr->clusterRef(0);
-      edm::Ref<edmNew::DetSetVector<TTCluster<Ref_Phase2TrackerDigi_>>, TTCluster<Ref_Phase2TrackerDigi_>> outerCluster =
-          tempStubPtr->clusterRef(1);
-
-      std::vector<int> irphi;
-      std::vector<int> innerrows = innerCluster->getRows();
-      irphi.reserve(innerrows.size());
-      for (int innerrow : innerrows) {
-        irphi.push_back(innerrow);
-      }
-      std::vector<int> outerrows = outerCluster->getRows();
-      for (int outerrow : outerrows) {
-        irphi.push_back(outerrow);
-      }
-
-      // -----------------------------------------------------
-      // check module orientation, if flipped, need to store that information for track fit
-      // -----------------------------------------------------
-
-      const DetId innerDetId = innerCluster->getDetId();
-      const GeomDetUnit* det_inner = theTrackerGeom->idToDetUnit(innerDetId);
-      const auto* theGeomDet_inner = dynamic_cast<const PixelGeomDetUnit*>(det_inner);
-      const PixelTopology* topol_inner = dynamic_cast<const PixelTopology*>(&(theGeomDet_inner->specificTopology()));
-
-      MeasurementPoint coords_inner = innerCluster->findAverageLocalCoordinatesCentered();
-      LocalPoint clustlp_inner = topol_inner->localPosition(coords_inner);
-      GlobalPoint posStub_inner = theGeomDet_inner->surface().toGlobal(clustlp_inner);
-
-      const DetId outerDetId = outerCluster->getDetId();
-      const GeomDetUnit* det_outer = theTrackerGeom->idToDetUnit(outerDetId);
-      const auto* theGeomDet_outer = dynamic_cast<const PixelGeomDetUnit*>(det_outer);
-      const PixelTopology* topol_outer = dynamic_cast<const PixelTopology*>(&(theGeomDet_outer->specificTopology()));
-
-      MeasurementPoint coords_outer = outerCluster->findAverageLocalCoordinatesCentered();
-      LocalPoint clustlp_outer = topol_outer->localPosition(coords_outer);
-      GlobalPoint posStub_outer = theGeomDet_outer->surface().toGlobal(clustlp_outer);
-
-      bool isFlipped = (posStub_outer.mag() < posStub_inner.mag());
-
-      // -----------------------------------------------------
-      // correct sign for stubs in negative endcap
-      float stub_bend = tempStubPtr->bendFE();
-      float stub_pt = -1;
-      if (layer > 999 && posStub.z() < 0.0) {
-        stub_bend = -stub_bend;
-      }
-      if (!irphi.empty()) {
-        strip = irphi[0];
-      }
-
-      }
-      */
-    }
-  }
-
-
   /////////////////////////////////
   /// READ DTC STUB INFORMATION ///
   /////////////////////////////////
@@ -651,19 +432,9 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   for ( const int& region : handleDTC->tfpRegions() ) {
     for ( const int& channel : handleDTC->tfpChannels() ) {
       
-      // Get the DTC link ID
-      // This is 'reconstructed' from working out the link word
-      //ap_uint< linkWordNBits_ > linkWord_ap = getLinkWord( region, channel );
-      // And then finding the location of the link word in the link assignment table
-      //auto linkWordInMap = std::find( kLinkAssignmentTable.begin(), kLinkAssignmentTable.end(), linkWord_ap );
-      //int linkID{-1};
-      //if ( linkWordInMap != kLinkAssignmentTable.end() ) {
-      //  linkID = linkWordInMap - kLinkAssignmentTable.begin();
-      //}
-      //std::cout << "region channel : "<<region<<" "<<channel<<"   ";
+      // Get the DTC name form the channel
 
       string dtcname="";
-
       if (channel%12==0) dtcname="PS10G_1";
       if (channel%12==1) dtcname="PS10G_2";
       if (channel%12==2) dtcname="PS10G_3";
@@ -681,18 +452,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
       dtcname+=(channel<24)?"_A":"_B"; 
 
-
-      /*
-
-      const std::vector<int>* thisDtcLayerEncodings{ &setup_.encodingLayerId( channel ) };
-
-      std::cout << "Layers encoded : ";
-      for(const auto& layer:*thisDtcLayerEncodings) {
-	std::cout << " "<<layer;
-      }
-      std::cout<<std::endl;
-      */
-
       // Get the stubs from the DTC
       const TTDTC::Stream& streamFromDTC{ handleDTC->stream( region, channel ) };
 
@@ -704,11 +463,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	if ( stub.first.isNull() ) {
 	  continue;
         }
-
-
-	//MeasurementPoint coords = stub.first->clusterRef(0)->findAverageLocalCoordinatesCentered();
-	//LocalPoint clustlp = ttStubRefMap[stub.first].first->localPosition(coords);
-	//GlobalPoint posStub = ttStubRefMap[stub.first].second->surface().toGlobal(clustlp);
 
 	const GlobalPoint& ttPos = setup_.stubPos(stub.first);
 
@@ -800,12 +554,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	  stubbend=-stubbend;
 	}
 
-
-
-	//std::cout << "coords : "<<coords<<" "<<posStub<<" "<<ttPos.perp()<<" "<<ttPos.z()<<" "<<ttPos.phi()
-	//		  << " bend " << stubbend<< " " << stub.first->innerClusterPosition()<<" layerdisk :"<<layerdisk<<std::endl;
-
-	//if module FE inefficiencies are calculated, a stub is thrown out if rawBend > 100
 	ev.addStub(dtcname,
 		   region,
 		   layerdisk,
@@ -836,8 +584,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   }
 
   std::vector<trklet::Track*>& tracks = eventProcessor.tracks();
-
-  trklet::L1SimTrack simtrk(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
   // this performs the actual tracklet event processing
   eventProcessor.event(ev);
