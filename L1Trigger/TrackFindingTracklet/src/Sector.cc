@@ -57,11 +57,7 @@ Sector::Sector(unsigned int i, Settings const& settings, Globals* globals) : set
   }
 }
 
-Sector::~Sector() {
-  //for (auto& mem : MemoriesV_) {
-  //  mem->clean();
-  //}
-}
+Sector::~Sector() = default;
 
 bool Sector::addStub(L1TStub stub, string dtc) {
 
@@ -72,19 +68,9 @@ bool Sector::addStub(L1TStub stub, string dtc) {
     stubphi-=2*M_PI;
   }
 
-  //FIXME - when input stubs are understood/fixed this block should not be needed
-  if (stubphi<phimin_ || stubphi>phimax_) {
-    static int count=0;
-    count++;
-    if (count<25) {
-      cout << "WARNING stub out of range: isector_ phimin_ phimax_ phi : "
-	   <<isector_<<" "<<phimin_<<" "<<phimax_<<"  "<<stub.phi()<<endl;
-    }
-    return false;
-  }
-    
   if (layerdisk < N_LAYER && globals_->phiCorr(layerdisk) == nullptr) {
     globals_->phiCorr(layerdisk) = new VMRouterPhiCorrTable(settings_);
+
     int nbits = 3;
     if (layerdisk >= N_PSLAYER)
       nbits = 4;

@@ -103,6 +103,7 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     configure(wires,memories,modules);
     
   }
+
 }
 
 
@@ -178,6 +179,7 @@ void TrackletEventProcessor::configure(istream& inwire, istream& inmem, istream&
 
 
 void TrackletEventProcessor::event(SLHCEvent& ev) {
+
   globals_->event() = &ev;
 
   tracks_.clear();
@@ -260,7 +262,6 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
       }
     */
   }
-
 
   addStubTimer_.stop();
 
@@ -446,6 +447,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 #endif
   }
   PDTimer_.stop();
+
 }
 
 void TrackletEventProcessor::printSummary() {
