@@ -118,14 +118,14 @@ using namespace std;
 // between different types of stubs
 struct L1TStubCompare {
 public:
-  bool operator()(const trklet::L1TStub& x, const trklet::L1TStub& y) const {
-    if (x.x() != y.x())
-      return (y.x() > x.x());
+  bool operator()(const trklet::L1TStub& a, const trklet::L1TStub& b) const {
+    if (a.x() != b.x())
+      return (b.x() > a.x());
     else {
-      if (x.y() != y.y())
-        return (y.y() > x.y());
+      if (a.y() != b.y())
+        return (b.y() > a.y());
       else
-        return (x.z() > y.z());
+        return (a.z() > b.z());
     }
   }
 };
@@ -160,8 +160,6 @@ private:
   string asciiEventOutName_;
   std::ofstream asciiEventOut_;
 
-  string geometryType_;
-
   // settings containing various constants for the tracklet processing
   trklet::Settings settings;
 
@@ -179,14 +177,10 @@ private:
   edm::InputTag MCTruthClusterInputTag;
   edm::InputTag MCTruthStubInputTag;
   edm::InputTag TrackingParticleInputTag;
-  edm::InputTag ttStubSrc_;
-  edm::InputTag bsSrc_;
 
-  const edm::EDGetTokenT<edmNew::DetSetVector<TTStub<Ref_Phase2TrackerDigi_>>> ttStubToken_;
   const edm::EDGetTokenT<reco::BeamSpot> bsToken_;
 
   edm::EDGetTokenT<TTClusterAssociationMap<Ref_Phase2TrackerDigi_>> ttClusterMCTruthToken_;
-  edm::EDGetTokenT<TTStubAssociationMap<Ref_Phase2TrackerDigi_>> ttStubMCTruthToken_;
   edm::EDGetTokenT<std::vector<TrackingParticle>> TrackingParticleToken_;
   edm::EDGetTokenT<TTDTC> tokenDTC_;
 
@@ -215,15 +209,11 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 			: edm::InputTag()),
     TrackingParticleInputTag(readMoreMcTruth_ ? iConfig.getParameter<edm::InputTag>("TrackingParticleInputTag")
 			     : edm::InputTag()),
-  ttStubSrc_(config.getParameter<edm::InputTag>("TTStubSource")),
-  bsSrc_(config.getParameter<edm::InputTag>("BeamSpotSource")),
-  ttStubToken_(consumes<edmNew::DetSetVector<TTStub<Ref_Phase2TrackerDigi_>>>(ttStubSrc_)),
-  bsToken_(consumes<reco::BeamSpot>(bsSrc_)),
-  tokenDTC_( consumes< TTDTC >( edm::InputTag( iConfig.getParameter<edm::InputTag>( "InputTagTTDTC" ) ) ) )
- {
+    bsToken_(consumes<reco::BeamSpot>(config.getParameter<edm::InputTag>("BeamSpotSource"))),
+  tokenDTC_(consumes<TTDTC>(edm::InputTag(iConfig.getParameter<edm::InputTag>( "InputTagTTDTC" ) ) ) )
+{
   if (readMoreMcTruth_) {
     ttClusterMCTruthToken_ = consumes<TTClusterAssociationMap<Ref_Phase2TrackerDigi_>>(MCTruthClusterInputTag);
-    ttStubMCTruthToken_ = consumes<TTStubAssociationMap<Ref_Phase2TrackerDigi_>>(MCTruthStubInputTag);
     TrackingParticleToken_ = consumes<std::vector<TrackingParticle>>(TrackingParticleInputTag);
   }
 
@@ -366,9 +356,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   ////////////////////////
   // GET THE PRIMITIVES //
-  edm::Handle<edmNew::DetSetVector<TTStub<Ref_Phase2TrackerDigi_>>> Phase2TrackerDigiTTStubHandle;
-  iEvent.getByToken(ttStubToken_, Phase2TrackerDigiTTStubHandle);
-
   edm::Handle< TTDTC > handleDTC;
   iEvent.getByToken< TTDTC >( tokenDTC_, handleDTC );
 
@@ -378,10 +365,8 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   // MC truth association maps
   edm::Handle<TTClusterAssociationMap<Ref_Phase2TrackerDigi_>> MCTruthTTClusterHandle;
-  edm::Handle<TTStubAssociationMap<Ref_Phase2TrackerDigi_>> MCTruthTTStubHandle;
   if (readMoreMcTruth_) {
     iEvent.getByToken(ttClusterMCTruthToken_, MCTruthTTClusterHandle);
-    iEvent.getByToken(ttStubMCTruthToken_, MCTruthTTStubHandle);
 
     ////////////////////////////////////////////////
     /// LOOP OVER TRACKING PARTICLES & GET SIMTRACKS
