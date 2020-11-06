@@ -58,9 +58,9 @@ Sector::Sector(unsigned int i, Settings const& settings, Globals* globals) : set
 }
 
 Sector::~Sector() {
-  for (auto& mem : MemoriesV_) {
-    mem->clean();
-  }
+  //for (auto& mem : MemoriesV_) {
+  //  mem->clean();
+  //}
 }
 
 bool Sector::addStub(L1TStub stub, string dtc) {

@@ -370,8 +370,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   eventnum++;
   trklet::SLHCEvent ev;
   ev.setEventNum(eventnum);
-  ev.setIPx(bsPosition.x());
-  ev.setIPy(bsPosition.y());
+  ev.setIP(bsPosition.x(),bsPosition.y());
 
   // tracking particles
   edm::Handle<std::vector<TrackingParticle>> TrackingParticleHandle;
@@ -562,21 +561,14 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
         }
       }  // end if (readMoreMcTruth_)
 
+      /*
       MeasurementPoint coords = tempStubPtr->clusterRef(0)->findAverageLocalCoordinatesCentered();
       LocalPoint clustlp = topol->localPosition(coords);
       GlobalPoint posStub = theGeomDet->surface().toGlobal(clustlp);
 
-      int eventID = -1;
-
       if (readMoreMcTruth_) {
         edm::Ptr<TrackingParticle> my_tp = MCTruthTTStubHandle->findTrackingParticlePtr(tempStubPtr);
       }
-
-      int layer = -999999;
-      int ladder = -999999;
-      int module = -999999;
-
-      int strip = 460;
 
       if (detid.subdetId() == StripSubdetector::TOB) {
         layer = static_cast<int>(tTopo->layer(detid));
@@ -666,23 +658,8 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
         strip = irphi[0];
       }
 
-      //if module FE inefficiencies are calculated, a stub is thrown out if rawBend > 100
-      if ((tempStubPtr->rawBend() < 100.) && (ev.addStub(layer,
-                                                         ladder,
-                                                         module,
-                                                         strip,
-                                                         eventID,
-                                                         assocTPs,
-                                                         stub_pt,
-                                                         stub_bend,
-                                                         posStub.x(),
-                                                         posStub.y(),
-                                                         posStub.z(),
-                                                         isPSmodule,
-                                                         isFlipped))) {
-        const trklet::L1TStub& lastStub = ev.lastStub();
-        stubMap[lastStub] = tempStubPtr;
       }
+      */
     }
   }
 
@@ -853,6 +830,22 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
 	//std::cout << "coords : "<<coords<<" "<<posStub<<" "<<ttPos.perp()<<" "<<ttPos.z()<<" "<<ttPos.phi()
 	//		  << " bend " << stubbend<< " " << stub.first->innerClusterPosition()<<" layerdisk :"<<layerdisk<<std::endl;
+
+	//if module FE inefficiencies are calculated, a stub is thrown out if rawBend > 100
+	ev.addStub(dtcname,
+		   region,
+		   layerdisk,
+		   setup_.psModule(setup_.dtcId(region,channel)),
+		   isFlipped,
+		   ttPos.x(),
+		   ttPos.y(),
+		   ttPos.z(),
+		   stubbend,
+		   stub.first->innerClusterPosition(),
+		   assocTPs);
+
+	const trklet::L1TStub& lastStub = ev.lastStub();
+	stubMap[lastStub] = stub.first;
 
 	if (!asciiEventOutName2_.empty()) {
 	  asciiEventOut2_ << "Stub: " << dtcname << " " << region << " " << layerdisk << " " 

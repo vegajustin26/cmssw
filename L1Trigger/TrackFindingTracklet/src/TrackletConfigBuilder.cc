@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <cassert>
 
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletConfigBuilder.h"
 

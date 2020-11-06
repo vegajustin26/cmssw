@@ -42,6 +42,11 @@ namespace trklet {
 
     const L1TStub& lastStub() const { return stubs_.back(); }
 
+    void  setIP(double x, double y) {
+      ipx_=x;
+      ipy_=y;
+    }
+
     void write(std::ofstream& out);
 
     unsigned int layersHit(int tpid, int& nlayers, int& ndisks);
@@ -62,6 +67,7 @@ namespace trklet {
     int eventnum_;
     std::vector<L1SimTrack> simtracks_;
     std::vector<L1TStub> stubs_;
+    double ipx_, ipy_;
 
   };
 

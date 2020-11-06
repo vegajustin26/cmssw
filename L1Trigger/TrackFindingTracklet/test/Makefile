@@ -189,13 +189,14 @@ CXXFLAGS += -std=c++17 #fix, otherwise ROOT cflags overrule c++11
 
 LIBS = -lHtml
 
-
 ifneq ($(CMSSW_BASE),)
 	ROOTFIT_INCLUDE := $(shell cd $(CMSSW_BASE); scram tool info roofitcore | grep INCLUDE= | sed 's|INCLUDE=||')
 	ROOTFIT_LIBDIR := $(shell cd $(CMSSW_BASE); scram tool info roofitcore | grep LIBDIR= | sed 's|LIBDIR=||')
 
 	CINTINCLUDES := -I$(ROOTFIT_INCLUDE)
+ifneq ($(ROOTFIT_INCLUDE),)
 	CXXFLAGS     += -I$(ROOTFIT_INCLUDE)
+endif
 	LDFLAGS      += -L$(ROOTFIT_LIBDIR)
 endif
 

@@ -6,6 +6,7 @@
 #include <cassert>
 #include <cmath>
 #include <vector>
+#include <memory>
 #include <set>
 
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
