@@ -161,9 +161,6 @@ private:
   string asciiEventOutName_;
   std::ofstream asciiEventOut_;
 
-  string asciiEventOutName2_;
-  std::ofstream asciiEventOut2_;
-
   string geometryType_;
 
   // settings containing various constants for the tracklet processing
@@ -239,7 +236,6 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   produces<std::vector<TTTrack<Ref_Phase2TrackerDigi_>>>("Level1TTTracks").setBranchAlias("Level1TTTracks");
 
   asciiEventOutName_ = iConfig.getUntrackedParameter<string>("asciiFileName", "");
-  asciiEventOutName2_ = iConfig.getUntrackedParameter<string>("asciiFileName2", "");
 
   fitPatternFile = iConfig.getParameter<edm::FileInPath>("fitPatternFile");
   processingModulesFile = iConfig.getParameter<edm::FileInPath>("processingModulesFile");
@@ -286,10 +282,6 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
     asciiEventOut_.open(asciiEventOutName_.c_str());
   }
 
-  if (not asciiEventOutName2_.empty()) {
-    asciiEventOut2_.open(asciiEventOutName2_.c_str());
-  }
-
   if (settings.debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "cabling DTC links :     " << DTCLinkFile.fullPath()
                                  << "\n module cabling :     " << moduleCablingFile.fullPath()
@@ -310,9 +302,6 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
 L1FPGATrackProducer::~L1FPGATrackProducer() {
   if (asciiEventOut_.is_open()) {
     asciiEventOut_.close();
-  }
-  if (asciiEventOut2_.is_open()) {
-    asciiEventOut2_.close();
   }
 }
 
@@ -406,11 +395,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     ////////////////////////////////////////////////
     /// LOOP OVER TRACKING PARTICLES & GET SIMTRACKS
 
-    if (!asciiEventOutName2_.empty()) {
-      asciiEventOut2_ << "Event: " << eventnum <<  std::endl; 
-    }
-    
-
     int ntps = 1;  //count from 1 ; 0 will mean invalid
 
     int this_tp = 0;
@@ -440,11 +424,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
         continue;
 
       ev.addL1SimTrack(sim_eventid, ntps, sim_type, sim_pt, sim_eta, sim_phi, vx, vy, vz);
-
-      if (!asciiEventOutName2_.empty()) {
-	  asciiEventOut2_ << "SimTrack: " << sim_eventid << " " << ntps << " " << sim_type << " "
-			  << sim_pt << " " << sim_eta << " " << sim_phi << " " << vx << " " << vy << " " << vz<<std::endl;
-      }
 
       translateTP[tp_ptr] = ntps;
       ntps++;
@@ -668,11 +647,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   /// READ DTC STUB INFORMATION ///
   /////////////////////////////////
 
-  if (!asciiEventOutName2_.empty()) {
-    asciiEventOut2_ << "SimTrackEnd" << std::endl; 
-  }
-
-
   // Process stubs in each region and channel within that region
   for ( const int& region : handleDTC->tfpRegions() ) {
     for ( const int& channel : handleDTC->tfpChannels() ) {
@@ -847,28 +821,10 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	const trklet::L1TStub& lastStub = ev.lastStub();
 	stubMap[lastStub] = stub.first;
 
-	if (!asciiEventOutName2_.empty()) {
-	  asciiEventOut2_ << "Stub: " << dtcname << " " << region << " " << layerdisk << " " 
-			  << setup_.psModule(setup_.dtcId(region,channel)) << " " 
-			  << isFlipped << " " << ttPos.x() << " " << ttPos.y() << " " << ttPos.z() << " "
-			  << stubbend<< " " << stub.first->innerClusterPosition()<< " "
-			  << assocTPs.size();
-	  for (const auto& tp:assocTPs) {	    
-	    asciiEventOut2_ << " " << tp;
-	  }
-	  asciiEventOut2_ << std::endl;
-	}
-
       }
 
     } 
   }
-
-  if (!asciiEventOutName2_.empty()) {
-    asciiEventOut2_ << "Stubend" << std::endl; 
-  }
-     
-
 
 
 
