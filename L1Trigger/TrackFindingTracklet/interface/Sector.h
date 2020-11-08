@@ -11,6 +11,8 @@
 #include <vector>
 #include <unordered_set>
 #include <fstream>
+#include <unordered_map>
+
 
 namespace trklet {
 
@@ -128,6 +130,12 @@ namespace trklet {
       Processes_[procName].reset(proc);
     }
 
+    void writeLinkNewEvent(int event);
+    void writeLink(const Stub& fpgastub);
+
+
+
+    
   private:
     int isector_;
     Settings const& settings_;
@@ -167,6 +175,9 @@ namespace trklet {
     std::vector<MatchProcessor*> MP_;
     std::vector<FitTrack*> FT_;
     std::vector<PurgeDuplicate*> PD_;
+    
+    std::unordered_map<std::string, std::ofstream*> DTCLink_ofstreams_;
+	
   };
 };  // namespace trklet
 #endif

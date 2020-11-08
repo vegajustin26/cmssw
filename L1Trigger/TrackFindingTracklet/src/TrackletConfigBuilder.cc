@@ -962,6 +962,8 @@ void TrackletConfigBuilder::writeILMemories(std::ostream& os, std::ostream& memo
   double phimin[52];
   double phimax[52];
 
+  //FIXME layerdisk numbering should be 0 to 10
+  
   dtcname[0] ="PS10G_1";    layerdisk[0] =1;   phimin[0] = 0.304273;   phimax[0] = 0.742925;
   dtcname[1] ="PS10G_1";    layerdisk[1] =7;   phimin[1] = -0.185672;  phimax[1] =  0.883803;
   dtcname[2] ="PS10G_1";    layerdisk[2] =9;   phimin[2] = -0.132414;  phimax[2] =  0.830545;
@@ -972,7 +974,7 @@ void TrackletConfigBuilder::writeILMemories(std::ostream& os, std::ostream& memo
   dtcname[7] ="PS10G_3";    layerdisk[7] = 2;  phimin[7] = -0.11381;   phimax[7] =  0.822812;
   dtcname[8] ="PS10G_3";    layerdisk[8] = 8;  phimin[8] = -0.185672;  phimax[8] =  0.883803;
   dtcname[9] ="PS10G_4";    layerdisk[9] = 7;  phimin[9] = -0.0823971; phimax[9] =  0.780529;
-  dtcname[10] ="PS10G_4";   layerdisk[10]= 9;  phimin[10]= -0.0963091; phimax[10]=  0.794441;
+  dtcname[10]="PS10G_4";    layerdisk[10]= 9;  phimin[10]= -0.0963091; phimax[10]=  0.794441;
   dtcname[11]="PS10G_4";    layerdisk[11]= 11; phimin[11]= -0.0963091; phimax[11]=  0.794441;
   dtcname[12]="PS_1";       layerdisk[12]= 3;  phimin[12]= 0.0827748;  phimax[12]=  0.615357;
   dtcname[13]="PS_1";       layerdisk[13]= 8;  phimin[13]= -0.0823971; phimax[13]=  0.780529;

@@ -24,24 +24,6 @@ namespace trklet {
 	    double bend,
 	    double strip,
 	    std::vector<int> tps);
-    
-    L1TStub(int eventid,
-            std::vector<int> tps,
-            int iphi,
-            int iz,
-            int layer,
-            int ladder,
-            int module,
-            int strip,
-            double x,
-            double y,
-            double z,
-            double sigmax,
-            double sigmaz,
-            double pt,
-            double bend,
-            int isPSmodule,
-            int isFlipped);
 
     ~L1TStub() = default;
 

@@ -193,74 +193,19 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   }
   cleanTimer_.stop();
 
+  if (settings_->writeMem()) {      
+    sectors_[settings_->writememsect()]->writeLinkNewEvent(eventnum_);
+  }
+
   addStubTimer_.start();
 
   for (int j = 0; j < ev.nstubs(); j++) {
     L1TStub stub = ev.stub(j);
 
     string dtc=stub.DTClink();
-    string dtcbase = dtc.substr(2, dtc.size() - 2);
-    
-    if (dtc[0] == 'n') {
-      dtcbase = dtc.substr(0, 4) + dtc.substr(6, dtc.size() - 6);
-    }
-
     unsigned int isector = stub.region();
 
     sectors_[isector]->addStub(stub, dtc);
-
-    /* FIXME needs to be updated
-    static std::map<string, ofstream*> dtcstubs;
-
-    if (settings_->writeMem()) { //FIXME code is not correct
-      string fname = "../data/MemPrints/InputStubs/Link_";
-      fname += dtc+".dat";
-      if (dtcstubs.find(dtc) == dtcstubs.end()) {
-	ofstream* out = new ofstream;
-	out->open(fname.c_str());
-	dtcstubs[dtc] = out;
-      }
-      static int oldevent = -1;
-      if (eventnum_ != oldevent) {
-	oldevent = eventnum_;
-	for (auto& dtcstub : dtcstubs) {
-	  FPGAWord tmp;
-	  tmp.set(eventnum_ % 8, 3);
-	  (*(dtcstub.second)) << "BX " << tmp.str() << " Event : " << eventnum_ + 1 << endl;
-	}
-      }
-    
-
-      if (add && settings_->writeMem() && k == settings_->writememsect()) {
-        Stub fpgastub(stub, *settings_, sectors_[k]->phimin(), sectors_[k]->phimax());
-        FPGAWord phi = fpgastub.phi();
-        int topbit = phi.value() >> (phi.nbits() - 1);
-        std::vector<int> tmp = dtclayerdisk_[dtcbase];
-        int layerdisk = stub.layer() + 1;
-        if (layerdisk > 999) {
-          layerdisk = 10 + abs(stub.disk());
-        }
-        int layerdiskcode = -1;
-        for (unsigned int i = 0; i < tmp.size(); i++) {
-          if (tmp[i] == layerdisk)
-            layerdiskcode = i;
-        }
-        if (layerdiskcode == -1) {
-          edm::LogVerbatim("Tracklet") << "dtcbase layerdisk layer disk : " << dtcbase << " " << layerdisk << " "
-                                       << stub.layer() + 1 << " " << stub.disk();
-        }
-        assert(layerdiskcode >= 0);
-        assert(layerdiskcode < 4);
-        FPGAWord ldcode;
-        ldcode.set(layerdiskcode, 2);
-        string dataword = "1|" + ldcode.str() + "|" + fpgastub.str();
-        if (topbit == 0) {
-          (*dtcstubs[dtcbase + "A"]) << dataword << " " << trklet::hexFormat(dataword) << endl;
-        } else {
-          (*dtcstubs[dtcbase + "B"]) << dataword << " " << trklet::hexFormat(dataword) << endl;
-        }
-      }
-    */
   }
 
   addStubTimer_.stop();
