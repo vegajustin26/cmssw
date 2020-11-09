@@ -9,6 +9,7 @@ L1TStub::L1TStub() {}
 L1TStub::L1TStub(std::string DTClink,
 		 int region,
 		 int layerdisk,
+		 std::string stubword,
 		 int isPSmodule,
 		 int isFlipped,
 		 double x,
@@ -20,6 +21,7 @@ L1TStub::L1TStub(std::string DTClink,
   DTClink_=DTClink;
   layerdisk_=layerdisk;
   region_=region;
+  stubword_ = stubword;
   eventid_ = -1;
   tps_ = tps;
   iphi_ = -1;
@@ -49,7 +51,7 @@ L1TStub::L1TStub(std::string DTClink,
 
 
 void L1TStub::write(ofstream& out) {
-  out << "Stub: " << DTClink_ << "\t" << region_ << "\t" << layerdisk_ << "\t" << isPSmodule_ << "\t" << isFlipped_ << "\t"
+  out << "Stub: " << DTClink_ << "\t" << region_ << "\t" << layerdisk_ << "\t" << stubword_ << "\t" << isPSmodule_ << "\t" << isFlipped_ << "\t"
       << x_ << "\t" << y_ << "\t" << z_ << "\t" << bend_ << "\t" << strip_ << "\t" << "\t" << tps_.size() << " \t";
   for (int itp : tps_) {
     out << itp << " \t";

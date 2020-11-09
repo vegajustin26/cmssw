@@ -16,6 +16,7 @@ namespace trklet {
     L1TStub(std::string DTClink,
 	    int region,
 	    int layerdisk,
+	    std::string stubword,
 	    int isPSmodule,
 	    int isFlipped,
 	    double x,
@@ -111,6 +112,7 @@ namespace trklet {
     int layerdisk_;
     std::string DTClink_;
     int region_;
+    std::string stubword_;
     int eventid_;
     std::vector<int> tps_;
     unsigned int iphi_;

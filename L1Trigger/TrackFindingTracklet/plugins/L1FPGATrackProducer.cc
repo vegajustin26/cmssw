@@ -480,6 +480,14 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	  layerdisk=0;
 	}
 
+	string stubword=stub.second.to_string().substr(64-36-5,36); //FIXME hardcoded numbers...
+	string stubwordhex="";
+
+	for(unsigned int i=0;i<9;i++){
+	  bitset<4> bits(stubword.substr(i*4,4));
+	  ulong val=bits.to_ulong();
+	  stubwordhex+=((val<10)?('0'+val):('A'+val-10));
+	}
 
 	/// Get the Inner and Outer TTCluster
 	edm::Ref<edmNew::DetSetVector<TTCluster<Ref_Phase2TrackerDigi_>>, TTCluster<Ref_Phase2TrackerDigi_>> innerCluster =
@@ -542,6 +550,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	ev.addStub(dtcname,
 		   region,
 		   layerdisk,
+		   stubwordhex,
 		   setup_.psModule(setup_.dtcId(region,channel)),
 		   isFlipped,
 		   ttPos.x(),

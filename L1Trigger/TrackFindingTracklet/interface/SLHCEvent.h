@@ -31,6 +31,7 @@ namespace trklet {
     bool addStub(std::string DTClink,
 		 int region,
 		 int layerdisk,
+		 std::string stubword,
 		 int isPSmodule,
 		 int isFlipped,
 		 double x,

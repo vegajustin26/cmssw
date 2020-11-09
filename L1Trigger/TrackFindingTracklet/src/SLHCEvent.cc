@@ -11,19 +11,20 @@ void SLHCEvent::addL1SimTrack(
 }
 
 bool SLHCEvent::addStub(string DTClink,
-			 int region,
-			 int layerdisk,
-			 int isPSmodule,
-			 int isFlipped,
-			 double x,
-			 double y,
-			 double z,
-			 double bend,
-			 double strip,
-			 vector<int> tps
+			int region,
+			int layerdisk,
+			string stubword,
+			int isPSmodule,
+			int isFlipped,
+			double x,
+			double y,
+			double z,
+			double bend,
+			double strip,
+			vector<int> tps
 ) {
 
-  L1TStub stub(DTClink, region, layerdisk, isPSmodule, isFlipped, x, y, z, bend, strip, tps);
+  L1TStub stub(DTClink, region, layerdisk, stubword, isPSmodule, isFlipped, x, y, z, bend, strip, tps);
 
   stubs_.push_back(stub);
   return true;
@@ -80,6 +81,7 @@ SLHCEvent::SLHCEvent(istream& in) {
     string DTClink;
     int region;
     int layerdisk;
+    string stubword;
     int isPSmodule;
     int isFlipped;
     double x;
@@ -90,7 +92,7 @@ SLHCEvent::SLHCEvent(istream& in) {
     unsigned int ntps;
     vector<int> tps;
 
-    in >> DTClink >> region >> layerdisk >> isPSmodule >> isFlipped >> x >> y >> z >> bend >> strip >> ntps;
+    in >> DTClink >> region >> layerdisk >> stubword >> isPSmodule >> isFlipped >> x >> y >> z >> bend >> strip >> ntps;
 
     for (unsigned int itps = 0; itps < ntps; itps++) {
       int tp;
@@ -98,7 +100,7 @@ SLHCEvent::SLHCEvent(istream& in) {
       tps.push_back(tp);
     }
 
-    L1TStub stub(DTClink, region, layerdisk, isPSmodule, isFlipped, x, y, z, bend, strip, tps);
+    L1TStub stub(DTClink, region, layerdisk, stubword, isPSmodule, isFlipped, x, y, z, bend, strip, tps);
 
     in >> tmp;
 
