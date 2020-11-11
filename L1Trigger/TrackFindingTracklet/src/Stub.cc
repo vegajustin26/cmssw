@@ -35,7 +35,7 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
     if (word=='F') stubwordbin+="1111";	
   }
 
-  cout << "stubword:"<<stubwordhex<<" "<<stubwordbin<<endl;
+  //cout << "stubword:"<<stubwordhex<<" "<<stubwordbin<<endl;
   
   layerdisk_=stub.layerdisk();
 
@@ -55,8 +55,8 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
   }
 
 
-  cout << "nbendbits nalphabits nrbits nzbits nphibits : "
-       <<nbendbits<<" "<<nalphabits<<" "<<nrbits<<" "<<nzbits<<" "<<nphibits<<endl;
+  //cout << "nbendbits nalphabits nrbits nzbits nphibits : "
+  //     <<nbendbits<<" "<<nalphabits<<" "<<nrbits<<" "<<nzbits<<" "<<nphibits<<endl;
 
   assert(nbendbits+nalphabits+nrbits+nzbits+nphibits==36);
 
@@ -90,8 +90,6 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
   int ibend = bendencode(sbend, stub.isPSmodule());
 
-  //cout << "old bend : "<<ibend<<endl;
-  
   bend_.set(ibend, nbendbits, true, __LINE__, __FILE__);
 
   int layer = stub.layer() + 1;
@@ -115,8 +113,6 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
     int ir = lround((1 << irbits) * ((r - settings_.rmean(layer - 1)) / (rmax - rmin)));
 
-    //cout << "old r : "<<ir<<endl;
-    
     double zmin = -settings_.zlength();
     double zmax = settings_.zlength();
 
@@ -127,8 +123,6 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
     int izbits = settings_.nzbitsstub(layer - 1);
 
     int iz = lround((1 << izbits) * z / (zmax - zmin));
-
-    //cout << "old z : "<<iz<<endl;
 
     if (z < zmin || z > zmax) {
       edm::LogProblem("Tracklet") << "Error z, zmin, zmax :" << z << " " << zmin << " " << zmax;
@@ -151,9 +145,6 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
     int iphi = (1 << iphibits) * deltaphi / (phimaxsec - phiminsec);
 
-    //cout << "old phi : "<<iphi<<endl;
-
-    
     layer_.set(layer - 1, 3, true, __LINE__, __FILE__);
     r_.set(ir, irbits, false, __LINE__, __FILE__);
     z_.set(iz, izbits, false, __LINE__, __FILE__);
@@ -161,11 +152,13 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
     phicorr_.set(iphi, iphibits, true, __LINE__, __FILE__);
 
+    /*
     cout << "newbend : "<<newbend<<" "<<ibend<<endl;
     cout << "newr    : "<<newr<<" "<<ir<<endl;
     cout << "newz    : "<<newz<<" "<<iz<<endl;  
     cout << "newphi  : "<<newphi<<" "<<iphi<<endl;  
-    
+    */    
+
   } else {
     // Here we handle the hits on disks.
 
@@ -184,8 +177,6 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
     int iz =
         (1 << settings.nzbitsstub(disk + N_DISK)) * ((z - sign * settings_.zmean(disk - 1)) / std::abs(zmax - zmin));
-
-    //cout << "old z : "<<iz<<endl;
 	
     assert(phimaxsec - phiminsec > 0.0);
     if (stubphi < phiminsec - (phimaxsec - phiminsec) / 6.0) {
@@ -203,8 +194,6 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
     int iphi = (1 << iphibits) * deltaphi / (phimaxsec - phiminsec);
 
-    //cout << "old phi : "<<iphi<<endl;
-    
     double rmin = 0;
     double rmax = settings_.rmaxdisk();
 
@@ -242,8 +231,6 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
       r_.set(irSS, 4, true, __LINE__, __FILE__);  // in case of SS modules, store index, not r itself
     }
 
-    //cout << "old r : "<<r_.value()<<endl;
-    
     z_.set(iz, settings.nzbitsstub(disk + 5), false, __LINE__, __FILE__);
     phi_.set(iphi, iphibits, true, __LINE__, __FILE__);
     phicorr_.set(iphi, iphibits, true, __LINE__, __FILE__);
@@ -255,15 +242,15 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
     int ialphanew = alphanorm * (1 << (settings.nbitsalpha() - 1));
     assert(ialphanew < (1 << (settings.nbitsalpha() - 1)));
     assert(ialphanew >= -(1 << (settings.nbitsalpha() - 1)));
-    //cout << "old alpha : "<<ialphanew<<endl;
     alphanew_.set(ialphanew, settings.nbitsalpha(), false, __LINE__, __FILE__);
 
+    /*
     cout << "newbend : "<<newbend<<" "<<ibend<<endl;
     cout << "newr    : "<<newr<<" "<<r_.value()<<endl;
     cout << "newz    : "<<newz<<" "<<iz<<endl;  
     cout << "newphi  : "<<newphi<<" "<<iphi<<endl;  
     if (nalphabits!=0) cout << "newalpha: "<<newalpha<<" "<<ialphanew<<"  "<<stub.strip()<<endl;  
-
+    */
 
     
   }
