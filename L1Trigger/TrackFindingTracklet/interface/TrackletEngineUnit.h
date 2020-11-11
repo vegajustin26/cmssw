@@ -7,6 +7,7 @@
 #include <cassert>
 #include <vector>
 
+
 namespace trklet {
 
   class Settings;
@@ -14,27 +15,20 @@ namespace trklet {
   class L1TStub;
   class FPGAWord;
 
-  struct TEData {
+  struct TEData{
     const Stub* stub_;
     int start_;
     int rzbinfirst_;
     int rzdiffmax_;
     int innerfinephi_;
     FPGAWord innerbend_;
-    std::vector<std::tuple<int, int, int> > regions_;  // next z/r bin; phi-region; nstub
+    std::vector< std::tuple<int, int, int> > regions_;  // next z/r bin; phi-region; nstub
   };
-
+  
+  
   class TrackletEngineUnit {
   public:
-    TrackletEngineUnit(const Settings* const settings,
-                       unsigned int nbitsfinephi,
-                       unsigned int layerdisk2,
-                       unsigned int iSeed,
-                       unsigned int nbitsfinephiediff,
-                       unsigned int iAllStub,
-                       std::vector<bool> pttableinner,
-                       std::vector<bool> pttableouter,
-                       VMStubsTEMemory* outervmstubs);
+    TrackletEngineUnit(const Settings* const settings, unsigned int nbitsfinephi, unsigned int layerdisk2, unsigned int iSeed, unsigned int nbitsfinephiediff, unsigned int iAllStub, std::vector<bool> pttableinner, std::vector<bool> pttableouter, VMStubsTEMemory* outervmstubs);
 
     ~TrackletEngineUnit() = default;
 
@@ -50,7 +44,7 @@ namespace trklet {
 
     void reset();
 
-    void step();
+    void step(bool print);
 
   private:
     VMStubsTEMemory* outervmstubs_;
@@ -62,14 +56,14 @@ namespace trklet {
     unsigned int nbitsfinephidiff_;
 
     unsigned int iAllStub_;
-
+    
     //unsigned int memory slot
     unsigned int nreg_;
     unsigned int istub_;
     unsigned int ireg_;
     unsigned int next_;
     unsigned int nstub_;
-
+    
     bool idle_;
 
     std::vector<bool> pttableinner_;
@@ -77,7 +71,7 @@ namespace trklet {
 
     //save the candidate matches
     CircularBuffer<std::pair<const Stub*, const Stub*> > candpairs_;
-  };  // TrackletEngineUnit
+  }; // TrackletEngineUnit
 
 };  // namespace trklet
 #endif

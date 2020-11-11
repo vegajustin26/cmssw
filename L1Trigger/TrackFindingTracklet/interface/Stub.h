@@ -37,6 +37,14 @@ namespace trklet {
 
     std::string strbare() const { return bend_.str() + r_.str() + z_.str() + phi_.str(); }
 
+    std::string strinner() const {
+      unsigned int nbitsfinephi=8;
+      FPGAWord finephi(phicorr_.bits(phicorr_.nbits()-nbitsfinephi,nbitsfinephi),nbitsfinephi,true,__LINE__,__FILE__);
+      return str()+"|"+stubindex_.str()+"|"+finephi.str();
+    }
+
+    FPGAWord allStubIndex() const {return stubindex_;}
+      
     unsigned int phiregionaddress() const;
     std::string phiregionaddressstr() const;
 

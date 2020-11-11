@@ -7,13 +7,13 @@ using namespace std;
 using namespace trklet;
 
 AllStubsMemory::AllStubsMemory(string name, Settings const& settings, unsigned int iSector)
-    : MemoryBase(name, settings, iSector) {}
+  : MemoryBase(name, settings, iSector), inner_(false) {}
 
 void AllStubsMemory::writeStubs(bool first) {
   openFile(first, "../data/MemPrints/Stubs/AllStubs_");
 
   for (unsigned int j = 0; j < stubs_.size(); j++) {
-    string stub = stubs_[j]->str();
+    string stub = inner_ ? stubs_[j]->strinner() : stubs_[j]->str();
     out_ << "0x";
     out_ << std::setfill('0') << std::setw(2);
     out_ << hex << j << dec;

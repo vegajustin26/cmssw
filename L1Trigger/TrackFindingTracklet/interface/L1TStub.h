@@ -107,6 +107,10 @@ namespace trklet {
     int region() const {
       return region_;
     }
+
+    const std::string& stubword() const {
+      return stubword_;
+    }
     
   private:
     int layerdisk_;
