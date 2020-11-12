@@ -176,6 +176,8 @@ namespace trackerDTC {
     double hybridLayerR(int layerId) const { return hybridLayerRs_.at(layerId); }
     // mean z of outer tracker endcap disks
     double hybridDiskZ(int layerId) const { return hybridDiskZs_.at(layerId); }
+    // range of stub phi in rad
+    double hybridRangePhi() const { return hybridRangePhi_; }
 
     // Parameter specifying TTStub algorithm
 
@@ -535,6 +537,8 @@ namespace trackerDTC {
     std::vector<double> hybridDiskZs_;
     // center radius of outer tracker endcap 2S diks strips
     std::vector<edm::ParameterSet> hybridDisk2SRsSet_;
+    // range of stub phi in rad
+    double hybridRangePhi_;
 
     // Parameter specifying TrackingParticle used for Efficiency measurements
     edm::ParameterSet pSetTP_;
