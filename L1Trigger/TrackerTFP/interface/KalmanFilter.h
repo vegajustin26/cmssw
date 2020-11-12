@@ -13,7 +13,7 @@ namespace trackerTFP {
   // Class to fit in a region tracks
   class KalmanFilter {
   public:
-    KalmanFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, const KalmanFilterFormats* kalmanFilterFormats, int region);
+    KalmanFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region);
     ~KalmanFilter(){}
 
     // read in and organize input stubs
@@ -21,7 +21,7 @@ namespace trackerTFP {
     // read in and organize input tracks
     void consume(const StreamsTrack& tracks);
     // fill output products
-    void produce(StreamTrack& accepted, StreamTrack& lost);
+    void produce(TTDTC::Streams& accpetedStubs, StreamsTrack& acceptedTracks, TTDTC::Streams& lostStubs, StreamsTrack& lostTracks);
 
   private:
     // remove and return first element of deque, returns nullptr if empty
@@ -47,7 +47,7 @@ namespace trackerTFP {
     //
     const DataFormats* dataFormats_;
     //
-    const KalmanFilterFormats* kalmanFilterFormats_;
+    KalmanFilterFormats* kalmanFilterFormats_;
     //
     int region_;
     //
@@ -65,36 +65,42 @@ namespace trackerTFP {
     //
     int layer_;
     //
-    DataFormatKF x0_;
-    DataFormatKF x1_;
-    DataFormatKF x2_;
-    DataFormatKF x3_;
-    DataFormatKF H00_;
-    DataFormatKF H12_;
-    DataFormatKF m0_;
-    DataFormatKF m1_;
-    DataFormatKF v0_;
-    DataFormatKF v1_;
-    DataFormatKF r0_;
-    DataFormatKF r1_;
-    DataFormatKF S00_;
-    DataFormatKF S01_;
-    DataFormatKF S12_;
-    DataFormatKF S13_;
-    DataFormatKF K00_;
-    DataFormatKF K10_;
-    DataFormatKF K21_;
-    DataFormatKF K31_;
-    DataFormatKF R00_;
-    DataFormatKF R11_;
-    DataFormatKF invR00_;
-    DataFormatKF invR11_;
-    DataFormatKF C00_;
-    DataFormatKF C01_;
-    DataFormatKF C11_;
-    DataFormatKF C22_;
-    DataFormatKF C23_;
-    DataFormatKF C33_;
+    DataFormatKF* x0_;
+    DataFormatKF* x1_;
+    DataFormatKF* x2_;
+    DataFormatKF* x3_;
+    DataFormatKF* H00_;
+    DataFormatKF* H12_;
+    DataFormatKF* m0_;
+    DataFormatKF* m1_;
+    DataFormatKF* v0_;
+    DataFormatKF* v1_;
+    DataFormatKF* r0_;
+    DataFormatKF* r1_;
+    DataFormatKF* S00_;
+    DataFormatKF* S01_;
+    DataFormatKF* S12_;
+    DataFormatKF* S13_;
+    DataFormatKF* K00_;
+    DataFormatKF* K10_;
+    DataFormatKF* K21_;
+    DataFormatKF* K31_;
+    DataFormatKF* R00_;
+    DataFormatKF* R11_;
+    DataFormatKF* R00Rough_;
+    DataFormatKF* R11Rough_;
+    DataFormatKF* invR00Approx_;
+    DataFormatKF* invR11Approx_;
+    DataFormatKF* invR00Cor_;
+    DataFormatKF* invR11Cor_;
+    DataFormatKF* invR00_;
+    DataFormatKF* invR11_;
+    DataFormatKF* C00_;
+    DataFormatKF* C01_;
+    DataFormatKF* C11_;
+    DataFormatKF* C22_;
+    DataFormatKF* C23_;
+    DataFormatKF* C33_;
  
   };
 

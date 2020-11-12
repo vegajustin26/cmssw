@@ -117,8 +117,19 @@ namespace trackerTFP {
   }
 
   FrameTrack State::frame() const {
-    TrackKF track(*track_, x1_, x0_, x3_, x2_, hitPattern_, setup_->layerMap(layerMap_));
+    TrackKF track(*track_, x1_, x0_, x3_, x2_);
     return track.frame();
+  }
+
+  vector<StubKF> State::stubs() const {
+    vector<StubKF> stubs;
+    stubs.reserve(hitPattern_.count());
+    State* s = parent_;
+    while (s) {
+      stubs.emplace_back(*(s->stub()), x0_, x1_, x2_, x3_);
+      s = s->parent();
+    }
+    return stubs;
   }
 
   //

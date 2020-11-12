@@ -79,8 +79,8 @@ namespace trackerTFP {
   template<> Format<Variable::sectorsPhi, Process::gp>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
   template<> Format<Variable::trackId, Process::kfin>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
   template<> Format<Variable::match, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::hitPattern, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::layerMap, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
+  template<> Format<Variable::hitPattern, Process::kfin>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
+  template<> Format<Variable::layerMap, Process::kfin>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
   template<> Format<Variable::phi0, Process::dr>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
   template<> Format<Variable::qOverPt, Process::dr>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
   template<> Format<Variable::z0, Process::dr>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
@@ -92,24 +92,24 @@ namespace trackerTFP {
   class DataFormats {
   private:
     static constexpr std::array<std::array<Process, +Process::end>, +Variable::end> config_ = {{
-    //  Process::fe  Process::dtc  Process::pp   Process::gp  Process::ht  Process::mht  Process::sf   Process::kfin  Process::kf  Process::dr
-      {{Process::x,  Process::ht,  Process::ht,  Process::ht, Process::ht, Process::ht,  Process::ht,  Process::ht,   Process::x,  Process::x }}, // Variable::r
-      {{Process::x,  Process::dtc, Process::dtc, Process::gp, Process::ht, Process::mht, Process::mht, Process::mht,  Process::x,  Process::x }}, // Variable::phi
-      {{Process::x,  Process::dtc, Process::dtc, Process::gp, Process::gp, Process::gp,  Process::sf,  Process::sf,   Process::x,  Process::x }}, // Variable::z
-      {{Process::x,  Process::ht,  Process::ht,  Process::ht, Process::ht, Process::ht,  Process::ht,  Process::x,    Process::x,  Process::x }}, // Variable::layer
-      {{Process::x,  Process::dtc, Process::dtc, Process::x,  Process::x,  Process::x,   Process::x,   Process::x,    Process::x,  Process::x }}, // Variable::sectorsPhi
-      {{Process::x,  Process::gp,  Process::gp,  Process::gp, Process::gp, Process::gp,  Process::gp,  Process::gp,   Process::gp, Process::x }}, // Variable::sectorEta
-      {{Process::x,  Process::x,   Process::x,   Process::gp, Process::gp, Process::gp,  Process::gp,  Process::gp,   Process::gp, Process::x }}, // Variable::sectorPhi
-      {{Process::x,  Process::ht,  Process::ht,  Process::ht, Process::ht, Process::mht, Process::mht, Process::mht,  Process::kf, Process::x }}, // Variable::phiT
-      {{Process::x,  Process::ht,  Process::ht,  Process::ht, Process::ht, Process::mht, Process::mht, Process::mht,  Process::dr, Process::dr}}, // Variable::qOverPt
-      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::sf,  Process::sf,   Process::kf, Process::x }}, // Variable::zT
-      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::sf,  Process::sf,   Process::kf, Process::dr}}, // Variable::cot
-      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::kfin, Process::x,  Process::x }}, // Variable::trackId
-      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::x,    Process::kf, Process::x }}, // Variable::match
-      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::kf,   Process::kf, Process::kf}}, // Variable::hitPattern
-      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::kf,   Process::kf, Process::kf}}, // Variable::layerMap
-      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::x,    Process::x,  Process::dr}}, // Variable::phi0
-      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::x,    Process::x,  Process::dr}}  // Variable::z0
+    //  Process::fe  Process::dtc  Process::pp   Process::gp  Process::ht  Process::mht  Process::sf   Process::kfin  Process::kf   Process::dr
+      {{Process::x,  Process::ht,  Process::ht,  Process::ht, Process::ht, Process::ht,  Process::ht,  Process::ht,   Process::ht,  Process::x }}, // Variable::r
+      {{Process::x,  Process::dtc, Process::dtc, Process::gp, Process::ht, Process::mht, Process::mht, Process::mht,  Process::mht, Process::x }}, // Variable::phi
+      {{Process::x,  Process::dtc, Process::dtc, Process::gp, Process::gp, Process::gp,  Process::sf,  Process::sf,   Process::sf,  Process::x }}, // Variable::z
+      {{Process::x,  Process::ht,  Process::ht,  Process::ht, Process::ht, Process::ht,  Process::ht,  Process::x,    Process::x,   Process::x }}, // Variable::layer
+      {{Process::x,  Process::dtc, Process::dtc, Process::x,  Process::x,  Process::x,   Process::x,   Process::x,    Process::x,   Process::x }}, // Variable::sectorsPhi
+      {{Process::x,  Process::gp,  Process::gp,  Process::gp, Process::gp, Process::gp,  Process::gp,  Process::gp,   Process::gp,  Process::x }}, // Variable::sectorEta
+      {{Process::x,  Process::x,   Process::x,   Process::gp, Process::gp, Process::gp,  Process::gp,  Process::gp,   Process::gp,  Process::x }}, // Variable::sectorPhi
+      {{Process::x,  Process::ht,  Process::ht,  Process::ht, Process::ht, Process::mht, Process::mht, Process::mht,  Process::kf,  Process::x }}, // Variable::phiT
+      {{Process::x,  Process::ht,  Process::ht,  Process::ht, Process::ht, Process::mht, Process::mht, Process::mht,  Process::dr,  Process::dr}}, // Variable::qOverPt
+      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::sf,  Process::sf,   Process::kf,  Process::x }}, // Variable::zT
+      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::sf,  Process::sf,   Process::kf,  Process::dr}}, // Variable::cot
+      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::kfin, Process::x,   Process::x }}, // Variable::trackId
+      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::x,    Process::kf,  Process::x }}, // Variable::match
+      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::kfin, Process::x,   Process::x }}, // Variable::hitPattern
+      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::kfin, Process::x,   Process::x }}, // Variable::layerMap
+      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::x,    Process::x,   Process::dr}}, // Variable::phi0
+      {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::x,    Process::x,   Process::dr}}  // Variable::z0
     }};
     static constexpr std::array<std::initializer_list<Variable>, +Process::end> stubs_ = {{
       {},                                                                                                                                                                   // Process::fe
@@ -120,7 +120,7 @@ namespace trackerTFP {
       {Variable::r, Variable::phi, Variable::z, Variable::layer, Variable::sectorPhi, Variable::sectorEta, Variable::phiT, Variable::qOverPt},                              // Process::mht
       {Variable::r, Variable::phi, Variable::z, Variable::layer, Variable::sectorPhi, Variable::sectorEta, Variable::phiT, Variable::qOverPt, Variable::zT, Variable::cot}, // Process::sf
       {Variable::r, Variable::phi, Variable::z, Variable::trackId},                                                                                                         // Process::kfin
-      {},                                                                                                                                                                   // Process::kf
+      {Variable::r, Variable::phi, Variable::z},                                                                                                                            // Process::kf
       {}                                                                                                                                                                    // Process::dr
     }};
     static constexpr std::array<std::initializer_list<Variable>, +Process::end> tracks_ = {{
@@ -132,8 +132,8 @@ namespace trackerTFP {
       {},                                                                                                                                                                      // Process::mht
       {},                                                                                                                                                                      // Process::sf
       {Variable::hitPattern, Variable::layerMap, Variable::phiT, Variable::qOverPt, Variable::zT, Variable::cot, Variable::sectorPhi, Variable::sectorEta, Variable::trackId}, // Process::kfin
-      {Variable::hitPattern, Variable::layerMap, Variable::phiT, Variable::qOverPt, Variable::zT, Variable::cot, Variable::sectorPhi, Variable::sectorEta, Variable::match},   // Process::kf
-      {Variable::hitPattern, Variable::layerMap, Variable::phi0, Variable::qOverPt, Variable::z0, Variable::cot}                                                               // Process::dr
+      {Variable::phiT, Variable::qOverPt, Variable::zT, Variable::cot, Variable::sectorPhi, Variable::sectorEta, Variable::match},                                             // Process::kf
+      {Variable::phi0, Variable::qOverPt, Variable::z0, Variable::cot}                                                                                                         // Process::dr
     }};
   public:
     DataFormats();
@@ -321,6 +321,19 @@ namespace trackerTFP {
     int layer_;
   };
 
+  class StubKF : public Stub<double, double, double> {
+  public:
+    StubKF(const TTDTC::Frame& frame, const DataFormats* dataFormats, int layer);
+    StubKF(const StubKFin& stub, double qOverPt, double phiT, double cot, double zT);
+    ~StubKF(){}
+    int layer() const { return layer_; }
+    double r() const { return std::get<0>(data_); }
+    double phi() const { return std::get<1>(data_); }
+    double z() const { return std::get<2>(data_); }
+  private:
+    int layer_;
+  };
+
   template<typename ...Ts>
   class Track {
   public:
@@ -375,43 +388,33 @@ namespace trackerTFP {
     std::vector<std::vector<StubKFin*>> stubs_;
   };
 
-  class TrackKF : public Track<TTBV, TTBV, double, double, double, double, int, int, int> {
+  class TrackKF : public Track<double, double, double, double, int, int, int> {
   public:
     TrackKF(const FrameTrack& frame, const DataFormats* dataFormats);
-    TrackKF(const TrackKFin& track, double phiT, double qOverPt, double zT, double cot, const TTBV& hitPattern, const TTBV& layerMap);
+    TrackKF(const TrackKFin& track, double phiT, double qOverPt, double zT, double cot);
     ~TrackKF(){}
-    const TTBV& hitPattern() const { return std::get<0>(data_); }
-    std::vector<int> layerMap() const { return setup()->layerMap(std::get<1>(data_)); }
-    double phiT() const { return std::get<2>(data_); }
-    double qOverPt() const { return std::get<3>(data_); }
-    double zT() const { return std::get<4>(data_); }
-    double cot() const { return std::get<5>(data_); }
-    int sectorPhi() const { return std::get<6>(data_); }
-    int sectorEta() const { return std::get<7>(data_); }
-    bool match() const { return std::get<8>(data_); }
-    const std::vector<TTStubRef>& ttStubRefs() const { return ttStubRefs_; }
-    void ttStubRefs(const std::vector<TTStubRef>& ttStubRefs) { ttStubRefs_ = ttStubRefs; }
-    TTTrack<Ref_Phase2TrackerDigi_> ttTrack() const;
-    bool hitPattern(int layer) const { return std::get<0>(data_)[layer]; }
-    int layerMap(int layer) const { return setup()->layerMap(std::get<1>(data_))[layer]; }
+    double phiT() const { return std::get<0>(data_); }
+    double qOverPt() const { return std::get<1>(data_); }
+    double zT() const { return std::get<2>(data_); }
+    double cot() const { return std::get<3>(data_); }
+    int sectorPhi() const { return std::get<4>(data_); }
+    int sectorEta() const { return std::get<5>(data_); }
+    bool match() const { return std::get<6>(data_); }
+    TTTrack<Ref_Phase2TrackerDigi_> ttTrack(const std::vector<StubKF>& stubs) const;
   private:
-    std::vector<TTStubRef> ttStubRefs_;
   };
 
-  class TrackDR : public Track<TTBV, TTBV, double, double, double, double> {
+  class TrackDR : public Track<double, double, double, double> {
   public:
-    TrackDR(const FrameTrack& frame, const DataFormats* dataFormats, const std::vector<TTStubRef>& ttStubRefs);
+    TrackDR(const FrameTrack& frame, const DataFormats* dataFormats);
     TrackDR(const TrackKF& track);
     ~TrackDR(){}
-    const TTBV& hitPattern() const { return std::get<0>(data_); }
-    std::vector<int> layerMap() const { return setup()->layerMap(hitPattern(), std::get<1>(data_)); }
-    double phi0() const { return std::get<2>(data_); }
-    double qOverPt() const { return std::get<3>(data_); }
-    double z0() const { return std::get<4>(data_); }
-    double cot() const { return std::get<5>(data_); }
+    double phi0() const { return std::get<0>(data_); }
+    double qOverPt() const { return std::get<1>(data_); }
+    double z0() const { return std::get<2>(data_); }
+    double cot() const { return std::get<3>(data_); }
     TTTrack<Ref_Phase2TrackerDigi_> ttTrack() const;
   private:
-    std::vector<TTStubRef> ttStubRefs_;
   };
 
 } // namespace trackerTFP

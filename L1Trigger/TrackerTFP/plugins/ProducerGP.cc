@@ -60,8 +60,8 @@ namespace trackerTFP {
     iConfig_(iConfig)
   {
     const string& label = iConfig.getParameter<string>("LabelDTC");
-    const string& branchAccepted = iConfig.getParameter<string>("BranchAccepted");
-    const string& branchLost = iConfig.getParameter<string>("BranchLost");
+    const string& branchAccepted = iConfig.getParameter<string>("BranchAcceptedStubs");
+    const string& branchLost = iConfig.getParameter<string>("BranchLostStubs");
     // book in- and output ED products
     edGetToken_ = consumes<TTDTC>(InputTag(label, branchAccepted));
     edPutTokenAccepted_ = produces<TTDTC::Streams>(branchAccepted);

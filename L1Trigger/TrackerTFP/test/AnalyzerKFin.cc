@@ -88,8 +88,8 @@ namespace trackerTFP {
     usesResource("TFileService");
     // book in- and output ED products
     const string& label = iConfig.getParameter<string>("LabelKFin");
-    const string& branchAccepted = iConfig.getParameter<string>("BranchAccepted");
-    const string& branchLost = iConfig.getParameter<string>("BranchLost");
+    const string& branchAccepted = iConfig.getParameter<string>("BranchAcceptedStubs");
+    const string& branchLost = iConfig.getParameter<string>("BranchLostStubs");
     edGetTokenAccepted_ = consumes<TTDTC::Streams>(InputTag(label, branchAccepted));
     edGetTokenLost_ = consumes<TTDTC::Streams>(InputTag(label, branchLost));
     if (useMCTruth_) {

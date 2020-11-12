@@ -62,6 +62,7 @@ namespace trackerTFP {
     double v1() const { return setup_->v1(stub_->ttStubRef(), track_->cotGlobal()); }
     int nPS() const { return nPS_; }
     FrameTrack frame() const;
+    std::vector<StubKF> stubs() const;
 
   private:
     //

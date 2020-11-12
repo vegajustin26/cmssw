@@ -11,10 +11,12 @@
 #include <initializer_list>
 #include <tuple>
 #include <utility>
+#include <array>
+#include <string>
 
 namespace trackerTFP {
 
-  enum class VariableKF { begin, x0 = begin, x1, x2, x3, H00, H12, m0, m1, v0, v1, r0, r1, r02, r12, S00, S01, S12, S13, K00, K10, K21, K31, R00, R11, invR00, invR11, chi20, chi21, C00, C01, C11, C22, C23, C33, chi2, end, x };
+  enum class VariableKF { begin, x0 = begin, x1, x2, x3, H00, H12, m0, m1, v0, v1, r0, r1, S00, S01, S12, S13, K00, K10, K21, K31, R00, R11, R00Rough, R11Rough, invR00Approx, invR11Approx, invR00Cor, invR11Cor, invR00, invR11, C00, C01, C11, C22, C23, C33, end, x };
   inline constexpr int operator+(VariableKF v) { return static_cast<int>(v); }
   inline constexpr VariableKF operator++(VariableKF v) { return VariableKF(+v + 1); }
 
@@ -23,10 +25,8 @@ namespace trackerTFP {
     DataFormatKF(bool twos);
     ~DataFormatKF() {}
     void updateRangeActual(double d);
-    //double digir(double val) const { return std::round(val / base_) * base_; }
-    double digir(double val) const { return val; }
-    //double digif(double val) const { return (std::floor(val / base_) + .5) * base_; }
-    double digif(double val) const { return val; }
+    //double digi(double val) const { return (std::floor(val / base_) + .5) * base_; }
+    double digi(double val) const { return val; }
     bool twos() const { return twos_; }
     int width() const { return width_; }
     double base() const { return base_; }
@@ -59,8 +59,6 @@ namespace trackerTFP {
   template<> FormatKF<VariableKF::v1>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::r0>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::r1>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
-  template<> FormatKF<VariableKF::r02>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
-  template<> FormatKF<VariableKF::r12>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::S00>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::S01>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::S12>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
@@ -71,17 +69,20 @@ namespace trackerTFP {
   template<> FormatKF<VariableKF::K31>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::R00>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::R11>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
+  template<> FormatKF<VariableKF::R00Rough>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
+  template<> FormatKF<VariableKF::R11Rough>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
+  template<> FormatKF<VariableKF::invR00Approx>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
+  template<> FormatKF<VariableKF::invR11Approx>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
+  template<> FormatKF<VariableKF::invR00Cor>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
+  template<> FormatKF<VariableKF::invR11Cor>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::invR00>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::invR11>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
-  template<> FormatKF<VariableKF::chi20>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
-  template<> FormatKF<VariableKF::chi21>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::C00>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::C01>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::C11>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::C22>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::C23>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
   template<> FormatKF<VariableKF::C33>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
-  template<> FormatKF<VariableKF::chi2>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
 
   class KalmanFilterFormats {
   public:
@@ -92,7 +93,8 @@ namespace trackerTFP {
     const DataFormats* dataFormats() const { return dataFormats_; }
     int width(VariableKF v) const { return formats_[+v].width(); }
     double base(VariableKF v) const { return formats_[+v].base(); }
-    const DataFormatKF& format(VariableKF v) const { return formats_[+v]; }
+    DataFormatKF& format(VariableKF v) { return formats_[+v]; }
+    void endJob();
   private:
     template<VariableKF it = VariableKF::begin>
     void fillFormats();

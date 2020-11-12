@@ -587,12 +587,18 @@ namespace trackerDTC {
   double Setup::dZ(const TTStubRef& ttStubRef, double cot) const {
     const DetId& detId = ttStubRef->getDetId();
     SensorModule* sm = sensorModule(detId + 1);
-    return sm->pitchCol() * sm->tiltCorrection(cot);
+    const double sigma = sm->pitchCol() * sm->tiltCorrection(cot);
+    const double digi = baseZ_;
+    return sigma + digi;
   }
 
   //
   double Setup::v1(const TTStubRef& ttStubRef, double cot) const {
-    return pow(dZ(ttStubRef, cot), 2) / 12.;
+    const DetId& detId = ttStubRef->getDetId();
+    SensorModule* sm = sensorModule(detId + 1);
+    const double sigma = pow(sm->pitchCol() * sm->tiltCorrection(cot), 2) / 12.;
+    const double digi = pow(baseZ_, 2);
+    return sigma + digi;
   }
 
   //
@@ -601,8 +607,8 @@ namespace trackerDTC {
     SensorModule* sm = sensorModule(detId + 1);
     const double r = stubPos(ttStubRef).perp();
     const double sigma = sm->pitchRow() / r;
-    const double scat = 0.00075 * qOverPt / invPtToDphi_;
-    const double extra = sm->barrel() ? 0. : sm->pitchCol() * qOverPt;
+    const double scat = 0.00075 * abs(qOverPt) / invPtToDphi_;
+    const double extra = sm->barrel() ? 0. : sm->pitchCol() * abs(qOverPt);
     const double digi = basePhi_;
     return sigma + scat + extra + digi;
   }

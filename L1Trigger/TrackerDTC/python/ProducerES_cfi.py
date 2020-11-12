@@ -27,7 +27,7 @@ TrackTrigger_params = cms.PSet (
 
   # TMTT specific parameter
   TMTT = cms.PSet (
-    MinPt            = cms.double(  3.   ), # cut on stub and TP pt, also defines region overlap shape in GeV
+    MinPt            = cms.double(  1.34 ), # cut on stub and TP pt, also defines region overlap shape in GeV
     MaxEta           = cms.double(  2.4  ), # cut on stub eta
     ChosenRofPhi     = cms.double( 67.24 ), # critical radius defining region overlap shape in cm
     NumLayers        = cms.int32 (  8    ), # number of detector layers a reconstructbale particle may cross
@@ -50,7 +50,7 @@ TrackTrigger_params = cms.PSet (
     WidthsBend   = cms.vint32 (   3,     4,     3,      4   ), # number of bits used for stub bend number for module types (barrelPS, barrel2S, diskPS, disk2S)
     RangesR      = cms.vdouble(   7.5,   7.5, 120. ,    0.  ), # range in stub r which needs to be covered for module types (barrelPS, barrel2S, diskPS, disk2S)
     RangesZ      = cms.vdouble( 240.,  240.,    7.5,    7.5 ), # range in stub z which needs to be covered for module types (barrelPS, barrel2S, diskPS, disk2S)
-    RangesAlpha  = cms.vdouble(   0.,    0.,    0.,  1024.  ), # range in stub row which needs to be covered for module types (barrelPS, barrel2S, diskPS, disk2S)
+    RangesAlpha  = cms.vdouble(   0.,    0.,    0.,  2048.  ), # range in stub row which needs to be covered for module types (barrelPS, barrel2S, diskPS, disk2S)
     LayerRs      = cms.vdouble(  24.9316,  37.1777,  52.2656,  68.7598,  86.0156, 108.3105 ), # mean radius of outer tracker barrel layer
     DiskZs       = cms.vdouble( 131.1914, 154.9805, 185.3320, 221.6016, 265.0195           ), # mean z of outer tracker endcap disks
     Disk2SRsSet  = cms.VPSet(                                                                 # center radius of outer tracker endcap 2S diks strips
@@ -134,8 +134,8 @@ TrackTrigger_params = cms.PSet (
 
   # Parmeter specifying HoughTransform
   HoughTransform = cms.PSet (
-    NumBinsQoverPt = cms.int32( 16 ), # number of used qOverPt bins
-    NumBinsPhiT    = cms.int32( 32 ), # number of used phiT bins
+    NumBinsQoverPt = cms.int32(  8 ), # number of used qOverPt bins
+    NumBinsPhiT    = cms.int32( 16 ), # number of used phiT bins
     MinLayers      = cms.int32(  5 ), # required number of stub layers to form a candidate
     DepthMemory    = cms.int32( 32 )  # internal fifo depth
   ),
@@ -161,8 +161,8 @@ TrackTrigger_params = cms.PSet (
   # Parmeter specifying KalmanFilter
   KalmanFilter = cms.PSet (
     NumWorker        = cms.int32(   1 ), # number of kf worker
-    WidthLutInvPhi   = cms.int32(  10 ), # number of bits for internal reciprocal look up
-    WidthLutInvZ     = cms.int32(  10 ), # number of bits for internal reciprocal look up
+    WidthLutInvPhi   = cms.int32(  13 ), # number of bits for internal reciprocal look up
+    WidthLutInvZ     = cms.int32(  12 ), # number of bits for internal reciprocal look up
     NumTracks        = cms.int32(  16 ), # cut on number of input candidates
     MinLayers        = cms.int32(   4 ), # required number of stub layers to form a track
     MaxLayers        = cms.int32(   4 ), # maximum number of  layers added to a track

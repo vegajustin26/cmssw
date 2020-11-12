@@ -84,28 +84,4 @@ namespace trackerTFP {
     return pattern;
   }
 
-  //
-  void LayerEncoding::addTTStubRefs(TrackKF& track) const {
-    const DataFormat& zT = dataFormats_->format(Variable::zT, Process::kfin);
-    const DataFormat& cot = dataFormats_->format(Variable::cot, Process::kfin);
-    const int binEta = track.sectorEta();
-    const int binZT = zT.toUnsigned(zT.integer(track.ttTrackRef()->z0()));
-    const int binCot = cot.toUnsigned(cot.integer(track.ttTrackRef()->tanL()));
-    const vector<int>& layers = layerEncoding_[binEta][binZT][binCot];
-    vector<vector<TTStubRef>> layerStubs(setup_->numLayers());
-    for (vector<TTStubRef>& stubs : layerStubs)
-      stubs.reserve(setup_->kfMaxStubsPerLayer());
-    for (const TTStubRef& ttStubRef : track.frame().first->getStubRefs()) {
-      const int layerId = setup_->layerId(ttStubRef);
-      const int layerKF = distance(layers.begin(), find(layers.begin(), layers.end(), layerId));
-      layerStubs[layerKF].push_back(ttStubRef);
-    }
-    vector<TTStubRef> ttstubRefs;
-    ttstubRefs.reserve(track.hitPattern().count());
-    for (int layer = 0; layer < setup_->numLayers(); layer++)
-      if (track.hitPattern(layer))
-        ttstubRefs.push_back(layerStubs[layer][track.layerMap(layer)]);
-    track.ttStubRefs(ttstubRefs);
-  }
-
 } // namespace trackerTFP

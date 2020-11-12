@@ -146,6 +146,8 @@ namespace trackerDTC {
     int tpMinLayers() const { return tpMinLayers_; }
     // required number of associated ps layers to a TP to consider it reconstruct-able
     int tpMinLayersPS() const { return tpMinLayersPS_; }
+    // BField used in fw in T
+    double bField() const { return bField_; }
 
     // TMTT specific parameter
 

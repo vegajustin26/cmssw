@@ -75,15 +75,17 @@ namespace trackerTFP {
   {
     const string& labelTTTracks = iConfig.getParameter<string>("LabelSFout");
     const string& labelStubs = iConfig.getParameter<string>("LabelSF");
-    const string& branchAccepted = iConfig.getParameter<string>("BranchAccepted");
-    const string& branchLost = iConfig.getParameter<string>("BranchLost");
+    const string& branchAcceptedStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
+    const string& branchAcceptedTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
+    const string& branchLostStubs = iConfig.getParameter<string>("BranchLostStubs");
+    const string& branchLostTracks = iConfig.getParameter<string>("BranchLostTracks");
     // book in- and output ED products
-    edGetTokenTTTracks_ = consumes<vector<TTTrack<Ref_Phase2TrackerDigi_>>>(InputTag(labelTTTracks, branchAccepted));
-    edGetTokenStubs_ = consumes<TTDTC::Streams>(InputTag(labelStubs, branchAccepted));
-    edPutTokenAcceptedStubs_ = produces<TTDTC::Streams>(branchAccepted);
-    edPutTokenAcceptedTracks_ = produces<StreamsTrack>(branchAccepted);
-    edPutTokenLostStubs_ = produces<TTDTC::Streams>(branchLost);
-    edPutTokenLostTracks_ = produces<StreamsTrack>(branchLost);
+    edGetTokenTTTracks_ = consumes<vector<TTTrack<Ref_Phase2TrackerDigi_>>>(InputTag(labelTTTracks, branchAcceptedTracks));
+    edGetTokenStubs_ = consumes<TTDTC::Streams>(InputTag(labelStubs, branchAcceptedStubs));
+    edPutTokenAcceptedStubs_ = produces<TTDTC::Streams>(branchAcceptedStubs);
+    edPutTokenAcceptedTracks_ = produces<StreamsTrack>(branchAcceptedTracks);
+    edPutTokenLostStubs_ = produces<TTDTC::Streams>(branchLostStubs);
+    edPutTokenLostTracks_ = produces<StreamsTrack>(branchLostTracks);
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
     esGetTokenDataFormats_ = esConsumes<DataFormats, DataFormatsRcd, Transition::BeginRun>();

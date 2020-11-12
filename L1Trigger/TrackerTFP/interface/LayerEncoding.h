@@ -19,8 +19,6 @@ namespace trackerTFP {
     const int layerIdKF(int binEta, int binZT, int binCot, int layerId) const;
     //
     TTBV hitPattern(const std::vector<TTStubRef>& ttStubRefs, int binEta, int binZT, int binCot) const;
-    //
-    void addTTStubRefs(TrackKF& track) const;
   private:
     const DataFormats* dataFormats_;
     const trackerDTC::Setup* setup_;

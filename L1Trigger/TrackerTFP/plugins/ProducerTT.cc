@@ -38,8 +38,10 @@ namespace trackerTFP {
     void produce(Event&, const EventSetup&) override;
     void endJob() {}
 
+    // ED input token of kf stubs
+    EDGetTokenT<TTDTC::Streams> edGetTokenStubs_;
     // ED input token of kf tracks
-    EDGetTokenT<StreamsTrack> edGetToken_;
+    EDGetTokenT<StreamsTrack> edGetTokenTracks_;
     // ED output token for TTTracks
     EDPutTokenT<TTTracks> edPutToken_;
     // Setup token
@@ -62,10 +64,12 @@ namespace trackerTFP {
     iConfig_(iConfig)
   {
     const string& label = iConfig.getParameter<string>("LabelKF");
-    const string& branch = iConfig.getParameter<string>("BranchAccepted");
+    const string& branchStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
+    const string& branchTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
     // book in- and output ED products
-    edGetToken_ = consumes<StreamsTrack>(InputTag(label, branch));
-    edPutToken_ = produces<TTTracks>(branch);
+    edGetTokenStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchStubs));
+    edGetTokenTracks_ = consumes<StreamsTrack>(InputTag(label, branchTracks));
+    edPutToken_ = produces<TTTracks>(branchTracks);
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
     esGetTokenDataFormats_ = esConsumes<DataFormats, DataFormatsRcd, Transition::BeginRun>();
@@ -95,20 +99,30 @@ namespace trackerTFP {
     TTTracks ttTracks;
     // read in KF Product and produce KFTTTrack product
     if (setup_->configurationSupported()) {
-      Handle<StreamsTrack> handle;
-      iEvent.getByToken<StreamsTrack>(edGetToken_, handle);
-      const StreamsTrack& streams = *handle.product();
+      Handle<StreamsTrack> handleTracks;
+      iEvent.getByToken<StreamsTrack>(edGetTokenTracks_, handleTracks);
+      const StreamsTrack& streamsTracks = *handleTracks.product();
+      Handle<TTDTC::Streams> handleStubs;
+      iEvent.getByToken<TTDTC::Streams>(edGetTokenTracks_, handleStubs);
+      const TTDTC::Streams& streamsStubs = *handleStubs.product();
       int nTracks(0);
-      for (const StreamTrack& stream : streams)
+      for (const StreamTrack& stream : streamsTracks)
         nTracks += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
       ttTracks.reserve(nTracks);
-      for (const StreamTrack& stream : streams) {
-        for (const FrameTrack& frame : stream) {
-          if (frame.first.isNull())
-            continue;
-          TrackKF track(frame, dataFormats_);
-          layerEncoding_->addTTStubRefs(track);
-          ttTracks.emplace_back(track.ttTrack());
+      for (int region = 0; region < setup_->numRegions(); region++) {
+        int pos(0);
+        const int offset = region * setup_->numLayers();
+        for (const FrameTrack& frameTrack : streamsTracks[region]) {
+          vector<StubKF> stubs;
+          stubs.reserve(setup_->numLayers());
+          for (int layer = 0; layer < setup_->numLayers(); layer++) {
+            const TTDTC::Frame& frameStub = streamsStubs[offset + layer][pos];
+            if (frameStub.first.isNonnull())
+              stubs.emplace_back(frameStub, dataFormats_, layer);
+          }
+          TrackKF track(frameTrack, dataFormats_);
+          ttTracks.emplace_back(track.ttTrack(stubs));
+          pos++;
         }
       }
     }

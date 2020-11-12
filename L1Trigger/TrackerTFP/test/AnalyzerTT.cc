@@ -48,7 +48,7 @@ namespace trackerTFP {
   AnalyzerTT::AnalyzerTT(const ParameterSet& iConfig) {
     // book in- and output ED products
     const auto& label = iConfig.getParameter<string>("LabelAS");
-    const auto& branch = iConfig.getParameter<string>("BranchAccepted");
+    const auto& branch = iConfig.getParameter<string>("BranchAcceptedTracks");
     const auto& inputTag = iConfig.getParameter<InputTag>("InputTagSelection");
     edGetTokenTTTrackMap_ = consumes<TTTrackMap>(InputTag(label, branch));
     edGetTokenStubAssociation_ = consumes<StubAssociation>(inputTag);

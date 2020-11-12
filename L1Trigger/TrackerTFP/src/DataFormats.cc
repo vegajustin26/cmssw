@@ -43,6 +43,9 @@ namespace trackerTFP {
     for (const Process p : Processes)
       for (const Variable v : stubs_[+p])
         numUnusedBitsStubs_[+p] -= formats_[+v][+p] ? formats_[+v][+p]->width() : 0;
+    for (const Process p : Processes)
+      for (const Variable v : tracks_[+p])
+        numUnusedBitsTracks_[+p] -= formats_[+v][+p] ? formats_[+v][+p]->width() : 0;
     numChannel_[+Process::dtc] = setup_->numDTCsPerRegion();
     numChannel_[+Process::pp] = setup_->numDTCsPerTFP();
     numChannel_[+Process::gp] = setup_->numSectors();
@@ -279,6 +282,19 @@ namespace trackerTFP {
     trackId_ = trackId;
   }
 
+  StubKF::StubKF(const TTDTC::Frame& frame, const DataFormats* formats, int layer) :
+    Stub(frame, formats, Process::kf), layer_(layer) {}
+
+  StubKF::StubKF(const StubKFin& stub, double qOverPt, double phiT, double cot, double zT) :
+    Stub(stub, stub.r(), stub.phi(), stub.z()),
+    layer_(stub.layer())
+  {
+    const Setup* setup = dataFormats_->setup();
+    get<1>(data_) -= phiT - this->r() * qOverPt;
+    get<2>(data_) -= zT + (this->r() + setup->chosenRofPhi() - setup->chosenRofZ()) * cot;
+    dataFormats_->convertStub(data_, frame_.second, p_);
+  }
+
   template<typename ...Ts>
   Track<Ts...>::Track(const FrameTrack& frame, const DataFormats* dataFormats, Process p) :
     dataFormats_(dataFormats),
@@ -356,57 +372,68 @@ namespace trackerTFP {
   }
 
   TrackKF::TrackKF(const FrameTrack& frame, const DataFormats* dataFormats) :
-    Track(frame, dataFormats, Process::kf)
-  {
-    ttStubRefs_.reserve(hitPattern().count());
-  }
+    Track(frame, dataFormats, Process::kf) {}
 
-  TrackKF::TrackKF(const TrackKFin& track, double phiT, double qOverPt, double zT, double cot, const TTBV& hitPattern, const TTBV& layerMap) :
-    Track(track, hitPattern, layerMap, 0., 0., 0., 0., track.sectorPhi(), track.sectorEta(), false),
-    ttStubRefs_(track.ttStubRefs(hitPattern, setup()->layerMap(layerMap)))
+  TrackKF::TrackKF(const TrackKFin& track, double phiT, double qOverPt, double zT, double cot) :
+    Track(track, track.phiT(), track.qOverPt(), track.zT(), track.cot(), track.sectorPhi(), track.sectorEta(), false)
   {
-    get<2>(data_) = track.phiT() + phiT;
-    get<3>(data_) = track.qOverPt() + qOverPt;
-    get<4>(data_) = track.zT() + zT;
-    get<5>(data_) = track.cot() + cot;
-    get<8>(data_) = abs(qOverPt) < dataFormats_->format(Variable::qOverPt, Process::sf).base() / 2. && abs(phiT) < dataFormats_->format(Variable::phiT, Process::sf).base() / 2.;
+    get<0>(data_) += phiT;
+    get<1>(data_) += qOverPt;
+    get<2>(data_) += zT;
+    get<3>(data_) += cot;
+    get<6>(data_) = abs(qOverPt) < dataFormats_->format(Variable::qOverPt, Process::sf).base() / 2. && abs(phiT) < dataFormats_->format(Variable::phiT, Process::sf).base() / 2.;
     dataFormats_->convertTrack(data_, frame_.second, p_);
   }
 
-  TTTrack<Ref_Phase2TrackerDigi_> TrackKF::ttTrack() const {
+  TTTrack<Ref_Phase2TrackerDigi_> TrackKF::ttTrack(const vector<StubKF>& stubs) const {
+    TTBV hitVector(0, setup()->numLayers());
+    double chi2phi(0.);
+    double chi2z(0.);
+    vector<TTStubRef> ttStubRefs;
+    const int nLayer = stubs.size();
+    ttStubRefs.reserve(nLayer);
+    for (const StubKF& stub : stubs) {
+      hitVector.set(stub.layer());
+      const TTStubRef& ttStubRef = stub.ttStubRef();
+      chi2phi += pow(stub.phi(), 2) / setup()->v0(ttStubRef, this->qOverPt());
+      chi2z += pow(stub.z(), 2) / setup()->v1(ttStubRef, this->qOverPt());
+      ttStubRefs.push_back(ttStubRef);
+    }
+    static constexpr int nParPhi = 2;
+    static constexpr int nParZ = 2;
+    static constexpr int nPar = nParPhi + nParZ;
+    const int dofPhi = nLayer - nParPhi;
+    const int dofZ = nLayer - nParZ;
+    chi2phi /= dofPhi;
+    chi2z /= dofZ;
     const int sectorPhi = frame_.first->phiSector();
     const int sectorEta = frame_.first->etaSector();
     const double qOverPt = this->qOverPt() / setup()->invPtToDphi();
     const double phi0 = deltaPhi(this->phiT() + this->qOverPt() * dataFormats_->chosenRofPhi() + dataFormats_->format(Variable::phiT, Process::ht).range() * (sectorPhi - .5));
     const double cot = this->cot() + setup()->sectorCot(this->sectorEta());
     const double z0 = this->zT() - this->cot() * setup()->chosenRofZ();
-    const double chi2phi = 0.;
-    const double chi2z = 0;
-    const double trkMVA1 = 0.;
-    const double trkMVA2 = 0.;
-    const double trkMVA3 = 0.;
-    const int hitPattern = this->hitPattern().val();
-    const int nPar = 4;
-    const double bField = 0.;
+    static constexpr double trkMVA1 = 0.;
+    static constexpr double trkMVA2 = 0.;
+    static constexpr double trkMVA3 = 0.;
+    const int hitPattern = hitVector.val();
+    const double bField = setup()->bField();
     TTTrack<Ref_Phase2TrackerDigi_> ttTrack(qOverPt, phi0, cot, z0, chi2phi, chi2z, trkMVA1, trkMVA2, trkMVA3, hitPattern, nPar, bField);
-    ttTrack.setStubRefs(ttStubRefs_);
+    ttTrack.setStubRefs(ttStubRefs);
     ttTrack.setPhiSector(sectorPhi);
     ttTrack.setEtaSector(sectorEta);
     return ttTrack;
   }
 
-  TrackDR::TrackDR(const FrameTrack& frame, const DataFormats* dataFormats, const vector<TTStubRef>& ttStubRefs) :
-    Track(frame, dataFormats, Process::dr),
-    ttStubRefs_(ttStubRefs) {}
+  TrackDR::TrackDR(const FrameTrack& frame, const DataFormats* dataFormats) :
+    Track(frame, dataFormats, Process::dr) {}
 
   TrackDR::TrackDR(const TrackKF& track) :
-    Track(track, track.hitPattern(), setup()->layerMap(track.layerMap()), 0., 0., 0., 0.),
-    ttStubRefs_(track.ttStubRefs())
+    Track(track, 0., 0., 0., 0.)
   {
-    get<2>(data_) = track.phiT() + track.qOverPt() * dataFormats_->chosenRofPhi() + dataFormats_->format(Variable::phi, Process::gp).range() * (track.sectorPhi() - .5);
-    get<3>(data_) = track.qOverPt();
-    get<4>(data_) = track.zT() - track.cot() * setup()->chosenRofZ();
-    get<5>(data_) = track.cot() + setup()->sectorCot(track.sectorEta());
+    get<0>(data_) = track.phiT() + track.qOverPt() * dataFormats_->chosenRofPhi() + dataFormats_->format(Variable::phi, Process::gp).range() * (track.sectorPhi() - .5);
+    get<1>(data_) = track.qOverPt();
+    get<2>(data_) = track.zT() - track.cot() * setup()->chosenRofZ();
+    get<3>(data_) = track.cot() + setup()->sectorCot(track.sectorEta());
     dataFormats_->convertTrack(data_, frame_.second, p_);
   }
 
@@ -420,13 +447,12 @@ namespace trackerTFP {
     const double trkMVA1 = 0.;
     const double trkMVA2 = 0.;
     const double trkMVA3 = 0.;
-    const int hitPattern = this->hitPattern().val();
+    const int hitPattern = 0.;
     const int nPar = 4;
     const double bField = 0.;
     const int sectorPhi = frame_.first->phiSector();
     const int sectorEta = frame_.first->etaSector();
     TTTrack<Ref_Phase2TrackerDigi_> ttTrack(qOverPt, phi0, cot, z0, chi2phi, chi2z, trkMVA1, trkMVA2, trkMVA3, hitPattern, nPar, bField);
-    ttTrack.setStubRefs(ttStubRefs_);
     ttTrack.setPhiSector(sectorPhi);
     ttTrack.setEtaSector(sectorEta);
     return ttTrack;
@@ -600,12 +626,12 @@ namespace trackerTFP {
   }
 
   template<>
-  Format<Variable::hitPattern, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(false) {
+  Format<Variable::hitPattern, Process::kfin>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(false) {
     width_ = setup->numLayers();
   }
 
   template<>
-  Format<Variable::layerMap, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(false) {
+  Format<Variable::layerMap, Process::kfin>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(false) {
     width_ = setup->numLayers() * ceil(log2(setup->kfMaxStubsPerLayer()));
   }
 

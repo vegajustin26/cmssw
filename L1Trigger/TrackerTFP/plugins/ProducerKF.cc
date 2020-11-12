@@ -29,7 +29,6 @@ namespace trackerTFP {
    *  \author Thomas Schuh
    *  \date   2020, July
    */
-  //class ProducerKF : public stream::EDProducer<> {
   class ProducerKF : public stream::EDProducer<> {
   public:
     explicit ProducerKF(const ParameterSet&);
@@ -38,16 +37,18 @@ namespace trackerTFP {
   private:
     void beginRun(const Run&, const EventSetup&) override;
     void produce(Event&, const EventSetup&) override;
-    void endJob() {}
+    void endStream() { /*kalmanFilterFormats_->endJob();*/ }
 
     // ED input token of sf stubs and tracks
     EDGetTokenT<TTDTC::Streams> edGetTokenStubs_;
     EDGetTokenT<TTDTC::Streams> edGetTokenLost_;
     EDGetTokenT<StreamsTrack> edGetTokenTracks_;
-    // ED output token for accepted tracks
-    EDPutTokenT<StreamsTrack> edPutTokenAccepted_;
-    // ED output token for lost tracks
-    EDPutTokenT<StreamsTrack> edPutTokenLost_;
+    // ED output token for accepted stubs and tracks
+    EDPutTokenT<TTDTC::Streams> edPutTokenAcceptedStubs_;
+    EDPutTokenT<StreamsTrack> edPutTokenAcceptedTracks_;
+    // ED output token for lost stubs and tracks
+    EDPutTokenT<TTDTC::Streams> edPutTokenLostStubs_;
+    EDPutTokenT<StreamsTrack> edPutTokenLostTracks_;
     // Setup token
     ESGetToken<Setup, SetupRcd> esGetTokenSetup_;
     // DataFormats token
@@ -61,20 +62,24 @@ namespace trackerTFP {
     // helper class to extract structured data from TTDTC::Frames
     const DataFormats* dataFormats_;
     // helper class to
-    const KalmanFilterFormats* kalmanFilterFormats_;
+    KalmanFilterFormats* kalmanFilterFormats_;
   };
 
   ProducerKF::ProducerKF(const ParameterSet& iConfig) : iConfig_(iConfig)
   {
     const string& label = iConfig.getParameter<string>("LabelKFin");
-    const string& branchAccepted = iConfig.getParameter<string>("BranchAccepted");
-    const string& branchLost = iConfig.getParameter<string>("BranchLost");
+    const string& branchAcceptedStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
+    const string& branchAcceptedTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
+    const string& branchLostStubs = iConfig.getParameter<string>("BranchLostStubs");
+    const string& branchLostTracks = iConfig.getParameter<string>("BranchLostTracks");
     // book in- and output ED products
-    edGetTokenStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchAccepted));
-    edGetTokenLost_ = consumes<TTDTC::Streams>(InputTag(label, branchLost));
-    edGetTokenTracks_ = consumes<StreamsTrack>(InputTag(label, branchAccepted));
-    edPutTokenAccepted_ = produces<StreamsTrack>(branchAccepted);
-    edPutTokenLost_ = produces<StreamsTrack>(branchLost);
+    edGetTokenStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchAcceptedStubs));
+    edGetTokenLost_ = consumes<TTDTC::Streams>(InputTag(label, branchLostStubs));
+    edGetTokenTracks_ = consumes<StreamsTrack>(InputTag(label, branchAcceptedTracks));
+    edPutTokenAcceptedStubs_ = produces<TTDTC::Streams>(branchAcceptedStubs);
+    edPutTokenAcceptedTracks_ = produces<StreamsTrack>(branchAcceptedTracks);
+    edPutTokenLostStubs_ = produces<TTDTC::Streams>(branchLostStubs);
+    edPutTokenLostTracks_ = produces<StreamsTrack>(branchLostTracks);
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
     esGetTokenDataFormats_ = esConsumes<DataFormats, DataFormatsRcd, Transition::BeginRun>();
@@ -96,13 +101,15 @@ namespace trackerTFP {
     // helper class to extract structured data from TTDTC::Frames
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
     // helper class to
-    kalmanFilterFormats_ = &iSetup.getData(esGetTokenKalmanFilterFormats_);
+    kalmanFilterFormats_ = const_cast<KalmanFilterFormats*>(&iSetup.getData(esGetTokenKalmanFilterFormats_));
   }
 
   void ProducerKF::produce(Event& iEvent, const EventSetup& iSetup) {
     // empty KF products
-    StreamsTrack accepted(setup_->numRegions());
-    StreamsTrack lost(setup_->numRegions());
+    TTDTC::Streams acceptedStubs(dataFormats_->numStreams(Process::kfin));
+    StreamsTrack acceptedTracks(dataFormats_->numStreams(Process::kf));
+    TTDTC::Streams lostStubs(dataFormats_->numStreams(Process::kfin));
+    StreamsTrack lostTracks(dataFormats_->numStreams(Process::kf));
     // read in SF Product and produce KF product
     if (setup_->configurationSupported()) {
       Handle<TTDTC::Streams> handleStubs;
@@ -112,19 +119,21 @@ namespace trackerTFP {
       Handle<StreamsTrack> handleTracks;
       iEvent.getByToken<StreamsTrack>(edGetTokenTracks_, handleTracks);
       for (int region = 0; region < setup_->numRegions(); region++) {
-        // object to find in a region finer rough candidates in r-z
+        // object to fit tracks in a processing region
         KalmanFilter kf(iConfig_, setup_, dataFormats_, kalmanFilterFormats_, region);
         // read in and organize input stubs
         kf.consume(*handleStubs, *handleLost);
         // read in and organize input tracks
         kf.consume(*handleTracks);
         // fill output products
-        kf.produce(accepted[region], lost[region]);
+        kf.produce(acceptedStubs, acceptedTracks, lostStubs, lostTracks);
       }
     }
     // store products
-    iEvent.emplace(edPutTokenAccepted_, move(accepted));
-    iEvent.emplace(edPutTokenLost_, move(lost));
+    iEvent.emplace(edPutTokenAcceptedStubs_, move(acceptedStubs));
+    iEvent.emplace(edPutTokenAcceptedTracks_, move(acceptedTracks));
+    iEvent.emplace(edPutTokenLostStubs_, move(lostStubs));
+    iEvent.emplace(edPutTokenLostTracks_, move(lostTracks));
   }
 
 } // namespace trackerTFP

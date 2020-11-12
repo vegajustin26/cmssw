@@ -58,10 +58,11 @@ namespace trackerTFP {
     iConfig_(iConfig)
   {
     const string& label = iConfig.getParameter<string>("LabelSF");
-    const string& branchAccepted = iConfig.getParameter<string>("BranchAccepted");
+    const string& branchAcceptedStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
+    const string& branchAcceptedTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
     // book in- and output ED products
-    edGetToken_ = consumes<TTDTC::Streams>(InputTag(label, branchAccepted));
-    edPutToken_ = produces<vector<TTTrack<Ref_Phase2TrackerDigi_>>>(branchAccepted);
+    edGetToken_ = consumes<TTDTC::Streams>(InputTag(label, branchAcceptedStubs));
+    edPutToken_ = produces<vector<TTTrack<Ref_Phase2TrackerDigi_>>>(branchAcceptedTracks);
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
     esGetTokenDataFormats_ = esConsumes<DataFormats, DataFormatsRcd, Transition::BeginRun>();

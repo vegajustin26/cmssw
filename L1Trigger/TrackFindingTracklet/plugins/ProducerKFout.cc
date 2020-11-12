@@ -39,24 +39,22 @@ namespace trackFindingTracklet {
     void produce(Event&, const EventSetup&) override;
     void endJob() {}
 
+    // ED input token of kf stubs
+    EDGetTokenT<TTDTC::Streams> edGetTokenStubs_;
     // ED input token of kf tracks
-    EDGetTokenT<StreamsTrack> edGetToken_;
+    EDGetTokenT<StreamsTrack> edGetTokenTracks_;
     // ED output token for TTTracks
     EDPutTokenT<TTTracks> edPutToken_;
     // Setup token
     ESGetToken<Setup, SetupRcd> esGetTokenSetup_;
     // DataFormats token
     ESGetToken<DataFormats, DataFormatsRcd> esGetTokenDataFormats_;
-    // LayerEncoding token
-    ESGetToken<LayerEncoding, LayerEncodingRcd> esGetTokenLayerEncoding_;
     // configuration
     ParameterSet iConfig_;
     // helper class to store configurations
     const Setup* setup_;
     // helper class to extract structured data from TTDTC::Frames
     const DataFormats* dataFormats_;
-    //
-    const LayerEncoding* layerEncoding_;
     // used data formats
     const DataFormat* zT_;
     const DataFormat* cot_;
@@ -68,18 +66,18 @@ namespace trackFindingTracklet {
     iConfig_(iConfig)
   {
     const string& label = iConfig.getParameter<string>("LabelKF");
-    const string& branch = iConfig.getParameter<string>("BranchAccepted");
+    const string& branchStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
+    const string& branchTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
     // book in- and output ED products
-    edGetToken_ = consumes<StreamsTrack>(InputTag(label, branch));
-    edPutToken_ = produces<TTTracks>(branch);
+    edGetTokenStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchStubs));
+    edGetTokenTracks_ = consumes<StreamsTrack>(InputTag(label, branchTracks));
+    edPutToken_ = produces<TTTracks>(branchTracks);
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
     esGetTokenDataFormats_ = esConsumes<DataFormats, DataFormatsRcd, Transition::BeginRun>();
-    esGetTokenLayerEncoding_ = esConsumes<LayerEncoding, LayerEncodingRcd, Transition::BeginRun>();
     // initial ES products
     setup_ = nullptr;
     dataFormats_ = nullptr;
-    layerEncoding_ = nullptr;
     // used data formats
     zT_ = nullptr;
     cot_ = nullptr;
@@ -97,8 +95,6 @@ namespace trackFindingTracklet {
       setup_->checkHistory(iRun.processHistory());
     // helper class to extract structured data from TTDTC::Frames
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
-    //
-    layerEncoding_ = &iSetup.getData(esGetTokenLayerEncoding_);
     // used data formats
     zT_ = &dataFormats_->format(Variable::zT, Process::kfin);
     cot_ = &dataFormats_->format(Variable::cot, Process::kfin);
@@ -111,55 +107,30 @@ namespace trackFindingTracklet {
     TTTracks ttTracks;
     // read in KF Product and produce KFout product
     if (setup_->configurationSupported()) {
-      Handle<StreamsTrack> handle;
-      iEvent.getByToken<StreamsTrack>(edGetToken_, handle);
-      const StreamsTrack& streams = *handle.product();
+      Handle<TTDTC::Streams> handleStubs;
+      iEvent.getByToken<TTDTC::Streams>(edGetTokenStubs_, handleStubs);
+      const TTDTC::Streams& streamsStubs = *handleStubs.product();
+      Handle<StreamsTrack> handleTracks;
+      iEvent.getByToken<StreamsTrack>(edGetTokenTracks_, handleTracks);
+      const StreamsTrack& streamsTracks = *handleTracks.product();
       int nTracks(0);
-      for (const StreamTrack& stream : streams)
+      for (const StreamTrack& stream : streamsTracks)
         nTracks += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
       ttTracks.reserve(nTracks);
-      for (const StreamTrack& stream : streams) {
-        for (const FrameTrack& frame : stream) {
-          if (frame.first.isNull())
-            continue;
-          TrackKF track(frame, dataFormats_);
-          const TTTrackRef& ttTrackRef = track.ttTrackRef();
-          // get rz parameter
-          double cot = ttTrackRef->tanL();
-          double zT = ttTrackRef->z0() + setup_->chosenRofZ() * cot;
-          const int binEta = track.sectorEta();
-          cot -= setup_->sectorCot(binEta);
-          zT -= setup_->sectorCot(binEta) * setup_->chosenRofZ();
-          const int binZT = zT_->toUnsigned(zT_->integer(zT));
-          const int binCot = cot_->toUnsigned(cot_->integer(cot));
-          const vector<int>& layerEncoding = layerEncoding_->layerEncoding(binEta, binZT, binCot);
-          vector<vector<TTStubRef>> layerStubs(setup_->numLayers());
-          for (vector<TTStubRef>& stubs : layerStubs)
-            stubs.reserve(setup_->kfMaxStubsPerLayer());
-          vector<int> layerMap(setup_->numLayers(), 0);
-          for (const TTStubRef& ttStubRef : track.frame().first->getStubRefs()) {
-            const GlobalPoint& gp = setup_->stubPos(ttStubRef);
-            const double phi = deltaPhi(gp.phi() - (ttTrackRef->phi() -  ttTrackRef->rInv() / 2. * gp.perp()));
-            const double z = gp.z() - (ttTrackRef->z0() + ttTrackRef->tanL() * gp.perp());
-            // cut on phi and z residuals
-            if (!phi_->inRange(phi) || !z_->inRange(z))
-              continue;
-            const int layerId = setup_->layerId(ttStubRef);
-            const int layerKF = distance(layerEncoding.begin(), find(layerEncoding.begin(), layerEncoding.end(), layerId));
-            // cut on max 4 stubs per layer
-            int& nLayerStubs = layerMap[layerKF];
-            if (nLayerStubs == setup_->kfMaxStubsPerLayer())
-              continue;
-            layerStubs[layerKF].push_back(ttStubRef);
-            nLayerStubs++;
+      for (int region = 0; region < setup_->numRegions(); region++) {
+        const int offset = region * setup_->numLayers();
+        int pos(0);
+        for (const FrameTrack& frameTrack : streamsTracks[region]) {
+          vector<StubKF> stubs;
+          stubs.reserve(setup_->numLayers());
+          for (int layer = 0; layer < setup_->numLayers(); layer++) {
+            const TTDTC::Frame& frameStub = streamsStubs[offset + layer][pos];
+            if (frameStub.first.isNonnull())
+              stubs.emplace_back(frameStub, dataFormats_, layer);
           }
-          vector<TTStubRef> ttstubRefs;
-          ttstubRefs.reserve(track.hitPattern().count());
-          for (int layer = 0; layer < setup_->numLayers(); layer++)
-            if (track.hitPattern(layer))
-              ttstubRefs.push_back(layerStubs[layer][track.layerMap(layer)]);
-          track.ttStubRefs(ttstubRefs);
-          ttTracks.emplace_back(track.ttTrack());
+          TrackKF track(frameTrack, dataFormats_);
+          ttTracks.emplace_back(track.ttTrack(stubs));
+          pos++;
         }
       }
     }
