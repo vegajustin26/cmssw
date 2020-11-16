@@ -13,7 +13,7 @@ namespace trackerTFP {
   // Class to fit in a region tracks
   class KalmanFilter {
   public:
-    KalmanFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region);
+    KalmanFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region, int numChannel);
     ~KalmanFilter(){}
 
     // read in and organize input stubs

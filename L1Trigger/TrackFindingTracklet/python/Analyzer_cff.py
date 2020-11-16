@@ -4,5 +4,5 @@ from L1Trigger.TrackFindingTracklet.Analyzer_cfi import TrackFindingTrackletAnal
 from L1Trigger.TrackFindingTracklet.Producer_cfi import TrackFindingTrackletProducer_params
 
 TrackFindingTrackletAnalyzerTracklet = cms.EDAnalyzer( 'trackFindingTracklet::AnalyzerTracklet', TrackFindingTrackletAnalyzer_params, TrackFindingTrackletProducer_params )
-TrackFindingTrackletAnalyzerKFin = cms.EDAnalyzer( 'trackerTFP::AnalyzerKFin', TrackFindingTrackletAnalyzer_params, TrackFindingTrackletProducer_params )
+TrackFindingTrackletAnalyzerKFin = cms.EDAnalyzer( 'trackFindingTracklet::AnalyzerKFin', TrackFindingTrackletAnalyzer_params, TrackFindingTrackletProducer_params )
 TrackFindingTrackletAnalyzerKF = cms.EDAnalyzer( 'trackerTFP::AnalyzerKF', TrackFindingTrackletAnalyzer_params, TrackFindingTrackletProducer_params )

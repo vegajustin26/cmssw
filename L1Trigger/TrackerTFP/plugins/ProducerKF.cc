@@ -105,11 +105,13 @@ namespace trackerTFP {
   }
 
   void ProducerKF::produce(Event& iEvent, const EventSetup& iSetup) {
+    const int numStreamsTracks = setup_->numRegions();
+    const int numStreamsStubs = numStreamsTracks * setup_->numLayers();
     // empty KF products
-    TTDTC::Streams acceptedStubs(dataFormats_->numStreams(Process::kfin));
-    StreamsTrack acceptedTracks(dataFormats_->numStreams(Process::kf));
-    TTDTC::Streams lostStubs(dataFormats_->numStreams(Process::kfin));
-    StreamsTrack lostTracks(dataFormats_->numStreams(Process::kf));
+    TTDTC::Streams acceptedStubs(numStreamsStubs);
+    StreamsTrack acceptedTracks(numStreamsTracks);
+    TTDTC::Streams lostStubs(numStreamsStubs);
+    StreamsTrack lostTracks(numStreamsTracks);
     // read in SF Product and produce KF product
     if (setup_->configurationSupported()) {
       Handle<TTDTC::Streams> handleStubs;
@@ -118,9 +120,10 @@ namespace trackerTFP {
       iEvent.getByToken<TTDTC::Streams>(edGetTokenLost_, handleLost);
       Handle<StreamsTrack> handleTracks;
       iEvent.getByToken<StreamsTrack>(edGetTokenTracks_, handleTracks);
+      const int numChannel = handleTracks->size() / setup_->numRegions();
       for (int region = 0; region < setup_->numRegions(); region++) {
         // object to fit tracks in a processing region
-        KalmanFilter kf(iConfig_, setup_, dataFormats_, kalmanFilterFormats_, region);
+        KalmanFilter kf(iConfig_, setup_, dataFormats_, kalmanFilterFormats_, region, numChannel);
         // read in and organize input stubs
         kf.consume(*handleStubs, *handleLost);
         // read in and organize input tracks

@@ -3,6 +3,7 @@
 <use name="root"/>
 <use name="rootrflx"/>
 <use name="xerces-c"/>
+<use name="CommonTools/UtilAlgos"/>
 <use name="CondFormats/DataRecord"/>
 <use name="CondFormats/L1TObjects"/>
 <use name="DataFormats/Common"/>

@@ -15,15 +15,15 @@ using namespace trackerDTC;
 
 namespace trackerTFP {
 
-  KalmanFilter::KalmanFilter(const ParameterSet& iConfig, const Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region) :
+  KalmanFilter::KalmanFilter(const ParameterSet& iConfig, const Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region, int numChannel) :
     enableTruncation_(iConfig.getParameter<bool>("EnableTruncation")),
     setup_(setup),
     dataFormats_(dataFormats),
     kalmanFilterFormats_(kalmanFilterFormats),
     region_(region),
-    inputStubs_(dataFormats_->numChannel(Process::kfin)),
-    inputTracks_(dataFormats_->numChannel(Process::kf)),
-    channelStubs_(dataFormats_->numChannel(Process::kf)),
+    inputStubs_(numChannel * setup_->numLayers()),
+    inputTracks_(numChannel),
+    channelStubs_(numChannel),
     layer_(0),
     x0_(&kalmanFilterFormats_->format(VariableKF::x0)),
     x1_(&kalmanFilterFormats_->format(VariableKF::x1)),
@@ -66,17 +66,17 @@ namespace trackerTFP {
   void KalmanFilter::consume(const TTDTC::Streams& stubs, const TTDTC::Streams& lost) {
     auto valid = [](int& sum, const TTDTC::Frame& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
     int nStubs(0);
-    for (int channel = 0; channel < dataFormats_->numChannel(Process::kfin); channel++) {
-      const TTDTC::Stream& stream = stubs[region_ * dataFormats_->numChannel(Process::kfin) + channel];
-      const TTDTC::Stream& streamLost = lost[region_ * dataFormats_->numChannel(Process::kfin) + channel];
+    for (int channel = 0; channel < (int)inputStubs_.size(); channel++) {
+      const TTDTC::Stream& stream = stubs[region_ * inputStubs_.size() + channel];
+      const TTDTC::Stream& streamLost = lost[region_ * inputStubs_.size() + channel];
       nStubs += accumulate(stream.begin(), stream.end(), 0, valid);
       nStubs += accumulate(streamLost.begin(), streamLost.end(), 0, valid);
     }
     stubs_.reserve(nStubs);
-    for (int channel = 0; channel < dataFormats_->numChannel(Process::kfin); channel++) {
+    for (int channel = 0; channel < (int)inputStubs_.size(); channel++) {
       const int layerId = channel % setup_->numLayers();
-      const TTDTC::Stream& stream = stubs[region_ * dataFormats_->numChannel(Process::kfin) + channel];
-      const TTDTC::Stream& streamLost = lost[region_ * dataFormats_->numChannel(Process::kfin) + channel];
+      const TTDTC::Stream& stream = stubs[region_ * inputStubs_.size() + channel];
+      const TTDTC::Stream& streamLost = lost[region_ * inputStubs_.size() + channel];
       vector<StubKFin*>& input = inputStubs_[channel];
       input.reserve(stream.size());
       for (const TTDTC::Frame& frame : stream) {
@@ -92,7 +92,7 @@ namespace trackerTFP {
         input.push_back(&stubs_.back());
       }
     }
-    for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {
+    for (int channel = 0; channel < (int)inputTracks_.size(); channel++) {
       const int offset = channel * setup_->numLayers();
       vector<StubKFin*>& stubs = channelStubs_[channel];
       int nStubs(0);
@@ -112,14 +112,14 @@ namespace trackerTFP {
   void KalmanFilter::consume(const StreamsTrack& tracks) {
     auto valid = [](int& sum, const FrameTrack& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
     int nTracks(0);
-    for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {
-      const StreamTrack& stream = tracks[region_ * dataFormats_->numChannel(Process::kf) + channel];
+    for (int channel = 0; channel < (int)inputTracks_.size(); channel++) {
+      const StreamTrack& stream = tracks[region_ * inputTracks_.size() + channel];
       nTracks += accumulate(stream.begin(), stream.end(), 0, valid);
     }
     tracks_.reserve(nTracks);
-    for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {
+    for (int channel = 0; channel < (int)inputTracks_.size(); channel++) {
       const vector<StubKFin*>& stubs = channelStubs_[channel];
-      const StreamTrack& stream = tracks[region_ * dataFormats_->numChannel(Process::kf) + channel];
+      const StreamTrack& stream = tracks[region_ * inputTracks_.size() + channel];
       vector<TrackKFin*>& tracks = inputTracks_[channel];
       tracks.reserve(stream.size());
       for (const FrameTrack& frame : stream) {
@@ -152,8 +152,8 @@ namespace trackerTFP {
           streamsStubs[offset + layer].emplace_back(TTDTC::Frame());
       }
     };
-    vector<deque<State*>> streams(dataFormats_->numChannel(Process::kf));
-    for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {
+    vector<deque<State*>> streams(inputTracks_.size());
+    for (int channel = 0; channel < (int)inputTracks_.size(); channel++) {
       deque<State*>& stream = streams[channel];
       // proto state creation
       for (TrackKFin* track : inputTracks_[channel]) {

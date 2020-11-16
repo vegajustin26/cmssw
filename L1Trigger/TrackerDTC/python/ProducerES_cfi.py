@@ -27,7 +27,7 @@ TrackTrigger_params = cms.PSet (
 
   # TMTT specific parameter
   TMTT = cms.PSet (
-    MinPt            = cms.double(  1.34 ), # cut on stub and TP pt, also defines region overlap shape in GeV
+    MinPt            = cms.double(  3.   ), # cut on stub and TP pt, also defines region overlap shape in GeV
     MaxEta           = cms.double(  2.4  ), # cut on stub eta
     ChosenRofPhi     = cms.double( 67.24 ), # critical radius defining region overlap shape in cm
     NumLayers        = cms.int32 (  8    ), # number of detector layers a reconstructbale particle may cross
@@ -38,7 +38,7 @@ TrackTrigger_params = cms.PSet (
 
   # Hybrid specific parameter
   Hybrid = cms.PSet (
-    MinPt        = cms.double(  2.   ),                        # cut on stub and TP pt, also defines region overlap shape in GeV
+    MinPt        = cms.double(  1.34 ),                        # cut on stub and TP pt, also defines region overlap shape in GeV
     MaxEta       = cms.double(  2.5  ),                        # cut on stub eta
     ChosenRofPhi = cms.double( 55.   ),                        # critical radius defining region overlap shape in cm
     NumLayers    = cms.int32 (  4    ),                        # max number of detector layer connected to one DTC
@@ -160,7 +160,7 @@ TrackTrigger_params = cms.PSet (
 
   # Parmeter specifying KalmanFilter
   KalmanFilter = cms.PSet (
-    NumWorker        = cms.int32(   1 ), # number of kf worker
+    NumWorker        = cms.int32(   2 ), # number of kf worker
     WidthLutInvPhi   = cms.int32(  13 ), # number of bits for internal reciprocal look up
     WidthLutInvZ     = cms.int32(  12 ), # number of bits for internal reciprocal look up
     NumTracks        = cms.int32(  16 ), # cut on number of input candidates

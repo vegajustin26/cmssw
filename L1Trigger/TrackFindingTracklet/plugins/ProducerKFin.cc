@@ -13,6 +13,7 @@
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
 #include "L1Trigger/TrackerTFP/interface/LayerEncoding.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackBuilderChannel.h"
 
 #include <string>
 #include <vector>
@@ -57,6 +58,8 @@ namespace trackFindingTracklet {
     ESGetToken<DataFormats, DataFormatsRcd> esGetTokenDataFormats_;
     // LayerEncoding token
     ESGetToken<LayerEncoding, LayerEncodingRcd> esGetTokenLayerEncoding_;
+    // TrackBuilderChannel token
+    ESGetToken<TrackBuilderChannel, TrackBuilderChannelRcd> esGetTokenTrackBuilderChannel_;
     // configuration
     ParameterSet iConfig_;
     // helper class to store configurations
@@ -65,6 +68,8 @@ namespace trackFindingTracklet {
     const DataFormats* dataFormats_;
     // helper class to encode layer
     const LayerEncoding* layerEncoding_;
+    // helper class to assign tracks to channel
+    TrackBuilderChannel* trackBuilderChannel_;
     //
     bool enableTruncation_;
   };
@@ -87,10 +92,12 @@ namespace trackFindingTracklet {
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
     esGetTokenDataFormats_ = esConsumes<DataFormats, DataFormatsRcd, Transition::BeginRun>();
     esGetTokenLayerEncoding_ = esConsumes<LayerEncoding, LayerEncodingRcd, Transition::BeginRun>();
+    esGetTokenTrackBuilderChannel_ = esConsumes<TrackBuilderChannel, TrackBuilderChannelRcd, Transition::BeginRun>();
     // initial ES products
     setup_ = nullptr;
     dataFormats_ = nullptr;
     layerEncoding_ = nullptr;
+    trackBuilderChannel_ = nullptr;
     //
     enableTruncation_ = iConfig.getParameter<bool>("EnableTruncation");
   }
@@ -107,6 +114,8 @@ namespace trackFindingTracklet {
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
     // helper class to encode layer
     layerEncoding_ = &iSetup.getData(esGetTokenLayerEncoding_);
+    // helper class to assign tracks to channel
+    trackBuilderChannel_ = const_cast<TrackBuilderChannel*>(&iSetup.getData(esGetTokenTrackBuilderChannel_));
   }
 
   void ProducerKFin::produce(Event& iEvent, const EventSetup& iSetup) {
@@ -118,27 +127,33 @@ namespace trackFindingTracklet {
     const DataFormat& dfPhiT = dataFormats_->format(Variable::phiT, Process::sf);
     const DataFormat& dfPhi = dataFormats_->format(Variable::phi, Process::sf);
     const DataFormat& dfZ = dataFormats_->format(Variable::z, Process::sf);
+    const int numStreamsTracks = setup_->numRegions() * trackBuilderChannel_->numChannels();
+    const int numStreamsStubs = numStreamsTracks * setup_->numLayers();
     // empty KFin products
-    TTDTC::Streams streamAcceptedStubs(dataFormats_->numStreams(Process::kf) * setup_->numLayers());
-    StreamsTrack streamAcceptedTracks(dataFormats_->numStreams(Process::kf));
-    TTDTC::Streams streamLostStubs(dataFormats_->numStreams(Process::kf) * setup_->numLayers());
-    StreamsTrack streamLostTracks(dataFormats_->numStreams(Process::kf));
+    TTDTC::Streams streamAcceptedStubs(numStreamsStubs);
+    StreamsTrack streamAcceptedTracks(numStreamsTracks);
+    TTDTC::Streams streamLostStubs(numStreamsStubs);
+    StreamsTrack streamLostTracks(numStreamsTracks);
     // read in hybrid track finding product and produce KFin product
     if (setup_->configurationSupported()) {
       Handle<TTTracks> handleTTTracks;
       iEvent.getByToken<TTTracks>(edGetTokenTTTracks_, handleTTTracks);
       const TTTracks& ttTracks = *handleTTTracks.product();
-      vector<TTTrackRefs> ttTrackRefsRegions(setup_->numRegions());
-      vector<int> nTTTracksRegions(setup_->numRegions(), 0);
+      vector<TTTrackRefs> ttTrackRefsStreams(numStreamsTracks);
+      vector<int> nTTTracksStreams(numStreamsTracks, 0);
+      int channelId;
       for (const TTTrack<Ref_Phase2TrackerDigi_>& ttTrack : ttTracks)
-        nTTTracksRegions[ttTrack.phiSector()]++;
-      for (int region = 0; region < setup_->numRegions(); region++)
-        ttTrackRefsRegions[region].reserve(nTTTracksRegions[region]);
+        if (trackBuilderChannel_->channelId(ttTrack, channelId))
+          nTTTracksStreams[channelId]++;
+      channelId = 0;
+      for (int nTTTracksStream : nTTTracksStreams)
+        ttTrackRefsStreams[channelId++].reserve(nTTTracksStream);
       int i(0);
       for (const TTTrack<Ref_Phase2TrackerDigi_>& ttTrack : ttTracks)
-        ttTrackRefsRegions[ttTrack.phiSector()].emplace_back(TTTrackRef(handleTTTracks, i++));
-      for (int region = 0; region < setup_->numRegions(); region++) {
-        const TTTrackRefs& ttTrackRefs = ttTrackRefsRegions[region];
+        if (trackBuilderChannel_->channelId(ttTrack, channelId))
+          ttTrackRefsStreams[channelId].emplace_back(TTTrackRef(handleTTTracks, i++));
+      for (channelId = 0; channelId < numStreamsTracks; channelId++) {
+        const TTTrackRefs& ttTrackRefs = ttTrackRefsStreams[channelId];
         vector<TrackKFin> tracks;
         tracks.reserve(ttTrackRefs.size());
         vector<StubKFin> stubs;
@@ -170,8 +185,8 @@ namespace trackFindingTracklet {
           const int binCot = dfCot.toUnsigned(dfCot.integer(cot));
           const vector<int>& layerEncoding = layerEncoding_->layerEncoding(binEta, binZT, binCot);
           // get rphi parameter
-          double qOverPt = ttTrackRef->rInv() / 2.; // times / over +-2?
-          double phiT = deltaPhi(ttTrackRef->phi() - setup_->hybridChosenRofPhi() * qOverPt - region * setup_->baseRegion());
+          double qOverPt = ttTrackRef->rInv() / 2.;
+          double phiT = deltaPhi(ttTrackRef->phi() - setup_->hybridChosenRofPhi() * qOverPt - ttTrackRef->phiSector() * setup_->baseRegion());
           const int sectorPhi = phiT < 0. ? 0 : 1; // dirty hack
           phiT -= (sectorPhi - .5) * setup_->baseSector();
           // cut on nonant size and pt > 2 GeV
@@ -206,7 +221,7 @@ namespace trackFindingTracklet {
           layerStubs[layer].reserve(numLayerStubs[layer]);
         for (StubKFin& stub : stubs)
           layerStubs[stub.layer()].push_back(&stub);
-        const int offset = region * setup_->numLayers();
+        const int offset = channelId * setup_->numLayers();
         for (int layer = 0; layer < setup_->numLayers(); layer++) {
           TTDTC::Stream& acceptedStubs = streamAcceptedStubs[offset + layer];
           TTDTC::Stream& lostStubs = streamLostStubs[offset + layer];
@@ -220,8 +235,8 @@ namespace trackFindingTracklet {
           transform(stubsLayer.begin(), stubsLayer.end(), back_inserter(acceptedStubs), toFrameStub);
         }
         // truncate and transform tracks
-        StreamTrack& acceptedTracks = streamAcceptedTracks[region];
-        StreamTrack& lostTracks = streamLostTracks[region];
+        StreamTrack& acceptedTracks = streamAcceptedTracks[channelId];
+        StreamTrack& lostTracks = streamLostTracks[channelId];
         if (enableTruncation_ && (int)tracks.size() > setup_->numFrames()) {
           const auto it = next(tracks.begin(), setup_->numFrames());
           lostTracks.reserve(setup_->numFrames() - (int)tracks.size());
