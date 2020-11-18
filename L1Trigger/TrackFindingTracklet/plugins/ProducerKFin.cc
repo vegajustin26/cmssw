@@ -200,7 +200,9 @@ namespace trackFindingTracklet {
             const double r = gp.perp() - setup_->hybridChosenRofPhi();
             const double phi = deltaPhi(gp.phi() - (ttTrackRef->phi() - qOverPt * gp.perp()));
             const double z = gp.z() - (ttTrackRef->z0() + ttTrackRef->tanL() * gp.perp());
-            const double layer = distance(layerEncoding.begin(), find(layerEncoding.begin(), layerEncoding.end(), setup_->layerId(ttStubRef)));
+            double layer = distance(layerEncoding.begin(), find(layerEncoding.begin(), layerEncoding.end(), setup_->layerId(ttStubRef)));
+            if (layer >= setup_->numLayers())
+              layer = setup_->numLayers() - 1;
             // cut on phi and z residuals
             if (!dfPhi.inRange(phi) || !dfZ.inRange(z))
               continue;
