@@ -344,19 +344,19 @@ namespace trackerTFP {
       stubs_[stub->layer()].push_back(stub);
   }
 
-  TrackKFin::TrackKFin(const StubSF& stub, const TTTrackRef& ttTrackRef, const TTBV& hitPattern, const TTBV& layerMap) :
-    Track(stub, ttTrackRef, hitPattern, layerMap, 0., 0., 0., 0., stub.sectorPhi(), stub.sectorEta(), ttTrackRef->hitPattern()),
+  TrackKFin::TrackKFin(const StubSF& stub, const TTTrackRef& ttTrackRef, const TTBV& hitPattern, const TTBV& layerMap, const TTBV& maybePattern) :
+    Track(stub, ttTrackRef, hitPattern, layerMap, maybePattern, 0., 0., 0., 0., stub.sectorPhi(), stub.sectorEta(), ttTrackRef->hitPattern()),
     stubs_(setup()->numLayers())
   {
-    get<2>(data_) = format(Variable::phiT, Process::mht).floating(stub.phiT());
-    get<3>(data_) = format(Variable::qOverPt, Process::mht).floating(stub.qOverPt());
-    get<4>(data_) = format(Variable::zT, Process::sf).floating(stub.zT());
-    get<5>(data_) = format(Variable::cot, Process::sf).floating(stub.cot());
+    get<3>(data_) = format(Variable::phiT, Process::mht).floating(stub.phiT());
+    get<4>(data_) = format(Variable::qOverPt, Process::mht).floating(stub.qOverPt());
+    get<5>(data_) = format(Variable::zT, Process::sf).floating(stub.zT());
+    get<6>(data_) = format(Variable::cot, Process::sf).floating(stub.cot());
     dataFormats_->convertTrack(data_, frame_.second, p_);
   }
 
-  TrackKFin::TrackKFin(const TTTrackRef& ttTrackRef, const DataFormats* dataFormats, const TTBV& hitPattern, const TTBV& layerMap, double phiT, double qOverPt, double zT, double cot, int sectorPhi, int sectorEta, int trackId) :
-    Track(ttTrackRef, dataFormats, Process::kfin, hitPattern, layerMap, phiT, qOverPt, zT, cot, sectorPhi, sectorEta, trackId),
+  TrackKFin::TrackKFin(const TTTrackRef& ttTrackRef, const DataFormats* dataFormats, const TTBV& hitPattern, const TTBV& layerMap, const TTBV& maybePattern, double phiT, double qOverPt, double zT, double cot, int sectorPhi, int sectorEta, int trackId) :
+    Track(ttTrackRef, dataFormats, Process::kfin, hitPattern, layerMap, maybePattern, phiT, qOverPt, zT, cot, sectorPhi, sectorEta, trackId),
     stubs_(setup()->numLayers())
   {
     dataFormats_->convertTrack(data_, frame_.second, p_);

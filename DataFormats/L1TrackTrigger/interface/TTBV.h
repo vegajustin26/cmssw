@@ -209,6 +209,13 @@ public:
     return *this;
   }
 
+  // manipulation: multiple bit set to 1
+  TTBV& set(std::vector<int> vpos) {
+    for (int pos : vpos)
+      bs_.set(pos);
+    return *this;
+  }
+
   // manipulation: single bit flip 1 to 0 and vice versa
   TTBV& flip(int pos) {
     bs_.flip(pos);

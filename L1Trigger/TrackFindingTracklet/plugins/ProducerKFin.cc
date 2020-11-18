@@ -213,7 +213,8 @@ namespace trackFindingTracklet {
             numLayerStubs[layer]++;
             stubs.emplace_back(ttStubRef, dataFormats_, r, phi, z, trackId, layer);
           }
-          tracks.emplace_back(ttTrackRef, dataFormats_, hitPattern, setup_->layerMap(hitPattern, layerMap), phiT, qOverPt, zT, cot, sectorPhi, binEta, trackId++);
+          const TTBV& maybePattern = layerEncoding_->maybePattern(binEta, binZT, binCot);
+          tracks.emplace_back(ttTrackRef, dataFormats_, hitPattern, setup_->layerMap(hitPattern, layerMap), maybePattern, phiT, qOverPt, zT, cot, sectorPhi, binEta, trackId++);
         }
         // truncate and transform stubs
         vector<vector<StubKFin*>> layerStubs(setup_->numLayers());

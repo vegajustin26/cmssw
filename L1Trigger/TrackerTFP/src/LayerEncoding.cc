@@ -68,7 +68,9 @@ namespace trackerTFP {
   
   const int LayerEncoding::layerIdKF(int binEta, int binZT, int binCot, int layerId) const {
     const vector<int>& layers = layerEncoding_[binEta][binZT][binCot];
-    const int layer = distance(layers.begin(), find(layers.begin(), layers.end(), layerId));
+    int layer = distance(layers.begin(), find(layers.begin(), layers.end(), layerId));
+    if (layer >= setup_->numLayers())
+      layer = setup_->numLayers() - 1;
     return layer;
   }
 
@@ -82,6 +84,11 @@ namespace trackerTFP {
       pattern.set(layer);
     }
     return pattern;
+  }
+
+  //
+  TTBV LayerEncoding::maybePattern(int binEta, int binZT, int binCot) const {
+    return TTBV(0, setup_->numLayers()).set(maybeLayer(binEta, binZT, binCot));
   }
 
 } // namespace trackerTFP

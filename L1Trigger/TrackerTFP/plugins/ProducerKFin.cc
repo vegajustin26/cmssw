@@ -175,7 +175,8 @@ namespace trackerTFP {
             stubs.emplace_back(stubKFin.frame());
           }
           const TTBV& layerMap = setup_->layerMap(hitPattern, layerCounts);
-          TrackKFin track(*stubSF, TTTrackRef(handleTTTracks, i++), hitPattern, layerMap);
+          const TTBV& maybePattern = layerEncoding_->maybePattern(binEta, binZT, binCot);
+          TrackKFin track(*stubSF, TTTrackRef(handleTTTracks, i++), hitPattern, layerMap, maybePattern);
           tracks.emplace_back(track.frame());
         }
         // transform deques to vectors

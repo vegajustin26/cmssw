@@ -241,11 +241,13 @@ namespace trackerTFP {
     } else {
       // picks first stub on next layer, nullifies state if skipping layer is not valid
       bool valid(true);
-      // having already maximum number of skipped layers, TODO: take maybe layers into account
-      if (hitPattern.count(0, layer + 1, false) >= setup_->kfMaxSkippedLayers())
+      // having already maximum number of skipped layers
+      TTBV maybePattern = state->track()->maybePattern();
+      maybePattern |= hitPattern;
+      if (maybePattern.count(0, layer + 1, false) >= setup_->kfMaxSkippedLayers())
         valid = false;
-      // would create two skipped layer in a row, TODO: take maybe layers into account
-      if ((layer > 0 && !track->hitPattern(layer - 1)) || !track->hitPattern(layer + 1))
+      // would create two skipped layer in a row
+      if ((layer > 0 && !maybePattern[layer - 1]) || !track->maybePattern(layer + 1))
         valid = false;
       // not enough layers remain after skipping
       if (hitPattern.count() + track->hitPattern().count(layer + 1, setup_->numLayers()) < setup_->kfMaxLayers())
