@@ -13,7 +13,74 @@ Stub::Stub(Settings const& settings) : settings_(settings) {}
 
 Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phimaxsec) : settings_(settings) {
 
+  const string& stubwordhex=stub.stubword();
+
+  string stubwordbin="";
+  for(char word:stubwordhex){
+    if (word=='0') stubwordbin+="0000";
+    if (word=='1') stubwordbin+="0001";
+    if (word=='2') stubwordbin+="0010";
+    if (word=='3') stubwordbin+="0011";
+    if (word=='4') stubwordbin+="0100";
+    if (word=='5') stubwordbin+="0101";
+    if (word=='6') stubwordbin+="0110";
+    if (word=='7') stubwordbin+="0111";
+    if (word=='8') stubwordbin+="1000";
+    if (word=='9') stubwordbin+="1001";
+    if (word=='A') stubwordbin+="1010";
+    if (word=='B') stubwordbin+="1011";
+    if (word=='C') stubwordbin+="1100";
+    if (word=='D') stubwordbin+="1101";
+    if (word=='E') stubwordbin+="1110";
+    if (word=='F') stubwordbin+="1111";	
+  }
+
+  //cout << "stubword:"<<stubwordhex<<" "<<stubwordbin<<endl;
+  
   layerdisk_=stub.layerdisk();
+
+  int nbendbits = 4;
+  if (stub.isPSmodule())
+    nbendbits = 3;
+
+  int nalphabits=0;
+
+  int nrbits=settings_.nrbitsstub(layerdisk_);
+  int nzbits=settings_.nzbitsstub(layerdisk_);
+  int nphibits=settings_.nphibitsstub(layerdisk_);
+
+  if (layerdisk_>=N_LAYER && !stub.isPSmodule()) {
+    nalphabits=settings.nbitsalpha();
+    nrbits=7;
+  }
+
+
+  //cout << "nbendbits nalphabits nrbits nzbits nphibits : "
+  //     <<nbendbits<<" "<<nalphabits<<" "<<nrbits<<" "<<nzbits<<" "<<nphibits<<endl;
+
+  assert(nbendbits+nalphabits+nrbits+nzbits+nphibits==36);
+
+  bitset<32> rbits(stubwordbin.substr(0,nrbits));
+  bitset<32> zbits(stubwordbin.substr(nrbits,nzbits));
+  bitset<32> phibits(stubwordbin.substr(nrbits+nzbits,nphibits));
+  bitset<32> alphabits(stubwordbin.substr(nphibits+nzbits+nrbits,nalphabits));
+  bitset<32> bendbits(stubwordbin.substr(nphibits+nzbits+nrbits+nalphabits,nbendbits));
+  
+  int newbend=bendbits.to_ulong();
+  int newr=rbits.to_ulong();
+  if (layerdisk_<N_LAYER) {
+    if (newr>=(1<<(nrbits-1))) newr=newr-(1<<nrbits);
+  }
+
+  int newz=zbits.to_ulong();
+  if (newz>=(1<<(nzbits-1))) newz=newz-(1<<nzbits);
+
+  
+  int newphi=phibits.to_ulong()+(1<<(nphibits-1));
+  if (newphi>=(1<<nphibits)) newphi=newphi-(1<<nphibits);
+
+  int newalpha=alphabits.to_ulong();//-(1<<(nalphabits-1));
+  //if (newalpha>=(1<<nalphabits)) newalpha=newalpha-(1<<nalphabits);
 
   double r = stub.r();
   double z = stub.z();
@@ -21,13 +88,9 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
   l1tstub_ = &stub;
 
-  int bendbits = 4;
-  if (stub.isPSmodule())
-    bendbits = 3;
-
   int ibend = bendencode(sbend, stub.isPSmodule());
 
-  bend_.set(ibend, bendbits, true, __LINE__, __FILE__);
+  bend_.set(ibend, nbendbits, true, __LINE__, __FILE__);
 
   int layer = stub.layer() + 1;
 
@@ -89,6 +152,13 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
     phicorr_.set(iphi, iphibits, true, __LINE__, __FILE__);
 
+    /*
+    cout << "newbend : "<<newbend<<" "<<ibend<<endl;
+    cout << "newr    : "<<newr<<" "<<ir<<endl;
+    cout << "newz    : "<<newz<<" "<<iz<<endl;  
+    cout << "newphi  : "<<newphi<<" "<<iphi<<endl;  
+    */    
+
   } else {
     // Here we handle the hits on disks.
 
@@ -107,7 +177,7 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
 
     int iz =
         (1 << settings.nzbitsstub(disk + N_DISK)) * ((z - sign * settings_.zmean(disk - 1)) / std::abs(zmax - zmin));
-
+	
     assert(phimaxsec - phiminsec > 0.0);
     if (stubphi < phiminsec - (phimaxsec - phiminsec) / 6.0) {
       stubphi += 2 * M_PI;
@@ -173,6 +243,16 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
     assert(ialphanew < (1 << (settings.nbitsalpha() - 1)));
     assert(ialphanew >= -(1 << (settings.nbitsalpha() - 1)));
     alphanew_.set(ialphanew, settings.nbitsalpha(), false, __LINE__, __FILE__);
+
+    /*
+    cout << "newbend : "<<newbend<<" "<<ibend<<endl;
+    cout << "newr    : "<<newr<<" "<<r_.value()<<endl;
+    cout << "newz    : "<<newz<<" "<<iz<<endl;  
+    cout << "newphi  : "<<newphi<<" "<<iphi<<endl;  
+    if (nalphabits!=0) cout << "newalpha: "<<newalpha<<" "<<ialphanew<<"  "<<stub.strip()<<endl;  
+    */
+
+    
   }
 }
 

@@ -29,7 +29,10 @@ namespace trklet {
 
     void writeStubs(bool first);
 
+    void setInner(bool inner) { inner_=inner; }
+    
   private:
+    bool inner_;
     std::vector<const Stub*> stubs_;
   };
 
