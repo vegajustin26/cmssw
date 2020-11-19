@@ -66,7 +66,7 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
   bitset<32> alphabits(stubwordbin.substr(nphibits+nzbits+nrbits,nalphabits));
   bitset<32> bendbits(stubwordbin.substr(nphibits+nzbits+nrbits+nalphabits,nbendbits));
   
-  int newbend=bendbits.to_ulong();
+  //int newbend=bendbits.to_ulong();
   int newr=rbits.to_ulong();
   if (layerdisk_<N_LAYER) {
     if (newr>=(1<<(nrbits-1))) newr=newr-(1<<nrbits);
@@ -79,7 +79,7 @@ Stub::Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phi
   int newphi=phibits.to_ulong()+(1<<(nphibits-1));
   if (newphi>=(1<<nphibits)) newphi=newphi-(1<<nphibits);
 
-  int newalpha=alphabits.to_ulong();//-(1<<(nalphabits-1));
+  //int newalpha=alphabits.to_ulong();//-(1<<(nalphabits-1));
   //if (newalpha>=(1<<nalphabits)) newalpha=newalpha-(1<<nalphabits);
 
   double r = stub.r();

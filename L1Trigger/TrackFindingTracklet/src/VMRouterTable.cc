@@ -9,9 +9,8 @@ using namespace trklet;
 
 VMRouterTable::VMRouterTable(Settings const& settings) : settings_(settings) {}
 
-VMRouterTable::VMRouterTable(Settings const& settings, unsigned int layerdisk, std::string const& name)
-    : settings_(settings) {
-  init(layerdisk, name);
+VMRouterTable::VMRouterTable(Settings const& settings, unsigned int layerdisk, std::string const& name) : settings_(settings) {
+  init(layerdisk,name);
 }
 
 void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
@@ -43,6 +42,23 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
       double r = rmin_ + (irbin + 0.5) * dr_;
       double z = zmin_ + (izbin + 0.5) * dz_;
 
+      if (settings_.combined()) {
+	int iznew=izbin-(1<<(zbits_-1));
+	if (iznew<0)
+	  iznew+=(1<<zbits_);
+	assert(iznew>=0);
+	assert(iznew<(1<<zbits_));
+	z = zmin_ + (iznew + 0.5) * dz_;
+	if (layerdisk<N_LAYER) {
+	  int irnew=irbin-(1<<(rbits_-1));
+	  if (irnew<0)
+	    irnew+=(1<<rbits_);
+	  assert(irnew>=0);
+	  assert(irnew<(1<<rbits_));
+	  r = rmin_ + (irnew + 0.5) * dr_;
+	}
+      }
+      
       if (layerdisk > (N_LAYER - 1) && irbin < 10)  //special case for the tabulated radii in 2S disks
         r = (layerdisk <= 7) ? settings_.rDSSinner(irbin) : settings_.rDSSouter(irbin);
 
@@ -101,34 +117,59 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
   }
 
   if (settings_.writeTable()) {
-    // write finebin tables
-    writeVMTable(settings_.tablePath() + name + "_finebin.tab", vmrtable_);
-    // write barrel seed teinner tables (L1L2, L2L3, L3L4, L5L6)
-    if (layerdisk == 0 || layerdisk == 1 || layerdisk == 2 || layerdisk == 4) {
-      std::string fnamesuffix = "L" + to_string(layerdisk + 1) + "L" + std::to_string(layerdisk + 2);
-      writeVMTable(settings_.tablePath() + "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
-    }
-    // write disk seed teinner tables (D1D2, D3D4)
-    if (layerdisk == 6 || layerdisk == 8) {
-      std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1) + "D" + to_string(layerdisk - N_LAYER + 2);
-      writeVMTable(settings_.tablePath() + "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
-    }
-    // write overlap seed teinner tables (L1D1, L2D1)
-    if (layerdisk == 0 || layerdisk == 1) {
-      std::string fnamesuffix = "L" + to_string(layerdisk + 1) + "D1";
-      writeVMTable(settings_.tablePath() + "VMTableInner" + fnamesuffix + ".tab", vmrtableteinneroverlap_);
-    }
-    // write barrel teouter tables (L2, L3, L4, L6, same as finebin tables)
-    if (layerdisk == 1 || layerdisk == 2 || layerdisk == 3 || layerdisk == 5) {
-      std::string fnamesuffix = "L" + to_string(layerdisk + 1);
-      writeVMTable(settings_.tablePath() + "VMTableOuter" + fnamesuffix + ".tab", vmrtable_);
-    }
-    // write disk teouter tables (D1, D2, D4)
-    if (layerdisk == 6 || layerdisk == 7 || layerdisk == 9) {
-      std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1);
-      writeVMTable(settings_.tablePath() + "VMTableOuter" + fnamesuffix + ".tab", vmrtabletedisk_);
+    if (!settings_.combined()) {
+      // write finebin tables
+      writeVMTable(settings_.tablePath() + name + "_finebin.tab", vmrtable_);
+      // write barrel seed teinner tables (L1L2, L2L3, L3L4, L5L6)
+      if (layerdisk == 0 || layerdisk == 1 || layerdisk == 2 || layerdisk == 4) {
+	std::string fnamesuffix = "L" + to_string(layerdisk + 1) + "L" + std::to_string(layerdisk + 2);
+	writeVMTable(settings_.tablePath() + "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
+      }
+      // write disk seed teinner tables (D1D2, D3D4)
+      if (layerdisk == 6 || layerdisk == 8) {
+	std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1) + "D" + to_string(layerdisk - N_LAYER + 2);
+	writeVMTable(settings_.tablePath() + "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
+      }
+      // write overlap seed teinner tables (L1D1, L2D1)
+      if (layerdisk == 0 || layerdisk == 1) {
+	std::string fnamesuffix = "L" + to_string(layerdisk + 1) + "D1";
+	writeVMTable(settings_.tablePath() + "VMTableInner" + fnamesuffix + ".tab", vmrtableteinneroverlap_);
+      }
+      // write barrel teouter tables (L2, L3, L4, L6, same as finebin tables)
+      if (layerdisk == 1 || layerdisk == 2 || layerdisk == 3 || layerdisk == 5) {
+	std::string fnamesuffix = "L" + to_string(layerdisk + 1);
+	writeVMTable(settings_.tablePath() + "VMTableOuter" + fnamesuffix + ".tab", vmrtable_);
+	// write disk teouter tables (D1, D2, D4)
+	if (layerdisk == 6 || layerdisk == 7 || layerdisk == 9) {
+	  std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1);
+	  writeVMTable(settings_.tablePath() + "VMTableOuter" + fnamesuffix + ".tab", vmrtabletedisk_);
+	}
+      }
+    } else {
+    
+      ofstream out;
+      if (layerdisk<6) {
+	out.open(settings_.tablePath()+"TP_L" + std::to_string(layerdisk+1) +".tab");
+      } else {
+	out.open(settings_.tablePath()+"TP_D" + std::to_string(layerdisk-5) +".tab");
+      }
+      out << "{" << endl;
+      for (unsigned int i = 0; i < vmrtableteinner_.size(); i++) {
+	if (i != 0) {
+	  out << "," << endl;
+	}
+	if (vmrtableteinner_[i]==-1) {
+	  out << 1023;
+	} else {
+	  out << vmrtableteinner_[i];
+	}
+      }
+      out << endl << "};" << endl;
+      out.close();
     }
   }
+
+  
 }
 
 int VMRouterTable::getLookup(unsigned int layerdisk, double z, double r, int iseed) {
@@ -252,7 +293,7 @@ int VMRouterTable::getLookup(unsigned int layerdisk, double z, double r, int ise
     if (rbin1 < 0)
       rbin1 = 0;
 
-    // This is a 9 bit word for disk seeding and same 10 bit as above for overlap:
+    // This is a 9 bit word:
     // xxx|yy|z|rrr
     // xxx is the delta r window
     // yy is the r bin yy is three bits for overlaps

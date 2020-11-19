@@ -57,8 +57,8 @@ void TrackletEngineUnit::step(bool){
 
   bool inrange=(idphi<(1<<(nbitsfinephidiff_-1)))&&(idphi>=-(1<<(nbitsfinephidiff_-1)));
 
-  if (idphi<0) idphi=idphi+(1<<nbitsfinephidiff_);
-
+  idphi=idphi&((1<<nbitsfinephidiff_)-1);
+  
   if (iSeed_ >= 4) {  //Also use r-position
     int ir = ((ibin & 3) << 1) + (rzbin >> 2);
     idphi = (idphi << 3) + ir;
