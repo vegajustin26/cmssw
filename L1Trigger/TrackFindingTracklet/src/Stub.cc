@@ -5,6 +5,7 @@
 #include "DataFormats/Math/interface/deltaPhi.h"
 
 #include <cmath>
+#include <bitset>
 
 using namespace std;
 using namespace trklet;
