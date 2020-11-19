@@ -480,7 +480,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	  layerdisk=0;
 	}
 
-	string stubword=stub.second.to_string().substr(64-36-5,36); //FIXME hardcoded numbers...
+	string stubword=stub.second.to_string().substr(64-36-3,36); //FIXME hardcoded numbers...
 	string stubwordhex="";
 
 	for(unsigned int i=0;i<9;i++){
@@ -488,6 +488,8 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	  ulong val=bits.to_ulong();
 	  stubwordhex+=((val<10)?('0'+val):('A'+val-10));
 	}
+
+	//cout << "stubword : "<<stubwordhex<<" "<<stubword<<" "<<stub.second.to_string()<<endl;
 
 	/// Get the Inner and Outer TTCluster
 	edm::Ref<edmNew::DetSetVector<TTCluster<Ref_Phase2TrackerDigi_>>, TTCluster<Ref_Phase2TrackerDigi_>> innerCluster =
