@@ -101,6 +101,16 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
 
     config.writeAll(wires,memories,modules);
     configure(wires,memories,modules);
+
+    if (settings_->writeConfig()){
+      std::ofstream wires("wires.dat");
+      std::ofstream memories("memories.dat");
+      std::ofstream modules("modules.dat");
+      
+      config.writeAll(wires,memories,modules);
+
+    }
+    
     
   }
 
