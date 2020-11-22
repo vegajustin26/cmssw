@@ -77,7 +77,7 @@ bool Sector::addStub(L1TStub stub, string dtc) {
     globals_->phiCorr(layerdisk)->init(layerdisk + 1, nbits, 3);
   }
   
-  Stub fpgastub(stub, settings_, phimin_, phimax_);
+  Stub fpgastub(stub, settings_);
 
   if (layerdisk < N_LAYER) {
     FPGAWord r = fpgastub.r();

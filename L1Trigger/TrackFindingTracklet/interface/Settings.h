@@ -240,9 +240,10 @@ namespace trklet {
     void setSkimfile(std::string skimfile) { skimfile_ = skimfile; }
 
     double dphisectorHG() const {
+      double rsectmin=21.8;
+      double rsectmax=112.7;
       return 2 * M_PI / N_SECTOR +
-             2 * std::max(std::abs(asin(0.5 * rinvmax() * rmean(0)) - asin(0.5 * rinvmax() * rcrit_)),
-                          std::abs(asin(0.5 * rinvmax() * rmean(5)) - asin(0.5 * rinvmax() * rcrit_)));
+	rinvmax()*std::max(rcrit_ - rsectmin, rsectmax - rcrit_);
     }
 
     double rcrit() const { return rcrit_; }
