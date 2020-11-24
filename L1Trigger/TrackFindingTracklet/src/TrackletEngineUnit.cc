@@ -84,8 +84,8 @@ void TrackletEngineUnit::step(bool){
     if (!(inrange && pttableinner_[ptinnerindex] && pttableouter_[ptouterindex])) {
       if (settings_->debugTracklet()) {
 	edm::LogVerbatim("Tracklet") <<" Stub pair rejected because of stub pt cut bends : "
-				     << - settings_->benddecode(tedata_.innerbend_.value(), layerdisk1_, tedata_.stub_->isPSmodule()) << " "
-				     << - settings_->benddecode(outerbend.value(), layerdisk2_, outervmstub.isPSmodule());
+				     << settings_->benddecode(tedata_.innerbend_.value(), layerdisk1_, tedata_.stub_->isPSmodule()) << " "
+				     << settings_->benddecode(outerbend.value(), layerdisk2_, outervmstub.isPSmodule());
       }
     } else {
       candpairs_.store(pair<const Stub*, const Stub*>(tedata_.stub_, outervmstub.stub()));

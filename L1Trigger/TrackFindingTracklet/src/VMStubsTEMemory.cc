@@ -10,6 +10,8 @@ VMStubsTEMemory::VMStubsTEMemory(string name, Settings const& settings, unsigned
   //set the layer or disk that the memory is in
   initLayerDisk(6, layer_, disk_);
 
+  layerdisk_=initLayerDisk(6);
+
   //Pointer to other VMStub memory for creating stub pairs
   other_ = nullptr;
 
@@ -82,7 +84,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub, int bin) {
   if (!pass) {
     if (settings_.debugTracklet())
       edm::LogVerbatim("Tracklet") << getName() << " Stub failed bend cut. bend = "
-                                   << benddecode(vmstub.bend().value(), vmstub.isPSmodule());
+                                   << settings_.benddecode(vmstub.bend().value(), layerdisk_, vmstub.isPSmodule());
     return false;
   }
 
@@ -144,7 +146,7 @@ bool VMStubsTEMemory::addVMStub(VMStubTE vmstub) {
   if (!pass) {
     if (settings_.debugTracklet())
       edm::LogVerbatim("Tracklet") << getName() << " Stub failed bend cut. bend = "
-                                   << benddecode(vmstub.bend().value(), vmstub.isPSmodule());
+                                   << settings_.benddecode(vmstub.bend().value(), layerdisk_, vmstub.isPSmodule());
     return false;
   }
 

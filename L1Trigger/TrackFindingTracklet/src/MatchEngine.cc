@@ -46,10 +46,10 @@ MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global,
 
       double stripPitch =
           (settings_.rmean(layer_ - 1) < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
-      double projbend = bend(settings_.rmean(layer_ - 1), rinv, stripPitch);
+      double projbend = bendstrip(settings_.rmean(layer_ - 1), rinv, stripPitch);
       for (unsigned int ibend = 0; ibend < (unsigned int)(1 << nbits); ibend++) {
-        double stubbend = benddecode(ibend, layer_ <= 3);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(layer_ - 1);
+        double stubbend = settings_.benddecode(ibend, layer_-1, layer_ <= 3);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layer_-1, layer_ <= 3);
         table_.push_back(pass);
       }
     }
@@ -75,15 +75,15 @@ MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global,
 
   if (disk_ > 0) {
     for (unsigned int iprojbend = 0; iprojbend < 32; iprojbend++) {
-      double projbend = 0.5 * (iprojbend - 15.0);
+      double projbend = -0.5 * (iprojbend - 15.0);
       for (unsigned int ibend = 0; ibend < 8; ibend++) {
-        double stubbend = benddecode(ibend, true);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(disk_ + 5);
+        double stubbend = settings_.benddecode(ibend, disk_ +5, true);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, disk_ +5, true);
         tablePS_.push_back(pass);
       }
       for (unsigned int ibend = 0; ibend < 16; ibend++) {
-        double stubbend = benddecode(ibend, false);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(disk_ + 5);
+        double stubbend = settings_.benddecode(ibend, disk_ +5, false);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, disk_ +5, false);
         table2S_.push_back(pass);
       }
     }
@@ -305,7 +305,7 @@ void MatchEngine::execute() {
         }
       } else {
         if (isPSmodule) {
-          passz = idrz >= -1 && idrz <= 1;
+	  passz = idrz >= -1 && idrz <= 1;
         } else {
           passz = idrz >= -5 && idrz <= 5;
         }
