@@ -1,4 +1,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Stub.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
+#include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
@@ -12,7 +14,7 @@ using namespace trklet;
 
 Stub::Stub(Settings const& settings) : settings_(settings) {}
 
-Stub::Stub(L1TStub& stub, Settings const& settings) : settings_(settings) {
+Stub::Stub(L1TStub& stub, Settings const& settings, Globals& globals) : settings_(settings) {
 
   const string& stubwordhex=stub.stubword();
 
@@ -36,8 +38,6 @@ Stub::Stub(L1TStub& stub, Settings const& settings) : settings_(settings) {
     if (word=='F') stubwordbin+="1111";	
   }
 
-  //cout << "stubword:"<<stubwordhex<<" "<<stubwordbin<<endl;
-  
   layerdisk_=stub.layerdisk();
 
   int nbendbits = 4;
@@ -55,10 +55,6 @@ Stub::Stub(L1TStub& stub, Settings const& settings) : settings_(settings) {
     nrbits=7;
   }
 
-
-  //cout << "nbendbits nalphabits nrbits nzbits nphibits : "
-  //     <<nbendbits<<" "<<nalphabits<<" "<<nrbits<<" "<<nzbits<<" "<<nphibits<<endl;
-
   int layer = stub.layer() + 1;
 
   assert(nbendbits+nalphabits+nrbits+nzbits+nphibits==36);
@@ -70,7 +66,8 @@ Stub::Stub(L1TStub& stub, Settings const& settings) : settings_(settings) {
   bitset<32> bendbits(stubwordbin.substr(nphibits+nzbits+nrbits+nalphabits,nbendbits));
   
   int newbend=bendbits.to_ulong();
-  if (newbend>=(1<<(nbendbits-1))) newbend=newbend-(1<<nbendbits);
+  //int rawbend=newbend;
+  //if (newbend>=(1<<(nbendbits-1))) newbend=newbend-(1<<nbendbits);
 
   double bendfact=-0.5;
 
@@ -94,9 +91,9 @@ Stub::Stub(L1TStub& stub, Settings const& settings) : settings_(settings) {
 
   l1tstub_ = &stub;
 
-  int ibendnew = bendencode(newbend*bendfact, stub.isPSmodule());
+  //int ibendnew = bendencode(newbend*bendfact, stub.isPSmodule());
   
-  bend_.set(ibendnew, nbendbits, true, __LINE__, __FILE__);
+  bend_.set(newbend, nbendbits, true, __LINE__, __FILE__);
   
   phi_.set(newphi, nphibits, true, __LINE__, __FILE__);
   phicorr_.set(newphi, nphibits, true, __LINE__, __FILE__);
@@ -117,6 +114,30 @@ Stub::Stub(L1TStub& stub, Settings const& settings) : settings_(settings) {
   r_.set(newr, nrbits, pos, __LINE__, __FILE__);
   z_.set(newz, nzbits, false, __LINE__, __FILE__);
 
+  if (settings.writeMonitorData("StubBend")) {
+
+    
+    unsigned int nsimtrks=globals.event()->nsimtracks();
+
+    //cout << "Have L1 stub" << endl;
+    
+    for (unsigned int isimtrk=0;isimtrk<nsimtrks;isimtrk++) {
+      const L1SimTrack& simtrk=globals.event()->simtrack(isimtrk);
+      if (stub.tpmatch2(simtrk.trackid())) {
+
+	double dr=0.18;
+	double rinv=simtrk.charge()*0.01*settings_.c()*settings_.bfield()/simtrk.pt();
+	double pitch=settings_.stripPitch(stub.isPSmodule());
+	double bend=stub.r()*dr*0.5*rinv/pitch;
+
+	globals.ofstream("stubbend.dat") << layerdisk_ << " "<<stub.isPSmodule()<<" "<<simtrk.pt()*simtrk.charge()<<" "<<bend<<" "<<newbend
+					 <<" "<<settings.benddecode(newbend,layerdisk_,stub.isPSmodule())
+					 <<" "<<settings.bendcut(newbend,layerdisk_,stub.isPSmodule())
+					 <<endl;
+      }
+    }
+  }
+  
 }
 
 FPGAWord Stub::iphivmFineBins(int VMbits, int finebits) const {

@@ -36,11 +36,12 @@ TrackletConfigBuilder::TrackletConfigBuilder(bool combinedmodules){
   zmean_[2]=(zlength_*3163)/2048;
   zmean_[3]=(zlength_*3782)/2048;
   zmean_[4]=(zlength_*4523)/2048;
+
+  double rsectmin=21.8;
+  double rsectmax=112.7;
   
-  
-  dphisectorHG_=2*M_PI/NSector_+
-    2*fmax(fabs(asin(0.5*rinvmax_*rmean_[0])-asin(0.5*rinvmax_*rcrit_)),
-	   fabs(asin(0.5*rinvmax_*rmean_[5])-asin(0.5*rinvmax_*rcrit_)));
+  dphisectorHG_ = 2 * M_PI / NSector_ +
+      rinvmax_*std::max(rcrit_ - rsectmin, rsectmax - rcrit_);
   
   NRegions_[0]=8;
   NRegions_[1]=4;

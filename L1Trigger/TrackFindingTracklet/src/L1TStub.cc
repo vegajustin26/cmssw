@@ -109,6 +109,21 @@ bool L1TStub::tpmatch(int tp) const {
   return false;
 }
 
+bool L1TStub::tpmatch2(int tp) const {
+  bool match1=false;
+  bool match2=false;
+  for (int itp : tps_) {
+    if (tp == itp) {
+      match1=true;
+    }
+    if (tp == -itp) {
+      match2=true;
+    }
+  }
+
+  return match1&&match2;
+}
+
 bool L1TStub::isTilted() const {
   //here layer_ runs 0-5 for barrel, >1000 for disk
   //disk modules and outer barrel modules are not tilted by construction

@@ -92,10 +92,10 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
       double rinv = (irinv - 15.5) * (1 << (settings_.nbitsrinv() - 5)) * settings_.krinvpars();
       double stripPitch =
           (settings_.rmean(layer_ - 1) < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
-      double projbend = bend(settings_.rmean(layer_ - 1), rinv, stripPitch);
+      double projbend = bendstrip(settings_.rmean(layer_ - 1), rinv, stripPitch);
       for (unsigned int ibend = 0; ibend < (unsigned int)(1 << nbits); ibend++) {
-        double stubbend = benddecode(ibend, layer_ <= (int)N_PSLAYER);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(layer_ - 1);
+        double stubbend = settings_.benddecode(ibend, layerdisk_, layer_ <= (int)N_PSLAYER);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, layer_ <= (int)N_PSLAYER);
         table_.push_back(pass);
       }
     }
@@ -121,15 +121,15 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
 
   if (disk_ > 0) {
     for (unsigned int iprojbend = 0; iprojbend < 32; iprojbend++) {
-      double projbend = 0.5 * (iprojbend - 15.0);
+      double projbend = - 0.5 * (iprojbend - 15.0);
       for (unsigned int ibend = 0; ibend < 8; ibend++) {
-        double stubbend = benddecode(ibend, true);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(disk_ + 5);
+        double stubbend = settings_.benddecode(ibend, layerdisk_, true);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, true);
         tablePS_.push_back(pass);
       }
       for (unsigned int ibend = 0; ibend < 16; ibend++) {
-        double stubbend = benddecode(ibend, false);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(disk_ + 5);
+        double stubbend = settings_.benddecode(ibend, layerdisk_, false);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, false);
         table2S_.push_back(pass);
       }
     }
@@ -323,14 +323,6 @@ void MatchProcessor::execute() {
               ProjectionTemp tmpProj(proj, slot + 1, projrinv, projfinerz - 8, projfinephi, iphi, false, isPSseed);
               inputProjBuffer_.store(tmpProj);
             }
-            //if (usefirst) {
-            //  ProjectionTemp tmpProj(proj, slot, projrinv, projfinerz, projfinephi, iphi, false, isPSseed);
-            //  inputProjBuffer_.store(tmpProj);
-            //}
-            //if (usesecond) {
-            //  ProjectionTemp tmpProj(proj, slot + 1, projrinv, projfinerz - 8, projfinephi, iphi, false, isPSseed);
-            //  inputProjBuffer_.store(tmpProj);
-            //}
             iproj++;
             if (iproj == projMem->nTracklets()) {
               iproj = 0;

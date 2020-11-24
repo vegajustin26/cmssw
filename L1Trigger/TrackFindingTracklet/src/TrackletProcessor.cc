@@ -129,7 +129,7 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
     }
     buildLUT(); //need iAllStub_ set before building the table //FIXME should be in initiall
 
-    TrackletEngineUnit teunit(&settings_,nbitsfinephi_,layerdisk2_,iSeed_,nbitsfinephidiff_,iAllStub_,pttableinnernew_,pttableouternew_,outervmstubs_);
+    TrackletEngineUnit teunit(&settings_,nbitsfinephi_,layerdisk1_,layerdisk2_,iSeed_,nbitsfinephidiff_,iAllStub_,pttableinnernew_,pttableouternew_,outervmstubs_);
     teunits_.resize(6,teunit);
     
     return;
@@ -144,7 +144,7 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
       innerallstubs_.push_back(tmp);
     }
 
-    //FIXEM should be done once after all inputs are added
+    //FIXME should be done once after all inputs are added
     tedatabuffers_.clear();
     CircularBuffer<TEData> tedatabuffertmp(3);
     tedatabuffertmp.reset();
@@ -328,6 +328,10 @@ void TrackletProcessor::execute() {
 	
 	const Stub* stub = innerallstubs_[imem]->getStub(istub);
 	
+	if (settings_.debugTracklet()) {
+	  edm::LogVerbatim("Tracklet") << getName() << " Have stub in "<<innerallstubs_[imem]->getName();
+	}
+	
 	bool negdisk = (stub->disk().value() < 0);  //FIXME stub needs to contain bit for +/- z disk
 
 	FPGAWord phicorr=stub->phicorr();
@@ -431,6 +435,8 @@ void TrackletProcessor::execute() {
 	  istub=0;
 	  imem++;
 	}
+      } else if ((!tebufferfull___[jte]) && imem < imemend && istub==0) {
+	imem++;
       }
 
       //tebufferfull____[jte]=tebufferfull___[jte];
@@ -438,7 +444,6 @@ void TrackletProcessor::execute() {
       tebufferfull__[jte]=tebufferfull[jte];
       
     }
-
 
     //
     // Done with processing - collect performance statistics
@@ -573,13 +578,13 @@ void TrackletProcessor::buildLUT() {
 	  } else {
 	    rinner = settings_.rmean(layerdisk1_);
 	  }
-	  double rinv1 = rinv(0.0, dphi[i2], rinner, router[i3]);
+	  double rinv1 = rinv(0.0, -dphi[i2], rinner, router[i3]);
 	  double pitchinner =
 	    (rinner < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
 	  double pitchouter =
 	    (router[i3] < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
-	  double abendinner = -bend(rinner, rinv1, pitchinner);
-	  double abendouter = -bend(router[i3], rinv1, pitchouter);
+	  double abendinner = bendstrip(rinner, rinv1, pitchinner);
+	  double abendouter = bendstrip(router[i3], rinv1, pitchouter);
 	  if (abendinner < bendinnermin)
 	    bendinnermin = abendinner;
 	  if (abendinner > bendinnermax)
@@ -597,18 +602,18 @@ void TrackletProcessor::buildLUT() {
       bool passptcut = rinvmin < settings_.rinvcutte();
     
       for (int ibend = 0; ibend < (1 << nbendbitsinner); ibend++) {
-	double bend = benddecode(ibend, nbendbitsinner == 3);
+	double bend = settings_.benddecode(ibend, layerdisk1_, nbendbitsinner == 3);
 	
-	bool passinner = bend - bendinnermin > -settings_.bendcutte(0, iSeed_) &&
-	  bend - bendinnermax < settings_.bendcutte(0, iSeed_);
+	bool passinner = bend <= bendinnermax + settings_.bendcutte(ibend, layerdisk1_, nbendbitsinner == 3) &&
+	  bend >= bendinnermin - settings_.bendcutte(ibend, layerdisk1_, nbendbitsinner == 3);
 	pttableinnernew_.push_back(passinner && passptcut);
       }
       
       for (int ibend = 0; ibend < (1 << nbendbitsouter); ibend++) {
-	double bend = benddecode(ibend, nbendbitsouter == 3);
+	double bend = settings_.benddecode(ibend, layerdisk2_, nbendbitsouter == 3);
 	
-	bool passouter = bend - bendoutermin > -settings_.bendcutte(1, iSeed_) &&
-	  bend - bendoutermax < settings_.bendcutte(1, iSeed_);
+	bool passouter = bend <= bendoutermax + settings_.bendcutte(ibend, layerdisk2_, nbendbitsouter == 3) &&
+	  bend >= bendoutermin - settings_.bendcutte(ibend, layerdisk2_, nbendbitsouter == 3);
 	pttableouternew_.push_back(passouter && passptcut);
       }
     }

@@ -170,6 +170,13 @@ namespace trklet {
     return bend;
   }
 
+  inline double bendstrip(double r, double rinv, double stripPitch) {
+    constexpr double dr = 0.18;
+    double delta = r * dr * 0.5 * rinv;
+    double bend = delta / stripPitch;
+    return bend;
+  }
+
   inline double rinv(double phi1, double phi2, double r1, double r2) {
     if (r2 <= r1) {  //can not form tracklet
       return 20.0;

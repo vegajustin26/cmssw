@@ -165,6 +165,10 @@ void VMRouterCM::execute() {
 	    memtype=='D') {
 	  allstub.second->setInner(true);  //FIXME can be done at initialization
 	}
+	if (settings_.debugTracklet()) {
+	  edm::LogVerbatim("Tracklet") << getName() << " adding stub to "
+				       << allstub.second->getName();
+	}
 
         allstub.second->addStub(stub);
       }

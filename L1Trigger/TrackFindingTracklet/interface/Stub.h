@@ -13,11 +13,13 @@
 
 namespace trklet {
 
+  class Globals;
+  
   class Stub {
   public:
     Stub(Settings const& settings);
 
-    Stub(L1TStub& stub, Settings const& settings);
+    Stub(L1TStub& stub, Settings const& settings, Globals& globals);
 
     ~Stub() = default;
 

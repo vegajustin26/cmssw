@@ -115,10 +115,9 @@ int main(const int argc, const char **argv) {
 
   for (int eventnum = 0; eventnum < nevents && !in->eof(); eventnum++) {
     SLHCEvent ev(*in);
-
+    /*
     L1SimTrack simtrk;
 
-    /*
     if (ev.nsimtracks()==0) {
       continue;
     }
@@ -127,11 +126,16 @@ int main(const int argc, const char **argv) {
 
     double eta=simtrk.eta();
 
-    if (abs((abs(eta)-2.2))>0.2) {
+    if (abs((abs(eta)-0.0))>0.7) {
       continue;		 
     }
-    */
 
+    if (simtrk.pt()>4.0) continue;
+    if (simtrk.pt()<2.0) continue;
+    
+    cout << "x,y,z : "<<simtrk.vx()<<" "<<simtrk.vy()<<" "<<simtrk.vz()<<endl;
+    cout << "pt rinv : "<<simtrk.pt()<<" "<<0.01*settings.c()*settings.bfield()/simtrk.pt()<<endl;
+    */
     // -----------------------------------------------------------------
     // setup ROOT Tree and Add Monte Carlo tracks to the ROOT-Tree Event
 #ifdef USEROOT
