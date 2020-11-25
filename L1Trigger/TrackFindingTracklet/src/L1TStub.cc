@@ -102,7 +102,7 @@ void L1TStub::setXY(double x, double y) {
 
 bool L1TStub::tpmatch(int tp) const {
   for (int itp : tps_) {
-    if (tp == itp)
+    if (tp == std::abs(itp))
       return true;
   }
 
