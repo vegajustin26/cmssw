@@ -736,6 +736,7 @@ namespace trklet {
     bool doMultipleMatches_{true};
 
     // if true, run a dummy fit, producing TTracks directly from output of tracklet pattern reco stage
+    // fakefit_=true also required if using TrackerTFP/interface/KalmanFilter.h track fit.
     bool fakefit_{true};
 
     unsigned int nHelixPar_{4};  // 4 or 5 param helix fit

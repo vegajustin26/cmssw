@@ -185,9 +185,9 @@ namespace trackerDTC {
     double halfLength() const { return halfLength_; }
     // max strip/pixel length of outer tracker sensors in cm
     double maxLength() const { return maxLength_; }
-    //
+    // In tilted barrel, grad*|z|/r+int approximates |cos(theta) - tiltAngle|/sin(theta)|
     double tiltApproxSlope() const { return tiltApproxSlope_; }
-    //
+    // In tilted barrel, grad*|z|/r+int approximates |cos(theta) - tiltAngle|/sin(theta)|
     double tiltApproxIntercept() const { return tiltApproxIntercept_; }
 
     // Hybrid specific parameter

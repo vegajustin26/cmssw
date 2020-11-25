@@ -41,7 +41,6 @@
 <use name="TrackingTools/TransientTrack"/>
 <use name="L1Trigger/TrackerDTC"/>
 <use name="L1Trigger/TrackerTFP"/>
-<use name="SimTracker/TrackTriggerAssociation"/>
 <flags CXXFLAGS="-DUSEHYBRID"/>
 
 <export>

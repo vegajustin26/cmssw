@@ -129,14 +129,14 @@ public:
     return bv.flip();
   }
 
-  // operator: bit shifts right reference
+  // operator: bit remove right reference
   TTBV& operator>>=(int pos) {
     bs_ >>= pos;
     size_ -= pos;
     return *this;
   }
 
-  // operator: bit shifts left reference
+  // operator: bit remove left reference
   TTBV& operator<<=(int pos) {
     bs_ <<= S - size_ + pos;
     bs_ >>= S - size_ + pos;
@@ -144,16 +144,16 @@ public:
     return *this;
   }
 
-  // operator: bit shifts left copy
+  // operator: bit remove left copy
   TTBV operator<<(int pos) const {
     TTBV bv(*this);
-    return bv >>= pos;
+    return bv <<= pos;
   }
 
-  // operator: bit shifts right copy
+  // operator: bit remove right copy
   TTBV operator>>(int pos) const {
     TTBV bv(*this);
-    return bv <<= pos;
+    return bv >>= pos;
   }
 
   // operator: concatenation reference
@@ -226,10 +226,8 @@ public:
   TTBV& abs() {
     if (twos_) {
       twos_ = false;
-      if (this->msb()) {
+      if (this->msb())
         this->flip();
-        this->operator++();
-      }
       size_--;
     }
     return *this;
