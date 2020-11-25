@@ -30,9 +30,6 @@ namespace trklet {
 
     CandidateMatchMemory* candmatches_;
 
-    int layer_;
-    int disk_;
-
     unsigned int layerdisk_;
 
     bool barrel_;

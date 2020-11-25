@@ -16,8 +16,6 @@ using namespace trklet;
 MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global, unsigned int iSector)
     : ProcessBase(name, settings, global, iSector) {
 
-  initLayerDisk(3, layer_, disk_);
-  
   layerdisk_ = initLayerDisk(3);
   
   barrel_ = layerdisk_ < N_LAYER;
@@ -51,7 +49,7 @@ MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global,
 
     if (settings_.writeTable()) {
       ofstream out;
-      char layer = '0' + layer_;
+      char layer = '1' + layerdisk_;
       string fname = "METable_L";
       fname += layer;
       fname += ".tab";
@@ -77,7 +75,7 @@ MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global,
         tablePS_.push_back(pass);
       }
       for (unsigned int ibend = 0; ibend < (1<<N_BENDBITS_2S); ibend++) {
-        double stubbend = settings_.benddecode(ibend, disk_ +5, false);
+        double stubbend = settings_.benddecode(ibend, layerdisk_, false);
         bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, false);
         table2S_.push_back(pass);
       }
@@ -177,9 +175,9 @@ void MatchEngine::execute() {
       iproj++;
       moreproj = iproj < nproj;
 
-      unsigned int rzfirst = barrel_ ? proj->zbin1projvm(layer_) : proj->rbin1projvm(disk_);
+      unsigned int rzfirst = barrel_ ? proj->zbin1projvm(layerdisk_+1) : proj->rbin1projvm(layerdisk_-5);
       unsigned int rzlast = rzfirst;
-      bool second = (barrel_ ? proj->zbin2projvm(layer_) : proj->rbin2projvm(disk_));
+      bool second = (barrel_ ? proj->zbin2projvm(layerdisk_+1) : proj->rbin2projvm(layerdisk_-5));
       if (second)
         rzlast += 1;
 
@@ -229,17 +227,17 @@ void MatchEngine::execute() {
 
         Tracklet* proj = vmprojs_->getTracklet(projindex);
 
-        FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layer_) : proj->fpgaphiprojdisk(disk_);
+        FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layerdisk_+1) : proj->fpgaphiprojdisk(layerdisk_-5);
         projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + nfinephibits_ ))) & ((1<<nfinephibits_)-1);
 
         nstubs = vmstubs_->nStubsBin(rzbin);
 
-        projfinerz = barrel_ ? proj->finezvm(layer_) : proj->finervm(disk_);
+        projfinerz = barrel_ ? proj->finezvm(layerdisk_+1) : proj->finervm(layerdisk_-5);
 
         projrinv =
             barrel_
-	  ? ((1<<(nrinv_-1)) + ((-2*proj->fpgaphiprojder(layer_).value()) >> (proj->fpgaphiprojder(layer_).nbits() - (nrinv_-1))))
-                : proj->getBendIndex(disk_).value();
+	  ? ((1<<(nrinv_-1)) + ((-2*proj->fpgaphiprojder(layerdisk_+1).value()) >> (proj->fpgaphiprojder(layerdisk_+1).nbits() - (nrinv_-1))))
+                : proj->getBendIndex(layerdisk_-5).value();
         assert(projrinv >= 0);
         if (settings_.extended() && projrinv == (1<<nrinv_)) {
           if (settings_.debugTracklet()) {
