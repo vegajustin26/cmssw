@@ -15,41 +15,36 @@ using namespace trklet;
 
 MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global, unsigned int iSector)
     : ProcessBase(name, settings, global, iSector) {
-  layer_ = 0;
-  disk_ = 0;
-  string subname = name.substr(3, 2);
-  if (subname.substr(0, 1) == "L")
-    layer_ = stoi(subname.substr(1, 1));
-  else if (subname.substr(0, 1) == "D")
-    disk_ = stoi(subname.substr(1, 1));
-  else
-    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " " << name << " subname = " << subname << " "
-                                      << layer_ << " " << disk_;
 
-  barrel_ = layer_ > 0;
+  initLayerDisk(3, layer_, disk_);
+  
+  layerdisk_ = initLayerDisk(3);
+  
+  barrel_ = layerdisk_ < N_LAYER;
 
-  nvm_ = barrel_ ? settings_.nvmme(layer_ - 1) * settings_.nallstubs(layer_ - 1)
-                 : settings_.nvmme(disk_ + N_LAYER - 1) * settings_.nallstubs(disk_ + N_LAYER - 1);
+  nvm_=settings_.nvmme(layerdisk_)*settings_.nallstubs(layerdisk_);
 
-  if (nvm_ == 32)
-    nvmbits_ = 5;
-  if (nvm_ == 16)
-    nvmbits_ = 4;
+  nvmbits_=settings_.nbitsvmme(layerdisk_)+settings_.nbitsallstubs(layerdisk_);
 
-  if (layer_ > 0) {
-    unsigned int nbits = 3;
-    if (layer_ >= 4)
-      nbits = 4;
+  nrinv_=NRINVBITS;
+  double rinvhalf=0.5*((1<<nrinv_)-1);
 
-    for (unsigned int irinv = 0; irinv < 32; irinv++) {
-      double rinv = (irinv - 15.5) * (1 << (settings_.nbitsrinv() - 5)) * settings_.krinvpars();
+  nfinephibits_=3; 
+  
+  if (barrel_) {
 
-      double stripPitch =
-          (settings_.rmean(layer_ - 1) < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
-      double projbend = bendstrip(settings_.rmean(layer_ - 1), rinv, stripPitch);
-      for (unsigned int ibend = 0; ibend < (unsigned int)(1 << nbits); ibend++) {
-        double stubbend = settings_.benddecode(ibend, layer_-1, layer_ <= 3);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layer_-1, layer_ <= 3);
+    bool isPSmodule=layerdisk_<N_PSLAYER;
+    
+    unsigned int nbits = isPSmodule ? N_BENDBITS_PS : N_BENDBITS_2S;
+
+    for (unsigned int irinv = 0; irinv < (1<<nrinv_); irinv++) {
+      double rinv = (irinv - rinvhalf) * (1 << (settings_.nbitsrinv() - nrinv_)) * settings_.krinvpars();
+
+      double stripPitch = settings_.stripPitch(isPSmodule);
+      double projbend = bendstrip(settings_.rmean(layerdisk_), rinv, stripPitch);
+      for (unsigned int ibend = 0; ibend < (1u << nbits); ibend++) {
+        double stubbend = settings_.benddecode(ibend, layerdisk_, isPSmodule);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, isPSmodule);
         table_.push_back(pass);
       }
     }
@@ -73,17 +68,17 @@ MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global,
     }
   }
 
-  if (disk_ > 0) {
-    for (unsigned int iprojbend = 0; iprojbend < 32; iprojbend++) {
-      double projbend = -0.5 * (iprojbend - 15.0);
-      for (unsigned int ibend = 0; ibend < 8; ibend++) {
-        double stubbend = settings_.benddecode(ibend, disk_ +5, true);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, disk_ +5, true);
+  if (layerdisk_ >= N_LAYER) {
+    for (unsigned int iprojbend = 0; iprojbend < (1<<nrinv_); iprojbend++) {
+      double projbend = -0.5 * (iprojbend - rinvhalf);
+      for (unsigned int ibend = 0; ibend < (1<<N_BENDBITS_PS); ibend++) {
+        double stubbend = settings_.benddecode(ibend, layerdisk_, true);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, true);
         tablePS_.push_back(pass);
       }
-      for (unsigned int ibend = 0; ibend < 16; ibend++) {
+      for (unsigned int ibend = 0; ibend < (1<<N_BENDBITS_2S); ibend++) {
         double stubbend = settings_.benddecode(ibend, disk_ +5, false);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, disk_ +5, false);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, false);
         table2S_.push_back(pass);
       }
     }
@@ -184,7 +179,7 @@ void MatchEngine::execute() {
 
       unsigned int rzfirst = barrel_ ? proj->zbin1projvm(layer_) : proj->rbin1projvm(disk_);
       unsigned int rzlast = rzfirst;
-      bool second = (barrel_ ? proj->zbin2projvm(layer_) : proj->rbin2projvm(disk_)) == 1;
+      bool second = (barrel_ ? proj->zbin2projvm(layer_) : proj->rbin2projvm(disk_));
       if (second)
         rzlast += 1;
 
@@ -235,7 +230,7 @@ void MatchEngine::execute() {
         Tracklet* proj = vmprojs_->getTracklet(projindex);
 
         FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layer_) : proj->fpgaphiprojdisk(disk_);
-        projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + 3))) & 7;
+        projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + nfinephibits_ ))) & ((1<<nfinephibits_)-1);
 
         nstubs = vmstubs_->nStubsBin(rzbin);
 
@@ -243,22 +238,22 @@ void MatchEngine::execute() {
 
         projrinv =
             barrel_
-                ? (16 + (((-2) * proj->fpgaphiprojder(layer_).value()) >> (proj->fpgaphiprojder(layer_).nbits() - 4)))
+	  ? ((1<<(nrinv_-1)) + ((-2*proj->fpgaphiprojder(layer_).value()) >> (proj->fpgaphiprojder(layer_).nbits() - (nrinv_-1))))
                 : proj->getBendIndex(disk_).value();
         assert(projrinv >= 0);
-        if (settings_.extended() && projrinv == 32) {
+        if (settings_.extended() && projrinv == (1<<nrinv_)) {
           if (settings_.debugTracklet()) {
             edm::LogVerbatim("Tracklet") << "Extended tracking, projrinv:" << projrinv;
           }
-          projrinv = 31;
+          projrinv = (1<<nrinv_)-1;
         }
-        assert(projrinv < 32);
+        assert(projrinv < (1<<nrinv_) );
 
-        isPSseed = proj->PSseed() == 1;
+        isPSseed = proj->PSseed();
 
         //Calculate fine z position
         if (second) {
-          projfinerzadj = projfinerz - 8;
+          projfinerzadj = projfinerz - (1<<NFINERZBITS);
         } else {
           projfinerzadj = projfinerz;
         }
@@ -285,11 +280,13 @@ void MatchEngine::execute() {
 
       int stubfinerz = vmstub.finerz().value();
 
-      int nbits = isPSmodule ? 3 : 4;
+      int nbits = isPSmodule ? N_BENDBITS_PS : N_BENDBITS_2S;
 
       int deltaphi = projfinephi - vmstub.finephi().value();
 
-      bool passphi = (abs(deltaphi) < 3) || (abs(deltaphi) > 5);
+      constexpr int mindeltaphicut=3;
+      constexpr int maxdeltaphicut=5;
+      bool passphi = (std::abs(deltaphi) < mindeltaphicut) || (std::abs(deltaphi) > maxdeltaphicut);
 
       unsigned int index = (projrinv << nbits) + vmstub.bend().value();
 
@@ -299,15 +296,19 @@ void MatchEngine::execute() {
 
       if (barrel_) {
         if (isPSseed) {
-          passz = idrz >= -2 && idrz <= 2;
+	  constexpr int drzcut=2;
+          passz = std::abs(idrz) <= drzcut;
         } else {
-          passz = idrz >= -5 && idrz <= 5;
+	  constexpr int drzcut=5;
+          passz = std::abs(idrz) <= drzcut;
         }
       } else {
         if (isPSmodule) {
-	  passz = idrz >= -1 && idrz <= 1;
+	  constexpr int drzcut=1;
+	  passz = std::abs(idrz) <= drzcut;
         } else {
-          passz = idrz >= -5 && idrz <= 5;
+	  constexpr int drzcut=5;
+          passz = std::abs(idrz) <= drzcut;
         }
       }
 
