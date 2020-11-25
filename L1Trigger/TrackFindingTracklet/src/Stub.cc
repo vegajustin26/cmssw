@@ -18,26 +18,8 @@ Stub::Stub(L1TStub& stub, Settings const& settings, Globals& globals) : settings
 
   const string& stubwordhex=stub.stubword();
 
-  string stubwordbin="";
-  for(char word:stubwordhex){
-    if (word=='0') stubwordbin+="0000";
-    if (word=='1') stubwordbin+="0001";
-    if (word=='2') stubwordbin+="0010";
-    if (word=='3') stubwordbin+="0011";
-    if (word=='4') stubwordbin+="0100";
-    if (word=='5') stubwordbin+="0101";
-    if (word=='6') stubwordbin+="0110";
-    if (word=='7') stubwordbin+="0111";
-    if (word=='8') stubwordbin+="1000";
-    if (word=='9') stubwordbin+="1001";
-    if (word=='A') stubwordbin+="1010";
-    if (word=='B') stubwordbin+="1011";
-    if (word=='C') stubwordbin+="1100";
-    if (word=='D') stubwordbin+="1101";
-    if (word=='E') stubwordbin+="1110";
-    if (word=='F') stubwordbin+="1111";	
-  }
-
+  const string stubwordbin=convertHexToBin(stubwordhex);
+  
   layerdisk_=stub.layerdisk();
 
   int nbendbits = 4;

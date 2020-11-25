@@ -35,141 +35,6 @@ namespace trklet {
     return str;
   }
 
-  //Should be optimized by layer - now first implementation to make sure it works OK
-  inline int bendencode(double bend, bool isPS) {
-    int ibend = 2.0 * bend;
-
-    assert(std::abs(ibend - 2.0 * bend) < 0.1);
-
-    if (isPS) {
-      if (ibend == 0 || ibend == 1)
-        return 0;
-      if (ibend == 2 || ibend == 3)
-        return 1;
-      if (ibend == 4 || ibend == 5)
-        return 2;
-      if (ibend >= 6)
-        return 3;
-      if (ibend == -1 || ibend == -2)
-        return 4;
-      if (ibend == -3 || ibend == -4)
-        return 5;
-      if (ibend == -5 || ibend == -6)
-        return 6;
-      if (ibend <= -7)
-        return 7;
-
-      throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
-                                        << " Unknown bendencode for PS module for bend = " << bend
-                                        << " ibend = " << ibend;
-    }
-
-    if (ibend == 0 || ibend == 1)
-      return 0;
-    if (ibend == 2 || ibend == 3)
-      return 1;
-    if (ibend == 4 || ibend == 5)
-      return 2;
-    if (ibend == 6 || ibend == 7)
-      return 3;
-    if (ibend == 8 || ibend == 9)
-      return 4;
-    if (ibend == 10 || ibend == 11)
-      return 5;
-    if (ibend == 12 || ibend == 13)
-      return 6;
-    if (ibend >= 14)
-      return 7;
-    if (ibend == -1 || ibend == -2)
-      return 8;
-    if (ibend == -3 || ibend == -4)
-      return 9;
-    if (ibend == -5 || ibend == -6)
-      return 10;
-    if (ibend == -7 || ibend == -8)
-      return 11;
-    if (ibend == -9 || ibend == -10)
-      return 12;
-    if (ibend == -11 || ibend == -12)
-      return 13;
-    if (ibend == -13 || ibend == -14)
-      return 14;
-    if (ibend <= -15)
-      return 15;
-
-    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
-                                      << " Unknown bendencode for 2S module for bend = " << bend
-                                      << " ibend = " << ibend;
-  }
-
-  //Should be optimized by layer - now first implementation to make sure it works OK
-  inline double benddecode(int ibend, bool isPS) {
-    if (isPS) {
-      if (ibend == 0)
-        return 0.25;
-      if (ibend == 1)
-        return 1.25;
-      if (ibend == 2)
-        return 2.25;
-      if (ibend == 3)
-        return 3.25;
-      if (ibend == 4)
-        return -0.75;
-      if (ibend == 5)
-        return -1.75;
-      if (ibend == 6)
-        return -2.75;
-      if (ibend == 7)
-        return -3.75;
-
-      throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
-                                        << " Unknown benddecode for PS module for ibend = " << ibend;
-    }
-
-    if (ibend == 0)
-      return 0.25;
-    if (ibend == 1)
-      return 1.25;
-    if (ibend == 2)
-      return 2.25;
-    if (ibend == 3)
-      return 3.25;
-    if (ibend == 4)
-      return 4.25;
-    if (ibend == 5)
-      return 5.25;
-    if (ibend == 6)
-      return 6.25;
-    if (ibend == 7)
-      return 7.25;
-    if (ibend == 8)
-      return -0.75;
-    if (ibend == 9)
-      return -1.75;
-    if (ibend == 10)
-      return -2.75;
-    if (ibend == 11)
-      return -3.75;
-    if (ibend == 12)
-      return -4.75;
-    if (ibend == 13)
-      return -5.75;
-    if (ibend == 14)
-      return -6.75;
-    if (ibend == 15)
-      return -7.75;
-
-    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__
-                                      << " Unknown benddecode for 2S module for ibend = " << ibend;
-  }
-
-  inline double bend(double r, double rinv, double stripPitch) {
-    constexpr double dr = 0.18;
-    double delta = r * dr * 0.5 * rinv;
-    double bend = -delta / stripPitch;
-    return bend;
-  }
-
   inline double bendstrip(double r, double rinv, double stripPitch) {
     constexpr double dr = 0.18;
     double delta = r * dr * 0.5 * rinv;
@@ -178,7 +43,8 @@ namespace trklet {
   }
 
   inline double rinv(double phi1, double phi2, double r1, double r2) {
-    if (r2 <= r1) {  //can not form tracklet
+
+    if (r2 <= r1) {  //FIXME can not form tracklet should not call function with r2<=r1
       return 20.0;
     }
 
@@ -187,6 +53,37 @@ namespace trklet {
 
     return 2.0 * sin(dphi) / dr / sqrt(1.0 + 2 * r1 * r2 * (1.0 - cos(dphi)) / (dr * dr));
   }
+
+  inline std::string convertHexToBin(const std::string& stubwordhex) {
+
+    std::string stubwordbin="";
+
+    for(char word:stubwordhex){
+      std::string hexword="";
+      if (word=='0') hexword="0000";
+      if (word=='1') hexword="0001";
+      if (word=='2') hexword="0010";
+      if (word=='3') hexword="0011";
+      if (word=='4') hexword="0100";
+      if (word=='5') hexword="0101";
+      if (word=='6') hexword="0110";
+      if (word=='7') hexword="0111";
+      if (word=='8') hexword="1000";
+      if (word=='9') hexword="1001";
+      if (word=='A') hexword="1010";
+      if (word=='B') hexword="1011";
+      if (word=='C') hexword="1100";
+      if (word=='D') hexword="1101";
+      if (word=='E') hexword="1110";
+      if (word=='F') hexword="1111";
+      if (hexword=="") {
+	throw cms::Exception("Inconsistency") << __FILE__ << " " << __LINE__ << " hex string format invalid: " << stubwordhex;
+      }
+      stubwordbin+=hexword;
+    }
+    return stubwordbin;
+  }
+
 
 };  // namespace trklet
 #endif

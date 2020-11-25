@@ -414,8 +414,10 @@ void MatchProcessor::execute() {
       }
     }
     if ((projdone && medone) || (istep == settings_.maxStep("MP") + step3delay - 1)) {
-      globals_->ofstream("matchprocessor.txt") << getName() << " " << istep << " " << countall << " " << countsel << " "
-                                               << countme << " " << countinputproj << endl;
+      if (settings_.writeMonitorData("MP")) {
+	  globals_->ofstream("matchprocessor.txt") << getName() << " " << istep << " " << countall << " " << countsel << " "
+						   << countme << " " << countinputproj << endl;
+      }
       break;
     }
   }
