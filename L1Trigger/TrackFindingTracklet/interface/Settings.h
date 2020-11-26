@@ -211,6 +211,7 @@ namespace trklet {
     bool doKF() const { return doKF_; }
     bool doMultipleMatches() const { return doMultipleMatches_; }
     bool fakefit() const { return fakefit_; }
+    void setFakefit(bool fakefit) { fakefit_ = fakefit; }
 
     // configurable
     unsigned int nHelixPar() const { return nHelixPar_; }
@@ -737,7 +738,7 @@ namespace trklet {
 
     // if true, run a dummy fit, producing TTracks directly from output of tracklet pattern reco stage
     // fakefit_=true also required if using TrackerTFP/interface/KalmanFilter.h track fit.
-    bool fakefit_{true};
+    bool fakefit_{false};
 
     unsigned int nHelixPar_{4};  // 4 or 5 param helix fit
     bool extended_{false};       // turn on displaced tracking

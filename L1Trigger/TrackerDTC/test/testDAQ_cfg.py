@@ -1,4 +1,5 @@
 ################################################################################################
+# plots cluster occupancy
 # To run execute do
 # cmsRun L1Trigger/TrackerDTC/test/testDAQ.py
 # where the arguments take default values if you don't specify them. You can change defaults below.

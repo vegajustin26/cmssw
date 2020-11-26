@@ -61,7 +61,7 @@ namespace trackerDTC {
   inline string name(Efficiency e) { return string(*(NameEfficiency.begin() + e)); }
 
   /*! \class  trackerDTC::Analyzer
-   *  \brief  Class to analyze hardware like structured TTStub Collection used by Track Trigger emulators
+   *  \brief  Class to analyze hardware like structured TTStub Collection used by Track Trigger emulators, runs DTC stub emulation, plots performance & stub occupancy
    *  \author Thomas Schuh
    *  \date   2020, Apr
    */

@@ -10,6 +10,11 @@
 
 namespace trackFindingTracklet {
 
+  /*! \class  trackFindingTracklet::TrackBuilderChannel
+   *  \brief  Class to assign tracklet tracks to channel
+   *  \author Thomas Schuh
+   *  \date   2020, Nov
+   */
   class TrackBuilderChannel {
   public:
     TrackBuilderChannel() {}

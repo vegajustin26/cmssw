@@ -14,7 +14,7 @@ using namespace trackerDTC;
 namespace trackFindingTracklet {
 
   /*! \class  trackFindingTracklet::ProducerTrackBuilderChannel
-   *  \brief  Class to assign tracklet tracks to channel
+   *  \brief  Creates TrackBuilderChannel class that assigns tracklet tracks to channel
    *  \author Thomas Schuh
    *  \date   2020, Nov
    */

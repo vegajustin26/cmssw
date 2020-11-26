@@ -27,7 +27,7 @@ using namespace trackerDTC;
 namespace trackerDTC {
 
   /*! \class  trackerDTC::AnalyzerDAQ
-   *  \brief  Class to analyze TTCluster Occupancies on DTCs
+   *  \brief  Class to analyze TTCluster Occupancies on DTCs, plots cluster occupancy
    *  \author Thomas Schuh
    *  \date   2020, Oct
    */
