@@ -113,14 +113,19 @@ namespace trackFindingTracklet {
       Handle<StreamsTrack> handleTracks;
       iEvent.getByToken<StreamsTrack>(edGetTokenTracks_, handleTracks);
       const StreamsTrack& streamsTracks = *handleTracks.product();
+      // count number of kf tracks
       int nTracks(0);
       for (const StreamTrack& stream : streamsTracks)
         nTracks += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
       ttTracks.reserve(nTracks);
+      // convert kf track frames and stub frames to TTTracks
       for (int region = 0; region < setup_->numRegions(); region++) {
         const int offset = region * setup_->numLayers();
         int pos(0);
         for (const FrameTrack& frameTrack : streamsTracks[region]) {
+          if (frameTrack.first.isNull())
+            continue;
+          // convert stub frames to kf stubs
           vector<StubKF> stubs;
           stubs.reserve(setup_->numLayers());
           for (int layer = 0; layer < setup_->numLayers(); layer++) {
@@ -128,7 +133,9 @@ namespace trackFindingTracklet {
             if (frameStub.first.isNonnull())
               stubs.emplace_back(frameStub, dataFormats_, layer);
           }
+          // convert track frame to kf track
           TrackKF track(frameTrack, dataFormats_);
+          // convert kf track and kf stubs to TTTrack
           ttTracks.emplace_back(track.ttTrack(stubs));
           pos++;
         }

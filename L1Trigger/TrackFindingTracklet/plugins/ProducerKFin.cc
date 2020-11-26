@@ -169,10 +169,9 @@ namespace trackFindingTracklet {
           double cot = ttTrackRef->tanL();
           double zT = ttTrackRef->z0() + setup_->chosenRofZ() * cot;
           int binEta(-1);
-          for (; binEta < setup_->numSectorsEta(); binEta++) {
+          for (; binEta < setup_->numSectorsEta(); binEta++)
             if (zT < sinh(setup_->boundarieEta(binEta + 1)) * setup_->chosenRofZ())
               break;
-          }
           // cut on outer eta sector boundaries
           if (binEta == -1 || binEta == setup_->numSectorsEta())
             continue;
@@ -186,10 +185,11 @@ namespace trackFindingTracklet {
           const vector<int>& layerEncoding = layerEncoding_->layerEncoding(binEta, binZT, binCot);
           // get rphi parameter
           double qOverPt = ttTrackRef->rInv() / 2.;
+          // calculcate track phi at radius hybridChosenRofPhi with respect to phi sector centre
           double phiT = deltaPhi(ttTrackRef->phi() - setup_->hybridChosenRofPhi() * qOverPt - ttTrackRef->phiSector() * setup_->baseRegion());
           const int sectorPhi = phiT < 0. ? 0 : 1; // dirty hack
           phiT -= (sectorPhi - .5) * setup_->baseSector();
-          // cut on nonant size and pt > 2 GeV
+          // cut on nonant size and pt
           if (!dfPhiT.inRange(phiT) || !dfQoverPt.inRange(qOverPt))
             continue;
           // loop over stubs
