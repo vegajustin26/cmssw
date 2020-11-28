@@ -121,7 +121,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
 
   if (disk_ > 0) {
     for (unsigned int iprojbend = 0; iprojbend < 32; iprojbend++) {
-      double projbend = - 0.5 * (iprojbend - 15.0);
+      double projbend = 0.5 * (iprojbend - 15.0);
       for (unsigned int ibend = 0; ibend < 8; ibend++) {
         double stubbend = settings_.benddecode(ibend, layerdisk_, true);
         bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, true);
@@ -289,8 +289,8 @@ void MatchProcessor::execute() {
               int phiderindex = (proj->fpgaphiprojderdisk(disk_).value() >>
                                  (proj->fpgaphiprojderdisk(disk_).nbits() - nphiderbits_)) &
                                 ((1 << nphiderbits_) - 1);
-
-              int signindex = (proj->fpgarprojderdisk(disk_).value() < 0);
+	      
+              int signindex = proj->fpgarprojderdisk(disk_).value() < 0;
 
               int bendindex = (signindex << (nphiderbits_ + nrbits_)) + (rindex << (nphiderbits_)) + phiderindex;
 

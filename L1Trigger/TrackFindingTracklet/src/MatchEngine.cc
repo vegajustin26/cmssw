@@ -68,7 +68,7 @@ MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global,
 
   if (layerdisk_ >= N_LAYER) {
     for (unsigned int iprojbend = 0; iprojbend < (1<<nrinv_); iprojbend++) {
-      double projbend = -0.5 * (iprojbend - rinvhalf);
+      double projbend = 0.5 * (iprojbend - rinvhalf);
       for (unsigned int ibend = 0; ibend < (1<<N_BENDBITS_PS); ibend++) {
         double stubbend = settings_.benddecode(ibend, layerdisk_, true);
         bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, true);

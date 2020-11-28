@@ -377,7 +377,6 @@ namespace trklet {
     }
 
     double bendcutme(int ibend, int layerdisk, bool isPSmodule) const {
-      if (layerdisk>5) return 2.0*bendcut(ibend,layerdisk,isPSmodule); //Need to understand the code in the MP to remove this factor of 2.
       return bendcut(ibend,layerdisk,isPSmodule);
     }
     
