@@ -3,7 +3,7 @@
 using namespace std;
 using namespace trklet;
 
-MatchEngineUnit::MatchEngineUnit(bool barrel, vector<bool> table, vector<bool> tablePS, vector<bool> table2S)
+MatchEngineUnit::MatchEngineUnit(bool barrel, unsigned int layerdisk, vector<bool> table, vector<bool> tablePS, vector<bool> table2S)
     : candmatches_(5) {
   idle_ = true;
   barrel_ = barrel;
@@ -11,6 +11,7 @@ MatchEngineUnit::MatchEngineUnit(bool barrel, vector<bool> table, vector<bool> t
   tablePS_ = tablePS;
   table2S_ = table2S;
   slot_ = 1;  //This makes it idle until initialized
+  layerdisk_=layerdisk;
 }
 
 void MatchEngineUnit::init(VMStubsMEMemory* vmstubsmemory,

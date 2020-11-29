@@ -17,7 +17,7 @@ namespace trklet {
 
   class MatchEngineUnit {
   public:
-    MatchEngineUnit(bool barrel, std::vector<bool> table, std::vector<bool> tablePS, std::vector<bool> table2S);
+    MatchEngineUnit(bool barrel, unsigned int layerdisk, std::vector<bool> table, std::vector<bool> tablePS, std::vector<bool> table2S);
 
     ~MatchEngineUnit() = default;
 
@@ -60,6 +60,8 @@ namespace trklet {
     Tracklet* proj_;
 
     bool idle_;
+
+    unsigned int layerdisk_;
 
     //used in the layers
     std::vector<bool> table_;

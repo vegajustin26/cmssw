@@ -377,7 +377,9 @@ namespace trklet {
     }
 
     double bendcutme(int ibend, int layerdisk, bool isPSmodule) const {
-      return bendcut(ibend,layerdisk,isPSmodule);
+      //FIXME temporary fix until phiprojderdisk bits adjusted. But requires coordinatin with HLS
+      double fact=(layerdisk<N_LAYER)?1.0:1.8; 
+      return fact*bendcut(ibend,layerdisk,isPSmodule);
     }
     
     

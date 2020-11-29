@@ -288,13 +288,17 @@ void MatchEngine::execute() {
 
       unsigned int index = (projrinv << nbits) + vmstub.bend().value();
 
+      //if (layerdisk_>5) {
+      //	cout << "layerdisk: "<<layerdisk_<<" "<<projrinv<<" "<<vmstub.bend().value()<<" "<<(isPSmodule ? tablePS_[index] : table2S_[index])<<endl;
+      //}
+      
       //Check if stub z position consistent
       int idrz = stubfinerz - projfinerzadj;
       bool passz;
 
       if (barrel_) {
         if (isPSseed) {
-	  constexpr int drzcut=2;
+	  constexpr int drzcut=1;
           passz = std::abs(idrz) <= drzcut;
         } else {
 	  constexpr int drzcut=5;
@@ -305,7 +309,7 @@ void MatchEngine::execute() {
 	  constexpr int drzcut=1;
 	  passz = std::abs(idrz) <= drzcut;
         } else {
-	  constexpr int drzcut=5;
+	  constexpr int drzcut=3;
           passz = std::abs(idrz) <= drzcut;
         }
       }

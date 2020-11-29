@@ -41,6 +41,9 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
   nrbits_ = 5;
   nphiderbits_ = 6;
 
+  nrinv_=NRINVBITS;
+  double rinvhalf=0.5*((1<<nrinv_)-1);
+
   //to adjust globaly the phi and rz matching cuts
   phifact_ = 1.0;
   rzfact_ = 1.0;
@@ -89,7 +92,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
       nbits = 4;
 
     for (unsigned int irinv = 0; irinv < 32; irinv++) {
-      double rinv = (irinv - 15.5) * (1 << (settings_.nbitsrinv() - 5)) * settings_.krinvpars();
+      double rinv = (irinv - rinvhalf) * (1 << (settings_.nbitsrinv() - 5)) * settings_.krinvpars();
       double stripPitch =
           (settings_.rmean(layer_ - 1) < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
       double projbend = bendstrip(settings_.rmean(layer_ - 1), rinv, stripPitch);
@@ -121,7 +124,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
 
   if (disk_ > 0) {
     for (unsigned int iprojbend = 0; iprojbend < 32; iprojbend++) {
-      double projbend = 0.5 * (iprojbend - 15.0);
+      double projbend = 0.5 * (iprojbend - rinvhalf);
       for (unsigned int ibend = 0; ibend < 8; ibend++) {
         double stubbend = settings_.benddecode(ibend, layerdisk_, true);
         bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, true);
@@ -158,7 +161,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
 
   nMatchEngines_ = 4;
   for (unsigned int iME = 0; iME < nMatchEngines_; iME++) {
-    MatchEngineUnit tmpME(barrel_, table_, tablePS_, table2S_);
+    MatchEngineUnit tmpME(barrel_, layerdisk_, table_, tablePS_, table2S_);
     matchengines_.push_back(tmpME);
   }
 }
