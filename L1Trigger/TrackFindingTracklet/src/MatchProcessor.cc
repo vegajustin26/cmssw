@@ -13,27 +13,25 @@ using namespace trklet;
 
 MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* global, unsigned int iSector)
     : ProcessBase(name, settings, global, iSector), fullmatches_(12), inputProjBuffer_(3) {
-  phioffset_ = phimin_;
 
   phiregion_ = name[8] - 'A';
 
-  initLayerDisk(3, layer_, disk_);
   layerdisk_ = initLayerDisk(3);
 
   //TODO should sort out constants here
   icorrshift_ = 7;
 
-  if (layer_ <= 3) {
+  if (layerdisk_ < N_PSLAYER) {
     icorzshift_ = -1 - settings_.PS_zderL_shift();
   } else {
     icorzshift_ = -1 - settings_.SS_zderL_shift();
   }
   phi0shift_ = 3;
   fact_ = 1;
-  if (layer_ >= 4) {
-    fact_ = (1 << (settings_.nzbitsstub(0) - settings_.nzbitsstub(5)));
-    icorrshift_ -= (10 - settings_.nrbitsstub(layer_ - 1));
-    icorzshift_ += (settings_.nzbitsstub(0) - settings_.nzbitsstub(5) + settings_.nrbitsstub(layer_ - 1) -
+  if (layerdisk_ >= N_PSLAYER && layerdisk_ < N_LAYER) {
+    fact_ = (1 << (settings_.nzbitsstub(0) - settings_.nzbitsstub(N_LAYER-1)));
+    icorrshift_ -= (10 - settings_.nrbitsstub(layerdisk_));
+    icorzshift_ += (settings_.nzbitsstub(0) - settings_.nzbitsstub(N_LAYER-1) + settings_.nrbitsstub(layerdisk_) -
                     settings_.nrbitsstub(0));
     phi0shift_ = 0;
   }
@@ -49,20 +47,19 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
   rzfact_ = 1.0;
 
   for (unsigned int iSeed = 0; iSeed < 12; iSeed++) {
-    if (layer_ > 0) {
+    if (layerdisk_ < N_LAYER) {
       phimatchcut_[iSeed] =
-          settings_.rphimatchcut(iSeed, layer_ - 1) / (settings_.kphi1() * settings_.rmean(layer_ - 1));
-      zmatchcut_[iSeed] = settings_.zmatchcut(iSeed, layer_ - 1) / settings_.kz();
-    }
-    if (disk_ != 0) {
-      rphicutPS_[iSeed] = settings_.rphicutPS(iSeed, abs(disk_) - 1) / (settings_.kphi() * settings_.kr());
-      rphicut2S_[iSeed] = settings_.rphicut2S(iSeed, abs(disk_) - 1) / (settings_.kphi() * settings_.kr());
-      rcut2S_[iSeed] = settings_.rcut2S(iSeed, abs(disk_) - 1) / settings_.krprojshiftdisk();
-      rcutPS_[iSeed] = settings_.rcutPS(iSeed, abs(disk_) - 1) / settings_.krprojshiftdisk();
+          settings_.rphimatchcut(iSeed, layerdisk_) / (settings_.kphi1() * settings_.rmean(layerdisk_));
+      zmatchcut_[iSeed] = settings_.zmatchcut(iSeed, layerdisk_) / settings_.kz();
+    } else {
+      rphicutPS_[iSeed] = settings_.rphicutPS(iSeed, layerdisk_ - N_LAYER) / (settings_.kphi() * settings_.kr());
+      rphicut2S_[iSeed] = settings_.rphicut2S(iSeed, layerdisk_ - N_LAYER) / (settings_.kphi() * settings_.kr());
+      rcut2S_[iSeed] = settings_.rcut2S(iSeed, layerdisk_ - N_LAYER) / settings_.krprojshiftdisk();
+      rcutPS_[iSeed] = settings_.rcutPS(iSeed, layerdisk_ - N_LAYER) / settings_.krprojshiftdisk();
     }
   }
 
-  if (iSector_ == 0 && layer_ > 0 && settings_.writeTable()) {
+  if (iSector_ == 0 && layerdisk_ < N_LAYER && settings_.writeTable()) {
     ofstream outphicut;
     outphicut.open(settings_.tablePath() + getName() + "_phicut.tab");
     outphicut << "{" << endl;
@@ -86,26 +83,26 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
     outzcut.close();
   }
 
-  if (layer_ > 0) {
+  if (layerdisk_ < N_LAYER) {
     unsigned int nbits = 3;
-    if (layer_ >= 4)
+    if (layerdisk_ >= N_PSLAYER)
       nbits = 4;
 
     for (unsigned int irinv = 0; irinv < 32; irinv++) {
       double rinv = (irinv - rinvhalf) * (1 << (settings_.nbitsrinv() - 5)) * settings_.krinvpars();
       double stripPitch =
-          (settings_.rmean(layer_ - 1) < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
-      double projbend = bendstrip(settings_.rmean(layer_ - 1), rinv, stripPitch);
+          (settings_.rmean(layerdisk_) < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
+      double projbend = bendstrip(settings_.rmean(layerdisk_), rinv, stripPitch);
       for (unsigned int ibend = 0; ibend < (unsigned int)(1 << nbits); ibend++) {
-        double stubbend = settings_.benddecode(ibend, layerdisk_, layer_ <= (int)N_PSLAYER);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, layer_ <= (int)N_PSLAYER);
+        double stubbend = settings_.benddecode(ibend, layerdisk_, layerdisk_ < (int)N_PSLAYER);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, layerdisk_ < (int)N_PSLAYER);
         table_.push_back(pass);
       }
     }
 
     if (settings_.writeTable()) {
       ofstream out;
-      char layer = '0' + layer_;
+      char layer = '0' + layerdisk_+1;
       string fname = "METable_L";
       fname += layer;
       fname += ".tab";
@@ -122,7 +119,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
     }
   }
 
-  if (disk_ > 0) {
+  if (layerdisk_ >= N_LAYER) {
     for (unsigned int iprojbend = 0; iprojbend < 32; iprojbend++) {
       double projbend = 0.5 * (iprojbend - rinvhalf);
       for (unsigned int ibend = 0; ibend < 8; ibend++) {
@@ -147,17 +144,11 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
                           settings_.kphi();
   }
 
-  barrel_ = layer_ > 0;
+  barrel_ = layerdisk_ < N_LAYER;
 
-  nvm_ = barrel_ ? settings_.nvmme(layer_ - 1) * settings_.nallstubs(layer_ - 1)
-                 : settings_.nvmme(disk_ + 5) * settings_.nallstubs(disk_ + 5);
-  nvmbins_ = barrel_ ? settings_.nvmme(layer_ - 1) : settings_.nvmme(disk_ + 5);
-
-  if (nvm_ == 32)
-    nvmbits_ = 5;
-  if (nvm_ == 16)
-    nvmbits_ = 4;
-  assert(nvmbits_ != -1);
+  nvm_ = settings_.nvmme(layerdisk_) * settings_.nallstubs(layerdisk_);
+  nvmbins_ = settings_.nvmme(layerdisk_);
+  nvmbits_ = settings_.nbitsvmme(layerdisk_)+settings_.nbitsallstubs(layerdisk_);
 
   nMatchEngines_ = 4;
   for (unsigned int iME = 0; iME < nMatchEngines_; iME++) {
@@ -274,7 +265,7 @@ void MatchProcessor::execute() {
             }
 
             Tracklet* proj = projMem->getTracklet(iproj);
-            FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layer_) : proj->fpgaphiprojdisk(disk_);
+            FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layerdisk_+1) : proj->fpgaphiprojdisk(layerdisk_-N_LAYER+1);
 
             int iphi = (fpgaphi.value() >> (fpgaphi.nbits() - nvmbits_)) & (nvmbins_ - 1);
 
@@ -286,28 +277,28 @@ void MatchProcessor::execute() {
               // 1 - r projections
               // 2 - phi derivative
               // 3 - the sign - i.e. if track is forward or backward
-              int rindex = (proj->fpgarprojdisk(disk_).value() >> (proj->fpgarprojdisk(disk_).nbits() - nrbits_)) &
+              int rindex = (proj->fpgarprojdisk(layerdisk_-N_LAYER+1).value() >> (proj->fpgarprojdisk(layerdisk_-N_LAYER+1).nbits() - nrbits_)) &
                            ((1 << nrbits_) - 1);
 
-              int phiderindex = (proj->fpgaphiprojderdisk(disk_).value() >>
-                                 (proj->fpgaphiprojderdisk(disk_).nbits() - nphiderbits_)) &
+              int phiderindex = (proj->fpgaphiprojderdisk(layerdisk_-N_LAYER+1).value() >>
+                                 (proj->fpgaphiprojderdisk(layerdisk_-N_LAYER+1).nbits() - nphiderbits_)) &
                                 ((1 << nphiderbits_) - 1);
 	      
-              int signindex = proj->fpgarprojderdisk(disk_).value() < 0;
+              int signindex = proj->fpgarprojderdisk(layerdisk_-N_LAYER+1).value() < 0;
 
               int bendindex = (signindex << (nphiderbits_ + nrbits_)) + (rindex << (nphiderbits_)) + phiderindex;
 
-              projrinv = globals_->projectionRouterBendTable()->bendLoookup(abs(disk_) - 1, bendindex);
+              projrinv = globals_->projectionRouterBendTable()->bendLoookup(layerdisk_-N_LAYER, bendindex);
 
-              proj->setBendIndex(projrinv, disk_);
+              proj->setBendIndex(projrinv, layerdisk_-N_LAYER+1);
             }
             assert(projrinv >= 0);
 
-            unsigned int slot = barrel_ ? proj->zbin1projvm(layer_) : proj->rbin1projvm(disk_);
-            bool second = (barrel_ ? proj->zbin2projvm(layer_) : proj->rbin2projvm(disk_));
+            unsigned int slot = barrel_ ? proj->zbin1projvm(layerdisk_+1) : proj->rbin1projvm(layerdisk_-N_LAYER+1);
+            bool second = (barrel_ ? proj->zbin2projvm(layerdisk_+1) : proj->rbin2projvm(layerdisk_-N_LAYER+1));
 
             unsigned int projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + 3))) & 7;
-            int projfinerz = barrel_ ? proj->finezvm(layer_) : proj->finervm(disk_);
+            int projfinerz = barrel_ ? proj->finezvm(layerdisk_+1) : proj->finervm(layerdisk_-N_LAYER+1);
 
             bool isPSseed = proj->PSseed() == 1;
 
@@ -433,14 +424,14 @@ void MatchProcessor::execute() {
 bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
   const L1TStub* stub = fpgastub->l1tstub();
 
-  if (layer_ != 0) {
+  if (layerdisk_ < N_LAYER) {
     int ir = fpgastub->r().value();
-    int iphi = tracklet->fpgaphiproj(layer_).value();
-    int icorr = (ir * tracklet->fpgaphiprojder(layer_).value()) >> icorrshift_;
+    int iphi = tracklet->fpgaphiproj(layerdisk_+1).value();
+    int icorr = (ir * tracklet->fpgaphiprojder(layerdisk_+1).value()) >> icorrshift_;
     iphi += icorr;
 
-    int iz = tracklet->fpgazproj(layer_).value();
-    int izcor = (ir * tracklet->fpgazprojder(layer_).value() + (1 << (icorzshift_ - 1))) >> icorzshift_;
+    int iz = tracklet->fpgazproj(layerdisk_+1).value();
+    int izcor = (ir * tracklet->fpgazprojder(layerdisk_+1).value() + (1 << (icorzshift_ - 1))) >> icorzshift_;
     iz += izcor;
 
     int ideltaz = fpgastub->z().value() - iz;
@@ -462,19 +453,19 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
 
     if (phi < 0)
       phi += 2 * M_PI;
-    phi -= phioffset_;
+    phi -= phimin_;
 
-    double dr = r - tracklet->rproj(layer_);
+    double dr = r - tracklet->rproj(layerdisk_+1);
     assert(std::abs(dr) < settings_.drmax());
 
-    double dphi = reco::reduceRange(phi - (tracklet->phiproj(layer_) + dr * tracklet->phiprojder(layer_)));
+    double dphi = reco::reduceRange(phi - (tracklet->phiproj(layerdisk_+1) + dr * tracklet->phiprojder(layerdisk_+1)));
 
-    double dz = z - (tracklet->zproj(layer_) + dr * tracklet->zprojder(layer_));
+    double dz = z - (tracklet->zproj(layerdisk_+1) + dr * tracklet->zprojder(layerdisk_+1));
 
     double dphiapprox =
-        reco::reduceRange(phi - (tracklet->phiprojapprox(layer_) + dr * tracklet->phiprojderapprox(layer_)));
+        reco::reduceRange(phi - (tracklet->phiprojapprox(layerdisk_+1) + dr * tracklet->phiprojderapprox(layerdisk_+1)));
 
-    double dzapprox = z - (tracklet->zprojapprox(layer_) + dr * tracklet->zprojderapprox(layer_));
+    double dzapprox = z - (tracklet->zprojapprox(layerdisk_+1) + dr * tracklet->zprojderapprox(layerdisk_+1));
 
     int seedindex = tracklet->getISeed();
 
@@ -485,10 +476,10 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       bool truthmatch = tracklet->stubtruthmatch(stub);
 
       HistBase* hists = globals_->histograms();
-      hists->FillLayerResidual(layer_,
+      hists->FillLayerResidual(layerdisk_+1,
                                seedindex,
-                               dphiapprox * settings_.rmean(layer_ - 1),
-                               ideltaphi * settings_.kphi1() * settings_.rmean(layer_ - 1),
+                               dphiapprox * settings_.rmean(layerdisk_),
+                               ideltaphi * settings_.kphi1() * settings_.rmean(layerdisk_),
                                ideltaz * fact_ * settings_.kz(),
                                dz,
                                truthmatch);
@@ -498,10 +489,10 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       double pt = 0.01 * settings_.c() * settings_.bfield() / std::abs(tracklet->rinv());
 
       globals_->ofstream("layerresiduals.txt")
-          << layer_ << " " << seedindex << " " << pt << " "
-          << ideltaphi * settings_.kphi1() * settings_.rmean(layer_ - 1) << " "
-          << dphiapprox * settings_.rmean(layer_ - 1) << " "
-          << phimatchcut_[seedindex] * settings_.kphi1() * settings_.rmean(layer_ - 1) << "   "
+          << layerdisk_+1 << " " << seedindex << " " << pt << " "
+          << ideltaphi * settings_.kphi1() * settings_.rmean(layerdisk_) << " "
+          << dphiapprox * settings_.rmean(layerdisk_) << " "
+          << phimatchcut_[seedindex] * settings_.kphi1() * settings_.rmean(layerdisk_) << "   "
           << ideltaz * fact_ * settings_.kz() << " " << dz << " " << zmatchcut_[seedindex] * settings_.kz() << endl;
     }
 
@@ -522,7 +513,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     assert(std::abs(dphiapprox) < 0.2);
 
     if (imatch) {
-      tracklet->addMatch(layer_,
+      tracklet->addMatch(layerdisk_+1,
                          ideltaphi,
                          ideltaz,
                          dphi,
@@ -552,7 +543,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     assert(stub->z() * tracklet->t() > 0.0);
 
     int sign = (tracklet->t() > 0.0) ? 1 : -1;
-    int disk = sign * disk_;
+    int disk = sign * (layerdisk_-N_LAYER+1);
     assert(disk != 0);
 
     //Perform integer calculations here
@@ -580,7 +571,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     int ialphafact = 0;
     if (!stub->isPSmodule()) {
       assert(irstub < (int)N_DSS_MOD * 2);
-      if (disk_ <= 2) {
+      if (layerdisk_-N_LAYER <= 1) {
         ialphafact = ialphafactinner_[irstub];
         irstub = settings_.rDSSinner(irstub) / settings_.kr();
       } else {
@@ -613,9 +604,9 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
 
     if (phi < 0)
       phi += 2 * M_PI;
-    phi -= phioffset_;
+    phi -= phimin_;
 
-    double dz = z - sign * settings_.zmean(disk_ - 1);
+    double dz = z - sign * settings_.zmean(layerdisk_ - N_LAYER);
 
     if (std::abs(dz) > settings_.dzmax()) {
       edm::LogProblem("Tracklet") << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " "
@@ -664,7 +655,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       double pt = 0.01 * settings_.c() * settings_.bfield() / std::abs(tracklet->rinv());
 
       globals_->ofstream("diskresiduals.txt")
-          << disk_ << " " << stub->isPSmodule() << " " << tracklet->layer() << " " << abs(tracklet->disk()) << " " << pt
+          << layerdisk_-N_LAYER+1 << " " << stub->isPSmodule() << " " << tracklet->layer() << " " << abs(tracklet->disk()) << " " << pt
           << " " << ideltaphi * settings_.kphi() * stub->r() << " " << drphiapprox << " " << drphicut << " "
           << ideltar * settings_.krprojshiftdisk() << " " << deltar << " " << drcut << " " << endl;
     }

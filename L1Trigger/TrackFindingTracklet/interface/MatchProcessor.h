@@ -35,8 +35,7 @@ namespace trklet {
     bool matchCalculator(Tracklet* tracklet, const Stub* fpgastub);
 
   private:
-    int layer_;
-    int disk_;
+
     unsigned int layerdisk_;
     bool barrel_;
 
@@ -51,8 +50,6 @@ namespace trklet {
     int icorrshift_;
     int icorzshift_;
     int phi0shift_;
-
-    double phioffset_;
 
     unsigned int phimatchcut_[N_SEED];
     unsigned int zmatchcut_[N_SEED];
