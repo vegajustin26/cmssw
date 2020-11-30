@@ -83,14 +83,14 @@ namespace trackerTFP {
       fillFormats<v, p, ++it>();
   }
 
-  // converts bits to Stub
+  // converts bits to ntuple of variables
   template<typename ...Ts>
   void DataFormats::convertStub(const TTDTC::BV& bv, tuple<Ts...>& data, Process p) const {
     TTBV ttBV(bv);
     extractStub(ttBV, data, p);
   }
 
-  // helper (loop) to convert bits to Stub
+  // helper (loop) to convert bits to ntuple of variables
   template<int it = 0, typename ...Ts>
   void DataFormats::extractStub(TTBV& ttBV, std::tuple<Ts...>& data, Process p) const {
     Variable v = *next(stubs_[+p].begin(), sizeof...(Ts) - 1 - it);
@@ -99,7 +99,7 @@ namespace trackerTFP {
       extractStub<it + 1>(ttBV, data, p);
   }
 
-  // converts Stub to bits
+  // converts ntuple of variables to bits
   template<typename... Ts>
   void DataFormats::convertStub(const std::tuple<Ts...>& data, TTDTC::BV& bv, Process p) const {
     TTBV ttBV(1, numUnusedBitsStubs_[+p]);
@@ -107,7 +107,7 @@ namespace trackerTFP {
     bv = ttBV.bs();
   }
 
-  // helper (loop) to convert Stub to bits
+  // helper (loop) to convert ntuple of variables to bits
   template<int it = 0, typename... Ts>
   void DataFormats::attachStub(const tuple<Ts...>& data, TTBV& ttBV, Process p) const {
     Variable v = *next(stubs_[+p].begin(), it);
@@ -116,14 +116,14 @@ namespace trackerTFP {
       attachStub<it + 1>(data, ttBV, p);
   }
 
-  // converts bits to Track
+  // converts bits to ntuple of variables
   template<typename ...Ts>
   void DataFormats::convertTrack(const TTDTC::BV& bv, tuple<Ts...>& data, Process p) const {
     TTBV ttBV(bv);
     extractTrack(ttBV, data, p);
   }
 
-  // helper (loop) to convert bits to Track
+  // helper (loop) to convert bits to ntuple of variables
   template<int it = 0, typename ...Ts>
   void DataFormats::extractTrack(TTBV& ttBV, std::tuple<Ts...>& data, Process p) const {
     Variable v = *next(tracks_[+p].begin(), sizeof...(Ts) - 1 - it);
@@ -132,7 +132,7 @@ namespace trackerTFP {
       extractTrack<it + 1>(ttBV, data, p);
   }
 
-  // converts Track to bits
+  // converts ntuple of variables to bits
   template<typename... Ts>
   void DataFormats::convertTrack(const std::tuple<Ts...>& data, TTDTC::BV& bv, Process p) const {
     TTBV ttBV(1, numUnusedBitsTracks_[+p]);
@@ -140,7 +140,7 @@ namespace trackerTFP {
     bv = ttBV.bs();
   }
 
-  // helper (loop) to convert Track to bits
+  // helper (loop) to convert ntuple of variables to bits
   template<int it = 0, typename... Ts>
   void DataFormats::attachTrack(const tuple<Ts...>& data, TTBV& ttBV, Process p) const {
     Variable v = *next(tracks_[+p].begin(), it);

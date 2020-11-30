@@ -40,24 +40,43 @@ namespace trackerTFP {
   public:
     DataFormat(bool twos) : twos_(twos), width_(0), base_(1.), range_(0.) {}
     ~DataFormat() {}
+    // converts int to bitvector
     TTBV ttBV(int i) const { return TTBV(i, width_, twos_); }
+    // converts double to bitvector
     TTBV ttBV(double d) const { return TTBV(d, base_, width_, twos_); }
+    // extracts int from bitvector, removing these bits from bitvector
     void extract(TTBV& in, int& out) const { out = in.extract(width_, twos_); }
+    // extracts double from bitvector, removing these bits from bitvector
     void extract(TTBV& in, double& out) const { out = in.extract(base_, width_, twos_); }
+    // extracts double from bitvector, removing these bits from bitvector
     void extract(TTBV& in, TTBV& out) const { out = in.slice(width_, twos_); }
+    // attaches integer to bitvector
     void attach(const int i, TTBV& ttBV) const { ttBV += TTBV(i, width_, twos_); }
+    // attaches double to bitvector
     void attach(const double d, TTBV& ttBV) const { ttBV += TTBV(d, base_, width_, twos_); }
+    // attaches bitvector to bitvector
     void attach(const TTBV bv, TTBV& ttBV) const { ttBV += bv; }
+    // converts int to double
     double floating(int i) const { return (i + .5) * base_; }
+    // converts double to int
     int integer(double d) const { return std::floor(d / base_); }
+    // converts double to int and back to double
     double digi(double d) const { return floating(integer(d)); }
+    // converts binary integer value to twos complement integer value
     int toSigned(int i) const { return i - std::pow(2, width_) / 2; }
+    // converts twos complement integer value to binary integer value
     int toUnsigned(int i) const { return i + std::pow(2, width_) / 2; }
+    // returns false if data format would oferflow for this double value
     bool inRange(double d) const { return d >= -range_ / 2. && d < range_ / 2.; }
+    // returns false if data format would oferflow for this int value
     bool inRange(int i) const { return inRange(floating(i)); }
+    // true if twos'complement or false if binary representation is chosen
     bool twos() const { return twos_; }
+    // number of used bits
     int width() const { return width_; }
+    // precision
     double base() const { return base_; }
+    // covered range
     double range() const { return range_; }
   protected:
     // true if twos'complement or false if binary representation is chosen
@@ -115,7 +134,7 @@ namespace trackerTFP {
    */
   class DataFormats {
   private:
-    // variable flavour mapping
+    // variable flavour mapping, decalers which processing step is using which variable definition
     static constexpr std::array<std::array<Process, +Process::end>, +Variable::end> config_ = {{
     //  Process::fe  Process::dtc  Process::pp   Process::gp  Process::ht  Process::mht  Process::sf   Process::kfin  Process::kf   Process::dr
       {{Process::x,  Process::ht,  Process::ht,  Process::ht, Process::ht, Process::ht,  Process::ht,  Process::ht,   Process::ht,  Process::x }}, // Variable::r
@@ -136,7 +155,7 @@ namespace trackerTFP {
       {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::x,    Process::x,   Process::dr}}, // Variable::phi0
       {{Process::x,  Process::x,   Process::x,   Process::x,  Process::x,  Process::x,   Process::x,   Process::x,    Process::x,   Process::dr}}  // Variable::z0
     }};
-    // stub word assembly
+    // stub word assembly, shows which stub variables are used by each process
     static constexpr std::array<std::initializer_list<Variable>, +Process::end> stubs_ = {{
       {},                                                                                                                                                                   // Process::fe
       {Variable::r, Variable::phi, Variable::z, Variable::layer, Variable::sectorsPhi, Variable::sectorEta, Variable::sectorEta, Variable::qOverPt, Variable::qOverPt},     // Process::dtc
@@ -149,7 +168,7 @@ namespace trackerTFP {
       {Variable::r, Variable::phi, Variable::z},                                                                                                                            // Process::kf
       {}                                                                                                                                                                    // Process::dr
     }};
-    // track word assembly
+    // track word assembly, shows which track variables are used by each process
     static constexpr std::array<std::initializer_list<Variable>, +Process::end> tracks_ = {{
       {},                                                                                                                                                                                            // Process::fe
       {},                                                                                                                                                                                            // Process::dtc
@@ -166,16 +185,16 @@ namespace trackerTFP {
     DataFormats();
     DataFormats(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
     ~DataFormats(){}
-    // converts bits to Stub
+    // converts bits to ntuple of variables
     template<typename ...Ts>
     void convertStub(const TTDTC::BV& bv, std::tuple<Ts...>& data, Process p) const;
-    // converts Stub to bits
+    // converts ntuple of variables to bits
     template<typename... Ts>
     void convertStub(const std::tuple<Ts...>& data, TTDTC::BV& bv, Process p) const;
-    // converts bits to Track
+    // converts bits to ntuple of variables
     template<typename ...Ts>
     void convertTrack(const TTDTC::BV& bv, std::tuple<Ts...>& data, Process p) const;
-    // converts Track to bits
+    // converts ntuple of variables to bits
     template<typename... Ts>
     void convertTrack(const std::tuple<Ts...>& data, TTDTC::BV& bv, Process p) const;
     // access to run-time constants
@@ -210,16 +229,16 @@ namespace trackerTFP {
     // helper (loop) data formats of all unique used variables and flavours
     template<Variable v, Process p, Process it = Process::begin>
     void fillFormats();
-    // helper (loop) to convert bits to Stub
+    // helper (loop) to convert bits to ntuple of variables
     template<int it = 0, typename ...Ts>
     void extractStub(TTBV& ttBV, std::tuple<Ts...>& data, Process p) const;
-    // helper (loop) to convert bits to Track
+    // helper (loop) to convert bits to ntuple of variables
     template<int it = 0, typename ...Ts>
     void extractTrack(TTBV& ttBV, std::tuple<Ts...>& data, Process p) const;
-    // helper (loop) to convert Stub to bits
+    // helper (loop) to convert ntuple of variables to bits
     template<int it = 0, typename... Ts>
     void attachStub(const std::tuple<Ts...>& data, TTBV& ttBV, Process p) const;
-    // helper (loop) to convert Track to bits
+    // helper (loop) to convert ntuple of variables to bits
     template<int it = 0, typename... Ts>
     void attachTrack(const std::tuple<Ts...>& data, TTBV& ttBV, Process p) const;
     // configuration during construction
@@ -280,7 +299,7 @@ namespace trackerTFP {
     Process p_;
     // underlying frame
     TTDTC::Frame frame_;
-    // data fields this stub is assemled of
+    // ntuple of variables this stub is assemled of
     std::tuple<Ts...> data_;
     // id of collection this stub belongs to
     int trackId_;
@@ -526,7 +545,7 @@ namespace trackerTFP {
     const TTTrackRef& ttTrackRef() const { return frame_.first; }
     // access to bitvector
     const TTDTC::BV& bv() const { return frame_.second; }
-    // access to data fields this track is assemled of
+    // access to ntuple of variables this track is assemled of
     const std::tuple<Ts...>& data() const { return data_; }
   protected:
     //number of bits uesd of given variable
@@ -545,7 +564,7 @@ namespace trackerTFP {
     Process p_;
     // underlying frame
     FrameTrack frame_;
-    // data fields this track is assemled of
+    // ntuple of variables this track is assemled of
     std::tuple<Ts...> data_;
   };
 
