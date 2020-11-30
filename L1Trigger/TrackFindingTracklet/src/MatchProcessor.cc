@@ -42,10 +42,6 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
   nrinv_=NRINVBITS;
   double rinvhalf=0.5*((1<<nrinv_)-1);
 
-  //to adjust globaly the phi and rz matching cuts
-  phifact_ = 1.0;
-  rzfact_ = 1.0;
-
   for (unsigned int iSeed = 0; iSeed < 12; iSeed++) {
     if (layerdisk_ < N_LAYER) {
       phimatchcut_[iSeed] =
@@ -496,8 +492,8 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
           << ideltaz * fact_ * settings_.kz() << " " << dz << " " << zmatchcut_[seedindex] * settings_.kz() << endl;
     }
 
-    bool imatch = (std::abs(ideltaphi) <= phifact_ * phimatchcut_[seedindex]) &&
-                  (std::abs(ideltaz * fact_) <= rzfact_ * zmatchcut_[seedindex]);
+    bool imatch = ((unsigned int)std::abs(ideltaphi) <= phimatchcut_[seedindex]) &&
+      ((unsigned int)std::abs(ideltaz * fact_) <= zmatchcut_[seedindex]);
 
     if (settings_.debugTracklet()) {
       edm::LogVerbatim("Tracklet") << getName() << " imatch = " << imatch << " ideltaphi cut " << ideltaphi << " "

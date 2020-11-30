@@ -59,9 +59,6 @@ namespace trklet {
     unsigned int rcutPS_[N_SEED];
     unsigned int rcut2S_[N_SEED];
 
-    double phifact_;
-    double rzfact_;
-
     int nrbits_;
     int nphiderbits_;
 
