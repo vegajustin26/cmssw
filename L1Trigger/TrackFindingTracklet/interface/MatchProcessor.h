@@ -72,12 +72,8 @@ namespace trklet {
     //Memory for the full matches
     std::vector<FullMatchMemory*> fullmatches_;
 
-    //used in the layers
+    //used for bend consistency with rinv 
     std::vector<bool> table_;
-
-    //used in the disks
-    std::vector<bool> tablePS_;
-    std::vector<bool> table2S_;
 
     unsigned int nMatchEngines_;
     std::vector<MatchEngineUnit> matchengines_;

@@ -116,17 +116,18 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
   }
 
   if (layerdisk_ >= N_LAYER) {
+    table_.resize(32*16*2,false);
     for (unsigned int iprojbend = 0; iprojbend < 32; iprojbend++) {
       double projbend = 0.5 * (iprojbend - rinvhalf);
       for (unsigned int ibend = 0; ibend < 8; ibend++) {
         double stubbend = settings_.benddecode(ibend, layerdisk_, true);
         bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, true);
-        tablePS_.push_back(pass);
+	table_[512+8*iprojbend+ibend]=pass;
       }
       for (unsigned int ibend = 0; ibend < 16; ibend++) {
         double stubbend = settings_.benddecode(ibend, layerdisk_, false);
         bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, false);
-        table2S_.push_back(pass);
+	table_[16*iprojbend+ibend]=pass;
       }
     }
   }
@@ -148,7 +149,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
 
   nMatchEngines_ = 4;
   for (unsigned int iME = 0; iME < nMatchEngines_; iME++) {
-    MatchEngineUnit tmpME(barrel_, layerdisk_, table_, tablePS_, table2S_);
+    MatchEngineUnit tmpME(barrel_, layerdisk_, table_);
     matchengines_.push_back(tmpME);
   }
 }
@@ -296,7 +297,7 @@ void MatchProcessor::execute() {
             unsigned int projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + 3))) & 7;
             int projfinerz = barrel_ ? proj->finezvm(layerdisk_+1) : proj->finervm(layerdisk_-N_LAYER+1);
 
-            bool isPSseed = proj->PSseed() == 1;
+            bool isPSseed = proj->PSseed();
 
             int nbins = 8;
             if (layerdisk_ >= 6)

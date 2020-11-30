@@ -3,13 +3,11 @@
 using namespace std;
 using namespace trklet;
 
-MatchEngineUnit::MatchEngineUnit(bool barrel, unsigned int layerdisk, vector<bool> table, vector<bool> tablePS, vector<bool> table2S)
+MatchEngineUnit::MatchEngineUnit(bool barrel, unsigned int layerdisk, vector<bool> table)
     : candmatches_(5) {
   idle_ = true;
   barrel_ = barrel;
   table_ = table;
-  tablePS_ = tablePS;
-  table2S_ = table2S;
   slot_ = 1;  //This makes it idle until initialized
   layerdisk_=layerdisk;
 }
@@ -50,7 +48,9 @@ void MatchEngineUnit::step() {
 
   int nbits = isPSmodule ? 3 : 4;
 
-  unsigned int index = (projrinv_ << nbits) + vmstub.bend().value();
+  int diskps = (!barrel_)&&isPSmodule;
+  
+  unsigned int index = (diskps<<(4+5)) + (projrinv_ << nbits) + vmstub.bend().value();
 
   //Check if stub z position consistent
   int idrz = stubfinerz - projfinerz_;
@@ -71,7 +71,7 @@ void MatchEngineUnit::step() {
   }
 
   //Check if stub bend and proj rinv consistent
-  if ((pass && dphicut) && (barrel_ ? table_[index] : (isPSmodule ? tablePS_[index] : table2S_[index]))) {
+  if ((pass && dphicut) && table_[index] ) {
     std::pair<Tracklet*, const Stub*> tmp(proj_, vmstub.stub());
     candmatches_.store(tmp);
   }
