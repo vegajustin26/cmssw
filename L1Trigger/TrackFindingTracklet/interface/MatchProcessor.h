@@ -49,7 +49,7 @@ namespace trklet {
     int fact_;
     int icorrshift_;
     int icorzshift_;
-    int phi0shift_;
+    int phishift_;
 
     unsigned int phimatchcut_[N_SEED];
     unsigned int zmatchcut_[N_SEED];

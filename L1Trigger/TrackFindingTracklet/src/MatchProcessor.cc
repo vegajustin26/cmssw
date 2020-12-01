@@ -21,22 +21,21 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
   barrel_ = layerdisk_ < N_LAYER;
   
   //TODO should sort out constants here
-  icorrshift_ = 7;
 
   if (layerdisk_ < N_PSLAYER) {
     icorzshift_ = -1 - settings_.PS_zderL_shift();
   } else {
     icorzshift_ = -1 - settings_.SS_zderL_shift();
   }
-  phi0shift_ = 3;
+  phishift_ = settings_.nphibitsstub(N_LAYER-1)-settings_.nphibitsstub(layerdisk_);
   fact_ = 1;
   if (layerdisk_ >= N_PSLAYER && layerdisk_ < N_LAYER) {
     fact_ = (1 << (settings_.nzbitsstub(0) - settings_.nzbitsstub(N_LAYER-1)));
-    icorrshift_ -= (10 - settings_.nrbitsstub(layerdisk_));
     icorzshift_ += (settings_.nzbitsstub(0) - settings_.nzbitsstub(N_LAYER-1) + settings_.nrbitsstub(layerdisk_) -
                     settings_.nrbitsstub(0));
-    phi0shift_ = 0;
   }
+
+  icorrshift_=ilog2(settings_.kphi(layerdisk_)/(settings_.krbarrel()*settings_.kphider()));
 
   nrbits_ = 5;
   nphiderbits_ = 6;
@@ -423,7 +422,8 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     iz += izcor;
 
     int ideltaz = fpgastub->z().value() - iz;
-    int ideltaphi = (fpgastub->phi().value() << phi0shift_) - (iphi << (settings_.phi0bitshift() - 1 + phi0shift_));
+    int ideltaphi = (fpgastub->phi().value() - iphi) << phishift_;
+    
 
     //Floating point calculations
 

@@ -84,6 +84,12 @@ namespace trklet {
     return stubwordbin;
   }
 
+  inline int ilog2(double factor) {
+    double power=log(factor)/log(2);
+    int ipower=round(power);
+    assert(std::abs(power-ipower)<0.1);
+    return ipower;
+  }
 
 };  // namespace trklet
 #endif

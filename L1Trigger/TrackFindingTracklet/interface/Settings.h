@@ -261,11 +261,14 @@ namespace trklet {
     double phicritmaxmc() const { return phicritmax() + dphicritmc_; }
 
     double kphi() const { return dphisectorHG() / (1 << nphibitsstub(0)); }
-    double kphi1() const { return dphisectorHG() / (1 << nphibitsstub(5)); }
+    double kphi1() const { return dphisectorHG() / (1 << nphibitsstub(N_LAYER-1)); }
+    double kphi(unsigned int layerdisk) const { return dphisectorHG() / (1 << nphibitsstub(layerdisk)); }
 
-    double kz() const { return 2 * zlength_ / (1 << nzbitsstub_[0]); }
-    double kr() const { return rmaxdisk_ / (1 << nrbitsstub_[6]); }
-
+    
+    double kz() const { return 2.0 * zlength_ / (1 << nzbitsstub_[0]); }
+    double kr() const { return rmaxdisk_ / (1 << nrbitsstub_[N_LAYER]); }
+    double krbarrel() const { return 2.0 * drmax() / (1 <<nrbitsstub_[0]); }
+    
     double maxrinv() const { return maxrinv_; }
     double maxd0() const { return maxd0_; }
     unsigned int nbitsd0() const { return nbitsd0_; }
@@ -350,7 +353,7 @@ namespace trklet {
     double kz0pars() const { return kz(); }
     double kd0pars() const { return kd0(); }
 
-    double kphider() const { return krinvpars() / (1 << phiderbitshift_); }
+    double kphider() const { return kphi()/kr()/256; }
     double kzder() const { return ktpars() / (1 << zderbitshift_); }
 
     //This is a 'historical accident' and should be fixed so that we don't

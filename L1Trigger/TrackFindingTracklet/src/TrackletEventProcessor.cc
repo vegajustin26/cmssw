@@ -41,6 +41,12 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     throw cms::Exception("Inconsistency") << "t conversion parameter inconsistency\n";
   }
 
+  if (settings_->kphider() != globals_->ITC_L1L2()->der_phiL_final.K()) {
+    throw cms::Exception("Inconsistency") << "t conversion parameter inconsistency:"
+      <<settings_->kphider()/globals_->ITC_L1L2()->der_phiL_final.K()<<"\n";
+  }
+
+  
   if (settings_->debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "========================================================= \n"
                                  << "Conversion factors for global coordinates: \n"
