@@ -20,23 +20,13 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
 
   barrel_ = layerdisk_ < N_LAYER;
   
-  //TODO should sort out constants here
-
-  if (layerdisk_ < N_PSLAYER) {
-    icorzshift_ = -1 - settings_.PS_zderL_shift();
-  } else {
-    icorzshift_ = -1 - settings_.SS_zderL_shift();
-  }
   phishift_ = settings_.nphibitsstub(N_LAYER-1)-settings_.nphibitsstub(layerdisk_);
-  fact_ = 1;
-  if (layerdisk_ >= N_PSLAYER && layerdisk_ < N_LAYER) {
-    fact_ = (1 << (settings_.nzbitsstub(0) - settings_.nzbitsstub(N_LAYER-1)));
-    icorzshift_ += (settings_.nzbitsstub(0) - settings_.nzbitsstub(N_LAYER-1) + settings_.nrbitsstub(layerdisk_) -
-                    settings_.nrbitsstub(0));
-  }
+  dzshift_ = settings_.nzbitsstub(0) - settings_.nzbitsstub(layerdisk_);
 
   icorrshift_=ilog2(settings_.kphi(layerdisk_)/(settings_.krbarrel()*settings_.kphider()));
+  icorzshift_=ilog2(settings_.kz(layerdisk_)/(settings_.krbarrel()*settings_.kzder()));
 
+   
   nrbits_ = 5;
   nphiderbits_ = 6;
 
@@ -468,7 +458,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
                                seedindex,
                                dphiapprox * settings_.rmean(layerdisk_),
                                ideltaphi * settings_.kphi1() * settings_.rmean(layerdisk_),
-                               ideltaz * fact_ * settings_.kz(),
+                               (ideltaz << dzshift_ ) * settings_.kz(),
                                dz,
                                truthmatch);
     }
@@ -481,15 +471,15 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
           << ideltaphi * settings_.kphi1() * settings_.rmean(layerdisk_) << " "
           << dphiapprox * settings_.rmean(layerdisk_) << " "
           << phimatchcut_[seedindex] * settings_.kphi1() * settings_.rmean(layerdisk_) << "   "
-          << ideltaz * fact_ * settings_.kz() << " " << dz << " " << zmatchcut_[seedindex] * settings_.kz() << endl;
+          << (ideltaz << dzshift_) * settings_.kz() << " " << dz << " " << zmatchcut_[seedindex] * settings_.kz() << endl;
     }
 
     bool imatch = ((unsigned int)std::abs(ideltaphi) <= phimatchcut_[seedindex]) &&
-      ((unsigned int)std::abs(ideltaz * fact_) <= zmatchcut_[seedindex]);
+      ((unsigned int)std::abs(ideltaz << dzshift_) <= zmatchcut_[seedindex]);
 
     if (settings_.debugTracklet()) {
       edm::LogVerbatim("Tracklet") << getName() << " imatch = " << imatch << " ideltaphi cut " << ideltaphi << " "
-                                   << phimatchcut_[seedindex] << " ideltaz*fact cut " << ideltaz * fact_ << " "
+                                   << phimatchcut_[seedindex] << " ideltaz<<dzshift cut " << (ideltaz << dzshift_) << " "
                                    << zmatchcut_[seedindex];
     }
 

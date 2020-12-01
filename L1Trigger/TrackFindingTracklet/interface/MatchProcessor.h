@@ -46,7 +46,7 @@ namespace trklet {
     int nvmbins_;  //VMs in in phi region
     int nrinv_;    //# of bits for rinv
     
-    int fact_;
+    int dzshift_;
     int icorrshift_;
     int icorzshift_;
     int phishift_;

@@ -266,6 +266,7 @@ namespace trklet {
 
     
     double kz() const { return 2.0 * zlength_ / (1 << nzbitsstub_[0]); }
+    double kz(unsigned int layerdisk) const { return 2.0 * zlength_ / (1 << nzbitsstub_[layerdisk]); }
     double kr() const { return rmaxdisk_ / (1 << nrbitsstub_[N_LAYER]); }
     double krbarrel() const { return 2.0 * drmax() / (1 <<nrbitsstub_[0]); }
     
@@ -354,7 +355,7 @@ namespace trklet {
     double kd0pars() const { return kd0(); }
 
     double kphider() const { return kphi()/kr()/256; }
-    double kzder() const { return ktpars() / (1 << zderbitshift_); }
+    double kzder() const { return 1.0/64; }
 
     //This is a 'historical accident' and should be fixed so that we don't
     //have the factor if 2
