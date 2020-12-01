@@ -23,9 +23,13 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
   phishift_ = settings_.nphibitsstub(N_LAYER-1)-settings_.nphibitsstub(layerdisk_);
   dzshift_ = settings_.nzbitsstub(0) - settings_.nzbitsstub(layerdisk_);
 
-  icorrshift_=ilog2(settings_.kphi(layerdisk_)/(settings_.krbarrel()*settings_.kphider()));
-  icorzshift_=ilog2(settings_.kz(layerdisk_)/(settings_.krbarrel()*settings_.kzder()));
-
+  if (barrel_) {
+    icorrshift_=ilog2(settings_.kphi(layerdisk_)/(settings_.krbarrel()*settings_.kphider()));
+    icorzshift_=ilog2(settings_.kz(layerdisk_)/(settings_.krbarrel()*settings_.kzder()));
+  } else {
+    icorrshift_=ilog2(settings_.kphi(layerdisk_)/(settings_.kz()*settings_.kphiderdisk()));
+    icorzshift_=ilog2(settings_.krprojshiftdisk()/(settings_.kz()*settings_.krder()));
+  }
    
   nrbits_ = 5;
   nphiderbits_ = 6;
@@ -527,23 +531,16 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     //Perform integer calculations here
 
     int iz = fpgastub->z().value();
+
     int iphi = tracklet->fpgaphiprojdisk(disk).value();
-
-    int shifttmp = 6;  //TODO - express in terms of constants
-    assert(shifttmp >= 0);
-    int iphicorr = (iz * tracklet->fpgaphiprojderdisk(disk).value()) >> shifttmp;
-
+    int iphicorr = (iz * tracklet->fpgaphiprojderdisk(disk).value()) >> icorrshift_;
     iphi += iphicorr;
 
     int ir = tracklet->fpgarprojdisk(disk).value();
-
-    int shifttmp2 = 7;  //TODO - express in terms of constants
-    assert(shifttmp2 >= 0);
-    int ircorr = (iz * tracklet->fpgarprojderdisk(disk).value()) >> shifttmp2;
-
+    int ircorr = (iz * tracklet->fpgarprojderdisk(disk).value()) >> icorzshift_;
     ir += ircorr;
 
-    int ideltaphi = fpgastub->phi().value() * settings_.kphi() / settings_.kphi() - iphi;
+    int ideltaphi = fpgastub->phi().value() - iphi;
 
     int irstub = fpgastub->r().value();
     int ialphafact = 0;

@@ -355,7 +355,9 @@ namespace trklet {
     double kd0pars() const { return kd0(); }
 
     double kphider() const { return kphi()/kr()/256; }
+    double kphiderdisk() const { return kphi()/kr()/128; }
     double kzder() const { return 1.0/64; }
+    double krder() const { return 1.0/128; }
 
     //This is a 'historical accident' and should be fixed so that we don't
     //have the factor if 2
