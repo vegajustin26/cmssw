@@ -370,7 +370,7 @@ void TrackletProcessor::execute() {
 	  int rzfinebinfirst = lookupbits.bits(0, 3);  //finephi
 	  int next = lookupbits.bits(3, 1);  //next r/z bin
 	  int start = lookupbits.bits(4, nbitsrzbin_);
-	  int rzdiffmax = lookupbits.bits(lookupbits.nbits() - 3, 3);
+	  int rzdiffmax = lookupbits.bits(4 + nbitsrzbin_, 3);
 	  
 	  if ((iSeed_ == 4 || iSeed_ == 5) && negdisk) {  //TODO - need to store negative disk
 	    start += 4;
