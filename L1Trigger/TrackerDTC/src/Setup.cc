@@ -359,8 +359,10 @@ namespace trackerDTC {
     for (const string& geomXMLFile : geomXMLFiles) {
       const auto begin = geomXMLFile.find(sgXMLPath_) + sgXMLPath_.size();
       const auto end = geomXMLFile.find(sgXMLFile_);
-      if (begin != string::npos && end != string::npos)
+      if (begin != string::npos && end != string::npos) {
+	LogWarning("geomXMLFile") << "geomXMLFile:"<<geomXMLFile<<" "<<begin<<" "<<end;
         version = geomXMLFile.substr(begin, end - begin - 1);
+      }
     }
     if (version.empty()) {
       cms::Exception exception("LogicError");
@@ -519,7 +521,7 @@ namespace trackerDTC {
     const double hybridRangeR =
         2. * max(abs(outerRadius_ - hybridChosenRofPhi_), abs(innerRadius_ - hybridChosenRofPhi_));
     hybridRangePhi_ = baseRegion_ + (hybridRangeR * hybridRangeQoverPt) / 2.;
-    hybridWidthLayerId_ = ceil(log2(hybridNumLayers_));
+    hybridWidthLayer_ = ceil(log2(hybridNumLayers_));
     hybridBasesZ_.reserve(SensorModule::NumTypes);
     for (int type = 0; type < SensorModule::NumTypes; type++)
       hybridBasesZ_.emplace_back(hybridRangesZ_.at(type) / pow(2., hybridWidthsZ_.at(type)));

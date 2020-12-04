@@ -90,6 +90,7 @@ namespace trackerDTC {
       // apply cabling map, reorganise stub collections
       vector<vector<vector<TTStubRef>>> stubsDTCs(setup_.numDTCs(),
                                                   vector<vector<TTStubRef>>(setup_.numModulesPerDTC()));
+
       for (auto module = handle->begin(); module != handle->end(); module++) {
         // DetSetVec->detId + 1 = tk layout det id
         const DetId detId = module->detId() + setup_.offsetDetIdDSV();
@@ -101,6 +102,7 @@ namespace trackerDTC {
         for (TTStubDetSet::const_iterator ttStub = module->begin(); ttStub != module->end(); ttStub++)
           stubsModule.emplace_back(makeRefTo(handle, ttStub));
       }
+
       // board level processing
       for (int dtcId = 0; dtcId < setup_.numDTCs(); dtcId++) {
         // create single outer tracker DTC board
@@ -108,12 +110,15 @@ namespace trackerDTC {
         // route stubs and fill products
         dtc.produce(productAccepted, productLost);
       }
+
     }
+
     // store ED products
     iEvent.emplace(edPutTokenAccepted_, move(productAccepted));
     iEvent.emplace(edPutTokenLost_, move(productLost));
   }
 
+  
 }  // namespace trackerDTC
 
 DEFINE_FWK_MODULE(trackerDTC::ProducerED);
