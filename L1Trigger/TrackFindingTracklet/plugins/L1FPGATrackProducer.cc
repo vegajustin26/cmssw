@@ -489,8 +489,6 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 	  stubwordhex+=((val<10)?('0'+val):('A'+val-10));
 	}
 
-	//cout << "stubword : "<<stubwordhex<<" "<<stubword<<" "<<stub.second.to_string()<<endl;
-
 	/// Get the Inner and Outer TTCluster
 	edm::Ref<edmNew::DetSetVector<TTCluster<Ref_Phase2TrackerDigi_>>, TTCluster<Ref_Phase2TrackerDigi_>> innerCluster =
           stub.first->clusterRef(0);

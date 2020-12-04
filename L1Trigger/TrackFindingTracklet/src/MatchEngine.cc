@@ -35,7 +35,7 @@ MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global,
     
     unsigned int nbits = isPSmodule ? N_BENDBITS_PS : N_BENDBITS_2S;
 
-    for (unsigned int irinv = 0; irinv < (1<<nrinv_); irinv++) {
+    for (unsigned int irinv = 0; irinv < (1u<<nrinv_); irinv++) {
       double rinv = (irinv - rinvhalf) * (1 << (settings_.nbitsrinv() - nrinv_)) * settings_.krinvpars();
 
       double stripPitch = settings_.stripPitch(isPSmodule);
@@ -67,7 +67,7 @@ MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global,
   }
 
   if (layerdisk_ >= N_LAYER) {
-    for (unsigned int iprojbend = 0; iprojbend < (1<<nrinv_); iprojbend++) {
+    for (unsigned int iprojbend = 0; iprojbend < (1u<<nrinv_); iprojbend++) {
       double projbend = 0.5 * (iprojbend - rinvhalf);
       for (unsigned int ibend = 0; ibend < (1<<N_BENDBITS_PS); ibend++) {
         double stubbend = settings_.benddecode(ibend, layerdisk_, true);

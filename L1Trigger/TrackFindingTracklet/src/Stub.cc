@@ -48,14 +48,6 @@ Stub::Stub(L1TStub& stub, Settings const& settings, Globals& globals) : settings
   bitset<32> bendbits(stubwordbin.substr(nphibits+nzbits+nrbits+nalphabits,nbendbits));
   
   int newbend=bendbits.to_ulong();
-  //int rawbend=newbend;
-  //if (newbend>=(1<<(nbendbits-1))) newbend=newbend-(1<<nbendbits);
-
-  double bendfact=-0.5;
-
-  if (layerdisk_==2) bendfact=-1.0;
-  if (layerdisk_==5) bendfact=-1.0;
-  if (layerdisk_>5&&stub.isPSmodule()) bendfact=-1.0;
   
   int newr=rbits.to_ulong();
   if (layerdisk_<N_LAYER) {

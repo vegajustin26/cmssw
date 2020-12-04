@@ -77,7 +77,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
   if (barrel_) {
     unsigned int nbits = (layerdisk_ < N_PSLAYER) ? N_BENDBITS_PS : N_BENDBITS_2S;
     
-    for (unsigned int irinv = 0; irinv < (1<<nrinv_); irinv++) {
+    for (unsigned int irinv = 0; irinv < (1u<<nrinv_); irinv++) {
       double rinv = (irinv - rinvhalf) * (1 << (settings_.nbitsrinv() - nrinv_)) * settings_.krinvpars();
       double stripPitch = settings_.stripPitch(layerdisk_<N_PSLAYER);
       double projbend = bendstrip(settings_.rmean(layerdisk_), rinv, stripPitch);
