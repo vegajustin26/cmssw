@@ -1446,8 +1446,16 @@ void TrackletCalculatorDisplaced::exacttracklet(double r1,
   double y2 = r2 * sin(phi2);
   double y3 = r3 * sin(phi3);
 
-  double k1 = -(x2 - x1) / (y2 - y1);
-  double k2 = -(x3 - x2) / (y3 - y2);
+  double dy21=y2-y1;
+  double dy32=y3-y2;
+
+  //Hack to protect against dividing by zero
+  //code should be rewritten to avoid this
+  if (dy21==0.0) dy21=1e-9;
+  if (dy32==0.0) dy32=1e-9;
+  
+  double k1 = -(x2 - x1) / dy21;
+  double k2 = -(x3 - x2) / dy32;
   double b1 = 0.5 * (y2 + y1) - 0.5 * (x1 + x2) * k1;
   double b2 = 0.5 * (y3 + y2) - 0.5 * (x2 + x3) * k2;
   //their intersection gives the center of the circle

@@ -13,53 +13,44 @@ using namespace trklet;
 
 MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* global, unsigned int iSector)
     : ProcessBase(name, settings, global, iSector), fullmatches_(12), inputProjBuffer_(3) {
-  phioffset_ = phimin_;
 
   phiregion_ = name[8] - 'A';
 
-  initLayerDisk(3, layer_, disk_);
   layerdisk_ = initLayerDisk(3);
 
-  //TODO should sort out constants here
-  icorrshift_ = 7;
+  barrel_ = layerdisk_ < N_LAYER;
+  
+  phishift_ = settings_.nphibitsstub(N_LAYER-1)-settings_.nphibitsstub(layerdisk_);
+  dzshift_ = settings_.nzbitsstub(0) - settings_.nzbitsstub(layerdisk_);
 
-  if (layer_ <= 3) {
-    icorzshift_ = -1 - settings_.PS_zderL_shift();
+  if (barrel_) {
+    icorrshift_=ilog2(settings_.kphi(layerdisk_)/(settings_.krbarrel()*settings_.kphider()));
+    icorzshift_=ilog2(settings_.kz(layerdisk_)/(settings_.krbarrel()*settings_.kzder()));
   } else {
-    icorzshift_ = -1 - settings_.SS_zderL_shift();
+    icorrshift_=ilog2(settings_.kphi(layerdisk_)/(settings_.kz()*settings_.kphiderdisk()));
+    icorzshift_=ilog2(settings_.krprojshiftdisk()/(settings_.kz()*settings_.krder()));
   }
-  phi0shift_ = 3;
-  fact_ = 1;
-  if (layer_ >= 4) {
-    fact_ = (1 << (settings_.nzbitsstub(0) - settings_.nzbitsstub(5)));
-    icorrshift_ -= (10 - settings_.nrbitsstub(layer_ - 1));
-    icorzshift_ += (settings_.nzbitsstub(0) - settings_.nzbitsstub(5) + settings_.nrbitsstub(layer_ - 1) -
-                    settings_.nrbitsstub(0));
-    phi0shift_ = 0;
-  }
-
+   
   nrbits_ = 5;
   nphiderbits_ = 6;
 
-  //to adjust globaly the phi and rz matching cuts
-  phifact_ = 1.0;
-  rzfact_ = 1.0;
+  nrinv_=NRINVBITS;
+  double rinvhalf=0.5*((1<<nrinv_)-1);
 
   for (unsigned int iSeed = 0; iSeed < 12; iSeed++) {
-    if (layer_ > 0) {
+    if (layerdisk_ < N_LAYER) {
       phimatchcut_[iSeed] =
-          settings_.rphimatchcut(iSeed, layer_ - 1) / (settings_.kphi1() * settings_.rmean(layer_ - 1));
-      zmatchcut_[iSeed] = settings_.zmatchcut(iSeed, layer_ - 1) / settings_.kz();
-    }
-    if (disk_ != 0) {
-      rphicutPS_[iSeed] = settings_.rphicutPS(iSeed, abs(disk_) - 1) / (settings_.kphi() * settings_.kr());
-      rphicut2S_[iSeed] = settings_.rphicut2S(iSeed, abs(disk_) - 1) / (settings_.kphi() * settings_.kr());
-      rcut2S_[iSeed] = settings_.rcut2S(iSeed, abs(disk_) - 1) / settings_.krprojshiftdisk();
-      rcutPS_[iSeed] = settings_.rcutPS(iSeed, abs(disk_) - 1) / settings_.krprojshiftdisk();
+          settings_.rphimatchcut(iSeed, layerdisk_) / (settings_.kphi1() * settings_.rmean(layerdisk_));
+      zmatchcut_[iSeed] = settings_.zmatchcut(iSeed, layerdisk_) / settings_.kz();
+    } else {
+      rphicutPS_[iSeed] = settings_.rphicutPS(iSeed, layerdisk_ - N_LAYER) / (settings_.kphi() * settings_.kr());
+      rphicut2S_[iSeed] = settings_.rphicut2S(iSeed, layerdisk_ - N_LAYER) / (settings_.kphi() * settings_.kr());
+      rcut2S_[iSeed] = settings_.rcut2S(iSeed, layerdisk_ - N_LAYER) / settings_.krprojshiftdisk();
+      rcutPS_[iSeed] = settings_.rcutPS(iSeed, layerdisk_ - N_LAYER) / settings_.krprojshiftdisk();
     }
   }
 
-  if (iSector_ == 0 && layer_ > 0 && settings_.writeTable()) {
+  if (iSector_ == 0 && barrel_ && settings_.writeTable()) {
     ofstream outphicut;
     outphicut.open(settings_.tablePath() + getName() + "_phicut.tab");
     outphicut << "{" << endl;
@@ -83,58 +74,55 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
     outzcut.close();
   }
 
-  if (layer_ > 0) {
-    unsigned int nbits = 3;
-    if (layer_ >= 4)
-      nbits = 4;
-
-    for (unsigned int irinv = 0; irinv < 32; irinv++) {
-      double rinv = (irinv - 15.5) * (1 << (settings_.nbitsrinv() - 5)) * settings_.krinvpars();
-      double stripPitch =
-          (settings_.rmean(layer_ - 1) < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
-      double projbend = bend(settings_.rmean(layer_ - 1), rinv, stripPitch);
+  if (barrel_) {
+    unsigned int nbits = (layerdisk_ < N_PSLAYER) ? N_BENDBITS_PS : N_BENDBITS_2S;
+    
+    for (unsigned int irinv = 0; irinv < (1<<nrinv_); irinv++) {
+      double rinv = (irinv - rinvhalf) * (1 << (settings_.nbitsrinv() - nrinv_)) * settings_.krinvpars();
+      double stripPitch = settings_.stripPitch(layerdisk_<N_PSLAYER);
+      double projbend = bendstrip(settings_.rmean(layerdisk_), rinv, stripPitch);
       for (unsigned int ibend = 0; ibend < (unsigned int)(1 << nbits); ibend++) {
-        double stubbend = benddecode(ibend, layer_ <= (int)N_PSLAYER);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(layer_ - 1);
+        double stubbend = settings_.benddecode(ibend, layerdisk_, layerdisk_ < (int)N_PSLAYER);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, layerdisk_ < (int)N_PSLAYER);
         table_.push_back(pass);
       }
     }
-
-    if (settings_.writeTable()) {
-      ofstream out;
-      char layer = '0' + layer_;
-      string fname = "METable_L";
-      fname += layer;
-      fname += ".tab";
-      out.open(settings_.tablePath() + fname);
-      out << "{" << endl;
-      for (unsigned int i = 0; i < table_.size(); i++) {
-        if (i != 0) {
-          out << "," << endl;
-        }
-        out << table_[i];
-      }
-      out << "};" << endl;
-      out.close();
-    }
-  }
-
-  if (disk_ > 0) {
+  } else {
+    table_.resize(32*16*2,false);
     for (unsigned int iprojbend = 0; iprojbend < 32; iprojbend++) {
-      double projbend = 0.5 * (iprojbend - 15.0);
+      double projbend = 0.5 * (iprojbend - rinvhalf);
       for (unsigned int ibend = 0; ibend < 8; ibend++) {
-        double stubbend = benddecode(ibend, true);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(disk_ + 5);
-        tablePS_.push_back(pass);
+        double stubbend = settings_.benddecode(ibend, layerdisk_, true);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, true);
+	table_[512+8*iprojbend+ibend]=pass;
       }
       for (unsigned int ibend = 0; ibend < 16; ibend++) {
-        double stubbend = benddecode(ibend, false);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(disk_ + 5);
-        table2S_.push_back(pass);
+        double stubbend = settings_.benddecode(ibend, layerdisk_, false);
+        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, false);
+	table_[16*iprojbend+ibend]=pass;
       }
     }
   }
+  
+  if (settings_.writeTable()) {
+    ofstream out;
+    char layerdisk = barrel_ ? '0' + layerdisk_ + 1 : '0' + layerdisk_ - N_LAYER + 1;
+    string fname = barrel_ ? "METable_L" : "METable_D";
+    fname += layerdisk;
+    fname += ".tab";
+    out.open(settings_.tablePath() + fname);
+    out << "{" << endl;
+    for (unsigned int i = 0; i < table_.size(); i++) {
+      if (i != 0) {
+	out << "," << endl;
+      }
+      out << table_[i];
+    }
+    out << "};" << endl;
+    out.close();
+  }
 
+  
   for (unsigned int i = 0; i < N_DSS_MOD * 2; i++) {
     ialphafactinner_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() * settings_.half2SmoduleWidth() /
                           (1 << (settings_.nbitsalpha() - 1)) / (settings_.rDSSinner(i) * settings_.rDSSinner(i)) /
@@ -144,23 +132,22 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
                           settings_.kphi();
   }
 
-  barrel_ = layer_ > 0;
-
-  nvm_ = barrel_ ? settings_.nvmme(layer_ - 1) * settings_.nallstubs(layer_ - 1)
-                 : settings_.nvmme(disk_ + 5) * settings_.nallstubs(disk_ + 5);
-  nvmbins_ = barrel_ ? settings_.nvmme(layer_ - 1) : settings_.nvmme(disk_ + 5);
-
-  if (nvm_ == 32)
-    nvmbits_ = 5;
-  if (nvm_ == 16)
-    nvmbits_ = 4;
-  assert(nvmbits_ != -1);
+  nvm_ = settings_.nvmme(layerdisk_) * settings_.nallstubs(layerdisk_);
+  nvmbins_ = settings_.nvmme(layerdisk_);
+  nvmbits_ = settings_.nbitsvmme(layerdisk_)+settings_.nbitsallstubs(layerdisk_);
 
   nMatchEngines_ = 4;
   for (unsigned int iME = 0; iME < nMatchEngines_; iME++) {
-    MatchEngineUnit tmpME(barrel_, table_, tablePS_, table2S_);
+    MatchEngineUnit tmpME(barrel_, layerdisk_, table_);
     matchengines_.push_back(tmpME);
   }
+
+  if (globals_->projectionRouterBendTable() == nullptr) { 
+    auto* bendTablePtr = new ProjectionRouterBendTable();
+    bendTablePtr->init(settings_, globals_, nrbits_, nphiderbits_);
+    globals_->projectionRouterBendTable() = bendTablePtr;
+  }
+  
 }
 
 void MatchProcessor::addOutput(MemoryBase* memory, string output) {
@@ -209,12 +196,6 @@ void MatchProcessor::addInput(MemoryBase* memory, string input) {
 void MatchProcessor::execute() {
   assert(vmstubs_.size() == 1);
 
-  if (globals_->projectionRouterBendTable() == nullptr) {  // move to constructor?!
-    auto* bendTablePtr = new ProjectionRouterBendTable();
-    bendTablePtr->init(settings_, globals_, nrbits_, nphiderbits_);
-    globals_->projectionRouterBendTable() = bendTablePtr;
-  }
-
   /*
     The code is organized in three 'steps' corresponding to the PR, ME, and MC functions. The output from
     the PR step is buffered in a 'circular' buffer, and similarly the ME output is put in a circular buffer. 
@@ -249,10 +230,7 @@ void MatchProcessor::execute() {
     matchengines_[iME].reset();
   }
 
-  unsigned int step2delay = 0;
-  unsigned int step3delay = 0;
-
-  for (unsigned int istep = 0; istep < settings_.maxStep("MP") + step3delay; istep++) {
+  for (unsigned int istep = 0; istep < settings_.maxStep("MP") ; istep++) {
     bool projdone = false;
     bool medone = true;
     //Step 1
@@ -271,42 +249,42 @@ void MatchProcessor::execute() {
             }
 
             Tracklet* proj = projMem->getTracklet(iproj);
-            FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layer_) : proj->fpgaphiprojdisk(disk_);
+            FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layerdisk_+1) : proj->fpgaphiprojdisk(layerdisk_-N_LAYER+1);
 
             int iphi = (fpgaphi.value() >> (fpgaphi.nbits() - nvmbits_)) & (nvmbins_ - 1);
 
             int projrinv = -1;
             if (barrel_) {
-              projrinv = 16 + (proj->fpgarinv().value() >> (proj->fpgarinv().nbits() - 5));
+              projrinv = 16 + (proj->fpgarinv().value() >> (proj->fpgarinv().nbits() - nrinv_));
             } else {
               //The next lines looks up the predicted bend based on:
               // 1 - r projections
               // 2 - phi derivative
               // 3 - the sign - i.e. if track is forward or backward
-              int rindex = (proj->fpgarprojdisk(disk_).value() >> (proj->fpgarprojdisk(disk_).nbits() - nrbits_)) &
+              int rindex = (proj->fpgarprojdisk(layerdisk_-N_LAYER+1).value() >> (proj->fpgarprojdisk(layerdisk_-N_LAYER+1).nbits() - nrbits_)) &
                            ((1 << nrbits_) - 1);
 
-              int phiderindex = (proj->fpgaphiprojderdisk(disk_).value() >>
-                                 (proj->fpgaphiprojderdisk(disk_).nbits() - nphiderbits_)) &
+              int phiderindex = (proj->fpgaphiprojderdisk(layerdisk_-N_LAYER+1).value() >>
+                                 (proj->fpgaphiprojderdisk(layerdisk_-N_LAYER+1).nbits() - nphiderbits_)) &
                                 ((1 << nphiderbits_) - 1);
-
-              int signindex = (proj->fpgarprojderdisk(disk_).value() < 0);
+	      
+              int signindex = proj->fpgarprojderdisk(layerdisk_-N_LAYER+1).value() < 0;
 
               int bendindex = (signindex << (nphiderbits_ + nrbits_)) + (rindex << (nphiderbits_)) + phiderindex;
 
-              projrinv = globals_->projectionRouterBendTable()->bendLoookup(abs(disk_) - 1, bendindex);
+              projrinv = globals_->projectionRouterBendTable()->bendLoookup(layerdisk_-N_LAYER, bendindex);
 
-              proj->setBendIndex(projrinv, disk_);
+              proj->setBendIndex(projrinv, layerdisk_-N_LAYER+1);
             }
             assert(projrinv >= 0);
 
-            unsigned int slot = barrel_ ? proj->zbin1projvm(layer_) : proj->rbin1projvm(disk_);
-            bool second = (barrel_ ? proj->zbin2projvm(layer_) : proj->rbin2projvm(disk_));
+            unsigned int slot = barrel_ ? proj->zbin1projvm(layerdisk_+1) : proj->rbin1projvm(layerdisk_-N_LAYER+1);
+            bool second = (barrel_ ? proj->zbin2projvm(layerdisk_+1) : proj->rbin2projvm(layerdisk_-N_LAYER+1));
 
             unsigned int projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + 3))) & 7;
-            int projfinerz = barrel_ ? proj->finezvm(layer_) : proj->finervm(disk_);
+            int projfinerz = barrel_ ? proj->finezvm(layerdisk_+1) : proj->finervm(layerdisk_-N_LAYER+1);
 
-            bool isPSseed = proj->PSseed() == 1;
+            bool isPSseed = proj->PSseed();
 
             int nbins = 8;
             if (layerdisk_ >= 6)
@@ -323,14 +301,6 @@ void MatchProcessor::execute() {
               ProjectionTemp tmpProj(proj, slot + 1, projrinv, projfinerz - 8, projfinephi, iphi, false, isPSseed);
               inputProjBuffer_.store(tmpProj);
             }
-            //if (usefirst) {
-            //  ProjectionTemp tmpProj(proj, slot, projrinv, projfinerz, projfinephi, iphi, false, isPSseed);
-            //  inputProjBuffer_.store(tmpProj);
-            //}
-            //if (usesecond) {
-            //  ProjectionTemp tmpProj(proj, slot + 1, projrinv, projfinerz - 8, projfinephi, iphi, false, isPSseed);
-            //  inputProjBuffer_.store(tmpProj);
-            //}
             iproj++;
             if (iproj == projMem->nTracklets()) {
               iproj = 0;
@@ -346,88 +316,87 @@ void MatchProcessor::execute() {
     //Step 2
     //Check if we have ME that can process projection
 
-    if (istep >= step2delay && istep < settings_.maxStep("MP") + step2delay) {
-      bool addedProjection = false;
-      for (unsigned int iME = 0; iME < nMatchEngines_; iME++) {
-        if (!matchengines_[iME].idle())
-          countme++;
-        matchengines_[iME].step();
-        //if match engine empty and we have queued projections add to match engine
-        if ((!addedProjection) && matchengines_[iME].idle() && (!inputProjBuffer_.empty())) {
-          ProjectionTemp tmpProj = inputProjBuffer_.read();
-          VMStubsMEMemory* stubmem = vmstubs_[0];
-
-          if (settings_.debugTracklet()) {
-            edm::LogVerbatim("Tracklet") << getName() << " adding projection to match engine";
-          }
-
-          int nbins = 8;
-          if (layerdisk_ >= 6)
-            nbins = 16;
-
-          matchengines_[iME].init(stubmem,
-                                  tmpProj.iphi() * nbins + tmpProj.slot(),
-                                  tmpProj.projrinv(),
-                                  tmpProj.projfinerz(),
-                                  tmpProj.projfinephi(),
-                                  tmpProj.usesecond(),
-                                  tmpProj.isPSseed(),
-                                  tmpProj.proj());
-          addedProjection = true;
-        }
+    bool addedProjection = false;
+    for (unsigned int iME = 0; iME < nMatchEngines_; iME++) {
+      if (!matchengines_[iME].idle())
+	countme++;
+      matchengines_[iME].step();
+      //if match engine empty and we have queued projections add to match engine
+      if ((!addedProjection) && matchengines_[iME].idle() && (!inputProjBuffer_.empty())) {
+	ProjectionTemp tmpProj = inputProjBuffer_.read();
+	VMStubsMEMemory* stubmem = vmstubs_[0];
+	
+	if (settings_.debugTracklet()) {
+	  edm::LogVerbatim("Tracklet") << getName() << " adding projection to match engine";
+	}
+	
+	int nbins = 8;
+	if (layerdisk_ >= 6)
+	  nbins = 16;
+	
+	matchengines_[iME].init(stubmem,
+				tmpProj.iphi() * nbins + tmpProj.slot(),
+				tmpProj.projrinv(),
+				tmpProj.projfinerz(),
+				tmpProj.projfinephi(),
+				tmpProj.usesecond(),
+				tmpProj.isPSseed(),
+				tmpProj.proj());
+	addedProjection = true;
       }
     }
 
     //Step 3
     //Check if we have candidate match to process
-
-    if (istep >= step3delay) {
-      unsigned int iMEbest = nMatchEngines_;
-      int bestTCID = -1;
-      bool bestInPipeline = false;
-      for (unsigned int iME = 0; iME < nMatchEngines_; iME++) {
-        bool empty = matchengines_[iME].empty();
-        medone = medone && (empty && matchengines_[iME].idle());
-        if (empty && matchengines_[iME].idle())
-          continue;
-        int currentTCID = empty ? matchengines_[iME].currentProj()->TCID() : matchengines_[iME].peek().first->TCID();
-        if ((iMEbest == nMatchEngines_) || (currentTCID < bestTCID)) {
-          iMEbest = iME;
-          bestTCID = currentTCID;
-          bestInPipeline = empty;
-        }
-      }
-
-      if (iMEbest != nMatchEngines_ && (!bestInPipeline)) {
-        std::pair<Tracklet*, const Stub*> candmatch = matchengines_[iMEbest].read();
-
-        const Stub* fpgastub = candmatch.second;
-        Tracklet* tracklet = candmatch.first;
-
-        if (oldTracklet != nullptr) {
-          //allow equal here since we can have more than one cadidate match per tracklet projection
-          assert(oldTracklet->TCID() <= tracklet->TCID());
-        }
-        oldTracklet = tracklet;
-
-        bool match = matchCalculator(tracklet, fpgastub);
-
-        if (settings_.debugTracklet() && match) {
-          edm::LogVerbatim("Tracklet") << getName() << " have match";
-        }
-
-        countall++;
-        if (match)
-          countsel++;
+    
+    unsigned int iMEbest = nMatchEngines_;
+    int bestTCID = -1;
+    bool bestInPipeline = false;
+    for (unsigned int iME = 0; iME < nMatchEngines_; iME++) {
+      bool empty = matchengines_[iME].empty();
+      medone = medone && (empty && matchengines_[iME].idle());
+      if (empty && matchengines_[iME].idle())
+	continue;
+      int currentTCID = empty ? matchengines_[iME].currentProj()->TCID() : matchengines_[iME].peek().first->TCID();
+      if ((iMEbest == nMatchEngines_) || (currentTCID < bestTCID)) {
+	iMEbest = iME;
+	bestTCID = currentTCID;
+	bestInPipeline = empty;
       }
     }
-    if ((projdone && medone) || (istep == settings_.maxStep("MP") + step3delay - 1)) {
-      globals_->ofstream("matchprocessor.txt") << getName() << " " << istep << " " << countall << " " << countsel << " "
-                                               << countme << " " << countinputproj << endl;
+    
+    if (iMEbest != nMatchEngines_ && (!bestInPipeline)) {
+      std::pair<Tracklet*, const Stub*> candmatch = matchengines_[iMEbest].read();
+      
+      const Stub* fpgastub = candmatch.second;
+      Tracklet* tracklet = candmatch.first;
+      
+      if (oldTracklet != nullptr) {
+	//allow equal here since we can have more than one cadidate match per tracklet projection
+	assert(oldTracklet->TCID() <= tracklet->TCID());
+      }
+      oldTracklet = tracklet;
+      
+      bool match = matchCalculator(tracklet, fpgastub);
+      
+      if (settings_.debugTracklet() && match) {
+	edm::LogVerbatim("Tracklet") << getName() << " have match";
+      }
+      
+      countall++;
+      if (match)
+	countsel++;
+    }
+  
+    if ((projdone && medone) || (istep == settings_.maxStep("MP") - 1)) {
+      if (settings_.writeMonitorData("MP")) {
+	globals_->ofstream("matchprocessor.txt") << getName() << " " << istep << " " << countall << " " << countsel << " "
+						 << countme << " " << countinputproj << endl;
+      }
       break;
     }
   }
-
+  
   if (settings_.writeMonitorData("MC")) {
     globals_->ofstream("matchcalculator.txt") << getName() << " " << countall << " " << countsel << endl;
   }
@@ -436,18 +405,19 @@ void MatchProcessor::execute() {
 bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
   const L1TStub* stub = fpgastub->l1tstub();
 
-  if (layer_ != 0) {
+  if (layerdisk_ < N_LAYER) {
     int ir = fpgastub->r().value();
-    int iphi = tracklet->fpgaphiproj(layer_).value();
-    int icorr = (ir * tracklet->fpgaphiprojder(layer_).value()) >> icorrshift_;
+    int iphi = tracklet->fpgaphiproj(layerdisk_+1).value();
+    int icorr = (ir * tracklet->fpgaphiprojder(layerdisk_+1).value()) >> icorrshift_;
     iphi += icorr;
 
-    int iz = tracklet->fpgazproj(layer_).value();
-    int izcor = (ir * tracklet->fpgazprojder(layer_).value() + (1 << (icorzshift_ - 1))) >> icorzshift_;
+    int iz = tracklet->fpgazproj(layerdisk_+1).value();
+    int izcor = (ir * tracklet->fpgazprojder(layerdisk_+1).value() + (1 << (icorzshift_ - 1))) >> icorzshift_;
     iz += izcor;
 
     int ideltaz = fpgastub->z().value() - iz;
-    int ideltaphi = (fpgastub->phi().value() << phi0shift_) - (iphi << (settings_.phi0bitshift() - 1 + phi0shift_));
+    int ideltaphi = (fpgastub->phi().value() - iphi) << phishift_;
+    
 
     //Floating point calculations
 
@@ -465,19 +435,19 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
 
     if (phi < 0)
       phi += 2 * M_PI;
-    phi -= phioffset_;
+    phi -= phimin_;
 
-    double dr = r - tracklet->rproj(layer_);
+    double dr = r - tracklet->rproj(layerdisk_+1);
     assert(std::abs(dr) < settings_.drmax());
 
-    double dphi = reco::reduceRange(phi - (tracklet->phiproj(layer_) + dr * tracklet->phiprojder(layer_)));
+    double dphi = reco::reduceRange(phi - (tracklet->phiproj(layerdisk_+1) + dr * tracklet->phiprojder(layerdisk_+1)));
 
-    double dz = z - (tracklet->zproj(layer_) + dr * tracklet->zprojder(layer_));
+    double dz = z - (tracklet->zproj(layerdisk_+1) + dr * tracklet->zprojder(layerdisk_+1));
 
     double dphiapprox =
-        reco::reduceRange(phi - (tracklet->phiprojapprox(layer_) + dr * tracklet->phiprojderapprox(layer_)));
+        reco::reduceRange(phi - (tracklet->phiprojapprox(layerdisk_+1) + dr * tracklet->phiprojderapprox(layerdisk_+1)));
 
-    double dzapprox = z - (tracklet->zprojapprox(layer_) + dr * tracklet->zprojderapprox(layer_));
+    double dzapprox = z - (tracklet->zprojapprox(layerdisk_+1) + dr * tracklet->zprojderapprox(layerdisk_+1));
 
     int seedindex = tracklet->getISeed();
 
@@ -488,11 +458,11 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       bool truthmatch = tracklet->stubtruthmatch(stub);
 
       HistBase* hists = globals_->histograms();
-      hists->FillLayerResidual(layer_,
+      hists->FillLayerResidual(layerdisk_+1,
                                seedindex,
-                               dphiapprox * settings_.rmean(layer_ - 1),
-                               ideltaphi * settings_.kphi1() * settings_.rmean(layer_ - 1),
-                               ideltaz * fact_ * settings_.kz(),
+                               dphiapprox * settings_.rmean(layerdisk_),
+                               ideltaphi * settings_.kphi1() * settings_.rmean(layerdisk_),
+                               (ideltaz << dzshift_ ) * settings_.kz(),
                                dz,
                                truthmatch);
     }
@@ -501,19 +471,19 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       double pt = 0.01 * settings_.c() * settings_.bfield() / std::abs(tracklet->rinv());
 
       globals_->ofstream("layerresiduals.txt")
-          << layer_ << " " << seedindex << " " << pt << " "
-          << ideltaphi * settings_.kphi1() * settings_.rmean(layer_ - 1) << " "
-          << dphiapprox * settings_.rmean(layer_ - 1) << " "
-          << phimatchcut_[seedindex] * settings_.kphi1() * settings_.rmean(layer_ - 1) << "   "
-          << ideltaz * fact_ * settings_.kz() << " " << dz << " " << zmatchcut_[seedindex] * settings_.kz() << endl;
+          << layerdisk_+1 << " " << seedindex << " " << pt << " "
+          << ideltaphi * settings_.kphi1() * settings_.rmean(layerdisk_) << " "
+          << dphiapprox * settings_.rmean(layerdisk_) << " "
+          << phimatchcut_[seedindex] * settings_.kphi1() * settings_.rmean(layerdisk_) << "   "
+          << (ideltaz << dzshift_) * settings_.kz() << " " << dz << " " << zmatchcut_[seedindex] * settings_.kz() << endl;
     }
 
-    bool imatch = (std::abs(ideltaphi) <= phifact_ * phimatchcut_[seedindex]) &&
-                  (std::abs(ideltaz * fact_) <= rzfact_ * zmatchcut_[seedindex]);
+    bool imatch = ((unsigned int)std::abs(ideltaphi) <= phimatchcut_[seedindex]) &&
+      ((unsigned int)std::abs(ideltaz << dzshift_) <= zmatchcut_[seedindex]);
 
     if (settings_.debugTracklet()) {
       edm::LogVerbatim("Tracklet") << getName() << " imatch = " << imatch << " ideltaphi cut " << ideltaphi << " "
-                                   << phimatchcut_[seedindex] << " ideltaz*fact cut " << ideltaz * fact_ << " "
+                                   << phimatchcut_[seedindex] << " ideltaz<<dzshift cut " << (ideltaz << dzshift_) << " "
                                    << zmatchcut_[seedindex];
     }
 
@@ -525,7 +495,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     assert(std::abs(dphiapprox) < 0.2);
 
     if (imatch) {
-      tracklet->addMatch(layer_,
+      tracklet->addMatch(layerdisk_+1,
                          ideltaphi,
                          ideltaz,
                          dphi,
@@ -555,35 +525,28 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     assert(stub->z() * tracklet->t() > 0.0);
 
     int sign = (tracklet->t() > 0.0) ? 1 : -1;
-    int disk = sign * disk_;
+    int disk = sign * (layerdisk_-N_LAYER+1);
     assert(disk != 0);
 
     //Perform integer calculations here
 
     int iz = fpgastub->z().value();
+
     int iphi = tracklet->fpgaphiprojdisk(disk).value();
-
-    int shifttmp = 6;  //TODO - express in terms of constants
-    assert(shifttmp >= 0);
-    int iphicorr = (iz * tracklet->fpgaphiprojderdisk(disk).value()) >> shifttmp;
-
+    int iphicorr = (iz * tracklet->fpgaphiprojderdisk(disk).value()) >> icorrshift_;
     iphi += iphicorr;
 
     int ir = tracklet->fpgarprojdisk(disk).value();
-
-    int shifttmp2 = 7;  //TODO - express in terms of constants
-    assert(shifttmp2 >= 0);
-    int ircorr = (iz * tracklet->fpgarprojderdisk(disk).value()) >> shifttmp2;
-
+    int ircorr = (iz * tracklet->fpgarprojderdisk(disk).value()) >> icorzshift_;
     ir += ircorr;
 
-    int ideltaphi = fpgastub->phi().value() * settings_.kphi() / settings_.kphi() - iphi;
+    int ideltaphi = fpgastub->phi().value() - iphi;
 
     int irstub = fpgastub->r().value();
     int ialphafact = 0;
     if (!stub->isPSmodule()) {
       assert(irstub < (int)N_DSS_MOD * 2);
-      if (disk_ <= 2) {
+      if (layerdisk_-N_LAYER <= 1) {
         ialphafact = ialphafactinner_[irstub];
         irstub = settings_.rDSSinner(irstub) / settings_.kr();
       } else {
@@ -616,9 +579,9 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
 
     if (phi < 0)
       phi += 2 * M_PI;
-    phi -= phioffset_;
+    phi -= phimin_;
 
-    double dz = z - sign * settings_.zmean(disk_ - 1);
+    double dz = z - sign * settings_.zmean(layerdisk_ - N_LAYER);
 
     if (std::abs(dz) > settings_.dzmax()) {
       edm::LogProblem("Tracklet") << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " "
@@ -667,7 +630,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       double pt = 0.01 * settings_.c() * settings_.bfield() / std::abs(tracklet->rinv());
 
       globals_->ofstream("diskresiduals.txt")
-          << disk_ << " " << stub->isPSmodule() << " " << tracklet->layer() << " " << abs(tracklet->disk()) << " " << pt
+          << layerdisk_-N_LAYER+1 << " " << stub->isPSmodule() << " " << tracklet->layer() << " " << abs(tracklet->disk()) << " " << pt
           << " " << ideltaphi * settings_.kphi() * stub->r() << " " << drphiapprox << " " << drphicut << " "
           << ideltar * settings_.krprojshiftdisk() << " " << deltar << " " << drcut << " " << endl;
     }

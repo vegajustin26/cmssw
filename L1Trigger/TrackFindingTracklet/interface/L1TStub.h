@@ -95,6 +95,7 @@ namespace trklet {
     bool isTilted() const;
 
     bool tpmatch(int tp) const;
+    bool tpmatch2(int tp) const;
 
     const std::string& DTClink() const {
       return DTClink_;

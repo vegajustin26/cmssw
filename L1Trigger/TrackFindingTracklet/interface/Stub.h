@@ -13,11 +13,13 @@
 
 namespace trklet {
 
+  class Globals;
+  
   class Stub {
   public:
     Stub(Settings const& settings);
 
-    Stub(L1TStub& stub, Settings const& settings, double phiminsec, double phimaxsec);
+    Stub(L1TStub& stub, Settings const& settings, Globals& globals);
 
     ~Stub() = default;
 
@@ -30,7 +32,7 @@ namespace trklet {
         if (isPSmodule()) {
           return r_.str() + "|" + z_.str() + "|" + phi_.str() + "|" + bend_.str();
         } else {
-          return "000" + r_.str() + "|" + z_.str() + "|" + phi_.str() + "|" + alphanew_.str() + "|" + bend_.str();
+          return "000" + r_.str() + "|" + z_.str() + "|" + phi_.str() + "|" + alpha_.str() + "|" + bend_.str();
         }
       }
     }
@@ -58,7 +60,7 @@ namespace trklet {
     const FPGAWord& z() const { return z_; }
     const FPGAWord& phi() const { return phi_; }
     const FPGAWord& phicorr() const { return phicorr_; }
-    const FPGAWord& alphanew() const { return alphanew_; }
+    const FPGAWord& alphanew() const { return alpha_; } //FIXME should remove new
 
     const FPGAWord& stubindex() const { return stubindex_; }
     const FPGAWord& layer() const { return layer_; }
@@ -83,7 +85,7 @@ namespace trklet {
     FPGAWord r_;
     FPGAWord z_;
     FPGAWord phi_;
-    FPGAWord alphanew_;
+    FPGAWord alpha_;
 
     FPGAWord bend_;
 

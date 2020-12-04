@@ -107,7 +107,7 @@ SLHCEvent::SLHCEvent(istream& in) {
     double t = std::abs(stub.z()) / stub.r();
     double eta = asinh(t);
 
-    if (std::abs(eta) < 2.6 ) {
+    if (std::abs(eta) < 2.6) {
       stubs_.push_back(stub);
     }
   }

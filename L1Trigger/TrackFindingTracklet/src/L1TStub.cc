@@ -102,11 +102,26 @@ void L1TStub::setXY(double x, double y) {
 
 bool L1TStub::tpmatch(int tp) const {
   for (int itp : tps_) {
-    if (tp == itp)
+    if (tp == std::abs(itp))
       return true;
   }
 
   return false;
+}
+
+bool L1TStub::tpmatch2(int tp) const {
+  bool match1=false;
+  bool match2=false;
+  for (int itp : tps_) {
+    if (tp == itp) {
+      match1=true;
+    }
+    if (tp == -itp) {
+      match2=true;
+    }
+  }
+
+  return match1&&match2;
 }
 
 bool L1TStub::isTilted() const {

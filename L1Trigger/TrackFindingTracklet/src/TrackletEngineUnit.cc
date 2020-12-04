@@ -6,11 +6,12 @@ using namespace std;
 using namespace trklet;
 
 
-TrackletEngineUnit::TrackletEngineUnit(const Settings* const settings, unsigned int nbitsfinephi, unsigned int layerdisk2, unsigned int iSeed, unsigned int nbitsfinephidiff, unsigned int iAllStub, std::vector<bool> pttableinner, std::vector<bool> pttableouter, VMStubsTEMemory* outervmstubs)
+TrackletEngineUnit::TrackletEngineUnit(const Settings* const settings, unsigned int nbitsfinephi, unsigned int layerdisk1, unsigned int layerdisk2, unsigned int iSeed, unsigned int nbitsfinephidiff, unsigned int iAllStub, std::vector<bool> pttableinner, std::vector<bool> pttableouter, VMStubsTEMemory* outervmstubs)
   : settings_(settings), candpairs_(5) {
   idle_=true;
   nbitsfinephi_=nbitsfinephi;
   layerdisk2_=layerdisk2;
+  layerdisk1_=layerdisk1;
   iSeed_=iSeed;
   nbitsfinephidiff_=nbitsfinephidiff;
   iAllStub_=iAllStub;
@@ -83,8 +84,8 @@ void TrackletEngineUnit::step(bool){
     if (!(inrange && pttableinner_[ptinnerindex] && pttableouter_[ptouterindex])) {
       if (settings_->debugTracklet()) {
 	edm::LogVerbatim("Tracklet") <<" Stub pair rejected because of stub pt cut bends : "
-				     << benddecode(tedata_.innerbend_.value(), tedata_.stub_->isPSmodule()) << " "
-				     << benddecode(outerbend.value(), outervmstub.isPSmodule());
+				     << settings_->benddecode(tedata_.innerbend_.value(), layerdisk1_, tedata_.stub_->isPSmodule()) << " "
+				     << settings_->benddecode(outerbend.value(), layerdisk2_, outervmstub.isPSmodule());
       }
     } else {
       candpairs_.store(pair<const Stub*, const Stub*>(tedata_.stub_, outervmstub.stub()));
