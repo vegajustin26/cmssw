@@ -33,9 +33,9 @@ namespace trackerDTC {
 
     const double y = (col_ + .5) * setup.baseCol() * sm->pitchCol();
     // radius of a column of strips/pixel in cm
-    d_ = sm->r() + y * sm->sin();
+    d_ = sm->r() + y * sm->sinTilt();
     // stub z in cm
-    z_ = digi(sm->z() + y * sm->cos(), setup.baseZ());
+    z_ = digi(sm->z() + y * sm->cosTilt(), setup.baseZ());
 
     const double x0 = rowLUT_ * setup.baseRow() * setup.dtcNumMergedRows() * sm->pitchRow();
     const double x1 = (rowLUT_ + 1) * setup.baseRow() * setup.dtcNumMergedRows() * sm->pitchRow();
@@ -80,7 +80,7 @@ namespace trackerDTC {
     r_ = digi(r_ - chosenRofPhi, setup.baseR());
 
     // radial (cylindrical) component of sensor separation
-    const double dr = sm->sep() / (sm->cos() - sm->sin() * z_ / d_);
+    const double dr = sm->sep() / (sm->cosTilt() - sm->sinTilt() * z_ / d_);
     // converts bend into qOverPt in 1/cm
     const double qOverPtOverBend = sm->pitchRow() / dr / d_;
     // qOverPt in 1/cm

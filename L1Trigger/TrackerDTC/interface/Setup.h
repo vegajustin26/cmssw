@@ -322,7 +322,7 @@ namespace trackerDTC {
 
     // Parameter specifying GeometricProcessor
 
-    // number of phi sectors used in hough transform
+    // number of phi sectors in a processing nonant used in hough transform
     int numSectorsPhi() const { return numSectorsPhi_; }
     // number of eta sectors used in hough transform
     int numSectorsEta() const { return numSectorsEta_; }

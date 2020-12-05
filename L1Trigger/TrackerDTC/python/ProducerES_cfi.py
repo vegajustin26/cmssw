@@ -3,6 +3,7 @@ import FWCore.ParameterSet.Config as cms
 TrackTrigger_params = cms.PSet (
 
   # Parameter to check if configured Tracker Geometry is supported
+  # this refers to files included by Configuration/Geometry/python/GeometryExtended*_cff.py
   SupportedGeometry = cms.PSet (
     XMLLabel    = cms.string ("geomXMLFiles"                                    ), # label of ESProducer/ESSource
     XMLPath     = cms.string ("Geometry/TrackerCommonData/data/PhaseII/"        ), # compared path

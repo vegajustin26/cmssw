@@ -121,11 +121,17 @@ namespace trackFindingTracklet {
   void ProducerKFin::produce(Event& iEvent, const EventSetup& iSetup) {
     auto toFrameStub = [](StubKFin* stub) { return stub->frame(); };
     auto toFrameTrack = [](const TrackKFin& track){ return track.frame(); };
+    // dataformat used for track cotTheta wrt eta sector centre
     const DataFormat& dfCot = dataFormats_->format(Variable::cot, Process::sf);
+    // dataformat used for track z at raiud chosenRofZ wrt eta sector centre
     const DataFormat& dfZT = dataFormats_->format(Variable::zT, Process::sf);
+    // dataformat used for track qOverPt in 1 / cm
     const DataFormat& dfQoverPt = dataFormats_->format(Variable::qOverPt, Process::sf);
+    // dataformat used for track phi at radius schoenRofPhi wrt phi sector centre
     const DataFormat& dfPhiT = dataFormats_->format(Variable::phiT, Process::sf);
+    // dataformat used for stub phi residual wrt track
     const DataFormat& dfPhi = dataFormats_->format(Variable::phi, Process::sf);
+    // dataformat used for stub z residual wrt track
     const DataFormat& dfZ = dataFormats_->format(Variable::z, Process::sf);
     const int numStreamsTracks = setup_->numRegions() * trackBuilderChannel_->numChannels();
     const int numStreamsStubs = numStreamsTracks * setup_->numLayers();
@@ -139,6 +145,7 @@ namespace trackFindingTracklet {
       Handle<TTTracks> handleTTTracks;
       iEvent.getByToken<TTTracks>(edGetTokenTTTracks_, handleTTTracks);
       const TTTracks& ttTracks = *handleTTTracks.product();
+      // Assign input tracks to channels according to TrackBuilder step.
       vector<TTTrackRefs> ttTrackRefsStreams(numStreamsTracks);
       vector<int> nTTTracksStreams(numStreamsTracks, 0);
       int channelId;
@@ -153,6 +160,7 @@ namespace trackFindingTracklet {
         if (trackBuilderChannel_->channelId(ttTrack, channelId))
           ttTrackRefsStreams[channelId].emplace_back(TTTrackRef(handleTTTracks, i++));
       for (channelId = 0; channelId < numStreamsTracks; channelId++) {
+        // Create vector of stubs/tracks in KF format from TTTracks
         const TTTrackRefs& ttTrackRefs = ttTrackRefsStreams[channelId];
         vector<TrackKFin> tracks;
         tracks.reserve(ttTrackRefs.size());
@@ -162,7 +170,7 @@ namespace trackFindingTracklet {
         int trackId(0);
         vector<int> numLayerStubs(setup_->numLayers(), 0);
         for (const TTTrackRef& ttTrackRef : ttTrackRefs) {
-          // cut on more then 256 tracks
+          // prevent more than 256 tracks per channel
           if (trackId >= dataFormats_->format(Variable::trackId, Process::kfin).range())
             continue;
           // get rz parameter
@@ -182,6 +190,7 @@ namespace trackFindingTracklet {
             continue;
           const int binZT = dfZT.toUnsigned(dfZT.integer(zT));
           const int binCot = dfCot.toUnsigned(dfCot.integer(cot));
+          // get kf layer encoding for this rough r-z track parameter
           const vector<int>& layerEncoding = layerEncoding_->layerEncoding(binEta, binZT, binCot);
           // get rphi parameter
           double qOverPt = ttTrackRef->rInv() / 2.;
@@ -200,7 +209,9 @@ namespace trackFindingTracklet {
             const double r = gp.perp() - setup_->hybridChosenRofPhi();
             const double phi = deltaPhi(gp.phi() - (ttTrackRef->phi() - qOverPt * gp.perp()));
             const double z = gp.z() - (ttTrackRef->z0() + ttTrackRef->tanL() * gp.perp());
-            double layer = distance(layerEncoding.begin(), find(layerEncoding.begin(), layerEncoding.end(), setup_->layerId(ttStubRef)));
+            // layers consitent with rough r-z track parameters are counted from 0 onwards
+            int layer = distance(layerEncoding.begin(), find(layerEncoding.begin(), layerEncoding.end(), setup_->layerId(ttStubRef)));
+            // put stubs from layer 7 to layer 6 since layer 7 almost never has stubs
             if (layer >= setup_->numLayers())
               layer = setup_->numLayers() - 1;
             // cut on phi and z residuals

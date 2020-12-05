@@ -383,6 +383,7 @@ namespace trackerDTC {
 
   // check if geometry is supported
   void Setup::checkGeometry() {
+    // Get tracker geometry version from file name included by ESProducer GeometryExtended*_cff.py
     const vector<string>& geomXMLFiles = pSetGC_->getParameter<vector<string>>(sgXMLLabel_);
     string version;
     for (const string& geomXMLFile : geomXMLFiles) {

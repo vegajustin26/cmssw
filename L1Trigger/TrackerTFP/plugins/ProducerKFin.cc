@@ -129,6 +129,7 @@ namespace trackerTFP {
       iEvent.getByToken<vector<TTTrack<Ref_Phase2TrackerDigi_>>>(edGetTokenTTTracks_, handleTTTracks);
       const vector<TTTrack<Ref_Phase2TrackerDigi_>>& ttTracks = *handleTTTracks.product();
       for (int region = 0; region < setup_->numRegions(); region++) {
+        // Unpack input SF data into vector
         int nStubsSF(0);
         for (int channel = 0; channel < dataFormats_->numChannel(Process::sf); channel++) {
           const int index = region * dataFormats_->numChannel(Process::sf) + channel;
@@ -179,7 +180,7 @@ namespace trackerTFP {
           TrackKFin track(*stubSF, TTTrackRef(handleTTTracks, i++), hitPattern, layerMap, maybePattern);
           tracks.emplace_back(track.frame());
         }
-        // transform deques to vectors
+        // transform deques to vectors & emulate truncation
         for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {
           const int index = region * dataFormats_->numChannel(Process::kf) + channel;
           deque<FrameTrack>& tracks = dequesTracks[channel];

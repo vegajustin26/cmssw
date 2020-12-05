@@ -53,12 +53,12 @@ namespace trackerDTC {
     double pitchRow() const { return pitchRow_; }
     // sensor length in cm [strip=5,pixel=.15625]
     double pitchCol() const { return pitchCol_; }
-    // module tilt measured w.r.t. beam axis (0=barrel), tk layout measures w.r.t. radial axis
+    // module tilt angle measured w.r.t. beam axis (0=barrel), tk layout measures w.r.t. radial axis
     double tilt() const { return tilt_; }
     // sinus of module tilt measured w.r.t. beam axis (0=barrel), tk layout measures w.r.t. radial axis
-    double sin() const { return sin_; }
+    double sinTilt() const { return sinTilt_; }
     // cosinus of module tilt measured w.r.t. beam axis (+-1=endcap), tk layout measures w.r.t. radial axis
-    double cos() const { return cos_; }
+    double cosTilt() const { return cosTilt_; }
     // encoded radius of disk2S stubs, used in Hybrid
     int encodedR() const { return encodedR_; }
     // encoded layer id [0-3]
@@ -112,12 +112,12 @@ namespace trackerDTC {
     double pitchRow_;
     // sensor length in cm [strip=5,pixel=.15625]
     double pitchCol_;
-    // module tilt measured w.r.t. beam axis (0=barrel), tk layout measures w.r.t. radial axis
+    // module tilt angle measured w.r.t. beam axis (0=barrel), tk layout measures w.r.t. radial axis
     double tilt_;
     // sinus of module tilt measured w.r.t. beam axis (0=barrel), tk layout measures w.r.t. radial axis
-    double sin_;
+    double sinTilt_;
     // cosinus of module tilt measured w.r.t. beam axis (+-1=endcap), tk layout measures w.r.t. radial axis
-    double cos_;
+    double cosTilt_;
     // module type (barrelPS, barrel2S, diskPS, disk2S)
     Type type_;
     // encoded radius of disk2S stubs, used in Hybrid
