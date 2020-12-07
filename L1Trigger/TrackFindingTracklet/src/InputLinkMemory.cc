@@ -54,7 +54,8 @@ void InputLinkMemory::addStub(const L1TStub& al1stub, const Stub& stub) {
 }
 
 void InputLinkMemory::writeStubs(bool first) {
-  openFile(first, "../data/MemPrints/InputStubs/InputStubs_");
+  const string dirIS = settings_.memPath() + "InputStubs/";
+  openFile(first, dirIS, "InputStubs_");
 
   for (unsigned int j = 0; j < stubs_.size(); j++) {
     string stub = stubs_[j]->str();
