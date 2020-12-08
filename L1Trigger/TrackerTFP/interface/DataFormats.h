@@ -297,7 +297,7 @@ namespace trackerTFP {
     const DataFormats* dataFormats_;
     // stub flavour
     Process p_;
-    // underlying frame
+    // underlying TTStubRef and bitvector
     TTDTC::Frame frame_;
     // ntuple of variables this stub is assemled of
     std::tuple<Ts...> data_;
@@ -562,7 +562,7 @@ namespace trackerTFP {
     const DataFormats* dataFormats_;
     // track flavour
     Process p_;
-    // underlying frame
+    // underlying TTTrackRef and bitvector
     FrameTrack frame_;
     // ntuple of variables this track is assemled of
     std::tuple<Ts...> data_;

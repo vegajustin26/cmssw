@@ -118,10 +118,10 @@ namespace trackFindingTracklet {
       for (const StreamTrack& stream : streamsTracks)
         nTracks += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
       ttTracks.reserve(nTracks);
-      // convert kf track frames and stub frames to TTTracks
+      // convert kf track frames per region and stub frames per region and layer to TTTracks
       for (int region = 0; region < setup_->numRegions(); region++) {
         const int offset = region * setup_->numLayers();
-        int pos(0);
+        int iTrk(0);
         for (const FrameTrack& frameTrack : streamsTracks[region]) {
           if (frameTrack.first.isNull())
             continue;
@@ -129,7 +129,7 @@ namespace trackFindingTracklet {
           vector<StubKF> stubs;
           stubs.reserve(setup_->numLayers());
           for (int layer = 0; layer < setup_->numLayers(); layer++) {
-            const TTDTC::Frame& frameStub = streamsStubs[offset + layer][pos];
+            const TTDTC::Frame& frameStub = streamsStubs[offset + layer][iTrk];
             if (frameStub.first.isNonnull())
               stubs.emplace_back(frameStub, dataFormats_, layer);
           }
@@ -137,7 +137,7 @@ namespace trackFindingTracklet {
           TrackKF track(frameTrack, dataFormats_);
           // convert kf track and kf stubs to TTTrack
           ttTracks.emplace_back(track.ttTrack(stubs));
-          pos++;
+          iTrk++;
         }
       }
     }
