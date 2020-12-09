@@ -27,7 +27,7 @@ process.load("L1Trigger.TrackFindingTracklet.L1HybridEmulationTracks_cff")
 #--- Load code that analyzes hybrid emulation 
 process.load( 'L1Trigger.TrackFindingTracklet.Analyzer_cff' )
 # load code that fits hybrid tracks
-process.load( 'L1Trigger.TrackFindingTracklet.Producer_cff' )
+process.load( 'L1Trigger.TrackFindingTracklet.ProducerKF_cff' )
 
 # build schedule
 process.mc = cms.Sequence( process.StubAssociator )

@@ -36,7 +36,7 @@ using namespace tt;
 namespace trackFindingTracklet {
 
   /*! \class  trackFindingTracklet::AnalyzerTracklet
-   *  \brief  Class to analyze TTTracks found by tracklet
+   *  \brief  Class to analyze TTTracks found by tracklet pattern recognition
    *  \author Thomas Schuh
    *  \date   2020, Oct
    */
@@ -50,8 +50,8 @@ namespace trackFindingTracklet {
     void endJob() override;
 
   private:
-    //
-    void associate(const vector<vector<TTStubRef>>& tracks, const StubAssociation* ass, set<TPPtr>& tps, int& sum) const;
+    // gets all TPs associated too any of the tracks & number of tracks matching at least one TP
+    void associate(const vector<vector<TTStubRef>>& tracks, const StubAssociation* ass, set<TPPtr>& tps, int& nMatchTrk) const;
 
     // ED input token of tracks
     EDGetTokenT<TTTracks> edGetToken_;
@@ -74,7 +74,9 @@ namespace trackFindingTracklet {
 
     // Histograms
 
+    // counts per TFP (processing nonant and event)
     TProfile* prof_;
+    // no. of tracks per nonant
     TProfile* profChannel_;
     TH1F* hisChannel_;
     TH1F* hisEff_;
@@ -175,26 +177,29 @@ namespace trackFindingTracklet {
       profChannel_->Fill(region, nTracks);
       prof_->Fill(1, nStubs);
       prof_->Fill(2, nTracks);
+      // no access to lost tracks
       prof_->Fill(3, 0);
     }
     // analyze tracklet products and associate found tracks with reconstrucable TrackingParticles
     set<TPPtr> tpPtrs;
     set<TPPtr> tpPtrsSelection;
-    int allMatched(0);
+    int nAllMatched(0);
+    // convert vector of tracks to vector of vector of associated stubs
     vector<vector<TTStubRef>> tracks;
     tracks.reserve(ttTracks.size());
     transform(ttTracks.begin(), ttTracks.end(), back_inserter(tracks), [](const TTTrack<Ref_Phase2TrackerDigi_>& ttTrack){ return ttTrack.getStubRefs(); });
     if (useMCTruth_) {
       int tmp(0);
       associate(tracks, selection, tpPtrsSelection, tmp);
-      associate(tracks, reconstructable, tpPtrs, allMatched);
+      associate(tracks, reconstructable, tpPtrs, nAllMatched);
     }
     for (const TPPtr& tpPtr : tpPtrsSelection)
       fill(tpPtr, hisEff_);
-    prof_->Fill(4, allMatched);
+    prof_->Fill(4, nAllMatched);
     prof_->Fill(5, ttTracks.size());
     prof_->Fill(6, tpPtrs.size());
     prof_->Fill(7, tpPtrsSelection.size());
+    // no access to lost tp
     prof_->Fill(8, 0);
     nEvents_++;
   }
@@ -231,13 +236,13 @@ namespace trackFindingTracklet {
     LogPrint("L1Trigger/TrackFindingTracklet") << log_.str();
   }
 
-  //
-  void AnalyzerTracklet::associate(const vector<vector<TTStubRef>>& tracks, const StubAssociation* ass, set<TPPtr>& tps, int& sum) const {
+  // gets all TPs associated too any of the tracks & number of tracks matching at least one TP
+  void AnalyzerTracklet::associate(const vector<vector<TTStubRef>>& tracks, const StubAssociation* ass, set<TPPtr>& tps, int& nMatchTrk) const {
     for (const vector<TTStubRef>& ttStubRefs : tracks) {
       const vector<TPPtr>& tpPtrs = ass->associate(ttStubRefs);
       if (tpPtrs.empty())
         continue;
-      sum++;
+      nMatchTrk++;
       copy(tpPtrs.begin(), tpPtrs.end(), inserter(tps, tps.begin()));
     }
   }
