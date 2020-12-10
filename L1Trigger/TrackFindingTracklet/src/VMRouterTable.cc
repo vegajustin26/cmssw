@@ -1,6 +1,7 @@
 // VMRouterTable: Lookup table used by the VMRouter to route stubs and provide information about which VMStubs are needed by the TrackletEngine
 #include "L1Trigger/TrackFindingTracklet/interface/VMRouterTable.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include <algorithm>
 #include <filesystem>
 
@@ -117,35 +118,38 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
   }
 
   if (settings_.writeTable()) {
+
+#ifdef CMSSW_GIT_HASH  
     if (not std::filesystem::exists(settings_.tablePath())) {
       system((string("mkdir -p ") + settings_.tablePath()).c_str());
     }
+#endif
     if (!settings_.combined()) {
       // write finebin tables
-      writeVMTable(settings_.tablePath() + name + "_finebin.tab", vmrtable_);
+      writeVMTable(settings_.tablePath(), name + "_finebin.tab", vmrtable_);
       // write barrel seed teinner tables (L1L2, L2L3, L3L4, L5L6)
       if (layerdisk == 0 || layerdisk == 1 || layerdisk == 2 || layerdisk == 4) {
 	std::string fnamesuffix = "L" + to_string(layerdisk + 1) + "L" + std::to_string(layerdisk + 2);
-	writeVMTable(settings_.tablePath() + "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
+	writeVMTable(settings_.tablePath(), "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
       }
       // write disk seed teinner tables (D1D2, D3D4)
       if (layerdisk == 6 || layerdisk == 8) {
 	std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1) + "D" + to_string(layerdisk - N_LAYER + 2);
-	writeVMTable(settings_.tablePath() + "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
+	writeVMTable(settings_.tablePath(), "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
       }
       // write overlap seed teinner tables (L1D1, L2D1)
       if (layerdisk == 0 || layerdisk == 1) {
 	std::string fnamesuffix = "L" + to_string(layerdisk + 1) + "D1";
-	writeVMTable(settings_.tablePath() + "VMTableInner" + fnamesuffix + ".tab", vmrtableteinneroverlap_);
+	writeVMTable(settings_.tablePath(), "VMTableInner" + fnamesuffix + ".tab", vmrtableteinneroverlap_);
       }
       // write barrel teouter tables (L2, L3, L4, L6, same as finebin tables)
       if (layerdisk == 1 || layerdisk == 2 || layerdisk == 3 || layerdisk == 5) {
 	std::string fnamesuffix = "L" + to_string(layerdisk + 1);
-	writeVMTable(settings_.tablePath() + "VMTableOuter" + fnamesuffix + ".tab", vmrtable_);
+	writeVMTable(settings_.tablePath(), "VMTableOuter" + fnamesuffix + ".tab", vmrtable_);
 	// write disk teouter tables (D1, D2, D4)
 	if (layerdisk == 6 || layerdisk == 7 || layerdisk == 9) {
 	  std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1);
-	  writeVMTable(settings_.tablePath() + "VMTableOuter" + fnamesuffix + ".tab", vmrtabletedisk_);
+	  writeVMTable(settings_.tablePath(), "VMTableOuter" + fnamesuffix + ".tab", vmrtabletedisk_);
 	}
       }
     } else {
@@ -362,10 +366,9 @@ int VMRouterTable::lookupinnerThird(int zbin, int rbin) {
   return vmrtableteinnerThird_[index];
 }
 
-void VMRouterTable::writeVMTable(std::string const& name, std::vector<int> const& table) {
-  ofstream out(name);
-  if (out.fail())
-    throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << name;
+void VMRouterTable::writeVMTable(std::string const& dir, std::string const& name, std::vector<int> const& table) {
+
+  ofstream out=openfile(dir,name,__FILE__,__LINE__);
 
   out << "{" << endl;
   for (unsigned int i = 0; i < table.size(); i++) {

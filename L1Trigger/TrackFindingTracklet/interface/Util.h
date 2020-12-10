@@ -2,9 +2,13 @@
 #define L1Trigger_TrackFindingTracklet_interface_Util_h
 
 #include <sstream>
+#include <fstream>
 #include <cassert>
 #include <cmath>
+#include <string>
 #include <algorithm>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
@@ -89,6 +93,68 @@ namespace trklet {
     int ipower=round(power);
     assert(std::abs(power-ipower)<0.1);
     return ipower;
+  }
+
+
+/******************************************************************************
+ * Checks to see if a directory exists. Note: This method only checks the
+ * existence of the full path AND if path leaf is a dir.
+ *
+ * @return   1 if dir exists AND is a dir,
+ *           0 if dir does not exist OR exists but not a dir,
+ *          -1 if an error occurred (errno is also set)
+ *****************************************************************************/
+  inline int dirExists(const std::string& path){
+    struct stat info;
+
+    int statRC = stat( path.c_str(), &info );
+    if( statRC != 0 )
+      {
+        if (errno == ENOENT)  { return 0; } // something along the path does not exist
+        if (errno == ENOTDIR) { return 0; } // something in path prefix is not a dir
+        return -1;
+    }
+    
+    return ( info.st_mode & S_IFDIR ) ? 1 : 0;
+  }
+
+
+  //Open file - create directory if not existent.
+  inline std::ofstream openfile(const std::string& dir, const std::string& fname, const char* file, int line) {
+
+    if (dirExists(dir)!=1) {
+      std::cout << "Creating directory : "<<dir<<std::endl;
+      system((std::string("mkdir -p ") + dir).c_str());
+    }
+
+    std::ofstream out(dir+"/"+fname);
+    
+    if (out.fail()) {
+      throw cms::Exception("BadFile") << file << " " << line << " could not create file " << fname << " in "<<dir;
+    }
+
+    return out;
+  }
+
+  
+  //Open file - create directory if not existent.
+  //If first==true open file in create mode, if first==false open in append mode
+  inline void openfile(std::ofstream& out, bool first, const std::string& dir, const std::string& fname, const char* file, int line) {
+
+    if (dirExists(dir)!=1) {
+      std::cout << "Creating directory : "<<dir<<std::endl;
+      system((std::string("mkdir -p ") + dir).c_str());
+    }
+
+    if (first) {
+      out.open(fname);
+    } else {
+      out.open(fname,std::ofstream::app);
+    }
+
+    if (out.fail()) {
+      throw cms::Exception("BadFile") << file << " " << line << " could not create file " << fname << " in "<<dir;
+    }
   }
 
 };  // namespace trklet

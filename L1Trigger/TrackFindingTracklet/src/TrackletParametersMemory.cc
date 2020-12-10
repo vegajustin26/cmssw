@@ -42,19 +42,7 @@ void TrackletParametersMemory::writeTPAR(bool first) {
       << ".dat";
   auto const& fname = oss.str();
 
-  if (first) {
-    bx_ = 0;
-    event_ = 1;
-
-    if (not std::filesystem::exists(dirTP)) {
-      system((string("mkdir -p ") + dirTP).c_str());
-    }
-    out_.open(fname);
-    if (out_.fail())
-      throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << fname;
-
-  } else
-    out_.open(fname, std::ofstream::app);
+  openfile(out_, first, dirTP, fname, __FILE__, __LINE__);
 
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
 

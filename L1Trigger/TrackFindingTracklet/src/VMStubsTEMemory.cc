@@ -283,15 +283,8 @@ void VMStubsTEMemory::setbendtable(std::vector<bool> vmbendtable) {
 
 void VMStubsTEMemory::writeVMBendTable() {
 
-  if (not std::filesystem::exists(settings_.tablePath())) {
-    system((string("mkdir -p ") + settings_.tablePath()).c_str());
-  }
-
-  const string fname = settings_.tablePath() + getName() + "_vmbendcut.tab";
-  ofstream outvmbendcut(fname);
-  if (outvmbendcut.fail())
-    throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << fname;
-
+  ofstream outvmbendcut=openfile(settings_.tablePath(), getName() + "_vmbendcut.tab", __FILE__, __LINE__);
+  
   outvmbendcut << "{" << endl;
   unsigned int vmbendtableSize = vmbendtable_.size();
   assert(vmbendtableSize == 16 || vmbendtableSize == 8);

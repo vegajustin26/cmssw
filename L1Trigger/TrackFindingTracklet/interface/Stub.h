@@ -77,6 +77,8 @@ namespace trklet {
     const L1TStub* l1tstub() const { return l1tstub_; }
     void setl1tstub(L1TStub* l1tstub) { l1tstub_ = l1tstub; }
 
+    bool isBarrel() const { return layerdisk_<N_LAYER; }
+    
   private:
     unsigned int layerdisk_;
     

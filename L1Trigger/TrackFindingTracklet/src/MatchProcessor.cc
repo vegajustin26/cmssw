@@ -53,14 +53,8 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
   }
 
   if (iSector_ == 0 && barrel_ && settings_.writeTable()) {
-    if (not std::filesystem::exists(settings_.tablePath())) {
-      system((string("mkdir -p ") + settings_.tablePath()).c_str());
-    }
 
-    const string filephicut = settings_.tablePath() + getName() + "_phicut.tab";
-    ofstream outphicut(filephicut);
-    if (outphicut.fail())
-      throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << filephicut;
+    ofstream outphicut=openfile(settings_.tablePath(), getName() + "_phicut.tab", __FILE__, __LINE__);
 
     outphicut << "{" << endl;
     for (unsigned int seedindex = 0; seedindex < 12; seedindex++) {
@@ -71,10 +65,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
     outphicut << endl << "};" << endl;
     outphicut.close();
 
-    const string filezcut = settings_.tablePath() + getName() + "_zcut.tab";
-    ofstream outzcut(filezcut);
-    if (outzcut.fail())
-      throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << filezcut;
+    ofstream outzcut=openfile(settings_.tablePath(), getName() + "_zcut.tab", __FILE__, __LINE__);
 
     outzcut << "{" << endl;
     for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
@@ -99,39 +90,8 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
         table_.push_back(pass);
       }
     }
-<<<<<<< HEAD
   } else {
     table_.resize(32*16*2,false);
-=======
-
-    if (settings_.writeTable()) {
-      if (not std::filesystem::exists(settings_.tablePath())) {
-        system((string("mkdir -p ") + settings_.tablePath()).c_str());
-      }
-
-      char layer = '0' + layer_;
-      string fname = "METable_L";
-      fname += layer;
-      fname += ".tab";
-      const string full_fname = settings_.tablePath() + fname;
-      ofstream out(full_fname);
-      if (out.fail())
-        throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << full_fname;
-
-      out << "{" << endl;
-      for (unsigned int i = 0; i < table_.size(); i++) {
-        if (i != 0) {
-          out << "," << endl;
-        }
-        out << table_[i];
-      }
-      out << "};" << endl;
-      out.close();
-    }
-  }
-
-  if (disk_ > 0) {
->>>>>>> Improve code that writes txt files for HLS (#57)
     for (unsigned int iprojbend = 0; iprojbend < 32; iprojbend++) {
       double projbend = 0.5 * (iprojbend - rinvhalf);
       for (unsigned int ibend = 0; ibend < 8; ibend++) {
@@ -148,12 +108,13 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
   }
   
   if (settings_.writeTable()) {
-    ofstream out;
+
     char layerdisk = barrel_ ? '0' + layerdisk_ + 1 : '0' + layerdisk_ - N_LAYER + 1;
     string fname = barrel_ ? "METable_L" : "METable_D";
     fname += layerdisk;
     fname += ".tab";
-    out.open(settings_.tablePath() + fname);
+
+    ofstream out=openfile(settings_.tablePath(), fname, __FILE__, __LINE__);
     out << "{" << endl;
     for (unsigned int i = 0; i < table_.size(); i++) {
       if (i != 0) {

@@ -59,14 +59,8 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
   }
 
   if (iSector_ == 0 && layerdisk_ < N_LAYER && settings_.writeTable()) {
-    if (not std::filesystem::exists(settings_.tablePath())) {
-      system((string("mkdir -p ") + settings_.tablePath()).c_str());
-    }
 
-    const string filephicut = settings_.tablePath() + getName() + "_phicut.tab";
-    ofstream outphicut(filephicut);
-    if (outphicut.fail())
-      throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << filephicut;
+    ofstream outphicut=openfile(settings_.tablePath(), getName() + "_phicut.tab", __FILE__, __LINE__);
 
     outphicut << "{" << endl;
     for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
@@ -93,14 +87,9 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
   }
 
   if (iSector_ == 0 && layerdisk_ >= N_LAYER && settings_.writeTable()) {
-    if (not std::filesystem::exists(settings_.tablePath())) {
-      system((string("mkdir -p ") + settings_.tablePath()).c_str());
-    }
 
-    const string filePSphicut = settings_.tablePath() + getName() + "_PSphicut.tab";
-    ofstream outPSphicut(filePSphicut);
-    if (outPSphicut.fail())
-      throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << filePSphicut;
+    ofstream outPSphicut=openfile(settings_.tablePath(), getName() + "_PSphicut.tab", __FILE__, __LINE__);
+
     outPSphicut << "{" << endl;
     for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
       if (seedindex != 0)
@@ -110,10 +99,8 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     outPSphicut << endl << "};" << endl;
     outPSphicut.close();
 
-    const string file2Sphicut = settings_.tablePath() + getName() + "_2Sphicut.tab";
-    ofstream out2Sphicut(file2Sphicut);
-    if (out2Sphicut.fail())
-      throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << file2Sphicut;
+    ofstream out2Sphicut=openfile(settings_.tablePath(), getName() + "_2Sphicut.tab", __FILE__, __LINE__);
+
     out2Sphicut << "{" << endl;
     for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
       if (seedindex != 0)

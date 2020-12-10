@@ -31,7 +31,7 @@ namespace trklet {
     int lookupinneroverlap(int zbin, int rbin);
     int lookupinnerThird(int zbin, int rbin);
 
-    void writeVMTable(std::string const& name, std::vector<int> const& table);
+    void writeVMTable(std::string const& dir, std::string const& name, std::vector<int> const& table);
     
   private:
     Settings const& settings_;
