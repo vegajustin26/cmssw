@@ -435,19 +435,11 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
       
       // Get the DTC name form the channel
 
-      string dtcname="";
-      if (channel%12==0) dtcname="PS10G_1";
-      if (channel%12==1) dtcname="PS10G_2";
-      if (channel%12==2) dtcname="PS10G_3";
-      if (channel%12==3) dtcname="PS10G_4";
-      if (channel%12==4) dtcname="PS_1";
-      if (channel%12==5) dtcname="PS_2";
-      if (channel%12==6) dtcname="2S_1";
-      if (channel%12==7) dtcname="2S_2";
-      if (channel%12==8) dtcname="2S_3";
-      if (channel%12==9) dtcname="2S_4";
-      if (channel%12==10) dtcname="2S_5";
-      if (channel%12==11) dtcname="2S_6";
+      static string dtcbasenames[12]={"PS10G_1", "PS10G_2", "PS10G_3", "PS10G_4", 
+				      "PS_1",  "PS_2",  "2S_1",  "2S_2",  "2S_3",  
+				      "2S_4",  "2S_5", "2S_6"};
+
+      string dtcname=dtcbasenames[channel%12];
 
       if (channel%24>=12) dtcname="neg"+dtcname;
 
@@ -467,38 +459,34 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
 	const GlobalPoint& ttPos = setup_.stubPos(stub.first);
 
-	double r=ttPos.perp();
-	double z=ttPos.z();
+	//Get the 2 bits for the layercode
+	string layerword=stub.second.to_string().substr(61,2);
+	unsigned int layercode=2*(layerword[0]-'0')+layerword[1]-'0';
+	assert(layercode<4);
 
-	int layerdisk=-1;
+	//translation from the two bit layercode to the layer/disk number of each of the
+	//12 channels (dtcs)
+	static int layerdisktab[12][4] = {{0,  6,  8, 10},
+					  {0,  7,  9, -1},
+					  {1,  7, -1, -1},
+					  {6,  8, 10, -1},
+					  {2,  7, -1, -1},
+					  {2,  9, -1, -1},
+					  {3,  4, -1, -1},
+					  {4, -1, -1, -1},
+					  {5, -1, -1, -1},
+					  {5,  8, -1, -1},
+					  {6,  9, -1, -1},
+					  {7, 10, -1, -1}};
 
-	if (std::abs(z)>250.0) {
-	  layerdisk=10;
-	} else if (std::abs(z)>210.0) {
-	  layerdisk=9;	
-	} else if (std::abs(z)>170.0) {
-	  layerdisk=8;
-	} else if (std::abs(z)>140.0) {
-	  layerdisk=7;
-	} else if (std::abs(z)>120.0) {
-	  layerdisk=6;
-	} else if (r>90.0) {
-	  layerdisk=5;
-	} else if (r>75.0) {
-	  layerdisk=4;
-	} else if (r>60.0) {
-	  layerdisk=3;
-	} else if (r>45.0) {
-	  layerdisk=2;
-	} else if (r>30.0) {
-	  layerdisk=1;
-	} else if (r>15.0) {
-	  layerdisk=0;
-	}
+	int layerdisk=layerdisktab[channel%12][layercode];
+	assert(layerdisk!=-1);
 
-	string stubword=stub.second.to_string().substr(64-36-3,36); //FIXME hardcoded numbers...
+	//Get the 36 bit word - skip the lowest 3 buts (status and layer code)
+	string stubword=stub.second.to_string().substr(64-36-3,36);
 	string stubwordhex="";
 
+	//Loop over the 9 words in the 36 bit stub word
 	for(unsigned int i=0;i<9;i++){
 	  bitset<4> bits(stubword.substr(i*4,4));
 	  ulong val=bits.to_ulong();
