@@ -472,6 +472,8 @@ void MatchCalculator::execute() {
       else{
         edm::LogProblem("Tracklet") << "WARNING dphi and/or dphiapprox too large : " << dphi << " " << dphiapprox
                                     << "dphi " << dphi << " Seed / ISeed " << tracklet->getISeed()<< endl;
+        match = false;
+        imatch = false;
       }
       if (settings_.debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "imatch match disk: " << imatch << " " << match << " " << std::abs(ideltaphi)
