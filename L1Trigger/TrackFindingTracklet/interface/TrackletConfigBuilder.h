@@ -1,6 +1,8 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_TrackletConfigBuilder_h
 #define L1Trigger_TrackFindingTracklet_interface_TrackletConfigBuilder_h
 
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+
 #include <vector>
 #include <utility>
 #include <set>
@@ -14,7 +16,7 @@ namespace trklet {
 
   public:
   
-    TrackletConfigBuilder(bool combinedmodules);
+    TrackletConfigBuilder(const Settings& settings);
     
     void writeAll(std::ostream& wires, std::ostream& memories, std::ostream& modules);
   
@@ -106,8 +108,6 @@ namespace trklet {
     
     unsigned int NTC_[8]; //Number of TC per seeding combination
 
-    unsigned int NTPSeedRegion_[8]; //Number of TP per region (outer) 
-  
     unsigned int NRegions_[11]; //Regions (all stubs memories 6 layers +5 disks
     unsigned int NVMME_[11]; //Number of MEs (all stubs memories 6 layers +5 disks
     std::pair<unsigned int, unsigned int> NVMTE_[8]; //number of TEs for each seeding combination
@@ -123,6 +123,21 @@ namespace trklet {
     std::vector<std::vector<unsigned int> > TC_[8];
     
     std::vector< std::vector<std::pair<unsigned int, unsigned int> > > projections_[11]; //seedindex and TC
+
+    //Which matches are used for each seeding layer
+    //                                         L1 L2 L3 L4 L5 L6 D1 D2 D3 D4 D5 
+    int matchport_[N_SEED][N_LAYER+N_DISK]= { {-1,-1, 1, 2, 3, 4, 4, 3, 2, 1,-1},   //L1L2
+					      { 1,-1,-1, 2, 3,-1, 4, 3, 2, 1,-1},   //L2L3
+					      { 1, 2,-1,-1, 3, 4, 4, 3,-1,-1,-1},   //L3L4
+					      { 1, 2, 3, 4,-1,-1,-1,-1,-1,-1,-1},   //L5L6
+					      { 1, 2,-1,-1,-1,-1,-1,-1, 2, 3, 4},   //D1D2
+					      { 1,-1,-1,-1,-1,-1, 2, 3,-1,-1, 4},   //D3D4
+					      {-1,-1,-1,-1,-1,-1,-1, 1, 2, 3, 4},   //L1D1
+					      { 1,-1,-1,-1,-1,-1,-1, 2, 3, 4,-1}};  //L2D1
+
+    unsigned int N_PromptSeed_;
+    
+    const Settings& settings_;
     
   };
 }

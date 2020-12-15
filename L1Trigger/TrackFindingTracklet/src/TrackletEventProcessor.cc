@@ -100,7 +100,7 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
 
   } else {
 
-    TrackletConfigBuilder config(settings_->combined());
+    TrackletConfigBuilder config(*settings_);
     
     std::stringstream wires;
     std::stringstream memories;

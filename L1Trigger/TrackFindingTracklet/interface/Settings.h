@@ -130,6 +130,16 @@ namespace trklet {
       return lutwidthtabextended_[inner][iSeed];
     }
 
+    unsigned int seedlayers(int inner, int seed) const {
+      int layerdisk=seedlayers_[seed][inner];
+      assert(layerdisk>=0);
+      return layerdisk;
+    }
+
+    unsigned int NTC(int seed) const {
+      return ntc_[seed];
+    }
+
     unsigned int projlayers(unsigned int iSeed, unsigned int i) const { return projlayers_[iSeed][i]; }
     unsigned int projdisks(unsigned int iSeed, unsigned int i) const { return projdisks_[iSeed][i]; }
     double rphimatchcut(unsigned int iSeed, unsigned int ilayer) const { return rphimatchcut_[ilayer][iSeed]; }
@@ -556,6 +566,25 @@ namespace trklet {
          {{6, 6, 6, 6, 10, 10, 10, 10, 0, 0, 6, 0}},
          {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6}}}};
 
+
+    //layers/disks used by each seed
+    std::array<std::array<int, 3>, N_SEED> seedlayers_{{{{0, 1, -1}}, //L1L2
+	                                                {{1, 2, -1}}, //1 L2L3
+							{{2, 3, -1}}, //2 L3L4
+							{{4, 5, -1}}, //3 L5L6
+							{{6, 7, -1}}, //4 D1D2
+							{{8, 9, -1}}, //5 D3D4
+							{{0, 6, -1}}, //6 L1D1
+							{{1, 6, -1}}, //7 L2D1
+							{{3, 4,  5}}, //8 L2L3L4
+							{{3, 4,  5}}, //9 L4L5L6
+							{{3, 4,  6}}, //10 L2L3D1
+							{{6, 7, 1}}}}; //11 D1D2L2
+
+    //Number of tracklet calculators for the prompt seeding combinations
+    std::array<unsigned int, N_SEED> ntc_{{12, 4, 4, 4, 4, 4, 8, 4, 0, 0, 0, 0}};
+    
+    
     //projection layers by seed index. For each seeding index (row) the list of layers that we consider projections to
     std::array<std::array<unsigned int, N_LAYER - 2>, N_SEED> projlayers_{{{{3, 4, 5, 6}},  //0 L1L2
                                                                            {{1, 4, 5, 6}},  //1 L2L3

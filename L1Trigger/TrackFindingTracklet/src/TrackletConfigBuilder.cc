@@ -8,97 +8,52 @@
 #include <cassert>
 
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletConfigBuilder.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 using namespace std;
 using namespace trklet;
 
-TrackletConfigBuilder::TrackletConfigBuilder(bool combinedmodules){
+TrackletConfigBuilder::TrackletConfigBuilder(const Settings& settings):
+  settings_(settings){
   
-  NSector_=9;
-  rcrit_=55.0;
+  NSector_=N_SECTOR;
+  rcrit_=settings.rcrit();
 
-  combinedmodules_=combinedmodules;
+  combinedmodules_=settings.combined();
   
-  rinvmax_=0.01*0.3*3.8/2.0; //0.01 to convert to cm-1
+  rinvmax_=settings.rinvmax();
   
-  rmaxdisk_=120.0;
-  zlength_=120.0;
-    
-  rmean_[0]=(rmaxdisk_*851)/4096;
-  rmean_[1]=(rmaxdisk_*1269)/4096;
-  rmean_[2]=(rmaxdisk_*1784)/4096;
-  rmean_[3]=(rmaxdisk_*2347)/4096;
-  rmean_[4]=(rmaxdisk_*2936)/4096;
-  rmean_[5]=(rmaxdisk_*3697)/4096;
-  
-  zmean_[0]=(zlength_*2239)/2048;
-  zmean_[1]=(zlength_*2645)/2048;
-  zmean_[2]=(zlength_*3163)/2048;
-  zmean_[3]=(zlength_*3782)/2048;
-  zmean_[4]=(zlength_*4523)/2048;
+  rmaxdisk_=settings.rmaxdisk();
+  zlength_=settings.zlength();
 
-  double rsectmin=21.8;
-  double rsectmax=112.7;
-  
-  dphisectorHG_ = 2 * M_PI / NSector_ +
-      rinvmax_*std::max(rcrit_ - rsectmin, rsectmax - rcrit_);
-  
-  NRegions_[0]=8;
-  NRegions_[1]=4;
-  NRegions_[2]=4;
-  NRegions_[3]=4;
-  NRegions_[4]=4;
-  NRegions_[5]=4;
-  NRegions_[6]=4;
-  NRegions_[7]=4;
-  NRegions_[8]=4;
-  NRegions_[9]=4;
-  NRegions_[10]=4;
-  
-  NVMME_[0]=4;
-  NVMME_[1]=8;
-  NVMME_[2]=8;
-  NVMME_[3]=8;
-  NVMME_[4]=8;
-  NVMME_[5]=8;
-  NVMME_[6]=8;
-  NVMME_[7]=4;
-  NVMME_[8]=4;
-  NVMME_[9]=4;
-  NVMME_[10]=4;
+  for (int i=0;i<N_LAYER;i++){
+    rmean_[i]=settings.rmean(i);
+  }
 
-  
-  NTPSeedRegion_[0]=1;
-  NTPSeedRegion_[1]=1;
-  NTPSeedRegion_[2]=1;
-  NTPSeedRegion_[3]=1;
-  NTPSeedRegion_[4]=1;
-  NTPSeedRegion_[5]=1;
-  NTPSeedRegion_[6]=1;
-  NTPSeedRegion_[7]=1;
+  for (int i=0;i<N_DISK;i++){
+    zmean_[i]=settings.zmean(i);
+  }
 
-  NVMTE_[0]=std::pair<unsigned int, unsigned int>(4,8);
-  NVMTE_[1]=std::pair<unsigned int, unsigned int>(4,4);
-  NVMTE_[2]=std::pair<unsigned int, unsigned int>(4,8);
-  NVMTE_[3]=std::pair<unsigned int, unsigned int>(4,8);
-  NVMTE_[4]=std::pair<unsigned int, unsigned int>(4,4);
-  NVMTE_[5]=std::pair<unsigned int, unsigned int>(4,4);
-  NVMTE_[6]=std::pair<unsigned int, unsigned int>(2,4);
-  NVMTE_[7]=std::pair<unsigned int, unsigned int>(2,4);
+  dphisectorHG_ = settings.dphisectorHG();
+
+  for(int layerdisk=0;layerdisk<N_LAYER+N_DISK;layerdisk++) {
+    NRegions_[layerdisk]=settings.nallstubs(layerdisk);
+    NVMME_[layerdisk]=settings.nvmme(layerdisk);
+  }
+
+  //This configuration class only handles the prompt seeds
+  constexpr int PROMPTSEEDS=8;
+  N_PromptSeed_=PROMPTSEEDS;
   
+  for(int iseed=0;iseed<PROMPTSEEDS;iseed++) {
+    NVMTE_[iseed]=std::pair<unsigned int, unsigned int>(settings.nvmte(0,iseed),settings.nvmte(1,iseed));
+    NTC_[iseed]=settings.NTC(iseed);
+  }
+
   initGeom();
     
   buildTE();
   
-  NTC_[0]=12;
-  NTC_[1]=4;
-  NTC_[2]=4;  //8
-  NTC_[3]=4;
-  NTC_[4]=4;
-  NTC_[5]=4;
-  NTC_[6]=8;  //4
-  NTC_[7]=4;
-    
   buildTC();
 
   buildProjections();
@@ -107,24 +62,14 @@ TrackletConfigBuilder::TrackletConfigBuilder(bool combinedmodules){
 
 std::pair<unsigned int,unsigned int> TrackletConfigBuilder::seedLayers(unsigned int iSeed) {
 
-  if (iSeed==0) return std::pair<unsigned int, unsigned int>(0,1);
-  if (iSeed==1) return std::pair<unsigned int, unsigned int>(1,2);
-  if (iSeed==2) return std::pair<unsigned int, unsigned int>(2,3);
-  if (iSeed==3) return std::pair<unsigned int, unsigned int>(4,5);
-  if (iSeed==4) return std::pair<unsigned int, unsigned int>(6,7);
-  if (iSeed==5) return std::pair<unsigned int, unsigned int>(8,9);
-  if (iSeed==6) return std::pair<unsigned int, unsigned int>(0,6);
-  
-  assert(iSeed==7);
-  
-  return std::pair<unsigned int, unsigned int>(1,6);
-  
+  return std::pair<unsigned int, unsigned int>(settings_.seedlayers(0,iSeed),settings_.seedlayers(1,iSeed));
+
 }
 
 
 void TrackletConfigBuilder::initGeom(){
   
-  for(unsigned int ilayer=0;ilayer<11;ilayer++) {
+  for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++) {
     double dphi= dphisectorHG_/NRegions_[ilayer];
     for(unsigned int iReg=0;iReg<NRegions_[ilayer];iReg++){
       std::vector< std::pair<unsigned int, unsigned int> > emptyVec;
@@ -142,7 +87,7 @@ void TrackletConfigBuilder::initGeom(){
       }
     }
   }
-  for(unsigned int iseed=0;iseed<8;iseed++){
+  for(unsigned int iseed=0;iseed<N_PromptSeed_;iseed++){
     unsigned int l1=seedLayers(iseed).first;
     unsigned int l2=seedLayers(iseed).second;
     unsigned int nVM1=NVMTE_[iseed].first;
@@ -216,7 +161,7 @@ bool TrackletConfigBuilder::validTEPair(unsigned int iseed, unsigned int iTE1, u
   
 void TrackletConfigBuilder::buildTE() {
   
-  for(unsigned int iseed=0;iseed<8;iseed++){
+  for(unsigned int iseed=0;iseed<N_PromptSeed_;iseed++){
     for(unsigned int i1=0;i1<VMStubsTE_[iseed].first.size();i1++){
       for(unsigned int i2=0;i2<VMStubsTE_[iseed].second.size();i2++){
 	if (validTEPair(iseed,i1,i2)) {
@@ -231,7 +176,7 @@ void TrackletConfigBuilder::buildTE() {
 
 void TrackletConfigBuilder::buildTC(){
 
-  for(unsigned int iSeed=0;iSeed<8;iSeed++){
+  for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++){
     unsigned int nTC=NTC_[iSeed];
     std::vector<std::pair<unsigned int, unsigned int> >& TEs=TE_[iSeed];
     std::vector<std::vector<unsigned int> >& TCs=TC_[iSeed];
@@ -284,23 +229,12 @@ std::pair<double, double> TrackletConfigBuilder::seedPhiRange(double rproj, unsi
 
 void TrackletConfigBuilder::buildProjections(){
   
-  //FIXME - should be member data
   
-  //                       L1 L2 L3 L4 L5 L6 D1 D2 D3 D4 D5 
-  int matchport[8][11]= { {-1,-1, 1, 2, 3, 4, 4, 3, 2, 1,-1},   //L1L2
-			  { 1,-1,-1, 2, 3,-1, 4, 3, 2, 1,-1},   //L2L3
-			  { 1, 2,-1,-1, 3, 4, 4, 3,-1,-1,-1},   //L3L4
-			  { 1, 2, 3, 4,-1,-1,-1,-1,-1,-1,-1},   //L5L6
-			  { 1, 2,-1,-1,-1,-1,-1,-1, 2, 3, 4},   //D1D2
-			  { 1,-1,-1,-1,-1,-1, 2, 3,-1,-1, 4},   //D3D4
-			  {-1,-1,-1,-1,-1,-1,-1, 1, 2, 3, 4},   //L1D1
-			  { 1,-1,-1,-1,-1,-1,-1, 2, 3, 4,-1}};  //L2D1
-  
-  for(unsigned int iseed=0;iseed<8;iseed++){ 
+  for(unsigned int iseed=0;iseed<N_PromptSeed_;iseed++){ 
     std::vector<std::vector<unsigned int> >& TCs=TC_[iseed];
     
-    for (unsigned int ilayer=0;ilayer<11;ilayer++) {
-      if (matchport[iseed][ilayer]==-1) continue;
+    for (unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++) {
+      if (matchport_[iseed][ilayer]==-1) continue;
       for (unsigned int iReg=0;iReg<NRegions_[ilayer];iReg++) {
 	for (unsigned int iTC=0;iTC<TCs.size();iTC++){
 	  double rproj=rmaxdisk_;
@@ -323,7 +257,7 @@ double TrackletConfigBuilder::phi(double r1, double phi1, double r2, double phi2
   double rhoinv=rinv(r1,phi1,r2,phi2);
   if (fabs(rhoinv)>rinvmax_) {
     rhoinv=rinvmax_*rhoinv/fabs(rhoinv);
-    }
+  }
   return phi1+asin(0.5*r*rhoinv)-asin(0.5*r1*rhoinv);
   
 }
@@ -416,7 +350,7 @@ std::string TrackletConfigBuilder::PRName(unsigned int ilayer, unsigned int ireg
 
 void TrackletConfigBuilder::writeProjectionMemories(std::ostream& os, std::ostream& memories, std::ostream&){
   
-  for(unsigned int ilayer=0;ilayer<11;ilayer++){
+  for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
     for(unsigned int ireg=0;ireg<projections_[ilayer].size();ireg++){
       for(unsigned int imem=0;imem<projections_[ilayer][ireg].size();imem++){
 	
@@ -461,7 +395,7 @@ void TrackletConfigBuilder::writeSPMemories(std::ostream& os, std::ostream& memo
 
   if (combinedmodules_) return;
   
-  for(unsigned int iSeed=0;iSeed<8;iSeed++) {
+  for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
     
     for(unsigned int iTC=0;iTC<TC_[iSeed].size();iTC++){
       for(unsigned int iTE=0;iTE<TC_[iSeed][iTC].size();iTE++){
@@ -494,7 +428,7 @@ void TrackletConfigBuilder::writeAPMemories(std::ostream& os, std::ostream& memo
 
   if (combinedmodules_) return;
   
-  for(unsigned int ilayer=0;ilayer<11;ilayer++){
+  for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
     for(unsigned int iReg=0;iReg<NRegions_[ilayer];iReg++){
       
       memories << "AllProj: AP_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<" [56]"<<std::endl;
@@ -513,7 +447,7 @@ void TrackletConfigBuilder::writeCMMemories(std::ostream& os, std::ostream& memo
 
   if (combinedmodules_) return;
   
-  for(unsigned int ilayer=0;ilayer<11;ilayer++){
+  for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
     for(unsigned int iME=0;iME<NVMME_[ilayer]*NRegions_[ilayer];iME++){
       
       memories << "CandidateMatch: CM_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iME/NVMME_[ilayer])
@@ -536,7 +470,7 @@ void TrackletConfigBuilder::writeVMPROJMemories(std::ostream& os, std::ostream& 
 
   if (combinedmodules_) return;
   
-  for(unsigned int ilayer=0;ilayer<11;ilayer++){      
+  for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){      
     for(unsigned int iME=0;iME<NVMME_[ilayer]*NRegions_[ilayer];iME++){
       
       memories << "VMProjections: VMPROJ_"<<LayerName(ilayer)<<"PHI"
@@ -554,44 +488,34 @@ void TrackletConfigBuilder::writeVMPROJMemories(std::ostream& os, std::ostream& 
  
 
 void TrackletConfigBuilder::writeFMMemories(std::ostream& os, std::ostream& memories, std::ostream& modules){
-  //                       L1 L2 L3 L4 L5 L6 D1 D2 D3 D4 D5 
-  int matchport[8][11]= { {-1,-1, 1, 2, 3, 4, 4, 3, 2, 1,-1},   //L1L2
-			  { 1,-1,-1, 2, 3,-1, 4, 3, 2, 1,-1},   //L2L3
-			  { 1, 2,-1,-1, 3, 4, 4, 3,-1,-1,-1},   //L3L4
-			  { 1, 2, 3, 4,-1,-1,-1,-1,-1,-1,-1},   //L5L6
-			  { 1, 2,-1,-1,-1,-1,-1,-1, 2, 3, 4},   //D1D2
-			  { 1,-1,-1,-1,-1,-1, 2, 3,-1,-1, 4},   //D3D4
-			  {-1,-1,-1,-1,-1,-1,-1, 1, 2, 3, 4},   //L1D1
-			  { 1,-1,-1,-1,-1,-1,-1, 2, 3, 4,-1}};  //L2D1
-
 
   if (combinedmodules_) {
-    for(unsigned int ilayer=0;ilayer<11;ilayer++){
+    for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
       for(unsigned int iReg=0;iReg<NRegions_[ilayer];iReg++){
 	modules << "MatchProcessor: MP_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<std::endl;
-	for(unsigned int iSeed=0;iSeed<8;iSeed++) {
-	  if (matchport[iSeed][ilayer]==-1) continue;
+	for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+	  if (matchport_[iSeed][ilayer]==-1) continue;
 	  memories << "FullMatch: FM_"<<iSeedStr(iSeed)<<"_"<<LayerName(ilayer)<<"PHI"
 		   <<iTCStr(iReg)<<" [36]"<<std::endl;
 	  os << "FM_"<<iSeedStr(iSeed)<<"_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)
 	     << " input=> MP_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)
 	     << ".matchout1 output=> FT_"<<iSeedStr(iSeed)<<".fullmatch"
-	     << matchport[iSeed][ilayer]<<"in"<<iReg+1<<std::endl;
+	     << matchport_[iSeed][ilayer]<<"in"<<iReg+1<<std::endl;
 	}
       }
     }	
   } else {
-    for(unsigned int ilayer=0;ilayer<11;ilayer++){
+    for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
       for(unsigned int iReg=0;iReg<NRegions_[ilayer];iReg++){
 	modules << "MatchCalculator: MC_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<std::endl;
-	for(unsigned int iSeed=0;iSeed<8;iSeed++) {
-	  if (matchport[iSeed][ilayer]==-1) continue;
+	for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+	  if (matchport_[iSeed][ilayer]==-1) continue;
 	  memories << "FullMatch: FM_"<<iSeedStr(iSeed)<<"_"<<LayerName(ilayer)<<"PHI"
 		   <<iTCStr(iReg)<<" [36]"<<std::endl;
 	  os << "FM_"<<iSeedStr(iSeed)<<"_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)
 	     << " input=> MC_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)
 	     << ".matchout1 output=> FT_"<<iSeedStr(iSeed)<<".fullmatch"
-	     << matchport[iSeed][ilayer]<<"in"<<iReg+1<<std::endl;
+	     << matchport_[iSeed][ilayer]<<"in"<<iReg+1<<std::endl;
 	}
       }
     }	
@@ -602,7 +526,7 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
 
   if (combinedmodules_) {
    //First write AS memories used by MatchProcessor
-    for(unsigned int ilayer=0;ilayer<11;ilayer++){
+    for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
       for(unsigned int iReg=0;iReg<NRegions_[ilayer];iReg++){
 	memories << "AllStubs: AS_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<"n1"<<" [42]"<<std::endl;
 	if (combinedmodules_) {
@@ -619,12 +543,12 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
     
     
     //Next write AS memories used by TrackletProcessor
-    for(unsigned int ilayer=0;ilayer<11;ilayer++){
+    for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
       for(int iReg=0;iReg<(int)NRegions_[ilayer];iReg++){
 	
 	unsigned int nmem=1;
 	
-	for(unsigned int iSeed=0;iSeed<8;iSeed++) {
+	for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
 	  
 	  unsigned int l1=seedLayers(iSeed).first;
 	  unsigned int l2=seedLayers(iSeed).second;
@@ -721,7 +645,7 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
     }
   } else {
     //First write AS memories used by MatchCalculator
-    for(unsigned int ilayer=0;ilayer<11;ilayer++){
+    for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
       for(unsigned int iReg=0;iReg<NRegions_[ilayer];iReg++){
 	memories << "AllStubs: AS_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<"n1"<<" [42]"<<std::endl;
 	if (combinedmodules_) {
@@ -738,12 +662,12 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
     
     
     //Next write AS memories used by TrackletCalculator
-    for(unsigned int ilayer=0;ilayer<11;ilayer++){
+    for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
       for(unsigned int iReg=0;iReg<NRegions_[ilayer];iReg++){
 	
 	unsigned int nmem=1;
 	
-	for(unsigned int iSeed=0;iSeed<8;iSeed++) {
+	for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
 	  
 	  unsigned int l1=seedLayers(iSeed).first;
 	  unsigned int l2=seedLayers(iSeed).second;
@@ -789,7 +713,7 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
 
   if (combinedmodules_) {
     //First write VMS memories used by MatchProcessor
-    for(unsigned int ilayer=0;ilayer<11;ilayer++){
+    for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
       for(unsigned int iReg=0;iReg<NRegions_[ilayer];iReg++){
 	memories << "VMStubsME: VMSME_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)
 		 <<"n1 [18]"<<std::endl;
@@ -802,7 +726,7 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
     }
   
     //Next write VMS memories used by TrackletProcessor
-    for(unsigned int iSeed=0;iSeed<8;iSeed++) {
+    for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
       
       //FIXME - code could be cleaner
       unsigned int l1=seedLayers(iSeed).first;
@@ -835,7 +759,7 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
     }
   } else {
     //First write VMS memories used by MatchEngine
-    for(unsigned int ilayer=0;ilayer<11;ilayer++){
+    for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
       for(unsigned int iVMME=0;iVMME<NVMME_[ilayer]*NRegions_[ilayer];iVMME++){
 	unsigned int iReg=iVMME/NVMME_[ilayer];
 	memories << "VMStubsME: VMSME_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<iVMME+1
@@ -849,7 +773,7 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
     }
   
     //Next write VMS memories used by MatchCalculator
-    for(unsigned int iSeed=0;iSeed<8;iSeed++) {
+    for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
       
       for (unsigned int innerouterseed=0;innerouterseed<2;innerouterseed++){
 	
@@ -907,7 +831,7 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
 void TrackletConfigBuilder::writeTPARMemories(std::ostream& os, std::ostream& memories, std::ostream& modules){
 
   if (combinedmodules_) {
-    for(unsigned int iSeed=0;iSeed<8;iSeed++) {
+    for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
       for(unsigned int iTP=0;iTP<TC_[iSeed].size();iTP++){
 	memories << "TrackletParameters: TPAR_"<<iSeedStr(iSeed)<<iTCStr(iTP)
 	       <<" [56]"<<std::endl;
@@ -918,7 +842,7 @@ void TrackletConfigBuilder::writeTPARMemories(std::ostream& os, std::ostream& me
       }
     }
   } else {
-    for(unsigned int iSeed=0;iSeed<8;iSeed++) {
+    for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
       for(unsigned int iTC=0;iTC<TC_[iSeed].size();iTC++){
 	memories << "TrackletParameters: TPAR_"<<iSeedStr(iSeed)<<iTCStr(iTC)
 	       <<" [56]"<<std::endl;
@@ -933,7 +857,7 @@ void TrackletConfigBuilder::writeTPARMemories(std::ostream& os, std::ostream& me
 
 void TrackletConfigBuilder::writeTFMemories(std::ostream& os, std::ostream& memories, std::ostream& modules){
   
-  for(unsigned int iSeed=0;iSeed<8;iSeed++) {
+  for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
     memories << "TrackFit: TF_"<<iSeedStr(iSeed)<<" [126]"<<std::endl;
     modules << "FitTrack: FT_"<<iSeedStr(iSeed)<<std::endl;
     os << "TF_"<<iSeedStr(iSeed)
@@ -947,7 +871,7 @@ void TrackletConfigBuilder::writeCTMemories(std::ostream& os, std::ostream& memo
   
   modules << "PurgeDuplicate: PD"<<std::endl;
   
-    for(unsigned int iSeed=0;iSeed<8;iSeed++) {
+    for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
       memories << "CleanTrack: CT_"<<iSeedStr(iSeed)<<" [126]"<<std::endl;
       os << "CT_"<<iSeedStr(iSeed)
 	 << " input=> PD.trackout output=>"<<std::endl;
@@ -965,58 +889,58 @@ void TrackletConfigBuilder::writeILMemories(std::ostream& os, std::ostream& memo
 
   //FIXME layerdisk numbering should be 0 to 10
   
-  dtcname[0] ="PS10G_1";    layerdisk[0] =1;   phimin[0] = 0.304273;   phimax[0] = 0.742925;
-  dtcname[1] ="PS10G_1";    layerdisk[1] =7;   phimin[1] = -0.185672;  phimax[1] =  0.883803;
-  dtcname[2] ="PS10G_1";    layerdisk[2] =9;   phimin[2] = -0.132414;  phimax[2] =  0.830545;
-  dtcname[3] ="PS10G_1";    layerdisk[3] =11;  phimin[3] = -0.132414;  phimax[3] =  0.830545;
-  dtcname[4] ="PS10G_2";    layerdisk[4] =1;   phimin[4] = -0.0133719; phimax[4] =  0.715599;
-  dtcname[5] ="PS10G_2";    layerdisk[5] =8;   phimin[5] = -0.110089;  phimax[5] =  0.808221;
-  dtcname[6] ="PS10G_2";    layerdisk[6] =10;  phimin[6] = -0.132414;  phimax[6] =  0.830545;
-  dtcname[7] ="PS10G_3";    layerdisk[7] = 2;  phimin[7] = -0.11381;   phimax[7] =  0.822812;
-  dtcname[8] ="PS10G_3";    layerdisk[8] = 8;  phimin[8] = -0.185672;  phimax[8] =  0.883803;
-  dtcname[9] ="PS10G_4";    layerdisk[9] = 7;  phimin[9] = -0.0823971; phimax[9] =  0.780529;
-  dtcname[10]="PS10G_4";    layerdisk[10]= 9;  phimin[10]= -0.0963091; phimax[10]=  0.794441;
-  dtcname[11]="PS10G_4";    layerdisk[11]= 11; phimin[11]= -0.0963091; phimax[11]=  0.794441;
-  dtcname[12]="PS_1";       layerdisk[12]= 3;  phimin[12]= 0.0827748;  phimax[12]=  0.615357;
-  dtcname[13]="PS_1";       layerdisk[13]= 8;  phimin[13]= -0.0823971; phimax[13]=  0.780529;
-  dtcname[14]="PS_2";       layerdisk[14]= 3;  phimin[14]= -0.0917521; phimax[14]=  0.614191;
-  dtcname[15]="PS_2";       layerdisk[15]= 10; phimin[15]= -0.0963091; phimax[15]=  0.794441;
-  dtcname[16]="2S_1";       layerdisk[16]= 4;  phimin[16]= -0.0246209; phimax[16]=  0.763311;
-  dtcname[17]="2S_1";       layerdisk[17]= 5;  phimin[17]= 0.261875;   phimax[17]=  0.403311;
-  dtcname[18]="2S_2";       layerdisk[18]= 5;  phimin[18]= -0.0542445; phimax[18]=  0.715509;
-  dtcname[19]="2S_3";       layerdisk[19]= 6;  phimin[19]= 0.0410126;  phimax[19]=  0.730605;
-  dtcname[20]="2S_4";       layerdisk[20]= 6;  phimin[20]= -0.0428961; phimax[20]=  0.693862;
-  dtcname[21]="2S_4";       layerdisk[21]= 9;  phimin[21]= -0.0676705; phimax[21]=  0.765802;
-  dtcname[22]="2S_5";       layerdisk[22]= 7;  phimin[22]= -0.0648206; phimax[22]=  0.762952;
-  dtcname[23]="2S_5";       layerdisk[23]= 10; phimin[23]= -0.0676705; phimax[23]=  0.765802;
-  dtcname[24]="2S_6";       layerdisk[24]= 8;  phimin[24]= -0.0648206; phimax[24]=  0.762952;
-  dtcname[25]="2S_6";       layerdisk[25]= 11; phimin[25]= -0.0676705; phimax[25]=  0.765802;
-  dtcname[26]="negPS10G_1"; layerdisk[26]= 1;  phimin[26]= -0.023281;  phimax[26]=  0.372347;
-  dtcname[27]="negPS10G_1"; layerdisk[27]= 7;  phimin[27]= -0.185672;  phimax[27]=  0.883803;
-  dtcname[28]="negPS10G_1"; layerdisk[28]= 9;  phimin[28]= -0.132414;  phimax[28]=  0.830545;
-  dtcname[29]="negPS10G_1"; layerdisk[29]= 11; phimin[29]= -0.132414;  phimax[29]=  0.830545;
-  dtcname[30]="negPS10G_2"; layerdisk[30]= 1;  phimin[30]= -0.0133719; phimax[30]=  0.715599;
-  dtcname[31]="negPS10G_2"; layerdisk[31]= 8;  phimin[31]= -0.110089;  phimax[31]=  0.808221;
-  dtcname[32]="negPS10G_2"; layerdisk[32]= 10; phimin[32]= -0.132414;  phimax[32]=  0.830545;
-  dtcname[33]="negPS10G_3"; layerdisk[33]= 2;  phimin[33]= -0.115834;  phimax[33]=  0.813823;
-  dtcname[34]="negPS10G_3"; layerdisk[34]= 8;  phimin[34]= -0.185672;  phimax[34]=  0.883803;
-  dtcname[35]="negPS10G_4"; layerdisk[35]= 7;  phimin[35]= -0.0823971; phimax[35]=  0.780529;
-  dtcname[36]="negPS10G_4"; layerdisk[36]= 9;  phimin[36]= -0.0963091; phimax[36]=  0.794441;
-  dtcname[37]="negPS10G_4"; layerdisk[37]= 11; phimin[37]= -0.0963091; phimax[37]=  0.794441;
-  dtcname[38]="negPS_1";    layerdisk[38]= 3;  phimin[38]= -0.0961318; phimax[38]=  0.445198;
-  dtcname[39]="negPS_1";    layerdisk[39]= 8;  phimin[39]= -0.0823971; phimax[39]=  0.780529;
-  dtcname[40]="negPS_2";    layerdisk[40]= 3;  phimin[40]= -0.0917521; phimax[40]=  0.614191;
-  dtcname[41]="negPS_2";    layerdisk[41]= 10; phimin[41]= -0.0963091; phimax[41]=  0.794441;
-  dtcname[42]="neg2S_1";    layerdisk[42]= 4;  phimin[42]= -0.0246209; phimax[42]=  0.763311;
-  dtcname[43]="neg2S_1";    layerdisk[43]= 5;  phimin[43]= 0.261875;   phimax[43]=  0.403311;
-  dtcname[44]="neg2S_2";    layerdisk[44]= 5;  phimin[44]= -0.0542445; phimax[44]=  0.715509;
-  dtcname[45]="neg2S_3";    layerdisk[45]= 6;  phimin[45]= 0.0410126;  phimax[45]=  0.730605;
-  dtcname[46]="neg2S_4";    layerdisk[46]= 6;  phimin[46]= -0.0428961; phimax[46]=  0.693862;
-  dtcname[47]="neg2S_4";    layerdisk[47]= 9;  phimin[47]= -0.06767;   phimax[47]=  0.765802;
-  dtcname[48]="neg2S_5";    layerdisk[48]= 7;  phimin[48]= -0.0648201; phimax[48]=  0.762952;
-  dtcname[49]="neg2S_5";    layerdisk[49]= 10; phimin[49]= -0.06767;   phimax[49]=  0.765802;
-  dtcname[50]="neg2S_6";    layerdisk[50]= 8;  phimin[50]= -0.0648201; phimax[50]=  0.762952;
-  dtcname[51]="neg2S_6";    layerdisk[51]= 11; phimin[51]= -0.06767;   phimax[51]=  0.765802;
+  dtcname[0] ="PS10G_1";    layerdisk[0] =0;   phimin[0] = 0.304273;   phimax[0] = 0.742925;
+  dtcname[1] ="PS10G_1";    layerdisk[1] =6;   phimin[1] = -0.185672;  phimax[1] =  0.883803;
+  dtcname[2] ="PS10G_1";    layerdisk[2] =8;   phimin[2] = -0.132414;  phimax[2] =  0.830545;
+  dtcname[3] ="PS10G_1";    layerdisk[3] =10;  phimin[3] = -0.132414;  phimax[3] =  0.830545;
+  dtcname[4] ="PS10G_2";    layerdisk[4] =0;   phimin[4] = -0.0133719; phimax[4] =  0.715599;
+  dtcname[5] ="PS10G_2";    layerdisk[5] =7;   phimin[5] = -0.110089;  phimax[5] =  0.808221;
+  dtcname[6] ="PS10G_2";    layerdisk[6] =9;   phimin[6] = -0.132414;  phimax[6] =  0.830545;
+  dtcname[7] ="PS10G_3";    layerdisk[7] = 1;  phimin[7] = -0.11381;   phimax[7] =  0.822812;
+  dtcname[8] ="PS10G_3";    layerdisk[8] = 7;  phimin[8] = -0.185672;  phimax[8] =  0.883803;
+  dtcname[9] ="PS10G_4";    layerdisk[9] = 6;  phimin[9] = -0.0823971; phimax[9] =  0.780529;
+  dtcname[10]="PS10G_4";    layerdisk[10]= 8;  phimin[10]= -0.0963091; phimax[10]=  0.794441;
+  dtcname[11]="PS10G_4";    layerdisk[11]= 10; phimin[11]= -0.0963091; phimax[11]=  0.794441;
+  dtcname[12]="PS_1";       layerdisk[12]= 2;  phimin[12]= 0.0827748;  phimax[12]=  0.615357;
+  dtcname[13]="PS_1";       layerdisk[13]= 7;  phimin[13]= -0.0823971; phimax[13]=  0.780529;
+  dtcname[14]="PS_2";       layerdisk[14]= 2;  phimin[14]= -0.0917521; phimax[14]=  0.614191;
+  dtcname[15]="PS_2";       layerdisk[15]= 9;  phimin[15]= -0.0963091; phimax[15]=  0.794441;
+  dtcname[16]="2S_1";       layerdisk[16]= 3;  phimin[16]= -0.0246209; phimax[16]=  0.763311;
+  dtcname[17]="2S_1";       layerdisk[17]= 4;  phimin[17]= 0.261875;   phimax[17]=  0.403311;
+  dtcname[18]="2S_2";       layerdisk[18]= 4;  phimin[18]= -0.0542445; phimax[18]=  0.715509;
+  dtcname[19]="2S_3";       layerdisk[19]= 5;  phimin[19]= 0.0410126;  phimax[19]=  0.730605;
+  dtcname[20]="2S_4";       layerdisk[20]= 5;  phimin[20]= -0.0428961; phimax[20]=  0.693862;
+  dtcname[21]="2S_4";       layerdisk[21]= 8;  phimin[21]= -0.0676705; phimax[21]=  0.765802;
+  dtcname[22]="2S_5";       layerdisk[22]= 6;  phimin[22]= -0.0648206; phimax[22]=  0.762952;
+  dtcname[23]="2S_5";       layerdisk[23]= 9;  phimin[23]= -0.0676705; phimax[23]=  0.765802;
+  dtcname[24]="2S_6";       layerdisk[24]= 7;  phimin[24]= -0.0648206; phimax[24]=  0.762952;
+  dtcname[25]="2S_6";       layerdisk[25]= 10; phimin[25]= -0.0676705; phimax[25]=  0.765802;
+  dtcname[26]="negPS10G_1"; layerdisk[26]= 0;  phimin[26]= -0.023281;  phimax[26]=  0.372347;
+  dtcname[27]="negPS10G_1"; layerdisk[27]= 6;  phimin[27]= -0.185672;  phimax[27]=  0.883803;
+  dtcname[28]="negPS10G_1"; layerdisk[28]= 8;  phimin[28]= -0.132414;  phimax[28]=  0.830545;
+  dtcname[29]="negPS10G_1"; layerdisk[29]= 10; phimin[29]= -0.132414;  phimax[29]=  0.830545;
+  dtcname[30]="negPS10G_2"; layerdisk[30]= 0;  phimin[30]= -0.0133719; phimax[30]=  0.715599;
+  dtcname[31]="negPS10G_2"; layerdisk[31]= 7;  phimin[31]= -0.110089;  phimax[31]=  0.808221;
+  dtcname[32]="negPS10G_2"; layerdisk[32]= 9;  phimin[32]= -0.132414;  phimax[32]=  0.830545;
+  dtcname[33]="negPS10G_3"; layerdisk[33]= 1;  phimin[33]= -0.115834;  phimax[33]=  0.813823;
+  dtcname[34]="negPS10G_3"; layerdisk[34]= 7;  phimin[34]= -0.185672;  phimax[34]=  0.883803;
+  dtcname[35]="negPS10G_4"; layerdisk[35]= 6;  phimin[35]= -0.0823971; phimax[35]=  0.780529;
+  dtcname[36]="negPS10G_4"; layerdisk[36]= 8;  phimin[36]= -0.0963091; phimax[36]=  0.794441;
+  dtcname[37]="negPS10G_4"; layerdisk[37]= 10; phimin[37]= -0.0963091; phimax[37]=  0.794441;
+  dtcname[38]="negPS_1";    layerdisk[38]= 2;  phimin[38]= -0.0961318; phimax[38]=  0.445198;
+  dtcname[39]="negPS_1";    layerdisk[39]= 7;  phimin[39]= -0.0823971; phimax[39]=  0.780529;
+  dtcname[40]="negPS_2";    layerdisk[40]= 2;  phimin[40]= -0.0917521; phimax[40]=  0.614191;
+  dtcname[41]="negPS_2";    layerdisk[41]= 9;  phimin[41]= -0.0963091; phimax[41]=  0.794441;
+  dtcname[42]="neg2S_1";    layerdisk[42]= 3;  phimin[42]= -0.0246209; phimax[42]=  0.763311;
+  dtcname[43]="neg2S_1";    layerdisk[43]= 4;  phimin[43]= 0.261875;   phimax[43]=  0.403311;
+  dtcname[44]="neg2S_2";    layerdisk[44]= 4;  phimin[44]= -0.0542445; phimax[44]=  0.715509;
+  dtcname[45]="neg2S_3";    layerdisk[45]= 5;  phimin[45]= 0.0410126;  phimax[45]=  0.730605;
+  dtcname[46]="neg2S_4";    layerdisk[46]= 5;  phimin[46]= -0.0428961; phimax[46]=  0.693862;
+  dtcname[47]="neg2S_4";    layerdisk[47]= 8;  phimin[47]= -0.06767;   phimax[47]=  0.765802;
+  dtcname[48]="neg2S_5";    layerdisk[48]= 6;  phimin[48]= -0.0648201; phimax[48]=  0.762952;
+  dtcname[49]="neg2S_5";    layerdisk[49]= 9;  phimin[49]= -0.06767;   phimax[49]=  0.765802;
+  dtcname[50]="neg2S_6";    layerdisk[50]= 7;  phimin[50]= -0.0648201; phimax[50]=  0.762952;
+  dtcname[51]="neg2S_6";    layerdisk[51]= 10; phimin[51]= -0.06767;   phimax[51]=  0.765802;
   
    
   double dphi=0.5*dphisectorHG_-M_PI/NSector_;
@@ -1026,24 +950,24 @@ void TrackletConfigBuilder::writeILMemories(std::ostream& os, std::ostream& memo
     double phimintmp=phimin[i]+dphi;
     double phimaxtmp=phimax[i]+dphi;
       
-    for(unsigned int iReg=0; iReg<NRegions_[layerdisk[i]-1]; iReg++) {
+    for(unsigned int iReg=0; iReg<NRegions_[layerdisk[i]]; iReg++) {
       
-      if (allStubs_[layerdisk[i]-1][iReg].first>phimaxtmp &&
-	  allStubs_[layerdisk[i]-1][iReg].second<phimintmp) continue;
+      if (allStubs_[layerdisk[i]][iReg].first>phimaxtmp &&
+	  allStubs_[layerdisk[i]][iReg].second<phimintmp) continue;
 
-      if (allStubs_[layerdisk[i]-1][iReg].second<phimaxtmp) { 
-	memories << "InputLink: IL_"<<LayerName(layerdisk[i]-1)<<"PHI"
+      if (allStubs_[layerdisk[i]][iReg].second<phimaxtmp) { 
+	memories << "InputLink: IL_"<<LayerName(layerdisk[i])<<"PHI"
 		 <<iTCStr(iReg)<<"_"<<dtcname[i]<<"_A"<< " [36]"<<std::endl;
-	os << "IL_"<<LayerName(layerdisk[i]-1)<<"PHI"<<iTCStr(iReg)<<"_"<<dtcname[i]<<"_A"
-	   << " input=> output=> VMR_"<<LayerName(layerdisk[i]-1)<<"PHI"<<iTCStr(iReg)
+	os << "IL_"<<LayerName(layerdisk[i])<<"PHI"<<iTCStr(iReg)<<"_"<<dtcname[i]<<"_A"
+	   << " input=> output=> VMR_"<<LayerName(layerdisk[i])<<"PHI"<<iTCStr(iReg)
 	   << ".stubin"<<std::endl;
       }
       
-      if (allStubs_[layerdisk[i]-1][iReg].first>phimintmp) { 
-	memories << "InputLink: IL_"<<LayerName(layerdisk[i]-1)<<"PHI"
+      if (allStubs_[layerdisk[i]][iReg].first>phimintmp) { 
+	memories << "InputLink: IL_"<<LayerName(layerdisk[i])<<"PHI"
 		 <<iTCStr(iReg)<<"_"<<dtcname[i]<<"_B"<< " [36]"<<std::endl;
-	os << "IL_"<<LayerName(layerdisk[i]-1)<<"PHI"<<iTCStr(iReg)<<"_"<<dtcname[i]<<"_B"
-	   << " input=> output=> VMR_"<<LayerName(layerdisk[i]-1)<<"PHI"<<iTCStr(iReg)
+	os << "IL_"<<LayerName(layerdisk[i])<<"PHI"<<iTCStr(iReg)<<"_"<<dtcname[i]<<"_B"
+	   << " input=> output=> VMR_"<<LayerName(layerdisk[i])<<"PHI"<<iTCStr(iReg)
 	   << ".stubin"<<std::endl;
       }
       
