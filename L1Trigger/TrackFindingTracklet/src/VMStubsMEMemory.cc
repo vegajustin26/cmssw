@@ -39,6 +39,8 @@ void VMStubsMEMemory::writeStubs(bool first) {
       string stub = binnedstubs_[i][j].stubindex().str();
       stub += "|" + binnedstubs_[i][j].bend().str();
 
+      FPGAWord finephipos = binnedstubs_[i][j].finephi();
+      stub += "|" + finephipos.str();
       FPGAWord finepos = binnedstubs_[i][j].finerz();
       stub += "|" + finepos.str();
       out_ << hex << i << " " << j << dec << " " << stub << " " << trklet::hexFormat(stub) << endl;
