@@ -50,7 +50,7 @@ namespace trklet {
     void buildProjections();
 
     //
-    // Helper functions to determine if a pair of VM memories form valid TE
+    // Helper function to determine if a pair of VM memories form valid TE
     //
     bool validTEPair(unsigned int iseed, unsigned int iTE1, unsigned int iTE2);
 
