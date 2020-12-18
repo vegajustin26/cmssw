@@ -493,12 +493,11 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
                                    << zmatchcut_[seedindex];
     }
 
-    if (std::abs(dphi) > 0.2 || std::abs(dphiapprox) > 0.2) {
-      edm::LogPrint("Tracklet") << "WARNING dphi and/or dphiapprox too large : " << dphi << " " << dphiapprox;
+    //This would catch significant consistency problems in the configuration - helps to debug if there are problems.
+    if (std::abs(dphi) > 0.5*settings_.dphisectorHG() || std::abs(dphiapprox) > 0.5*settings_.dphisectorHG()) {
+      throw cms::Exception("LogicError") << "WARNING dphi and/or dphiapprox too large : "
+					 << dphi << " " << dphiapprox << endl;
     }
-
-    assert(std::abs(dphi) < 0.2);
-    assert(std::abs(dphiapprox) < 0.2);
 
     if (imatch) {
       tracklet->addMatch(layerdisk_+1,

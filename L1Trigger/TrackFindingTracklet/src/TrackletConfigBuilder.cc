@@ -41,11 +41,7 @@ TrackletConfigBuilder::TrackletConfigBuilder(const Settings& settings):
     NVMME_[layerdisk]=settings.nvmme(layerdisk);
   }
 
-  //This configuration class only handles the prompt seeds
-  constexpr int PROMPTSEEDS=8;
-  N_PromptSeed_=PROMPTSEEDS;
-  
-  for(int iseed=0;iseed<PROMPTSEEDS;iseed++) {
+  for(unsigned int iseed=0;iseed<N_SEED_PROMPT;iseed++) {
     NVMTE_[iseed]=std::pair<unsigned int, unsigned int>(settings.nvmte(0,iseed),settings.nvmte(1,iseed));
     NTC_[iseed]=settings.NTC(iseed);
   }
@@ -87,7 +83,7 @@ void TrackletConfigBuilder::initGeom(){
       }
     }
   }
-  for(unsigned int iseed=0;iseed<N_PromptSeed_;iseed++){
+  for(unsigned int iseed=0;iseed<N_SEED_PROMPT;iseed++){
     unsigned int l1=seedLayers(iseed).first;
     unsigned int l2=seedLayers(iseed).second;
     unsigned int nVM1=NVMTE_[iseed].first;
@@ -161,7 +157,7 @@ bool TrackletConfigBuilder::validTEPair(unsigned int iseed, unsigned int iTE1, u
   
 void TrackletConfigBuilder::buildTE() {
   
-  for(unsigned int iseed=0;iseed<N_PromptSeed_;iseed++){
+  for(unsigned int iseed=0;iseed<N_SEED_PROMPT;iseed++){
     for(unsigned int i1=0;i1<VMStubsTE_[iseed].first.size();i1++){
       for(unsigned int i2=0;i2<VMStubsTE_[iseed].second.size();i2++){
 	if (validTEPair(iseed,i1,i2)) {
@@ -176,7 +172,7 @@ void TrackletConfigBuilder::buildTE() {
 
 void TrackletConfigBuilder::buildTC(){
 
-  for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++){
+  for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++){
     unsigned int nTC=NTC_[iSeed];
     std::vector<std::pair<unsigned int, unsigned int> >& TEs=TE_[iSeed];
     std::vector<std::vector<unsigned int> >& TCs=TC_[iSeed];
@@ -230,7 +226,7 @@ std::pair<double, double> TrackletConfigBuilder::seedPhiRange(double rproj, unsi
 void TrackletConfigBuilder::buildProjections(){
   
   
-  for(unsigned int iseed=0;iseed<N_PromptSeed_;iseed++){ 
+  for(unsigned int iseed=0;iseed<N_SEED_PROMPT;iseed++){ 
     std::vector<std::vector<unsigned int> >& TCs=TC_[iseed];
     
     for (unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++) {
@@ -395,7 +391,7 @@ void TrackletConfigBuilder::writeSPMemories(std::ostream& os, std::ostream& memo
 
   if (combinedmodules_) return;
   
-  for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+  for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++) {
     
     for(unsigned int iTC=0;iTC<TC_[iSeed].size();iTC++){
       for(unsigned int iTE=0;iTE<TC_[iSeed][iTC].size();iTE++){
@@ -493,7 +489,7 @@ void TrackletConfigBuilder::writeFMMemories(std::ostream& os, std::ostream& memo
     for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
       for(unsigned int iReg=0;iReg<NRegions_[ilayer];iReg++){
 	modules << "MatchProcessor: MP_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<std::endl;
-	for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+	for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++) {
 	  if (matchport_[iSeed][ilayer]==-1) continue;
 	  memories << "FullMatch: FM_"<<iSeedStr(iSeed)<<"_"<<LayerName(ilayer)<<"PHI"
 		   <<iTCStr(iReg)<<" [36]"<<std::endl;
@@ -508,7 +504,7 @@ void TrackletConfigBuilder::writeFMMemories(std::ostream& os, std::ostream& memo
     for(unsigned int ilayer=0;ilayer<N_LAYER+N_DISK;ilayer++){
       for(unsigned int iReg=0;iReg<NRegions_[ilayer];iReg++){
 	modules << "MatchCalculator: MC_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<std::endl;
-	for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+	for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++) {
 	  if (matchport_[iSeed][ilayer]==-1) continue;
 	  memories << "FullMatch: FM_"<<iSeedStr(iSeed)<<"_"<<LayerName(ilayer)<<"PHI"
 		   <<iTCStr(iReg)<<" [36]"<<std::endl;
@@ -548,7 +544,7 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
 	
 	unsigned int nmem=1;
 	
-	for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+	for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++) {
 	  
 	  unsigned int l1=seedLayers(iSeed).first;
 	  unsigned int l2=seedLayers(iSeed).second;
@@ -667,7 +663,7 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
 	
 	unsigned int nmem=1;
 	
-	for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+	for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++) {
 	  
 	  unsigned int l1=seedLayers(iSeed).first;
 	  unsigned int l2=seedLayers(iSeed).second;
@@ -726,7 +722,7 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
     }
   
     //Next write VMS memories used by TrackletProcessor
-    for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+    for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++) {
       
       //FIXME - code could be cleaner
       unsigned int l1=seedLayers(iSeed).first;
@@ -773,7 +769,7 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
     }
   
     //Next write VMS memories used by MatchCalculator
-    for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+    for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++) {
       
       for (unsigned int innerouterseed=0;innerouterseed<2;innerouterseed++){
 	
@@ -831,7 +827,7 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
 void TrackletConfigBuilder::writeTPARMemories(std::ostream& os, std::ostream& memories, std::ostream& modules){
 
   if (combinedmodules_) {
-    for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+    for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++) {
       for(unsigned int iTP=0;iTP<TC_[iSeed].size();iTP++){
 	memories << "TrackletParameters: TPAR_"<<iSeedStr(iSeed)<<iTCStr(iTP)
 	       <<" [56]"<<std::endl;
@@ -842,7 +838,7 @@ void TrackletConfigBuilder::writeTPARMemories(std::ostream& os, std::ostream& me
       }
     }
   } else {
-    for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+    for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++) {
       for(unsigned int iTC=0;iTC<TC_[iSeed].size();iTC++){
 	memories << "TrackletParameters: TPAR_"<<iSeedStr(iSeed)<<iTCStr(iTC)
 	       <<" [56]"<<std::endl;
@@ -857,7 +853,7 @@ void TrackletConfigBuilder::writeTPARMemories(std::ostream& os, std::ostream& me
 
 void TrackletConfigBuilder::writeTFMemories(std::ostream& os, std::ostream& memories, std::ostream& modules){
   
-  for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+  for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++) {
     memories << "TrackFit: TF_"<<iSeedStr(iSeed)<<" [126]"<<std::endl;
     modules << "FitTrack: FT_"<<iSeedStr(iSeed)<<std::endl;
     os << "TF_"<<iSeedStr(iSeed)
@@ -871,7 +867,7 @@ void TrackletConfigBuilder::writeCTMemories(std::ostream& os, std::ostream& memo
   
   modules << "PurgeDuplicate: PD"<<std::endl;
   
-    for(unsigned int iSeed=0;iSeed<N_PromptSeed_;iSeed++) {
+    for(unsigned int iSeed=0;iSeed<N_SEED_PROMPT;iSeed++) {
       memories << "CleanTrack: CT_"<<iSeedStr(iSeed)<<" [126]"<<std::endl;
       os << "CT_"<<iSeedStr(iSeed)
 	 << " input=> PD.trackout output=>"<<std::endl;

@@ -277,12 +277,12 @@ void MatchCalculator::execute() {
                                  truthmatch);
       }
 
-      if (std::abs(dphi) > 0.2 || std::abs(dphiapprox) > 0.2) {
-        edm::LogProblem("Tracklet") << "WARNING dphi and/or dphiapprox too large : " << dphi << " " << dphiapprox
-                                    << endl;
+      
+      //This would catch significant consistency problems in the configuration - helps to debug if there are problems.
+      if (std::abs(dphi) > 0.5*settings_.dphisectorHG() || std::abs(dphiapprox) > 0.5*settings_.dphisectorHG()) {
+        throw cms::Exception("LogicError") << "WARNING dphi and/or dphiapprox too large : "
+					   << dphi << " " << dphiapprox << endl;
       }
-      assert(std::abs(dphi) < 0.2);
-      assert(std::abs(dphiapprox) < 0.2);
 
       if (settings_.writeMonitorData("Residuals")) {
         double pt = 0.01 * settings_.c() * settings_.bfield() / std::abs(tracklet->rinv());
