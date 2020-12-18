@@ -20,6 +20,7 @@ namespace trklet {
   constexpr int N_DISK = 5;              // # of endcap disks assumed
   constexpr unsigned int N_PSLAYER = 3;  // # of barrel PS layers assumed
   constexpr unsigned int N_SEED = 12;    // # of tracklet+triplet seeds
+  constexpr unsigned int N_SEED_PROMPT = 8;  // # of tracklet (prompt) seeds
 
   constexpr unsigned int N_DSS_MOD = 5;  // # of rings with 2S modules per disk
 
