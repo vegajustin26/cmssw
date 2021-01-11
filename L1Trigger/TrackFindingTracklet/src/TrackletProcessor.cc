@@ -193,15 +193,14 @@ void TrackletProcessor::execute() {
 
   unsigned int ntedata = 0;
   
-  unsigned int ninnerstubs=0;
+  unsigned int ninnerstubs = 0;
 
-  //Actual implemenation statrs here
+  //Actual implemenation starts here
   
   //Reset the tebuffer
   std::get<0>(tebuffer_).reset();
-  std::get<1>(tebuffer_)=0;
-  std::get<2>(tebuffer_)=std::get<3>(tebuffer_);
-  
+  std::get<1>(tebuffer_) = 0;
+  std::get<2>(tebuffer_) = std::get<3>(tebuffer_);
   
   //Reset the teunits
   for(auto& teunit:teunits_) {
@@ -494,6 +493,7 @@ void TrackletProcessor::execute() {
     
   }
 
+<<<<<<< HEAD
 
   //
   // Done with processing - collect performance statistics
@@ -510,6 +510,30 @@ void TrackletProcessor::execute() {
   }
 
   
+=======
+void TrackletProcessor::writeTETable() {
+  ofstream outstubptinnercut;
+  outstubptinnercut.open(getName() + "_stubptinnercut.tab");
+  outstubptinnercut << "{" << endl;
+  // the below is outcommented as the writing of these tables are currently not implemented, to be adressed
+  //for(unsigned int i=0;i<pttableinner_.size();i++){
+  //  if (i!=0) outstubptinnercut<<","<<endl;
+  //  outstubptinnercut << pttableinner_[i];
+  //}
+  outstubptinnercut << endl << "};" << endl;
+  outstubptinnercut.close();
+
+  ofstream outstubptoutercut;
+  outstubptoutercut.open(getName() + "_stubptoutercut.tab");
+  outstubptoutercut << "{" << endl;
+  // the below is outcommented as the writing of these tables are currently not implemented, to be adressed
+  //for(unsigned int i=0;i<pttableouter_.size();i++){
+  //  if (i!=0) outstubptoutercut<<","<<endl;
+  //  outstubptoutercut << pttableouter_[i];
+  //}
+  outstubptoutercut << endl << "};" << endl;
+  outstubptoutercut.close();
+>>>>>>> fd1f230d81e... part one of PR review fixes for TrackFindingTracklet package
 }
 
 
@@ -527,12 +551,20 @@ void TrackletProcessor::buildLUT() {
     rmin=settings_.rmean(layerdisk1_);
     rmax=settings_.rmean(layerdisk2_);
   } else {
+<<<<<<< HEAD
     if (iSeed_>5) {
       if (iSeed_==6) {
 	rmax=settings_.rmaxdiskl1overlapvm();
       }
       if (iSeed_==7) {
 	rmax=settings_.rmaxdiskvm();
+=======
+    if (iSeed_ > 5) {
+      if (iSeed_ == 6) {
+        rmax = settings_.rmaxdiskl1overlapvm();
+      } else if (iSeed_ == 7) {
+        rmax = settings_.rmaxdiskvm();
+>>>>>>> fd1f230d81e... part one of PR review fixes for TrackFindingTracklet package
       }
       rmin=settings_.rmean(layerdisk1_);
     } else {
@@ -563,8 +595,7 @@ void TrackletProcessor::buildLUT() {
   unsigned int nbendbitsouter = 3;
   if (iSeed_ == 2) {
     nbendbitsouter = 4;
-  }
-  if (iSeed_ == 3) {
+  } else if (iSeed_ == 3) {
     nbendbitsinner = 4;
     nbendbitsouter = 4;
   }

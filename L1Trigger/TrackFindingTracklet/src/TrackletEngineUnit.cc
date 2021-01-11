@@ -5,8 +5,7 @@
 using namespace std;
 using namespace trklet;
 
-
-TrackletEngineUnit::TrackletEngineUnit(const Settings* const settings, unsigned int nbitsfinephi, unsigned int layerdisk1, unsigned int layerdisk2, unsigned int iSeed, unsigned int nbitsfinephidiff, unsigned int iAllStub, std::vector<bool> pttableinner, std::vector<bool> pttableouter, VMStubsTEMemory* outervmstubs)
+TrackletEngineUnit::TrackletEngineUnit(const Settings* const settings, unsigned int nbitsfinephi, unsigned int layerdisk1, unsigned int layerdisk2, unsigned int iSeed, unsigned int nbitsfinephidiff, unsigned int iAllStub, std::vector<bool> const& pttableinner, std::vector<bool> const& pttableouter, VMStubsTEMemory* outervmstubs)
   : settings_(settings), candpairs_(3) {
   idle_=true;
   nbitsfinephi_=nbitsfinephi;
@@ -53,6 +52,7 @@ void TrackletEngineUnit::step(bool print, int istep,int iTE){
 
   goodpair_=false;
 
+<<<<<<< HEAD
 
   if (idle_||nearfull_) {
     if (print) cout << "istep="<<istep<<" TEUnit step iTE="<<iTE<<" idle nearfull: "<<idle_<<" "<<nearfull_<<" rptr wptr:"
@@ -69,15 +69,26 @@ void TrackletEngineUnit::step(bool print, int istep,int iTE){
   const VMStubTE& outervmstub = outervmstubs_->getVMStubTEBinned(ireg_*nbins+ibin,istub_);
   int rzbin = (outervmstub.vmbits().value() & 7);
 
+=======
+>>>>>>> fd1f230d81e... part one of PR review fixes for TrackFindingTracklet package
   FPGAWord iphiouterbin = outervmstub.finephi();
 
   assert(iphiouterbin == outervmstub.finephi());
 	
   //New code to calculate lut value
+<<<<<<< HEAD
   int outerfinephi=iAllStub_*(1<<(nbitsfinephi_-settings_->nbitsallstubs(layerdisk2_)))+ireg_*(1<<settings_->nfinephi(1,iSeed_))+iphiouterbin.value();
   int idphi=outerfinephi-tedata_.innerfinephi_;
 
   bool inrange=(idphi<(1<<(nbitsfinephidiff_-1)))&&(idphi>=-(1<<(nbitsfinephidiff_-1)));
+=======
+  int outerfinephi = iAllStub_ * (1 << (nbitsfinephi_ - settings_->nbitsallstubs(layerdisk2_))) +
+                     ireg_ * (1 << settings_->nfinephi(1, iSeed_)) + iphiouterbin.value();
+  int idphi = outerfinephi - tedata_.innerfinephi_;
+  bool inrange = (idphi < (1 << (nbitsfinephidiff_ - 1))) && (idphi >= -(1 << (nbitsfinephidiff_ - 1)));
+  if (idphi < 0)
+    idphi = idphi + (1 << nbitsfinephidiff_);
+>>>>>>> fd1f230d81e... part one of PR review fixes for TrackFindingTracklet package
 
   idphi=idphi&((1<<nbitsfinephidiff_)-1);
   

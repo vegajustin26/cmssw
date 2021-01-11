@@ -90,7 +90,8 @@ void VMRouterCM::addOutput(MemoryBase* memory, string output) {
       assert(vmstubsMEPHI_[0] == nullptr);
 	vmstubsMEPHI_[0] = tmp;
     } else {
-      throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " should never get here!";
+      throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " memory: " << memory->getName()
+                                         << " => should never get here!";
     }
     
     return;
