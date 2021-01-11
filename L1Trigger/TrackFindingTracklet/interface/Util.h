@@ -81,7 +81,7 @@ namespace trklet {
       if (word=='E') hexword="1110";
       if (word=='F') hexword="1111";
       if (hexword=="") {
-	throw cms::Exception("Inconsistency") << __FILE__ << " " << __LINE__ << " hex string format invalid: " << stubwordhex;
+	throw cms::Exception("Inconsistency") << __FILE__ << " " << __LINE__ << " hex string format invalid: " << stubwordhex << std::endl;
       }
       stubwordbin+=hexword;
     }
@@ -124,13 +124,16 @@ namespace trklet {
 
     if (dirExists(dir)!=1) {
       std::cout << "Creating directory : "<<dir<<std::endl;
-      system((std::string("mkdir -p ") + dir).c_str());
+      int fail=system((std::string("mkdir -p ") + dir).c_str());
+      if (fail) {
+	throw cms::Exception("BadDir") << file << " " << line << " could not create directory " <<dir << std::endl;
+      }
     }
 
     std::ofstream out(dir+"/"+fname);
     
     if (out.fail()) {
-      throw cms::Exception("BadFile") << file << " " << line << " could not create file " << fname << " in "<<dir;
+      throw cms::Exception("BadFile") << file << " " << line << " could not create file " << fname << " in "<<dir << std::endl;
     }
 
     return out;
@@ -143,7 +146,10 @@ namespace trklet {
 
     if (dirExists(dir)!=1) {
       std::cout << "Creating directory : "<<dir<<std::endl;
-      system((std::string("mkdir -p ") + dir).c_str());
+      int fail=system((std::string("mkdir -p ") + dir).c_str());
+      if (fail) {
+	throw cms::Exception("BadDir") << file << " " << line << " could not create directory " <<dir << std::endl;
+      }
     }
 
     if (first) {
@@ -153,7 +159,7 @@ namespace trklet {
     }
 
     if (out.fail()) {
-      throw cms::Exception("BadFile") << file << " " << line << " could not create file " << fname << " in "<<dir;
+      throw cms::Exception("BadFile") << file << " " << line << " could not create file " << fname << " in "<<dir << std::endl;
     }
   }
 
