@@ -308,6 +308,8 @@ namespace trklet {
     double rPS2S() const { return rPS2S_; }
 
     double z0cut() const { return z0cut_; }
+    
+    double disp_z0cut() const { return disp_z0cut_; }
 
     unsigned int NLONGVMBITS() const { return NLONGVMBITS_; }
     unsigned int NLONGVMBINS() const { return (1 << NLONGVMBITS_); }
@@ -468,6 +470,8 @@ namespace trklet {
     double rPS2S_{60.0};
 
     double z0cut_{15.0};
+    
+    double disp_z0cut_{27.0};
 
     unsigned int NLONGVMBITS_{3};
 
