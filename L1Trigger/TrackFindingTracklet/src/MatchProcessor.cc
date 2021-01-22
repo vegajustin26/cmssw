@@ -282,7 +282,7 @@ void MatchProcessor::execute() {
 
             int projrinv = -1;
             if (barrel_) {
-              projrinv = 16 + (proj->fpgarinv().value() >> (proj->fpgarinv().nbits() - nrinv_));
+              projrinv = (1<<(nrinv_-1)) + (proj->fpgarinv().value() >> (proj->fpgarinv().nbits() - nrinv_));
             } else {
               //The next lines looks up the predicted bend based on:
               // 1 - r projections
@@ -308,7 +308,8 @@ void MatchProcessor::execute() {
             unsigned int slot = barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin1projvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgarbin1projvm().value();
             bool second = (barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin2projvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgarbin2projvm().value());
 
-            unsigned int projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + 3))) & 7;
+	    int nfinephi=3;
+            unsigned int projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + nfinephi))) & ((1<<nfinephi)-1);
             int projfinerz = barrel_ ? proj->layerProj(layerdisk_+1).fpgafinezvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgafinervm().value();
 
             bool isPSseed = proj->PSseed();
@@ -402,6 +403,7 @@ void MatchProcessor::execute() {
 	bestTCID = currentTCID;
 	bestInPipeline = empty;
       }
+<<<<<<< HEAD
     }
     
     if (iMEbest != nMatchEngines_ && (!bestInPipeline)) {
@@ -413,6 +415,30 @@ void MatchProcessor::execute() {
       if (oldTracklet != nullptr) {
 	//allow equal here since we can have more than one cadidate match per tracklet projection
 	assert(oldTracklet->TCID() <= tracklet->TCID());
+=======
+
+      if (iMEbest != nMatchEngines_ && (!bestInPipeline)) {
+        const std::pair<Tracklet*, const Stub*>& candmatch = matchengines_[iMEbest].read();
+
+        const Stub* fpgastub = candmatch.second;
+        Tracklet* tracklet = candmatch.first;
+
+        if (oldTracklet != nullptr) {
+          //allow equal here since we can have more than one cadidate match per tracklet projection
+          assert(oldTracklet->TCID() <= tracklet->TCID());
+        }
+        oldTracklet = tracklet;
+
+        bool match = matchCalculator(tracklet, fpgastub);
+
+        if (settings_.debugTracklet() && match) {
+          edm::LogVerbatim("Tracklet") << getName() << " have match";
+        }
+
+        countall++;
+        if (match)
+          countsel++;
+>>>>>>> ca9f4d8d9ec... Various fixes to comment on pull request (#68)
       }
       oldTracklet = tracklet;
       

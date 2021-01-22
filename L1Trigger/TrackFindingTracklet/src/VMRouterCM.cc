@@ -230,10 +230,10 @@ void VMRouterCM::execute() {
 
       assert(melut >= 0);
 
-      int vmbin = melut >> 3;
+      int vmbin = melut >> NFINERZBITS;
       if (negdisk)
-        vmbin += 8;
-      int rzfine = melut & 7;
+        vmbin += (1<<NFINERZBITS);
+      int rzfine = melut & ((1<<NFINERZBITS)-1);
 
       // pad disk PS bend word with a '0' in MSB so that all disk bends have 4 bits (for HLS compatibility)
       int nbendbits = stub->bend().nbits();
@@ -242,8 +242,8 @@ void VMRouterCM::execute() {
 
       VMStubME vmstub(
           stub,
-          stub->iphivmFineBins(settings_.nbitsallstubs(layerdisk_) + settings_.nbitsvmme(layerdisk_),3),
-          FPGAWord(rzfine, 3, true, __LINE__, __FILE__),
+          stub->iphivmFineBins(settings_.nbitsallstubs(layerdisk_) + settings_.nbitsvmme(layerdisk_),NFINERZBITS),
+          FPGAWord(rzfine, NFINERZBITS, true, __LINE__, __FILE__),
           FPGAWord(stub->bend().value(), nbendbits, true, __LINE__, __FILE__),
           allStubIndex);
       

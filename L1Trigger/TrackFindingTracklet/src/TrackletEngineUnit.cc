@@ -52,8 +52,6 @@ void TrackletEngineUnit::step(bool print, int istep,int iTE){
 
   goodpair_=false;
 
-<<<<<<< HEAD
-
   if (idle_||nearfull_) {
     if (print) cout << "istep="<<istep<<" TEUnit step iTE="<<iTE<<" idle nearfull: "<<idle_<<" "<<nearfull_<<" rptr wptr:"
 		    << candpairs_.rptr()<<" "<<candpairs_.wptr()<<endl;
@@ -62,35 +60,25 @@ void TrackletEngineUnit::step(bool print, int istep,int iTE){
     
   int ibin=tedata_.start_+next_;
 
-  int nbins=8; //FIXME
+  int nbins = (1<<NFINERZBITS);
   
   assert(istub_<outervmstubs_->nVMStubsBinned(ireg_*nbins+ibin));
 	  
-  const VMStubTE& outervmstub = outervmstubs_->getVMStubTEBinned(ireg_*nbins+ibin,istub_);
-  int rzbin = (outervmstub.vmbits().value() & 7);
+  const VMStubTE& outervmstub = outervmstubs_->getVMStubTEBinned(ireg_ * nbins + ibin, istub_);
+  int rzbin = (outervmstub.vmbits().value() & (nbins-1));
 
-=======
->>>>>>> fd1f230d81e... part one of PR review fixes for TrackFindingTracklet package
   FPGAWord iphiouterbin = outervmstub.finephi();
 
   assert(iphiouterbin == outervmstub.finephi());
 	
   //New code to calculate lut value
-<<<<<<< HEAD
-  int outerfinephi=iAllStub_*(1<<(nbitsfinephi_-settings_->nbitsallstubs(layerdisk2_)))+ireg_*(1<<settings_->nfinephi(1,iSeed_))+iphiouterbin.value();
-  int idphi=outerfinephi-tedata_.innerfinephi_;
-
-  bool inrange=(idphi<(1<<(nbitsfinephidiff_-1)))&&(idphi>=-(1<<(nbitsfinephidiff_-1)));
-=======
   int outerfinephi = iAllStub_ * (1 << (nbitsfinephi_ - settings_->nbitsallstubs(layerdisk2_))) +
-                     ireg_ * (1 << settings_->nfinephi(1, iSeed_)) + iphiouterbin.value();
+    ireg_ * (1 << settings_->nfinephi(1,iSeed_)) + iphiouterbin.value();
   int idphi = outerfinephi - tedata_.innerfinephi_;
-  bool inrange = (idphi < (1 << (nbitsfinephidiff_ - 1))) && (idphi >= -(1 << (nbitsfinephidiff_ - 1)));
-  if (idphi < 0)
-    idphi = idphi + (1 << nbitsfinephidiff_);
->>>>>>> fd1f230d81e... part one of PR review fixes for TrackFindingTracklet package
 
-  idphi=idphi&((1<<nbitsfinephidiff_)-1);
+  bool inrange = (idphi < (1 << (nbitsfinephidiff_ - 1))) && (idphi >= -(1 << (nbitsfinephidiff_- 1 )));
+
+  idphi = idphi & ((1 << nbitsfinephidiff_) - 1);
   
   if (iSeed_ >= 4) {  //Also use r-position
     int ir = ((ibin & 3) << 1) + (rzbin >> 2);
@@ -100,6 +88,18 @@ void TrackletEngineUnit::step(bool print, int istep,int iTE){
   if (next_!=0)
     rzbin += 8;
 
+
+  unsigned int firstDiskSeed=4;
+  if (iSeed_ >= firstDiskSeed) {  //Also use r-position
+    int ibinMask=3; //Get two least sign. bits
+    int ir = ((ibin & ibinMask) << 1) + (rzbin >> (NFINERZBITS-1));
+    int nrbits=3;
+    idphi = (idphi << nrbits) + ir;
+  }
+
+  if (next_ != 0)
+    rzbin += (1<<NFINERZBITS);
+>>>>>>> ca9f4d8d9ec... Various fixes to comment on pull request (#68)
   if ((rzbin < tedata_.rzbinfirst_) || (rzbin - tedata_.rzbinfirst_ > tedata_.rzdiffmax_)) {
     if (settings_->debugTracklet()) {
       edm::LogVerbatim("Tracklet")

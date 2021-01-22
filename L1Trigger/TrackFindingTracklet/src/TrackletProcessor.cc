@@ -1,4 +1,3 @@
-
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletProcessor.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
@@ -43,7 +42,7 @@ TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Glob
 
   vmrtable_.init(layerdisk1_);
 
-  nbitsrzbin_ = 3;
+  nbitsrzbin_ = NFINERZBITS;
   if (iSeed_ == 4 || iSeed_ == 5)
     nbitsrzbin_ = 2;
   
@@ -155,7 +154,7 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
 
     //FIXME should be done once after all inputs are added
     tebuffer_ = tuple<CircularBuffer<TEData>, unsigned int , unsigned int, unsigned int, unsigned int>(CircularBuffer<TEData>(3),0,0,0,innerallstubs_.size());
-    
+
     return;
   }
   if (input == "outerallstubin") {

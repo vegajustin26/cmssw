@@ -33,6 +33,8 @@ namespace trklet {
   
   constexpr unsigned int N_VMSTUBSMAX = 15;  // maximum number of stubs in VM bin
 
+  constexpr double sixth = 1.0/6.0;     //Commonly used factor
+
   class Settings {
   public:
     Settings() {
