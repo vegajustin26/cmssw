@@ -43,7 +43,7 @@ TrackletCalculator::TrackletCalculator(string name, Settings const& settings, Gl
   }
 
   // write the drinv and invt inverse tables
-  if ((settings_.writeInvTable() || settings_.writeHLSInvTable()) && iTC_ == 0 && iSector_ == 0) {
+  if ((settings_.writeInvTable() || settings_.writeHLSInvTable() || settings_.writeTable() ) && iTC_ == 0 && iSector_ == 0) {
     void (*writeLUT)(const VarInv&, const string&) = nullptr;
     if (settings.writeInvTable()) {  // Verilog version
       writeLUT = [](const VarInv& x, const string& basename) -> void {

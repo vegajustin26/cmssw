@@ -99,8 +99,16 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     configure(inwire,inmem,inproc);
 
   } else {
-
     TrackletConfigBuilder config(*settings_);
+
+    //Write configurations to file.
+    if (settings_->writeConfig()){
+      std::ofstream wires=openfile(settings_->tablePath(), "wires.dat", __FILE__, __LINE__);
+      std::ofstream memories=openfile(settings_->tablePath(), "memories.dat", __FILE__, __LINE__);
+      std::ofstream modules=openfile(settings_->tablePath(), "modules.dat", __FILE__, __LINE__);
+      
+      config.writeAll(wires,memories,modules);
+    }
     
     std::stringstream wires;
     std::stringstream memories;
@@ -109,16 +117,6 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     config.writeAll(wires,memories,modules);
     configure(wires,memories,modules);
 
-    if (settings_->writeConfig()){
-      std::ofstream wires("wires.dat");
-      std::ofstream memories("memories.dat");
-      std::ofstream modules("modules.dat");
-      
-      config.writeAll(wires,memories,modules);
-
-    }
-    
-    
   }
 
 }
@@ -216,13 +214,33 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 
   addStubTimer_.start();
 
+  vector<int> layerstubs(N_LAYER+N_DISK,0);
+  vector<int> layerstubssector(N_SECTOR*(N_LAYER+N_DISK),0);
+  
   for (int j = 0; j < ev.nstubs(); j++) {
     L1TStub stub = ev.stub(j);
 
     string dtc=stub.DTClink();
     unsigned int isector = stub.region();
 
+    layerstubs[stub.layerdisk()]++;
+    layerstubssector[isector*(N_LAYER+N_DISK)+stub.layerdisk()]++;
+    
     sectors_[isector]->addStub(stub, dtc);
+  }
+
+  if (settings_->writeMonitorData("StubsLayerSector")) {
+    for (unsigned int index=0;index<layerstubssector.size();index++) {
+      int layerdisk=index%(N_LAYER+N_DISK);
+      int sector=index/(N_LAYER+N_DISK);
+      globals_->ofstream("stubslayersector.txt") << layerdisk << " " << sector << " " << layerstubssector[index] << endl;
+    }
+  }
+
+  if (settings_->writeMonitorData("StubsLayer")) {
+    for (unsigned int layerdisk=0;layerdisk<layerstubs.size();layerdisk++) {
+      globals_->ofstream("stubslayer.txt") << layerdisk << " " << layerstubs[layerdisk] << endl;
+    }
   }
 
   addStubTimer_.stop();

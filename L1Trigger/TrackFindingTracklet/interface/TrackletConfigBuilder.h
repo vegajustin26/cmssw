@@ -104,10 +104,49 @@ namespace trklet {
     std::string SPName(unsigned int l1, unsigned int ireg1, unsigned int ivm1,
 		       unsigned int l2, unsigned int ireg2, unsigned int ivm2,
 		       unsigned int iseed);
-    
+
+    std::string SPDName(unsigned int l1, unsigned int ireg1, unsigned int ivm1,
+			unsigned int l2, unsigned int ireg2, unsigned int ivm2,
+			unsigned int l3, unsigned int ireg3, unsigned int ivm3,
+			unsigned int iseed);
+
+    std::string STName(unsigned int l1, unsigned int ireg1, 
+			unsigned int l2, unsigned int ireg2,
+			unsigned int l3, unsigned int ireg3,
+		       unsigned int iseed, unsigned int count);
+
     std::string TEName(unsigned int l1, unsigned int ireg1, unsigned int ivm1,
 		       unsigned int l2, unsigned int ireg2, unsigned int ivm2,
 		       unsigned int iseed);
+    
+    std::string TREName(unsigned int l1, unsigned int ireg1,
+			unsigned int l2, unsigned int ireg2,
+			unsigned int iseed, unsigned int count);
+
+    std::string TEDName(unsigned int l1, unsigned int ireg1, unsigned int ivm1,
+			unsigned int l2, unsigned int ireg2, unsigned int ivm2,
+			unsigned int iseed);
+
+    std::string TParName(unsigned int l1,
+			unsigned int l2,
+			unsigned int l3,
+			unsigned int itc);
+
+    std::string TCDName(unsigned int l1,
+			unsigned int l2,
+			unsigned int l3,
+			unsigned int itc);
+
+    std::string TPROJName(unsigned int l1,
+			  unsigned int l2,
+			  unsigned int l3,
+			  unsigned int itc,
+			  unsigned int projlay,
+			  unsigned int projreg);
+
+    std::string FTName(unsigned int l1,
+		       unsigned int l2,
+		       unsigned int l3);
     
     std::string TCNAme(unsigned int iseed, unsigned int iTC);
 
@@ -118,6 +157,8 @@ namespace trklet {
     void writeProjectionMemories(std::ostream& os, std::ostream& memories, std::ostream& modules);
     
     void writeSPMemories(std::ostream& os, std::ostream& memories, std::ostream& modules);
+
+    void writeSPDMemories(std::ostream& os, std::ostream& memories, std::ostream& modules);
     
     void writeAPMemories(std::ostream& os, std::ostream& memories, std::ostream& modules);
     
@@ -146,6 +187,8 @@ namespace trklet {
     double rcrit_; //critical radius that defines the sector
     
     bool combinedmodules_; //if true write configuration for combined modules
+
+    bool extended_; //if true write configuration for extended configuration
     
     double rinvmax_; //Max value for valid rinv
     double rmaxdisk_; //Maximim disk radius

@@ -119,11 +119,6 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
 
   if (settings_.writeTable()) {
 
-#ifdef CMSSW_GIT_HASH  
-    if (not std::filesystem::exists(settings_.tablePath())) {
-      system((string("mkdir -p ") + settings_.tablePath()).c_str());
-    }
-#endif
     if (!settings_.combined()) {
       // write finebin tables
       writeVMTable(settings_.tablePath(), name + "_finebin.tab", vmrtable_);

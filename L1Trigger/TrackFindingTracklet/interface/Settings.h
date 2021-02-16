@@ -30,6 +30,8 @@ namespace trklet {
   constexpr unsigned int NRINVBITS=5; //number of bit for rinv in bend match table 
   constexpr unsigned int NFINERZBITS=3; //number of bit for r or z within a r/z bin 
   
+  constexpr unsigned int N_VMSTUBSMAX = 15;  // maximum number of stubs in VM bin
+
   class Settings {
   public:
     Settings() {
@@ -577,9 +579,9 @@ namespace trklet {
 							{{8, 9, -1}}, //5 D3D4
 							{{0, 6, -1}}, //6 L1D1
 							{{1, 6, -1}}, //7 L2D1
-							{{3, 4,  5}}, //8 L2L3L4
-							{{3, 4,  5}}, //9 L4L5L6
-							{{3, 4,  6}}, //10 L2L3D1
+							{{2, 3,  1}}, //8 L2L3L4
+							{{4, 5,  3}}, //9 L4L5L6
+							{{1, 2,  6}}, //10 L2L3D1
 							{{6, 7, 1}}}}; //11 D1D2L2
 
     //Number of tracklet calculators for the prompt seeding combinations
@@ -609,7 +611,7 @@ namespace trklet {
                                                                      {{1, 2, 5}},     //5 D3D4
                                                                      {{2, 3, 4, 5}},  //6 L1D1
                                                                      {{2, 3, 4}},     //7 L2D1
-                                                                     {{1, 2}},        //8 L2L3L4
+								     {{1, 2, 3}},     //8 L2L3L4
                                                                      {{}},            //9 L4L5L6
                                                                      {{2, 3, 4}},     //10 L2L3D1
                                                                      {{3, 4}}}};      //11 D1D2L2
@@ -716,7 +718,7 @@ namespace trklet {
                                                            {"PR", 107},
                                                            {"TC", 107},
                                                            {"TE", 101},
-                                                           {"TP", 108},
+                                                           {"TP", 105},
                                                            {"TRE", 108},
                                                            {"VMR", 101}};
 

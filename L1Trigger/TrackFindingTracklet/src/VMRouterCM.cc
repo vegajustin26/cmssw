@@ -142,12 +142,20 @@ void VMRouterCM::execute() {
 
       FPGAWord iphi = stub->phicorr();
       unsigned int iphipos = iphi.bits(iphi.nbits() - (settings_.nbitsallstubs(layerdisk_) + 3),3);
+
+      unsigned int phicutmax=4;
+      unsigned int phicutmin=4;
+
+      if (layerdisk_!=0) {
+	phicutmax=6;
+	phicutmin=2;
+      }
       
       //Fill allstubs memories - in HLS this is the same write to multiple memories
       for (auto& allstub : allstubs_) {
 	char memtype=allstub.first;
-	if (memtype=='R' && iphipos<5) continue;
-	if (memtype=='L' && iphipos>=3) continue;
+	if (memtype=='R' && iphipos<phicutmax) continue;
+	if (memtype=='L' && iphipos>=phicutmin) continue;
 	if (memtype=='A' && iphipos<4) continue;
 	if (memtype=='B' && iphipos>=4) continue;
 	if (memtype=='E' && iphipos>=4) continue;
@@ -157,12 +165,23 @@ void VMRouterCM::execute() {
 	//cout << allstub.second->getName()<<endl;
 	if (memtype=='R'||
 	    memtype=='L'||
+	    memtype=='M'||
 	    memtype=='A'||
 	    memtype=='B'||
 	    memtype=='E'||
 	    memtype=='F'||
 	    memtype=='C'||
 	    memtype=='D') {
+	  if (layerdisk_==1 && std::abs(stub->l1tstub()->z())<50.0) continue;
+	  if ((layerdisk_==2 || layerdisk_==4) && std::abs(stub->l1tstub()->z())>95.0) continue;	  
+	  if ((layerdisk_==6 || layerdisk_==8) && stub->l1tstub()->r()>55.0) continue;
+	  if (layerdisk_==0) {
+	    if (memtype=='M'||memtype=='R'||memtype=='L') {
+	      if (std::abs(stub->l1tstub()->z())<70.0) continue;
+	    } else {
+	      if (std::abs(stub->l1tstub()->z())>95.0) continue;	      
+	    }
+	  }
 	  allstub.second->setInner(true);  //FIXME can be done at initialization
 	}
 	if (settings_.debugTracklet()) {

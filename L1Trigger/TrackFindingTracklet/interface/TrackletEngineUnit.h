@@ -42,10 +42,18 @@ namespace trklet {
 
     bool idle() const { return idle_; }
 
+    void setNearFull() { nearfull_=candpairs_.nearfull(); }
+
     void reset();
 
-    void step(bool print);
+    void step(bool print, int istep, int iTE);
 
+    int rptr() const { return candpairs_.rptr(); }
+
+    int wptr() const { return candpairs_.wptr(); }
+    
+    const Stub* innerStub() const {return tedata_.stub_;}
+    
   private:
     VMStubsTEMemory* outervmstubs_;
     TEData tedata_;
@@ -55,7 +63,7 @@ namespace trklet {
     unsigned int layerdisk2_;
     unsigned int iSeed_;
     unsigned int nbitsfinephidiff_;
-
+    bool nearfull_; //initialized at start of each processing step
     unsigned int iAllStub_;
     
     //unsigned int memory slot
@@ -70,6 +78,9 @@ namespace trklet {
     std::vector<bool> pttableinner_;
     std::vector<bool> pttableouter_;
 
+    std::pair<const Stub*, const Stub*> candpair_, candpair__;
+    bool goodpair_, goodpair__;
+    
     //save the candidate matches
     CircularBuffer<std::pair<const Stub*, const Stub*> > candpairs_;
   }; // TrackletEngineUnit
