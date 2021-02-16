@@ -45,8 +45,8 @@ namespace trklet {
 
     VMStubsTEMemory* outervmstubs_;
 
-    //                                               istub          imem        start imem    end imem
-    std::vector<std::tuple<CircularBuffer<TEData>, unsigned int , unsigned int, unsigned int, unsigned int> > tedatabuffers_;
+    //                                 istub          imem          start imem    end imem
+    std::tuple<CircularBuffer<TEData>, unsigned int , unsigned int, unsigned int, unsigned int> tebuffer_;
 
     std::vector<TrackletEngineUnit> teunits_;
 
