@@ -801,6 +801,8 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
 	  unsigned int l2=seedLayers(iSeed).second;
 	  
 	  if (ilayer!=l1&&ilayer!=l2) continue;
+
+	  bool inner = ilayer==l1;
 	  
 	  for(unsigned int iTC=0;iTC<TC_[iSeed].size();iTC++){
 
@@ -826,11 +828,11 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
 		continue;
 
 	      if (max-min>=2) {
-		ext="_M";
+		ext="M";
 		if (iReg==min)
-		  ext="_R";
+		  ext="R";
 		if (iReg==max)
-		  ext="_L";
+		  ext="L";
 	      }
 	      
 	      if (max-min==1) {
@@ -838,50 +840,62 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
 		  assert(0);
 		  if (jTCReg==0){
 		    if (iReg==min)
-		      ext="_R";
+		      ext="R";
 		    if (iReg==max)
-		      ext="_B";
+		      ext="B";
 		  }
 		  if (jTCReg==1){
 		    if (iReg==min)
-		      ext="_A";
+		      ext="A";
 		    if (iReg==max)
-		      ext="_L";
+		      ext="L";
 		  }
 		}
 		if (nTCReg==3) {
 		  if (jTCReg==0){
 		    if (iReg==min)
-		      ext="_A";
+		      ext="A";
 		    if (iReg==max)
-		      ext="_F";
+		      ext="F";
 		  }
 		  if (jTCReg==1){
 		    if (iReg==min)
-		      ext="_E";
+		      ext="E";
 		    if (iReg==max)
-		      ext="_D";
+		      ext="D";
 		  }		  
 		  if (jTCReg==2){
 		    if (iReg==min)
-		      ext="_C";
+		      ext="C";
 		    if (iReg==max)
-		      ext="_B";
+		      ext="B";
 		  }		  
 		}
 	      }
 	      //cout << "iseed ratio max min : "<<iSeed<<" "<<ratio<<" "<<max<<" "<<min<<endl;
-	      assert(ext!="");
-	      
+	      assert(ext!="");	      
+	    }
+
+	    if (iSeed<4) { //Barrel seeding
+	      ext="_B"+ext;
+	    } else if (iSeed>5) {
+	      ext="_O"+ext;
+	    } else {
+	      ext="_D"+ext;
 	    }
 
 	    nmem++;
-	    memories << "AllStubs: AS_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<"n"<<nmem
+	    if (inner) {
+	      memories << "AllInnerStubs: ";
+	    } else {
+	      memories << "AllStubs: ";
+	    }
+	    memories << "AS_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<ext
 		     <<" [42]"<<std::endl;
-	    os << "AS_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<"n"<<nmem
+	    os << "AS_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)<<ext
 	       << " input=> VMR_"<<LayerName(ilayer)<<"PHI"<<iTCStr(iReg)
-	       << ".allstubout"<<ext<<" output=> TP_"<<iSeedStr(iSeed)<<iTCStr(iTC);
-	    if (ilayer==l1){
+	       << ".all"<<(inner?"inner":"")<<"stubout output=> TP_"<<iSeedStr(iSeed)<<iTCStr(iTC);
+	    if (inner){
 	      os << ".innerallstubin"<<std::endl;
 	    } else {
 	      os << ".outerallstubin"<<std::endl;

@@ -849,7 +849,7 @@ namespace trklet {
 
     unsigned int nHelixPar_{4};  // 4 or 5 param helix fit
     bool extended_{false};       // turn on displaced tracking
-    bool combined_{false};       // use combined TP (TE+TC) and MP (PR+ME+MC) configuration
+    bool combined_{true};       // use combined TP (TE+TC) and MP (PR+ME+MC) configuration
 
     std::string skimfile_{""};  //if not empty events will be written out in ascii format to this file
 

@@ -19,6 +19,7 @@ namespace trklet {
   class Globals;
   class MemoryBase;
   class AllStubsMemory;
+  class AllInnerStubsMemory;
   class VMStubsTEMemory;
 
   class TrackletProcessor : public TrackletCalculatorBase {
@@ -51,7 +52,7 @@ namespace trklet {
     std::vector<TrackletEngineUnit> teunits_;
 
     
-    std::vector<AllStubsMemory*> innerallstubs_;
+    std::vector<AllInnerStubsMemory*> innerallstubs_;
     std::vector<AllStubsMemory*> outerallstubs_;
 
     std::map<unsigned int, std::vector<bool> > pttableinner_;

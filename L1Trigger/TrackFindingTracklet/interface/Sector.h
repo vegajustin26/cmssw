@@ -27,6 +27,7 @@ namespace trklet {
   //Memory modules
   class InputLinkMemory;
   class AllStubsMemory;
+  class AllInnerStubsMemory;
   class VMStubsTEMemory;
   class VMStubsMEMemory;
   class StubPairsMemory;
@@ -147,6 +148,7 @@ namespace trklet {
     std::vector<MemoryBase*> MemoriesV_;
     std::vector<InputLinkMemory*> IL_;
     std::vector<AllStubsMemory*> AS_;
+    std::vector<AllInnerStubsMemory*> AIS_;
     std::vector<VMStubsTEMemory*> VMSTE_;
     std::vector<VMStubsMEMemory*> VMSME_;
     std::vector<StubPairsMemory*> SP_;

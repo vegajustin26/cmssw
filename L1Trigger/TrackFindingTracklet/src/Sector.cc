@@ -5,6 +5,7 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/InputLinkMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/AllInnerStubsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
@@ -189,6 +190,8 @@ void Sector::addMem(string memType, string memName) {
     addMemToVec(IL_, new InputLinkMemory(memName, settings_, isector_, phimin_, phimax_), memName);
   } else if (memType == "AllStubs:") {
     addMemToVec(AS_, new AllStubsMemory(memName, settings_, isector_), memName);
+  } else if (memType == "AllInnerStubs:") {
+    addMemToVec(AIS_, new AllInnerStubsMemory(memName, settings_, isector_), memName);
   } else if (memType == "VMStubsTE:") {
     addMemToVec(VMSTE_, new VMStubsTEMemory(memName, settings_, isector_), memName);
   } else if (memType == "VMStubsME:") {

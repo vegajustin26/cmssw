@@ -4,6 +4,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubTE.h"
 #include "L1Trigger/TrackFindingTracklet/interface/InputLinkMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/AllInnerStubsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
 
@@ -37,14 +38,17 @@ void VMRouterCM::addOutput(MemoryBase* memory, string output) {
                                  << output;
   }
 
+  if (output == "allinnerstubout") {
+    AllInnerStubsMemory* tmp = dynamic_cast<AllInnerStubsMemory*>(memory);
+    assert(tmp != nullptr);
+    char memtype=memory->getName().back();
+    allinnerstubs_.emplace_back(memtype,tmp);
+    return;
+  }
+
   if (output.substr(0, 10) == "allstubout") {
     AllStubsMemory* tmp = dynamic_cast<AllStubsMemory*>(memory);
-    assert(tmp != nullptr);
-    char memtype=0;
-    if (output.size()>10) {
-      memtype=output[11];
-    }
-    allstubs_.push_back(pair<char, AllStubsMemory*>(memtype,tmp));
+    allstubs_.push_back(tmp);
     return;
   }
 
@@ -140,6 +144,15 @@ void VMRouterCM::execute() {
 
       allStubCounter++;
 
+      for (auto& allstub : allstubs_) {
+        allstub->addStub(stub);
+	if (settings_.debugTracklet()) {
+	  edm::LogVerbatim("Tracklet") << getName() << " adding stub to "
+				       << allstub->getName();
+	}
+
+      }
+      
       FPGAWord iphi = stub->phicorr();
       unsigned int iphipos = iphi.bits(iphi.nbits() - (settings_.nbitsallstubs(layerdisk_) + 3),3);
 
@@ -152,7 +165,7 @@ void VMRouterCM::execute() {
       }
       
       //Fill allstubs memories - in HLS this is the same write to multiple memories
-      for (auto& allstub : allstubs_) {
+      for (auto& allstub : allinnerstubs_) {
 	char memtype=allstub.first;
 	if (memtype=='R' && iphipos<phicutmax) continue;
 	if (memtype=='L' && iphipos>=phicutmin) continue;
@@ -162,28 +175,19 @@ void VMRouterCM::execute() {
 	if (memtype=='F' && iphipos<4) continue;
 	if (memtype=='C' && iphipos>=4) continue;
 	if (memtype=='D' && iphipos<4) continue;
-	//cout << allstub.second->getName()<<endl;
-	if (memtype=='R'||
-	    memtype=='L'||
-	    memtype=='M'||
-	    memtype=='A'||
-	    memtype=='B'||
-	    memtype=='E'||
-	    memtype=='F'||
-	    memtype=='C'||
-	    memtype=='D') {
-	  if (layerdisk_==1 && std::abs(stub->l1tstub()->z())<50.0) continue;
-	  if ((layerdisk_==2 || layerdisk_==4) && std::abs(stub->l1tstub()->z())>95.0) continue;	  
-	  if ((layerdisk_==6 || layerdisk_==8) && stub->l1tstub()->r()>55.0) continue;
-	  if (layerdisk_==0) {
-	    if (memtype=='M'||memtype=='R'||memtype=='L') {
-	      if (std::abs(stub->l1tstub()->z())<70.0) continue;
-	    } else {
-	      if (std::abs(stub->l1tstub()->z())>95.0) continue;	      
-	    }
+
+	int absz = std::abs(stub->z().value());
+	if (layerdisk_==1 && absz<50.0/settings_.kz(layerdisk_)) continue;
+	if ((layerdisk_==2 || layerdisk_==4) && absz>95.0/settings_.kz(layerdisk_)) continue;	  
+	if ((layerdisk_==6 || layerdisk_==8) && stub->r().value()>55.0/settings_.kr()) continue;
+	if (layerdisk_==0) {
+	  if (memtype=='M'||memtype=='R'||memtype=='L') {
+	    if (absz<70.0/settings_.kz(layerdisk_)) continue;
+	  } else {
+	    if (absz>95.0/settings_.kz(layerdisk_)) continue;	      
 	  }
-	  allstub.second->setInner(true);  //FIXME can be done at initialization
 	}
+
 	if (settings_.debugTracklet()) {
 	  edm::LogVerbatim("Tracklet") << getName() << " adding stub to "
 				       << allstub.second->getName();
@@ -253,6 +257,12 @@ void VMRouterCM::execute() {
       assert(vmstubsMEPHI_[0] != nullptr);
       vmstubsMEPHI_[0]->addStub(vmstub, ivmPlus*nvmmebins_+vmbin);
 
+      //
+      // FIXME - this can not be implemented (well) in firmware as it requires a write to the
+      // same memory as the line above and this can not be done on the same clk.
+      // This can be eliminated by removing the need to write twice here and implementing the
+      // same functionality in the MP
+      //
       if (ivmMinus != ivmPlus) {
         vmstubsMEPHI_[0]->addStub(vmstub, ivmMinus*nvmmebins_+vmbin);
       }

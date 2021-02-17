@@ -3,6 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/AllInnerStubsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
 
@@ -144,7 +145,7 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
   }
 
   if (input == "innerallstubin") {
-    auto* tmp = dynamic_cast<AllStubsMemory*>(memory);
+    auto* tmp = dynamic_cast<AllInnerStubsMemory*>(memory);
     assert(tmp != nullptr);
     if (innerallstubs_.size()==2) { //FIXME this should be done with better logic with reading the input stubs
       innerallstubs_.insert(innerallstubs_.begin(),tmp);

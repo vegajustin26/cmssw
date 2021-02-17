@@ -1,5 +1,5 @@
-#ifndef L1Trigger_TrackFindingTracklet_interface_AllStubsMemory_h
-#define L1Trigger_TrackFindingTracklet_interface_AllStubsMemory_h
+#ifndef L1Trigger_TrackFindingTracklet_interface_AllInnerStubsMemory_h
+#define L1Trigger_TrackFindingTracklet_interface_AllInnerStubsMemory_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/MemoryBase.h"
 
@@ -13,11 +13,11 @@ namespace trklet {
   class Stub;
   class L1TStub;
 
-  class AllStubsMemory : public MemoryBase {
+  class AllInnerStubsMemory : public MemoryBase {
   public:
-    AllStubsMemory(std::string name, Settings const& settings, unsigned int iSector);
+    AllInnerStubsMemory(std::string name, Settings const& settings, unsigned int iSector);
 
-    ~AllStubsMemory() override = default;
+    ~AllInnerStubsMemory() override = default;
 
     void addStub(const Stub* stub) { stubs_.push_back(stub); }
 
