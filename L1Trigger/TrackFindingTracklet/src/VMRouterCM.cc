@@ -200,15 +200,6 @@ void VMRouterCM::execute() {
       unsigned int ivm =
 	iphi.bits(iphi.nbits() - (settings_.nbitsallstubs(layerdisk_) + settings_.nbitsvmme(layerdisk_)),
 		  settings_.nbitsvmme(layerdisk_));
-      unsigned int extrabits = iphi.bits(iphi.nbits() - overlapbits_, nextrabits_);
-
-      unsigned int ivmPlus = ivm;
-
-      if (extrabits == ((1U << nextrabits_) - 1) && ivm != ((1U << settings_.nbitsvmme(layerdisk_)) - 1))
-        ivmPlus++;
-      unsigned int ivmMinus = ivm;
-      if (extrabits == 0 && ivm != 0)
-        ivmMinus--;
 
       //Calculate the z and r position for the vmstub
 
@@ -255,17 +246,8 @@ void VMRouterCM::execute() {
           allStubIndex);
       
       assert(vmstubsMEPHI_[0] != nullptr);
-      vmstubsMEPHI_[0]->addStub(vmstub, ivmPlus*nvmmebins_+vmbin);
 
-      //
-      // FIXME - this can not be implemented (well) in firmware as it requires a write to the
-      // same memory as the line above and this can not be done on the same clk.
-      // This can be eliminated by removing the need to write twice here and implementing the
-      // same functionality in the MP
-      //
-      if (ivmMinus != ivmPlus) {
-        vmstubsMEPHI_[0]->addStub(vmstub, ivmMinus*nvmmebins_+vmbin);
-      }
+      vmstubsMEPHI_[0]->addStub(vmstub, ivm*nvmmebins_+vmbin);
 
       //Fill the TE VM memories
       if (layerdisk_>=6&&(!stub->isPSmodule()))

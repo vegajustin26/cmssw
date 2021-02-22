@@ -17,6 +17,7 @@ void MatchEngineUnit::init(VMStubsMEMemory* vmstubsmemory,
                            int projrinv,
                            int projfinerz,
                            int projfinephi,
+			   int shift,
                            bool usesecond,
                            bool isPSseed,
                            Tracklet* proj) {
@@ -27,6 +28,7 @@ void MatchEngineUnit::init(VMStubsMEMemory* vmstubsmemory,
   projrinv_ = projrinv;
   projfinerz_ = projfinerz;
   projfinephi_ = projfinephi;
+  shift_ = shift;
   usesecond_ = usesecond;
   isPSseed_ = isPSseed;
   proj_ = proj;
@@ -42,9 +44,9 @@ void MatchEngineUnit::step() {
   int stubfinerz = vmstub.finerz().value();
   int stubfinephi = vmstub.finephi().value();
 
-  int deltaphi = stubfinephi - projfinephi_;
+  int deltaphi = stubfinephi - projfinephi_ + (1<<NFINERZBITS)*shift_;
 
-  bool dphicut = (abs(deltaphi) < 3) || (abs(deltaphi) > 5);  //TODO - need better implementations
+  bool dphicut = (abs(deltaphi) < 3);
 
   int nbits = isPSmodule ? 3 : 4;
 

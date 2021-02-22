@@ -257,7 +257,28 @@ void MatchProcessor::execute() {
             Tracklet* proj = projMem->getTracklet(iproj);
             FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layerdisk_+1) : proj->fpgaphiprojdisk(layerdisk_-N_LAYER+1);
 
-            int iphi = (fpgaphi.value() >> (fpgaphi.nbits() - nvmbits_)) & (nvmbins_ - 1);
+            unsigned int iphi = (fpgaphi.value() >> (fpgaphi.nbits() - nvmbits_)) & (nvmbins_ - 1);
+
+	    int nextrabits = 2;
+	    int overlapbits = nvmbits_+nextrabits;
+	      
+	    unsigned int extrabits = fpgaphi.bits(fpgaphi.nbits() - overlapbits, nextrabits);
+
+	    unsigned int ivmPlus = iphi;
+
+	    int plusShift=0;
+	    int negShift=0;
+	    
+	    
+	    if (extrabits == ((1U << nextrabits) - 1) && iphi != ((1U << settings_.nbitsvmme(layerdisk_)) - 1)) {
+	      plusShift = 1;
+	      ivmPlus++;
+	    }
+	    unsigned int ivmMinus = iphi;
+	    if (extrabits == 0 && iphi != 0){
+	      negShift = -1;
+	      ivmMinus--;
+	    }
 
             int projrinv = -1;
             if (barrel_) {
@@ -297,16 +318,27 @@ void MatchProcessor::execute() {
               nbins = 16;
 
             VMStubsMEMemory* stubmem = vmstubs_[0];
-            bool usefirst = stubmem->nStubsBin(iphi * nbins + slot) != 0;
-            bool usesecond = (second && (stubmem->nStubsBin(iphi * nbins + slot + 1) != 0));
+            bool usefirstPlus = stubmem->nStubsBin(ivmPlus * nbins + slot) != 0;
+            bool usesecondPlus = (second && (stubmem->nStubsBin(ivmPlus * nbins + slot + 1) != 0));
+            bool usefirstMinus = stubmem->nStubsBin(ivmMinus * nbins + slot) != 0;
+            bool usesecondMinus = (second && (stubmem->nStubsBin(ivmMinus * nbins + slot + 1) != 0));
 
-            if (usefirst) {
-              ProjectionTemp tmpProj(proj, slot, projrinv, projfinerz, projfinephi, iphi, usesecond, isPSseed);
+            if (usefirstPlus) {
+              ProjectionTemp tmpProj(proj, slot, projrinv, projfinerz, projfinephi, ivmPlus, plusShift, usesecondPlus, isPSseed);
               inputProjBuffer_.store(tmpProj);
-            } else if (usesecond) {
-              ProjectionTemp tmpProj(proj, slot + 1, projrinv, projfinerz - 8, projfinephi, iphi, false, isPSseed);
+            } else if (usesecondPlus) {
+              ProjectionTemp tmpProj(proj, slot + 1, projrinv, projfinerz - 8, projfinephi, ivmPlus, plusShift, false, isPSseed);
               inputProjBuffer_.store(tmpProj);
             }
+	    if (ivmPlus!=ivmMinus) {
+	      if (usefirstMinus) {
+		ProjectionTemp tmpProj(proj, slot, projrinv, projfinerz, projfinephi, ivmMinus, negShift, usesecondMinus, isPSseed);
+		inputProjBuffer_.store(tmpProj);
+	      } else if (usesecondMinus) {
+		ProjectionTemp tmpProj(proj, slot + 1, projrinv, projfinerz - 8, projfinephi, ivmMinus, negShift, false, isPSseed);
+		inputProjBuffer_.store(tmpProj);
+	      }
+	    }
             iproj++;
             if (iproj == projMem->nTracklets()) {
               iproj = 0;
@@ -345,6 +377,7 @@ void MatchProcessor::execute() {
 				tmpProj.projrinv(),
 				tmpProj.projfinerz(),
 				tmpProj.projfinephi(),
+				tmpProj.shift(),
 				tmpProj.usesecond(),
 				tmpProj.isPSseed(),
 				tmpProj.proj());

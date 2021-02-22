@@ -27,8 +27,8 @@ namespace trklet {
   constexpr unsigned int N_BENDBITS_PS = 3; // Number of bend bits for PS modules
   constexpr unsigned int N_BENDBITS_2S = 4; // Number of bend bits for 2S modules
 
-  constexpr unsigned int NRINVBITS=5; //number of bit for rinv in bend match table 
-  constexpr unsigned int NFINERZBITS=3; //number of bit for r or z within a r/z bin 
+  constexpr unsigned int NRINVBITS = 5; //number of bit for rinv in bend match table 
+  constexpr unsigned int NFINERZBITS = 3; //number of bit for r or z within a r/z bin 
   
   constexpr unsigned int N_VMSTUBSMAX = 15;  // maximum number of stubs in VM bin
 
