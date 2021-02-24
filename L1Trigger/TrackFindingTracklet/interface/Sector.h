@@ -82,6 +82,7 @@ namespace trklet {
     void writeVMSTE(bool first);
     void writeVMSME(bool first);
     void writeAS(bool first);
+    void writeAIS(bool first);
     void writeSP(bool first);
     void writeST(bool first);
     void writeTPAR(bool first);

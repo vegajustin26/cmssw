@@ -11,7 +11,7 @@ AllInnerStubsMemory::AllInnerStubsMemory(string name, Settings const& settings, 
 
 void AllInnerStubsMemory::writeStubs(bool first) {
   const string dirS = settings_.memPath() + "Stubs/";
-  openFile(first, dirS, "AllStubs_");
+  openFile(first, dirS, "AllInnerStubs_");
 
   for (unsigned int j = 0; j < stubs_.size(); j++) {
     string stub = stubs_[j]->strinner(); 

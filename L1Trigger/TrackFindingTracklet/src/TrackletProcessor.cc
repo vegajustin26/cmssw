@@ -366,10 +366,7 @@ void TrackletProcessor::execute() {
 	if (negdisk) {
 	  indexz = ((1 << nbitszfinebintable_) - 1 ) - indexz;
 	}
-	indexr = stub->r().value();
-	if (stub->isPSmodule()) {
-	  indexr = stub->r().value() >> (stub->r().nbits() - nbitsrfinebintable_);
-	}
+	indexr = stub->r().value() >> (stub->r().nbits() - nbitsrfinebintable_);
       } else {	  //Take the top nbitsfinebintable_ bits of the z coordinate
 	indexr = (stub->r().value() >> (stub->r().nbits() - nbitsrfinebintable_))&((1<<nbitsrfinebintable_)-1);
       }

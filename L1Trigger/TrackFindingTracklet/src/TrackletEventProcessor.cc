@@ -257,6 +257,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
       sectors_[k]->writeVMSTE(first);
       sectors_[k]->writeVMSME(first);
       sectors_[k]->writeAS(first);
+      sectors_[k]->writeAIS(first);
     }
   }
   VMRouterTimer_.stop();

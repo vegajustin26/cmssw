@@ -180,6 +180,7 @@ void VMRouterCM::execute() {
 	if (layerdisk_==1 && absz<50.0/settings_.kz(layerdisk_)) continue;
 	if ((layerdisk_==2 || layerdisk_==4) && absz>95.0/settings_.kz(layerdisk_)) continue;	  
 	if ((layerdisk_==6 || layerdisk_==8) && stub->r().value()>55.0/settings_.kr()) continue;
+	if ((layerdisk_==6 || layerdisk_==8) && stub->r().value()<2*int(N_DSS_MOD)) continue;
 	if (layerdisk_==0) {
 	  if (memtype=='M'||memtype=='R'||memtype=='L') {
 	    if (absz<70.0/settings_.kz(layerdisk_)) continue;

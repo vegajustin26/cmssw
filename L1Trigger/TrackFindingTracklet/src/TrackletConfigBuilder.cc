@@ -876,6 +876,10 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
 	      assert(ext!="");	      
 	    }
 
+	    if (ext=="") {
+	      ext="_"+iTCStr(iTC);
+	    }
+	    
 	    if (iSeed<4) { //Barrel seeding
 	      ext="_B"+ext;
 	    } else if (iSeed>5) {

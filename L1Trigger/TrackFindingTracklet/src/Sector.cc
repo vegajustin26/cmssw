@@ -326,6 +326,12 @@ void Sector::writeAS(bool first) {
   }
 }
 
+void Sector::writeAIS(bool first) {
+  for (auto& i : AIS_) {
+    i->writeStubs(first);
+  }
+}
+
 void Sector::writeSP(bool first) {
   for (auto& i : SP_) {
     i->writeSP(first);

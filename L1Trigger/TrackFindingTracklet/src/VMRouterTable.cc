@@ -151,9 +151,9 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
     
       ofstream out;
       if (layerdisk<6) {
-	out.open(settings_.tablePath()+"TP_L" + std::to_string(layerdisk+1) +".tab");
+	out.open(settings_.tablePath()+"VMR_L" + std::to_string(layerdisk+1) +".tab");
       } else {
-	out.open(settings_.tablePath()+"TP_D" + std::to_string(layerdisk-5) +".tab");
+	out.open(settings_.tablePath()+"VMR_D" + std::to_string(layerdisk-5) +".tab");
       }
       out << "{" << endl;
       for (unsigned int i = 0; i < vmrtableteinner_.size(); i++) {
