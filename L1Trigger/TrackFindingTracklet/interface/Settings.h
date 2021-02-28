@@ -726,21 +726,21 @@ namespace trklet {
     
     
     // Offset to the maximum number of steps in each processing step:
-    // Set to 0 (default) means standard trunction
+    // Set to 0 (default) means standard truncation
     // Set to large value, e.g. 10000, to disable truncation
     unsigned int maxstepoffset_{0};
 
-    //Default number of processing steps for one event
+    //Number of processing steps for one event (108=18TM*240MHz/40MHz)
     std::unordered_map<std::string, unsigned int> maxstep_{{"Link", 108},
-                                                           {"MC", 105},
-                                                           {"ME", 108},
-                                                           {"MP", 108},
-                                                           {"PR", 108},
-                                                           {"TC", 108},
+	                                                   {"VMR", 108},
                                                            {"TE", 108},
+                                                           {"TC", 108},
+                                                           {"PR", 108},
+                                                           {"ME", 108},
+                                                           {"MC", 105},
+                                                           {"MP", 108},
                                                            {"TP", 108},
-                                                           {"TRE", 108},
-                                                           {"VMR", 108}};
+                                                           {"TRE", 108}};
 
     // If set to true this will generate debub printout in text files
     std::unordered_map<std::string, bool> writeMonitorData_{{"IL", false},
