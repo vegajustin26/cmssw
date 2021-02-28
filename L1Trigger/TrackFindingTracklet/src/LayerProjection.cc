@@ -36,11 +36,6 @@ void LayerProjection::init(Settings const& settings,
 
   if (rproj < settings.rPS2S()) {
     fpgaphiproj_.set(iphiproj, settings.nphibitsstub(0), true, __LINE__, __FILE__);
-    int iphivm = (iphiproj >> (settings.nphibitsstub(0) - 5)) & 0x7;
-    if ((projlayer_ % 2) == 1) {
-      iphivm ^= 4;
-    }
-    fpgaphiprojvm_.set(iphivm, 3, true, __LINE__, __FILE__);
     fpgazproj_.set(izproj, settings.nzbitsstub(0), false, __LINE__, __FILE__);
     int izvm = izproj >> (12 - 7) & 0xf;
     fpgazprojvm_.set(izvm, 4, true, __LINE__, __FILE__);
@@ -48,11 +43,6 @@ void LayerProjection::init(Settings const& settings,
     fpgazprojder_.set(izder, settings.nbitszprojderL123(), false, __LINE__, __FILE__);
   } else {
     fpgaphiproj_.set(iphiproj, settings.nphibitsstub(5), true, __LINE__, __FILE__);
-    int iphivm = (iphiproj >> (settings.nphibitsstub(5) - 5)) & 0x7;
-    if ((projlayer_ % 2) == 1) {
-      iphivm ^= 4;
-    }
-    fpgaphiprojvm_.set(iphivm, 3, true, __LINE__, __FILE__);
     fpgazproj_.set(izproj, settings.nzbitsstub(5), false, __LINE__, __FILE__);
     int izvm = izproj >> (8 - 7) & 0xf;
     fpgazprojvm_.set(izvm, 4, true, __LINE__, __FILE__);

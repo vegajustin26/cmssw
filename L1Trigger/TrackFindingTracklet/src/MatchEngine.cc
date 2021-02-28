@@ -238,7 +238,6 @@ void MatchEngine::execute() {
 
         Tracklet* proj = vmprojs_->getTracklet(projindex);
 
-        FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layerdisk_+1) : proj->fpgaphiprojdisk(layerdisk_-5);
         FPGAWord fpgafinephi = barrel_ ? proj->fpgafinephiproj(layerdisk_+1) : proj->fpgafinephiprojdisk(layerdisk_-5);
 
         projfinephi = fpgafinephi.value();
