@@ -147,11 +147,6 @@ namespace trklet {
       return diskproj_[disk - 1].fpgafinervm().value();
     }
 
-    int zprojvm(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].fpgazprojvm().value();
-    }
-
     double phiproj(int layer) const {
       assert(layer > 0 && layer <= N_LAYER);
       return layerproj_[layer - 1].phiproj();

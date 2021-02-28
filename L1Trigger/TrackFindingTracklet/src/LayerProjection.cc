@@ -27,25 +27,20 @@ void LayerProjection::init(Settings const& settings,
   assert(projlayer <= N_LAYER);
 
   valid_ = true;
-
+  
   rproj_ = rproj;
 
   projlayer_ = projlayer;
+  int layerdisk =  projlayer-1;
+  
+  fpgaphiproj_.set(iphiproj, settings.nphibitsstub(layerdisk), true, __LINE__, __FILE__);
+  fpgazproj_.set(izproj, settings.nzbitsstub(layerdisk), false, __LINE__, __FILE__);
 
-  assert(iphiproj >= 0);
 
-  if (rproj < settings.rPS2S()) {
-    fpgaphiproj_.set(iphiproj, settings.nphibitsstub(0), true, __LINE__, __FILE__);
-    fpgazproj_.set(izproj, settings.nzbitsstub(0), false, __LINE__, __FILE__);
-    int izvm = izproj >> (12 - 7) & 0xf;
-    fpgazprojvm_.set(izvm, 4, true, __LINE__, __FILE__);
+  if (layerdisk < N_PSLAYER) {
     fpgaphiprojder_.set(iphider, settings.nbitsphiprojderL123(), false, __LINE__, __FILE__);
     fpgazprojder_.set(izder, settings.nbitszprojderL123(), false, __LINE__, __FILE__);
   } else {
-    fpgaphiproj_.set(iphiproj, settings.nphibitsstub(5), true, __LINE__, __FILE__);
-    fpgazproj_.set(izproj, settings.nzbitsstub(5), false, __LINE__, __FILE__);
-    int izvm = izproj >> (8 - 7) & 0xf;
-    fpgazprojvm_.set(izvm, 4, true, __LINE__, __FILE__);
     fpgaphiprojder_.set(iphider, settings.nbitsphiprojderL456(), false, __LINE__, __FILE__);
     fpgazprojder_.set(izder, settings.nbitszprojderL456(), false, __LINE__, __FILE__);
   }
@@ -65,8 +60,10 @@ void LayerProjection::init(Settings const& settings,
   if (zbin1 >= settings.MEBins()) {
     zbin1 = 0;  //note that zbin1 is unsigned
   }
-  if (zbin2 >= settings.MEBins())
+  if (zbin2 >= settings.MEBins()) {
     zbin2 = settings.MEBins() - 1;
+  }
+  
   assert(zbin1 <= zbin2);
   assert(zbin2 - zbin1 <= 1);
   fpgazbin1projvm_.set(zbin1, settings.MEBinsBits(), true, __LINE__, __FILE__);  // first z bin

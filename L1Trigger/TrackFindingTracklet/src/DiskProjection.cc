@@ -38,8 +38,7 @@ void DiskProjection::init(Settings const& settings,
   fpgaphiproj_.set(iphiproj, settings.nphibitsstub(0), true, __LINE__, __FILE__);
 
   fpgarproj_.set(irproj, settings.nrbitsstub(6), false, __LINE__, __FILE__);
-  int irvm = irproj >> (13 - 7) & 0xf;
-  fpgarprojvm_.set(irvm, 4, true, __LINE__, __FILE__);
+
   fpgaphiprojder_.set(iphider, settings.nbitsphiprojderL123(), false, __LINE__, __FILE__);
   fpgarprojder_.set(irder, settings.nrbitsprojderdisk(), false, __LINE__, __FILE__);
 
