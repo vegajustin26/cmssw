@@ -107,6 +107,11 @@ namespace trklet {
       return layerproj_[layer - 1].fpgaphiproj();
     }
 
+    const FPGAWord& fpgafinephiproj(int layer) const {
+      assert(layer > 0 && layer <= N_LAYER);
+      return layerproj_[layer - 1].fpgafinephivm();
+    }
+
     const FPGAWord& fpgazprojder(int layer) const {
       assert(layer > 0 && layer <= N_LAYER);
       return layerproj_[layer - 1].fpgazprojder();
@@ -267,6 +272,11 @@ namespace trklet {
     const FPGAWord& fpgaphiprojdisk(int disk) const {
       assert(abs(disk) <= N_DISK);
       return diskproj_[abs(disk) - 1].fpgaphiproj();
+    }
+
+    const FPGAWord& fpgafinephiprojdisk(int disk) const {
+      assert(abs(disk) <= N_DISK);
+      return diskproj_[abs(disk) - 1].fpgafinephivm();
     }
 
     const FPGAWord& fpgaphiprojderdisk(int disk) const {

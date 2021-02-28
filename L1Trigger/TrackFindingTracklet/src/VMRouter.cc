@@ -14,7 +14,7 @@ using namespace std;
 using namespace trklet;
 
 VMRouter::VMRouter(string name, Settings const& settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector), vmrtable_(settings) {
+  : ProcessBase(name, settings, global, iSector), vmrtable_(settings) {
   layerdisk_ = initLayerDisk(4);
 
   vmstubsMEPHI_.resize(settings_.nvmme(layerdisk_), nullptr);
@@ -22,7 +22,7 @@ VMRouter::VMRouter(string name, Settings const& settings, Globals* global, unsig
   overlapbits_ = 7;
   nextrabits_ = overlapbits_ - (settings_.nbitsallstubs(layerdisk_) + settings_.nbitsvmme(layerdisk_));
 
-  vmrtable_.init(layerdisk_);
+  vmrtable_.init(layerdisk_,name);
 
   nbitszfinebintable_ = settings_.vmrlutzbits(layerdisk_);
   nbitsrfinebintable_ = settings_.vmrlutrbits(layerdisk_);

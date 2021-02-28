@@ -1034,7 +1034,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
       continue;
 
     diskprojs[i].init(settings_,
-                      i + 1,
+                      settings_.projdisks(iSeed_, i),
                       settings_.zmean(settings_.projdisks(iSeed_, i) - 1),
                       iphiprojdisk[i],
                       irprojdisk[i],
@@ -1400,8 +1400,8 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
       continue;
 
     diskprojs[i].init(settings_,
-                      i + 1,
-                      settings_.zmean(i),
+                      i + 2,
+                      settings_.zmean(i+1),
                       iphiprojdisk[i],
                       irprojdisk[i],
                       ITC->der_phiD_final.ival(),

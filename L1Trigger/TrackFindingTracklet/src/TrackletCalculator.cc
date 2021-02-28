@@ -155,6 +155,9 @@ void TrackletCalculator::execute() {
   unsigned int countall = 0;
   unsigned int countsel = 0;
 
+  bool print=(iSector_==3)&&(getName()=="TC_L1L2G");
+  print=false;
+  
   for (auto& stubpair : stubpairs_) {
     if (trackletpars_->nTracklets() >= settings_.ntrackletmax()) {
       edm::LogVerbatim("Tracklet") << "Will break on too many tracklets in " << getName();
@@ -181,6 +184,10 @@ void TrackletCalculator::execute() {
         } else {
           //barrel+barrel seeding
           bool accept = barrelSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
+	  if (print) {
+	    cout << stubpair->getName()<<" i inner outer : "<<countall<<" "<<innerFPGAStub->allStubIndex().value()<<" "
+		 <<outerFPGAStub->allStubIndex().value()<<" accept = "<<accept<<endl;
+	  }
           if (accept)
             countsel++;
         }

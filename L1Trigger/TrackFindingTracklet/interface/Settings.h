@@ -29,6 +29,7 @@ namespace trklet {
 
   constexpr unsigned int NRINVBITS = 5; //number of bit for rinv in bend match table 
   constexpr unsigned int NFINERZBITS = 3; //number of bit for r or z within a r/z bin 
+  constexpr unsigned int NFINEPHIBITS = 3; //number of bits for phi within a vm bin 
   
   constexpr unsigned int N_VMSTUBSMAX = 15;  // maximum number of stubs in VM bin
 
@@ -712,15 +713,15 @@ namespace trklet {
 
     //Default number of processing steps for one event
     std::unordered_map<std::string, unsigned int> maxstep_{{"Link", 108},
-                                                           {"MC", 107},
-                                                           {"ME", 101},
+                                                           {"MC", 105},
+                                                           {"ME", 108},
                                                            {"MP", 108},
-                                                           {"PR", 107},
-                                                           {"TC", 107},
-                                                           {"TE", 101},
-                                                           {"TP", 105},
+                                                           {"PR", 108},
+                                                           {"TC", 108},
+                                                           {"TE", 108},
+                                                           {"TP", 108},
                                                            {"TRE", 108},
-                                                           {"VMR", 101}};
+                                                           {"VMR", 108}};
 
     // If set to true this will generate debub printout in text files
     std::unordered_map<std::string, bool> writeMonitorData_{{"IL", false},
@@ -849,7 +850,7 @@ namespace trklet {
 
     unsigned int nHelixPar_{4};  // 4 or 5 param helix fit
     bool extended_{false};       // turn on displaced tracking
-    bool combined_{true};       // use combined TP (TE+TC) and MP (PR+ME+MC) configuration
+    bool combined_{false};       // use combined TP (TE+TC) and MP (PR+ME+MC) configuration
 
     std::string skimfile_{""};  //if not empty events will be written out in ascii format to this file
 

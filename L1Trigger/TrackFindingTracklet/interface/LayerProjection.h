@@ -82,6 +82,11 @@ namespace trklet {
       return fpgafinezvm_;
     };
 
+    const FPGAWord& fpgafinephivm() const {
+      assert(valid_);
+      return fpgafinephivm_;
+    };
+
     const FPGAWord& fpgazprojvm() const {
       assert(valid_);
       return fpgazprojvm_;
@@ -145,6 +150,7 @@ namespace trklet {
     FPGAWord fpgazbin1projvm_;
     FPGAWord fpgazbin2projvm_;
     FPGAWord fpgafinezvm_;
+    FPGAWord fpgafinephivm_;
 
     double phiproj_;
     double zproj_;

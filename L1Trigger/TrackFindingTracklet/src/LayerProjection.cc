@@ -1,3 +1,4 @@
+
 #include "L1Trigger/TrackFindingTracklet/interface/LayerProjection.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
@@ -91,6 +92,11 @@ void LayerProjection::init(Settings const& settings,
 
   fpgafinezvm_.set(finez, 4, true, __LINE__, __FILE__);  // fine z postions starting at zbin1 //FIXME using 3 bits
 
+  //fine phi bits
+  int projfinephi = (fpgaphiproj_.value() >> (fpgaphiproj_.nbits() - (settings.nbitsallstubs(projlayer_) + settings.nbitsvmme(projlayer_) + NFINEPHIBITS ))) & ((1<<NFINEPHIBITS)-1);
+  fpgafinephivm_.set(projfinephi, NFINEPHIBITS, true, __LINE__, __FILE__);  // fine phi postions
+  
+  
   phiproj_ = phiproj;
   zproj_ = zproj;
   phiprojder_ = phiprojder;

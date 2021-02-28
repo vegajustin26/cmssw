@@ -125,6 +125,9 @@ void MatchEngine::execute() {
   unsigned int countall = 0;
   unsigned int countpass = 0;
 
+  bool print=(iSector_==3)&&(getName()=="ME_L3PHIC20");
+  print=false;
+
   constexpr unsigned int kNBitsBuffer = 3;
 
   int writeindex = 0;
@@ -185,6 +188,10 @@ void MatchEngine::execute() {
       if (second)
         rzlast += 1;
 
+      if (print) {
+	cout << "istep rzfirst rzlast : "<<istep<<" "<<rzfirst<<" "<<rzlast<<endl;
+      }
+
       //Check if there are stubs in the memory
       int nstubfirst = vmstubs_->nStubsBin(rzfirst);
       int nstublast = vmstubs_->nStubsBin(rzlast);
@@ -232,7 +239,9 @@ void MatchEngine::execute() {
         Tracklet* proj = vmprojs_->getTracklet(projindex);
 
         FPGAWord fpgaphi = barrel_ ? proj->fpgaphiproj(layerdisk_+1) : proj->fpgaphiprojdisk(layerdisk_-5);
-        projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + nfinephibits_ ))) & ((1<<nfinephibits_)-1);
+        FPGAWord fpgafinephi = barrel_ ? proj->fpgafinephiproj(layerdisk_+1) : proj->fpgafinephiprojdisk(layerdisk_-5);
+
+        projfinephi = fpgafinephi.value();
 
         nstubs = vmstubs_->nStubsBin(rzbin);
 
@@ -318,6 +327,13 @@ void MatchEngine::execute() {
         }
       }
 
+      if (print) {
+	cout << "istep index : "<<istep<<" "<<index<<" "<<vmstub.bend().value()<<" rzbin istubtmp : "<<rzbin<<" "<<istubtmp
+	     <<" dz "<<stubfinerz<<" "<<projfinerzadj<<"  dphi: "<<deltaphi<<endl;
+      }
+      
+
+      
       //Check if stub bend and proj rinv consistent
       if (passz && passphi) {
         if (barrel_ ? table_[index] : (isPSmodule ? tablePS_[index] : table2S_[index])) {

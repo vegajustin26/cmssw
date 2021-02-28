@@ -249,8 +249,8 @@ std::string Tracklet::vmstrlayer(int layer, unsigned int allstubindex) {
   FPGAWord tmp;
   tmp.set(irinvvm, 5, true, __LINE__, __FILE__);
   std::string oss = index.str() + "|" + layerproj_[layer - 1].fpgazbin1projvm().str() + "|" +
-                    layerproj_[layer - 1].fpgazbin2projvm().str() + "|" + layerproj_[layer - 1].fpgafinezvm().str() +
-                    "|" + tmp.str() + "|" + std::to_string(PSseed());
+    layerproj_[layer - 1].fpgazbin2projvm().str() + "|" + layerproj_[layer - 1].fpgafinezvm().str() 
+    + "|" + layerproj_[layer-1].fpgafinephivm().str() + "|" + tmp.str() + "|" + std::to_string(PSseed());
   return oss;
 }
 
@@ -263,8 +263,8 @@ std::string Tracklet::vmstrdisk(int disk, unsigned int allstubindex) {
     index.set(allstubindex, 7, true, __LINE__, __FILE__);
   }
   std::string oss = index.str() + "|" + diskproj_[disk - 1].fpgarbin1projvm().str() + "|" +
-                    diskproj_[disk - 1].fpgarbin2projvm().str() + "|" + diskproj_[disk - 1].fpgafinervm().str() + "|" +
-                    diskproj_[disk - 1].getBendIndex().str();
+    diskproj_[disk - 1].fpgarbin2projvm().str() + "|" + diskproj_[disk - 1].fpgafinervm().str()
+    + "|" + diskproj_[disk-1].fpgafinephivm().str() + "|" + diskproj_[disk - 1].getBendIndex().str();
   return oss;
 }
 
