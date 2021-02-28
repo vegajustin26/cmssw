@@ -31,7 +31,7 @@ void LayerProjection::init(Settings const& settings,
   rproj_ = rproj;
 
   projlayer_ = projlayer;
-  int layerdisk =  projlayer-1;
+  unsigned int layerdisk =  projlayer-1;
   
   fpgaphiproj_.set(iphiproj, settings.nphibitsstub(layerdisk), true, __LINE__, __FILE__);
   fpgazproj_.set(izproj, settings.nzbitsstub(layerdisk), false, __LINE__, __FILE__);
@@ -76,7 +76,7 @@ void LayerProjection::init(Settings const& settings,
   int finez = ((1 << (settings.MEBinsBits() + 2)) +
                (fpgazproj_.value() >> (fpgazproj_.nbits() - (settings.MEBinsBits() + 3)))) -
               (zbin1 << 3);
-
+  
   fpgafinezvm_.set(finez, 4, true, __LINE__, __FILE__);  // fine z postions starting at zbin1 //FIXME using 3 bits
 
   //fine phi bits
