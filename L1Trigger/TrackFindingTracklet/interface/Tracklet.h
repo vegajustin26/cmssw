@@ -187,11 +187,6 @@ namespace trklet {
       return layerproj_[layer - 1].phiprojderapprox();
     }
 
-    double rproj(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].rproj();
-    }
-
     double rstub(int layer) {
       assert(layer > 0 && layer <= N_LAYER);
       return layerresid_[layer - 1].rstub();

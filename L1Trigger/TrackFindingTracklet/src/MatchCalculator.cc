@@ -246,7 +246,7 @@ void MatchCalculator::execute() {
       if (phi < 0)
         phi += 2 * M_PI;
 
-      double dr = r - tracklet->rproj(layerdisk_ + 1);
+      double dr = r - settings_.rmean(layerdisk_);
       assert(std::abs(dr) < settings_.drmax());
 
       double dphi =

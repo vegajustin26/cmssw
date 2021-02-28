@@ -9,7 +9,6 @@ using namespace trklet;
 
 void LayerProjection::init(Settings const& settings,
                            int projlayer,
-                           double rproj,
                            int iphiproj,
                            int izproj,
                            int iphider,
@@ -28,8 +27,6 @@ void LayerProjection::init(Settings const& settings,
 
   valid_ = true;
   
-  rproj_ = rproj;
-
   projlayer_ = projlayer;
   unsigned int layerdisk =  projlayer-1;
   
@@ -49,14 +46,12 @@ void LayerProjection::init(Settings const& settings,
   ////This determines the central bin:
   ////int zbin=4+(zproj.value()>>(zproj.nbits()-3));
   ////But we need some range (particularly for L5L6 seed projecting to L1-L3):
-  int offset = 4;
-  if (isPSseed) {
-    offset = 1;
-  }
-  unsigned int zbin1 = (1 << (settings.MEBinsBits() - 1)) +
-                       (((fpgazproj_.value() >> (fpgazproj_.nbits() - settings.MEBinsBits() - 3)) - offset) >> 3);
-  unsigned int zbin2 = (1 << (settings.MEBinsBits() - 1)) +
-                       (((fpgazproj_.value() >> (fpgazproj_.nbits() - settings.MEBinsBits() - 3)) + offset) >> 3);
+  int offset = isPSseed?1:4;
+
+  int ztemp = fpgazproj_.value() >> (fpgazproj_.nbits() - settings.MEBinsBits() - NFINERZBITS);
+  unsigned int zbin1 = (1 << (settings.MEBinsBits() - 1)) + (( ztemp - offset) >> NFINERZBITS);
+  unsigned int zbin2 = (1 << (settings.MEBinsBits() - 1)) + (( ztemp + offset) >> NFINERZBITS);
+
   if (zbin1 >= settings.MEBins()) {
     zbin1 = 0;  //note that zbin1 is unsigned
   }
@@ -66,18 +61,16 @@ void LayerProjection::init(Settings const& settings,
   
   assert(zbin1 <= zbin2);
   assert(zbin2 - zbin1 <= 1);
+  
   fpgazbin1projvm_.set(zbin1, settings.MEBinsBits(), true, __LINE__, __FILE__);  // first z bin
-  if (zbin1 == zbin2)
-    fpgazbin2projvm_.set(0, 1, true, __LINE__, __FILE__);  // don't need to check adjacent z bin
-  else
-    fpgazbin2projvm_.set(1, 1, true, __LINE__, __FILE__);  // do need to check next z bin
+
+  int nextbin =  zbin1 != zbin2;
+  fpgazbin2projvm_.set(nextbin, 1, true, __LINE__, __FILE__);  // need to check adjacent z bin?
 
   //fine vm z bits. Use 4 bits for fine position. starting at zbin 1
-  int finez = ((1 << (settings.MEBinsBits() + 2)) +
-               (fpgazproj_.value() >> (fpgazproj_.nbits() - (settings.MEBinsBits() + 3)))) -
-              (zbin1 << 3);
+  int finez = ((1 << (settings.MEBinsBits() + NFINERZBITS - 1)) + ztemp) - (zbin1 << NFINERZBITS);
   
-  fpgafinezvm_.set(finez, 4, true, __LINE__, __FILE__);  // fine z postions starting at zbin1 //FIXME using 3 bits
+  fpgafinezvm_.set(finez, NFINERZBITS+1, true, __LINE__, __FILE__);  // fine z postions starting at zbin1
 
   //fine phi bits
   int projfinephi = (fpgaphiproj_.value() >> (fpgaphiproj_.nbits() - (settings.nbitsallstubs(projlayer_) + settings.nbitsvmme(projlayer_) + NFINEPHIBITS ))) & ((1<<NFINEPHIBITS)-1);

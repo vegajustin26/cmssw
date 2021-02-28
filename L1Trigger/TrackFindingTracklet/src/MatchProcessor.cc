@@ -476,7 +476,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       phi += 2 * M_PI;
     phi -= phimin_;
 
-    double dr = r - tracklet->rproj(layerdisk_+1);
+    double dr = r - settings_.rmean(layerdisk_);
     assert(std::abs(dr) < settings_.drmax());
 
     double dphi = reco::reduceRange(phi - (tracklet->phiproj(layerdisk_+1) + dr * tracklet->phiprojder(layerdisk_+1)));

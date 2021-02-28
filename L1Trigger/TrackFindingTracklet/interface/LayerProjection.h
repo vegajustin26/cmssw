@@ -15,7 +15,6 @@ namespace trklet {
 
     void init(Settings const& settings,
               int projlayer,
-              double rproj,
               int iphiproj,
               int izproj,
               int iphider,
@@ -35,11 +34,6 @@ namespace trklet {
     int projlayer() const {
       assert(valid_);
       return projlayer_;
-    };
-
-    double rproj() const {
-      assert(valid_);
-      return rproj_;
     };
 
     const FPGAWord& fpgaphiproj() const {
