@@ -182,9 +182,9 @@ void MatchEngine::execute() {
       iproj++;
       moreproj = iproj < nproj;
 
-      unsigned int rzfirst = barrel_ ? proj->zbin1projvm(layerdisk_+1) : proj->rbin1projvm(layerdisk_-5);
+      unsigned int rzfirst = barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin1projvm().value() : proj->rbin1projvm(layerdisk_-5);
       unsigned int rzlast = rzfirst;
-      bool second = (barrel_ ? proj->zbin2projvm(layerdisk_+1) : proj->rbin2projvm(layerdisk_-5));
+      bool second = (barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin2projvm().value() : proj->rbin2projvm(layerdisk_-5));
       if (second)
         rzlast += 1;
 
@@ -238,17 +238,17 @@ void MatchEngine::execute() {
 
         Tracklet* proj = vmprojs_->getTracklet(projindex);
 
-        FPGAWord fpgafinephi = barrel_ ? proj->fpgafinephiproj(layerdisk_+1) : proj->fpgafinephiprojdisk(layerdisk_-5);
+        FPGAWord fpgafinephi = barrel_ ? proj->layerProj(layerdisk_+1).fpgafinephivm() : proj->fpgafinephiprojdisk(layerdisk_-5);
 
         projfinephi = fpgafinephi.value();
 
         nstubs = vmstubs_->nStubsBin(rzbin);
 
-        projfinerz = barrel_ ? proj->finezvm(layerdisk_+1) : proj->finervm(layerdisk_-5);
+        projfinerz = barrel_ ? proj->layerProj(layerdisk_+1).fpgafinezvm().value() : proj->finervm(layerdisk_-5);
 
         projrinv =
             barrel_
-	  ? ((1<<(nrinv_-1)) + ((-2*proj->fpgaphiprojder(layerdisk_+1).value()) >> (proj->fpgaphiprojder(layerdisk_+1).nbits() - (nrinv_-1))))
+	  ? ((1<<(nrinv_-1)) + ((-2*proj->layerProj(layerdisk_+1).fpgaphiprojder().value()) >> (proj->layerProj(layerdisk_+1).fpgaphiprojder().nbits() - (nrinv_-1))))
                 : proj->getBendIndex(layerdisk_-5).value();
         assert(projrinv >= 0);
         if (settings_.extended() && projrinv == (1<<nrinv_)) {

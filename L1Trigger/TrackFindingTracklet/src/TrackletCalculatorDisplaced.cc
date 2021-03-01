@@ -310,8 +310,8 @@ void TrackletCalculatorDisplaced::addDiskProj(Tracklet* tracklet, int disk) {
 bool TrackletCalculatorDisplaced::addLayerProj(Tracklet* tracklet, int layer) {
   assert(layer > 0);
 
-  FPGAWord fpgaz = tracklet->fpgazproj(layer);
-  FPGAWord fpgaphi = tracklet->fpgaphiproj(layer);
+  FPGAWord fpgaz = tracklet->layerProj(layer).fpgazproj();
+  FPGAWord fpgaphi = tracklet->layerProj(layer).fpgaphiproj();
 
   if (fpgaz.atExtreme())
     return false;

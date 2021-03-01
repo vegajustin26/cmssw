@@ -217,13 +217,15 @@ void MatchCalculator::execute() {
     if (layerdisk_ < N_LAYER) {
       //Integer calculation
 
+      const LayerProjection& layerProj = tracklet->layerProj(layerdisk_+1);
+      
       int ir = fpgastub->r().value();
-      int iphi = tracklet->fpgaphiproj(layerdisk_ + 1).value();
-      int icorr = (ir * tracklet->fpgaphiprojder(layerdisk_ + 1).value()) >> icorrshift_;
+      int iphi = layerProj.fpgaphiproj().value();
+      int icorr = (ir * layerProj.fpgaphiprojder().value()) >> icorrshift_;
       iphi += icorr;
 
-      int iz = tracklet->fpgazproj(layerdisk_ + 1).value();
-      int izcor = (ir * tracklet->fpgazprojder(layerdisk_ + 1).value() + (1 << (icorzshift_ - 1))) >> icorzshift_;
+      int iz = layerProj.fpgazproj().value();
+      int izcor = (ir * layerProj.fpgazprojder().value() + (1 << (icorzshift_ - 1))) >> icorzshift_;
       iz += izcor;
 
       int ideltaz = fpgastub->z().value() - iz;
@@ -250,14 +252,14 @@ void MatchCalculator::execute() {
       assert(std::abs(dr) < settings_.drmax());
 
       double dphi =
-          reco::reduceRange(phi - (tracklet->phiproj(layerdisk_ + 1) + dr * tracklet->phiprojder(layerdisk_ + 1)));
+          reco::reduceRange(phi - (layerProj.phiproj() + dr * layerProj.phiprojder()));
 
-      double dz = z - (tracklet->zproj(layerdisk_ + 1) + dr * tracklet->zprojder(layerdisk_ + 1));
+      double dz = z - (layerProj.zproj() + dr * layerProj.zprojder());
 
       double dphiapprox = reco::reduceRange(
-          phi - (tracklet->phiprojapprox(layerdisk_ + 1) + dr * tracklet->phiprojderapprox(layerdisk_ + 1)));
+          phi - (layerProj.phiprojapprox() + dr * layerProj.phiprojderapprox()));
 
-      double dzapprox = z - (tracklet->zprojapprox(layerdisk_ + 1) + dr * tracklet->zprojderapprox(layerdisk_ + 1));
+      double dzapprox = z - (layerProj.zprojapprox() + dr * layerProj.zprojderapprox());
 
       int seedindex = tracklet->getISeed();
 

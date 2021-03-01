@@ -92,105 +92,12 @@ namespace trklet {
       return layerproj_[layer - 1].valid();
     }
 
-    const FPGAWord& fpgaphiprojder(int layer) const {
+    const LayerProjection& layerProj(int layer) const {
       assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].fpgaphiprojder();
+      assert(layerproj_[layer-1].valid());
+      return layerproj_[layer-1];
     }
-
-    const FPGAWord& fpgazproj(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].fpgazproj();
-    }
-
-    const FPGAWord& fpgaphiproj(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].fpgaphiproj();
-    }
-
-    const FPGAWord& fpgafinephiproj(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].fpgafinephivm();
-    }
-
-    const FPGAWord& fpgazprojder(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].fpgazprojder();
-    }
-
-    int zbin1projvm(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].fpgazbin1projvm().value();
-    }
-
-    int zbin2projvm(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].fpgazbin2projvm().value();
-    }
-
-    int finezvm(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].fpgafinezvm().value();
-    }
-
-    int rbin1projvm(int disk) const {
-      assert(disk > 0 && disk <= N_DISK);
-      return diskproj_[disk - 1].fpgarbin1projvm().value();
-    }
-
-    int rbin2projvm(int disk) const {
-      assert(disk > 0 && disk <= N_DISK);
-      return diskproj_[disk - 1].fpgarbin2projvm().value();
-    }
-
-    int finervm(int disk) const {
-      assert(disk > 0 && disk <= N_DISK);
-      return diskproj_[disk - 1].fpgafinervm().value();
-    }
-
-    double phiproj(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].phiproj();
-    }
-
-    double phiprojder(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].phiprojder();
-    }
-
-    double zproj(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].zproj();
-    }
-
-    double zprojder(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].zprojder();
-    }
-
-    double zprojapprox(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].zprojapprox();
-    }
-
-    double zprojderapprox(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].zprojderapprox();
-    }
-
-    double phiprojapprox(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].phiprojapprox();
-    }
-
-    double phiprojderapprox(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].phiprojderapprox();
-    }
-
-    double rstub(int layer) {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerresid_[layer - 1].rstub();
-    }
+      
 
     //Disks residuals
 
@@ -234,6 +141,25 @@ namespace trklet {
       return diskresid_[abs(disk) - 1].zstub();
     }
 
+    int rbin1projvm(int disk) const {
+      assert(disk > 0 && disk <= N_DISK);
+      return diskproj_[disk - 1].fpgarbin1projvm().value();
+    }
+
+
+
+    int rbin2projvm(int disk) const {
+      assert(disk > 0 && disk <= N_DISK);
+      return diskproj_[disk - 1].fpgarbin2projvm().value();
+    }
+
+    int finervm(int disk) const {
+      assert(disk > 0 && disk <= N_DISK);
+      return diskproj_[disk - 1].fpgafinervm().value();
+    }
+
+
+    
     void setBendIndex(int bendIndex, int disk) {
       assert(abs(disk) <= N_DISK);
       diskproj_[abs(disk) - 1].setBendIndex(bendIndex);

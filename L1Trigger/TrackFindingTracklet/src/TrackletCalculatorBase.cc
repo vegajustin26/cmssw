@@ -230,8 +230,8 @@ void TrackletCalculatorBase::addDiskProj(Tracklet* tracklet, int disk) {
 bool TrackletCalculatorBase::addLayerProj(Tracklet* tracklet, int layer) {
   assert(layer > 0);
 
-  FPGAWord fpgaz = tracklet->fpgazproj(layer);
-  FPGAWord fpgaphi = tracklet->fpgaphiproj(layer);
+  FPGAWord fpgaz = tracklet->layerProj(layer).fpgazproj();
+  FPGAWord fpgaphi = tracklet->layerProj(layer).fpgaphiproj();
 
   if (fpgaphi.atExtreme())
     edm::LogProblem("Tracklet") << "at extreme! " << fpgaphi.value();
