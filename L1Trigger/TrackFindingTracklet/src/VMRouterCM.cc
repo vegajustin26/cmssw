@@ -164,7 +164,7 @@ void VMRouterCM::execute() {
 	phicutmin=2;
       }
       
-      //Fill allstubs memories - in HLS this is the same write to multiple memories
+      //Fill inner allstubs memories - in HLS this is the same write to multiple memories
       for (auto& allstub : allinnerstubs_) {
 	char memtype=allstub.first;
 	if (memtype=='R' && iphipos<phicutmax) continue;
@@ -265,9 +265,10 @@ void VMRouterCM::execute() {
 	  lutval = melut;
 	} else {
 	  lutval = vmrtable_.lookupdisk(indexz, indexr);
+	  if (lutval == 0) {
+	    continue;
+	  }
 	}
-	if (lutval == -1)
-	  continue;
 
 	assert(lutval >= 0);
 

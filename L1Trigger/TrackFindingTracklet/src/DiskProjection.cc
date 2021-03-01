@@ -33,20 +33,23 @@ void DiskProjection::init(Settings const& settings,
 
   projdisk_ = projdisk;
 
+  unsigned int layerdisk = projdisk + N_LAYER - 1;
+  
   assert(iphiproj >= 0);
 
-  fpgaphiproj_.set(iphiproj, settings.nphibitsstub(0), true, __LINE__, __FILE__);
+  fpgaphiproj_.set(iphiproj, settings.nphibitsstub(layerdisk), true, __LINE__, __FILE__);
 
-  fpgarproj_.set(irproj, settings.nrbitsstub(6), false, __LINE__, __FILE__);
+  fpgarproj_.set(irproj, settings.nrbitsstub(layerdisk), false, __LINE__, __FILE__);
 
   fpgaphiprojder_.set(iphider, settings.nbitsphiprojderL123(), false, __LINE__, __FILE__);
   fpgarprojder_.set(irder, settings.nrbitsprojderdisk(), false, __LINE__, __FILE__);
 
   //TODO the -3 and +3 should be evaluated and efficiency for matching hits checked.
   //This code should be migrated in the ProjectionRouter
-  int rbin1 = 8.0 * (irproj * settings.krprojshiftdisk() - 3 - settings.rmindiskvm()) /
+  double roffset = 3.0;
+  int rbin1 = 8.0 * (irproj * settings.krprojshiftdisk() - roffset - settings.rmindiskvm()) /
               (settings.rmaxdisk() - settings.rmindiskvm());
-  int rbin2 = 8.0 * (irproj * settings.krprojshiftdisk() + 3 - settings.rmindiskvm()) /
+  int rbin2 = 8.0 * (irproj * settings.krprojshiftdisk() + roffset - settings.rmindiskvm()) /
               (settings.rmaxdisk() - settings.rmindiskvm());
 
   if (irproj * settings.krprojshiftdisk() < 20.0) {
@@ -54,8 +57,9 @@ void DiskProjection::init(Settings const& settings,
                               << projdisk_;
   }
 
-  if (rbin1 < 0)
+  if (rbin1 < 0) {
     rbin1 = 0;
+  }
   rbin2 = clamp(rbin2, 0, 7);
 
   assert(rbin1 <= rbin2);

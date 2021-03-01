@@ -80,10 +80,12 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
       if (layerdisk >= N_LAYER) {
         double rproj = r * settings_.zmean(layerdisk - N_LAYER) / z;
         bin = 0.5 * NBINS * (rproj - settings_.rmindiskvm()) / (settings_.rmaxdiskvm() - settings_.rmindiskvm());
+	//bin value of zero indicates that stub is out of range
         if (bin < 0)
           bin = 0;
         if (bin >= NBINS / 2)
-          bin = NBINS / 2 - 1;
+          //bin = NBINS / 2 - 1;
+          bin = 0;
         vmrtabletedisk_.push_back(bin);
       }
 
@@ -148,26 +150,41 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
 	}
       }
     } else {
-    
-      ofstream out;
+
+      std::string fname = "VMRME_"; 
       if (layerdisk<6) {
-	out.open(settings_.tablePath()+"VMR_L" + std::to_string(layerdisk+1) +".tab");
+	fname+="L" + std::to_string(layerdisk+1) +".tab";
       } else {
-	out.open(settings_.tablePath()+"VMR_D" + std::to_string(layerdisk-5) +".tab");
+	fname+="D" + std::to_string(layerdisk-5) +".tab";
       }
-      out << "{" << endl;
-      for (unsigned int i = 0; i < vmrtableteinner_.size(); i++) {
-	if (i != 0) {
-	  out << "," << endl;
-	}
-	if (vmrtableteinner_[i]==-1) {
-	  out << 1023;
+      writeVMTable(settings_.tablePath(),fname,vmrtable_);
+
+      if (layerdisk == 6 || layerdisk == 7 || layerdisk == 9) {
+	std::string fname = "VMRTE_D" + to_string(layerdisk - N_LAYER + 1)+".tab";
+	writeVMTable(settings_.tablePath(), fname, vmrtabletedisk_);
+      }
+      
+      if (vmrtableteinner_.size()>0) {
+	ofstream out;
+	if (layerdisk<6) {
+	  out.open(settings_.tablePath()+"TP_L" + std::to_string(layerdisk+1) +".tab");
 	} else {
-	  out << vmrtableteinner_[i];
+	  out.open(settings_.tablePath()+"TP_D" + std::to_string(layerdisk-5) +".tab");
 	}
+	out << "{" << endl;
+	for (unsigned int i = 0; i < vmrtableteinner_.size(); i++) {
+	  if (i != 0) {
+	    out << "," << endl;
+	  }
+	  if (vmrtableteinner_[i]==-1) {
+	    out << 1023;
+	  } else {
+	    out << vmrtableteinner_[i];
+	  }
+	}
+	out << endl << "};" << endl;
+	out.close();
       }
-      out << endl << "};" << endl;
-      out.close();
     }
   }
 

@@ -608,7 +608,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
                        zprojapprox[i],
                        ITC->der_phiL_final.fval(),
                        ITC->der_zL_final.fval(),
-                       !(iSeed_ == 1 || iSeed_ == 2));
+                       !(iSeed_ == 2 || iSeed_ == 3));
   }
 
   iphiprojdisk[0] = ITC->phiD_0_final.ival();
