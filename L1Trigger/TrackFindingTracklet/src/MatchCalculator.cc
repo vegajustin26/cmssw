@@ -338,20 +338,22 @@ void MatchCalculator::execute() {
 
       //Perform integer calculations here
 
+      const DiskProjection& diskProj = tracklet->diskProj(disk);
+      
       int iz = fpgastub->z().value();
-      int iphi = tracklet->fpgaphiprojdisk(disk).value();
+      int iphi = diskProj.fpgaphiproj().value();
 
       //TODO - need to express interms of constants
       int shifttmp = 6;
-      int iphicorr = (iz * tracklet->fpgaphiprojderdisk(disk).value()) >> shifttmp;
+      int iphicorr = (iz * diskProj.fpgaphiprojder().value()) >> shifttmp;
 
       iphi += iphicorr;
 
-      int ir = tracklet->fpgarprojdisk(disk).value();
+      int ir = diskProj.fpgarproj().value();
 
       //TODO - need to express interms of constants
       int shifttmp2 = 7;
-      int ircorr = (iz * tracklet->fpgarprojderdisk(disk).value()) >> shifttmp2;
+      int ircorr = (iz * diskProj.fpgarprojder().value()) >> shifttmp2;
 
       ir += ircorr;
 
@@ -404,9 +406,9 @@ void MatchCalculator::execute() {
             << "\n stub " << stub->z() << " disk " << disk << " " << dz;
       }
 
-      double phiproj = tracklet->phiprojdisk(disk) + dz * tracklet->phiprojderdisk(disk);
+      double phiproj = diskProj.phiproj() + dz * diskProj.phiprojder();
 
-      double rproj = tracklet->rprojdisk(disk) + dz * tracklet->rprojderdisk(disk);
+      double rproj = diskProj.rproj() + dz * diskProj.rprojder();
 
       double deltar = r - rproj;
 
@@ -415,9 +417,9 @@ void MatchCalculator::execute() {
       double dphi = reco::reduceRange(phi - phiproj);
 
       double dphiapprox =
-          reco::reduceRange(phi - (tracklet->phiprojapproxdisk(disk) + dz * tracklet->phiprojderapproxdisk(disk)));
+          reco::reduceRange(phi - (diskProj.phiprojapprox() + dz * diskProj.phiprojderapprox()));
 
-      double drapprox = stub->r() - (tracklet->rprojapproxdisk(disk) + dz * tracklet->rprojderapproxdisk(disk));
+      double drapprox = stub->r() - (diskProj.rprojapprox() + dz * diskProj.rprojderapprox());
 
       double drphi = dphi * stub->r();
       double drphiapprox = dphiapprox * stub->r();

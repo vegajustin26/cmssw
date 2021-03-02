@@ -106,6 +106,14 @@ namespace trklet {
       return diskproj_[abs(disk) - 1].valid();
     }
 
+    //Should be const; but setBendIndex method needs to be migrated out of the disk projection
+    DiskProjection& diskProj(int disk) {
+      assert(abs(disk) <= N_DISK);
+      assert(diskproj_[abs(disk) - 1].valid());
+      return diskproj_[abs(disk) - 1];
+    }
+
+
     const FPGAWord& fpgaphiresiddisk(int disk) {
       assert(abs(disk) <= N_DISK);
       return diskresid_[abs(disk) - 1].fpgaphiresid();
@@ -140,7 +148,8 @@ namespace trklet {
       assert(abs(disk) <= N_DISK);
       return diskresid_[abs(disk) - 1].zstub();
     }
-
+    /*
+    
     int rbin1projvm(int disk) const {
       assert(disk > 0 && disk <= N_DISK);
       return diskproj_[disk - 1].fpgarbin1projvm().value();
@@ -168,16 +177,6 @@ namespace trklet {
     const FPGAWord& getBendIndex(int disk) const {
       assert(abs(disk) <= N_DISK);
       return diskproj_[abs(disk) - 1].getBendIndex();
-    }
-
-    double alphadisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].alpha();
-    }
-
-    const FPGAWord& ialphadisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].ialpha();
     }
 
     const FPGAWord& fpgaphiprojdisk(int disk) const {
@@ -245,6 +244,20 @@ namespace trklet {
       return diskproj_[abs(disk) - 1].rprojder();
     }
 
+    */
+    
+    double alphadisk(int disk) const {
+      assert(abs(disk) <= N_DISK);
+      return diskresid_[abs(disk) - 1].alpha();
+    }
+
+    const FPGAWord& ialphadisk(int disk) const {
+      assert(abs(disk) <= N_DISK);
+      return diskresid_[abs(disk) - 1].ialpha();
+    }
+
+
+    
     bool matchdisk(int disk) {
       assert(abs(disk) <= N_DISK);
       return diskresid_[abs(disk) - 1].valid();

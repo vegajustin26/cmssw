@@ -508,7 +508,7 @@ double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, const Stub* curStub) {
   } else if (Layer != 0) {
     phiproj = curTracklet->layerProj(Layer).phiproj();
   } else if (Disk != 0) {
-    phiproj = curTracklet->phiprojdisk(Disk);
+    phiproj = curTracklet->diskProj(Disk).phiproj();
   } else {
     throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Layer: " << Layer << "  --  Disk: " << Disk
                                        << " Stub is not layer or disk in getPhiRes";

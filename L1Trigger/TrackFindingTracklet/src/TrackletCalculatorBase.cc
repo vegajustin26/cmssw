@@ -211,14 +211,14 @@ void TrackletCalculatorBase::exactprojdisk(double zproj,
 }
 
 void TrackletCalculatorBase::addDiskProj(Tracklet* tracklet, int disk) {
-  FPGAWord fpgar = tracklet->fpgarprojdisk(disk);
+  FPGAWord fpgar = tracklet->diskProj(disk).fpgarproj();
 
   if (fpgar.value() * settings_.krprojshiftdisk() < settings_.rmindiskvm())
     return;
   if (fpgar.value() * settings_.krprojshiftdisk() > settings_.rmaxdisk())
     return;
 
-  FPGAWord fpgaphi = tracklet->fpgaphiprojdisk(disk);
+  FPGAWord fpgaphi = tracklet->diskProj(disk).fpgaphiproj();
 
   int iphivmRaw = fpgaphi.value() >> (fpgaphi.nbits() - 5);
 

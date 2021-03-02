@@ -255,7 +255,7 @@ void MatchProcessor::execute() {
             }
 
             Tracklet* proj = projMem->getTracklet(iproj);
-            FPGAWord fpgaphi = barrel_ ? proj->layerProj(layerdisk_+1).fpgaphiproj() : proj->fpgaphiprojdisk(layerdisk_-N_LAYER+1);
+            FPGAWord fpgaphi = barrel_ ? proj->layerProj(layerdisk_+1).fpgaphiproj() : proj->diskProj(layerdisk_-N_LAYER+1).fpgaphiproj();
 
             unsigned int iphi = (fpgaphi.value() >> (fpgaphi.nbits() - nvmbits_)) & (nvmbins_ - 1);
 
@@ -288,28 +288,28 @@ void MatchProcessor::execute() {
               // 1 - r projections
               // 2 - phi derivative
               // 3 - the sign - i.e. if track is forward or backward
-              int rindex = (proj->fpgarprojdisk(layerdisk_-N_LAYER+1).value() >> (proj->fpgarprojdisk(layerdisk_-N_LAYER+1).nbits() - nrbits_)) &
+              int rindex = (proj->diskProj(layerdisk_-N_LAYER+1).fpgarproj().value() >> (proj->diskProj(layerdisk_-N_LAYER+1).fpgarproj().nbits() - nrbits_)) &
                            ((1 << nrbits_) - 1);
 
-              int phiderindex = (proj->fpgaphiprojderdisk(layerdisk_-N_LAYER+1).value() >>
-                                 (proj->fpgaphiprojderdisk(layerdisk_-N_LAYER+1).nbits() - nphiderbits_)) &
+              int phiderindex = (proj->diskProj(layerdisk_-N_LAYER+1).fpgaphiprojder().value() >>
+                                 (proj->diskProj(layerdisk_-N_LAYER+1).fpgaphiprojder().nbits() - nphiderbits_)) &
                                 ((1 << nphiderbits_) - 1);
 	      
-              int signindex = proj->fpgarprojderdisk(layerdisk_-N_LAYER+1).value() < 0;
+              int signindex = proj->diskProj(layerdisk_-N_LAYER+1).fpgarprojder().value() < 0;
 
               int bendindex = (signindex << (nphiderbits_ + nrbits_)) + (rindex << (nphiderbits_)) + phiderindex;
 
               projrinv = globals_->projectionRouterBendTable()->bendLoookup(layerdisk_-N_LAYER, bendindex);
 
-              proj->setBendIndex(projrinv, layerdisk_-N_LAYER+1);
+              proj->diskProj(layerdisk_-N_LAYER+1).setBendIndex(projrinv);
             }
             assert(projrinv >= 0);
 
-            unsigned int slot = barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin1projvm().value() : proj->rbin1projvm(layerdisk_-N_LAYER+1);
-            bool second = (barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin2projvm().value() : proj->rbin2projvm(layerdisk_-N_LAYER+1));
+            unsigned int slot = barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin1projvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgarbin1projvm().value();
+            bool second = (barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin2projvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgarbin2projvm().value());
 
             unsigned int projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + 3))) & 7;
-            int projfinerz = barrel_ ? proj->layerProj(layerdisk_+1).fpgafinezvm().value() : proj->finervm(layerdisk_-N_LAYER+1);
+            int projfinerz = barrel_ ? proj->layerProj(layerdisk_+1).fpgafinezvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgafinervm().value();
 
             bool isPSseed = proj->PSseed();
 
@@ -571,12 +571,14 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
 
     int iz = fpgastub->z().value();
 
-    int iphi = tracklet->fpgaphiprojdisk(disk).value();
-    int iphicorr = (iz * tracklet->fpgaphiprojderdisk(disk).value()) >> icorrshift_;
+    const DiskProjection& diskProj = tracklet->diskProj(disk);
+    
+    int iphi = diskProj.fpgaphiproj().value();
+    int iphicorr = (iz * diskProj.fpgaphiprojder().value()) >> icorrshift_;
     iphi += iphicorr;
 
-    int ir = tracklet->fpgarprojdisk(disk).value();
-    int ircorr = (iz * tracklet->fpgarprojderdisk(disk).value()) >> icorzshift_;
+    int ir = diskProj.fpgarproj().value();
+    int ircorr = (iz * diskProj.fpgarprojder().value()) >> icorzshift_;
     ir += ircorr;
 
     int ideltaphi = fpgastub->phi().value() - iphi;
@@ -629,16 +631,16 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       assert(std::abs(dz) < settings_.dzmax());
     }
 
-    double phiproj = tracklet->phiprojdisk(disk) + dz * tracklet->phiprojderdisk(disk);
-    double rproj = tracklet->rprojdisk(disk) + dz * tracklet->rprojderdisk(disk);
+    double phiproj = diskProj.phiproj() + dz * diskProj.phiprojder();
+    double rproj = diskProj.rproj() + dz * diskProj.rprojder();
     double deltar = r - rproj;
 
     double dr = stub->r() - rproj;
-    double drapprox = stub->r() - (tracklet->rprojapproxdisk(disk) + dz * tracklet->rprojderapproxdisk(disk));
+    double drapprox = stub->r() - (diskProj.rprojapprox() + dz * diskProj.rprojderapprox());
 
     double dphi = reco::reduceRange(phi - phiproj);
     double dphiapprox =
-        reco::reduceRange(phi - (tracklet->phiprojapproxdisk(disk) + dz * tracklet->phiprojderapproxdisk(disk)));
+        reco::reduceRange(phi - (diskProj.phiprojapprox() + dz * diskProj.phiprojderapprox()));
 
     double drphi = dphi * stub->r();
     double drphiapprox = dphiapprox * stub->r();
