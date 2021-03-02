@@ -407,7 +407,6 @@ void MatchProcessor::execute() {
         bestTCID = currentTCID;
         bestInPipeline = empty;
       }
-<<<<<<< HEAD
     }
 
     if (iMEbest != nMatchEngines_ && (!bestInPipeline)) {
@@ -419,30 +418,6 @@ void MatchProcessor::execute() {
       if (oldTracklet != nullptr) {
         //allow equal here since we can have more than one cadidate match per tracklet projection
         assert(oldTracklet->TCID() <= tracklet->TCID());
-=======
-
-      if (iMEbest != nMatchEngines_ && (!bestInPipeline)) {
-        const std::pair<Tracklet*, const Stub*>& candmatch = matchengines_[iMEbest].read();
-
-        const Stub* fpgastub = candmatch.second;
-        Tracklet* tracklet = candmatch.first;
-
-        if (oldTracklet != nullptr) {
-          //allow equal here since we can have more than one cadidate match per tracklet projection
-          assert(oldTracklet->TCID() <= tracklet->TCID());
-        }
-        oldTracklet = tracklet;
-
-        bool match = matchCalculator(tracklet, fpgastub);
-
-        if (settings_.debugTracklet() && match) {
-          edm::LogVerbatim("Tracklet") << getName() << " have match";
-        }
-
-        countall++;
-        if (match)
-          countsel++;
->>>>>>> ca9f4d8d9ec... Various fixes to comment on pull request (#68)
       }
       oldTracklet = tracklet;
 

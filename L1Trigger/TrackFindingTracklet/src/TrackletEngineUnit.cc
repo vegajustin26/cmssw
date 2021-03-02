@@ -106,7 +106,6 @@ void TrackletEngineUnit::step(bool print, int istep, int iTE) {
 
   if (next_ != 0)
     rzbin += (1 << NFINERZBITS);
->>>>>>> ca9f4d8d9ec... Various fixes to comment on pull request (#68)
   if ((rzbin < tedata_.rzbinfirst_) || (rzbin - tedata_.rzbinfirst_ > tedata_.rzdiffmax_)) {
     if (settings_->debugTracklet()) {
       edm::LogVerbatim("Tracklet") << " layer-disk stub pair rejected because rbin cut : " << rzbin << " "
