@@ -14,7 +14,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackPars.h"
-#include "L1Trigger/TrackFindingTracklet/interface/LayerProjection.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Projection.h"
 #include "L1Trigger/TrackFindingTracklet/interface/DiskProjection.h"
 #include "L1Trigger/TrackFindingTracklet/interface/LayerResidual.h"
 #include "L1Trigger/TrackFindingTracklet/interface/DiskResidual.h"
@@ -50,7 +50,7 @@ namespace trklet {
              int id0,
              int iz0,
              int it,
-             LayerProjection layerprojs[N_PROJ],
+	     Projection projs[N_LAYER+N_DISK],
              DiskProjection diskprojs[N_PROJ],
              bool disk,
              bool overlap = false);
@@ -87,15 +87,14 @@ namespace trklet {
     std::string trackletprojstrlayer(int layer) const { return trackletprojstr(layer); }
     std::string trackletprojstrdisk(int disk) const { return trackletprojstrD(disk); }
 
-    bool validProj(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerproj_[layer - 1].valid();
+    bool validProj(int layerdisk) const {
+      assert(layerdisk >= 0 && layerdisk < N_LAYER+N_DISK);
+      return proj_[layerdisk].valid();
     }
 
-    const LayerProjection& layerProj(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      assert(layerproj_[layer - 1].valid());
-      return layerproj_[layer - 1];
+    const Projection& proj(int layerdisk) const {
+      assert(validProj(layerdisk));
+      return proj_[layerdisk];
     }
 
     //Disks residuals
@@ -321,7 +320,8 @@ namespace trklet {
 
     std::unique_ptr<Track> fpgatrack_;
 
-    LayerProjection layerproj_[N_LAYER];
+    Projection proj_[N_LAYER+N_DISK];
+    
     DiskProjection diskproj_[N_DISK];
 
     LayerResidual layerresid_[N_LAYER];

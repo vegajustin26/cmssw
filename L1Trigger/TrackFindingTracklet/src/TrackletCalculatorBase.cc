@@ -230,8 +230,8 @@ void TrackletCalculatorBase::addDiskProj(Tracklet* tracklet, int disk) {
 bool TrackletCalculatorBase::addLayerProj(Tracklet* tracklet, int layer) {
   assert(layer > 0);
 
-  FPGAWord fpgaz = tracklet->layerProj(layer).fpgazproj();
-  FPGAWord fpgaphi = tracklet->layerProj(layer).fpgaphiproj();
+  FPGAWord fpgaz = tracklet->proj(layer-1).fpgarzproj();
+  FPGAWord fpgaphi = tracklet->proj(layer-1).fpgaphiproj();
 
   if (fpgaphi.atExtreme())
     edm::LogProblem("Tracklet") << "at extreme! " << fpgaphi.value();
@@ -483,7 +483,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   //now binary
 
   int irinv, iphi0, it, iz0;
-  LayerProjection layerprojs[N_LAYER - 2];
+  Projection projs[N_LAYER+N_DISK];
   DiskProjection diskprojs[N_DISK];
 
   int iphiproj[N_LAYER - 2], izproj[N_LAYER - 2];
@@ -594,21 +594,21 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
       izproj[i] >>= (settings_.nzbitsstub(0) - settings_.nzbitsstub(5));
     }
 
-    layerprojs[i].init(settings_,
-                       settings_.projlayers(iSeed_, i),
-                       iphiproj[i],
-                       izproj[i],
-                       ITC->der_phiL_final.ival(),
-                       ITC->der_zL_final.ival(),
-                       phiproj[i],
-                       zproj[i],
-                       phider[i],
-                       zder[i],
-                       phiprojapprox[i],
-                       zprojapprox[i],
-                       ITC->der_phiL_final.fval(),
-                       ITC->der_zL_final.fval(),
-                       !(iSeed_ == 2 || iSeed_ == 3));
+    projs[settings_.projlayers(iSeed_, i)-1].init(settings_,
+						  settings_.projlayers(iSeed_, i)-1,
+						  iphiproj[i],
+						  izproj[i],
+						  ITC->der_phiL_final.ival(),
+						  ITC->der_zL_final.ival(),
+						  phiproj[i],
+						  zproj[i],
+						  phider[i],
+						  zder[i],
+						  phiprojapprox[i],
+						  zprojapprox[i],
+						  ITC->der_phiL_final.fval(),
+						  ITC->der_zL_final.fval(),
+						  !(iSeed_ == 2 || iSeed_ == 3));
   }
 
   iphiprojdisk[0] = ITC->phiD_0_final.ival();
@@ -681,7 +681,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
                                     0,
                                     iz0,
                                     it,
-                                    layerprojs,
+				    projs,
                                     diskprojs,
                                     false);
 
@@ -725,7 +725,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   for (unsigned int j = 0; j < N_LAYER - 2; j++) {
     int lproj = settings_.projlayers(iSeed_, j);
     bool added = false;
-    if (tracklet->validProj(lproj)) {
+    if (tracklet->validProj(lproj-1)) {
       added = addLayerProj(tracklet, lproj);
       if (added && lproj == 3)
         addL3 = true;
@@ -976,7 +976,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   if (!inSector(iphi0, irinv, phi0approx, rinvapprox))
     return false;
 
-  LayerProjection layerprojs[N_LAYER - 2];
+  Projection projs[N_LAYER+N_DISK];
   DiskProjection diskprojs[N_DISK - 2];
 
   for (unsigned int i = 0; i < N_DISK - 2; ++i) {
@@ -995,22 +995,22 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
     //shift bits - allways in PS modules for disk seeding
     iphiproj[i] >>= (settings_.nphibitsstub(5) - settings_.nphibitsstub(0));
 
-    layerprojs[i].init(settings_,
-                       i + 1,
-                       iphiproj[i],
-                       izproj[i],
-                       ITC->der_phiL_final.ival(),
-                       ITC->der_zL_final.ival(),
-                       phiproj[i],
-                       zproj[i],
-                       phider[i],
-                       zder[i],
-                       phiprojapprox[i],
-                       zprojapprox[i],
-                       ITC->der_phiL_final.fval(),
-                       ITC->der_zL_final.fval(),
-                       true);
-  }
+    projs[i].init(settings_,
+		    i,
+		    iphiproj[i],
+		    izproj[i],
+		    ITC->der_phiL_final.ival(),
+		    ITC->der_zL_final.ival(),
+		    phiproj[i],
+		    zproj[i],
+		    phider[i],
+		    zder[i],
+		    phiprojapprox[i],
+		    zprojapprox[i],
+		    ITC->der_phiL_final.fval(),
+		    ITC->der_zL_final.fval(),
+		    true);
+}
 
   iphiprojdisk[0] = ITC->phiD_0_final.ival();
   iphiprojdisk[1] = ITC->phiD_1_final.ival();
@@ -1078,7 +1078,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
                                     0,
                                     iz0,
                                     it,
-                                    layerprojs,
+				    projs,
                                     diskprojs,
                                     true);
 
@@ -1096,11 +1096,11 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   }
   trackletpars_->addTracklet(tracklet);
 
-  if (tracklet->validProj(1)) {
+  if (tracklet->validProj(0)) {
     addLayerProj(tracklet, 1);
   }
 
-  if (tracklet->validProj(2)) {
+  if (tracklet->validProj(1)) {
     addLayerProj(tracklet, 2);
   }
 
@@ -1349,7 +1349,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   if (!inSector(iphi0, irinv, phi0approx, rinvapprox))
     return false;
 
-  LayerProjection layerprojs[N_LAYER - 2];
+  Projection projs[N_LAYER+N_DISK];
   DiskProjection diskprojs[N_DISK];
 
   for (unsigned int i = 0; i < N_DISK - 2; ++i) {
@@ -1368,21 +1368,21 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
     //adjust bits for PS modules (no 2S modules in overlap seeds)
     iphiproj[i] >>= (settings_.nphibitsstub(5) - settings_.nphibitsstub(0));
 
-    layerprojs[i].init(settings_,
-                       i + 1,
-                       iphiproj[i],
-                       izproj[i],
-                       ITC->der_phiL_final.ival(),
-                       ITC->der_zL_final.ival(),
-                       phiproj[i],
-                       zproj[i],
-                       phider[i],
-                       zder[i],
-                       phiprojapprox[i],
-                       zprojapprox[i],
-                       ITC->der_phiL_final.fval(),
-                       ITC->der_zL_final.fval(),
-                       true);
+    projs[i].init(settings_,
+		    i,
+		    iphiproj[i],
+		    izproj[i],
+		    ITC->der_phiL_final.ival(),
+		    ITC->der_zL_final.ival(),
+		    phiproj[i],
+		    zproj[i],
+		    phider[i],
+		    zder[i],
+		    phiprojapprox[i],
+		    zprojapprox[i],
+		    ITC->der_phiL_final.fval(),
+		    ITC->der_zL_final.fval(),
+		    true);
   }
 
   for (int i = 0; i < 4; ++i) {
@@ -1442,7 +1442,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
                                     0,
                                     iz0,
                                     it,
-                                    layerprojs,
+                                    projs,
                                     diskprojs,
                                     false,
                                     true);
@@ -1464,7 +1464,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   int layer = outerFPGAStub->layer().value() + 1;
 
   if (layer == 2) {
-    if (tracklet->validProj(1)) {
+    if (tracklet->validProj(0)) {
       addLayerProj(tracklet, 1);
     }
   }
