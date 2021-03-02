@@ -59,8 +59,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
   }
 
   if (iSector_ == 0 && layerdisk_ < N_LAYER && settings_.writeTable()) {
-
-    ofstream outphicut=openfile(settings_.tablePath(), getName() + "_phicut.tab", __FILE__, __LINE__);
+    ofstream outphicut = openfile(settings_.tablePath(), getName() + "_phicut.tab", __FILE__, __LINE__);
 
     outphicut << "{" << endl;
     for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
@@ -87,8 +86,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
   }
 
   if (iSector_ == 0 && layerdisk_ >= N_LAYER && settings_.writeTable()) {
-
-    ofstream outPSphicut=openfile(settings_.tablePath(), getName() + "_PSphicut.tab", __FILE__, __LINE__);
+    ofstream outPSphicut = openfile(settings_.tablePath(), getName() + "_PSphicut.tab", __FILE__, __LINE__);
 
     outPSphicut << "{" << endl;
     for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
@@ -99,7 +97,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     outPSphicut << endl << "};" << endl;
     outPSphicut.close();
 
-    ofstream out2Sphicut=openfile(settings_.tablePath(), getName() + "_2Sphicut.tab", __FILE__, __LINE__);
+    ofstream out2Sphicut = openfile(settings_.tablePath(), getName() + "_2Sphicut.tab", __FILE__, __LINE__);
 
     out2Sphicut << "{" << endl;
     for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
@@ -217,8 +215,8 @@ void MatchCalculator::execute() {
     if (layerdisk_ < N_LAYER) {
       //Integer calculation
 
-      const LayerProjection& layerProj = tracklet->layerProj(layerdisk_+1);
-      
+      const LayerProjection& layerProj = tracklet->layerProj(layerdisk_ + 1);
+
       int ir = fpgastub->r().value();
       int iphi = layerProj.fpgaphiproj().value();
       int icorr = (ir * layerProj.fpgaphiprojder().value()) >> icorrshift_;
@@ -251,13 +249,11 @@ void MatchCalculator::execute() {
       double dr = r - settings_.rmean(layerdisk_);
       assert(std::abs(dr) < settings_.drmax());
 
-      double dphi =
-          reco::reduceRange(phi - (layerProj.phiproj() + dr * layerProj.phiprojder()));
+      double dphi = reco::reduceRange(phi - (layerProj.phiproj() + dr * layerProj.phiprojder()));
 
       double dz = z - (layerProj.zproj() + dr * layerProj.zprojder());
 
-      double dphiapprox = reco::reduceRange(
-          phi - (layerProj.phiprojapprox() + dr * layerProj.phiprojderapprox()));
+      double dphiapprox = reco::reduceRange(phi - (layerProj.phiprojapprox() + dr * layerProj.phiprojderapprox()));
 
       double dzapprox = z - (layerProj.zprojapprox() + dr * layerProj.zprojderapprox());
 
@@ -279,11 +275,10 @@ void MatchCalculator::execute() {
                                  truthmatch);
       }
 
-      
       //This would catch significant consistency problems in the configuration - helps to debug if there are problems.
-      if (std::abs(dphi) > 0.5*settings_.dphisectorHG() || std::abs(dphiapprox) > 0.5*settings_.dphisectorHG()) {
-        throw cms::Exception("LogicError") << "WARNING dphi and/or dphiapprox too large : "
-					   << dphi << " " << dphiapprox << endl;
+      if (std::abs(dphi) > 0.5 * settings_.dphisectorHG() || std::abs(dphiapprox) > 0.5 * settings_.dphisectorHG()) {
+        throw cms::Exception("LogicError")
+            << "WARNING dphi and/or dphiapprox too large : " << dphi << " " << dphiapprox << endl;
       }
 
       if (settings_.writeMonitorData("Residuals")) {
@@ -298,7 +293,7 @@ void MatchCalculator::execute() {
       }
 
       bool imatch = false;
-      if(std::abs(dphi) < 0.2 && std::abs(dphiapprox) < 0.2){ //Changed the Asserts into if statements
+      if (std::abs(dphi) < 0.2 && std::abs(dphiapprox) < 0.2) {  //Changed the Asserts into if statements
         if (settings_.writeMonitorData("Residuals")) {
           double pt = 0.01 * settings_.c() * settings_.bfield() / std::abs(tracklet->rinv());
 
@@ -310,8 +305,8 @@ void MatchCalculator::execute() {
               << ideltaz * fact_ * settings_.kz() << " " << dz << " " << zmatchcut_[seedindex] * settings_.kz() << endl;
         }
 
-       imatch = (std::abs(ideltaphi) <= (int)phimatchcut_[seedindex]) &&
-                      (std::abs(ideltaz * fact_) <= (int)zmatchcut_[seedindex]);
+        imatch = (std::abs(ideltaphi) <= (int)phimatchcut_[seedindex]) &&
+                 (std::abs(ideltaz * fact_) <= (int)zmatchcut_[seedindex]);
       }
       if (settings_.debugTracklet()) {
         edm::LogVerbatim("Tracklet") << getName() << " imatch = " << imatch << " ideltaphi cut " << ideltaphi << " "
@@ -352,7 +347,7 @@ void MatchCalculator::execute() {
       //Perform integer calculations here
 
       const DiskProjection& diskProj = tracklet->diskProj(disk);
-      
+
       int iz = fpgastub->z().value();
       int iphi = diskProj.fpgaphiproj().value();
 
@@ -429,8 +424,7 @@ void MatchCalculator::execute() {
 
       double dphi = reco::reduceRange(phi - phiproj);
 
-      double dphiapprox =
-          reco::reduceRange(phi - (diskProj.phiprojapprox() + dz * diskProj.phiprojderapprox()));
+      double dphiapprox = reco::reduceRange(phi - (diskProj.phiprojapprox() + dz * diskProj.phiprojderapprox()));
 
       double drapprox = stub->r() - (diskProj.rprojapprox() + dz * diskProj.rprojderapprox());
 
@@ -459,7 +453,7 @@ void MatchCalculator::execute() {
       double drcut = idrcut * settings_.krprojshiftdisk();
 
       bool match, imatch;
-      if(std::abs(dphi) < 0.25 && std::abs(dphiapprox) < 0.25){ //Changed the Asserts into if statements
+      if (std::abs(dphi) < 0.25 && std::abs(dphiapprox) < 0.25) {  //Changed the Asserts into if statements
         if (settings_.writeMonitorData("Residuals")) {
           double pt = 0.01 * settings_.c() * settings_.bfield() / std::abs(tracklet->rinv());
 
@@ -472,10 +466,9 @@ void MatchCalculator::execute() {
         match = (std::abs(drphi) < drphicut) && (std::abs(deltar) < drcut);
 
         imatch = (std::abs(ideltaphi * irstub) < idrphicut) && (std::abs(ideltar) < idrcut);
-      }
-      else{
+      } else {
         edm::LogProblem("Tracklet") << "WARNING dphi and/or dphiapprox too large : " << dphi << " " << dphiapprox
-                                    << "dphi " << dphi << " Seed / ISeed " << tracklet->getISeed()<< endl;
+                                    << "dphi " << dphi << " Seed / ISeed " << tracklet->getISeed() << endl;
         match = false;
         imatch = false;
       }

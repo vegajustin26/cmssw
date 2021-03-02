@@ -94,10 +94,9 @@ namespace trklet {
 
     const LayerProjection& layerProj(int layer) const {
       assert(layer > 0 && layer <= N_LAYER);
-      assert(layerproj_[layer-1].valid());
-      return layerproj_[layer-1];
+      assert(layerproj_[layer - 1].valid());
+      return layerproj_[layer - 1];
     }
-      
 
     //Disks residuals
 
@@ -113,7 +112,6 @@ namespace trklet {
       return diskproj_[abs(disk) - 1];
     }
 
-
     bool matchdisk(int disk) const {
       assert(abs(disk) <= N_DISK);
       return diskresid_[abs(disk) - 1].valid();
@@ -121,7 +119,7 @@ namespace trklet {
 
     const DiskResidual& diskResid(int disk) const {
       assert(matchdisk(disk));
-      return diskresid_[abs(disk)-1];
+      return diskresid_[abs(disk) - 1];
     }
 
     void addMatch(int layer,
@@ -158,13 +156,12 @@ namespace trklet {
       return layerresid_[layer - 1].valid();
     }
 
-    const LayerResidual& layerResid(int layer){
+    const LayerResidual& layerResid(int layer) {
       assert(layer > 0 && layer <= N_LAYER);
       assert(layerresid_[layer - 1].valid());
       return layerresid_[layer - 1];
     }
 
-    
     std::vector<const L1TStub*> getL1Stubs();
 
     std::map<int, int> getStubIDs();

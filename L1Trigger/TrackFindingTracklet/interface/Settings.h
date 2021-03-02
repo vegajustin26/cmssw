@@ -16,24 +16,24 @@ namespace trklet {
 
   constexpr unsigned int N_SECTOR = 9;  // # of phi sectors for L1TK processing
 
-  constexpr int N_LAYER = 6;             // # of barrel layers assumed
-  constexpr int N_DISK = 5;              // # of endcap disks assumed
-  constexpr unsigned int N_PSLAYER = 3;  // # of barrel PS layers assumed
-  constexpr unsigned int N_SEED = 12;    // # of tracklet+triplet seeds
+  constexpr int N_LAYER = 6;                 // # of barrel layers assumed
+  constexpr int N_DISK = 5;                  // # of endcap disks assumed
+  constexpr unsigned int N_PSLAYER = 3;      // # of barrel PS layers assumed
+  constexpr unsigned int N_SEED = 12;        // # of tracklet+triplet seeds
   constexpr unsigned int N_SEED_PROMPT = 8;  // # of tracklet (prompt) seeds
 
   constexpr unsigned int N_DSS_MOD = 5;  // # of rings with 2S modules per disk
 
-  constexpr unsigned int N_BENDBITS_PS = 3; // Number of bend bits for PS modules
-  constexpr unsigned int N_BENDBITS_2S = 4; // Number of bend bits for 2S modules
+  constexpr unsigned int N_BENDBITS_PS = 3;  // Number of bend bits for PS modules
+  constexpr unsigned int N_BENDBITS_2S = 4;  // Number of bend bits for 2S modules
 
-  constexpr unsigned int NRINVBITS = 5; //number of bit for rinv in bend match table 
-  constexpr unsigned int NFINERZBITS = 3; //number of bit for r or z within a r/z bin 
-  constexpr unsigned int NFINEPHIBITS = 3; //number of bits for phi within a vm bin 
-  
+  constexpr unsigned int NRINVBITS = 5;     //number of bit for rinv in bend match table
+  constexpr unsigned int NFINERZBITS = 3;   //number of bit for r or z within a r/z bin
+  constexpr unsigned int NFINEPHIBITS = 3;  //number of bits for phi within a vm bin
+
   constexpr unsigned int N_VMSTUBSMAX = 15;  // maximum number of stubs in VM bin
 
-  constexpr double sixth = 1.0/6.0;     //Commonly used factor
+  constexpr double sixth = 1.0 / 6.0;  //Commonly used factor
 
   class Settings {
   public:
@@ -137,14 +137,12 @@ namespace trklet {
     }
 
     unsigned int seedlayers(int inner, int seed) const {
-      int layerdisk=seedlayers_[seed][inner];
-      assert(layerdisk>=0);
+      int layerdisk = seedlayers_[seed][inner];
+      assert(layerdisk >= 0);
       return layerdisk;
     }
 
-    unsigned int NTC(int seed) const {
-      return ntc_[seed];
-    }
+    unsigned int NTC(int seed) const { return ntc_[seed]; }
 
     unsigned int projlayers(unsigned int iSeed, unsigned int i) const { return projlayers_[iSeed][i]; }
     unsigned int projdisks(unsigned int iSeed, unsigned int i) const { return projdisks_[iSeed][i]; }
@@ -273,10 +271,9 @@ namespace trklet {
     void setNbitsseedextended(unsigned int nbitsseed) { nbitsseedextended_ = nbitsseed; }
 
     double dphisectorHG() const {
-      double rsectmin=21.8;
-      double rsectmax=112.7;
-      return 2 * M_PI / N_SECTOR +
-	rinvmax()*std::max(rcrit_ - rsectmin, rsectmax - rcrit_);
+      double rsectmin = 21.8;
+      double rsectmax = 112.7;
+      return 2 * M_PI / N_SECTOR + rinvmax() * std::max(rcrit_ - rsectmin, rsectmax - rcrit_);
     }
 
     double rcrit() const { return rcrit_; }
@@ -290,15 +287,14 @@ namespace trklet {
     double phicritmaxmc() const { return phicritmax() + dphicritmc_; }
 
     double kphi() const { return dphisectorHG() / (1 << nphibitsstub(0)); }
-    double kphi1() const { return dphisectorHG() / (1 << nphibitsstub(N_LAYER-1)); }
+    double kphi1() const { return dphisectorHG() / (1 << nphibitsstub(N_LAYER - 1)); }
     double kphi(unsigned int layerdisk) const { return dphisectorHG() / (1 << nphibitsstub(layerdisk)); }
 
-    
     double kz() const { return 2.0 * zlength_ / (1 << nzbitsstub_[0]); }
     double kz(unsigned int layerdisk) const { return 2.0 * zlength_ / (1 << nzbitsstub_[layerdisk]); }
     double kr() const { return rmaxdisk_ / (1 << nrbitsstub_[N_LAYER]); }
-    double krbarrel() const { return 2.0 * drmax() / (1 <<nrbitsstub_[0]); }
-    
+    double krbarrel() const { return 2.0 * drmax() / (1 << nrbitsstub_[0]); }
+
     double maxrinv() const { return maxrinv_; }
     double maxd0() const { return maxd0_; }
     unsigned int nbitsd0() const { return nbitsd0_; }
@@ -317,7 +313,7 @@ namespace trklet {
     double rPS2S() const { return rPS2S_; }
 
     double z0cut() const { return z0cut_; }
-    
+
     double disp_z0cut() const { return disp_z0cut_; }
 
     unsigned int NLONGVMBITS() const { return NLONGVMBITS_; }
@@ -385,41 +381,41 @@ namespace trklet {
     double kz0pars() const { return kz(); }
     double kd0pars() const { return kd0(); }
 
-    double kphider() const { return kphi()/kr()/256; }
-    double kphiderdisk() const { return kphi()/kr()/128; }
-    double kzder() const { return 1.0/64; }
-    double krder() const { return 1.0/128; }
+    double kphider() const { return kphi() / kr() / 256; }
+    double kphiderdisk() const { return kphi() / kr() / 128; }
+    double kzder() const { return 1.0 / 64; }
+    double krder() const { return 1.0 / 128; }
 
     //This is a 'historical accident' and should be fixed so that we don't
     //have the factor if 2
     double krprojshiftdisk() const { return 2 * kr(); }
 
     double benddecode(int ibend, int layerdisk, bool isPSmodule) const {
-      if (layerdisk>5&&(!isPSmodule)) layerdisk+=5;
-      double bend=benddecode_[layerdisk][ibend];
-      assert(bend<99.0);
+      if (layerdisk > 5 && (!isPSmodule))
+        layerdisk += 5;
+      double bend = benddecode_[layerdisk][ibend];
+      assert(bend < 99.0);
       return bend;
     }
-    
+
     double bendcut(int ibend, int layerdisk, bool isPSmodule) const {
-      if (layerdisk>5&&(!isPSmodule)) layerdisk+=5;
-      double bendcut=bendcut_[layerdisk][ibend];
-      if (bendcut<=0.0) std::cout << "bendcut : "<<layerdisk<<" "<<ibend<<" "<<isPSmodule<<std::endl;
-      assert(bendcut>0.0);
+      if (layerdisk > 5 && (!isPSmodule))
+        layerdisk += 5;
+      double bendcut = bendcut_[layerdisk][ibend];
+      if (bendcut <= 0.0)
+        std::cout << "bendcut : " << layerdisk << " " << ibend << " " << isPSmodule << std::endl;
+      assert(bendcut > 0.0);
       return bendcut;
     }
-    
-    double bendcutte(int ibend, int layerdisk, bool isPSmodule) const {
-      return bendcut(ibend,layerdisk,isPSmodule);
-    }
+
+    double bendcutte(int ibend, int layerdisk, bool isPSmodule) const { return bendcut(ibend, layerdisk, isPSmodule); }
 
     double bendcutme(int ibend, int layerdisk, bool isPSmodule) const {
       //FIXME temporary fix until phiprojderdisk bits adjusted. But requires coordinatin with HLS
-      double fact=(layerdisk<N_LAYER)?1.0:1.8; 
-      return fact*bendcut(ibend,layerdisk,isPSmodule);
+      double fact = (layerdisk < N_LAYER) ? 1.0 : 1.8;
+      return fact * bendcut(ibend, layerdisk, isPSmodule);
     }
-    
-    
+
   private:
     std::string DTCLinkFile_;
     std::string moduleCablingFile_;
@@ -479,7 +475,7 @@ namespace trklet {
     double rPS2S_{60.0};
 
     double z0cut_{15.0};
-    
+
     double disp_z0cut_{27.0};
 
     unsigned int NLONGVMBITS_{3};
@@ -589,25 +585,23 @@ namespace trklet {
          {{6, 6, 6, 6, 10, 10, 10, 10, 0, 0, 6, 0}},
          {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6}}}};
 
-
     //layers/disks used by each seed
-    std::array<std::array<int, 3>, N_SEED> seedlayers_{{{{0, 1, -1}}, //L1L2
-	                                                {{1, 2, -1}}, //1 L2L3
-							{{2, 3, -1}}, //2 L3L4
-							{{4, 5, -1}}, //3 L5L6
-							{{6, 7, -1}}, //4 D1D2
-							{{8, 9, -1}}, //5 D3D4
-							{{0, 6, -1}}, //6 L1D1
-							{{1, 6, -1}}, //7 L2D1
-							{{2, 3,  1}}, //8 L2L3L4
-							{{4, 5,  3}}, //9 L4L5L6
-							{{1, 2,  6}}, //10 L2L3D1
-							{{6, 7, 1}}}}; //11 D1D2L2
+    std::array<std::array<int, 3>, N_SEED> seedlayers_{{{{0, 1, -1}},   //L1L2
+                                                        {{1, 2, -1}},   //1 L2L3
+                                                        {{2, 3, -1}},   //2 L3L4
+                                                        {{4, 5, -1}},   //3 L5L6
+                                                        {{6, 7, -1}},   //4 D1D2
+                                                        {{8, 9, -1}},   //5 D3D4
+                                                        {{0, 6, -1}},   //6 L1D1
+                                                        {{1, 6, -1}},   //7 L2D1
+                                                        {{2, 3, 1}},    //8 L2L3L4
+                                                        {{4, 5, 3}},    //9 L4L5L6
+                                                        {{1, 2, 6}},    //10 L2L3D1
+                                                        {{6, 7, 1}}}};  //11 D1D2L2
 
     //Number of tracklet calculators for the prompt seeding combinations
     std::array<unsigned int, N_SEED> ntc_{{12, 4, 4, 4, 4, 4, 8, 4, 0, 0, 0, 0}};
-    
-    
+
     //projection layers by seed index. For each seeding index (row) the list of layers that we consider projections to
     std::array<std::array<unsigned int, N_LAYER - 2>, N_SEED> projlayers_{{{{3, 4, 5, 6}},  //0 L1L2
                                                                            {{1, 4, 5, 6}},  //1 L2L3
@@ -631,7 +625,7 @@ namespace trklet {
                                                                      {{1, 2, 5}},     //5 D3D4
                                                                      {{2, 3, 4, 5}},  //6 L1D1
                                                                      {{2, 3, 4}},     //7 L2D1
-								     {{1, 2, 3}},     //8 L2L3L4
+                                                                     {{1, 2, 3}},     //8 L2L3L4
                                                                      {{}},            //9 L4L5L6
                                                                      {{2, 3, 4}},     //10 L2L3D1
                                                                      {{3, 4}}}};      //11 D1D2L2
@@ -688,43 +682,42 @@ namespace trklet {
 
     //returns the mean bend (in strips at a 1.8cm separation) for bendcode
     std::array<std::array<double, 16>, 16> benddecode_{
-      {{{0.0,  0.5,  0.7,  0.8, 89.9, -1.0, -0.9, -0.8, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},   //L1 PS
-       {{0.0,  0.7,  1.0,  1.5, 89.9, -1.5, -1.0, -0.7, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},   //L2 PS
-       {{0.0,  1.0,  1.8,  2.2, 89.9, -2.2, -1.8, -1.0, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},   //L3 PS
-       {{0.0,  0.7,  1.2,  1.8,  2.1,  2.6,  3.2,  3.5, 89.9, -3.5, -3.2, -2.6, -2.1, -1.8, -1.2, -0.7}},   //L4 2S
-       {{0.0,  0.8,  1.2,  1.8,  2.2,  3.2,  4.1,  4.4, 89.9, -4.4, -4.1, -3.2, -2.2, -1.8, -1.2, -0.8}},   //L5 2S
-       {{0.0,  0.9,  1.8,  2.8,  3.8,  4.5,  5.3,  5.9, 89.9, -5.9, -5.3, -4.5, -3.8, -2.8, -1.8, -0.9}},   //L6 2S
-       {{0.0,  0.8,  1.2,  2.0, 89.9, -2.0, -1.2, -0.8, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},   //D1 PS
-       {{0.0,  1.5,  1.8,  2.4, 89.9, -2.4, -1.8, -1.4, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},   //D2 PS
-       {{0.0,  1.7,  2.0,  2.2, 89.9, -2.2, -2.0, -1.7, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},   //D3 PS
-       {{0.0,  1.8,  2.0,  2.4, 89.9, -2.4, -2.0, -1.8, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},   //D4 PS
-       {{0.0,  2.0,  2.2,  2.4, 89.9, -2.4, -2.0, -1.8, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},   //D5 PS
-       {{0.0,  1.8,  2.3,  2.5,  3.0,  3.9,  4.5,  5.2, 89.9, -5.2, -4.5, -3.9, -3.0, -2.5, -2.3, -1.8}},   //D1 2S
-       {{0.0,  2.0,  2.4,  2.9,  3.2,  4.0,  4.8,  5.2, 89.9, -5.2, -4.8, -4.0, -3.2, -2.9, -2.4, -2.0}},   //D2 2S
-       {{0.0,  2.0,  2.4,  2.7,  3.6,  3.7,  4.4,  4.6, 89.9, -4.6, -4.4, -3.7, -3.6, -2.7, -2.4, -2.0}},   //D3 2S
-       {{0.0,  2.0,  2.6,  3.2,  3.8,  4.0,  4.4,  4.4, 89.9, -4.4, -4.4, -4.0, -3.8, -3.2, -2.6, -2.0}},   //D4 2S
-       {{0.0,  2.0,  3.2,  3.4,  3.9,  3.9,  4.4,  4.4, 89.9, -4.4, -4.4, -3.9, -3.9, -3.4, -3.2, -2.0}}}};   //D5 2S
+        {{{0.0, 0.5, 0.7, 0.8, 89.9, -1.0, -0.9, -0.8, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},  //L1 PS
+         {{0.0, 0.7, 1.0, 1.5, 89.9, -1.5, -1.0, -0.7, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},  //L2 PS
+         {{0.0, 1.0, 1.8, 2.2, 89.9, -2.2, -1.8, -1.0, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},  //L3 PS
+         {{0.0, 0.7, 1.2, 1.8, 2.1, 2.6, 3.2, 3.5, 89.9, -3.5, -3.2, -2.6, -2.1, -1.8, -1.2, -0.7}},      //L4 2S
+         {{0.0, 0.8, 1.2, 1.8, 2.2, 3.2, 4.1, 4.4, 89.9, -4.4, -4.1, -3.2, -2.2, -1.8, -1.2, -0.8}},      //L5 2S
+         {{0.0, 0.9, 1.8, 2.8, 3.8, 4.5, 5.3, 5.9, 89.9, -5.9, -5.3, -4.5, -3.8, -2.8, -1.8, -0.9}},      //L6 2S
+         {{0.0, 0.8, 1.2, 2.0, 89.9, -2.0, -1.2, -0.8, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},  //D1 PS
+         {{0.0, 1.5, 1.8, 2.4, 89.9, -2.4, -1.8, -1.4, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},  //D2 PS
+         {{0.0, 1.7, 2.0, 2.2, 89.9, -2.2, -2.0, -1.7, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},  //D3 PS
+         {{0.0, 1.8, 2.0, 2.4, 89.9, -2.4, -2.0, -1.8, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},  //D4 PS
+         {{0.0, 2.0, 2.2, 2.4, 89.9, -2.4, -2.0, -1.8, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9}},  //D5 PS
+         {{0.0, 1.8, 2.3, 2.5, 3.0, 3.9, 4.5, 5.2, 89.9, -5.2, -4.5, -3.9, -3.0, -2.5, -2.3, -1.8}},      //D1 2S
+         {{0.0, 2.0, 2.4, 2.9, 3.2, 4.0, 4.8, 5.2, 89.9, -5.2, -4.8, -4.0, -3.2, -2.9, -2.4, -2.0}},      //D2 2S
+         {{0.0, 2.0, 2.4, 2.7, 3.6, 3.7, 4.4, 4.6, 89.9, -4.6, -4.4, -3.7, -3.6, -2.7, -2.4, -2.0}},      //D3 2S
+         {{0.0, 2.0, 2.6, 3.2, 3.8, 4.0, 4.4, 4.4, 89.9, -4.4, -4.4, -4.0, -3.8, -3.2, -2.6, -2.0}},      //D4 2S
+         {{0.0, 2.0, 3.2, 3.4, 3.9, 3.9, 4.4, 4.4, 89.9, -4.4, -4.4, -3.9, -3.9, -3.4, -3.2, -2.0}}}};    //D5 2S
 
     //returns the bend 'cut' (in strips at a 1.8cm separation) for bendcode
     std::array<std::array<double, 16>, 16> bendcut_{
-      {{{1.5,  1.2,  0.8,  0.8, 99.9,  0.8,  0.8,  1.2, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},   //L1 PS
-       {{1.5,  1.3,  1.0,  1.0, 99.9,  1.0,  1.0,  1.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},   //L2 PS
-       {{1.6,  1.5,  1.0,  1.0, 99.9,  1.0,  1.0,  1.5, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},   //L3 PS
-       {{1.6,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, 99.9,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0}},   //L4 2S
-       {{1.6,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, 99.9,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0}},   //L5 2S
-       {{1.6,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, 99.9,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0}},   //L6 2S
-       {{1.8,  1.6,  1.6,  1.6, 99.9,  1.6,  1.6,  1.6, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},   //D1 PS
-       {{1.8,  1.6,  1.6,  1.6, 99.9,  1.6,  1.6,  1.6, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},   //D2 PS
-       {{1.8,  1.6,  1.6,  1.6, 99.9,  1.6,  1.6,  1.6, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},   //D3 PS
-       {{2.2,  1.6,  1.6,  1.6, 99.9,  1.6,  1.6,  1.6, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},   //D4 PS
-       {{2.2,  1.6,  1.6,  1.6, 99.9,  1.6,  1.6,  1.6, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},   //D5 PS
-       {{2.0,  1.2,  1.2,  1.2,  1.5,  1.5,  1.5,  1.5, 99.9,  1.5,  1.5,  1.5,  1.5,  1.2,  1.2,  1.2}},   //D1 2S
-       {{2.0,  1.2,  1.2,  1.2,  1.5,  1.5,  1.5,  1.5, 99.9,  1.5,  1.5,  1.5,  1.5,  1.2,  1.2,  1.2}},   //D2 2S
-       {{2.2,  1.5,  1.5,  1.5,  2.0,  2.0,  2.0,  2.0, 99.9,  2.0,  2.0,  2.0,  2.0,  1.5,  1.5,  1.5}},   //D3 2S
-       {{2.5,  1.5,  1.5,  2.0,  2.0,  2.0,  2.0,  2.0, 99.9,  2.0,  2.0,  2.0,  2.0,  2.0,  1.5,  1.5}},   //D4 2S
-       {{2.5,  1.5,  2.0,  2.0,  2.0,  2.0,  2.0,  2.0, 99.9,  2.0,  2.0,  2.0,  2.0,  2.0,  2.0,  1.5}}}};   //D5 2S
-    
-    
+        {{{1.5, 1.2, 0.8, 0.8, 99.9, 0.8, 0.8, 1.2, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},  //L1 PS
+         {{1.5, 1.3, 1.0, 1.0, 99.9, 1.0, 1.0, 1.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},  //L2 PS
+         {{1.6, 1.5, 1.0, 1.0, 99.9, 1.0, 1.0, 1.5, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},  //L3 PS
+         {{1.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 99.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}},          //L4 2S
+         {{1.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 99.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}},          //L5 2S
+         {{1.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 99.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}},          //L6 2S
+         {{1.8, 1.6, 1.6, 1.6, 99.9, 1.6, 1.6, 1.6, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},  //D1 PS
+         {{1.8, 1.6, 1.6, 1.6, 99.9, 1.6, 1.6, 1.6, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},  //D2 PS
+         {{1.8, 1.6, 1.6, 1.6, 99.9, 1.6, 1.6, 1.6, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},  //D3 PS
+         {{2.2, 1.6, 1.6, 1.6, 99.9, 1.6, 1.6, 1.6, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},  //D4 PS
+         {{2.2, 1.6, 1.6, 1.6, 99.9, 1.6, 1.6, 1.6, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}},  //D5 PS
+         {{2.0, 1.2, 1.2, 1.2, 1.5, 1.5, 1.5, 1.5, 99.9, 1.5, 1.5, 1.5, 1.5, 1.2, 1.2, 1.2}},          //D1 2S
+         {{2.0, 1.2, 1.2, 1.2, 1.5, 1.5, 1.5, 1.5, 99.9, 1.5, 1.5, 1.5, 1.5, 1.2, 1.2, 1.2}},          //D2 2S
+         {{2.2, 1.5, 1.5, 1.5, 2.0, 2.0, 2.0, 2.0, 99.9, 2.0, 2.0, 2.0, 2.0, 1.5, 1.5, 1.5}},          //D3 2S
+         {{2.5, 1.5, 1.5, 2.0, 2.0, 2.0, 2.0, 2.0, 99.9, 2.0, 2.0, 2.0, 2.0, 2.0, 1.5, 1.5}},          //D4 2S
+         {{2.5, 1.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 99.9, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 1.5}}}};        //D5 2S
+
     // Offset to the maximum number of steps in each processing step:
     // Set to 0 (default) means standard truncation
     // Set to large value, e.g. 10000, to disable truncation
@@ -732,7 +725,7 @@ namespace trklet {
 
     //Number of processing steps for one event (108=18TM*240MHz/40MHz)
     std::unordered_map<std::string, unsigned int> maxstep_{{"Link", 108},
-	                                                   {"VMR", 108},
+                                                           {"VMR", 108},
                                                            {"TE", 108},
                                                            {"TC", 108},
                                                            {"PR", 108},
@@ -743,38 +736,18 @@ namespace trklet {
                                                            {"TRE", 108}};
 
     // If set to true this will generate debub printout in text files
-    std::unordered_map<std::string, bool> writeMonitorData_{{"IL", false},
-                                                            {"TE", false},
-                                                            {"CT", false},
-                                                            {"HitPattern", false},
-                                                            {"ChiSq", false},
-                                                            {"Seeds", false},
-                                                            {"FT", false},
-                                                            {"Residuals", false},
-                                                            {"StubBend", false},
-                                                            {"MC", false},
-                                                            {"MP", false},
-                                                            {"ME", false},
-                                                            {"AP", false},
-                                                            {"VMP", false},
-                                                            {"NMatches", false},
-                                                            {"TrackProjOcc", false},
-                                                            {"TC", false},
-                                                            {"Pars", false},
-                                                            {"TPars", false},
-                                                            {"TPD", false},
-                                                            {"TrackletPars", false},
-                                                            {"TED", false},
-                                                            {"TP", false},
-                                                            {"TRE", false},
-                                                            {"VMR", false},
-                                                            {"StubsLayer", false},
-                                                            {"StubsLayerSector", false},
-                                                            {"HitEff", false},
-                                                            {"MatchEff", false},
-                                                            {"Cabling", false},
-                                                            {"IFit", false},
-                                                            {"AS", false}};
+    std::unordered_map<std::string, bool> writeMonitorData_{
+        {"IL", false},           {"TE", false},         {"CT", false},
+        {"HitPattern", false},   {"ChiSq", false},      {"Seeds", false},
+        {"FT", false},           {"Residuals", false},  {"StubBend", false},
+        {"MC", false},           {"MP", false},         {"ME", false},
+        {"AP", false},           {"VMP", false},        {"NMatches", false},
+        {"TrackProjOcc", false}, {"TC", false},         {"Pars", false},
+        {"TPars", false},        {"TPD", false},        {"TrackletPars", false},
+        {"TED", false},          {"TP", false},         {"TRE", false},
+        {"VMR", false},          {"StubsLayer", false}, {"StubsLayerSector", false},
+        {"HitEff", false},       {"MatchEff", false},   {"Cabling", false},
+        {"IFit", false},         {"AS", false}};
 
     std::array<double, N_DSS_MOD> rDSSinner_mod_{{68.9391, 78.7750, 85.4550, 96.3150, 102.3160}};
     std::array<double, N_DSS_MOD> rDSSouter_mod_{{66.4903, 76.7750, 84.4562, 94.9920, 102.3160}};
@@ -791,9 +764,9 @@ namespace trklet {
     bool warnNoDer_{false};  //If true will print out warnings about missing track fit derivatives
 
     //--- These used to create files needed by HLS code.
-    bool writeMem_{false};    //If true will print out content of memories (between algo steps) to files
-    bool writeTable_{false};  //If true will print out content of LUTs to files
-    bool writeConfig_{false};                  //If true will print out the autogenerated configuration as files
+    bool writeMem_{false};     //If true will print out content of memories (between algo steps) to files
+    bool writeTable_{false};   //If true will print out content of LUTs to files
+    bool writeConfig_{false};  //If true will print out the autogenerated configuration as files
     std::string memPath_{"../data/MemPrints/"};  //path for writing memories
     std::string tablePath_{"../data/LUTs/"};     //path for writing LUTs
 

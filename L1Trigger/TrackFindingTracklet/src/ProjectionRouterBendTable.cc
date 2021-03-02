@@ -25,7 +25,7 @@ void ProjectionRouterBendTable::init(Settings const& settings,
           if (iphider > (1 << (nphiderbits - 1)))
             iphider -= (1 << nphiderbits);
           iphider = iphider << (settings.nbitsphiprojderL123() - nphiderbits);
-	  
+
           double rproj = ir * settings.krprojshiftdisk();
           double phider = iphider * globals->ITC_L1L2()->der_phiD_final.K();
           double t = settings.zmean(idisk) / rproj;

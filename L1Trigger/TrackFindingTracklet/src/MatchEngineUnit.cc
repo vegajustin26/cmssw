@@ -3,13 +3,12 @@
 using namespace std;
 using namespace trklet;
 
-MatchEngineUnit::MatchEngineUnit(bool barrel, unsigned int layerdisk, vector<bool> table)
-    : candmatches_(5) {
+MatchEngineUnit::MatchEngineUnit(bool barrel, unsigned int layerdisk, vector<bool> table) : candmatches_(5) {
   idle_ = true;
   barrel_ = barrel;
   table_ = table;
   slot_ = 1;  //This makes it idle until initialized
-  layerdisk_=layerdisk;
+  layerdisk_ = layerdisk;
 }
 
 void MatchEngineUnit::init(VMStubsMEMemory* vmstubsmemory,
@@ -17,7 +16,7 @@ void MatchEngineUnit::init(VMStubsMEMemory* vmstubsmemory,
                            int projrinv,
                            int projfinerz,
                            int projfinephi,
-			   int shift,
+                           int shift,
                            bool usesecond,
                            bool isPSseed,
                            Tracklet* proj) {
@@ -44,15 +43,15 @@ void MatchEngineUnit::step() {
   int stubfinerz = vmstub.finerz().value();
   int stubfinephi = vmstub.finephi().value();
 
-  int deltaphi = stubfinephi - projfinephi_ + (1<<NFINERZBITS)*shift_;
+  int deltaphi = stubfinephi - projfinephi_ + (1 << NFINERZBITS) * shift_;
 
   bool dphicut = (abs(deltaphi) < 3);
 
   int nbits = isPSmodule ? 3 : 4;
 
-  int diskps = (!barrel_)&&isPSmodule;
-  
-  unsigned int index = (diskps<<(4+5)) + (projrinv_ << nbits) + vmstub.bend().value();
+  int diskps = (!barrel_) && isPSmodule;
+
+  unsigned int index = (diskps << (4 + 5)) + (projrinv_ << nbits) + vmstub.bend().value();
 
   //Check if stub z position consistent
   int idrz = stubfinerz - projfinerz_;
@@ -73,7 +72,7 @@ void MatchEngineUnit::step() {
   }
 
   //Check if stub bend and proj rinv consistent
-  if ((pass && dphicut) && table_[index] ) {
+  if ((pass && dphicut) && table_[index]) {
     std::pair<Tracklet*, const Stub*> tmp(proj_, vmstub.stub());
     candmatches_.store(tmp);
   }
@@ -84,7 +83,7 @@ void MatchEngineUnit::step() {
       usesecond_ = false;
       istub_ = 0;
       slot_++;
-      projfinerz_ -= (1<<NFINERZBITS);
+      projfinerz_ -= (1 << NFINERZBITS);
     } else {
       idle_ = true;
     }

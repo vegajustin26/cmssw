@@ -33,7 +33,6 @@ namespace trklet {
     std::vector<Track*>& tracks() { return tracks_; }
 
   private:
-
     void configure(std::istream& inwire, std::istream& inmem, std::istream& inproc);
 
     const Settings* settings_{nullptr};

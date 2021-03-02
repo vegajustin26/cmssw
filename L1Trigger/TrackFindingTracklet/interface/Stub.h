@@ -14,7 +14,7 @@
 namespace trklet {
 
   class Globals;
-  
+
   class Stub {
   public:
     Stub(Settings const& settings);
@@ -40,13 +40,14 @@ namespace trklet {
     std::string strbare() const { return bend_.str() + r_.str() + z_.str() + phi_.str(); }
 
     std::string strinner() const {
-      unsigned int nbitsfinephi=8;
-      FPGAWord finephi(phicorr_.bits(phicorr_.nbits()-nbitsfinephi,nbitsfinephi),nbitsfinephi,true,__LINE__,__FILE__);
-      return str()+"|"+stubindex_.str()+"|"+finephi.str();
+      unsigned int nbitsfinephi = 8;
+      FPGAWord finephi(
+          phicorr_.bits(phicorr_.nbits() - nbitsfinephi, nbitsfinephi), nbitsfinephi, true, __LINE__, __FILE__);
+      return str() + "|" + stubindex_.str() + "|" + finephi.str();
     }
 
-    FPGAWord allStubIndex() const {return stubindex_;}
-      
+    FPGAWord allStubIndex() const { return stubindex_; }
+
     unsigned int phiregionaddress() const;
     std::string phiregionaddressstr() const;
 
@@ -60,14 +61,14 @@ namespace trklet {
     const FPGAWord& z() const { return z_; }
     const FPGAWord& phi() const { return phi_; }
     const FPGAWord& phicorr() const { return phicorr_; }
-    const FPGAWord& alphanew() const { return alpha_; } //FIXME should remove new
+    const FPGAWord& alphanew() const { return alpha_; }  //FIXME should remove new
 
     const FPGAWord& stubindex() const { return stubindex_; }
     const FPGAWord& layer() const { return layer_; }
     const FPGAWord& disk() const { return disk_; }
     unsigned int layerdisk() const;
 
-    bool isPSmodule() const { return (layerdisk_<N_LAYER) ? (layerdisk_ < N_PSLAYER) : (r_.value() > 10); }
+    bool isPSmodule() const { return (layerdisk_ < N_LAYER) ? (layerdisk_ < N_PSLAYER) : (r_.value() > 10); }
 
     double rapprox() const;
     double zapprox() const;
@@ -77,11 +78,11 @@ namespace trklet {
     const L1TStub* l1tstub() const { return l1tstub_; }
     void setl1tstub(L1TStub* l1tstub) { l1tstub_ = l1tstub; }
 
-    bool isBarrel() const { return layerdisk_<N_LAYER; }
-    
+    bool isBarrel() const { return layerdisk_ < N_LAYER; }
+
   private:
     unsigned int layerdisk_;
-    
+
     FPGAWord layer_;
     FPGAWord disk_;
     FPGAWord r_;

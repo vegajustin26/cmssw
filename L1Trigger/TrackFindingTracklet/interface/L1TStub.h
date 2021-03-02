@@ -14,17 +14,17 @@ namespace trklet {
     L1TStub();
 
     L1TStub(std::string DTClink,
-	    int region,
-	    int layerdisk,
-	    std::string stubword,
-	    int isPSmodule,
-	    int isFlipped,
-	    double x,
-	    double y,
-	    double z,
-	    double bend,
-	    double strip,
-	    std::vector<int> tps);
+            int region,
+            int layerdisk,
+            std::string stubword,
+            int isPSmodule,
+            int isFlipped,
+            double x,
+            double y,
+            double z,
+            double bend,
+            double strip,
+            std::vector<int> tps);
 
     ~L1TStub() = default;
 
@@ -38,12 +38,12 @@ namespace trklet {
 
     unsigned int layer() const { return layer_; }
     int disk() const {
-      if (layerdisk_<6) {
-	return 0;
+      if (layerdisk_ < 6) {
+        return 0;
       }
-      int disk=layerdisk_-5;
-      if (z_ < 0.0 ) {
-	return -disk;
+      int disk = layerdisk_ - 5;
+      if (z_ < 0.0) {
+        return -disk;
       }
       return disk;
     }
@@ -97,22 +97,14 @@ namespace trklet {
     bool tpmatch(int tp) const;
     bool tpmatch2(int tp) const;
 
-    const std::string& DTClink() const {
-      return DTClink_;
-    }
+    const std::string& DTClink() const { return DTClink_; }
 
-    int layerdisk() const {
-      return layerdisk_;
-    }
-    
-    int region() const {
-      return region_;
-    }
+    int layerdisk() const { return layerdisk_; }
 
-    const std::string& stubword() const {
-      return stubword_;
-    }
-    
+    int region() const { return region_; }
+
+    const std::string& stubword() const { return stubword_; }
+
   private:
     int layerdisk_;
     std::string DTClink_;

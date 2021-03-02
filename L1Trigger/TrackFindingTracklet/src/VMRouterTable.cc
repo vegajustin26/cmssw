@@ -10,8 +10,9 @@ using namespace trklet;
 
 VMRouterTable::VMRouterTable(Settings const& settings) : settings_(settings) {}
 
-VMRouterTable::VMRouterTable(Settings const& settings, unsigned int layerdisk, std::string const& name) : settings_(settings) {
-  init(layerdisk,name);
+VMRouterTable::VMRouterTable(Settings const& settings, unsigned int layerdisk, std::string const& name)
+    : settings_(settings) {
+  init(layerdisk, name);
 }
 
 void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
@@ -44,22 +45,22 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
       double z = zmin_ + (izbin + 0.5) * dz_;
 
       if (settings_.combined()) {
-	int iznew=izbin-(1<<(zbits_-1));
-	if (iznew<0)
-	  iznew+=(1<<zbits_);
-	assert(iznew>=0);
-	assert(iznew<(1<<zbits_));
-	z = zmin_ + (iznew + 0.5) * dz_;
-	if (layerdisk<N_LAYER) {
-	  int irnew=irbin-(1<<(rbits_-1));
-	  if (irnew<0)
-	    irnew+=(1<<rbits_);
-	  assert(irnew>=0);
-	  assert(irnew<(1<<rbits_));
-	  r = rmin_ + (irnew + 0.5) * dr_;
-	}
+        int iznew = izbin - (1 << (zbits_ - 1));
+        if (iznew < 0)
+          iznew += (1 << zbits_);
+        assert(iznew >= 0);
+        assert(iznew < (1 << zbits_));
+        z = zmin_ + (iznew + 0.5) * dz_;
+        if (layerdisk < N_LAYER) {
+          int irnew = irbin - (1 << (rbits_ - 1));
+          if (irnew < 0)
+            irnew += (1 << rbits_);
+          assert(irnew >= 0);
+          assert(irnew < (1 << rbits_));
+          r = rmin_ + (irnew + 0.5) * dr_;
+        }
       }
-      
+
       if (layerdisk > (N_LAYER - 1) && irbin < 10)  //special case for the tabulated radii in 2S disks
         r = (layerdisk <= 7) ? settings_.rDSSinner(irbin) : settings_.rDSSouter(irbin);
 
@@ -80,7 +81,7 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
       if (layerdisk >= N_LAYER) {
         double rproj = r * settings_.zmean(layerdisk - N_LAYER) / z;
         bin = 0.5 * NBINS * (rproj - settings_.rmindiskvm()) / (settings_.rmaxdiskvm() - settings_.rmindiskvm());
-	//bin value of zero indicates that stub is out of range
+        //bin value of zero indicates that stub is out of range
         if (bin < 0)
           bin = 0;
         if (bin >= NBINS / 2)
@@ -120,75 +121,71 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
   }
 
   if (settings_.writeTable()) {
-
     if (!settings_.combined()) {
       // write finebin tables
       writeVMTable(settings_.tablePath(), name + "_finebin.tab", vmrtable_);
       // write barrel seed teinner tables (L1L2, L2L3, L3L4, L5L6)
       if (layerdisk == 0 || layerdisk == 1 || layerdisk == 2 || layerdisk == 4) {
-	std::string fnamesuffix = "L" + to_string(layerdisk + 1) + "L" + std::to_string(layerdisk + 2);
-	writeVMTable(settings_.tablePath(), "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
+        std::string fnamesuffix = "L" + to_string(layerdisk + 1) + "L" + std::to_string(layerdisk + 2);
+        writeVMTable(settings_.tablePath(), "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
       }
       // write disk seed teinner tables (D1D2, D3D4)
       if (layerdisk == 6 || layerdisk == 8) {
-	std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1) + "D" + to_string(layerdisk - N_LAYER + 2);
-	writeVMTable(settings_.tablePath(), "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
+        std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1) + "D" + to_string(layerdisk - N_LAYER + 2);
+        writeVMTable(settings_.tablePath(), "VMTableInner" + fnamesuffix + ".tab", vmrtableteinner_);
       }
       // write overlap seed teinner tables (L1D1, L2D1)
       if (layerdisk == 0 || layerdisk == 1) {
-	std::string fnamesuffix = "L" + to_string(layerdisk + 1) + "D1";
-	writeVMTable(settings_.tablePath(), "VMTableInner" + fnamesuffix + ".tab", vmrtableteinneroverlap_);
+        std::string fnamesuffix = "L" + to_string(layerdisk + 1) + "D1";
+        writeVMTable(settings_.tablePath(), "VMTableInner" + fnamesuffix + ".tab", vmrtableteinneroverlap_);
       }
       // write barrel teouter tables (L2, L3, L4, L6, same as finebin tables)
       if (layerdisk == 1 || layerdisk == 2 || layerdisk == 3 || layerdisk == 5) {
-	std::string fnamesuffix = "L" + to_string(layerdisk + 1);
-	writeVMTable(settings_.tablePath(), "VMTableOuter" + fnamesuffix + ".tab", vmrtable_);
-	// write disk teouter tables (D1, D2, D4)
-	if (layerdisk == 6 || layerdisk == 7 || layerdisk == 9) {
-	  std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1);
-	  writeVMTable(settings_.tablePath(), "VMTableOuter" + fnamesuffix + ".tab", vmrtabletedisk_);
-	}
+        std::string fnamesuffix = "L" + to_string(layerdisk + 1);
+        writeVMTable(settings_.tablePath(), "VMTableOuter" + fnamesuffix + ".tab", vmrtable_);
+        // write disk teouter tables (D1, D2, D4)
+        if (layerdisk == 6 || layerdisk == 7 || layerdisk == 9) {
+          std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1);
+          writeVMTable(settings_.tablePath(), "VMTableOuter" + fnamesuffix + ".tab", vmrtabletedisk_);
+        }
       }
     } else {
-
-      std::string fname = "VMRME_"; 
-      if (layerdisk<6) {
-	fname+="L" + std::to_string(layerdisk+1) +".tab";
+      std::string fname = "VMRME_";
+      if (layerdisk < 6) {
+        fname += "L" + std::to_string(layerdisk + 1) + ".tab";
       } else {
-	fname+="D" + std::to_string(layerdisk-5) +".tab";
+        fname += "D" + std::to_string(layerdisk - 5) + ".tab";
       }
-      writeVMTable(settings_.tablePath(),fname,vmrtable_);
+      writeVMTable(settings_.tablePath(), fname, vmrtable_);
 
       if (layerdisk == 6 || layerdisk == 7 || layerdisk == 9) {
-	std::string fname = "VMRTE_D" + to_string(layerdisk - N_LAYER + 1)+".tab";
-	writeVMTable(settings_.tablePath(), fname, vmrtabletedisk_);
+        std::string fname = "VMRTE_D" + to_string(layerdisk - N_LAYER + 1) + ".tab";
+        writeVMTable(settings_.tablePath(), fname, vmrtabletedisk_);
       }
-      
-      if (vmrtableteinner_.size()>0) {
-	ofstream out;
-	if (layerdisk<6) {
-	  out.open(settings_.tablePath()+"TP_L" + std::to_string(layerdisk+1) +".tab");
-	} else {
-	  out.open(settings_.tablePath()+"TP_D" + std::to_string(layerdisk-5) +".tab");
-	}
-	out << "{" << endl;
-	for (unsigned int i = 0; i < vmrtableteinner_.size(); i++) {
-	  if (i != 0) {
-	    out << "," << endl;
-	  }
-	  if (vmrtableteinner_[i]==-1) {
-	    out << 1023;
-	  } else {
-	    out << vmrtableteinner_[i];
-	  }
-	}
-	out << endl << "};" << endl;
-	out.close();
+
+      if (vmrtableteinner_.size() > 0) {
+        ofstream out;
+        if (layerdisk < 6) {
+          out.open(settings_.tablePath() + "TP_L" + std::to_string(layerdisk + 1) + ".tab");
+        } else {
+          out.open(settings_.tablePath() + "TP_D" + std::to_string(layerdisk - 5) + ".tab");
+        }
+        out << "{" << endl;
+        for (unsigned int i = 0; i < vmrtableteinner_.size(); i++) {
+          if (i != 0) {
+            out << "," << endl;
+          }
+          if (vmrtableteinner_[i] == -1) {
+            out << 1023;
+          } else {
+            out << vmrtableteinner_[i];
+          }
+        }
+        out << endl << "};" << endl;
+        out.close();
       }
     }
   }
-
-  
 }
 
 int VMRouterTable::getLookup(unsigned int layerdisk, double z, double r, int iseed) {
@@ -379,8 +376,7 @@ int VMRouterTable::lookupinnerThird(int zbin, int rbin) {
 }
 
 void VMRouterTable::writeVMTable(std::string const& dir, std::string const& name, std::vector<int> const& table) {
-
-  ofstream out=openfile(dir,name,__FILE__,__LINE__);
+  ofstream out = openfile(dir, name, __FILE__, __LINE__);
 
   out << "{" << endl;
   for (unsigned int i = 0; i < table.size(); i++) {

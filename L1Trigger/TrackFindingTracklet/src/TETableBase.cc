@@ -9,7 +9,7 @@ TETableBase::TETableBase(Settings const& settings) : settings_(settings) {}
 void TETableBase::writeVMTable(const std::string& dir, const std::string& name, bool positive) {
   // Write LUT table.
 
-  ofstream out=openfile(dir, name, __FILE__, __LINE__);
+  ofstream out = openfile(dir, name, __FILE__, __LINE__);
 
   out << "{" << endl;
   for (unsigned int i = 0; i < table_.size(); i++) {

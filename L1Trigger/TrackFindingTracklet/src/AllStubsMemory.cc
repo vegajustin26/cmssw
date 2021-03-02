@@ -7,7 +7,7 @@ using namespace std;
 using namespace trklet;
 
 AllStubsMemory::AllStubsMemory(string name, Settings const& settings, unsigned int iSector)
-  : MemoryBase(name, settings, iSector) {}
+    : MemoryBase(name, settings, iSector) {}
 
 void AllStubsMemory::writeStubs(bool first) {
   const string dirS = settings_.memPath() + "Stubs/";

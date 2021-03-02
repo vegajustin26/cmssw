@@ -38,9 +38,8 @@ void VMRouterPhiCorrTable::init(int layer, int bendbits, int rbits) {
 }
 
 int VMRouterPhiCorrTable::getphiCorrValue(int ibend, int irbin) const {
-
-  assert(layer_>0.0&&layer_<=(int)N_LAYER);
-  double bend = - settings_.benddecode(ibend, layer_-1, layer_ <= (int)N_PSLAYER);
+  assert(layer_ > 0.0 && layer_ <= (int)N_LAYER);
+  double bend = -settings_.benddecode(ibend, layer_ - 1, layer_ <= (int)N_PSLAYER);
 
   //for the rbin - calculate the distance to the nominal layer radius
   double Delta = (irbin + 0.5) * dr_ - settings_.drmax();

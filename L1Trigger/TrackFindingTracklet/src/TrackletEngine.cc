@@ -122,8 +122,11 @@ void TrackletEngine::execute() {
         if (!(pttableinner_[ptinnerindex] && pttableouter_[ptouterindex])) {
           if (settings_.debugTracklet()) {
             edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-                                         << settings_.benddecode(innervmstub.bend().value(), layerdisk1_, innervmstub.isPSmodule()) << " "
-                                         << settings_.benddecode(outervmstub.bend().value(), layerdisk2_, outervmstub.isPSmodule());
+                                         << settings_.benddecode(
+                                                innervmstub.bend().value(), layerdisk1_, innervmstub.isPSmodule())
+                                         << " "
+                                         << settings_.benddecode(
+                                                outervmstub.bend().value(), layerdisk2_, outervmstub.isPSmodule());
           }
           continue;
         }
@@ -267,9 +270,8 @@ void TrackletEngine::setVMPhiBin() {
 }
 
 void TrackletEngine::writeTETable() {
+  ofstream outstubptinnercut = openfile(settings_.tablePath(), getName() + "_stubptinnercut.tab", __FILE__, __LINE__);
 
-  ofstream outstubptinnercut=openfile(settings_.tablePath(), getName() + "_stubptinnercut.tab", __FILE__, __LINE__);
-        
   outstubptinnercut << "{" << endl;
   for (unsigned int i = 0; i < pttableinner_.size(); i++) {
     if (i != 0)
@@ -279,7 +281,7 @@ void TrackletEngine::writeTETable() {
   outstubptinnercut << endl << "};" << endl;
   outstubptinnercut.close();
 
-  ofstream outstubptoutercut=openfile(settings_.tablePath(), getName() + "_stubptoutercut.tab", __FILE__, __LINE__);
+  ofstream outstubptoutercut = openfile(settings_.tablePath(), getName() + "_stubptoutercut.tab", __FILE__, __LINE__);
 
   outstubptoutercut << "{" << endl;
   for (unsigned int i = 0; i < pttableouter_.size(); i++) {

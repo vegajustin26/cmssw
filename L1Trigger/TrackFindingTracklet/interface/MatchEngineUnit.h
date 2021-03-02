@@ -26,7 +26,7 @@ namespace trklet {
               int projrinv,
               int projfinerz,
               int projfinephi,
-	      int shift,
+              int shift,
               bool usesecond,
               bool isPSseed,
               Tracklet* proj);

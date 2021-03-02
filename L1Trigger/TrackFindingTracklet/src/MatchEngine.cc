@@ -17,27 +17,25 @@ using namespace trklet;
 
 MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global, unsigned int iSector)
     : ProcessBase(name, settings, global, iSector) {
-
   layerdisk_ = initLayerDisk(3);
-  
+
   barrel_ = layerdisk_ < N_LAYER;
 
-  nvm_=settings_.nvmme(layerdisk_)*settings_.nallstubs(layerdisk_);
+  nvm_ = settings_.nvmme(layerdisk_) * settings_.nallstubs(layerdisk_);
 
-  nvmbits_=settings_.nbitsvmme(layerdisk_)+settings_.nbitsallstubs(layerdisk_);
+  nvmbits_ = settings_.nbitsvmme(layerdisk_) + settings_.nbitsallstubs(layerdisk_);
 
-  nrinv_=NRINVBITS;
-  double rinvhalf=0.5*((1<<nrinv_)-1);
+  nrinv_ = NRINVBITS;
+  double rinvhalf = 0.5 * ((1 << nrinv_) - 1);
 
-  nfinephibits_=3; 
-  
+  nfinephibits_ = 3;
+
   if (barrel_) {
+    bool isPSmodule = layerdisk_ < N_PSLAYER;
 
-    bool isPSmodule=layerdisk_<N_PSLAYER;
-    
     unsigned int nbits = isPSmodule ? N_BENDBITS_PS : N_BENDBITS_2S;
 
-    for (unsigned int irinv = 0; irinv < (1u<<nrinv_); irinv++) {
+    for (unsigned int irinv = 0; irinv < (1u << nrinv_); irinv++) {
       double rinv = (irinv - rinvhalf) * (1 << (settings_.nbitsrinv() - nrinv_)) * settings_.krinvpars();
 
       double stripPitch = settings_.stripPitch(isPSmodule);
@@ -50,13 +48,12 @@ MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global,
     }
 
     if (settings_.writeTable()) {
-
       char layer = '1' + layerdisk_;
       string fname = "METable_L";
       fname += layer;
       fname += ".tab";
 
-      ofstream out=openfile(settings_.tablePath(), fname, __FILE__, __LINE__);
+      ofstream out = openfile(settings_.tablePath(), fname, __FILE__, __LINE__);
 
       out << "{" << endl;
       for (unsigned int i = 0; i < table_.size(); i++) {
@@ -71,14 +68,14 @@ MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global,
   }
 
   if (layerdisk_ >= N_LAYER) {
-    for (unsigned int iprojbend = 0; iprojbend < (1u<<nrinv_); iprojbend++) {
+    for (unsigned int iprojbend = 0; iprojbend < (1u << nrinv_); iprojbend++) {
       double projbend = 0.5 * (iprojbend - rinvhalf);
-      for (unsigned int ibend = 0; ibend < (1<<N_BENDBITS_PS); ibend++) {
+      for (unsigned int ibend = 0; ibend < (1 << N_BENDBITS_PS); ibend++) {
         double stubbend = settings_.benddecode(ibend, layerdisk_, true);
         bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, true);
         tablePS_.push_back(pass);
       }
-      for (unsigned int ibend = 0; ibend < (1<<N_BENDBITS_2S); ibend++) {
+      for (unsigned int ibend = 0; ibend < (1 << N_BENDBITS_2S); ibend++) {
         double stubbend = settings_.benddecode(ibend, layerdisk_, false);
         bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, false);
         table2S_.push_back(pass);
@@ -125,8 +122,8 @@ void MatchEngine::execute() {
   unsigned int countall = 0;
   unsigned int countpass = 0;
 
-  bool print=(iSector_==3)&&(getName()=="ME_L3PHIC20");
-  print=false;
+  bool print = (iSector_ == 3) && (getName() == "ME_L3PHIC20");
+  print = false;
 
   constexpr unsigned int kNBitsBuffer = 3;
 
@@ -182,14 +179,16 @@ void MatchEngine::execute() {
       iproj++;
       moreproj = iproj < nproj;
 
-      unsigned int rzfirst = barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin1projvm().value() : proj->diskProj(layerdisk_-5).fpgarbin1projvm().value();
+      unsigned int rzfirst = barrel_ ? proj->layerProj(layerdisk_ + 1).fpgazbin1projvm().value()
+                                     : proj->diskProj(layerdisk_ - 5).fpgarbin1projvm().value();
       unsigned int rzlast = rzfirst;
-      bool second = barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin2projvm().value() : proj->diskProj(layerdisk_-5).fpgarbin2projvm().value();
+      bool second = barrel_ ? proj->layerProj(layerdisk_ + 1).fpgazbin2projvm().value()
+                            : proj->diskProj(layerdisk_ - 5).fpgarbin2projvm().value();
       if (second)
         rzlast += 1;
 
       if (print) {
-	cout << "istep rzfirst rzlast : "<<istep<<" "<<rzfirst<<" "<<rzlast<<endl;
+        cout << "istep rzfirst rzlast : " << istep << " " << rzfirst << " " << rzlast << endl;
       }
 
       //Check if there are stubs in the memory
@@ -238,32 +237,35 @@ void MatchEngine::execute() {
 
         Tracklet* proj = vmprojs_->getTracklet(projindex);
 
-        FPGAWord fpgafinephi = barrel_ ? proj->layerProj(layerdisk_+1).fpgafinephivm() : proj->diskProj(layerdisk_-5).fpgafinephivm();
+        FPGAWord fpgafinephi =
+            barrel_ ? proj->layerProj(layerdisk_ + 1).fpgafinephivm() : proj->diskProj(layerdisk_ - 5).fpgafinephivm();
 
         projfinephi = fpgafinephi.value();
 
         nstubs = vmstubs_->nStubsBin(rzbin);
 
-        projfinerz = barrel_ ? proj->layerProj(layerdisk_+1).fpgafinezvm().value() : proj->diskProj(layerdisk_-5).fpgafinervm().value();
+        projfinerz = barrel_ ? proj->layerProj(layerdisk_ + 1).fpgafinezvm().value()
+                             : proj->diskProj(layerdisk_ - 5).fpgafinervm().value();
 
         projrinv =
             barrel_
-	  ? ((1<<(nrinv_-1)) + ((-2*proj->layerProj(layerdisk_+1).fpgaphiprojder().value()) >> (proj->layerProj(layerdisk_+1).fpgaphiprojder().nbits() - (nrinv_-1))))
-                : proj->diskProj(layerdisk_-5).getBendIndex().value();
+                ? ((1 << (nrinv_ - 1)) + ((-2 * proj->layerProj(layerdisk_ + 1).fpgaphiprojder().value()) >>
+                                          (proj->layerProj(layerdisk_ + 1).fpgaphiprojder().nbits() - (nrinv_ - 1))))
+                : proj->diskProj(layerdisk_ - 5).getBendIndex().value();
         assert(projrinv >= 0);
-        if (settings_.extended() && projrinv == (1<<nrinv_)) {
+        if (settings_.extended() && projrinv == (1 << nrinv_)) {
           if (settings_.debugTracklet()) {
             edm::LogVerbatim("Tracklet") << "Extended tracking, projrinv:" << projrinv;
           }
-          projrinv = (1<<nrinv_)-1;
+          projrinv = (1 << nrinv_) - 1;
         }
-        assert(projrinv < (1<<nrinv_) );
+        assert(projrinv < (1 << nrinv_));
 
         isPSseed = proj->PSseed();
 
         //Calculate fine z position
         if (second) {
-          projfinerzadj = projfinerz - (1<<NFINERZBITS);
+          projfinerzadj = projfinerz - (1 << NFINERZBITS);
         } else {
           projfinerzadj = projfinerz;
         }
@@ -294,8 +296,8 @@ void MatchEngine::execute() {
 
       int deltaphi = projfinephi - vmstub.finephi().value();
 
-      constexpr int mindeltaphicut=3;
-      constexpr int maxdeltaphicut=5;
+      constexpr int mindeltaphicut = 3;
+      constexpr int maxdeltaphicut = 5;
       bool passphi = (std::abs(deltaphi) < mindeltaphicut) || (std::abs(deltaphi) > maxdeltaphicut);
 
       unsigned int index = (projrinv << nbits) + vmstub.bend().value();
@@ -303,36 +305,35 @@ void MatchEngine::execute() {
       //if (layerdisk_>5) {
       //	cout << "layerdisk: "<<layerdisk_<<" "<<projrinv<<" "<<vmstub.bend().value()<<" "<<(isPSmodule ? tablePS_[index] : table2S_[index])<<endl;
       //}
-      
+
       //Check if stub z position consistent
       int idrz = stubfinerz - projfinerzadj;
       bool passz;
 
       if (barrel_) {
         if (isPSseed) {
-	  constexpr int drzcut=1;
+          constexpr int drzcut = 1;
           passz = std::abs(idrz) <= drzcut;
         } else {
-	  constexpr int drzcut=5;
+          constexpr int drzcut = 5;
           passz = std::abs(idrz) <= drzcut;
         }
       } else {
         if (isPSmodule) {
-	  constexpr int drzcut=1;
-	  passz = std::abs(idrz) <= drzcut;
+          constexpr int drzcut = 1;
+          passz = std::abs(idrz) <= drzcut;
         } else {
-	  constexpr int drzcut=3;
+          constexpr int drzcut = 3;
           passz = std::abs(idrz) <= drzcut;
         }
       }
 
       if (print) {
-	cout << "istep index : "<<istep<<" "<<index<<" "<<vmstub.bend().value()<<" rzbin istubtmp : "<<rzbin<<" "<<istubtmp
-	     <<" dz "<<stubfinerz<<" "<<projfinerzadj<<"  dphi: "<<deltaphi<<endl;
+        cout << "istep index : " << istep << " " << index << " " << vmstub.bend().value()
+             << " rzbin istubtmp : " << rzbin << " " << istubtmp << " dz " << stubfinerz << " " << projfinerzadj
+             << "  dphi: " << deltaphi << endl;
       }
-      
 
-      
       //Check if stub bend and proj rinv consistent
       if (passz && passphi) {
         if (barrel_ ? table_[index] : (isPSmodule ? tablePS_[index] : table2S_[index])) {

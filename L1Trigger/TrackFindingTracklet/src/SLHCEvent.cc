@@ -11,19 +11,17 @@ void SLHCEvent::addL1SimTrack(
 }
 
 bool SLHCEvent::addStub(string DTClink,
-			int region,
-			int layerdisk,
-			string stubword,
-			int isPSmodule,
-			int isFlipped,
-			double x,
-			double y,
-			double z,
-			double bend,
-			double strip,
-			vector<int> tps
-) {
-
+                        int region,
+                        int layerdisk,
+                        string stubword,
+                        int isPSmodule,
+                        int isFlipped,
+                        double x,
+                        double y,
+                        double z,
+                        double bend,
+                        double strip,
+                        vector<int> tps) {
   L1TStub stub(DTClink, region, layerdisk, stubword, isPSmodule, isFlipped, x, y, z, bend, strip, tps);
 
   stubs_.push_back(stub);
@@ -174,4 +172,3 @@ unsigned int SLHCEvent::layersHit(int tpid, int& nlayers, int& ndisks) {
 
   return l1 + 2 * l2 + 4 * l3 + 8 * l4 + 16 * l5 + 32 * l6 + 64 * d1 + 128 * d2 + 256 * d3 + 512 * d4 + 1024 * d5;
 }
-

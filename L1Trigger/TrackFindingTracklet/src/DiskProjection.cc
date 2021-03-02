@@ -34,7 +34,7 @@ void DiskProjection::init(Settings const& settings,
   projdisk_ = projdisk;
 
   unsigned int layerdisk = projdisk + N_LAYER - 1;
-  
+
   assert(iphiproj >= 0);
 
   fpgaphiproj_.set(iphiproj, settings.nphibitsstub(layerdisk), true, __LINE__, __FILE__);
@@ -82,10 +82,13 @@ void DiskProjection::init(Settings const& settings,
   fpgafinervm_.set(finer, 4, true, __LINE__, __FILE__);  // fine r postions starting at rbin1
 
   //fine phi bits
-  int projfinephi = (fpgaphiproj_.value() >> (fpgaphiproj_.nbits() - (settings.nbitsallstubs(N_LAYER+projdisk_-1) + settings.nbitsvmme(N_LAYER+projdisk_-1) + NFINEPHIBITS ))) & ((1<<NFINEPHIBITS)-1);
+  int projfinephi =
+      (fpgaphiproj_.value() >> (fpgaphiproj_.nbits() - (settings.nbitsallstubs(N_LAYER + projdisk_ - 1) +
+                                                        settings.nbitsvmme(N_LAYER + projdisk_ - 1) + NFINEPHIBITS))) &
+      ((1 << NFINEPHIBITS) - 1);
 
   fpgafinephivm_.set(projfinephi, NFINEPHIBITS, true, __LINE__, __FILE__);  // fine phi postions
-  
+
   phiproj_ = phiproj;
   rproj_ = rproj;
   phiprojder_ = phiprojder;

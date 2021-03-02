@@ -24,18 +24,16 @@ InputLinkMemory::InputLinkMemory(string name, Settings const& settings, unsigned
 }
 
 void InputLinkMemory::addStub(const L1TStub& al1stub, const Stub& stub) {
-
-
   //Various consistency checks
   unsigned int stublayerdisk = stub.layerdisk();
   assert(stublayerdisk == layerdisk_);
-  
+
   FPGAWord iphi = stub.phicorr();
   unsigned int nallbits = settings_.nbitsallstubs(layerdisk_);
   int phibin = iphi.bits(iphi.nbits() - nallbits, nallbits);
   int iphivmRaw = iphi.bits(iphi.nbits() - 5, 5);
 
-  assert ( phibin==phiregion_);
+  assert(phibin == phiregion_);
 
   if (settings_.debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "Will add stub in " << getName() << " "
@@ -50,7 +48,6 @@ void InputLinkMemory::addStub(const L1TStub& al1stub, const Stub& stub) {
 
     stubs_.emplace_back(stubptr);
   }
-  
 }
 
 void InputLinkMemory::writeStubs(bool first) {

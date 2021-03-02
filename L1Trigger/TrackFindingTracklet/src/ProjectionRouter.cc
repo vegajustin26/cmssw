@@ -92,18 +92,16 @@ void ProjectionRouter::execute() {
         fpgaphi = tracklet->layerProj(layerdisk_ + 1).fpgaphiproj();
       } else {
         int disk = layerdisk_ - (N_LAYER - 1);
-	DiskProjection& diskProj =  tracklet->diskProj(disk);
+        DiskProjection& diskProj = tracklet->diskProj(disk);
         fpgaphi = diskProj.fpgaphiproj();
 
         //The next lines looks up the predicted bend based on:
         // 1 - r projections
         // 2 - phi derivative
         // 3 - the sign - i.e. if track is forward or backward
-        int rindex = (diskProj.fpgarproj().value() >> (diskProj.fpgarproj().nbits() - nrbits_)) &
-                     ((1 << nrbits_) - 1);
+        int rindex = (diskProj.fpgarproj().value() >> (diskProj.fpgarproj().nbits() - nrbits_)) & ((1 << nrbits_) - 1);
 
-        int phiderindex = (diskProj.fpgaphiprojder().value() >>
-                           (diskProj.fpgaphiprojder().nbits() - nphiderbits_)) &
+        int phiderindex = (diskProj.fpgaphiprojder().value() >> (diskProj.fpgaphiprojder().nbits() - nphiderbits_)) &
                           ((1 << nphiderbits_) - 1);
 
         int signindex = (diskProj.fpgarprojder().value() < 0);

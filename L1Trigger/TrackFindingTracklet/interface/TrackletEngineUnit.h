@@ -7,7 +7,6 @@
 #include <cassert>
 #include <vector>
 
-
 namespace trklet {
 
   class Settings;
@@ -15,20 +14,28 @@ namespace trklet {
   class L1TStub;
   class FPGAWord;
 
-  struct TEData{
+  struct TEData {
     const Stub* stub_;
     int start_;
     int rzbinfirst_;
     int rzdiffmax_;
     int innerfinephi_;
     FPGAWord innerbend_;
-    std::vector< std::tuple<int, int, int> > regions_;  // next z/r bin; phi-region; nstub
+    std::vector<std::tuple<int, int, int> > regions_;  // next z/r bin; phi-region; nstub
   };
-  
-  
+
   class TrackletEngineUnit {
   public:
-    TrackletEngineUnit(const Settings* const settings, unsigned int nbitsfinephi, unsigned int layerdisk1, unsigned int layerdisk2, unsigned int iSeed, unsigned int nbitsfinephiediff, unsigned int iAllStub, std::vector<bool> const& pttableinner, std::vector<bool> const& pttableouter, VMStubsTEMemory* outervmstubs);
+    TrackletEngineUnit(const Settings* const settings,
+                       unsigned int nbitsfinephi,
+                       unsigned int layerdisk1,
+                       unsigned int layerdisk2,
+                       unsigned int iSeed,
+                       unsigned int nbitsfinephiediff,
+                       unsigned int iAllStub,
+                       std::vector<bool> const& pttableinner,
+                       std::vector<bool> const& pttableouter,
+                       VMStubsTEMemory* outervmstubs);
 
     ~TrackletEngineUnit() = default;
 
@@ -42,7 +49,7 @@ namespace trklet {
 
     bool idle() const { return idle_; }
 
-    void setNearFull() { nearfull_=candpairs_.nearfull(); }
+    void setNearFull() { nearfull_ = candpairs_.nearfull(); }
 
     void reset();
 
@@ -51,9 +58,9 @@ namespace trklet {
     int rptr() const { return candpairs_.rptr(); }
 
     int wptr() const { return candpairs_.wptr(); }
-    
-    const Stub* innerStub() const {return tedata_.stub_;}
-    
+
+    const Stub* innerStub() const { return tedata_.stub_; }
+
   private:
     VMStubsTEMemory* outervmstubs_;
     TEData tedata_;
@@ -63,16 +70,16 @@ namespace trklet {
     unsigned int layerdisk2_;
     unsigned int iSeed_;
     unsigned int nbitsfinephidiff_;
-    bool nearfull_; //initialized at start of each processing step
+    bool nearfull_;  //initialized at start of each processing step
     unsigned int iAllStub_;
-    
+
     //unsigned int memory slot
     unsigned int nreg_;
     unsigned int istub_;
     unsigned int ireg_;
     unsigned int next_;
     unsigned int nstub_;
-    
+
     bool idle_;
 
     std::vector<bool> pttableinner_;
@@ -80,10 +87,10 @@ namespace trklet {
 
     std::pair<const Stub*, const Stub*> candpair_, candpair__;
     bool goodpair_, goodpair__;
-    
+
     //save the candidate matches
     CircularBuffer<std::pair<const Stub*, const Stub*> > candpairs_;
-  }; // TrackletEngineUnit
+  };  // TrackletEngineUnit
 
 };  // namespace trklet
 #endif

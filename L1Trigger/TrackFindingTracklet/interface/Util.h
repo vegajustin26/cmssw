@@ -47,7 +47,6 @@ namespace trklet {
   }
 
   inline double rinv(double phi1, double phi2, double r1, double r2) {
-
     if (r2 <= r1) {  //FIXME can not form tracklet should not call function with r2<=r1
       return 20.0;
     }
@@ -59,44 +58,59 @@ namespace trklet {
   }
 
   inline std::string convertHexToBin(const std::string& stubwordhex) {
+    std::string stubwordbin = "";
 
-    std::string stubwordbin="";
-
-    for(char word:stubwordhex){
-      std::string hexword="";
-      if (word=='0') hexword="0000";
-      if (word=='1') hexword="0001";
-      if (word=='2') hexword="0010";
-      if (word=='3') hexword="0011";
-      if (word=='4') hexword="0100";
-      if (word=='5') hexword="0101";
-      if (word=='6') hexword="0110";
-      if (word=='7') hexword="0111";
-      if (word=='8') hexword="1000";
-      if (word=='9') hexword="1001";
-      if (word=='A') hexword="1010";
-      if (word=='B') hexword="1011";
-      if (word=='C') hexword="1100";
-      if (word=='D') hexword="1101";
-      if (word=='E') hexword="1110";
-      if (word=='F') hexword="1111";
-      if (hexword=="") {
-	throw cms::Exception("Inconsistency") << __FILE__ << " " << __LINE__ << " hex string format invalid: " << stubwordhex;
+    for (char word : stubwordhex) {
+      std::string hexword = "";
+      if (word == '0')
+        hexword = "0000";
+      if (word == '1')
+        hexword = "0001";
+      if (word == '2')
+        hexword = "0010";
+      if (word == '3')
+        hexword = "0011";
+      if (word == '4')
+        hexword = "0100";
+      if (word == '5')
+        hexword = "0101";
+      if (word == '6')
+        hexword = "0110";
+      if (word == '7')
+        hexword = "0111";
+      if (word == '8')
+        hexword = "1000";
+      if (word == '9')
+        hexword = "1001";
+      if (word == 'A')
+        hexword = "1010";
+      if (word == 'B')
+        hexword = "1011";
+      if (word == 'C')
+        hexword = "1100";
+      if (word == 'D')
+        hexword = "1101";
+      if (word == 'E')
+        hexword = "1110";
+      if (word == 'F')
+        hexword = "1111";
+      if (hexword == "") {
+        throw cms::Exception("Inconsistency")
+            << __FILE__ << " " << __LINE__ << " hex string format invalid: " << stubwordhex;
       }
-      stubwordbin+=hexword;
+      stubwordbin += hexword;
     }
     return stubwordbin;
   }
 
   inline int ilog2(double factor) {
-    double power=log(factor)/log(2);
-    int ipower=round(power);
-    assert(std::abs(power-ipower)<0.1);
+    double power = log(factor) / log(2);
+    int ipower = round(power);
+    assert(std::abs(power - ipower) < 0.1);
     return ipower;
   }
 
-
-/******************************************************************************
+  /******************************************************************************
  * Checks to see if a directory exists. Note: This method only checks the
  * existence of the full path AND if path leaf is a dir.
  *
@@ -104,62 +118,62 @@ namespace trklet {
  *           0 if dir does not exist OR exists but not a dir,
  *          -1 if an error occurred (errno is also set)
  *****************************************************************************/
-  inline int dirExists(const std::string& path){
+  inline int dirExists(const std::string& path) {
     struct stat info;
 
-    int statRC = stat( path.c_str(), &info );
-    if( statRC != 0 )
-      {
-        if (errno == ENOENT)  { return 0; } // something along the path does not exist
-        if (errno == ENOTDIR) { return 0; } // something in path prefix is not a dir
-        return -1;
+    int statRC = stat(path.c_str(), &info);
+    if (statRC != 0) {
+      if (errno == ENOENT) {
+        return 0;
+      }  // something along the path does not exist
+      if (errno == ENOTDIR) {
+        return 0;
+      }  // something in path prefix is not a dir
+      return -1;
     }
-    
-    return ( info.st_mode & S_IFDIR ) ? 1 : 0;
-  }
 
+    return (info.st_mode & S_IFDIR) ? 1 : 0;
+  }
 
   //Open file - create directory if not existent.
   inline std::ofstream openfile(const std::string& dir, const std::string& fname, const char* file, int line) {
-
-    if (dirExists(dir)!=1) {
-      std::cout << "Creating directory : "<<dir<<std::endl;
-      int fail=system((std::string("mkdir -p ") + dir).c_str());
+    if (dirExists(dir) != 1) {
+      std::cout << "Creating directory : " << dir << std::endl;
+      int fail = system((std::string("mkdir -p ") + dir).c_str());
       if (fail) {
-	throw cms::Exception("BadDir") << file << " " << line << " could not create directory " <<dir;
+        throw cms::Exception("BadDir") << file << " " << line << " could not create directory " << dir;
       }
     }
 
-    std::ofstream out(dir+"/"+fname);
-    
+    std::ofstream out(dir + "/" + fname);
+
     if (out.fail()) {
-      throw cms::Exception("BadFile") << file << " " << line << " could not create file " << fname << " in "<<dir;
+      throw cms::Exception("BadFile") << file << " " << line << " could not create file " << fname << " in " << dir;
     }
 
     return out;
   }
 
-  
   //Open file - create directory if not existent.
   //If first==true open file in create mode, if first==false open in append mode
-  inline void openfile(std::ofstream& out, bool first, const std::string& dir, const std::string& fname, const char* file, int line) {
-
-    if (dirExists(dir)!=1) {
-      std::cout << "Creating directory : "<<dir<<std::endl;
-      int fail=system((std::string("mkdir -p ") + dir).c_str());
+  inline void openfile(
+      std::ofstream& out, bool first, const std::string& dir, const std::string& fname, const char* file, int line) {
+    if (dirExists(dir) != 1) {
+      std::cout << "Creating directory : " << dir << std::endl;
+      int fail = system((std::string("mkdir -p ") + dir).c_str());
       if (fail) {
-	throw cms::Exception("BadDir") << file << " " << line << " could not create directory " <<dir;
+        throw cms::Exception("BadDir") << file << " " << line << " could not create directory " << dir;
       }
     }
 
     if (first) {
       out.open(fname);
     } else {
-      out.open(fname,std::ofstream::app);
+      out.open(fname, std::ofstream::app);
     }
 
     if (out.fail()) {
-      throw cms::Exception("BadFile") << file << " " << line << " could not create file " << fname << " in "<<dir;
+      throw cms::Exception("BadFile") << file << " " << line << " could not create file " << fname << " in " << dir;
     }
   }
 

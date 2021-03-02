@@ -35,4 +35,3 @@ void L1SimTrack::write(ostream& out) {
         << "\t" << vx_ << "\t" << vy_ << "\t" << vz_ << "\t" << endl;
   }
 }
-

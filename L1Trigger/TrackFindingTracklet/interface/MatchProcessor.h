@@ -35,7 +35,6 @@ namespace trklet {
     bool matchCalculator(Tracklet* tracklet, const Stub* fpgastub);
 
   private:
-
     unsigned int layerdisk_;
     bool barrel_;
 
@@ -45,7 +44,7 @@ namespace trklet {
     int nvmbits_;  //# of bits for VMs in sector
     int nvmbins_;  //VMs in in phi region
     int nrinv_;    //# of bits for rinv
-    
+
     int dzshift_;
     int icorrshift_;
     int icorzshift_;
@@ -72,7 +71,7 @@ namespace trklet {
     //Memory for the full matches
     std::vector<FullMatchMemory*> fullmatches_;
 
-    //used for bend consistency with rinv 
+    //used for bend consistency with rinv
     std::vector<bool> table_;
 
     unsigned int nMatchEngines_;

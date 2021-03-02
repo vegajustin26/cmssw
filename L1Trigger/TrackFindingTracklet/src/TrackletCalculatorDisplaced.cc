@@ -244,20 +244,24 @@ void TrackletCalculatorDisplaced::execute() {
       if (settings_.debugTracklet())
         edm::LogVerbatim("Tracklet") << "TrackletCalculatorDisplaced execute " << getName() << "[" << iSector_ << "]";
 
-      if (innerFPGAStub->layerdisk()<N_LAYER && middleFPGAStub->layerdisk()<N_LAYER && outerFPGAStub->layerdisk()<N_LAYER) {
+      if (innerFPGAStub->layerdisk() < N_LAYER && middleFPGAStub->layerdisk() < N_LAYER &&
+          outerFPGAStub->layerdisk() < N_LAYER) {
         //barrel+barrel seeding
         bool accept = LLLSeeding(innerFPGAStub, innerStub, middleFPGAStub, middleStub, outerFPGAStub, outerStub);
         if (accept)
           countsel++;
-      } else if (innerFPGAStub->layerdisk()>=N_LAYER && middleFPGAStub->layerdisk()>=N_LAYER && outerFPGAStub->layerdisk()>=N_LAYER) {
+      } else if (innerFPGAStub->layerdisk() >= N_LAYER && middleFPGAStub->layerdisk() >= N_LAYER &&
+                 outerFPGAStub->layerdisk() >= N_LAYER) {
         throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Invalid seeding!";
       } else {
         //layer+disk seeding
-        if (innerFPGAStub->layerdisk()<N_LAYER && middleFPGAStub->layerdisk()>=N_LAYER && outerFPGAStub->layerdisk()>=N_LAYER) {  //D1D2L2
+        if (innerFPGAStub->layerdisk() < N_LAYER && middleFPGAStub->layerdisk() >= N_LAYER &&
+            outerFPGAStub->layerdisk() >= N_LAYER) {  //D1D2L2
           bool accept = DDLSeeding(innerFPGAStub, innerStub, middleFPGAStub, middleStub, outerFPGAStub, outerStub);
           if (accept)
             countsel++;
-        } else if (innerFPGAStub->layerdisk()>=N_LAYER && middleFPGAStub->layerdisk()<N_LAYER && outerFPGAStub->layerdisk()<N_LAYER) {  //L2L3D1
+        } else if (innerFPGAStub->layerdisk() >= N_LAYER && middleFPGAStub->layerdisk() < N_LAYER &&
+                   outerFPGAStub->layerdisk() < N_LAYER) {  //L2L3D1
           bool accept = LLDSeeding(innerFPGAStub, innerStub, middleFPGAStub, middleStub, outerFPGAStub, outerStub);
           if (accept)
             countsel++;
@@ -372,7 +376,7 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
                                  << " trying stub triplet in layer (L L L): " << innerFPGAStub->layer().value() << " "
                                  << middleFPGAStub->layer().value() << " " << outerFPGAStub->layer().value();
 
-  assert(outerFPGAStub->layerdisk()<N_LAYER);
+  assert(outerFPGAStub->layerdisk() < N_LAYER);
 
   double r1 = innerStub->r();
   double z1 = innerStub->z();
@@ -454,33 +458,32 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
   double phiderdiskapprox[N_DISK], rderdiskapprox[N_DISK];
 
   //TODO: implement the actual integer calculation
-  if(settings_.useapprox()){
+  if (settings_.useapprox()) {
     approxtracklet(r1,
-                 z1,
-                 phi1,
-                 r2,
-                 z2,
-                 phi2,
-                 r3,
-                 z3,
-                 phi3,
-                 take3,
-                 ndisks,
-                 rinvapprox,
-                 phi0approx,
-                 d0approx,
-                 tapprox,
-                 z0approx,
-                 phiprojapprox,
-                 zprojapprox,
-                 phiderapprox,
-                 zderapprox,
-                 phiprojdiskapprox,
-                 rprojdiskapprox,
-                 phiderdiskapprox,
-                 rderdiskapprox);
-  }
-  else{
+                   z1,
+                   phi1,
+                   r2,
+                   z2,
+                   phi2,
+                   r3,
+                   z3,
+                   phi3,
+                   take3,
+                   ndisks,
+                   rinvapprox,
+                   phi0approx,
+                   d0approx,
+                   tapprox,
+                   z0approx,
+                   phiprojapprox,
+                   zprojapprox,
+                   phiderapprox,
+                   zderapprox,
+                   phiprojdiskapprox,
+                   rprojdiskapprox,
+                   phiderdiskapprox,
+                   rderdiskapprox);
+  } else {
     rinvapprox = rinv;
     phi0approx = phi0;
     d0approx = d0;
@@ -871,33 +874,32 @@ bool TrackletCalculatorDisplaced::DDLSeeding(const Stub* innerFPGAStub,
   double phiderdiskapprox[N_DISK], rderdiskapprox[N_DISK];
 
   //TODO: implement the actual integer calculation
-  if(settings_.useapprox()){
+  if (settings_.useapprox()) {
     approxtracklet(r1,
-                 z1,
-                 phi1,
-                 r2,
-                 z2,
-                 phi2,
-                 r3,
-                 z3,
-                 phi3,
-                 take3,
-                 ndisks,
-                 rinvapprox,
-                 phi0approx,
-                 d0approx,
-                 tapprox,
-                 z0approx,
-                 phiprojapprox,
-                 zprojapprox,
-                 phiderapprox,
-                 zderapprox,
-                 phiprojdiskapprox,
-                 rprojdiskapprox,
-                 phiderdiskapprox,
-                 rderdiskapprox);
-  }
-  else{
+                   z1,
+                   phi1,
+                   r2,
+                   z2,
+                   phi2,
+                   r3,
+                   z3,
+                   phi3,
+                   take3,
+                   ndisks,
+                   rinvapprox,
+                   phi0approx,
+                   d0approx,
+                   tapprox,
+                   z0approx,
+                   phiprojapprox,
+                   zprojapprox,
+                   phiderapprox,
+                   zderapprox,
+                   phiprojdiskapprox,
+                   rprojdiskapprox,
+                   phiderdiskapprox,
+                   rderdiskapprox);
+  } else {
     rinvapprox = rinv;
     phi0approx = phi0;
     d0approx = d0;
@@ -1272,33 +1274,32 @@ bool TrackletCalculatorDisplaced::LLDSeeding(const Stub* innerFPGAStub,
   double phiderdiskapprox[N_DISK], rderdiskapprox[N_DISK];
 
   //TODO: implement the actual integer calculation
-  if(settings_.useapprox()){
+  if (settings_.useapprox()) {
     approxtracklet(r1,
-                 z1,
-                 phi1,
-                 r2,
-                 z2,
-                 phi2,
-                 r3,
-                 z3,
-                 phi3,
-                 take3,
-                 ndisks,
-                 rinvapprox,
-                 phi0approx,
-                 d0approx,
-                 tapprox,
-                 z0approx,
-                 phiprojapprox,
-                 zprojapprox,
-                 phiderapprox,
-                 zderapprox,
-                 phiprojdiskapprox,
-                 rprojdiskapprox,
-                 phiderdiskapprox,
-                 rderdiskapprox);
-  }
-  else{
+                   z1,
+                   phi1,
+                   r2,
+                   z2,
+                   phi2,
+                   r3,
+                   z3,
+                   phi3,
+                   take3,
+                   ndisks,
+                   rinvapprox,
+                   phi0approx,
+                   d0approx,
+                   tapprox,
+                   z0approx,
+                   phiprojapprox,
+                   zprojapprox,
+                   phiderapprox,
+                   zderapprox,
+                   phiprojdiskapprox,
+                   rprojdiskapprox,
+                   phiderdiskapprox,
+                   rderdiskapprox);
+  } else {
     rinvapprox = rinv;
     phi0approx = phi0;
     d0approx = d0;
@@ -1682,14 +1683,16 @@ void TrackletCalculatorDisplaced::exacttracklet(double r1,
   double y2 = r2 * sin(phi2);
   double y3 = r3 * sin(phi3);
 
-  double dy21=y2-y1;
-  double dy32=y3-y2;
+  double dy21 = y2 - y1;
+  double dy32 = y3 - y2;
 
   //Hack to protect against dividing by zero
   //code should be rewritten to avoid this
-  if (dy21==0.0) dy21=1e-9;
-  if (dy32==0.0) dy32=1e-9;
-  
+  if (dy21 == 0.0)
+    dy21 = 1e-9;
+  if (dy32 == 0.0)
+    dy32 = 1e-9;
+
   double k1 = -(x2 - x1) / dy21;
   double k2 = -(x3 - x2) / dy32;
   double b1 = 0.5 * (y2 + y1) - 0.5 * (x1 + x2) * k1;
@@ -1896,10 +1899,9 @@ void TrackletCalculatorDisplaced::approxtracklet(double r1,
   phi0 = -phi1c * r1 * (r2 + r3) * a + phi2c * r2 * (r1 + r3) * b - phi3c * r3 * (r1 + r2) * c;
   d0 = r1 * r2 * r3 * (-phi1c * a + phi2c * b - phi3c * c);
 
-  t = ((z - z1) / (r - r1)) * (1. + d0 * halfRinv - 0.5 * d0OverR1 * d0OverR -
-                               sixth * (r1 * r1 + r2 * r2 + r1 * r2) * halfRinv_0 * halfRinv_0);
-  z0 = z1 -
-       t * r1 * (1.0 - d0_0 * halfRinv_0 - 0.5 * d0OverR1 * d0OverR1 + sixth * r1 * r1 * halfRinv_0 * halfRinv_0);
+  t = ((z - z1) / (r - r1)) *
+      (1. + d0 * halfRinv - 0.5 * d0OverR1 * d0OverR - sixth * (r1 * r1 + r2 * r2 + r1 * r2) * halfRinv_0 * halfRinv_0);
+  z0 = z1 - t * r1 * (1.0 - d0_0 * halfRinv_0 - 0.5 * d0OverR1 * d0OverR1 + sixth * r1 * r1 * halfRinv_0 * halfRinv_0);
 
   rinv = 2.0 * halfRinv;
   phi0 += -phimin_;

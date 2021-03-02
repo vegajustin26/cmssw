@@ -338,7 +338,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
                                  << " " << outerFPGAStub->layer().value();
   }
 
-  assert(outerFPGAStub->layerdisk()<N_LAYER);
+  assert(outerFPGAStub->layerdisk() < N_LAYER);
   assert(layerdisk1_ == (unsigned int)innerFPGAStub->layer().value());
   assert(layerdisk1_ < N_LAYER && layerdisk2_ < N_LAYER);
 
@@ -1118,9 +1118,9 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
                                             const Stub* outerFPGAStub,
                                             const L1TStub* outerStub) {
   //Deal with overlap stubs here
-  assert(outerFPGAStub->layerdisk()<N_LAYER);
+  assert(outerFPGAStub->layerdisk() < N_LAYER);
 
-  assert(innerFPGAStub->layerdisk()>=N_LAYER);
+  assert(innerFPGAStub->layerdisk() >= N_LAYER);
 
   int disk = innerFPGAStub->disk().value();
 
@@ -1398,7 +1398,7 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
 
     diskprojs[i].init(settings_,
                       i + 2,
-                      settings_.zmean(i+1),
+                      settings_.zmean(i + 1),
                       iphiprojdisk[i],
                       irprojdisk[i],
                       ITC->der_phiD_final.ival(),

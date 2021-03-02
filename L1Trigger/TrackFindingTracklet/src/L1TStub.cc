@@ -7,31 +7,32 @@ using namespace trklet;
 L1TStub::L1TStub() {}
 
 L1TStub::L1TStub(std::string DTClink,
-		 int region,
-		 int layerdisk,
-		 std::string stubword,
-		 int isPSmodule,
-		 int isFlipped,
-		 double x,
-		 double y,
-		 double z,
-		 double bend,
-		 double strip,
-		 std::vector<int> tps){
-  DTClink_=DTClink;
-  layerdisk_=layerdisk;
-  region_=region;
+                 int region,
+                 int layerdisk,
+                 std::string stubword,
+                 int isPSmodule,
+                 int isFlipped,
+                 double x,
+                 double y,
+                 double z,
+                 double bend,
+                 double strip,
+                 std::vector<int> tps) {
+  DTClink_ = DTClink;
+  layerdisk_ = layerdisk;
+  region_ = region;
   stubword_ = stubword;
   eventid_ = -1;
   tps_ = tps;
   iphi_ = -1;
   iz_ = -1;
   layer_ = layerdisk;
-  if (layerdisk>5) {
-    layer_=1000+layerdisk-5;
-    if (z<0.0) layer_+=1000;
+  if (layerdisk > 5) {
+    layer_ = 1000 + layerdisk - 5;
+    if (z < 0.0)
+      layer_ += 1000;
   }
-  
+
   ladder_ = -1;
   module_ = -1;
   strip_ = strip;
@@ -46,13 +47,12 @@ L1TStub::L1TStub(std::string DTClink,
   isFlipped_ = isFlipped;
 
   allstubindex_ = 999;
-
 }
 
-
 void L1TStub::write(ofstream& out) {
-  out << "Stub: " << DTClink_ << "\t" << region_ << "\t" << layerdisk_ << "\t" << stubword_ << "\t" << isPSmodule_ << "\t" << isFlipped_ << "\t"
-      << x_ << "\t" << y_ << "\t" << z_ << "\t" << bend_ << "\t" << strip_ << "\t" << "\t" << tps_.size() << " \t";
+  out << "Stub: " << DTClink_ << "\t" << region_ << "\t" << layerdisk_ << "\t" << stubword_ << "\t" << isPSmodule_
+      << "\t" << isFlipped_ << "\t" << x_ << "\t" << y_ << "\t" << z_ << "\t" << bend_ << "\t" << strip_ << "\t"
+      << "\t" << tps_.size() << " \t";
   for (int itp : tps_) {
     out << itp << " \t";
   }
@@ -110,18 +110,18 @@ bool L1TStub::tpmatch(int tp) const {
 }
 
 bool L1TStub::tpmatch2(int tp) const {
-  bool match1=false;
-  bool match2=false;
+  bool match1 = false;
+  bool match2 = false;
   for (int itp : tps_) {
     if (tp == itp) {
-      match1=true;
+      match1 = true;
     }
     if (tp == -itp) {
-      match2=true;
+      match2 = true;
     }
   }
 
-  return match1&&match2;
+  return match1 && match2;
 }
 
 bool L1TStub::isTilted() const {

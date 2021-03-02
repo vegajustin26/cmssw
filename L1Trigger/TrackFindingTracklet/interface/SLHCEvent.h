@@ -29,23 +29,23 @@ namespace trklet {
         int eventid, int trackid, int type, double pt, double eta, double phi, double vx, double vy, double vz);
 
     bool addStub(std::string DTClink,
-		 int region,
-		 int layerdisk,
-		 std::string stubword,
-		 int isPSmodule,
-		 int isFlipped,
-		 double x,
-		 double y,
-		 double z,
-		 double bend,
-		 double strip,
-		 std::vector<int> tps);
+                 int region,
+                 int layerdisk,
+                 std::string stubword,
+                 int isPSmodule,
+                 int isFlipped,
+                 double x,
+                 double y,
+                 double z,
+                 double bend,
+                 double strip,
+                 std::vector<int> tps);
 
     const L1TStub& lastStub() const { return stubs_.back(); }
 
-    void  setIP(double x, double y) {
-      ipx_=x;
-      ipy_=y;
+    void setIP(double x, double y) {
+      ipx_ = x;
+      ipy_ = y;
     }
 
     void write(std::ofstream& out);
@@ -69,7 +69,6 @@ namespace trklet {
     std::vector<L1SimTrack> simtracks_;
     std::vector<L1TStub> stubs_;
     double ipx_, ipy_;
-
   };
 
 };  // namespace trklet

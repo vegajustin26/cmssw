@@ -9,7 +9,7 @@ ProjectionTemp::ProjectionTemp(Tracklet* proj,
                                int projfinerz,
                                unsigned int projfinephi,
                                unsigned int iphi,
-			       int shift,
+                               int shift,
                                bool usesecond,
                                bool isPSseed) {
   proj_ = proj;

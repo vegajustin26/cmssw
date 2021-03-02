@@ -23,7 +23,7 @@ void AllProjectionsMemory::writeAP(bool first) {
   auto const& fname = oss.str();
 
   openfile(out_, first, dirTP, fname, __FILE__, __LINE__);
-    
+
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
 
   for (unsigned int j = 0; j < tracklets_.size(); j++) {

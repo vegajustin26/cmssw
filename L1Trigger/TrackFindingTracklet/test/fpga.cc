@@ -116,7 +116,6 @@ int main(const int argc, const char **argv) {
   for (int eventnum = 0; eventnum < nevents && !in->eof(); eventnum++) {
     SLHCEvent ev(*in);
 
-    
     /*
 
     L1SimTrack simtrk;

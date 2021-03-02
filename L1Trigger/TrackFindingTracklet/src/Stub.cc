@@ -15,71 +15,73 @@ using namespace trklet;
 Stub::Stub(Settings const& settings) : settings_(settings) {}
 
 Stub::Stub(L1TStub& stub, Settings const& settings, Globals& globals) : settings_(settings) {
+  const string& stubwordhex = stub.stubword();
 
-  const string& stubwordhex=stub.stubword();
+  const string stubwordbin = convertHexToBin(stubwordhex);
 
-  const string stubwordbin=convertHexToBin(stubwordhex);
-  
-  layerdisk_=stub.layerdisk();
+  layerdisk_ = stub.layerdisk();
 
   int nbendbits = 4;
   if (stub.isPSmodule())
     nbendbits = 3;
 
-  int nalphabits=0;
+  int nalphabits = 0;
 
-  int nrbits=settings_.nrbitsstub(layerdisk_);
-  int nzbits=settings_.nzbitsstub(layerdisk_);
-  int nphibits=settings_.nphibitsstub(layerdisk_);
+  int nrbits = settings_.nrbitsstub(layerdisk_);
+  int nzbits = settings_.nzbitsstub(layerdisk_);
+  int nphibits = settings_.nphibitsstub(layerdisk_);
 
-  if (layerdisk_>=N_LAYER && !stub.isPSmodule()) {
-    nalphabits=settings.nbitsalpha();
-    nrbits=7;
+  if (layerdisk_ >= N_LAYER && !stub.isPSmodule()) {
+    nalphabits = settings.nbitsalpha();
+    nrbits = 7;
   }
 
   int layer = stub.layer() + 1;
 
-  assert(nbendbits+nalphabits+nrbits+nzbits+nphibits==36);
+  assert(nbendbits + nalphabits + nrbits + nzbits + nphibits == 36);
 
-  bitset<32> rbits(stubwordbin.substr(0,nrbits));
-  bitset<32> zbits(stubwordbin.substr(nrbits,nzbits));
-  bitset<32> phibits(stubwordbin.substr(nrbits+nzbits,nphibits));
-  bitset<32> alphabits(stubwordbin.substr(nphibits+nzbits+nrbits,nalphabits));
-  bitset<32> bendbits(stubwordbin.substr(nphibits+nzbits+nrbits+nalphabits,nbendbits));
-  
-  int newbend=bendbits.to_ulong();
-  
-  int newr=rbits.to_ulong();
-  if (layerdisk_<N_LAYER) {
-    if (newr>=(1<<(nrbits-1))) newr=newr-(1<<nrbits);
+  bitset<32> rbits(stubwordbin.substr(0, nrbits));
+  bitset<32> zbits(stubwordbin.substr(nrbits, nzbits));
+  bitset<32> phibits(stubwordbin.substr(nrbits + nzbits, nphibits));
+  bitset<32> alphabits(stubwordbin.substr(nphibits + nzbits + nrbits, nalphabits));
+  bitset<32> bendbits(stubwordbin.substr(nphibits + nzbits + nrbits + nalphabits, nbendbits));
+
+  int newbend = bendbits.to_ulong();
+
+  int newr = rbits.to_ulong();
+  if (layerdisk_ < N_LAYER) {
+    if (newr >= (1 << (nrbits - 1)))
+      newr = newr - (1 << nrbits);
   }
 
-  int newz=zbits.to_ulong();
-  if (newz>=(1<<(nzbits-1))) newz=newz-(1<<nzbits);
+  int newz = zbits.to_ulong();
+  if (newz >= (1 << (nzbits - 1)))
+    newz = newz - (1 << nzbits);
 
-  
-  int newphi=phibits.to_ulong();
+  int newphi = phibits.to_ulong();
 
-  int newalpha=alphabits.to_ulong();//-(1<<(nalphabits-1));
-  if (newalpha>=(1<<(nalphabits-1))) newalpha=newalpha-(1<<nalphabits);
+  int newalpha = alphabits.to_ulong();  //-(1<<(nalphabits-1));
+  if (newalpha >= (1 << (nalphabits - 1)))
+    newalpha = newalpha - (1 << nalphabits);
 
   l1tstub_ = &stub;
 
   //int ibendnew = bendencode(newbend*bendfact, stub.isPSmodule());
-  
+
   bend_.set(newbend, nbendbits, true, __LINE__, __FILE__);
-  
+
   phi_.set(newphi, nphibits, true, __LINE__, __FILE__);
   phicorr_.set(newphi, nphibits, true, __LINE__, __FILE__);
-  bool pos=false;
-  if (layerdisk_>5) {
-    pos=true;
-    int disk=layerdisk_-5;
-    if (stub.z()<0.0) disk=-disk;
+  bool pos = false;
+  if (layerdisk_ > 5) {
+    pos = true;
+    int disk = layerdisk_ - 5;
+    if (stub.z() < 0.0)
+      disk = -disk;
     disk_.set(disk, 4, false, __LINE__, __FILE__);
     if (!stub.isPSmodule()) {
       alpha_.set(newalpha, nalphabits, false, __LINE__, __FILE__);
-      nrbits=4;
+      nrbits = 4;
     }
   } else {
     disk_.set(0, 4, false, __LINE__, __FILE__);
@@ -89,29 +91,25 @@ Stub::Stub(L1TStub& stub, Settings const& settings, Globals& globals) : settings
   z_.set(newz, nzbits, false, __LINE__, __FILE__);
 
   if (settings.writeMonitorData("StubBend")) {
-
-    
-    unsigned int nsimtrks=globals.event()->nsimtracks();
+    unsigned int nsimtrks = globals.event()->nsimtracks();
 
     //cout << "Have L1 stub" << endl;
-    
-    for (unsigned int isimtrk=0;isimtrk<nsimtrks;isimtrk++) {
-      const L1SimTrack& simtrk=globals.event()->simtrack(isimtrk);
+
+    for (unsigned int isimtrk = 0; isimtrk < nsimtrks; isimtrk++) {
+      const L1SimTrack& simtrk = globals.event()->simtrack(isimtrk);
       if (stub.tpmatch2(simtrk.trackid())) {
+        double dr = 0.18;
+        double rinv = simtrk.charge() * 0.01 * settings_.c() * settings_.bfield() / simtrk.pt();
+        double pitch = settings_.stripPitch(stub.isPSmodule());
+        double bend = stub.r() * dr * 0.5 * rinv / pitch;
 
-	double dr=0.18;
-	double rinv=simtrk.charge()*0.01*settings_.c()*settings_.bfield()/simtrk.pt();
-	double pitch=settings_.stripPitch(stub.isPSmodule());
-	double bend=stub.r()*dr*0.5*rinv/pitch;
-
-	globals.ofstream("stubbend.dat") << layerdisk_ << " "<<stub.isPSmodule()<<" "<<simtrk.pt()*simtrk.charge()<<" "<<bend<<" "<<newbend
-					 <<" "<<settings.benddecode(newbend,layerdisk_,stub.isPSmodule())
-					 <<" "<<settings.bendcut(newbend,layerdisk_,stub.isPSmodule())
-					 <<endl;
+        globals.ofstream("stubbend.dat") << layerdisk_ << " " << stub.isPSmodule() << " "
+                                         << simtrk.pt() * simtrk.charge() << " " << bend << " " << newbend << " "
+                                         << settings.benddecode(newbend, layerdisk_, stub.isPSmodule()) << " "
+                                         << settings.bendcut(newbend, layerdisk_, stub.isPSmodule()) << endl;
       }
     }
   }
-  
 }
 
 FPGAWord Stub::iphivmFineBins(int VMbits, int finebits) const {

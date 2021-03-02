@@ -72,8 +72,6 @@ void MemoryBase::findAndReplaceAll(std::string& data, std::string toSearch, std:
 }
 
 void MemoryBase::openFile(bool first, std::string dirName, std::string filebase) {
-
-
   std::string fname = filebase + getName();
 
   findAndReplaceAll(fname, "PHIa", "PHIaa");
@@ -92,8 +90,8 @@ void MemoryBase::openFile(bool first, std::string dirName, std::string filebase)
   fname += std::to_string(iSector_ + 1);
   fname += ".dat";
 
-  openfile(out_, first, dirName, dirName+fname, __FILE__, __LINE__);
-  
+  openfile(out_, first, dirName, dirName + fname, __FILE__, __LINE__);
+
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
 
   bx_++;
