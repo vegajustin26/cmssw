@@ -16,11 +16,11 @@ TrackletProjectionsMemory::TrackletProjectionsMemory(string name, Settings const
 
 void TrackletProjectionsMemory::addProj(Tracklet* tracklet) {
   if (layer_ != 0 && disk_ == 0)
-    assert(tracklet->validProj(layer_));
+    assert(tracklet->validProj(layer_-1));
   if (layer_ == 0 && disk_ != 0)
     assert(tracklet->validProjDisk(disk_));
   if (layer_ != 0 && disk_ != 0)
-    assert(tracklet->validProj(layer_) || tracklet->validProjDisk(disk_));
+    assert(tracklet->validProj(layer_-1) || tracklet->validProjDisk(disk_));
 
   for (auto& itracklet : tracklets_) {
     if (itracklet == tracklet) {
@@ -47,8 +47,8 @@ void TrackletProjectionsMemory::writeTPROJ(bool first) {
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
 
   for (unsigned int j = 0; j < tracklets_.size(); j++) {
-    string proj = (layer_ > 0 && tracklets_[j]->validProj(layer_)) ? tracklets_[j]->trackletprojstrlayer(layer_)
-                                                                   : tracklets_[j]->trackletprojstrdisk(disk_);
+    string proj = (layer_ > 0 && tracklets_[j]->validProj(layer_-1)) ? tracklets_[j]->trackletprojstrlayer(layer_)
+      : tracklets_[j]->trackletprojstrdisk(disk_);
     out_ << "0x";
     out_ << std::setfill('0') << std::setw(2);
     out_ << hex << j << dec;

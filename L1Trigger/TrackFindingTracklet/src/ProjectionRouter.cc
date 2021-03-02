@@ -89,7 +89,7 @@ void ProjectionRouter::execute() {
       FPGAWord fpgaphi;
 
       if (layerdisk_ < N_LAYER) {
-        fpgaphi = tracklet->layerProj(layerdisk_ + 1).fpgaphiproj();
+        fpgaphi = tracklet->proj(layerdisk_).fpgaphiproj();
       } else {
         int disk = layerdisk_ - (N_LAYER - 1);
 	DiskProjection& diskProj =  tracklet->diskProj(disk);

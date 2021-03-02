@@ -310,8 +310,8 @@ void TrackletCalculatorDisplaced::addDiskProj(Tracklet* tracklet, int disk) {
 bool TrackletCalculatorDisplaced::addLayerProj(Tracklet* tracklet, int layer) {
   assert(layer > 0);
 
-  FPGAWord fpgaz = tracklet->layerProj(layer).fpgazproj();
-  FPGAWord fpgaphi = tracklet->layerProj(layer).fpgaphiproj();
+  FPGAWord fpgaz = tracklet->proj(layer-1).fpgarzproj();
+  FPGAWord fpgaphi = tracklet->proj(layer-1).fpgaphiproj();
 
   if (fpgaz.atExtreme())
     return false;
@@ -393,7 +393,7 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
 
   double rinv, phi0, d0, t, z0;
 
-  LayerProjection layerprojs[N_LAYER - 2];
+  Projection projs[N_LAYER+N_DISK];
   DiskProjection diskprojs[N_DISK];
 
   double phiproj[N_LAYER - 2], zproj[N_LAYER - 2], phider[N_LAYER - 2], zder[N_LAYER - 2];
@@ -627,21 +627,21 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
       }
     }
 
-    layerprojs[i].init(settings_,
-                       lproj_[i],
-                       rproj_[i],
-                       iphiproj[i],
-                       izproj[i],
-                       iphider[i],
-                       izder[i],
-                       phiproj[i],
-                       zproj[i],
-                       phider[i],
-                       zder[i],
-                       phiprojapprox[i],
-                       zprojapprox[i],
-                       phiderapprox[i],
-                       zderapprox[i]);
+    projs[lproj_[i]-1].init(settings_,
+			    lproj_[i]-1,
+			    rproj_[i],
+			    iphiproj[i],
+			    izproj[i],
+			    iphider[i],
+			    izder[i],
+			    phiproj[i],
+			    zproj[i],
+			    phider[i],
+			    zder[i],
+			    phiprojapprox[i],
+			    zprojapprox[i],
+			    phiderapprox[i],
+			    zderapprox[i]);
   }
 
   if (std::abs(it * kt) > 1.0) {
@@ -708,7 +708,7 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
                                     id0,
                                     iz0,
                                     it,
-                                    layerprojs,
+				    projs,
                                     diskprojs,
                                     false);
 
@@ -732,7 +732,7 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
     bool added = false;
     if (settings_.debugTracklet())
       edm::LogVerbatim("Tracklet") << "adding layer projection " << j << "/" << toR_.size() << " " << lproj_[j];
-    if (tracklet->validProj(lproj_[j])) {
+    if (tracklet->validProj(lproj_[j]-1)) {
       added = addLayerProj(tracklet, lproj_[j]);
       if (added && lproj_[j] == 5)
         addL5 = true;
@@ -976,7 +976,7 @@ bool TrackletCalculatorDisplaced::DDLSeeding(const Stub* innerFPGAStub,
       return false;
   }
 
-  LayerProjection layerprojs[N_LAYER - 2];
+  Projection projs[N_LAYER+N_DISK];
   DiskProjection diskprojs[N_DISK];
 
   for (unsigned int i = 0; i < toR_.size(); ++i) {
@@ -1016,21 +1016,22 @@ bool TrackletCalculatorDisplaced::DDLSeeding(const Stub* innerFPGAStub,
         iphider[i] = (1 << (settings_.nbitsphiprojderL456() - 1)) - 1;
     }
 
-    layerprojs[i].init(settings_,
-                       lproj_[i],
-                       rproj_[i],
-                       iphiproj[i],
-                       izproj[i],
-                       iphider[i],
-                       izder[i],
-                       phiproj[i],
-                       zproj[i],
-                       phider[i],
-                       zder[i],
-                       phiprojapprox[i],
-                       zprojapprox[i],
-                       phiderapprox[i],
-                       zderapprox[i]);
+    projs[lproj_[i]-1].init(settings_,
+			    lproj_[i]-1,
+			    rproj_[i],
+			    iphiproj[i],
+			    izproj[i],
+			    iphider[i],
+			    izder[i],
+			    phiproj[i],
+			    zproj[i],
+			    phider[i],
+			    zder[i],
+			    phiprojapprox[i],
+			    zprojapprox[i],
+			    phiderapprox[i],
+			    zderapprox[i]);
+    
   }
 
   if (std::abs(it * kt) > 1.0) {
@@ -1095,7 +1096,7 @@ bool TrackletCalculatorDisplaced::DDLSeeding(const Stub* innerFPGAStub,
                                     id0,
                                     iz0,
                                     it,
-                                    layerprojs,
+				    projs,
                                     diskprojs,
                                     true);
 
@@ -1116,8 +1117,8 @@ bool TrackletCalculatorDisplaced::DDLSeeding(const Stub* innerFPGAStub,
   for (unsigned int j = 0; j < toR_.size(); j++) {
     if (settings_.debugTracklet())
       edm::LogVerbatim("Tracklet") << "adding layer projection " << j << "/" << toR_.size() << " " << lproj_[j] << " "
-                                   << tracklet->validProj(lproj_[j]);
-    if (tracklet->validProj(lproj_[j])) {
+                                   << tracklet->validProj(lproj_[j]-1);
+    if (tracklet->validProj(lproj_[j]-1)) {
       addLayerProj(tracklet, lproj_[j]);
     }
   }
@@ -1354,7 +1355,7 @@ bool TrackletCalculatorDisplaced::LLDSeeding(const Stub* innerFPGAStub,
       return false;
   }
 
-  LayerProjection layerprojs[N_LAYER - 2];
+  Projection projs[N_LAYER+N_DISK];
   DiskProjection diskprojs[N_DISK];
 
   for (unsigned int i = 0; i < toR_.size(); ++i) {
@@ -1393,8 +1394,8 @@ bool TrackletCalculatorDisplaced::LLDSeeding(const Stub* innerFPGAStub,
         iphider[i] = (1 << (settings_.nbitsphiprojderL456() - 1)) - 1;
     }
 
-    layerprojs[i].init(settings_,
-                       lproj_[i],
+    projs[lproj_[i]-1].init(settings_,
+                       lproj_[i]-1,
                        rproj_[i],
                        iphiproj[i],
                        izproj[i],
@@ -1474,7 +1475,7 @@ bool TrackletCalculatorDisplaced::LLDSeeding(const Stub* innerFPGAStub,
                                     id0,
                                     iz0,
                                     it,
-                                    layerprojs,
+				    projs,
                                     diskprojs,
                                     false);
 
@@ -1495,7 +1496,7 @@ bool TrackletCalculatorDisplaced::LLDSeeding(const Stub* innerFPGAStub,
   for (unsigned int j = 0; j < toR_.size(); j++) {
     if (settings_.debugTracklet())
       edm::LogVerbatim("Tracklet") << "adding layer projection " << j << "/" << toR_.size() << " " << lproj_[j];
-    if (tracklet->validProj(lproj_[j])) {
+    if (tracklet->validProj(lproj_[j]-1)) {
       addLayerProj(tracklet, lproj_[j]);
     }
   }

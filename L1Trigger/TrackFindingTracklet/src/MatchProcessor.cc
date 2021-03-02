@@ -255,7 +255,7 @@ void MatchProcessor::execute() {
             }
 
             Tracklet* proj = projMem->getTracklet(iproj);
-            FPGAWord fpgaphi = barrel_ ? proj->layerProj(layerdisk_+1).fpgaphiproj() : proj->diskProj(layerdisk_-N_LAYER+1).fpgaphiproj();
+            FPGAWord fpgaphi = barrel_ ? proj->proj(layerdisk_).fpgaphiproj() : proj->diskProj(layerdisk_-N_LAYER+1).fpgaphiproj();
 
             unsigned int iphi = (fpgaphi.value() >> (fpgaphi.nbits() - nvmbits_)) & (nvmbins_ - 1);
 
@@ -305,11 +305,11 @@ void MatchProcessor::execute() {
             }
             assert(projrinv >= 0);
 
-            unsigned int slot = barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin1projvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgarbin1projvm().value();
-            bool second = (barrel_ ? proj->layerProj(layerdisk_+1).fpgazbin2projvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgarbin2projvm().value());
+            unsigned int slot = barrel_ ? proj->proj(layerdisk_).fpgarzbin1projvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgarbin1projvm().value();
+            bool second = (barrel_ ? proj->proj(layerdisk_).fpgarzbin2projvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgarbin2projvm().value());
 
             unsigned int projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + 3))) & 7;
-            int projfinerz = barrel_ ? proj->layerProj(layerdisk_+1).fpgafinezvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgafinervm().value();
+            int projfinerz = barrel_ ? proj->proj(layerdisk_).fpgafinerzvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgafinervm().value();
 
             bool isPSseed = proj->PSseed();
 
@@ -445,14 +445,14 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
   const L1TStub* stub = fpgastub->l1tstub();
 
   if (layerdisk_ < N_LAYER) {
-    const LayerProjection& layerProj = tracklet->layerProj(layerdisk_+1);
+    const Projection& proj = tracklet->proj(layerdisk_);
     int ir = fpgastub->r().value();
-    int iphi = layerProj.fpgaphiproj().value();
-    int icorr = (ir * layerProj.fpgaphiprojder().value()) >> icorrshift_;
+    int iphi = proj.fpgaphiproj().value();
+    int icorr = (ir * proj.fpgaphiprojder().value()) >> icorrshift_;
     iphi += icorr;
 
-    int iz = layerProj.fpgazproj().value();
-    int izcor = (ir * layerProj.fpgazprojder().value() + (1 << (icorzshift_ - 1))) >> icorzshift_;
+    int iz = proj.fpgarzproj().value();
+    int izcor = (ir * proj.fpgarzprojder().value() + (1 << (icorzshift_ - 1))) >> icorzshift_;
     iz += izcor;
 
     int ideltaz = fpgastub->z().value() - iz;
@@ -480,14 +480,14 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     double dr = r - settings_.rmean(layerdisk_);
     assert(std::abs(dr) < settings_.drmax());
 
-    double dphi = reco::reduceRange(phi - (layerProj.phiproj() + dr * layerProj.phiprojder()));
+    double dphi = reco::reduceRange(phi - (proj.phiproj() + dr * proj.phiprojder()));
 
-    double dz = z - (layerProj.zproj() + dr * layerProj.zprojder());
+    double dz = z - (proj.rzproj() + dr * proj.rzprojder());
 
     double dphiapprox =
-        reco::reduceRange(phi - (layerProj.phiprojapprox() + dr * layerProj.phiprojderapprox()));
+        reco::reduceRange(phi - (proj.phiprojapprox() + dr * proj.phiprojderapprox()));
 
-    double dzapprox = z - (layerProj.zprojapprox() + dr * layerProj.zprojderapprox());
+    double dzapprox = z - (proj.rzprojapprox() + dr * proj.rzprojderapprox());
 
     int seedindex = tracklet->getISeed();
 

@@ -506,7 +506,7 @@ double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, const Stub* curStub) {
     phiproj = stubphi;
     // Otherwise, get projection of tracklet
   } else if (Layer != 0) {
-    phiproj = curTracklet->layerProj(Layer).phiproj();
+    phiproj = curTracklet->proj(Layer-1).phiproj();
   } else if (Disk != 0) {
     phiproj = curTracklet->diskProj(Disk).phiproj();
   } else {

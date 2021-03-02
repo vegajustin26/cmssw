@@ -35,7 +35,7 @@ Tracklet::Tracklet(Settings const& settings,
                    int id0,
                    int iz0,
                    int it,
-                   LayerProjection layerprojs[N_PROJ],
+                   Projection projs[N_LAYER+N_DISK],
                    DiskProjection diskprojs[N_PROJ],
                    bool disk,
                    bool overlap)
@@ -98,10 +98,10 @@ Tracklet::Tracklet(Settings const& settings,
   for (unsigned int i = 0; i < N_LAYER - 2; i++) {
     if (projlayer_[i] == 0)
       continue;
-    if (!layerprojs[i].valid())
+    if (!projs[projlayer_[i]-1].valid())
       continue;
 
-    layerproj_[projlayer_[i] - 1] = layerprojs[i];
+    proj_[projlayer_[i] - 1] = projs[projlayer_[i] - 1];
   }
   //Now handle projections to the disks
   for (unsigned int i = 0; i < N_DISK; i++) {
@@ -232,8 +232,8 @@ std::string Tracklet::vmstrlayer(int layer, unsigned int allstubindex) {
   //int irinvvm=16+(fpgarinv().value()>>(fpgarinv().nbits()-5));
   // rinv is not directly available in the TrackletProjection.
   // can be inferred from phi derivative: rinv = - phider * 2
-  int tmp_irinv = layerproj_[layer - 1].fpgaphiprojder().value() * (-2);
-  int nbits_irinv = layerproj_[layer - 1].fpgaphiprojder().nbits() + 1;
+  int tmp_irinv = proj_[layer - 1].fpgaphiprojder().value() * (-2);
+  int nbits_irinv = proj_[layer - 1].fpgaphiprojder().nbits() + 1;
 
   // irinv in VMProjection:
   // top 5 bits of rinv and shifted to be positive
@@ -248,9 +248,9 @@ std::string Tracklet::vmstrlayer(int layer, unsigned int allstubindex) {
   assert(irinvvm < 32);
   FPGAWord tmp;
   tmp.set(irinvvm, 5, true, __LINE__, __FILE__);
-  std::string oss = index.str() + "|" + layerproj_[layer - 1].fpgazbin1projvm().str() + "|" +
-    layerproj_[layer - 1].fpgazbin2projvm().str() + "|" + layerproj_[layer - 1].fpgafinezvm().str() 
-    + "|" + layerproj_[layer-1].fpgafinephivm().str() + "|" + tmp.str() + "|" + std::to_string(PSseed());
+  std::string oss = index.str() + "|" + proj_[layer - 1].fpgarzbin1projvm().str() + "|" +
+    proj_[layer - 1].fpgarzbin2projvm().str() + "|" + proj_[layer - 1].fpgafinerzvm().str() 
+    + "|" + proj_[layer-1].fpgafinephivm().str() + "|" + tmp.str() + "|" + std::to_string(PSseed());
   return oss;
 }
 
@@ -282,9 +282,9 @@ std::string Tracklet::trackletprojstr(int layer) const {
     tcid.set(TCIndex_, 7, true, __LINE__, __FILE__);
   }
 
-  std::string oss = tcid.str() + "|" + tmp.str() + "|" + layerproj_[layer - 1].fpgaphiproj().str() + "|" +
-                    layerproj_[layer - 1].fpgazproj().str() + "|" + layerproj_[layer - 1].fpgaphiprojder().str() + "|" +
-                    layerproj_[layer - 1].fpgazprojder().str();
+  std::string oss = tcid.str() + "|" + tmp.str() + "|" + proj_[layer - 1].fpgaphiproj().str() + "|" +
+                    proj_[layer - 1].fpgarzproj().str() + "|" + proj_[layer - 1].fpgaphiprojder().str() + "|" +
+                    proj_[layer - 1].fpgarzprojder().str();
   return oss;
 }
 
