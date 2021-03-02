@@ -201,14 +201,15 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
         continue;
       }
       if (tracklet->match(l)) {
+	const LayerResidual& layerResid = tracklet->layerResid(l);
         lmatches.set(N_LAYER - l);
         layermask |= (1 << (N_LAYER - l));
-        phiresid[nlayers] = tracklet->phiresidapprox(l);
-        zresid[nlayers] = tracklet->zresidapprox(l);
-        phiresidexact[nlayers] = tracklet->phiresid(l);
-        zresidexact[nlayers] = tracklet->zresid(l);
-        iphiresid[nlayers] = tracklet->fpgaphiresid(l).value();
-        izresid[nlayers] = tracklet->fpgazresid(l).value();
+        phiresid[nlayers] = layerResid.phiresidapprox();
+        zresid[nlayers] = layerResid.zresidapprox();
+        phiresidexact[nlayers] = layerResid.phiresid();
+        zresidexact[nlayers] = layerResid.zresid();
+        iphiresid[nlayers] = layerResid.fpgaphiresid().value();
+        izresid[nlayers] = layerResid.fpgazresid().value();
 
         layers[nlayers++] = l;
       }
@@ -265,13 +266,13 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
         lmatches.set(N_LAYER - l);
 
         layermask |= (1 << (N_LAYER - l));
-
-        phiresid[nlayers] = tracklet->phiresidapprox(l);
-        zresid[nlayers] = tracklet->zresidapprox(l);
-        phiresidexact[nlayers] = tracklet->phiresid(l);
-        zresidexact[nlayers] = tracklet->zresid(l);
-        iphiresid[nlayers] = tracklet->fpgaphiresid(l).value();
-        izresid[nlayers] = tracklet->fpgazresid(l).value();
+	const LayerResidual& layerResid = tracklet->layerResid(l);	
+        phiresid[nlayers] = layerResid.phiresidapprox();
+        zresid[nlayers] = layerResid.zresidapprox();
+        phiresidexact[nlayers] = layerResid.phiresid();
+        zresidexact[nlayers] = layerResid.zresid();
+        iphiresid[nlayers] = layerResid.fpgaphiresid().value();
+        izresid[nlayers] = layerResid.fpgazresid().value();
 
         layers[nlayers++] = l;
       }
@@ -339,14 +340,15 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
       if (tracklet->match(l)) {
         lmatches.set(N_LAYER - l);
         layermask |= (1 << (N_LAYER - l));
-        assert(std::abs(tracklet->phiresidapprox(l)) < 0.2);
-        phiresid[nlayers] = tracklet->phiresidapprox(l);
-        zresid[nlayers] = tracklet->zresidapprox(l);
-        assert(std::abs(tracklet->phiresid(l)) < 0.2);
-        phiresidexact[nlayers] = tracklet->phiresid(l);
-        zresidexact[nlayers] = tracklet->zresid(l);
-        iphiresid[nlayers] = tracklet->fpgaphiresid(l).value();
-        izresid[nlayers] = tracklet->fpgazresid(l).value();
+	const LayerResidual& layerResid = tracklet->layerResid(l);	
+        assert(std::abs(layerResid.phiresidapprox()) < 0.2);
+        phiresid[nlayers] = layerResid.phiresidapprox();
+        zresid[nlayers] = layerResid.zresidapprox();
+        assert(std::abs(layerResid.phiresid()) < 0.2);
+        phiresidexact[nlayers] = layerResid.phiresid();
+        zresidexact[nlayers] = layerResid.zresid();
+        iphiresid[nlayers] = layerResid.fpgaphiresid().value();
+        izresid[nlayers] = layerResid.fpgazresid().value();
 
         layers[nlayers++] = l;
       }
@@ -456,8 +458,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
     if (layers[i] == tracklet->layer() + 1) {
       realrstub[i] = tracklet->outerStub()->r();
     }
-    if (tracklet->validResid(layers[i]) && layers[i] < 4) {
-      const Stub* stubptr = tracklet->stubptr(layers[i]);
+    if (tracklet->match(layers[i]) && layers[i] < 4) {
+      const Stub* stubptr = tracklet->layerResid(layers[i]).stubptr();
       realrstub[i] = stubptr->l1tstub()->r();
       assert(std::abs(realrstub[i] - r[i]) < 5.0);
     }

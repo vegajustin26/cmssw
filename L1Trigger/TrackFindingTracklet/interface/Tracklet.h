@@ -148,103 +148,6 @@ namespace trklet {
       assert(abs(disk) <= N_DISK);
       return diskresid_[abs(disk) - 1].zstub();
     }
-    /*
-    
-    int rbin1projvm(int disk) const {
-      assert(disk > 0 && disk <= N_DISK);
-      return diskproj_[disk - 1].fpgarbin1projvm().value();
-    }
-
-
-
-    int rbin2projvm(int disk) const {
-      assert(disk > 0 && disk <= N_DISK);
-      return diskproj_[disk - 1].fpgarbin2projvm().value();
-    }
-
-    int finervm(int disk) const {
-      assert(disk > 0 && disk <= N_DISK);
-      return diskproj_[disk - 1].fpgafinervm().value();
-    }
-
-
-    
-    void setBendIndex(int bendIndex, int disk) {
-      assert(abs(disk) <= N_DISK);
-      diskproj_[abs(disk) - 1].setBendIndex(bendIndex);
-    }
-
-    const FPGAWord& getBendIndex(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].getBendIndex();
-    }
-
-    const FPGAWord& fpgaphiprojdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].fpgaphiproj();
-    }
-
-    const FPGAWord& fpgafinephiprojdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].fpgafinephivm();
-    }
-
-    const FPGAWord& fpgaphiprojderdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].fpgaphiprojder();
-    }
-
-    const FPGAWord& fpgarprojdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].fpgarproj();
-    }
-
-    const FPGAWord& fpgarprojderdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].fpgarprojder();
-    }
-
-    double phiprojapproxdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].phiprojapprox();
-    }
-
-    double phiprojderapproxdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].phiprojderapprox();
-    }
-
-    double rprojapproxdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].rprojapprox();
-    }
-
-    double rprojderapproxdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].rprojderapprox();
-    }
-
-    double phiprojdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].phiproj();
-    }
-
-    double phiprojderdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].phiprojder();
-    }
-
-    double rprojdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].rproj();
-    }
-
-    double rprojderdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].rprojder();
-    }
-
-    */
     
     double alphadisk(int disk) const {
       assert(abs(disk) <= N_DISK);
@@ -255,7 +158,6 @@ namespace trklet {
       assert(abs(disk) <= N_DISK);
       return diskresid_[abs(disk) - 1].ialpha();
     }
-
 
     
     bool matchdisk(int disk) {
@@ -289,54 +191,21 @@ namespace trklet {
     int nMatches();
     int nMatchesDisk();
 
+    std::string fullmatchstr(int layer);
+    std::string fullmatchdiskstr(int disk);
+
     bool match(int layer) {
       assert(layer > 0 && layer <= N_LAYER);
       return layerresid_[layer - 1].valid();
     }
 
-    std::string fullmatchstr(int layer);
-    std::string fullmatchdiskstr(int disk);
-
-    bool validResid(int layer) const {
+    const LayerResidual& layerResid(int layer){
       assert(layer > 0 && layer <= N_LAYER);
-      return layerresid_[layer - 1].valid();
+      assert(layerresid_[layer - 1].valid());
+      return layerresid_[layer - 1];
     }
 
-    const trklet::Stub* stubptr(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerresid_[layer - 1].stubptr();
-    }
-
-    double phiresid(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerresid_[layer - 1].phiresid();
-    }
-
-    double phiresidapprox(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerresid_[layer - 1].phiresidapprox();
-    }
-
-    double zresid(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerresid_[layer - 1].zresid();
-    }
-
-    double zresidapprox(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerresid_[layer - 1].zresidapprox();
-    }
-
-    const FPGAWord& fpgaphiresid(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerresid_[layer - 1].fpgaphiresid();
-    }
-
-    const FPGAWord& fpgazresid(int layer) const {
-      assert(layer > 0 && layer <= N_LAYER);
-      return layerresid_[layer - 1].fpgazresid();
-    }
-
+    
     std::vector<const L1TStub*> getL1Stubs();
 
     std::map<int, int> getStubIDs();
