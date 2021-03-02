@@ -114,55 +114,14 @@ namespace trklet {
     }
 
 
-    const FPGAWord& fpgaphiresiddisk(int disk) {
-      assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].fpgaphiresid();
-    }
-
-    const FPGAWord& fpgarresiddisk(int disk) {
-      assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].fpgarresid();
-    }
-
-    double phiresiddisk(int disk) {
-      assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].phiresid();
-    }
-
-    double rresiddisk(int disk) {
-      assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].rresid();
-    }
-
-    double phiresidapproxdisk(int disk) {
-      assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].phiresidapprox();
-    }
-
-    double rresidapproxdisk(int disk) {
-      assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].rresidapprox();
-    }
-
-    double zstubdisk(int disk) {
-      assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].zstub();
-    }
-    
-    double alphadisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].alpha();
-    }
-
-    const FPGAWord& ialphadisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].ialpha();
-    }
-
-    
-    bool matchdisk(int disk) {
+    bool matchdisk(int disk) const {
       assert(abs(disk) <= N_DISK);
       return diskresid_[abs(disk) - 1].valid();
+    }
+
+    const DiskResidual& diskResid(int disk) const {
+      assert(matchdisk(disk));
+      return diskresid_[abs(disk)-1];
     }
 
     void addMatch(int layer,
