@@ -483,8 +483,14 @@ double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, const Stub* curStub) {
   // Get phi position of stub
   stubphi = curStub->l1tstub()->phi();
   // Get region that the stub is in (Layer 1->6, Disk 1->5)
-  int Layer = curStub->layer().value() + 1;
-  int Disk = curStub->disk().value();
+  int Layer = curStub->layerdisk() + 1;
+  if (Layer>6) {
+    Layer=0;
+  }
+  int Disk = curStub->layerdisk()-5;
+  if (Disk<0) {
+    Disk=0;
+  }
   // Get phi projection of tracklet
   int seedindex = curTracklet->seedIndex();
   // If this stub is a seed stub, set projection=phi, so that res=0
@@ -500,9 +506,9 @@ double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, const Stub* curStub) {
     phiproj = stubphi;
     // Otherwise, get projection of tracklet
   } else if (Layer != 0) {
-    phiproj = curTracklet->phiproj(Layer);
+    phiproj = curTracklet->layerProj(Layer).phiproj();
   } else if (Disk != 0) {
-    phiproj = curTracklet->phiprojdisk(Disk);
+    phiproj = curTracklet->diskProj(Disk).phiproj();
   } else {
     throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Layer: " << Layer << "  --  Disk: " << Disk
                                        << " Stub is not layer or disk in getPhiRes";

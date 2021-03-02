@@ -46,21 +46,7 @@ void FullMatchMemory::writeMC(bool first) {
   oss << dirM << "FullMatches_" << getName() << "_" << std::setfill('0') << std::setw(2) << (iSector_ + 1) << ".dat";
   auto const& fname = oss.str();
 
-  if (first) {
-    bx_ = 0;
-    event_ = 1;
-
-    if (not std::filesystem::exists(dirM)) {
-      int fail = system((string("mkdir -p ") + dirM).c_str());
-      if (fail)
-        throw cms::Exception("BadDir") << __FILE__ << " " << __LINE__ << " could not create directory " << dirM;
-    }
-    out_.open(fname);
-    if (out_.fail())
-      throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << fname;
-
-  } else
-    out_.open(fname, std::ofstream::app);
+  openfile(out_, first, dirM, fname, __FILE__, __LINE__);
 
   out_ << "BX = " << (bitset<3>)bx_ << " Event : " << event_ << endl;
 

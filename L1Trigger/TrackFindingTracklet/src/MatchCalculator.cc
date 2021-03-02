@@ -59,17 +59,8 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
   }
 
   if (iSector_ == 0 && layerdisk_ < N_LAYER && settings_.writeTable()) {
-    if (not std::filesystem::exists(settings_.tablePath())) {
-      int fail = system((string("mkdir -p ") + settings_.tablePath()).c_str());
-      if (fail)
-        throw cms::Exception("BadDir") << __FILE__ << " " << __LINE__ << " could not create directory "
-                                       << settings_.tablePath();
-    }
 
-    const string filephicut = settings_.tablePath() + getName() + "_phicut.tab";
-    ofstream outphicut(filephicut);
-    if (outphicut.fail())
-      throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << filephicut;
+    ofstream outphicut=openfile(settings_.tablePath(), getName() + "_phicut.tab", __FILE__, __LINE__);
 
     outphicut << "{" << endl;
     for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
@@ -96,17 +87,9 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
   }
 
   if (iSector_ == 0 && layerdisk_ >= N_LAYER && settings_.writeTable()) {
-    if (not std::filesystem::exists(settings_.tablePath())) {
-      int fail = system((string("mkdir -p ") + settings_.tablePath()).c_str());
-      if (fail)
-        throw cms::Exception("BadDir") << __FILE__ << " " << __LINE__ << " could not create directory "
-                                       << settings_.tablePath();
-    }
 
-    const string filePSphicut = settings_.tablePath() + getName() + "_PSphicut.tab";
-    ofstream outPSphicut(filePSphicut);
-    if (outPSphicut.fail())
-      throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << filePSphicut;
+    ofstream outPSphicut=openfile(settings_.tablePath(), getName() + "_PSphicut.tab", __FILE__, __LINE__);
+
     outPSphicut << "{" << endl;
     for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
       if (seedindex != 0)
@@ -116,10 +99,8 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     outPSphicut << endl << "};" << endl;
     outPSphicut.close();
 
-    const string file2Sphicut = settings_.tablePath() + getName() + "_2Sphicut.tab";
-    ofstream out2Sphicut(file2Sphicut);
-    if (out2Sphicut.fail())
-      throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << file2Sphicut;
+    ofstream out2Sphicut=openfile(settings_.tablePath(), getName() + "_2Sphicut.tab", __FILE__, __LINE__);
+
     out2Sphicut << "{" << endl;
     for (unsigned int seedindex = 0; seedindex < N_SEED; seedindex++) {
       if (seedindex != 0)
@@ -236,13 +217,15 @@ void MatchCalculator::execute() {
     if (layerdisk_ < N_LAYER) {
       //Integer calculation
 
+      const LayerProjection& layerProj = tracklet->layerProj(layerdisk_+1);
+      
       int ir = fpgastub->r().value();
-      int iphi = tracklet->fpgaphiproj(layerdisk_ + 1).value();
-      int icorr = (ir * tracklet->fpgaphiprojder(layerdisk_ + 1).value()) >> icorrshift_;
+      int iphi = layerProj.fpgaphiproj().value();
+      int icorr = (ir * layerProj.fpgaphiprojder().value()) >> icorrshift_;
       iphi += icorr;
 
-      int iz = tracklet->fpgazproj(layerdisk_ + 1).value();
-      int izcor = (ir * tracklet->fpgazprojder(layerdisk_ + 1).value() + (1 << (icorzshift_ - 1))) >> icorzshift_;
+      int iz = layerProj.fpgazproj().value();
+      int izcor = (ir * layerProj.fpgazprojder().value() + (1 << (icorzshift_ - 1))) >> icorzshift_;
       iz += izcor;
 
       int ideltaz = fpgastub->z().value() - iz;
@@ -265,18 +248,18 @@ void MatchCalculator::execute() {
       if (phi < 0)
         phi += 2 * M_PI;
 
-      double dr = r - tracklet->rproj(layerdisk_ + 1);
+      double dr = r - settings_.rmean(layerdisk_);
       assert(std::abs(dr) < settings_.drmax());
 
       double dphi =
-          reco::reduceRange(phi - (tracklet->phiproj(layerdisk_ + 1) + dr * tracklet->phiprojder(layerdisk_ + 1)));
+          reco::reduceRange(phi - (layerProj.phiproj() + dr * layerProj.phiprojder()));
 
-      double dz = z - (tracklet->zproj(layerdisk_ + 1) + dr * tracklet->zprojder(layerdisk_ + 1));
+      double dz = z - (layerProj.zproj() + dr * layerProj.zprojder());
 
       double dphiapprox = reco::reduceRange(
-          phi - (tracklet->phiprojapprox(layerdisk_ + 1) + dr * tracklet->phiprojderapprox(layerdisk_ + 1)));
+          phi - (layerProj.phiprojapprox() + dr * layerProj.phiprojderapprox()));
 
-      double dzapprox = z - (tracklet->zprojapprox(layerdisk_ + 1) + dr * tracklet->zprojderapprox(layerdisk_ + 1));
+      double dzapprox = z - (layerProj.zprojapprox() + dr * layerProj.zprojderapprox());
 
       int seedindex = tracklet->getISeed();
 
@@ -296,13 +279,26 @@ void MatchCalculator::execute() {
                                  truthmatch);
       }
 
-      if (std::abs(dphi) > 0.2 || std::abs(dphiapprox) > 0.2) {
-        edm::LogProblem("Tracklet") << "WARNING dphi and/or dphiapprox too large : " << dphi << " " << dphiapprox
-                                    << endl;
+      
+      //This would catch significant consistency problems in the configuration - helps to debug if there are problems.
+      if (std::abs(dphi) > 0.5*settings_.dphisectorHG() || std::abs(dphiapprox) > 0.5*settings_.dphisectorHG()) {
+        throw cms::Exception("LogicError") << "WARNING dphi and/or dphiapprox too large : "
+					   << dphi << " " << dphiapprox << endl;
+      }
+
+      if (settings_.writeMonitorData("Residuals")) {
+        double pt = 0.01 * settings_.c() * settings_.bfield() / std::abs(tracklet->rinv());
+
+        globals_->ofstream("layerresiduals.txt")
+            << layerdisk_ + 1 << " " << seedindex << " " << pt << " "
+            << ideltaphi * settings_.kphi1() * settings_.rmean(layerdisk_) << " "
+            << dphiapprox * settings_.rmean(layerdisk_) << " "
+            << phimatchcut_[seedindex] * settings_.kphi1() * settings_.rmean(layerdisk_) << "   "
+            << ideltaz * fact_ * settings_.kz() << " " << dz << " " << zmatchcut_[seedindex] * settings_.kz() << endl;
       }
 
       bool imatch = false;
-      if (std::abs(dphi) < 0.2 && std::abs(dphiapprox) < 0.2) {  //Changed the Asserts into if statements
+      if(std::abs(dphi) < 0.2 && std::abs(dphiapprox) < 0.2){ //Changed the Asserts into if statements
         if (settings_.writeMonitorData("Residuals")) {
           double pt = 0.01 * settings_.c() * settings_.bfield() / std::abs(tracklet->rinv());
 
@@ -314,8 +310,8 @@ void MatchCalculator::execute() {
               << ideltaz * fact_ * settings_.kz() << " " << dz << " " << zmatchcut_[seedindex] * settings_.kz() << endl;
         }
 
-        imatch = (std::abs(ideltaphi) <= (int)phimatchcut_[seedindex]) &&
-                 (std::abs(ideltaz * fact_) <= (int)zmatchcut_[seedindex]);
+       imatch = (std::abs(ideltaphi) <= (int)phimatchcut_[seedindex]) &&
+                      (std::abs(ideltaz * fact_) <= (int)zmatchcut_[seedindex]);
       }
       if (settings_.debugTracklet()) {
         edm::LogVerbatim("Tracklet") << getName() << " imatch = " << imatch << " ideltaphi cut " << ideltaphi << " "
@@ -355,20 +351,22 @@ void MatchCalculator::execute() {
 
       //Perform integer calculations here
 
+      const DiskProjection& diskProj = tracklet->diskProj(disk);
+      
       int iz = fpgastub->z().value();
-      int iphi = tracklet->fpgaphiprojdisk(disk).value();
+      int iphi = diskProj.fpgaphiproj().value();
 
       //TODO - need to express interms of constants
       int shifttmp = 6;
-      int iphicorr = (iz * tracklet->fpgaphiprojderdisk(disk).value()) >> shifttmp;
+      int iphicorr = (iz * diskProj.fpgaphiprojder().value()) >> shifttmp;
 
       iphi += iphicorr;
 
-      int ir = tracklet->fpgarprojdisk(disk).value();
+      int ir = diskProj.fpgarproj().value();
 
       //TODO - need to express interms of constants
       int shifttmp2 = 7;
-      int ircorr = (iz * tracklet->fpgarprojderdisk(disk).value()) >> shifttmp2;
+      int ircorr = (iz * diskProj.fpgarprojder().value()) >> shifttmp2;
 
       ir += ircorr;
 
@@ -421,9 +419,9 @@ void MatchCalculator::execute() {
             << "\n stub " << stub->z() << " disk " << disk << " " << dz;
       }
 
-      double phiproj = tracklet->phiprojdisk(disk) + dz * tracklet->phiprojderdisk(disk);
+      double phiproj = diskProj.phiproj() + dz * diskProj.phiprojder();
 
-      double rproj = tracklet->rprojdisk(disk) + dz * tracklet->rprojderdisk(disk);
+      double rproj = diskProj.rproj() + dz * diskProj.rprojder();
 
       double deltar = r - rproj;
 
@@ -432,9 +430,9 @@ void MatchCalculator::execute() {
       double dphi = reco::reduceRange(phi - phiproj);
 
       double dphiapprox =
-          reco::reduceRange(phi - (tracklet->phiprojapproxdisk(disk) + dz * tracklet->phiprojderapproxdisk(disk)));
+          reco::reduceRange(phi - (diskProj.phiprojapprox() + dz * diskProj.phiprojderapprox()));
 
-      double drapprox = stub->r() - (tracklet->rprojapproxdisk(disk) + dz * tracklet->rprojderapproxdisk(disk));
+      double drapprox = stub->r() - (diskProj.rprojapprox() + dz * diskProj.rprojderapprox());
 
       double drphi = dphi * stub->r();
       double drphiapprox = dphiapprox * stub->r();
@@ -461,7 +459,7 @@ void MatchCalculator::execute() {
       double drcut = idrcut * settings_.krprojshiftdisk();
 
       bool match, imatch;
-      if (std::abs(dphi) < 0.25 && std::abs(dphiapprox) < 0.25) {  //Changed the Asserts into if statements
+      if(std::abs(dphi) < 0.25 && std::abs(dphiapprox) < 0.25){ //Changed the Asserts into if statements
         if (settings_.writeMonitorData("Residuals")) {
           double pt = 0.01 * settings_.c() * settings_.bfield() / std::abs(tracklet->rinv());
 
@@ -474,9 +472,10 @@ void MatchCalculator::execute() {
         match = (std::abs(drphi) < drphicut) && (std::abs(deltar) < drcut);
 
         imatch = (std::abs(ideltaphi * irstub) < idrphicut) && (std::abs(ideltar) < idrcut);
-      } else {
+      }
+      else{
         edm::LogProblem("Tracklet") << "WARNING dphi and/or dphiapprox too large : " << dphi << " " << dphiapprox
-                                    << "dphi " << dphi << " Seed / ISeed " << tracklet->getISeed() << endl;
+                                    << "dphi " << dphi << " Seed / ISeed " << tracklet->getISeed()<< endl;
         match = false;
         imatch = false;
       }

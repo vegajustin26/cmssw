@@ -17,7 +17,7 @@ namespace trklet {
 
   class MatchEngineUnit {
   public:
-    MatchEngineUnit(bool barrel, std::vector<bool> table, std::vector<bool> tablePS, std::vector<bool> table2S);
+    MatchEngineUnit(bool barrel, unsigned int layerdisk, std::vector<bool> table);
 
     ~MatchEngineUnit() = default;
 
@@ -26,6 +26,7 @@ namespace trklet {
               int projrinv,
               int projfinerz,
               int projfinephi,
+	      int shift,
               bool usesecond,
               bool isPSseed,
               Tracklet* proj);
@@ -57,16 +58,15 @@ namespace trklet {
     int projfinephi_;
     bool usesecond_;
     bool isPSseed_;
+    int shift_;
     Tracklet* proj_;
 
     bool idle_;
 
-    //used in the layers
-    std::vector<bool> table_;
+    unsigned int layerdisk_;
 
-    //used in the disks
-    std::vector<bool> tablePS_;
-    std::vector<bool> table2S_;
+    //used for bend consistency with rinv
+    std::vector<bool> table_;
 
     //save the candidate matches
     CircularBuffer<std::pair<Tracklet*, const Stub*> > candmatches_;

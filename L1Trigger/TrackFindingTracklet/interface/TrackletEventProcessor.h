@@ -17,7 +17,6 @@ namespace trklet {
   class Sector;
   class HistBase;
   class Track;
-  class Cabling;
 
   class TrackletEventProcessor {
   public:
@@ -34,6 +33,9 @@ namespace trklet {
     std::vector<Track*>& tracks() { return tracks_; }
 
   private:
+
+    void configure(std::istream& inwire, std::istream& inmem, std::istream& inproc);
+
     const Settings* settings_{nullptr};
 
     std::unique_ptr<Globals> globals_;
@@ -43,8 +45,6 @@ namespace trklet {
     HistBase* histbase_{};
 
     int eventnum_ = {0};
-
-    std::unique_ptr<Cabling> cabling_;
 
     Timer cleanTimer_;
     Timer addStubTimer_;
@@ -64,7 +64,7 @@ namespace trklet {
 
     std::vector<Track*> tracks_;
 
-    std::map<std::string, std::vector<int> > dtclayerdisk_;
+    //std::map<std::string, std::vector<int> > dtclayerdisk_;
   };
 
 };  // namespace trklet

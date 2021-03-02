@@ -122,8 +122,8 @@ void TrackletEngine::execute() {
         if (!(pttableinner_[ptinnerindex] && pttableouter_[ptouterindex])) {
           if (settings_.debugTracklet()) {
             edm::LogVerbatim("Tracklet") << "Stub pair rejected because of stub pt cut bends : "
-                                         << benddecode(innervmstub.bend().value(), innervmstub.isPSmodule()) << " "
-                                         << benddecode(outervmstub.bend().value(), outervmstub.isPSmodule());
+                                         << settings_.benddecode(innervmstub.bend().value(), layerdisk1_, innervmstub.isPSmodule()) << " "
+                                         << settings_.benddecode(outervmstub.bend().value(), layerdisk2_, outervmstub.isPSmodule());
           }
           continue;
         }
@@ -212,13 +212,13 @@ void TrackletEngine::setVMPhiBin() {
               } else {
                 rinner = settings_.rmean(layerdisk1_);
               }
-              double rinv1 = rinv(phiinner[i1], phiouter[i2], rinner, router[i3]);
+              double rinv1 = -rinv(phiinner[i1], phiouter[i2], rinner, router[i3]);
               double pitchinner =
                   (rinner < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
               double pitchouter =
                   (router[i3] < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
-              double abendinner = -bend(rinner, rinv1, pitchinner);
-              double abendouter = -bend(router[i3], rinv1, pitchouter);
+              double abendinner = bendstrip(rinner, rinv1, pitchinner);
+              double abendouter = bendstrip(router[i3], rinv1, pitchouter);
               if (abendinner < bendinnermin)
                 bendinnermin = abendinner;
               if (abendinner > bendinnermax)
@@ -237,20 +237,20 @@ void TrackletEngine::setVMPhiBin() {
         bool passptcut = rinvmin < settings_.rinvcutte();
 
         for (int ibend = 0; ibend < (1 << nbendbitsinner); ibend++) {
-          double bend = benddecode(ibend, nbendbitsinner == 3);
+          double bend = settings_.benddecode(ibend, layerdisk1_, nbendbitsinner == 3);
 
-          bool passinner = bend - bendinnermin > -settings_.bendcutte(0, iSeed_) &&
-                           bend - bendinnermax < settings_.bendcutte(0, iSeed_);
+          bool passinner = bend > bendinnermin - settings_.bendcutte(ibend, layerdisk1_, nbendbitsinner == 3) &&
+                           bend < bendinnermax + settings_.bendcutte(ibend, layerdisk1_, nbendbitsinner == 3);
           if (passinner)
             vmbendinner[ibend] = true;
           pttableinner_.push_back(passinner && passptcut);
         }
 
         for (int ibend = 0; ibend < (1 << nbendbitsouter); ibend++) {
-          double bend = benddecode(ibend, nbendbitsouter == 3);
+          double bend = settings_.benddecode(ibend, layerdisk2_, nbendbitsouter == 3);
 
-          bool passouter = bend - bendoutermin > -settings_.bendcutte(1, iSeed_) &&
-                           bend - bendoutermax < settings_.bendcutte(1, iSeed_);
+          bool passouter = bend > bendoutermin - settings_.bendcutte(ibend, layerdisk2_, nbendbitsouter == 3) &&
+                           bend < bendoutermax + settings_.bendcutte(ibend, layerdisk2_, nbendbitsouter == 3);
           if (passouter)
             vmbendouter[ibend] = true;
           pttableouter_.push_back(passouter && passptcut);
@@ -267,18 +267,9 @@ void TrackletEngine::setVMPhiBin() {
 }
 
 void TrackletEngine::writeTETable() {
-  if (not std::filesystem::exists(settings_.tablePath())) {
-    int fail = system((string("mkdir -p ") + settings_.tablePath()).c_str());
-    if (fail)
-      throw cms::Exception("BadDir") << __FILE__ << " " << __LINE__ << " could not create directory "
-                                     << settings_.tablePath();
-  }
 
-  const string fnameI = settings_.tablePath() + getName() + "_stubptinnercut.tab";
-  ofstream outstubptinnercut(fnameI);
-  if (outstubptinnercut.fail())
-    throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << fnameI;
-
+  ofstream outstubptinnercut=openfile(settings_.tablePath(), getName() + "_stubptinnercut.tab", __FILE__, __LINE__);
+        
   outstubptinnercut << "{" << endl;
   for (unsigned int i = 0; i < pttableinner_.size(); i++) {
     if (i != 0)
@@ -288,10 +279,7 @@ void TrackletEngine::writeTETable() {
   outstubptinnercut << endl << "};" << endl;
   outstubptinnercut.close();
 
-  const string fnameO = settings_.tablePath() + getName() + "_stubptoutercut.tab";
-  ofstream outstubptoutercut(fnameO);
-  if (outstubptoutercut.fail())
-    throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << fnameI;
+  ofstream outstubptoutercut=openfile(settings_.tablePath(), getName() + "_stubptoutercut.tab", __FILE__, __LINE__);
 
   outstubptoutercut << "{" << endl;
   for (unsigned int i = 0; i < pttableouter_.size(); i++) {

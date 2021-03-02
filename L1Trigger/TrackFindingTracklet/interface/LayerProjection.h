@@ -15,7 +15,6 @@ namespace trklet {
 
     void init(Settings const& settings,
               int projlayer,
-              double rproj,
               int iphiproj,
               int izproj,
               int iphider,
@@ -35,11 +34,6 @@ namespace trklet {
     int projlayer() const {
       assert(valid_);
       return projlayer_;
-    };
-
-    double rproj() const {
-      assert(valid_);
-      return rproj_;
     };
 
     const FPGAWord& fpgaphiproj() const {
@@ -62,11 +56,6 @@ namespace trklet {
       return fpgazprojder_;
     };
 
-    const FPGAWord& fpgaphiprojvm() const {
-      assert(valid_);
-      return fpgaphiprojvm_;
-    };
-
     const FPGAWord& fpgazbin1projvm() const {
       assert(valid_);
       return fpgazbin1projvm_;
@@ -82,9 +71,9 @@ namespace trklet {
       return fpgafinezvm_;
     };
 
-    const FPGAWord& fpgazprojvm() const {
+    const FPGAWord& fpgafinephivm() const {
       assert(valid_);
-      return fpgazprojvm_;
+      return fpgafinephivm_;
     };
 
     double phiproj() const {
@@ -139,12 +128,10 @@ namespace trklet {
     FPGAWord fpgaphiprojder_;
     FPGAWord fpgazprojder_;
 
-    FPGAWord fpgaphiprojvm_;
-    FPGAWord fpgazprojvm_;
-
     FPGAWord fpgazbin1projvm_;
     FPGAWord fpgazbin2projvm_;
     FPGAWord fpgafinezvm_;
+    FPGAWord fpgafinephivm_;
 
     double phiproj_;
     double zproj_;

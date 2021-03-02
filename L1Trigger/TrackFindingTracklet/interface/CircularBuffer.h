@@ -28,6 +28,9 @@ namespace trklet {
     //Almost full if writer ptr incremented by 1 or 2 is same as read ptr
     bool almostfull() const { return (((wptr_ + 1) % size_) == rptr_) || (((wptr_ + 2) % size_) == rptr_); }
 
+    //Almost full if writer ptr incremented by 1 or 2 is same as read ptr
+    bool nearfull() const { return (((wptr_ + 1) % size_) == rptr_) || (((wptr_ + 2) % size_) == rptr_)  || (((wptr_ + 3) % size_) == rptr_) ; }
+
     //Empty buffer is write ptr is same as read ptr
     bool empty() const { return wptr_ == rptr_; }
 
@@ -47,8 +50,17 @@ namespace trklet {
       assert(!full());
       buffer_[wptr_++] = element;
       wptr_ = wptr_ % size_;
+      assert(wptr_!=rptr_);
     }
 
+    unsigned int rptr() const {
+      return rptr_;
+    }
+    
+    unsigned int wptr() const {
+      return wptr_;
+    }
+    
   private:
     std::vector<T> buffer_;
 

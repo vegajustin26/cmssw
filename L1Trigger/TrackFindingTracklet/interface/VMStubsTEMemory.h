@@ -59,6 +59,7 @@ namespace trklet {
   private:
     int layer_;
     int disk_;
+    int layerdisk_;
     int phibin_;
     VMStubsTEMemory* other_;
     bool overlap_;

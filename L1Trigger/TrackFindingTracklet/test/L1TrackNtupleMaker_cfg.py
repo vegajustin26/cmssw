@@ -28,7 +28,8 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.MessageLogger.L1track=dict()
+process.MessageLogger.categories.append('Tracklet')
+process.MessageLogger.categories.append('L1track')
 process.MessageLogger.Tracklet = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 
 if GEOMETRY == "D49": 
@@ -86,7 +87,7 @@ process.Timing = cms.Service("Timing", summaryOnly = cms.untracked.bool(True))
 # L1 tracking: remake stubs?
 ############################################################
 
-#process.load('L1Trigger.TrackTrigger.TrackTrigger_cff')
+process.load('L1Trigger.TrackTrigger.TrackTrigger_cff')
 #from L1Trigger.TrackTrigger.TTStubAlgorithmRegister_cfi import *
 #process.load("SimTracker.TrackTriggerAssociation.TrackTriggerAssociator_cff")
 
@@ -95,6 +96,7 @@ process.Timing = cms.Service("Timing", summaryOnly = cms.untracked.bool(True))
 
 #process.TTClusterStub = cms.Path(process.TrackTriggerClustersStubs)
 #process.TTClusterStubTruth = cms.Path(process.TrackTriggerAssociatorClustersStubs) 
+
 
 ############################################################
 # L1 tracking
@@ -189,6 +191,23 @@ process.L1TrackNtuple = cms.EDAnalyzer('L1TrackNtupleMaker',
 
 process.ana = cms.Path(process.L1TrackNtuple)
 
+process.load( 'L1Trigger.TrackerDTC.ProducerED_cff' )
+process.load( 'L1Trigger.TrackerDTC.ProducerES_cff' )
+
+#--- Load code that produces DTCStubs
+# load Track Trigger Configuration
+process.load( 'L1Trigger.TrackerDTC.ProducerES_cff' )
+# load code that produces DTCStubs
+process.load( 'L1Trigger.TrackerDTC.ProducerED_cff' )
+# load code that analyzes DTCStubs
+process.load( 'L1Trigger.TrackerDTC.Analyzer_cff' )
+#process.TrackTriggerSetup.FrontEnd.BendCut=5.0
+#process.TrackTriggerSetup.Hybrid.MinPt=1.0
+process.dtc = cms.Path( process.TrackerDTCProducer )#* process.TrackerDTCAnalyzer )
+
+
+
+
 # use this if you want to re-run the stub making
 # process.schedule = cms.Schedule(process.TTClusterStub,process.TTClusterStubTruth,process.TTTracksEmulationWithTruth,process.ana)
 
@@ -196,7 +215,7 @@ process.ana = cms.Path(process.L1TrackNtuple)
 # process.schedule = cms.Schedule(process.TTClusterStubTruth,process.TTTracksEmulationWithTruth,process.ana)
 
 # use this to only run tracking + track associator
-process.schedule = cms.Schedule(process.TTTracksEmulationWithTruth,process.ana)
+process.schedule = cms.Schedule(process.dtc,process.TTTracksEmulationWithTruth,process.ana)
 
 
 ############################################################

@@ -5,6 +5,7 @@
 
 #include "L1Trigger/TrackFindingTracklet/interface/InputLinkMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/AllInnerStubsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsTEMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/StubPairsMemory.h"
@@ -37,6 +38,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
+#include "L1Trigger/TrackFindingTracklet/interface/VMRouterPhiCorrTable.h"
 
 using namespace std;
 using namespace trklet;
@@ -51,44 +53,136 @@ Sector::Sector(unsigned int i, Settings const& settings, Globals* globals) : set
   phimax_ -= M_PI / N_SECTOR;
   phimin_ = reco::reduceRange(phimin_);
   phimax_ = reco::reduceRange(phimax_);
-  if (phimin_ > phimax_)
+  if (phimin_ > phimax_) {
     phimin_ -= 2 * M_PI;
-}
-
-Sector::~Sector() {
-  for (auto& mem : MemoriesV_) {
-    mem->clean();
   }
 }
 
+Sector::~Sector() = default;
+
 bool Sector::addStub(L1TStub stub, string dtc) {
-  bool add = false;
 
-  double phi = stub.phi();
-  double dphi = 0.5 * settings_.dphisectorHG() - M_PI / N_SECTOR;
+  unsigned int layerdisk=stub.layerdisk();
 
-  std::map<string, std::vector<int> >& ILindex = globals_->ILindex();
-  std::vector<int>& tmp = ILindex[dtc];
-  if (tmp.empty()) {
-    for (unsigned int i = 0; i < IL_.size(); i++) {
-      if (IL_[i]->getName().find("_" + dtc) != string::npos) {
-        tmp.push_back(i);
+  double stubphi = stub.phi();
+  if (stubphi-phimin_>M_PI){
+    stubphi-=2*M_PI;
+  }
+
+  if (layerdisk < N_LAYER && globals_->phiCorr(layerdisk) == nullptr) {
+    globals_->phiCorr(layerdisk) = new VMRouterPhiCorrTable(settings_);
+
+    int nbits = 3;
+    if (layerdisk >= N_PSLAYER)
+      nbits = 4;
+    globals_->phiCorr(layerdisk)->init(layerdisk + 1, nbits, 3);
+  }
+  
+  Stub fpgastub(stub, settings_, *globals_);
+
+  if (layerdisk < N_LAYER) {
+    FPGAWord r = fpgastub.r();
+    int bendbin = fpgastub.bend().value();
+    int rbin = (r.value() + (1 << (r.nbits() - 1))) >> (r.nbits() - 3);
+    const VMRouterPhiCorrTable& phiCorrTable = *globals_->phiCorr(layerdisk);
+    int iphicorr = phiCorrTable.getphiCorrValue(bendbin, rbin);
+    fpgastub.setPhiCorr(iphicorr);
+  }
+  
+  FPGAWord phi=fpgastub.phicorr();
+  int ireg=phi.value()>>(phi.nbits()-settings_.nbitsallstubs(layerdisk));
+
+  int nadd=0;
+  for (unsigned int i = 0; i < IL_.size(); i++) {
+    const string& name=IL_[i]->getName();
+    if (name.find("_" + dtc) == string::npos) continue;
+    if ( (name[3]=='L' && name[4]-'1'==(int)layerdisk) ||  (name[3]=='D' && name[4]-'1'==(int)layerdisk-6) ) {
+      if (name[8]-'A'==ireg){
+	IL_[i]->addStub(stub, fpgastub);
+	nadd++;
       }
     }
   }
 
-  if (((phi > phimin_ - dphi) && (phi < phimax_ + dphi)) ||
-      ((phi > 2 * M_PI + phimin_ - dphi) && (phi < 2 * M_PI + phimax_ + dphi))) {
-    Stub fpgastub(stub, settings_, phimin_, phimax_);
-    std::vector<int>& tmp = ILindex[dtc];
-    assert(!tmp.empty());
-    for (int i : tmp) {
-      if (IL_[i]->addStub(settings_, globals_, stub, fpgastub, dtc))
-        add = true;
+  assert(nadd==1);
+
+  if (settings_.writeMem() && isector_ == (int)settings_.writememsect() ) {
+    writeLink(fpgastub);
+  }
+  
+  return true;
+}
+
+void Sector::writeLinkNewEvent(int event) {
+
+  if (DTCLink_ofstreams_.size()==0) {
+    //FIXME should be in settings
+    static string dtcbasenames[12]={"PS10G_1","PS10G_2","PS10G_3","PS10G_4","PS_1","PS_2","2S_1","2S_2","2S_3","2S_4","2S_5","2S_6"};     
+    for (const auto& dtcbasename: dtcbasenames) {
+      for (int neg=0;neg<2;neg++) {
+	string dtcnametmp=(neg==0?"":"neg")+dtcbasename;
+	for (int ab=0;ab<2;ab++) {
+	  string dtcname=dtcnametmp+(ab==0?"_A":"_B");	
+	  string fname = "../data/MemPrints/InputStubs/Link_"+dtcname+"_"+to_string(isector_+1)+".dat";
+	  ofstream* out = new ofstream;
+	  out->open(fname.c_str());
+	  DTCLink_ofstreams_[dtcname] = out;
+	}
+      }
     }
   }
 
-  return add;
+  for(auto& out:DTCLink_ofstreams_){
+    FPGAWord bx(event%8,3,true);
+    (*out.second) << "BX "<<bx.str()<<" Event : "<< event << endl;
+  }
+
+}
+
+void Sector::writeLink(const Stub& fpgastub) {
+
+  //FIXME should be in settings
+  static map<string, vector<int> > dtclayers{
+    {"PS10G_1", {0,6,8,10}},
+    {"PS10G_2", {0,7,9}},
+    {"PS10G_3", {1,7}},
+    {"PS10G_4", {6,8,10}},
+    {"PS_1", {2,7}},
+    {"PS_2", {2,9}},
+    {"2S_1", {3,4}},
+    {"2S_2", {4}},
+    {"2S_3", {5}},
+    {"2S_4", {5,8}},
+    {"2S_5", {6,9}},
+    {"2S_6", {7,10}}
+  };
+  
+  string dtcname=fpgastub.l1tstub()->DTClink();
+  int layerdisk=fpgastub.l1tstub()->layerdisk();
+
+  int start=dtcname.substr(0,3)=="neg"?3:0;
+  
+  string dtcbase=dtcname.substr(start,dtcname.size()-2-start);
+
+  vector<int> layers=dtclayers[dtcbase];
+
+  int lcode=-1;
+  for(unsigned int index=0;index<layers.size();index++) {
+    if (layerdisk==layers[index]) {
+      lcode=index;
+    }
+  }
+  assert(lcode!=-1);
+  
+  assert(DTCLink_ofstreams_.find(dtcname) != DTCLink_ofstreams_.end());
+
+  FPGAWord ldcode(lcode,2,true);
+
+  string dataword = "1|" + ldcode.str() + "|" + fpgastub.str();
+
+  (*DTCLink_ofstreams_.find(dtcname)->second) << dataword << " " << trklet::hexFormat(dataword) << endl;
+
+    
 }
 
 void Sector::addMem(string memType, string memName) {
@@ -96,6 +190,8 @@ void Sector::addMem(string memType, string memName) {
     addMemToVec(IL_, memName, settings_, isector_, phimin_, phimax_);
   } else if (memType == "AllStubs:") {
     addMemToVec(AS_, memName, settings_, isector_);
+  } else if (memType == "AllInnerStubs:") {
+    addMemToVec(AIS_, memName, settings_, isector_);
   } else if (memType == "VMStubsTE:") {
     addMemToVec(VMSTE_, memName, settings_, isector_);
   } else if (memType == "VMStubsME:") {
@@ -226,6 +322,12 @@ void Sector::writeVMSME(bool first) {
 
 void Sector::writeAS(bool first) {
   for (auto& i : AS_) {
+    i->writeStubs(first);
+  }
+}
+
+void Sector::writeAIS(bool first) {
+  for (auto& i : AIS_) {
     i->writeStubs(first);
   }
 }

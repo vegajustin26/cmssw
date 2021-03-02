@@ -11,6 +11,8 @@
 #include <vector>
 #include <unordered_set>
 #include <fstream>
+#include <unordered_map>
+
 
 namespace trklet {
 
@@ -25,6 +27,7 @@ namespace trklet {
   //Memory modules
   class InputLinkMemory;
   class AllStubsMemory;
+  class AllInnerStubsMemory;
   class VMStubsTEMemory;
   class VMStubsMEMemory;
   class StubPairsMemory;
@@ -79,6 +82,7 @@ namespace trklet {
     void writeVMSTE(bool first);
     void writeVMSME(bool first);
     void writeAS(bool first);
+    void writeAIS(bool first);
     void writeSP(bool first);
     void writeST(bool first);
     void writeTPAR(bool first);
@@ -116,18 +120,24 @@ namespace trklet {
     double phimax() const { return phimax_; }
 
     template <typename TV, typename... Args>
-    void addMemToVec(std::vector<std::unique_ptr<TV> >& memvec, const std::string& memName, Args&... args) {
+      void addMemToVec(std::vector<std::unique_ptr<TV> >& memvec, const std::string& memName, Args&... args) {
       memvec.push_back(std::make_unique<TV>(memName, std::forward<Args>(args)...));
       Memories_[memName] = memvec.back().get();
       MemoriesV_.push_back(memvec.back().get());
     }
 
     template <typename TV, typename... Args>
-    void addProcToVec(std::vector<std::unique_ptr<TV> >& procvec, const std::string& procName, Args&... args) {
+      void addProcToVec(std::vector<std::unique_ptr<TV> >& procvec, const std::string& procName, Args&... args) {
       procvec.push_back(std::make_unique<TV>(procName, std::forward<Args>(args)...));
       Processes_[procName] = procvec.back().get();
     }
 
+    void writeLinkNewEvent(int event);
+    void writeLink(const Stub& fpgastub);
+
+
+
+    
   private:
     int isector_;
     Settings const& settings_;
@@ -135,10 +145,11 @@ namespace trklet {
     double phimin_;
     double phimax_;
 
-    std::map<std::string, MemoryBase*> Memories_;
+    std::map<std::string, MemoryBase* > Memories_;
     std::vector<MemoryBase*> MemoriesV_;
     std::vector<std::unique_ptr<InputLinkMemory> > IL_;
     std::vector<std::unique_ptr<AllStubsMemory> > AS_;
+    std::vector<std::unique_ptr<AllInnerStubsMemory> > AIS_;
     std::vector<std::unique_ptr<VMStubsTEMemory> > VMSTE_;
     std::vector<std::unique_ptr<VMStubsMEMemory> > VMSME_;
     std::vector<std::unique_ptr<StubPairsMemory> > SP_;
@@ -152,7 +163,7 @@ namespace trklet {
     std::vector<std::unique_ptr<TrackFitMemory> > TF_;
     std::vector<std::unique_ptr<CleanTrackMemory> > CT_;
 
-    std::map<std::string, ProcessBase*> Processes_;
+    std::map<std::string, ProcessBase* > Processes_;
     std::vector<std::unique_ptr<VMRouter> > VMR_;
     std::vector<std::unique_ptr<VMRouterCM> > VMRCM_;
     std::vector<std::unique_ptr<TrackletEngine> > TE_;
@@ -167,6 +178,9 @@ namespace trklet {
     std::vector<std::unique_ptr<MatchProcessor> > MP_;
     std::vector<std::unique_ptr<FitTrack> > FT_;
     std::vector<std::unique_ptr<PurgeDuplicate> > PD_;
+
+    std::unordered_map<std::string, std::ofstream*> DTCLink_ofstreams_;
+    
   };
 };  // namespace trklet
 #endif

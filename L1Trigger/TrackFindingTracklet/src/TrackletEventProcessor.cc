@@ -1,11 +1,12 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEventProcessor.h"
+#include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/SLHCEvent.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
 #include "L1Trigger/TrackFindingTracklet/interface/HistBase.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletConfigBuilder.h"
 #include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Cabling.h"
 
 #include "DataFormats/Math/interface/deltaPhi.h"
 
@@ -41,6 +42,12 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     throw cms::Exception("Inconsistency") << "t conversion parameter inconsistency\n";
   }
 
+  if (settings_->kphider() != globals_->ITC_L1L2()->der_phiL_final.K()) {
+    throw cms::Exception("Inconsistency") << "t conversion parameter inconsistency:"
+      <<settings_->kphider()/globals_->ITC_L1L2()->der_phiL_final.K()<<"\n";
+  }
+
+  
   if (settings_->debugTracklet()) {
     edm::LogVerbatim("Tracklet") << "========================================================= \n"
                                  << "Conversion factors for global coordinates: \n"
@@ -78,13 +85,49 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     sectors_[i] = make_unique<Sector>(i, *settings_, globals_.get());
   }
 
-  // get the memory modules
-  if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "Will read memory modules file";
+  if (settings_->extended()) {
+ 
+    ifstream inmem(settings_->memoryModulesFile().c_str());
+    assert(inmem.good());
+
+    ifstream inproc(settings_->processingModulesFile().c_str());
+    assert(inproc.good());
+
+    ifstream inwire(settings_->wiresFile().c_str());
+    assert(inwire.good());
+    
+    configure(inwire,inmem,inproc);
+
+  } else {
+    TrackletConfigBuilder config(*settings_);
+
+    //Write configurations to file.
+    if (settings_->writeConfig()){
+      std::ofstream wires=openfile(settings_->tablePath(), "wires.dat", __FILE__, __LINE__);
+      std::ofstream memories=openfile(settings_->tablePath(), "memories.dat", __FILE__, __LINE__);
+      std::ofstream modules=openfile(settings_->tablePath(), "modules.dat", __FILE__, __LINE__);
+      
+      config.writeAll(wires,memories,modules);
+    }
+    
+    std::stringstream wires;
+    std::stringstream memories;
+    std::stringstream modules;
+
+    config.writeAll(wires,memories,modules);
+    configure(wires,memories,modules);
+
   }
 
-  ifstream inmem(settings_->memoryModulesFile().c_str());
-  assert(inmem.good());
+}
+
+
+void TrackletEventProcessor::configure(istream& inwire, istream& inmem, istream& inproc) {
+
+  // get the memory modules
+  if (settings_->debugTracklet()) {
+    edm::LogVerbatim("Tracklet") << "Will read memory modules";
+  }
 
   while (inmem.good()) {
     string memType, memName, size;
@@ -101,11 +144,9 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
 
   // get the processing modules
   if (settings_->debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "Will read processing modules file";
+    edm::LogVerbatim("Tracklet") << "Will read processing modules";
   }
 
-  ifstream inproc(settings_->processingModulesFile().c_str());
-  assert(inproc.good());
 
   while (inproc.good()) {
     string procType, procName;
@@ -125,8 +166,6 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     edm::LogVerbatim("Tracklet") << "Will read wiring information";
   }
 
-  ifstream inwire(settings_->wiresFile().c_str());
-  assert(inwire.good());
 
   while (inwire.good()) {
     string line;
@@ -151,27 +190,11 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     }
   }
 
-  // get the DTC/cabling information
-  ifstream indtc(settings_->DTCLinkLayerDiskFile());
-  assert(indtc.good());
-  string dtc;
-  indtc >> dtc;
-  while (indtc.good()) {
-    vector<int> tmp;
-    dtclayerdisk_[dtc] = tmp;
-    int layerdisk;
-    indtc >> layerdisk;
-    while (layerdisk > 0) {
-      dtclayerdisk_[dtc].push_back(layerdisk);
-      indtc >> layerdisk;
-    }
-    indtc >> dtc;
-  }
-
-  cabling_ = make_unique<Cabling>(settings_->DTCLinkFile(), settings_->moduleCablingFile(), *settings_);
 }
 
+
 void TrackletEventProcessor::event(SLHCEvent& ev) {
+
   globals_->event() = &ev;
 
   tracks_.clear();
@@ -185,127 +208,38 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   }
   cleanTimer_.stop();
 
+  if (settings_->writeMem()) {      
+    sectors_[settings_->writememsect()]->writeLinkNewEvent(eventnum_);
+  }
+
   addStubTimer_.start();
 
+  vector<int> layerstubs(N_LAYER+N_DISK,0);
+  vector<int> layerstubssector(N_SECTOR*(N_LAYER+N_DISK),0);
+  
   for (int j = 0; j < ev.nstubs(); j++) {
     L1TStub stub = ev.stub(j);
 
-    int layer = stub.layer() + 1;
-    int ladder = stub.ladder();
-    int module = stub.module();
+    string dtc=stub.DTClink();
+    unsigned int isector = stub.region();
 
-    string dtc = cabling_->dtc(layer, ladder, module);
-    string dtcbase = dtc.substr(2, dtc.size() - 2);
-    if (dtc[0] == 'n') {
-      dtcbase = dtc.substr(0, 4) + dtc.substr(6, dtc.size() - 6);
+    layerstubs[stub.layerdisk()]++;
+    layerstubssector[isector*(N_LAYER+N_DISK)+stub.layerdisk()]++;
+    
+    sectors_[isector]->addStub(stub, dtc);
+  }
+
+  if (settings_->writeMonitorData("StubsLayerSector")) {
+    for (unsigned int index=0;index<layerstubssector.size();index++) {
+      int layerdisk=index%(N_LAYER+N_DISK);
+      int sector=index/(N_LAYER+N_DISK);
+      globals_->ofstream("stubslayersector.txt") << layerdisk << " " << sector << " " << layerstubssector[index] << endl;
     }
+  }
 
-    cabling_->addphi(dtc, stub.phi(), layer, module);
-
-    double phi = angle0to2pi::make0To2pi(stub.phi() + 0.5 * settings_->dphisectorHG());
-
-    unsigned int isector = N_SECTOR * phi / (2 * M_PI);
-
-    for (unsigned int k = 0; k < N_SECTOR; k++) {
-      int diff = k - isector;
-      if (diff > (int)N_SECTOR / 2)
-        diff -= (int)N_SECTOR;
-      if (diff < (-1) * (int)N_SECTOR / 2)
-        diff += (int)N_SECTOR;
-      if (abs(diff) > 1)
-        continue;
-      double phiminsect =
-          k * 2 * M_PI / N_SECTOR - 0.5 * (settings_->dphisectorHG() - 2 * M_PI / N_SECTOR) - M_PI / N_SECTOR;
-      double dphi = stub.phi() - phiminsect;
-      if (dphi > M_PI)
-        dphi -= 2 * M_PI;
-      while (dphi < 0.0)
-        dphi += 2 * M_PI;
-      if (dphi > settings_->dphisectorHG())
-        continue;
-      bool add = sectors_[k]->addStub(stub, dtcbase);
-
-      static std::map<string, ofstream*> dtcstubs;
-
-      if (settings_->writeMem()) {
-        vector<string> dtcs = cabling_->DTCs();
-        for (const auto& dtc : dtcs) {
-          string dtcbase = dtc.substr(2, dtc.size() - 2);
-          if (dtc[0] == 'n') {
-            dtcbase = dtc.substr(0, 4) + dtc.substr(6, dtc.size() - 6);
-          }
-
-          const string dirIS = settings_->memPath() + "InputStubs/";
-          string fname = dirIS + "Link_";
-          fname += dtcbase;
-          if (dtcstubs.find(dtcbase + "A") != dtcstubs.end())
-            continue;
-          fname += "_A.dat";
-
-          if (not std::filesystem::exists(dirIS)) {
-            int fail = system((string("mkdir -p ") + dirIS).c_str());
-            if (fail)
-              throw cms::Exception("BadDir") << __FILE__ << " " << __LINE__ << " could not create directory " << dirIS;
-          }
-
-          ofstream* out = new ofstream;
-          out->open(fname);
-          if (out->fail())
-            throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << fname;
-          dtcstubs[dtcbase + "A"] = out;
-
-          fname = dirIS + "Link_";
-          fname += dtcbase;
-          if (dtcstubs.find(dtcbase + "B") != dtcstubs.end())
-            continue;
-          fname += "_B.dat";
-          out = new ofstream;
-          out->open(fname);
-          if (out->fail())
-            throw cms::Exception("BadFile") << __FILE__ << " " << __LINE__ << " could not create file " << fname;
-          dtcstubs[dtcbase + "B"] = out;
-        }
-
-        static int oldevent = -1;
-        if (eventnum_ != oldevent) {
-          oldevent = eventnum_;
-          for (auto& dtcstub : dtcstubs) {
-            FPGAWord tmp;
-            tmp.set(eventnum_ % 8, 3);
-            (*(dtcstub.second)) << "BX " << tmp.str() << " Event : " << eventnum_ + 1 << endl;
-          }
-        }
-      }
-
-      if (add && settings_->writeMem() && k == settings_->writememsect()) {
-        Stub fpgastub(stub, *settings_, sectors_[k]->phimin(), sectors_[k]->phimax());
-        FPGAWord phi = fpgastub.phi();
-        int topbit = phi.value() >> (phi.nbits() - 1);
-        std::vector<int> tmp = dtclayerdisk_[dtcbase];
-        int layerdisk = stub.layer() + 1;
-        if (layerdisk > 999) {
-          layerdisk = 10 + abs(stub.disk());
-        }
-        int layerdiskcode = -1;
-        for (unsigned int i = 0; i < tmp.size(); i++) {
-          if (tmp[i] == layerdisk)
-            layerdiskcode = i;
-        }
-        if (layerdiskcode == -1) {
-          edm::LogVerbatim("Tracklet") << "dtcbase layerdisk layer disk : " << dtcbase << " " << layerdisk << " "
-                                       << stub.layer() + 1 << " " << stub.disk();
-        }
-        assert(layerdiskcode >= 0);
-        assert(layerdiskcode < 4);
-        FPGAWord ldcode;
-        ldcode.set(layerdiskcode, 2);
-        string dataword = fpgastub.str() + "|" + ldcode.str() + "|1";
-        if (topbit == 0) {
-          (*dtcstubs[dtcbase + "A"]) << dataword << " " << trklet::hexFormat(dataword) << endl;
-        } else {
-          (*dtcstubs[dtcbase + "B"]) << dataword << " " << trklet::hexFormat(dataword) << endl;
-        }
-      }
+  if (settings_->writeMonitorData("StubsLayer")) {
+    for (unsigned int layerdisk=0;layerdisk<layerstubs.size();layerdisk++) {
+      globals_->ofstream("stubslayer.txt") << layerdisk << " " << layerstubs[layerdisk] << endl;
     }
   }
 
@@ -323,6 +257,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
       sectors_[k]->writeVMSTE(first);
       sectors_[k]->writeVMSME(first);
       sectors_[k]->writeAS(first);
+      sectors_[k]->writeAIS(first);
     }
   }
   VMRouterTimer_.stop();
@@ -489,12 +424,13 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     }
   }
   PDTimer_.stop();
+
 }
 
 void TrackletEventProcessor::printSummary() {
-  if (settings_->writeMonitorData("Cabling")) {
-    cabling_->writephirange();
-  }
+  //if (settings_->writeMonitorData("Cabling")) {
+  //  cabling_->writephirange();
+  //}
 
   if (settings_->bookHistos()) {
     globals_->histograms()->close();

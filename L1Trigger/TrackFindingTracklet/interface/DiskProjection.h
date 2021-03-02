@@ -63,16 +63,6 @@ namespace trklet {
       return fpgarprojder_;
     };
 
-    const FPGAWord& fpgaphiprojvm() const {
-      assert(valid_);
-      return fpgaphiprojvm_;
-    };
-
-    const FPGAWord& fpgarprojvm() const {
-      assert(valid_);
-      return fpgarprojvm_;
-    };
-
     double phiproj() const {
       assert(valid_);
       return phiproj_;
@@ -91,6 +81,11 @@ namespace trklet {
     const FPGAWord& fpgafinervm() const {
       assert(valid_);
       return fpgafinervm_;
+    };
+
+    const FPGAWord& fpgafinephivm() const {
+      assert(valid_);
+      return fpgafinephivm_;
     };
 
     double rproj() const {
@@ -144,12 +139,10 @@ namespace trklet {
     FPGAWord fpgaphiprojder_;
     FPGAWord fpgarprojder_;
 
-    FPGAWord fpgaphiprojvm_;
-    FPGAWord fpgarprojvm_;
-
     FPGAWord fpgarbin1projvm_;
     FPGAWord fpgarbin2projvm_;
     FPGAWord fpgafinervm_;
+    FPGAWord fpgafinephivm_;
 
     FPGAWord fpgabendindex_;
 

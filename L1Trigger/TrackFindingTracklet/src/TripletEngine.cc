@@ -207,10 +207,13 @@ void TripletEngine::execute() {
                 if (settings_.debugTracklet()) {
                   edm::LogVerbatim("Tracklet")
                       << "Stub pair rejected because of stub pt cut bends : "
-                      << benddecode(secondvmstub.bend().value(), secondvmstub.isPSmodule()) << " "
-                      << benddecode(thirdvmstub.bend().value(), thirdvmstub.isPSmodule());
+                      << settings_.benddecode(secondvmstub.bend().value(), layer2_-1, secondvmstub.isPSmodule()) << " "
+                      << settings_.benddecode(thirdvmstub.bend().value(), layer3_-1, thirdvmstub.isPSmodule());
                 }
-                continue;
+
+		//FIXME temporarily commented out until bend table fixed
+                //if (!settings_.writeTripletTables())
+                //  continue;
               }
               if (settings_.writeTripletTables()) {
                 if (index >= table_.size())
@@ -290,8 +293,8 @@ void TripletEngine::execute() {
                 if (settings_.debugTracklet()) {
                   edm::LogVerbatim("Tracklet")
                       << "Stub triplet rejected because of stub pt cut bends : "
-                      << benddecode(secondvmstub.bend().value(), secondvmstub.isPSmodule()) << " "
-                      << benddecode(thirdvmstub.bend().value(), thirdvmstub.isPSmodule());
+                      << settings_.benddecode(secondvmstub.bend().value(), disk2_+5, secondvmstub.isPSmodule()) << " "
+                      << settings_.benddecode(thirdvmstub.bend().value(), layer3_-1, thirdvmstub.isPSmodule());
                 }
                 continue;
               }
@@ -374,8 +377,8 @@ void TripletEngine::execute() {
                 if (settings_.debugTracklet()) {
                   edm::LogVerbatim("Tracklet")
                       << "Stub pair rejected because of stub pt cut bends : "
-                      << benddecode(secondvmstub.bend().value(), secondvmstub.isPSmodule()) << " "
-                      << benddecode(thirdvmstub.bend().value(), thirdvmstub.isPSmodule());
+                      << settings_.benddecode(secondvmstub.bend().value(), layer2_-1, secondvmstub.isPSmodule()) << " "
+                      << settings_.benddecode(thirdvmstub.bend().value(), disk3_+5, thirdvmstub.isPSmodule());
                 }
                 continue;
               }

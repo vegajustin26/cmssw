@@ -211,14 +211,14 @@ void TrackletCalculatorBase::exactprojdisk(double zproj,
 }
 
 void TrackletCalculatorBase::addDiskProj(Tracklet* tracklet, int disk) {
-  FPGAWord fpgar = tracklet->fpgarprojdisk(disk);
+  FPGAWord fpgar = tracklet->diskProj(disk).fpgarproj();
 
   if (fpgar.value() * settings_.krprojshiftdisk() < settings_.rmindiskvm())
     return;
   if (fpgar.value() * settings_.krprojshiftdisk() > settings_.rmaxdisk())
     return;
 
-  FPGAWord fpgaphi = tracklet->fpgaphiprojdisk(disk);
+  FPGAWord fpgaphi = tracklet->diskProj(disk).fpgaphiproj();
 
   int iphivmRaw = fpgaphi.value() >> (fpgaphi.nbits() - 5);
 
@@ -230,8 +230,8 @@ void TrackletCalculatorBase::addDiskProj(Tracklet* tracklet, int disk) {
 bool TrackletCalculatorBase::addLayerProj(Tracklet* tracklet, int layer) {
   assert(layer > 0);
 
-  FPGAWord fpgaz = tracklet->fpgazproj(layer);
-  FPGAWord fpgaphi = tracklet->fpgaphiproj(layer);
+  FPGAWord fpgaz = tracklet->layerProj(layer).fpgazproj();
+  FPGAWord fpgaphi = tracklet->layerProj(layer).fpgaphiproj();
 
   if (fpgaphi.atExtreme())
     edm::LogProblem("Tracklet") << "at extreme! " << fpgaphi.value();
@@ -333,12 +333,12 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
                                            const Stub* outerFPGAStub,
                                            const L1TStub* outerStub) {
   if (settings_.debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "TrackletCalculator " << getName()
+    edm::LogVerbatim("Tracklet") << "TrackletCalculatorBase " << getName()
                                  << " trying stub pair in layer (inner outer): " << innerFPGAStub->layer().value()
                                  << " " << outerFPGAStub->layer().value();
   }
 
-  assert(outerFPGAStub->isBarrel());
+  assert(outerFPGAStub->layerdisk()<N_LAYER);
   assert(layerdisk1_ == (unsigned int)innerFPGAStub->layer().value());
   assert(layerdisk1_ < N_LAYER && layerdisk2_ < N_LAYER);
 
@@ -561,11 +561,18 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   izproj[3] = ITC->zL_3_final.ival();
 
   if (!goodTrackPars(ITC->rinv_final.local_passes(), ITC->z0_final.local_passes())) {
+    if (settings_.debugTracklet()) {
+      edm::LogVerbatim("Tracklet") << getName() << " Failed rinv or z0 cut";
+    }
     return false;
   }
 
-  if (!inSector(iphi0, irinv, phi0approx, rinvapprox))
+  if (!inSector(iphi0, irinv, phi0approx, rinvapprox)) {
+    if (settings_.debugTracklet()) {
+      edm::LogVerbatim("Tracklet") << getName() << " Failed in sector check";
+    }
     return false;
+  }
 
   for (unsigned int i = 0; i < N_LAYER - 2; ++i) {
     //reject projection if z is out of range
@@ -589,7 +596,6 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
 
     layerprojs[i].init(settings_,
                        settings_.projlayers(iSeed_, i),
-                       settings_.rmean(settings_.projlayers(iSeed_, i) - 1),
                        iphiproj[i],
                        izproj[i],
                        ITC->der_phiL_final.ival(),
@@ -602,7 +608,7 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
                        zprojapprox[i],
                        ITC->der_phiL_final.fval(),
                        ITC->der_zL_final.fval(),
-                       !(iSeed_ == 1 || iSeed_ == 2));
+                       !(iSeed_ == 2 || iSeed_ == 3));
   }
 
   iphiprojdisk[0] = ITC->phiD_0_final.ival();
@@ -991,7 +997,6 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
 
     layerprojs[i].init(settings_,
                        i + 1,
-                       settings_.rmean(i),
                        iphiproj[i],
                        izproj[i],
                        ITC->der_phiL_final.ival(),
@@ -1027,7 +1032,7 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
       continue;
 
     diskprojs[i].init(settings_,
-                      i + 1,
+                      settings_.projdisks(iSeed_, i),
                       settings_.zmean(settings_.projdisks(iSeed_, i) - 1),
                       iphiprojdisk[i],
                       irprojdisk[i],
@@ -1113,9 +1118,9 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
                                             const Stub* outerFPGAStub,
                                             const L1TStub* outerStub) {
   //Deal with overlap stubs here
-  assert(outerFPGAStub->isBarrel());
+  assert(outerFPGAStub->layerdisk()<N_LAYER);
 
-  assert(innerFPGAStub->isDisk());
+  assert(innerFPGAStub->layerdisk()>=N_LAYER);
 
   int disk = innerFPGAStub->disk().value();
 
@@ -1365,7 +1370,6 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
 
     layerprojs[i].init(settings_,
                        i + 1,
-                       settings_.rmean(i),
                        iphiproj[i],
                        izproj[i],
                        ITC->der_phiL_final.ival(),
@@ -1393,8 +1397,8 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
       continue;
 
     diskprojs[i].init(settings_,
-                      i + 1,
-                      settings_.zmean(i),
+                      i + 2,
+                      settings_.zmean(i+1),
                       iphiprojdisk[i],
                       irprojdisk[i],
                       ITC->der_phiD_final.ival(),

@@ -17,6 +17,7 @@ namespace trklet {
   class MemoryBase;
   class InputLinkMemory;
   class AllStubsMemory;
+  class AllInnerStubsMemory;
   class VMStubsMEMemory;
   class VMStubsTEMemory;
 
@@ -59,7 +60,8 @@ namespace trklet {
     std::vector<InputLinkMemory*> stubinputs_;
 
     //The all stub memories
-    std::vector<std::pair<char, AllStubsMemory*> > allstubs_;
+    std::vector<AllStubsMemory*> allstubs_;
+    std::vector<std::pair<char,AllInnerStubsMemory*> > allinnerstubs_;
 
     //The VM stubs memories used by the MEs
     std::vector<VMStubsMEMemory*> vmstubsMEPHI_;

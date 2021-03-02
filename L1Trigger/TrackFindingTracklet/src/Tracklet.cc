@@ -249,8 +249,8 @@ std::string Tracklet::vmstrlayer(int layer, unsigned int allstubindex) {
   FPGAWord tmp;
   tmp.set(irinvvm, 5, true, __LINE__, __FILE__);
   std::string oss = index.str() + "|" + layerproj_[layer - 1].fpgazbin1projvm().str() + "|" +
-                    layerproj_[layer - 1].fpgazbin2projvm().str() + "|" + layerproj_[layer - 1].fpgafinezvm().str() +
-                    "|" + tmp.str() + "|" + std::to_string(PSseed());
+    layerproj_[layer - 1].fpgazbin2projvm().str() + "|" + layerproj_[layer - 1].fpgafinezvm().str() 
+    + "|" + layerproj_[layer-1].fpgafinephivm().str() + "|" + tmp.str() + "|" + std::to_string(PSseed());
   return oss;
 }
 
@@ -263,8 +263,8 @@ std::string Tracklet::vmstrdisk(int disk, unsigned int allstubindex) {
     index.set(allstubindex, 7, true, __LINE__, __FILE__);
   }
   std::string oss = index.str() + "|" + diskproj_[disk - 1].fpgarbin1projvm().str() + "|" +
-                    diskproj_[disk - 1].fpgarbin2projvm().str() + "|" + diskproj_[disk - 1].fpgafinervm().str() + "|" +
-                    diskproj_[disk - 1].getBendIndex().str();
+    diskproj_[disk - 1].fpgarbin2projvm().str() + "|" + diskproj_[disk - 1].fpgafinervm().str()
+    + "|" + diskproj_[disk-1].fpgafinephivm().str() + "|" + diskproj_[disk - 1].getBendIndex().str();
   return oss;
 }
 
@@ -822,16 +822,16 @@ Track Tracklet::makeTrack(const vector<const L1TStub*>& l1stubs) {
 }
 
 int Tracklet::layer() const {
-  int l1 = (innerFPGAStub_ && innerFPGAStub_->isBarrel()) ? innerStub_->layer() + 1 : 999,
-      l2 = (middleFPGAStub_ && middleFPGAStub_->isBarrel()) ? middleStub_->layer() + 1 : 999,
-      l3 = (outerFPGAStub_ && outerFPGAStub_->isBarrel()) ? outerStub_->layer() + 1 : 999, l = min(min(l1, l2), l3);
+  int l1 = (innerFPGAStub_ && innerFPGAStub_->layerdisk()<N_LAYER) ? innerStub_->layerdisk() + 1 : 999,
+    l2 = (middleFPGAStub_ && middleFPGAStub_->layerdisk()<N_LAYER) ? middleStub_->layerdisk() + 1 : 999,
+    l3 = (outerFPGAStub_ && outerFPGAStub_->layerdisk()<N_LAYER) ? outerStub_->layerdisk() + 1 : 999, l = min(min(l1, l2), l3);
   return (l < 999 ? l : 0);
 }
 
 int Tracklet::disk() const {
-  int d1 = (innerFPGAStub_ && innerFPGAStub_->isDisk()) ? innerStub_->disk() : 999,
-      d2 = (middleFPGAStub_ && middleFPGAStub_->isDisk()) ? middleStub_->disk() : 999,
-      d3 = (outerFPGAStub_ && outerFPGAStub_->isDisk()) ? outerStub_->disk() : 999, d = 999;
+  int d1 = (innerFPGAStub_ && (innerFPGAStub_->layerdisk()>=N_LAYER)) ? innerStub_->disk() : 999,
+    d2 = (middleFPGAStub_ && (middleFPGAStub_->layerdisk()>=N_LAYER)) ? middleStub_->disk() : 999,
+    d3 = (outerFPGAStub_ && (outerFPGAStub_->layerdisk()>=N_LAYER)) ? outerStub_->disk() : 999, d = 999;
   if (abs(d1) < min(abs(d2), abs(d3)))
     d = d1;
   if (abs(d2) < min(abs(d1), abs(d3)))
@@ -900,9 +900,9 @@ unsigned int Tracklet::calcSeedIndex() const {
   assert(innerFPGAStub_ != nullptr);
   assert(outerFPGAStub_ != nullptr);
   if (middleFPGAStub_ && seedlayer == 2 && abs(seeddisk) == 1) {
-    int l1 = (innerFPGAStub_ && innerFPGAStub_->isBarrel()) ? innerStub_->layer() + 1 : 999,
-        l2 = (middleFPGAStub_ && middleFPGAStub_->isBarrel()) ? middleStub_->layer() + 1 : 999,
-        l3 = (outerFPGAStub_ && outerFPGAStub_->isBarrel()) ? outerStub_->layer() + 1 : 999;
+    int l1 = (innerFPGAStub_ && innerFPGAStub_->layerdisk()<N_LAYER) ? innerStub_->layerdisk() + 1 : 999,
+        l2 = (middleFPGAStub_ && middleFPGAStub_->layerdisk()<N_LAYER) ? middleStub_->layerdisk() + 1 : 999,
+        l3 = (outerFPGAStub_ && outerFPGAStub_->layerdisk()<N_LAYER) ? outerStub_->layerdisk() + 1 : 999;
     if (l1 + l2 + l3 < 1998) {  // If two stubs are layer stubs
       seedindex = 10;           // L2L3D1
     } else {

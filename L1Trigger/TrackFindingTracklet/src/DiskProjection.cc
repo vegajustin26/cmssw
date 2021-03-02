@@ -24,7 +24,7 @@ void DiskProjection::init(Settings const& settings,
                           double rprojapprox,
                           double phiprojderapprox,
                           double rprojderapprox) {
-  assert(abs(projdisk) >= 0);
+  assert(abs(projdisk) > 0);
   assert(abs(projdisk) <= N_DISK);
 
   valid_ = true;
@@ -33,25 +33,23 @@ void DiskProjection::init(Settings const& settings,
 
   projdisk_ = projdisk;
 
+  unsigned int layerdisk = projdisk + N_LAYER - 1;
+  
   assert(iphiproj >= 0);
 
-  fpgaphiproj_.set(iphiproj, settings.nphibitsstub(0), true, __LINE__, __FILE__);
-  int iphivm = (iphiproj >> (settings.nphibitsstub(0) - 5)) & 0x7;
-  if ((abs(projdisk_) % 2) == 1) {
-    iphivm ^= 4;
-  }
-  fpgaphiprojvm_.set(iphivm, 3, true, __LINE__, __FILE__);
-  fpgarproj_.set(irproj, settings.nrbitsstub(6), false, __LINE__, __FILE__);
-  int irvm = irproj >> (13 - 7) & 0xf;
-  fpgarprojvm_.set(irvm, 4, true, __LINE__, __FILE__);
+  fpgaphiproj_.set(iphiproj, settings.nphibitsstub(layerdisk), true, __LINE__, __FILE__);
+
+  fpgarproj_.set(irproj, settings.nrbitsstub(layerdisk), false, __LINE__, __FILE__);
+
   fpgaphiprojder_.set(iphider, settings.nbitsphiprojderL123(), false, __LINE__, __FILE__);
   fpgarprojder_.set(irder, settings.nrbitsprojderdisk(), false, __LINE__, __FILE__);
 
   //TODO the -3 and +3 should be evaluated and efficiency for matching hits checked.
   //This code should be migrated in the ProjectionRouter
-  int rbin1 = 8.0 * (irproj * settings.krprojshiftdisk() - 3 - settings.rmindiskvm()) /
+  double roffset = 3.0;
+  int rbin1 = 8.0 * (irproj * settings.krprojshiftdisk() - roffset - settings.rmindiskvm()) /
               (settings.rmaxdisk() - settings.rmindiskvm());
-  int rbin2 = 8.0 * (irproj * settings.krprojshiftdisk() + 3 - settings.rmindiskvm()) /
+  int rbin2 = 8.0 * (irproj * settings.krprojshiftdisk() + roffset - settings.rmindiskvm()) /
               (settings.rmaxdisk() - settings.rmindiskvm());
 
   if (irproj * settings.krprojshiftdisk() < 20.0) {
@@ -59,8 +57,9 @@ void DiskProjection::init(Settings const& settings,
                               << projdisk_;
   }
 
-  if (rbin1 < 0)
+  if (rbin1 < 0) {
     rbin1 = 0;
+  }
   rbin2 = clamp(rbin2, 0, 7);
 
   assert(rbin1 <= rbin2);
@@ -82,6 +81,11 @@ void DiskProjection::init(Settings const& settings,
 
   fpgafinervm_.set(finer, 4, true, __LINE__, __FILE__);  // fine r postions starting at rbin1
 
+  //fine phi bits
+  int projfinephi = (fpgaphiproj_.value() >> (fpgaphiproj_.nbits() - (settings.nbitsallstubs(N_LAYER+projdisk_-1) + settings.nbitsvmme(N_LAYER+projdisk_-1) + NFINEPHIBITS ))) & ((1<<NFINEPHIBITS)-1);
+
+  fpgafinephivm_.set(projfinephi, NFINEPHIBITS, true, __LINE__, __FILE__);  // fine phi postions
+  
   phiproj_ = phiproj;
   rproj_ = rproj;
   phiprojder_ = phiprojder;

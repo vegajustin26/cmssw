@@ -43,7 +43,7 @@ TrackletCalculator::TrackletCalculator(string name, Settings const& settings, Gl
   }
 
   // write the drinv and invt inverse tables
-  if ((settings_.writeInvTable() || settings_.writeHLSInvTable()) && iTC_ == 0 && iSector_ == 0) {
+  if ((settings_.writeInvTable() || settings_.writeHLSInvTable() || settings_.writeTable() ) && iTC_ == 0 && iSector_ == 0) {
     void (*writeLUT)(const VarInv&, const string&) = nullptr;
     if (settings.writeInvTable()) {  // Verilog version
       writeLUT = [](const VarInv& x, const string& basename) -> void {
@@ -155,6 +155,9 @@ void TrackletCalculator::execute() {
   unsigned int countall = 0;
   unsigned int countsel = 0;
 
+  bool print=(iSector_==3)&&(getName()=="TC_L1L2G");
+  print=false;
+  
   for (auto& stubpair : stubpairs_) {
     if (trackletpars_->nTracklets() >= settings_.ntrackletmax()) {
       edm::LogVerbatim("Tracklet") << "Will break on too many tracklets in " << getName();
@@ -172,8 +175,8 @@ void TrackletCalculator::execute() {
         edm::LogVerbatim("Tracklet") << "TrackletCalculator execute " << getName() << "[" << iSector_ << "]";
       }
 
-      if (innerFPGAStub->isBarrel() && (getName() != "TC_D1L2A" && getName() != "TC_D1L2B")) {
-        if (outerFPGAStub->isDisk()) {
+      if (innerFPGAStub->layerdisk()<N_LAYER && (getName() != "TC_D1L2A" && getName() != "TC_D1L2B")) {
+        if (outerFPGAStub->layerdisk()>=N_LAYER) {
           //overlap seeding
           bool accept = overlapSeeding(outerFPGAStub, outerStub, innerFPGAStub, innerStub);
           if (accept)
@@ -181,16 +184,20 @@ void TrackletCalculator::execute() {
         } else {
           //barrel+barrel seeding
           bool accept = barrelSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
+	  if (print) {
+	    cout << stubpair->getName()<<" i inner outer : "<<countall<<" "<<innerFPGAStub->allStubIndex().value()<<" "
+		 <<outerFPGAStub->allStubIndex().value()<<" accept = "<<accept<<endl;
+	  }
           if (accept)
             countsel++;
         }
       } else {
-        if (outerFPGAStub->isDisk()) {
+        if (outerFPGAStub->layerdisk()>=N_LAYER) {
           //disk+disk seeding
           bool accept = diskSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
           if (accept)
             countsel++;
-        } else if (innerFPGAStub->isDisk()) {
+        } else if (innerFPGAStub->layerdisk()>=N_LAYER) {
           //layer+disk seeding
           bool accept = overlapSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
           if (accept)
