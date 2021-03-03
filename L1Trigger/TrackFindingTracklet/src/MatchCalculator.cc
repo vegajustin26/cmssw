@@ -338,22 +338,22 @@ void MatchCalculator::execute() {
 
       //Perform integer calculations here
 
-      const DiskProjection& diskProj = tracklet->diskProj(disk);
+      const Projection& proj = tracklet->proj(layerdisk_);
       
       int iz = fpgastub->z().value();
-      int iphi = diskProj.fpgaphiproj().value();
+      int iphi = proj.fpgaphiproj().value();
 
       //TODO - need to express interms of constants
       int shifttmp = 6;
-      int iphicorr = (iz * diskProj.fpgaphiprojder().value()) >> shifttmp;
+      int iphicorr = (iz * proj.fpgaphiprojder().value()) >> shifttmp;
 
       iphi += iphicorr;
 
-      int ir = diskProj.fpgarproj().value();
+      int ir = proj.fpgarzproj().value();
 
       //TODO - need to express interms of constants
       int shifttmp2 = 7;
-      int ircorr = (iz * diskProj.fpgarprojder().value()) >> shifttmp2;
+      int ircorr = (iz * proj.fpgarzprojder().value()) >> shifttmp2;
 
       ir += ircorr;
 
@@ -406,9 +406,9 @@ void MatchCalculator::execute() {
             << "\n stub " << stub->z() << " disk " << disk << " " << dz;
       }
 
-      double phiproj = diskProj.phiproj() + dz * diskProj.phiprojder();
+      double phiproj = proj.phiproj() + dz * proj.phiprojder();
 
-      double rproj = diskProj.rproj() + dz * diskProj.rprojder();
+      double rproj = proj.rzproj() + dz * proj.rzprojder();
 
       double deltar = r - rproj;
 
@@ -417,9 +417,9 @@ void MatchCalculator::execute() {
       double dphi = reco::reduceRange(phi - phiproj);
 
       double dphiapprox =
-          reco::reduceRange(phi - (diskProj.phiprojapprox() + dz * diskProj.phiprojderapprox()));
+          reco::reduceRange(phi - (proj.phiprojapprox() + dz * proj.phiprojderapprox()));
 
-      double drapprox = stub->r() - (diskProj.rprojapprox() + dz * diskProj.rprojderapprox());
+      double drapprox = stub->r() - (proj.rzprojapprox() + dz * proj.rzprojderapprox());
 
       double drphi = dphi * stub->r();
       double drphiapprox = dphiapprox * stub->r();

@@ -15,7 +15,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackPars.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Projection.h"
-#include "L1Trigger/TrackFindingTracklet/interface/DiskProjection.h"
 #include "L1Trigger/TrackFindingTracklet/interface/LayerResidual.h"
 #include "L1Trigger/TrackFindingTracklet/interface/DiskResidual.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
@@ -51,7 +50,6 @@ namespace trklet {
              int iz0,
              int it,
 	     Projection projs[N_LAYER+N_DISK],
-             DiskProjection diskprojs[N_PROJ],
              bool disk,
              bool overlap = false);
 
@@ -92,26 +90,11 @@ namespace trklet {
       return proj_[layerdisk].valid();
     }
 
-    const Projection& proj(int layerdisk) const {
+    Projection& proj(int layerdisk) {
       assert(validProj(layerdisk));
       return proj_[layerdisk];
     }
       
-
-    //Disks residuals
-
-    bool validProjDisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return diskproj_[abs(disk) - 1].valid();
-    }
-
-    //Should be const; but setBendIndex method needs to be migrated out of the disk projection
-    DiskProjection& diskProj(int disk) {
-      assert(abs(disk) <= N_DISK);
-      assert(diskproj_[abs(disk) - 1].valid());
-      return diskproj_[abs(disk) - 1];
-    }
-
 
     bool matchdisk(int disk) const {
       assert(abs(disk) <= N_DISK);
@@ -319,8 +302,6 @@ namespace trklet {
 
     Projection proj_[N_LAYER+N_DISK];
     
-    DiskProjection diskproj_[N_DISK];
-
     LayerResidual layerresid_[N_LAYER];
     DiskResidual diskresid_[N_DISK];
 

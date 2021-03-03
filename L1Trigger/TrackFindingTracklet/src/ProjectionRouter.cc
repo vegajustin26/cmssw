@@ -92,27 +92,27 @@ void ProjectionRouter::execute() {
         fpgaphi = tracklet->proj(layerdisk_).fpgaphiproj();
       } else {
         int disk = layerdisk_ - (N_LAYER - 1);
-	DiskProjection& diskProj =  tracklet->diskProj(disk);
-        fpgaphi = diskProj.fpgaphiproj();
+	Projection& proj =  tracklet->proj(layerdisk_);
+        fpgaphi = proj.fpgaphiproj();
 
         //The next lines looks up the predicted bend based on:
         // 1 - r projections
         // 2 - phi derivative
         // 3 - the sign - i.e. if track is forward or backward
-        int rindex = (diskProj.fpgarproj().value() >> (diskProj.fpgarproj().nbits() - nrbits_)) &
+        int rindex = (proj.fpgarzproj().value() >> (proj.fpgarzproj().nbits() - nrbits_)) &
                      ((1 << nrbits_) - 1);
 
-        int phiderindex = (diskProj.fpgaphiprojder().value() >>
-                           (diskProj.fpgaphiprojder().nbits() - nphiderbits_)) &
+        int phiderindex = (proj.fpgaphiprojder().value() >>
+                           (proj.fpgaphiprojder().nbits() - nphiderbits_)) &
                           ((1 << nphiderbits_) - 1);
 
-        int signindex = (diskProj.fpgarprojder().value() < 0);
+        int signindex = (proj.fpgarzprojder().value() < 0);
 
         int bendindex = (signindex << (nphiderbits_ + nrbits_)) + (rindex << (nphiderbits_)) + phiderindex;
 
         int ibendproj = globals_->projectionRouterBendTable()->bendLoookup(disk - 1, bendindex);
 
-        diskProj.setBendIndex(ibendproj);
+        proj.setBendIndex(ibendproj);
       }
 
       unsigned int iphivm =
