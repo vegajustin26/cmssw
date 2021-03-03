@@ -1,46 +1,39 @@
-#ifndef L1Trigger_TrackFindingTracklet_interface_DiskProjection_h
-#define L1Trigger_TrackFindingTracklet_interface_DiskProjection_h
+#ifndef L1Trigger_TrackFindingTracklet_interface_Projection_h
+#define L1Trigger_TrackFindingTracklet_interface_Projection_h
 
 #include "L1Trigger/TrackFindingTracklet/interface/FPGAWord.h"
-
-#include <cassert>
 
 namespace trklet {
 
   class Settings;
 
-  class DiskProjection {
+  class Projection {
   public:
-    DiskProjection() { valid_ = false; }
+    Projection() { valid_ = false; }
 
-    ~DiskProjection() = default;
+    ~Projection() = default;
 
     void init(Settings const& settings,
-              int projdisk,
-              double zproj,
+              unsigned int layerdisk,
               int iphiproj,
-              int irproj,
+              int irzproj,
               int iphider,
-              int irder,
+              int irzder,
               double phiproj,
-              double rproj,
+              double rzproj,
               double phiprojder,
-              double rprojder,
+              double rzprojder,
               double phiprojapprox,
-              double rprojapprox,
+              double rzprojapprox,
               double phiprojderapprox,
-              double rprojderapprox);
+              double rzprojderapprox,
+              bool isPSseed);
 
     bool valid() const { return valid_; }
 
-    int projdisk() const {
+    unsigned int layerdisk() const {
       assert(valid_);
-      return projdisk_;
-    };
-
-    double zproj() const {
-      assert(valid_);
-      return zproj_;
+      return layerdisk_;
     };
 
     const FPGAWord& fpgaphiproj() const {
@@ -48,9 +41,9 @@ namespace trklet {
       return fpgaphiproj_;
     };
 
-    const FPGAWord& fpgarproj() const {
+    const FPGAWord& fpgarzproj() const {
       assert(valid_);
-      return fpgarproj_;
+      return fpgarzproj_;
     };
 
     const FPGAWord& fpgaphiprojder() const {
@@ -58,29 +51,24 @@ namespace trklet {
       return fpgaphiprojder_;
     };
 
-    const FPGAWord& fpgarprojder() const {
+    const FPGAWord& fpgarzprojder() const {
       assert(valid_);
-      return fpgarprojder_;
+      return fpgarzprojder_;
     };
 
-    double phiproj() const {
+    const FPGAWord& fpgarzbin1projvm() const {
       assert(valid_);
-      return phiproj_;
+      return fpgarzbin1projvm_;
     };
 
-    const FPGAWord& fpgarbin1projvm() const {
+    const FPGAWord& fpgarzbin2projvm() const {
       assert(valid_);
-      return fpgarbin1projvm_;
+      return fpgarzbin2projvm_;
     };
 
-    const FPGAWord& fpgarbin2projvm() const {
+    const FPGAWord& fpgafinerzvm() const {
       assert(valid_);
-      return fpgarbin2projvm_;
-    };
-
-    const FPGAWord& fpgafinervm() const {
-      assert(valid_);
-      return fpgafinervm_;
+      return fpgafinerzvm_;
     };
 
     const FPGAWord& fpgafinephivm() const {
@@ -88,9 +76,14 @@ namespace trklet {
       return fpgafinephivm_;
     };
 
-    double rproj() const {
+    double phiproj() const {
       assert(valid_);
-      return rproj_;
+      return phiproj_;
+    };
+
+    double rzproj() const {
+      assert(valid_);
+      return rzproj_;
     };
 
     double phiprojder() const {
@@ -98,9 +91,9 @@ namespace trklet {
       return phiprojder_;
     };
 
-    double rprojder() const {
+    double rzprojder() const {
       assert(valid_);
-      return rprojder_;
+      return rzprojder_;
     };
 
     double phiprojapprox() const {
@@ -108,9 +101,9 @@ namespace trklet {
       return phiprojapprox_;
     };
 
-    double rprojapprox() const {
+    double rzprojapprox() const {
       assert(valid_);
-      return rprojapprox_;
+      return rzprojapprox_;
     };
 
     double phiprojderapprox() const {
@@ -118,44 +111,43 @@ namespace trklet {
       return phiprojderapprox_;
     };
 
-    double rprojderapprox() const {
+    double rzprojderapprox() const {
       assert(valid_);
-      return rprojderapprox_;
+      return rzprojderapprox_;
     };
 
     void setBendIndex(int bendindex) { fpgabendindex_.set(bendindex, 5, true, __LINE__, __FILE__); }
-
+    
     const FPGAWord& getBendIndex() const { return fpgabendindex_; }
 
   protected:
     bool valid_;
 
-    int projdisk_;
-
-    double zproj_;
+    unsigned int layerdisk_;
 
     FPGAWord fpgaphiproj_;
-    FPGAWord fpgarproj_;
+    FPGAWord fpgarzproj_;
     FPGAWord fpgaphiprojder_;
-    FPGAWord fpgarprojder_;
+    FPGAWord fpgarzprojder_;
 
-    FPGAWord fpgarbin1projvm_;
-    FPGAWord fpgarbin2projvm_;
-    FPGAWord fpgafinervm_;
+    FPGAWord fpgarzbin1projvm_;
+    FPGAWord fpgarzbin2projvm_;
+    FPGAWord fpgafinerzvm_;
     FPGAWord fpgafinephivm_;
 
-    FPGAWord fpgabendindex_;
-
     double phiproj_;
-    double rproj_;
+    double rzproj_;
     double phiprojder_;
-    double rprojder_;
+    double rzprojder_;
 
     double phiprojapprox_;
-    double rprojapprox_;
+    double rzprojapprox_;
     double phiprojderapprox_;
-    double rprojderapprox_;
-  };
+    double rzprojderapprox_;
 
+    //used by projections to disks
+    FPGAWord fpgabendindex_;
+    
+  };
 };  // namespace trklet
 #endif

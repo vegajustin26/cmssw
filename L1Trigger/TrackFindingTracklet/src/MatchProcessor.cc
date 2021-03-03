@@ -251,7 +251,7 @@ void MatchProcessor::execute() {
 
             Tracklet* proj = projMem->getTracklet(iproj);
 
-            FPGAWord fpgaphi = barrel_ ? proj->proj(layerdisk_).fpgaphiproj() : proj->diskProj(layerdisk_-N_LAYER+1).fpgaphiproj();
+            FPGAWord fpgaphi = proj->proj(layerdisk_).fpgaphiproj();
 
             unsigned int iphi = (fpgaphi.value() >> (fpgaphi.nbits() - nvmbits_)) & (nvmbins_ - 1);
 
@@ -283,29 +283,30 @@ void MatchProcessor::execute() {
               // 1 - r projections
               // 2 - phi derivative
               // 3 - the sign - i.e. if track is forward or backward
-              int rindex = (proj->diskProj(layerdisk_ - N_LAYER + 1).fpgarproj().value() >>
-                            (proj->diskProj(layerdisk_ - N_LAYER + 1).fpgarproj().nbits() - nrbits_)) &
+
+              int rindex = (proj->proj(layerdisk_).fpgarzproj().value() >> (proj->proj(layerdisk_).fpgarzproj().nbits() - nrbits_)) &
                            ((1 << nrbits_) - 1);
 
-              int phiderindex = (proj->diskProj(layerdisk_ - N_LAYER + 1).fpgaphiprojder().value() >>
-                                 (proj->diskProj(layerdisk_ - N_LAYER + 1).fpgaphiprojder().nbits() - nphiderbits_)) &
+              int phiderindex = (proj->proj(layerdisk_).fpgaphiprojder().value() >>
+                                 (proj->proj(layerdisk_).fpgaphiprojder().nbits() - nphiderbits_)) &
                                 ((1 << nphiderbits_) - 1);
-
-              int signindex = proj->diskProj(layerdisk_ - N_LAYER + 1).fpgarprojder().value() < 0;
+	      
+              int signindex = proj->proj(layerdisk_).fpgarzprojder().value() < 0;
 
               int bendindex = (signindex << (nphiderbits_ + nrbits_)) + (rindex << (nphiderbits_)) + phiderindex;
 
               projrinv = globals_->projectionRouterBendTable()->bendLoookup(layerdisk_ - N_LAYER, bendindex);
 
-              proj->diskProj(layerdisk_ - N_LAYER + 1).setBendIndex(projrinv);
+              proj->proj(layerdisk_).setBendIndex(projrinv);
+
             }
             assert(projrinv >= 0);
 
-            unsigned int slot = barrel_ ? proj->proj(layerdisk_).fpgarzbin1projvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgarbin1projvm().value();
-            bool second = (barrel_ ? proj->proj(layerdisk_).fpgarzbin2projvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgarbin2projvm().value());
+            unsigned int slot = proj->proj(layerdisk_).fpgarzbin1projvm().value();
+            bool second = proj->proj(layerdisk_).fpgarzbin2projvm().value();
 
             unsigned int projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + 3))) & 7;
-            int projfinerz = barrel_ ? proj->proj(layerdisk_).fpgafinerzvm().value() : proj->diskProj(layerdisk_-N_LAYER+1).fpgafinervm().value();
+            int projfinerz = proj->proj(layerdisk_).fpgafinerzvm().value();
 
             bool isPSseed = proj->PSseed();
 
@@ -571,14 +572,15 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
 
     int iz = fpgastub->z().value();
 
-    const DiskProjection& diskProj = tracklet->diskProj(disk);
+    const Projection& proj = tracklet->proj(layerdisk_);
+    
+    int iphi = proj.fpgaphiproj().value();
+    int iphicorr = (iz * proj.fpgaphiprojder().value()) >> icorrshift_;
 
-    int iphi = diskProj.fpgaphiproj().value();
-    int iphicorr = (iz * diskProj.fpgaphiprojder().value()) >> icorrshift_;
     iphi += iphicorr;
 
-    int ir = diskProj.fpgarproj().value();
-    int ircorr = (iz * diskProj.fpgarprojder().value()) >> icorzshift_;
+    int ir = proj.fpgarzproj().value();
+    int ircorr = (iz * proj.fpgarzprojder().value()) >> icorzshift_;
     ir += ircorr;
 
     int ideltaphi = fpgastub->phi().value() - iphi;
@@ -631,15 +633,17 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       assert(std::abs(dz) < settings_.dzmax());
     }
 
-    double phiproj = diskProj.phiproj() + dz * diskProj.phiprojder();
-    double rproj = diskProj.rproj() + dz * diskProj.rprojder();
+    double phiproj = proj.phiproj() + dz * proj.phiprojder();
+    double rproj = proj.rzproj() + dz * proj.rzprojder();
     double deltar = r - rproj;
 
     double dr = stub->r() - rproj;
-    double drapprox = stub->r() - (diskProj.rprojapprox() + dz * diskProj.rprojderapprox());
+    double drapprox = stub->r() - (proj.rzprojapprox() + dz * proj.rzprojderapprox());
 
     double dphi = reco::reduceRange(phi - phiproj);
-    double dphiapprox = reco::reduceRange(phi - (diskProj.phiprojapprox() + dz * diskProj.phiprojderapprox()));
+
+    double dphiapprox =
+        reco::reduceRange(phi - (proj.phiprojapprox() + dz * proj.phiprojderapprox()));
 
     double drphi = dphi * stub->r();
     double drphiapprox = dphiapprox * stub->r();

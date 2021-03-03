@@ -18,9 +18,9 @@ void TrackletProjectionsMemory::addProj(Tracklet* tracklet) {
   if (layer_ != 0 && disk_ == 0)
     assert(tracklet->validProj(layer_-1));
   if (layer_ == 0 && disk_ != 0)
-    assert(tracklet->validProjDisk(disk_));
+    assert(tracklet->validProj(N_LAYER + abs(disk_) -1 ));
   if (layer_ != 0 && disk_ != 0)
-    assert(tracklet->validProj(layer_-1) || tracklet->validProjDisk(disk_));
+    assert(tracklet->validProj(layer_-1) || tracklet->validProj(N_LAYER+abs(disk_)-1));
 
   for (auto& itracklet : tracklets_) {
     if (itracklet == tracklet) {

@@ -505,13 +505,8 @@ double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, const Stub* curStub) {
       (seedindex == 11 && (Layer == 2 || abs(Disk) == 1 || abs(Disk) == 2))) {
     phiproj = stubphi;
     // Otherwise, get projection of tracklet
-  } else if (Layer != 0) {
-    phiproj = curTracklet->proj(Layer-1).phiproj();
-  } else if (Disk != 0) {
-    phiproj = curTracklet->diskProj(Disk).phiproj();
   } else {
-    throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " Layer: " << Layer << "  --  Disk: " << Disk
-                                       << " Stub is not layer or disk in getPhiRes";
+    phiproj = curTracklet->proj(curStub->layerdisk()).phiproj();
   }
   // Calculate residual
   phires = std::abs(stubphi - phiproj);

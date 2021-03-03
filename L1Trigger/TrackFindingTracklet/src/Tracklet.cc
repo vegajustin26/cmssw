@@ -36,7 +36,6 @@ Tracklet::Tracklet(Settings const& settings,
                    int iz0,
                    int it,
                    Projection projs[N_LAYER+N_DISK],
-                   DiskProjection diskprojs[N_PROJ],
                    bool disk,
                    bool overlap)
     : settings_(settings) {
@@ -107,10 +106,10 @@ Tracklet::Tracklet(Settings const& settings,
   for (unsigned int i = 0; i < N_DISK; i++) {
     if (projdisk_[i] == 0)
       continue;
-    if (!diskprojs[i].valid())
+    if (!projs[N_LAYER + projdisk_[i] -1].valid())
       continue;
 
-    diskproj_[projdisk_[i] - 1] = diskprojs[i];
+    proj_[N_LAYER + projdisk_[i] - 1] = projs[N_LAYER + projdisk_[i] -1];
   }
 
   ichisqrphifit_.set(-1, 8, false);
@@ -262,9 +261,9 @@ std::string Tracklet::vmstrdisk(int disk, unsigned int allstubindex) {
   } else {
     index.set(allstubindex, 7, true, __LINE__, __FILE__);
   }
-  std::string oss = index.str() + "|" + diskproj_[disk - 1].fpgarbin1projvm().str() + "|" +
-                    diskproj_[disk - 1].fpgarbin2projvm().str() + "|" + diskproj_[disk - 1].fpgafinervm().str() + "|" +
-                    diskproj_[disk - 1].fpgafinephivm().str() + "|" + diskproj_[disk - 1].getBendIndex().str();
+  std::string oss = index.str() + "|" + proj_[N_LAYER + disk - 1].fpgarzbin1projvm().str() + "|" +
+    proj_[N_LAYER + disk - 1].fpgarzbin2projvm().str() + "|" + proj_[N_LAYER + disk - 1].fpgafinerzvm().str()
+    + "|" + proj_[N_LAYER + disk - 1].fpgafinephivm().str() + "|" + proj_[N_LAYER + disk - 1].getBendIndex().str();
   return oss;
 }
 
@@ -292,10 +291,14 @@ std::string Tracklet::trackletprojstrD(int disk) const {
   }
   tmp.set(trackletIndex_, settings_.nbitstrackletindex(), true, __LINE__, __FILE__);
   FPGAWord tcid;
-  tcid.set(TCIndex_, settings_.nbitstcindex(), true, __LINE__, __FILE__);
-  std::string oss = tcid.str() + "|" + tmp.str() + "|" + diskproj_[abs(disk) - 1].fpgaphiproj().str() + "|" +
-                    diskproj_[abs(disk) - 1].fpgarproj().str() + "|" + diskproj_[abs(disk) - 1].fpgaphiprojder().str() +
-                    "|" + diskproj_[abs(disk) - 1].fpgarprojder().str();
+  if (settings_.extended()) {
+    tcid.set(TCIndex_, 8, true, __LINE__, __FILE__);
+  } else {
+    tcid.set(TCIndex_, 7, true, __LINE__, __FILE__);
+  }
+  std::string oss = tcid.str() + "|" + tmp.str() + "|" + proj_[N_LAYER + abs(disk) - 1].fpgaphiproj().str() + "|" +
+                    proj_[N_LAYER + abs(disk) - 1].fpgarzproj().str() + "|" + proj_[N_LAYER + abs(disk) - 1].fpgaphiprojder().str() +
+                    "|" + proj_[N_LAYER + abs(disk) - 1].fpgarzprojder().str();
   return oss;
 }
 
