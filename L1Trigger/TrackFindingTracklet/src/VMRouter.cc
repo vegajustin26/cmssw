@@ -149,7 +149,7 @@ void VMRouter::execute() {
   //Loop over the input stubs
   for (auto& stubinput : stubinputs_) {
     for (unsigned int i = 0; i < stubinput->nStubs(); i++) {
-      if (allStubCounter > settings_.maxStep("VMR"))
+      if (allStubCounter >= settings_.maxStep("VMR"))
         continue;
       if (allStubCounter > 127)
         continue;

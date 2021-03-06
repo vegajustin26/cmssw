@@ -81,7 +81,7 @@ void ProjectionRouter::execute() {
 
   for (auto& iproj : inputproj_) {
     for (unsigned int i = 0; i < iproj->nTracklets(); i++) {
-      if (allprojcount > settings_.maxStep("PR"))
+      if (allprojcount >= settings_.maxStep("PR"))
         continue;
 
       Tracklet* tracklet = iproj->getTracklet(i);
