@@ -3,6 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include <algorithm>
 
 using namespace std;
 using namespace trklet;
