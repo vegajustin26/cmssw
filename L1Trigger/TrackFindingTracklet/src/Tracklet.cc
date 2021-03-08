@@ -857,13 +857,13 @@ void Tracklet::setTrackletIndex(unsigned int index) {
   assert(index <= settings_.ntrackletmax());
 }
 
-const int Tracklet::getISeed() const {
+int Tracklet::getISeed() const {
   const int iSeed = TCIndex_ >> settings_.nbitsitc();
   assert(iSeed >= 0 && iSeed <= (int)N_SEED);
   return iSeed;
 }
 
-const int Tracklet::getITC() const {
+int Tracklet::getITC() const {
   const int iSeed = getISeed(), iTC = TCIndex_ - (iSeed << settings_.nbitsitc());
   assert(iTC >= 0 && iTC <= 14);
   return iTC;
@@ -874,7 +874,7 @@ void Tracklet::setTrackIndex(int index) {
   assert(index <= (int)settings_.ntrackletmax());
 }
 
-const int Tracklet::trackIndex() const { return trackIndex_; }
+int Tracklet::trackIndex() const { return trackIndex_; }
 
 unsigned int Tracklet::calcSeedIndex() const {
   int seedindex = -1;

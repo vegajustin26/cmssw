@@ -244,11 +244,11 @@ namespace trklet {
 
     int TCID() const { return TCIndex_ * (1 << settings_.nbitstrackletindex()) + trackletIndex_; }
 
-    const int getISeed() const;
-    const int getITC() const;
+    int getISeed() const;
+    int getITC() const;
 
     void setTrackIndex(int index);
-    const int trackIndex() const;
+    int trackIndex() const;
 
     unsigned int PSseed() const { return ((layer() == 1) || (layer() == 2) || (disk() != 0)) ? 1 : 0; }
 
