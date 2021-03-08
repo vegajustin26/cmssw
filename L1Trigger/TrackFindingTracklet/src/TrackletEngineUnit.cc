@@ -88,14 +88,6 @@ void TrackletEngineUnit::step(bool print, int istep, int iTE) {
 
   idphi = idphi & ((1 << nbitsfinephidiff_) - 1);
 
-  if (iSeed_ >= 4) {  //Also use r-position
-    int ir = ((ibin & 3) << 1) + (rzbin >> 2);
-    idphi = (idphi << 3) + ir;
-  }
-
-  if (next_ != 0)
-    rzbin += 8;
-
   unsigned int firstDiskSeed = 4;
   if (iSeed_ >= firstDiskSeed) {  //Also use r-position
     int ibinMask = 3;             //Get two least sign. bits
@@ -106,6 +98,7 @@ void TrackletEngineUnit::step(bool print, int istep, int iTE) {
 
   if (next_ != 0)
     rzbin += (1 << NFINERZBITS);
+
   if ((rzbin < tedata_.rzbinfirst_) || (rzbin - tedata_.rzbinfirst_ > tedata_.rzdiffmax_)) {
     if (settings_->debugTracklet()) {
       edm::LogVerbatim("Tracklet") << " layer-disk stub pair rejected because rbin cut : " << rzbin << " "
