@@ -124,9 +124,10 @@ void Sector::writeLinkNewEvent(int event) {
         string dtcnametmp = (neg == 0 ? "" : "neg") + dtcbasename;
         for (int ab = 0; ab < 2; ab++) {
           string dtcname = dtcnametmp + (ab == 0 ? "_A" : "_B");
-          string fname = "../data/MemPrints/InputStubs/Link_" + dtcname + "_" + to_string(isector_ + 1) + ".dat";
+	  string dirName = settings_.memPath() + "InputStubs/";
+          string fname = dirName + "Link_" + dtcname + "_" + to_string(isector_ + 1) + ".dat";
           ofstream* out = new ofstream;
-          out->open(fname.c_str());
+          openfile(*out, true, dirName,fname, __FILE__, __LINE__);
           DTCLink_ofstreams_[dtcname] = out;
         }
       }
