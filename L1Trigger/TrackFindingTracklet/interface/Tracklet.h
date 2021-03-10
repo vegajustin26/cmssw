@@ -15,7 +15,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackPars.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Projection.h"
-#include "L1Trigger/TrackFindingTracklet/interface/LayerResidual.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Residual.h"
 #include "L1Trigger/TrackFindingTracklet/interface/DiskResidual.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
@@ -113,7 +113,6 @@ namespace trklet {
                   double dphiapprox,
                   double dzapprox,
                   int stubid,
-                  double rstub,
                   const trklet::Stub* stubptr);
 
     void addMatchDisk(int disk,
@@ -136,13 +135,13 @@ namespace trklet {
 
     bool match(int layer) {
       assert(layer > 0 && layer <= N_LAYER);
-      return layerresid_[layer - 1].valid();
+      return resid_[layer - 1].valid();
     }
 
-    const LayerResidual& layerResid(int layer) {
+    const Residual& resid(int layer) {
       assert(layer > 0 && layer <= N_LAYER);
-      assert(layerresid_[layer - 1].valid());
-      return layerresid_[layer - 1];
+      assert(resid_[layer - 1].valid());
+      return resid_[layer - 1];
     }
 
     std::vector<const L1TStub*> getL1Stubs();
@@ -306,7 +305,7 @@ namespace trklet {
 
     Projection proj_[N_LAYER+N_DISK];
     
-    LayerResidual layerresid_[N_LAYER];
+    Residual resid_[N_LAYER];
     DiskResidual diskresid_[N_DISK];
 
     Settings const& settings_;

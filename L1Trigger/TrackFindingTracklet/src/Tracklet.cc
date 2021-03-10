@@ -310,11 +310,10 @@ void Tracklet::addMatch(int layer,
                         double dphiapprox,
                         double dzapprox,
                         int stubid,
-                        double rstub,
                         const trklet::Stub* stubptr) {
   assert(layer > 0 && layer <= N_LAYER);
-  layerresid_[layer - 1].init(
-      settings_, layer, ideltaphi, ideltaz, stubid, dphi, dz, dphiapprox, dzapprox, rstub, stubptr);
+  resid_[layer - 1].init(
+      settings_, layer, ideltaphi, ideltaz, stubid, dphi, dz, dphiapprox, dzapprox, stubptr);
 }
 
 void Tracklet::addMatchDisk(int disk,
@@ -347,8 +346,8 @@ void Tracklet::addMatchDisk(int disk,
 int Tracklet::nMatches() {
   int nmatches = 0;
 
-  for (const auto& ilayerresid : layerresid_) {
-    if (ilayerresid.valid()) {
+  for (const auto& iresid : resid_) {
+    if (iresid.valid()) {
       nmatches++;
     }
   }
@@ -377,9 +376,9 @@ std::string Tracklet::fullmatchstr(int layer) {
   tmp.set(trackletIndex_, settings_.nbitstrackletindex(), true, __LINE__, __FILE__);
   FPGAWord tcid;
   tcid.set(TCIndex_, settings_.nbitstcindex(), true, __LINE__, __FILE__);
-  std::string oss = tcid.str() + "|" + tmp.str() + "|" + layerresid_[layer - 1].fpgastubid().str() + "|" +
-                    layerresid_[layer - 1].stubptr()->r().str() + "|" + layerresid_[layer - 1].fpgaphiresid().str() +
-                    "|" + layerresid_[layer - 1].fpgazresid().str();
+  std::string oss = tcid.str() + "|" + tmp.str() + "|" + resid_[layer - 1].fpgastubid().str() + "|" +
+                    resid_[layer - 1].stubptr()->r().str() + "|" + resid_[layer - 1].fpgaphiresid().str() +
+                    "|" + resid_[layer - 1].fpgarzresid().str();
   return oss;
 }
 
@@ -411,9 +410,9 @@ std::vector<const L1TStub*> Tracklet::getL1Stubs() {
   if (outerStub_)
     tmp.push_back(outerStub_);
 
-  for (const auto& ilayerresid : layerresid_) {
-    if (ilayerresid.valid())
-      tmp.push_back(ilayerresid.stubptr()->l1tstub());
+  for (const auto& iresid : resid_) {
+    if (iresid.valid())
+      tmp.push_back(iresid.stubptr()->l1tstub());
   }
 
   for (const auto& idiskresid : diskresid_) {
@@ -441,19 +440,19 @@ std::map<int, int> Tracklet::getStubIDs() {
   if (barrel_) {
     for (int i = 0; i < N_LAYER; i++) {
       //check barrel
-      if (layerresid_[i].valid()) {
+      if (resid_[i].valid()) {
         // two extra bits to indicate if the matched stub is local or from neighbor
         int location = 1;  // local
-        location <<= layerresid_[i].fpgastubid().nbits();
+        location <<= resid_[i].fpgastubid().nbits();
 
-        stubIDs[1 + i] = layerresid_[i].fpgastubid().value() + location;
+        stubIDs[1 + i] = resid_[i].fpgastubid().value() + location;
       }
 
       //check disk
       if (i >= N_DISK)
         continue;  //i=[0..4] for disks
       if (diskresid_[i].valid()) {
-        if (i == 3 && layerresid_[0].valid() && innerFPGAStub_->layer().value() == 1)
+        if (i == 3 && resid_[0].valid() && innerFPGAStub_->layer().value() == 1)
           continue;  // Don't add D4 if track has L1 stub
         // two extra bits to indicate if the matched stub is local or from neighbor
         int location = 1;  // local
@@ -478,16 +477,16 @@ std::map<int, int> Tracklet::getStubIDs() {
   } else if (disk_) {
     for (int i = 0; i < N_DISK; i++) {
       //check barrel
-      if (layerresid_[i].valid()) {
+      if (resid_[i].valid()) {
         // two extra bits to indicate if the matched stub is local or from neighbor
         int location = 1;  // local
-        location <<= layerresid_[i].fpgastubid().nbits();
+        location <<= resid_[i].fpgastubid().nbits();
 
-        stubIDs[1 + i] = layerresid_[i].fpgastubid().value() + location;
+        stubIDs[1 + i] = resid_[i].fpgastubid().value() + location;
       }
 
       //check disks
-      if (i == 4 && layerresid_[1].valid())
+      if (i == 4 && resid_[1].valid())
         continue;  // Don't add D5 if track has L2 stub
       if (diskresid_[i].valid()) {
         // two extra bits to indicate if the matched stub is local or from neighbor
@@ -522,12 +521,12 @@ std::map<int, int> Tracklet::getStubIDs() {
   } else if (overlap_) {
     for (int i = 0; i < N_DISK; i++) {
       //check barrel
-      if (layerresid_[i].valid()) {
+      if (resid_[i].valid()) {
         // two extra bits to indicate if the matched stub is local or from neighbor
         int location = 1;  // local
-        location <<= layerresid_[i].fpgastubid().nbits();
+        location <<= resid_[i].fpgastubid().nbits();
 
-        stubIDs[1 + i] = layerresid_[i].fpgastubid().value() + location;
+        stubIDs[1 + i] = resid_[i].fpgastubid().value() + location;
       }
 
       //check disks
@@ -537,12 +536,12 @@ std::map<int, int> Tracklet::getStubIDs() {
         location <<= diskresid_[i].fpgastubid().nbits();
 
         if (innerStub_->disk() < 0) {  // if negative overlap
-          if (innerFPGAStub_->layer().value() != 2 || !layerresid_[0].valid() ||
+          if (innerFPGAStub_->layer().value() != 2 || !resid_[0].valid() ||
               i != 3) {  // Don't add D4 if this is an L3L2 track with an L1 stub
             stubIDs[-11 - i] = diskresid_[i].fpgastubid().value() + location;
           }
         } else {
-          if (innerFPGAStub_->layer().value() != 2 || !layerresid_[0].valid() || i != 3) {
+          if (innerFPGAStub_->layer().value() != 2 || !resid_[0].valid() || i != 3) {
             stubIDs[11 + i] = diskresid_[i].fpgastubid().value() + location;
           }
         }
@@ -639,7 +638,7 @@ const std::string Tracklet::layerstubstr(const unsigned layer) const {
   assert(layer < N_LAYER);
 
   std::stringstream oss("");
-  if (!layerresid_[layer].valid())
+  if (!resid_[layer].valid())
     oss << "0|0000000|0000000000|0000000|000000000000|000000000";
   else {
     if (trackIndex_ < 0 || trackIndex_ > (int)settings_.ntrackletmax()) {
@@ -649,10 +648,10 @@ const std::string Tracklet::layerstubstr(const unsigned layer) const {
     const FPGAWord tmp(trackIndex_, settings_.nbitstrackletindex(), true, __LINE__, __FILE__);
     oss << "1|";  // valid bit
     oss << tmp.str() << "|";
-    oss << layerresid_[layer].fpgastubid().str() << "|";
-    oss << layerresid_[layer].stubptr()->r().str() << "|";
-    oss << layerresid_[layer].fpgaphiresid().str() << "|";
-    oss << layerresid_[layer].fpgazresid().str();
+    oss << resid_[layer].fpgastubid().str() << "|";
+    oss << resid_[layer].stubptr()->r().str() << "|";
+    oss << resid_[layer].fpgaphiresid().str() << "|";
+    oss << resid_[layer].fpgarzresid().str();
   }
 
   return oss.str();

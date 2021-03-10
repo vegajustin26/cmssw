@@ -543,7 +543,6 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
                          dphiapprox,
                          dzapprox,
                          (phiregion_ << 7) + fpgastub->stubindex().value(),
-                         stub->r(),
                          fpgastub);
 
       if (settings_.debugTracklet()) {

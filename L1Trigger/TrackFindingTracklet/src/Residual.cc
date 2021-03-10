@@ -1,42 +1,44 @@
-#include "L1Trigger/TrackFindingTracklet/interface/LayerResidual.h"
+#include "L1Trigger/TrackFindingTracklet/interface/Residual.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 using namespace std;
 using namespace trklet;
 
-void LayerResidual::init(Settings const& settings,
-                         int layer,
+void Residual::init(Settings const& settings,
+                         unsigned int layerdisk,
                          int iphiresid,
-                         int izresid,
+                         int irzresid,
                          int istubid,
                          double phiresid,
-                         double zresid,
+                         double rzresid,
                          double phiresidapprox,
-                         double zresidapprox,
-                         double rstub,
+                         double rzresidapprox,
                          const Stub* stubptr) {
-  assert(layer > 0);
-  assert(layer <= N_LAYER);
+  assert(layerdisk < N_LAYER + N_DISK);
 
   if (valid_ && (std::abs(iphiresid) > std::abs(fpgaphiresid_.value())))
     return;
 
   valid_ = true;
 
-  layer_ = layer;
+  layerdisk_ = layerdisk;
 
   fpgaphiresid_.set(iphiresid, settings.phiresidbits(), false, __LINE__, __FILE__);
-  fpgazresid_.set(izresid, settings.zresidbits(), false, __LINE__, __FILE__);
+  if (layerdisk < N_LAYER) {
+    fpgarzresid_.set(irzresid, settings.zresidbits(), false, __LINE__, __FILE__);
+  } else {
+    fpgarzresid_.set(irzresid, settings.rresidbits(), false, __LINE__, __FILE__);
+  }
+
   int nbitsid = 10;
   fpgastubid_.set(istubid, nbitsid, true, __LINE__, __FILE__);
   assert(!fpgaphiresid_.atExtreme());
 
   phiresid_ = phiresid;
-  zresid_ = zresid;
+  rzresid_ = rzresid;
 
   phiresidapprox_ = phiresidapprox;
-  zresidapprox_ = zresidapprox;
+  rzresidapprox_ = rzresidapprox;
 
-  rstub_ = rstub;
   stubptr_ = stubptr;
 }

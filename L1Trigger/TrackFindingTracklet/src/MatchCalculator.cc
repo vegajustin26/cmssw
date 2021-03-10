@@ -327,7 +327,6 @@ void MatchCalculator::execute() {
                            dphiapprox,
                            dzapprox,
                            (phiregion_ << 7) + fpgastub->stubindex().value(),
-                           stub->r(),
                            mergedMatches[j].second);
 
         if (settings_.debugTracklet()) {
