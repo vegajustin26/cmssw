@@ -33,7 +33,7 @@ TrackTrigger_params = cms.PSet (
     ChosenRofPhi     = cms.double( 67.24 ), # critical radius defining region overlap shape in cm
     NumLayers        = cms.int32 (  7    ), # number of detector layers a reconstructbale particle may cross, reduced to 7, 8th layer almost never corssed
     WidthR           = cms.int32 ( 12    ), # number of bits used for stub r - ChosenRofPhi
-    WidthPhi         = cms.int32 ( 14    ), # number of bits used for stub phi w.r.t. phi sector centre
+    WidthPhi         = cms.int32 ( 15    ), # number of bits used for stub phi w.r.t. phi region centre
     WidthZ           = cms.int32 ( 14    )  # number of bits used for stub z
   ),
 
@@ -65,7 +65,7 @@ TrackTrigger_params = cms.PSet (
 
   # Parameter specifying TrackingParticle used for Efficiency measurements
   TrackingParticle = cms.PSet (
-    MinPt       = cms.double(  2.  ), # pt cut in GeV
+    MinPt       = cms.double(  3.  ), # pt cut in GeV
     MaxEta      = cms.double(  2.4 ), # eta cut
     MaxVertR    = cms.double(  1.  ), # cut on vertex pos r in cm
     MaxVertZ    = cms.double( 30.  ), # cut on vertex pos z in cm
@@ -76,6 +76,11 @@ TrackTrigger_params = cms.PSet (
 
   # Fimrware specific Parameter
   Firmware = cms.PSet (
+    WidthDSPa           = cms.int32(   27                ), # width of the 'A' port of an DSP slice
+    WidthDSPb           = cms.int32(   18                ), # width of the 'B' port of an DSP slice
+    WidthDSPc           = cms.int32(   48                ), # width of the 'C' port of an DSP slice
+    WidthAddrBRAM36     = cms.int32(    9                ), # smallest address width of an BRAM36 configured as broadest simple dual port memory
+    WidthAddrBRAM18     = cms.int32(   10                ), # smallest address width of an BRAM18 configured as broadest simple dual port memory
     NumFramesInfra      = cms.int32 (   6                ), # needed gap between events of emp-infrastructure firmware
     FreqLHC             = cms.double(  40.               ), # LHC bunch crossing rate in MHz
     FreqBE              = cms.double( 360.               ), # processing Frequency of DTC & TFP in MHz, has to be integer multiple of FreqLHC
@@ -90,7 +95,11 @@ TrackTrigger_params = cms.PSet (
     MaxPitch            = cms.double(    .01             ), # max strip/pixel pitch of outer tracker sensors in cm
     MaxLength           = cms.double(   2.5              ), # max strip/pixel length of outer tracker sensors in cm
     TiltApproxSlope     = cms.double(   0.886            ), # 
-    TiltApproxIntercept = cms.double(   0.504            )  # 
+    TiltApproxIntercept = cms.double(   0.504            ), # 
+    MindPhi             = cms.double(  0.0001            ), # minimum representable stub phi uncertainty
+    MaxdPhi             = cms.double(  0.01              ), # maximum representable stub phi uncertainty
+    MindZ               = cms.double(  0.1               ), # minimum representable stub z uncertainty
+    MaxdZ               = cms.double( 30.                )  # maximum representable stub z uncertainty
   ),
 
   # Parmeter specifying front-end
@@ -115,13 +124,21 @@ TrackTrigger_params = cms.PSet (
     NumRoutingBlocks      = cms.int32(  2 ), # number of systiloic arrays in stub router firmware
     DepthMemory           = cms.int32( 64 ), # fifo depth in stub router firmware
     WidthRowLUT           = cms.int32(  4 ), # number of row bits used in look up table
-    WidthQoverPt          = cms.int32(  9 ), # number of bits used for stub qOverPt. lut addr is col + bend = 11 => 1 BRAM -> 18 bits for min and max val -> 9
+    WidthInv2R            = cms.int32(  9 ), # number of bits used for stub inv2R. lut addr is col + bend = 11 => 1 BRAM -> 18 bits for min and max val -> 9
     OffsetDetIdDSV        = cms.int32(  1 ), # tk layout det id minus DetSetVec->detId
     OffsetDetIdTP         = cms.int32( -1 ), # tk layout det id minus TrackerTopology lower det id
     OffsetLayerDisks      = cms.int32( 10 ), # offset in layer ids between barrel layer and endcap disks
     OffsetLayerId         = cms.int32(  1 ), # offset between 0 and smallest layer id (barrel layer 1)
     SlotLimitPS           = cms.int32(  6 ), # slot number changing from PS to 2S
     SlotLimit10gbps       = cms.int32(  3 )  # slot number changing from 10 gbps to 5gbps
+  ),
+
+  # Parmeter specifying TFP 
+  TFP = cms.PSet (
+    WidthPhi0  = cms.int32( 12 ), # number of bist used for phi0
+    WidthInv2R = cms.int32( 15 ), # number of bist used for inv2R
+    WidthCot   = cms.int32( 16 ), # number of bist used for cot(theta)
+    WidthZ0    = cms.int32( 12 )  # number of bist used for z0
   ),
 
   # Parmeter specifying GeometricProcessor
@@ -135,90 +152,42 @@ TrackTrigger_params = cms.PSet (
 
   # Parmeter specifying HoughTransform
   HoughTransform = cms.PSet (
-    NumBinsQoverPt = cms.int32(  8 ), # number of used qOverPt bins
-    NumBinsPhiT    = cms.int32( 16 ), # number of used phiT bins
-    MinLayers      = cms.int32(  5 ), # required number of stub layers to form a candidate
-    DepthMemory    = cms.int32( 32 )  # internal fifo depth
+    NumBinsInv2R = cms.int32( 16 ), # number of used inv2R bins
+    NumBinsPhiT  = cms.int32( 32 ), # number of used phiT bins
+    MinLayers    = cms.int32(  5 ), # required number of stub layers to form a candidate
+    DepthMemory  = cms.int32( 32 )  # internal fifo depth
   ),
 
   # Parmeter specifying MiniHoughTransform
   MiniHoughTransform = cms.PSet (
-    NumBinsQoverPt = cms.int32( 2 ), # number of finer qOverPt bins inside HT bin
-    NumBinsPhiT    = cms.int32( 2 ), # number of finer phiT bins inside HT bin
-    NumDLBs        = cms.int32( 2 ), # number of dynamic load balancing steps
-    NumDLBNodes    = cms.int32( 8 ), # number of units per dynamic load balancing step
-    NumDLBChannel  = cms.int32( 2 ), # number of inputs per dynamic load balancing unit
-    MinLayers      = cms.int32( 5 )  # required number of stub layers to form a candidate
+    NumBinsInv2R  = cms.int32( 2 ), # number of finer inv2R bins inside HT bin
+    NumBinsPhiT   = cms.int32( 2 ), # number of finer phiT bins inside HT bin
+    NumDLBs       = cms.int32( 2 ), # number of dynamic load balancing steps
+    NumDLBNodes   = cms.int32( 8 ), # number of units per dynamic load balancing step
+    NumDLBChannel = cms.int32( 2 ), # number of inputs per dynamic load balancing unit
+    MinLayers     = cms.int32( 5 )  # required number of stub layers to form a candidate
   ),
 
   # Parmeter specifying SeedFilter
   SeedFilter = cms.PSet (
-    #BaseDiff  = cms.int32( 7 ), # used z0 and zT bin width = baseZ * 2 ** this
-    BaseDiff  = cms.int32(  6 ), # used z0 and zT bin width = baseZ * 2 ** this
-    MinLayers = cms.int32(  4 ), # required number of stub layers to form a candidate
-    MaxTracks = cms.int32( 16 )  # max number of output tracks per node
+    WidthZT          = cms.int32(  5 ), # number of used zT bins
+    WidthCot         = cms.int32(  5 ), # number of used cot bins
+    MinLayers        = cms.int32(  4 ), # required number of stub layers to form a candidate
+    MaxTracks        = cms.int32( 16 ), # max number of output tracks per node
+    MaxStubsPerLayer = cms.int32(  4 )  # cut on number of stub per layer for input candidates
   ),
 
   # Parmeter specifying KalmanFilter
   KalmanFilter = cms.PSet (
-    NumWorker        = cms.int32(   2 ), # number of kf worker
-    WidthLutInvPhi   = cms.int32(  13 ), # number of bits for internal reciprocal look up
-    WidthLutInvZ     = cms.int32(  12 ), # number of bits for internal reciprocal look up
-    NumTracks        = cms.int32(  16 ), # cut on number of input candidates
-    MinLayers        = cms.int32(   4 ), # required number of stub layers to form a track
-    MaxLayers        = cms.int32(   4 ), # maximum number of  layers added to a track
-    MaxStubsPerLayer = cms.int32(   4 ), # cut on number of stub per layer for input candidates
-    MaxSkippedLayers = cms.int32(   2 ), # maximum allowed skipped layers from inside to outside to form a track
-    BaseShiftr0      = cms.int32(  -3 ),
-    BaseShiftr02     = cms.int32(  -5 ),
-    BaseShiftv0      = cms.int32(  -2 ),
-    BaseShiftS00     = cms.int32(  -1 ),
-    BaseShiftS01     = cms.int32(  -7 ),
-    BaseShiftK00     = cms.int32(  -9 ),
-    BaseShiftK10     = cms.int32( -15 ),
-    BaseShiftR00     = cms.int32(  -2 ),
-    BaseShiftInvR00  = cms.int32( -19 ),
-    BaseShiftChi20   = cms.int32(  -5 ),
-    BaseShiftC00     = cms.int32(   5 ),
-    BaseShiftC01     = cms.int32(  -3 ),
-    BaseShiftC11     = cms.int32(  -7 ),
-    BaseShiftr1      = cms.int32(   2 ),
-    BaseShiftr12     = cms.int32(   5 ),
-    BaseShiftv1      = cms.int32(   3 ),
-    BaseShiftS12     = cms.int32(  -3 ),
-    BaseShiftS13     = cms.int32(  -3 ),
-    BaseShiftK21     = cms.int32( -13 ),
-    BaseShiftK31     = cms.int32( -14 ),
-    BaseShiftR11     = cms.int32(   3 ),
-    BaseShiftInvR11  = cms.int32( -21 ),
-    BaseShiftChi21   = cms.int32(  -5 ),
-    BaseShiftC22     = cms.int32(  -3 ),
-    BaseShiftC23     = cms.int32(  -5 ),
-    BaseShiftC33     = cms.int32(  -3 ),
-    BaseShiftChi2    = cms.int32(  -5 )
+    NumWorker   = cms.int32 ( 2   ), # number of kf worker
+    RangeFactor = cms.double( 2.0 ), # search window of each track parameter in initial uncertainties
+    MinLayers   = cms.int32 ( 4   ), # required number of stub layers to form a track
+    MaxLayers   = cms.int32 ( 4   )  # maximum number of  layers added to a track
   ),
 
   # Parmeter specifying DuplicateRemoval
   DuplicateRemoval = cms.PSet (
-    DepthMemory  = cms.int32( 16 ), # internal memory depth
-    WidthPhi0    = cms.int32( 12 ), # number of bist used for phi0
-    WidthQoverPt = cms.int32( 15 ), # number of bist used for qOverPt
-    WidthCot     = cms.int32( 16 ), # number of bist used for cot(theta)
-    WidthZ0      = cms.int32( 12 )  # number of bist used for z0
-  ),
-
-  # LR
-  LinearRegression = cms.PSet (
-    BaseDiffPhiT    = cms.int32 (  -5    ),
-    BaseDiffQoverPt = cms.int32 (  -5    ),
-    BaseDiffZT      = cms.int32 (  -1    ),
-    BaseDiffCot     = cms.int32 ( -11    ),
-    NumIterations   = cms.int32 (  12    ),
-    MinLayers       = cms.int32 (   4    ),
-    MinLayersPS     = cms.int32 (   2    ),
-    ResidPhi        = cms.double(   .001 ),
-    ResidZ2S        = cms.double(  2.5   ),
-    ResidZPS        = cms.double(   .07  )
+    DepthMemory  = cms.int32( 16 ) # internal memory depth
   )
 
 )

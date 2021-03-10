@@ -122,17 +122,21 @@ namespace trackFindingTracklet {
     auto toFrameStub = [](StubKFin* stub) { return stub->frame(); };
     auto toFrameTrack = [](const TrackKFin& track){ return track.frame(); };
     // dataformat used for track cotTheta wrt eta sector centre
-    const DataFormat& dfCot = dataFormats_->format(Variable::cot, Process::sf);
+    const DataFormat& dfcot = dataFormats_->format(Variable::cot, Process::kfin);
     // dataformat used for track z at raiud chosenRofZ wrt eta sector centre
-    const DataFormat& dfZT = dataFormats_->format(Variable::zT, Process::sf);
-    // dataformat used for track qOverPt in 1 / cm
-    const DataFormat& dfQoverPt = dataFormats_->format(Variable::qOverPt, Process::sf);
+    const DataFormat& dfzT = dataFormats_->format(Variable::zT, Process::kfin);
+    // dataformat used for track inv2R in 1 / cm
+    const DataFormat& dfinv2R = dataFormats_->format(Variable::inv2R, Process::kfin);
     // dataformat used for track phi at radius schoenRofPhi wrt phi sector centre
-    const DataFormat& dfPhiT = dataFormats_->format(Variable::phiT, Process::sf);
+    const DataFormat& dfphiT = dataFormats_->format(Variable::phiT, Process::kfin);
     // dataformat used for stub phi residual wrt track
-    const DataFormat& dfPhi = dataFormats_->format(Variable::phi, Process::sf);
+    const DataFormat& dfphi = dataFormats_->format(Variable::phi, Process::kfin);
     // dataformat used for stub z residual wrt track
-    const DataFormat& dfZ = dataFormats_->format(Variable::z, Process::sf);
+    const DataFormat& dfz = dataFormats_->format(Variable::z, Process::kfin);
+    // dataformat used for stub phi uncertainty
+    const DataFormat& dfdPhi = dataFormats_->format(Variable::z, Process::kfin);
+    // dataformat used for stub z uncertainty
+    const DataFormat& dfdZ = dataFormats_->format(Variable::z, Process::kfin);
     const int numStreamsTracks = setup_->numRegions() * trackBuilderChannel_->numChannels();
     const int numStreamsStubs = numStreamsTracks * setup_->numLayers();
     // empty KFin products
@@ -174,32 +178,32 @@ namespace trackFindingTracklet {
           if (trackId >= dataFormats_->format(Variable::trackId, Process::kfin).range())
             continue;
           // get rz parameter
-          double cot = ttTrackRef->tanL();
-          double zT = ttTrackRef->z0() + setup_->chosenRofZ() * cot;
+          const double cotGlobal = dfcot.digi(ttTrackRef->tanL());
+          const double zTGlobal = dfzT.digi(ttTrackRef->z0() + setup_->chosenRofZ() * cotGlobal);
           int binEta(-1);
           for (; binEta < setup_->numSectorsEta(); binEta++)
-            if (zT < sinh(setup_->boundarieEta(binEta + 1)) * setup_->chosenRofZ())
+            if (zTGlobal < sinh(setup_->boundarieEta(binEta + 1)) * setup_->chosenRofZ())
               break;
           // cut on outer eta sector boundaries
           if (binEta == -1 || binEta == setup_->numSectorsEta())
             continue;
-          cot -= setup_->sectorCot(binEta);
-          zT -= setup_->sectorCot(binEta) * setup_->chosenRofZ();
+          const double cot = cotGlobal - setup_->sectorCot(binEta);
+          const double zT = zTGlobal - setup_->sectorCot(binEta) * setup_->chosenRofZ();
           // cut on eta and |z0| < 15 cm
-          if (!dfZT.inRange(zT) || !dfCot.inRange(cot))
+          if (!dfzT.inRange(zT) || !dfcot.inRange(cot))
             continue;
-          const int binZT = dfZT.toUnsigned(dfZT.integer(zT));
-          const int binCot = dfCot.toUnsigned(dfCot.integer(cot));
-          // get kf layer encoding for this rough r-z track parameter
+          const int binZT = dfzT.toUnsigned(dfzT.integer(zT));
+          const int binCot = dfcot.toUnsigned(dfcot.integer(cot));
+          // get set of kf layers for this rough r-z track parameter
           const vector<int>& layerEncoding = layerEncoding_->layerEncoding(binEta, binZT, binCot);
           // get rphi parameter
-          double qOverPt = ttTrackRef->rInv() / 2.;
+          const double qOverPt = dfinv2R.digi(ttTrackRef->rInv() / 2.);
           // calculcate track phi at radius hybridChosenRofPhi with respect to phi sector centre
-          double phiT = deltaPhi(ttTrackRef->phi() - setup_->hybridChosenRofPhi() * qOverPt - ttTrackRef->phiSector() * setup_->baseRegion());
+          double phiT = dfphiT.digi(deltaPhi(ttTrackRef->phi() - setup_->hybridChosenRofPhi() * qOverPt - ttTrackRef->phiSector() * setup_->baseRegion()));
           const int sectorPhi = phiT < 0. ? 0 : 1; // dirty hack
           phiT -= (sectorPhi - .5) * setup_->baseSector();
           // cut on nonant size and pt
-          if (!dfPhiT.inRange(phiT) || !dfQoverPt.inRange(qOverPt))
+          if (!dfphiT.inRange(phiT) || !dfinv2R.inRange(qOverPt))
             continue;
           // loop over stubs
           TTBV hitPattern(0, setup_->numLayers());
@@ -208,23 +212,25 @@ namespace trackFindingTracklet {
             const GlobalPoint& gp = setup_->stubPos(ttStubRef);
             const double r = gp.perp() - setup_->hybridChosenRofPhi();
             const double phi = deltaPhi(gp.phi() - (ttTrackRef->phi() - qOverPt * gp.perp()));
-            const double z = gp.z() - (ttTrackRef->z0() + ttTrackRef->tanL() * gp.perp());
+            const double z = gp.z() - (ttTrackRef->z0() + cotGlobal * gp.perp());
             // layers consitent with rough r-z track parameters are counted from 0 onwards
             int layer = distance(layerEncoding.begin(), find(layerEncoding.begin(), layerEncoding.end(), setup_->layerId(ttStubRef)));
             // put stubs from layer 7 to layer 6 since layer 7 almost never has stubs
             if (layer >= setup_->numLayers())
               layer = setup_->numLayers() - 1;
             // cut on phi and z residuals
-            if (!dfPhi.inRange(phi) || !dfZ.inRange(z))
+            if (!dfphi.inRange(phi) || !dfz.inRange(z))
               continue;
             hitPattern.set(layer);
             int& nLayerStubs = layerMap[layer];
             // cut on max 4 stubs per layer
-            if (nLayerStubs == setup_->kfMaxStubsPerLayer())
+            if (nLayerStubs == setup_->sfMaxStubsPerLayer())
               continue;
             nLayerStubs++;
             numLayerStubs[layer]++;
-            stubs.emplace_back(ttStubRef, dataFormats_, r, phi, z, trackId, layer);
+            const double dPhi = dfdPhi.digi(setup_->dPhi(ttStubRef, qOverPt));
+            const double dZ = dfdZ.digi(setup_->dZ(ttStubRef, cotGlobal));
+            stubs.emplace_back(ttStubRef, dataFormats_, r, phi, z, dPhi, dZ, trackId, layer);
           }
           const TTBV& maybePattern = layerEncoding_->maybePattern(binEta, binZT, binCot);
           tracks.emplace_back(ttTrackRef, dataFormats_, hitPattern, setup_->layerMap(hitPattern, layerMap), maybePattern, phiT, qOverPt, zT, cot, sectorPhi, binEta, trackId++);

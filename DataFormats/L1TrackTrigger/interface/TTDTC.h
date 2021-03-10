@@ -17,7 +17,7 @@
 class TTDTC {
 public:
   // bit accurate Stub
-  typedef std::bitset<TTBV::S> BV;
+  typedef std::bitset<TTBV::S_> BV;
   // TTStub with bit accurate Stub
   typedef std::pair<TTStubRef, BV> Frame;
   // stub collection transported over an optical link between DTC and TFP

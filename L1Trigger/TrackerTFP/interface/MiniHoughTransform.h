@@ -39,13 +39,13 @@ namespace trackerTFP {
     //
     const DataFormats* dataFormats_;
     //
-    DataFormat qOverPt_;
+    DataFormat inv2R_;
     //
     DataFormat phiT_;
     //
     int region_;
     //
-    int numBinsQoverPt_;
+    int numBinsInv2R_;
     //
     int numCells_;
     //

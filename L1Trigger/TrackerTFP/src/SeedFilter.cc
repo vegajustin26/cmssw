@@ -71,13 +71,6 @@ namespace trackerTFP {
       const int pos = hitPattern.encode(setup_->kfMinLayers());
       for (int layer : maybeLayer)
         hitPattern.set(layer);
-      // no more then 2 skipped layers
-      if (hitPattern.count(0, pos, false) > setup_->kfMaxSkippedLayers())
-        return true;
-      // no 2 skipped layers in a row
-      for (int layer = 0; layer < pos; layer++)
-        if (!hitPattern[layer] && !hitPattern[layer + 1])
-          return true;
       return false;
     };
     auto lessSkippedLayers = [this](const vector<StubSF*>& lhs, const vector<StubSF*>& rhs) {

@@ -35,6 +35,7 @@ namespace trackerDTC {
         pSetGC_(&pSetGeometryConfiguration),
         pSetIdTTStubAlgorithm_(pSetIdTTStubAlgorithm),
         pSetIdGeometryConfiguration_(pSetIdGeometryConfiguration),
+
         // Parameter to check if configured Tracker Geometry is supported
         pSetSG_(iConfig.getParameter<ParameterSet>("SupportedGeometry")),
         sgXMLLabel_(pSetSG_.getParameter<string>("XMLLabel")),
@@ -58,9 +59,9 @@ namespace trackerDTC {
         maxEta_(pSetTMTT_.getParameter<double>("MaxEta")),
         chosenRofPhi_(pSetTMTT_.getParameter<double>("ChosenRofPhi")),
         numLayers_(pSetTMTT_.getParameter<int>("NumLayers")),
-        widthR_(pSetTMTT_.getParameter<int>("WidthR")),
-        widthPhi_(pSetTMTT_.getParameter<int>("WidthPhi")),
-        widthZ_(pSetTMTT_.getParameter<int>("WidthZ")),
+        tmttWidthR_(pSetTMTT_.getParameter<int>("WidthR")),
+        tmttWidthPhi_(pSetTMTT_.getParameter<int>("WidthPhi")),
+        tmttWidthZ_(pSetTMTT_.getParameter<int>("WidthZ")),
         // Hybrid specific parameter
         pSetHybrid_(iConfig.getParameter<ParameterSet>("Hybrid")),
         hybridMinPt_(pSetHybrid_.getParameter<double>("MinPt")),
@@ -90,6 +91,11 @@ namespace trackerDTC {
         tpMinLayersPS_(pSetTP_.getParameter<int>("MinLayersPS")),
         // Fimrware specific Parameter
         pSetFW_(iConfig.getParameter<ParameterSet>("Firmware")),
+        widthDSPa_(pSetFW_.getParameter<int>("WidthDSPa")),
+        widthDSPb_(pSetFW_.getParameter<int>("WidthDSPb")),
+        widthDSPc_(pSetFW_.getParameter<int>("WidthDSPc")),
+        widthAddrBRAM36_(pSetFW_.getParameter<int>("WidthAddrBRAM36")),
+        widthAddrBRAM18_(pSetFW_.getParameter<int>("WidthAddrBRAM18")),
         numFramesInfra_(pSetFW_.getParameter<int>("NumFramesInfra")),
         freqLHC_(pSetFW_.getParameter<double>("FreqLHC")),
         freqBE_(pSetFW_.getParameter<double>("FreqBE")),
@@ -105,6 +111,10 @@ namespace trackerDTC {
         maxLength_(pSetFW_.getParameter<double>("MaxLength")),
         tiltApproxSlope_(pSetFW_.getParameter<double>("TiltApproxSlope")),
         tiltApproxIntercept_(pSetFW_.getParameter<double>("TiltApproxIntercept")),
+        mindPhi_(pSetFW_.getParameter<double>("MindPhi")),
+        maxdPhi_(pSetFW_.getParameter<double>("MaxdPhi")),
+        mindZ_(pSetFW_.getParameter<double>("MindZ")),
+        maxdZ_(pSetFW_.getParameter<double>("MaxdZ")),
         // Parmeter specifying front-end
         pSetFE_(iConfig.getParameter<ParameterSet>("FrontEnd")),
         widthBend_(pSetFE_.getParameter<int>("WidthBend")),
@@ -125,13 +135,19 @@ namespace trackerDTC {
         dtcNumRoutingBlocks_(pSetDTC_.getParameter<int>("NumRoutingBlocks")),
         dtcDepthMemory_(pSetDTC_.getParameter<int>("DepthMemory")),
         dtcWidthRowLUT_(pSetDTC_.getParameter<int>("WidthRowLUT")),
-        dtcWidthQoverPt_(pSetDTC_.getParameter<int>("WidthQoverPt")),
+        dtcWidthInv2R_(pSetDTC_.getParameter<int>("WidthInv2R")),
         offsetDetIdDSV_(pSetDTC_.getParameter<int>("OffsetDetIdDSV")),
         offsetDetIdTP_(pSetDTC_.getParameter<int>("OffsetDetIdTP")),
         offsetLayerDisks_(pSetDTC_.getParameter<int>("OffsetLayerDisks")),
         offsetLayerId_(pSetDTC_.getParameter<int>("OffsetLayerId")),
         slotLimitPS_(pSetDTC_.getParameter<int>("SlotLimitPS")),
         slotLimit10gbps_(pSetDTC_.getParameter<int>("SlotLimit10gbps")),
+        // Parmeter specifying TFP
+        pSetTFP_(iConfig.getParameter<ParameterSet>("TFP")),
+        tfpWidthPhi0_(pSetTFP_.getParameter<int>("WidthPhi0")),
+        tfpWidthInv2R_(pSetTFP_.getParameter<int>("WidthInv2R")),
+        tfpWidthCot_(pSetTFP_.getParameter<int>("WidthCot")),
+        tfpWidthZ0_(pSetTFP_.getParameter<int>("WidthZ0")),
         // Parmeter specifying GeometricProcessor
         pSetGP_(iConfig.getParameter<ParameterSet>("GeometricProcessor")),
         numSectorsPhi_(pSetGP_.getParameter<int>("NumSectorsPhi")),
@@ -141,13 +157,13 @@ namespace trackerDTC {
         boundariesEta_(pSetGP_.getParameter<vector<double>>("BoundariesEta")),
         // Parmeter specifying HoughTransform
         pSetHT_(iConfig.getParameter<ParameterSet>("HoughTransform")),
-        htNumBinsQoverPt_(pSetHT_.getParameter<int>("NumBinsQoverPt")),
+        htNumBinsInv2R_(pSetHT_.getParameter<int>("NumBinsInv2R")),
         htNumBinsPhiT_(pSetHT_.getParameter<int>("NumBinsPhiT")),
         htMinLayers_(pSetHT_.getParameter<int>("MinLayers")),
         htDepthMemory_(pSetHT_.getParameter<int>("DepthMemory")),
         // Parmeter specifying MiniHoughTransform
         pSetMHT_(iConfig.getParameter<ParameterSet>("MiniHoughTransform")),
-        mhtNumBinsQoverPt_(pSetMHT_.getParameter<int>("NumBinsQoverPt")),
+        mhtNumBinsInv2R_(pSetMHT_.getParameter<int>("NumBinsInv2R")),
         mhtNumBinsPhiT_(pSetMHT_.getParameter<int>("NumBinsPhiT")),
         mhtNumDLBs_(pSetMHT_.getParameter<int>("NumDLBs")),
         mhtNumDLBNodes_(pSetMHT_.getParameter<int>("NumDLBNodes")),
@@ -155,65 +171,20 @@ namespace trackerDTC {
         mhtMinLayers_(pSetMHT_.getParameter<int>("MinLayers")),
         // Parmeter specifying SeedFilter
         pSetSF_(iConfig.getParameter<ParameterSet>("SeedFilter")),
-        sfBaseDiff_(pSetSF_.getParameter<int>("BaseDiff")),
+        sfWidthZT_(pSetSF_.getParameter<int>("WidthZT")),
+        sfWidthCot_(pSetSF_.getParameter<int>("WidthCot")),
         sfMinLayers_(pSetSF_.getParameter<int>("MinLayers")),
         sfMaxTracks_(pSetSF_.getParameter<int>("MaxTracks")),
+        sfMaxStubsPerLayer_(pSetSF_.getParameter<int>("MaxStubsPerLayer")),
         // Parmeter specifying KalmanFilter
         pSetKF_(iConfig.getParameter<ParameterSet>("KalmanFilter")),
         kfNumWorker_(pSetKF_.getParameter<int>("NumWorker")),
-        kfWidthLutInvPhi_(pSetKF_.getParameter<int>("WidthLutInvPhi")),
-        kfWidthLutInvZ_(pSetKF_.getParameter<int>("WidthLutInvZ")),
-        kfNumTracks_(pSetKF_.getParameter<int>("NumTracks")),
         kfMinLayers_(pSetKF_.getParameter<int>("MinLayers")),
         kfMaxLayers_(pSetKF_.getParameter<int>("MaxLayers")),
-        kfMaxStubsPerLayer_(pSetKF_.getParameter<int>("MaxStubsPerLayer")),
-        kfMaxSkippedLayers_(pSetKF_.getParameter<int>("MaxSkippedLayers")),
-        kfBaseShiftr0_(pSetKF_.getParameter<int>("BaseShiftr0")),
-        kfBaseShiftr02_(pSetKF_.getParameter<int>("BaseShiftr02")),
-        kfBaseShiftv0_(pSetKF_.getParameter<int>("BaseShiftv0")),
-        kfBaseShiftS00_(pSetKF_.getParameter<int>("BaseShiftS00")),
-        kfBaseShiftS01_(pSetKF_.getParameter<int>("BaseShiftS01")),
-        kfBaseShiftK00_(pSetKF_.getParameter<int>("BaseShiftK00")),
-        kfBaseShiftK10_(pSetKF_.getParameter<int>("BaseShiftK10")),
-        kfBaseShiftR00_(pSetKF_.getParameter<int>("BaseShiftR00")),
-        kfBaseShiftInvR00_(pSetKF_.getParameter<int>("BaseShiftInvR00")),
-        kfBaseShiftChi20_(pSetKF_.getParameter<int>("BaseShiftChi20")),
-        kfBaseShiftC00_(pSetKF_.getParameter<int>("BaseShiftC00")),
-        kfBaseShiftC01_(pSetKF_.getParameter<int>("BaseShiftC01")),
-        kfBaseShiftC11_(pSetKF_.getParameter<int>("BaseShiftC11")),
-        kfBaseShiftr1_(pSetKF_.getParameter<int>("BaseShiftr1")),
-        kfBaseShiftr12_(pSetKF_.getParameter<int>("BaseShiftr12")),
-        kfBaseShiftv1_(pSetKF_.getParameter<int>("BaseShiftv1")),
-        kfBaseShiftS12_(pSetKF_.getParameter<int>("BaseShiftS12")),
-        kfBaseShiftS13_(pSetKF_.getParameter<int>("BaseShiftS13")),
-        kfBaseShiftK21_(pSetKF_.getParameter<int>("BaseShiftK21")),
-        kfBaseShiftK31_(pSetKF_.getParameter<int>("BaseShiftK31")),
-        kfBaseShiftR11_(pSetKF_.getParameter<int>("BaseShiftR11")),
-        kfBaseShiftInvR11_(pSetKF_.getParameter<int>("BaseShiftInvR11")),
-        kfBaseShiftChi21_(pSetKF_.getParameter<int>("BaseShiftChi21")),
-        kfBaseShiftC22_(pSetKF_.getParameter<int>("BaseShiftC22")),
-        kfBaseShiftC23_(pSetKF_.getParameter<int>("BaseShiftC23")),
-        kfBaseShiftC33_(pSetKF_.getParameter<int>("BaseShiftC33")),
-        kfBaseShiftChi2_(pSetKF_.getParameter<int>("BaseShiftChi2")),
+        kfRangeFactor_(pSetKF_.getParameter<double>("RangeFactor")),
         // Parmeter specifying DuplicateRemoval
         pSetDR_(iConfig.getParameter<ParameterSet>("DuplicateRemoval")),
-        drDepthMemory_(pSetDR_.getParameter<int>("DepthMemory")),
-        drWidthPhi0_(pSetDR_.getParameter<int>("WidthPhi0")),
-        drWidthQoverPt_(pSetDR_.getParameter<int>("WidthQoverPt")),
-        drWidthCot_(pSetDR_.getParameter<int>("WidthCot")),
-        drWidthZ0_(pSetDR_.getParameter<int>("WidthZ0")),
-        // LR
-        pSetLR_(iConfig.getParameter<ParameterSet>("LinearRegression")),
-        lrBaseDiffPhiT_(pSetLR_.getParameter<int>("BaseDiffPhiT")),
-        lrBaseDiffQoverPt_(pSetLR_.getParameter<int>("BaseDiffQoverPt")),
-        lrBaseDiffZT_(pSetLR_.getParameter<int>("BaseDiffZT")),
-        lrBaseDiffCot_(pSetLR_.getParameter<int>("BaseDiffCot")),
-        lrNumIterations_(pSetLR_.getParameter<int>("NumIterations")),
-        lrMinLayers_(pSetLR_.getParameter<int>("MinLayers")),
-        lrMinLayersPS_(pSetLR_.getParameter<int>("MinLayersPS")),
-        lrResidPhi_(pSetLR_.getParameter<double>("ResidPhi")),
-        lrResidZ2S_(pSetLR_.getParameter<double>("ResidZ2S")),
-        lrResidZPS_(pSetLR_.getParameter<double>("ResidZPS")) {
+        drDepthMemory_(pSetDR_.getParameter<int>("DepthMemory")) {
     configurationSupported_ = true;
     // check if bField is supported
     checkMagneticField();
@@ -589,8 +560,16 @@ namespace trackerDTC {
     const DetId& detId = ttStubRef->getDetId();
     SensorModule* sm = sensorModule(detId + 1);
     const double sigma = sm->pitchCol() * sm->tiltCorrection(cot);
-    const double digi = baseZ_;
-    return sigma + digi;
+    const double digi = tmttBaseZ_;
+    const double dZ = sigma + digi;
+    if (dZ >= maxdZ_ || dZ < mindZ_) {
+      cms::Exception exception("out_of_range");
+      exception.addContext("trackerDTC::Setup::dZ");
+      exception << "Stub z uncertainty " << dZ << " "
+                << "is out of range " << mindZ_ << " to " << maxdZ_ << ".";
+      throw exception;
+    }
+    return dZ;
   }
 
   //
@@ -598,7 +577,7 @@ namespace trackerDTC {
     const DetId& detId = ttStubRef->getDetId();
     SensorModule* sm = sensorModule(detId + 1);
     const double sigma = pow(sm->pitchCol() * sm->tiltCorrection(cot), 2) / 12.;
-    const double digi = pow(baseZ_, 2);
+    const double digi = pow(tmttBaseZ_, 2);
     return sigma + digi;
   }
 
@@ -610,8 +589,16 @@ namespace trackerDTC {
     const double sigma = sm->pitchRow() / r;
     const double scat = 0.00075 * abs(qOverPt) / invPtToDphi_;
     const double extra = sm->barrel() ? 0. : sm->pitchCol() * abs(qOverPt);
-    const double digi = basePhi_;
-    return sigma + scat + extra + digi;
+    const double digi = tmttBasePhi_;
+    const double dPhi = sigma + scat + extra + digi;
+    if (dPhi >= maxdPhi_ || dPhi < mindPhi_) {
+      cms::Exception exception("out_of_range");
+      exception.addContext("trackerDTC::Setup::dPhi");
+      exception << "Stub phi uncertainty " << dPhi << " "
+                << "is out of range " << mindPhi_ << " to " << maxdPhi_ << ".";
+      throw exception;
+    }
+    return dPhi;
   }
 
   //
@@ -622,7 +609,7 @@ namespace trackerDTC {
     const double sigma = pow(sm->pitchRow() / r, 2) / 12.;
     const double scat = pow(0.00075 * qOverPt / invPtToDphi_, 2);
     const double extra = sm->barrel() ? 0. : pow(sm->pitchCol() * qOverPt, 2);
-    const double digi = pow(basePhi_, 2);
+    const double digi = pow(tmttBasePhi_, 2);
     return sigma + scat + extra + digi;
 
   }
@@ -654,6 +641,13 @@ namespace trackerDTC {
     numFrames_ = numFramesPerBX * tmpTFP_ - 1;
     numFramesIO_ = numFramesPerBX * tmpTFP_ - numFramesInfra_;
     numFramesFE_ = numFramesPerBX * tmpFE_ - numFramesInfra_;
+    // dsp
+    widthDSPab_ = widthDSPa_ - 1;
+    widthDSPau_ = widthDSPab_ - 1;
+    widthDSPbb_ = widthDSPb_ - 1;
+    widthDSPbu_ = widthDSPbb_ - 1;
+    widthDSPcb_ = widthDSPc_ - 1;
+    widthDSPcu_ = widthDSPcb_ - 1;
     // common track finding
     invPtToDphi_ = speedOfLight_ * bField_ / 2000.;
     baseRegion_ = 2. * M_PI / numRegions_;
@@ -662,43 +656,33 @@ namespace trackerDTC {
     maxCot_ = sinh(maxEta_);
     maxZT_ = maxCot_ * chosenRofZ_;
     numSectorsEta_ = boundariesEta_.size() - 1;
-    widthSectorEta_ = ceil(log2(numSectorsEta_));
     numSectors_ = numSectorsPhi_ * numSectorsEta_;
-    widthSector_ = ceil(log2(numSectors_));
-    gpNumStreams_ = numRegions_ * numSectors_;
     sectorCots_.reserve(numSectorsEta_);
     for (int eta = 0; eta < numSectorsEta_; eta++)
       sectorCots_.emplace_back((sinh(boundariesEta_.at(eta)) + sinh(boundariesEta_.at(eta + 1))) / 2.);
-    // ht
-    htWidthQoverPt_ = ceil(log2(htNumBinsQoverPt_));
-    htWidthPhiT_ = ceil(log2(htNumBinsPhiT_));
-    const double rangeQoverPt = 2. * invPtToDphi_ / minPt_;
-    htBaseQoverPt_ = rangeQoverPt / htNumBinsQoverPt_;
-    htBasePhiT_ = baseSector_ / htNumBinsPhiT_;
-    htNumStreams_ = numRegions_ * htNumBinsQoverPt_;
     // tmtt
-    widthLayerId_ = ceil(log2(numLayers_));
-    const double baseRgen = htBasePhiT_ / htBaseQoverPt_;
+    const double rangeInv2R = 2. * invPtToDphi_ / minPt_;
+    tmttBaseInv2R_ = rangeInv2R / htNumBinsInv2R_;
+    tmttBasePhiT_ = baseSector_ / htNumBinsPhiT_;
+    const double baseRgen = tmttBasePhiT_ / tmttBaseInv2R_;
     const double rangeR = 2. * max(abs(outerRadius_ - chosenRofPhi_), abs(innerRadius_ - chosenRofPhi_));
-    const int baseShiftR = ceil(log2(rangeR / baseRgen / pow(2., widthR_)));
-    baseR_ = baseRgen * pow(2., baseShiftR);
+    const int baseShiftR = ceil(log2(rangeR / baseRgen / pow(2., tmttWidthR_)));
+    tmttBaseR_ = baseRgen * pow(2., baseShiftR);
     const double rangeZ = 2. * halfLength_;
-    const int baseShiftZ = ceil(log2(rangeZ / baseR_ / pow(2., widthZ_)));
-    baseZ_ = baseR_ * pow(2., baseShiftZ);
-    widthChiZ_ = ceil(log2(neededRangeChiZ_ / baseZ_));
-    const double rangePhiDTC = baseRegion_ + rangeQoverPt * baseR_ * pow(2., widthR_) / 4.;
-    widthPhiDTC_ = widthPhi_ + ceil(log2(rangePhiDTC / baseRegion_));
-    const int baseShiftPhi = ceil(log2(rangePhiDTC / htBasePhiT_ / pow(2., widthPhiDTC_)));
-    basePhi_ = htBasePhiT_ * pow(2., baseShiftPhi);
-    const double neededRangeChiPhi = 2. * htBasePhiT_;
-    widthChiPhi_ = ceil(log2(neededRangeChiPhi / basePhi_));
-    gpNumUnusedBits_ = TTBV::S - 1 - widthR_ - widthPhi_ - widthChiZ_ - 2 * htWidthQoverPt_ - widthLayerId_;
-    htNumUnusedBits_ = TTBV::S - 1 - widthR_ - widthChiPhi_ - widthChiZ_ - htWidthPhiT_ - widthSector_ - widthLayerId_;
+    const int baseShiftZ = ceil(log2(rangeZ / tmttBaseR_ / pow(2., tmttWidthZ_)));
+    tmttBaseZ_ = tmttBaseR_ * pow(2., baseShiftZ);
+    const double rangePhi = baseRegion_ + rangeInv2R * rangeR / 2.;
+    const int baseShiftPhi = ceil(log2(rangePhi / tmttBasePhiT_ / pow(2., tmttWidthPhi_)));
+    tmttBasePhi_ = tmttBasePhiT_ * pow(2., baseShiftPhi);
+    tmttWidthLayer_ = ceil(log2(numLayers_));
+    tmttWidthSectorEta_ = ceil(log2(numSectorsEta_));
+    tmttWidthInv2R_ = ceil(log2(htNumBinsInv2R_));
+    tmttNumUnusedBits_ = TTBV::S_ - tmttWidthLayer_ - 2 * tmttWidthSectorEta_ - tmttWidthR_ - tmttWidthPhi_ - tmttWidthZ_ - 2 *tmttWidthInv2R_ - numSectorsPhi_ - 1;
     // hybrid
-    const double hybridRangeQoverPt = 2. * invPtToDphi_ / hybridMinPt_;
+    const double hybridRangeInv2R = 2. * invPtToDphi_ / hybridMinPt_;
     const double hybridRangeR =
         2. * max(abs(outerRadius_ - hybridChosenRofPhi_), abs(innerRadius_ - hybridChosenRofPhi_));
-    hybridRangePhi_ = baseRegion_ + (hybridRangeR * hybridRangeQoverPt) / 2.;
+    hybridRangePhi_ = baseRegion_ + (hybridRangeR * hybridRangeInv2R) / 2.;
     hybridWidthLayerId_ = ceil(log2(hybridNumLayers_));
     hybridBasesZ_.reserve(SensorModule::NumTypes);
     for (int type = 0; type < SensorModule::NumTypes; type++)
@@ -715,7 +699,7 @@ namespace trackerDTC {
       hybridBasesAlpha_.emplace_back(hybridRangesAlpha_.at(type) / pow(2., hybridWidthsAlpha_.at(type)));
     hybridNumsUnusedBits_.reserve(SensorModule::NumTypes);
     for (int type = 0; type < SensorModule::NumTypes; type++)
-      hybridNumsUnusedBits_.emplace_back(TTBV::S - hybridWidthsR_.at(type) - hybridWidthsZ_.at(type) -
+      hybridNumsUnusedBits_.emplace_back(TTBV::S_ - hybridWidthsR_.at(type) - hybridWidthsZ_.at(type) -
                                          hybridWidthsPhi_.at(type) - hybridWidthsAlpha_.at(type) -
                                          hybridWidthsBend_.at(type) - hybridWidthLayerId_ - 1);
     hybridMaxCot_ = sinh(hybridMaxEta_);
@@ -728,67 +712,20 @@ namespace trackerDTC {
     numModules_ = numDTCs_ * numModulesPerDTC_;
     dtcNumModulesPerRoutingBlock_ = numModulesPerDTC_ / dtcNumRoutingBlocks_;
     dtcNumMergedRows_ = pow(2, widthRow_ - dtcWidthRowLUT_);
-    const double maxRangeQoverPt = max(rangeQoverPt, hybridRangeQoverPt);
-    const int baseShiftQoverPt = htWidthQoverPt_ - dtcWidthQoverPt_ + ceil(log2(maxRangeQoverPt / rangeQoverPt));
-    dtcBaseQoverPt_ = htBaseQoverPt_ * pow(2., baseShiftQoverPt);
+    const double maxRangeInv2R = max(rangeInv2R, hybridRangeInv2R);
+    const int baseShiftInv2R = ceil(log2(htNumBinsInv2R_)) - dtcWidthInv2R_ + ceil(log2(maxRangeInv2R / rangeInv2R));
+    dtcBaseInv2R_ = tmttBaseInv2R_ * pow(2., baseShiftInv2R);
     const int baseDiffM = dtcWidthRowLUT_ - widthRow_;
-    dtcBaseM_ = basePhi_ * pow(2., baseDiffM);
+    dtcBaseM_ = tmttBasePhi_ * pow(2., baseDiffM);
     const double x1 = pow(2, widthRow_) * baseRow_ * maxPitch_ / 2.;
     const double x0 = x1 - pow(2, dtcWidthRowLUT_) * baseRow_ * maxPitch_;
     const double maxM = atan2(x1, innerRadius_) - atan2(x0, innerRadius_);
     dtcWidthM_ = ceil(log2(maxM / dtcBaseM_));
-    dtcNumUnusedBits_ = TTBV::S - 1 - widthR_ - widthPhiDTC_ - widthZ_ - 2 * htWidthQoverPt_ - 2 * widthSectorEta_ -
-                        numSectorsPhi_ - widthLayerId_;
     dtcNumStreams_ = numDTCs_ * numOverlappingRegions_;
     // mht
-    mhtNumCells_ = mhtNumBinsQoverPt_ * mhtNumBinsPhiT_;
-    mhtWidthQoverPt_ = ceil(log2(htNumBinsQoverPt_ * mhtNumBinsQoverPt_));
-    mhtWidthPhiT_ = ceil(log2(htNumBinsPhiT_ * mhtNumBinsPhiT_));
-    mhtBaseQoverPt_ = htBaseQoverPt_ / mhtNumBinsQoverPt_;
-    mhtBasePhiT_ = htBasePhiT_ / mhtNumBinsPhiT_;
-    // SF
-    // DR
-    drBaseQoverPt_ = htBaseQoverPt_ * pow(2, htWidthQoverPt_ - drWidthQoverPt_);
-    drBasePhi0_ = basePhi_ * pow(2, widthPhiDTC_ - drWidthPhi0_);
-    drBaseCot_ = floor(log2(2. * maxCot_ * pow(2, -drWidthCot_)));
-    drBaseZ0_ = baseZ_ * pow(2, ceil(log2(2. * beamWindowZ_ / baseZ_)) - drWidthZ0_);
-    // KF
-    kfWidthLayerCount_ = ceil(log2(kfMaxStubsPerLayer_));
-    kfBasex0_ = drBaseQoverPt_;
-    kfBasex1_ = drBasePhi0_;
-    kfBasex2_ = drBaseCot_;
-    kfBasex3_ = drBaseZ0_;
-    kfBasem0_ = basePhi_;
-    kfBasem1_ = baseZ_;
-    kfBaseH00_ = baseR_;
-    kfBaseH12_ = baseR_;
-    kfBaseChi2_ = pow(2, kfBaseShiftChi2_);
-    kfBaser0_ = pow(2, kfBaseShiftr0_) * kfBasex1_;
-    kfBaser02_ = pow(2, kfBaseShiftr02_) * kfBasex1_ * kfBasex1_;
-    kfBasev0_ = pow(2, kfBaseShiftv0_) * kfBasex1_ * kfBasex1_;
-    kfBaseS00_ = pow(2, kfBaseShiftS00_) * kfBasex0_ * kfBasex1_;
-    kfBaseS01_ = pow(2, kfBaseShiftS01_) * kfBasex1_ * kfBasex1_;
-    kfBaseK00_ = pow(2, kfBaseShiftK00_) * kfBasex0_ / kfBasex1_;
-    kfBaseK10_ = pow(2, kfBaseShiftK10_);
-    kfBaseR00_ = pow(2, kfBaseShiftR00_) * kfBasex1_ * kfBasex1_;
-    kfBaseInvR00_ = pow(2, kfBaseShiftInvR00_) / kfBasex1_ / kfBasex1_;
-    kfBaseChi20_ = pow(2, kfBaseShiftChi20_);
-    kfBaseC00_ = pow(2, kfBaseShiftC00_) * kfBasex0_ * kfBasex0_;
-    kfBaseC01_ = pow(2, kfBaseShiftC01_) * kfBasex0_ * kfBasex1_;
-    kfBaseC11_ = pow(2, kfBaseShiftC11_) * kfBasex1_ * kfBasex1_;
-    kfBaser1_ = pow(2, kfBaseShiftr1_) * kfBasex3_;
-    kfBaser12_ = pow(2, kfBaseShiftr12_) * kfBasex3_ * kfBasex3_;
-    kfBasev1_ = pow(2, kfBaseShiftv1_) * kfBasex3_ * kfBasex3_;
-    kfBaseS12_ = pow(2, kfBaseShiftS12_) * kfBasex2_ * kfBasex3_;
-    kfBaseS13_ = pow(2, kfBaseShiftS13_) * kfBasex3_ * kfBasex3_;
-    kfBaseK21_ = pow(2, kfBaseShiftK21_) * kfBasex2_ / kfBasex3_;
-    kfBaseK31_ = pow(2, kfBaseShiftK31_);
-    kfBaseR11_ = pow(2, kfBaseShiftR11_) * kfBasex3_ * kfBasex3_;
-    kfBaseInvR11_ = pow(2, kfBaseShiftInvR11_) / kfBasex3_ / kfBasex3_;
-    kfBaseChi21_ = pow(2, kfBaseShiftChi21_);
-    kfBaseC22_ = pow(2, kfBaseShiftC22_) * kfBasex2_ * kfBasex2_;
-    kfBaseC23_ = pow(2, kfBaseShiftC23_) * kfBasex2_ * kfBasex3_;
-    kfBaseC33_ = pow(2, kfBaseShiftC33_) * kfBasex3_ * kfBasex3_;
+    mhtNumCells_ = mhtNumBinsInv2R_ * mhtNumBinsPhiT_;
+    //
+    kfWidthLayerCount_ = ceil(log2(sfMaxStubsPerLayer_));
   }
 
   // returns bit accurate position of a stub from a given tfp identifier region [0-8] channel [0-47]
@@ -841,13 +778,13 @@ namespace trackerDTC {
       }
       p = GlobalPoint(GlobalPoint::Cylindrical(r, phi, z));
     } else {
-      bv >>= 2 * htWidthQoverPt_ + 2 * widthSectorEta_ + numSectorsPhi_ + widthLayerId_;
-      double z = (bv.val(widthZ_, 0, true) + .5) * baseZ_;
-      bv >>= widthZ_;
-      double phi = (bv.val(widthPhiDTC_, 0, true) + .5) * basePhi_;
-      bv >>= widthPhiDTC_;
-      double r = (bv.val(widthR_, 0, true) + .5) * baseR_;
-      bv >>= widthR_;
+      bv >>= 2 * tmttWidthInv2R_ + 2 * tmttWidthSectorEta_ + numSectorsPhi_ + tmttWidthLayer_;
+      double z = (bv.val(tmttWidthZ_, 0, true) + .5) * tmttBaseZ_;
+      bv >>= tmttWidthZ_;
+      double phi = (bv.val(tmttWidthPhi_, 0, true) + .5) * tmttBasePhi_;
+      bv >>= tmttWidthPhi_;
+      double r = (bv.val(tmttWidthR_, 0, true) + .5) * tmttBaseR_;
+      bv >>= tmttWidthR_;
       r = r + chosenRofPhi_;
       phi = deltaPhi(phi + tfpRegion * baseRegion_);
       p = GlobalPoint(GlobalPoint::Cylindrical(r, phi, z));

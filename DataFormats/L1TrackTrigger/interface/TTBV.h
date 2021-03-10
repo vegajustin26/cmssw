@@ -19,19 +19,19 @@
  */
 class TTBV {
 public:
-  static constexpr int S = 64;  // Frame width of emp infrastructure f/w, max number of bits a TTBV can handle
+  static constexpr int S_ = 64;  // Frame width of emp infrastructure f/w, max number of bits a TTBV can handle
 
 private:
   bool twos_;          // Two's complement (true) or binary (false)
   int size_;           // number or bits
-  std::bitset<S> bs_;  // underlying storage
+  std::bitset<S_> bs_;  // underlying storage
 
 public:
   // constructor: default
   TTBV() : twos_(false), size_(0), bs_() {}
 
   // constructor: double precision (IEEE 754); from most to least significant bit: 1 bit sign + 11 bit binary exponent + 52 bit binary mantisse
-  TTBV(const double d) : twos_(false), size_(S) {
+  TTBV(const double d) : twos_(false), size_(S_) {
     int index(0);
     const char* c = reinterpret_cast<const char*>(&d);
     for (int iByte = 0; iByte < (int)sizeof(d); iByte++) {
@@ -55,12 +55,12 @@ public:
   TTBV(const std::string& str, bool twos = false) : twos_(twos), size_(str.size()), bs_(str) {}
 
   // constructor: bitset
-  TTBV(const std::bitset<S>& bs, bool twos = false) : twos_(twos), size_(S), bs_(bs) {}
+  TTBV(const std::bitset<S_>& bs, bool twos = false) : twos_(twos), size_(S_), bs_(bs) {}
 
   // constructor: slice reinterpret sign
   TTBV(const TTBV& ttBV, int begin, int end = 0, bool twos = false) : twos_(twos), size_(begin - end), bs_(ttBV.bs_) {
-    bs_ <<= S - begin;
-    bs_ >>= S - begin + end;
+    bs_ <<= S_ - begin;
+    bs_ >>= S_ - begin + end;
   }
 
   // Two's complement (true) or binary (false)
@@ -68,17 +68,17 @@ public:
   // number or bits
   int size() const { return size_; }
   // underlying storage
-  const std::bitset<S>& bs() const { return bs_; }
+  const std::bitset<S_>& bs() const { return bs_; }
 
   // access: single bit
   bool operator[](int pos) const { return bs_[pos]; }
-  std::bitset<S>::reference operator[](int pos) { return bs_[pos]; }
+  std::bitset<S_>::reference operator[](int pos) { return bs_[pos]; }
 
   // access: most significant bit copy
   bool msb() const { return bs_[size_ - 1]; }
 
   // access: most significant bit reference
-  std::bitset<S>::reference msb() { return bs_[size_ - 1]; }
+  std::bitset<S_>::reference msb() { return bs_[size_ - 1]; }
 
   // access: members of underlying bitset
 
@@ -129,17 +129,17 @@ public:
     return bv.flip();
   }
 
-  // operator: bit remove right reference
+  // reference operator: bit remove right
   TTBV& operator>>=(int pos) {
     bs_ >>= pos;
     size_ -= pos;
     return *this;
   }
 
-  // operator: bit remove left reference
+  // reference operator: bit remove left
   TTBV& operator<<=(int pos) {
-    bs_ <<= S - size_ + pos;
-    bs_ >>= S - size_ + pos;
+    bs_ <<= S_ - size_ + pos;
+    bs_ >>= S_ - size_ + pos;
     size_ -= pos;
     return *this;
   }
@@ -156,7 +156,7 @@ public:
     return bv >>= pos;
   }
 
-  // operator: concatenation reference
+  // reference operator: concatenation
   TTBV& operator+=(const TTBV& rhs) {
     bs_ <<= rhs.size();
     bs_ |= rhs.bs_;
@@ -172,7 +172,7 @@ public:
 
   // operator: value increment, overflow protected
   TTBV& operator++() {
-    bs_ = std::bitset<S>(bs_.to_ullong() + 1);
+    bs_ = std::bitset<S_>(bs_.to_ullong() + 1);
     this->resize(size_);
     return *this;
   }
@@ -250,7 +250,7 @@ public:
   }
 
   // conversion: to string
-  std::string str() const { return bs_.to_string().substr(S - size_, S); }
+  std::string str() const { return bs_.to_string().substr(S_ - size_, S_); }
 
   // conversion: range based to string
   std::string str(int start, int end = 0) const { return this->str().substr(size_ - start, size_ - end); }
@@ -342,16 +342,16 @@ public:
 
 private:
   // look up table initializer for powers of 2
-  constexpr std::array<unsigned long long int, S> powersOfTwo() const {
-    std::array<unsigned long long int, S> lut = {};
-    for (int i = 0; i < S; i++)
+  constexpr std::array<unsigned long long int, S_> powersOfTwo() const {
+    std::array<unsigned long long int, S_> lut = {};
+    for (int i = 0; i < S_; i++)
       lut[i] = std::pow(2, i);
     return lut;
   }
 
   // returns 2 ** size_
   unsigned long long int iMax() const {
-    static const std::array<unsigned long long int, S> lut = powersOfTwo();
+    static const std::array<unsigned long long int, S_> lut = powersOfTwo();
     return lut[size_];
   }
 };

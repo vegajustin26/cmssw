@@ -113,8 +113,11 @@ namespace trackerTFP {
   }
 
   void ProducerKFin::produce(Event& iEvent, const EventSetup& iSetup) {
-    const DataFormat& dfCot = dataFormats_->format(Variable::cot, Process::sf);
-    const DataFormat& dfZT = dataFormats_->format(Variable::zT, Process::sf);
+    const DataFormat& dfcot = dataFormats_->format(Variable::cot, Process::kfin);
+    const DataFormat& dfzT = dataFormats_->format(Variable::zT, Process::kfin);
+    const DataFormat& dfinv2R = dataFormats_->format(Variable::inv2R, Process::kfin);
+    const DataFormat& dfdPhi = dataFormats_->format(Variable::dPhi, Process::kfin);
+    const DataFormat& dfdZ = dataFormats_->format(Variable::dZ, Process::kfin);
     // empty KFin products
     TTDTC::Streams streamAcceptedStubs(dataFormats_->numStreams(Process::kf) * setup_->numLayers());
     StreamsTrack streamAcceptedTracks(dataFormats_->numStreams(Process::kf));
@@ -128,7 +131,8 @@ namespace trackerTFP {
       Handle<vector<TTTrack<Ref_Phase2TrackerDigi_>>> handleTTTracks;
       iEvent.getByToken<vector<TTTrack<Ref_Phase2TrackerDigi_>>>(edGetTokenTTTracks_, handleTTTracks);
       const vector<TTTrack<Ref_Phase2TrackerDigi_>>& ttTracks = *handleTTTracks.product();
-      for (int region = 0; region < setup_->numRegions(); region++) {
+      //for (int region = 0; region < setup_->numRegions(); region++) {
+      {const int region = 0;
         // Unpack input SF data into vector
         int nStubsSF(0);
         for (int channel = 0; channel < dataFormats_->numChannel(Process::sf); channel++) {
@@ -155,8 +159,8 @@ namespace trackerTFP {
           const int sectorPhi = ttTrack.phiSector() % setup_->numSectorsPhi();
           deque<FrameTrack>& tracks = dequesTracks[sectorPhi];
           const int binEta = ttTrack.etaSector();
-          const int binZT = dfZT.toUnsigned(dfZT.integer(ttTrack.z0()));
-          const int binCot = dfCot.toUnsigned(dfCot.integer(ttTrack.tanL()));
+          const int binZT = dfzT.toUnsigned(dfzT.integer(ttTrack.z0()));
+          const int binCot = dfcot.toUnsigned(dfcot.integer(ttTrack.tanL()));
           StubSF* stubSF = nullptr;
           TTBV hitPattern(0, setup_->numLayers());
           vector<int> layerCounts(setup_->numLayers(), 0);
@@ -164,7 +168,7 @@ namespace trackerTFP {
             const int layerId = setup_->layerId(ttStubRef);
             const int layerIdKF = layerEncoding_->layerIdKF(binEta, binZT, binCot, layerId);
             hitPattern.set(layerIdKF);
-            if (layerCounts[layerIdKF] == setup_->kfMaxStubsPerLayer())
+            if (layerCounts[layerIdKF] == setup_->sfMaxStubsPerLayer())
               continue;
             layerCounts[layerIdKF]++;
             deque<TTDTC::Frame>& stubs = dequesStubs[sectorPhi * setup_->numLayers() + layerIdKF];
@@ -172,13 +176,18 @@ namespace trackerTFP {
               return (int)ttTrack.trackSeedType() == stub.trackId() && ttStubRef == stub.ttStubRef();
             };
             stubSF = &*find_if(stubsSF.begin(), stubsSF.end(), identical);
-            const StubKFin stubKFin(*stubSF, layerIdKF, ttTrack.hitPattern());
+            const double inv2R = dfinv2R.floating(stubSF->inv2R());
+            const double cot = dfcot.floating(stubSF->cot()) + setup_->sectorCot(binEta);
+            const double dPhi = dfdPhi.digi(setup_->dPhi(ttStubRef, inv2R));
+            const double dZ = dfdZ.digi(setup_->dZ(ttStubRef, cot));
+            const StubKFin stubKFin(*stubSF, dPhi, dZ, ttTrack.hitPattern(), layerIdKF);
             stubs.emplace_back(stubKFin.frame());
           }
           const TTBV& layerMap = setup_->layerMap(hitPattern, layerCounts);
           const TTBV& maybePattern = layerEncoding_->maybePattern(binEta, binZT, binCot);
           TrackKFin track(*stubSF, TTTrackRef(handleTTTracks, i++), hitPattern, layerMap, maybePattern);
           tracks.emplace_back(track.frame());
+          break;
         }
         // transform deques to vectors & emulate truncation
         for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {

@@ -19,7 +19,7 @@ namespace trackerTFP {
     enableTruncation_(iConfig.getParameter<bool>("EnableTruncation")),
     setup_(setup),
     dataFormats_(dataFormats),
-    qOverPt_(dataFormats_->format(Variable::qOverPt, Process::ht)),
+    inv2R_(dataFormats_->format(Variable::inv2R, Process::ht)),
     phiT_(dataFormats_->format(Variable::phiT, Process::ht)),
     region_(region),
     input_(dataFormats_->numChannel(Process::ht), vector<deque<StubGP*>>(dataFormats_->numChannel(Process::gp)))
@@ -44,8 +44,8 @@ namespace trackerTFP {
           stubsGP_.emplace_back(frame, dataFormats_, sectorPhi, sectorEta);
           stub = &stubsGP_.back();
         }
-        for (int binQoverPt = 0; binQoverPt < dataFormats_->numChannel(Process::ht); binQoverPt++)
-          input_[binQoverPt][sector].push_back(stub && stub->inQoverPtBin(binQoverPt) ? stub : nullptr);
+        for (int binInv2R = 0; binInv2R < dataFormats_->numChannel(Process::ht); binInv2R++)
+          input_[binInv2R][sector].push_back(stub && stub->inInv2RBin(binInv2R) ? stub : nullptr);
       }
     }
     // remove all gaps between end and last stub
@@ -55,26 +55,26 @@ namespace trackerTFP {
           it = (*--it) ? stubs.begin() : stubs.erase(it);
     auto validStub = [](int& sum, StubGP* stub){ return sum += stub ? 1 : 0; };
     int nStubsHT(0);
-    for (const vector<deque<StubGP*>>& binQoverPt : input_)
-      for (const deque<StubGP*>& sector : binQoverPt)
+    for (const vector<deque<StubGP*>>& binInv2R : input_)
+      for (const deque<StubGP*>& sector : binInv2R)
         nStubsHT += accumulate(sector.begin(), sector.end(), 0, validStub);
     stubsHT_.reserve(nStubsHT);
   }
 
   // fill output products
   void HoughTransform::produce(TTDTC::Streams& accepted, TTDTC::Streams& lost) {
-    for (int binQoverPt = 0; binQoverPt < dataFormats_->numChannel(Process::ht); binQoverPt++) {
-      const int qOverPt = qOverPt_.toSigned(binQoverPt);
+    for (int binInv2R = 0; binInv2R < dataFormats_->numChannel(Process::ht); binInv2R++) {
+      const int inv2R = inv2R_.toSigned(binInv2R);
       deque<StubHT*> acceptedAll;
       deque<StubHT*> lostAll;
-      for (deque<StubGP*>& inputSector : input_[binQoverPt]) {
+      for (deque<StubGP*>& inputSector : input_[binInv2R]) {
         const int size = inputSector.size();
         vector<StubHT*> acceptedSector;
         vector<StubHT*> lostSector;
         acceptedSector.reserve(size);
         lostSector.reserve(size);
-        // associate stubs with qOverPt and phiT bins
-        fillIn(inputSector, acceptedSector, lostSector, qOverPt);
+        // associate stubs with inv2R and phiT bins
+        fillIn(inputSector, acceptedSector, lostSector, inv2R);
         // Process::ht collects all stubs before readout starts -> remove all gaps
         acceptedSector.erase(remove(acceptedSector.begin(), acceptedSector.end(), nullptr), acceptedSector.end());
         // identify tracks
@@ -91,14 +91,14 @@ namespace trackerTFP {
           stream.emplace_back(stub ? stub->frame() : TTDTC::Frame());
       };
       const int offset = region_ * dataFormats_->numChannel(Process::ht);
-      put(acceptedAll, accepted[offset + binQoverPt]);
+      put(acceptedAll, accepted[offset + binInv2R]);
       // store lost tracks
-      put(lostAll, lost[offset + binQoverPt]);
+      put(lostAll, lost[offset + binInv2R]);
     }
   }
 
-  // associate stubs with qOverPt and phiT bins
-  void HoughTransform::fillIn(deque<StubGP*>& inputSector, vector<StubHT*>& acceptedSector, vector<StubHT*>& lostSector, int qOverPt) {
+  // associate stubs with inv2R and phiT bins
+  void HoughTransform::fillIn(deque<StubGP*>& inputSector, vector<StubHT*>& acceptedSector, vector<StubHT*>& lostSector, int inv2R) {
     // fifo, used to store stubs which belongs to a second possible track
     deque<StubHT*> stack;
     // clock accurate firmware emulation, each while trip describes one clock tick, one stub in and one stub out per tick
@@ -106,20 +106,20 @@ namespace trackerTFP {
       StubHT* stubHT = nullptr;
       StubGP* stubGP = pop_front(inputSector);
       if (stubGP) {
-        const double phiT = stubGP->phi() + qOverPt_.floating(qOverPt) * stubGP->r();
+        const double phiT = stubGP->phi() - inv2R_.floating(inv2R) * stubGP->r();
         const int major = phiT_.integer(phiT);
         if (phiT_.inRange(major)) {
           // major candidate has pt > threshold (3 GeV)
-          stubsHT_.emplace_back(*stubGP, major, qOverPt);
+          stubsHT_.emplace_back(*stubGP, major, inv2R);
           stubHT = &stubsHT_.back();
         }
         const double chi = phiT - phiT_.floating(major);
-        if (abs(stubGP->r() * qOverPt_.base()) + 2. * abs(chi) >= phiT_.base()) {
+        if (abs(stubGP->r() * inv2R_.base()) + 2. * abs(chi) >= phiT_.base()) {
           // stub belongs to two candidates
           const int minor = chi >= 0. ? major + 1 : major - 1;
           if (phiT_.inRange(minor)) {
             // second (minor) candidate has pt > threshold (3 GeV)
-            stubsHT_.emplace_back(*stubGP, minor, qOverPt);
+            stubsHT_.emplace_back(*stubGP, minor, inv2R);
             if (enableTruncation_ && (int)stack.size() == setup_->htDepthMemory() - 1)
               // buffer overflow
               lostSector.push_back(pop_front(stack));

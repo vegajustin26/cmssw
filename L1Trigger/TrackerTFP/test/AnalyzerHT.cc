@@ -128,11 +128,11 @@ namespace trackerTFP {
     prof_->GetXaxis()->SetBinLabel(7, "Found selected TPs");
     prof_->GetXaxis()->SetBinLabel(8, "Lost TPs");
     prof_->GetXaxis()->SetBinLabel(9, "All TPs");
-    // binQoverPt occupancy
+    // binInv2R occupancy
     constexpr int maxOcc = 180;
     const int numChannel = dataFormats_->numChannel(Process::ht);
-    hisChannel_ = dir.make<TH1F>("His binQoverPt Occupancy", ";", maxOcc, -.5, maxOcc - .5);
-    profChannel_ = dir.make<TProfile>("Prof binQoverPt Occupancy", ";", numChannel, -.5, numChannel - .5);
+    hisChannel_ = dir.make<TH1F>("His binInv2R Occupancy", ";", maxOcc, -.5, maxOcc - .5);
+    profChannel_ = dir.make<TProfile>("Prof binInv2R Occupancy", ";", numChannel, -.5, numChannel - .5);
   }
 
   void AnalyzerHT::analyze(const Event& iEvent, const EventSetup& iSetup) {
@@ -164,7 +164,7 @@ namespace trackerTFP {
       int nTracks(0);
       int nLost(0);
       for (int channel = 0; channel < dataFormats_->numChannel(Process::ht); channel++) {
-        const int qOverPt = dataFormats_->format(Variable::qOverPt, Process::ht).toSigned(channel);
+        const int inv2R = dataFormats_->format(Variable::inv2R, Process::ht).toSigned(channel);
         const int index = region * dataFormats_->numChannel(Process::ht) + channel;
         const TTDTC::Stream& accepted = handleAccepted->at(index);
         hisChannel_->Fill(accepted.size());
@@ -172,8 +172,8 @@ namespace trackerTFP {
         nStubs += accepted.size();
         vector<vector<TTStubRef>> tracks;
         vector<vector<TTStubRef>> lost;
-        formTracks(accepted, tracks, qOverPt);
-        formTracks(handleLost->at(index), lost, qOverPt);
+        formTracks(accepted, tracks, inv2R);
+        formTracks(handleLost->at(index), lost, inv2R);
         nTracks += tracks.size();
         allTracks += tracks.size();
         nLost += lost.size();
@@ -238,11 +238,11 @@ namespace trackerTFP {
   }
 
   //
-  void AnalyzerHT::formTracks(const TTDTC::Stream& stream, vector<vector<TTStubRef>>& tracks, int qOverPt) const {
+  void AnalyzerHT::formTracks(const TTDTC::Stream& stream, vector<vector<TTStubRef>>& tracks, int inv2R) const {
     vector<StubHT> stubs;
     stubs.reserve(stream.size());
     for (const TTDTC::Frame& frame : stream)
-      stubs.emplace_back(frame, dataFormats_, qOverPt);
+      stubs.emplace_back(frame, dataFormats_, inv2R);
     for (auto it = stubs.begin(); it != stubs.end();) {
       const auto start = it;
       const int id = it->trackId();

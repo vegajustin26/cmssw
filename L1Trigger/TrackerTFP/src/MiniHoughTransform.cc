@@ -19,33 +19,33 @@ namespace trackerTFP {
     enableTruncation_(iConfig.getParameter<bool>("EnableTruncation")),
     setup_(setup),
     dataFormats_(dataFormats),
-    qOverPt_(dataFormats_->format(Variable::qOverPt, Process::ht)),
+    inv2R_(dataFormats_->format(Variable::inv2R, Process::ht)),
     phiT_(dataFormats_->format(Variable::phiT, Process::ht)),
     region_(region),
-    numBinsQoverPt_(setup_->htNumBinsQoverPt()),
+    numBinsInv2R_(setup_->htNumBinsInv2R()),
     numCells_(setup_->mhtNumCells()),
     numNodes_(setup_->mhtNumDLBNodes()),
     numChannel_(setup_->mhtNumDLBChannel()),
-    input_(numBinsQoverPt_) {}
+    input_(numBinsInv2R_) {}
 
   void MiniHoughTransform::consume(const TTDTC::Streams& streams) {
     auto valid = [](int& sum, const TTDTC::Frame& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
     int nStubsHT(0);
-    for (int binQoverPt = 0; binQoverPt < numBinsQoverPt_; binQoverPt++) {
-      const TTDTC::Stream& stream = streams[region_ * numBinsQoverPt_ + binQoverPt];
+    for (int binInv2R = 0; binInv2R < numBinsInv2R_; binInv2R++) {
+      const TTDTC::Stream& stream = streams[region_ * numBinsInv2R_ + binInv2R];
       nStubsHT += accumulate(stream.begin(), stream.end(), 0, valid);
     }
     stubsHT_.reserve(nStubsHT);
     stubsMHT_.reserve(nStubsHT * numCells_);
-    for (int binQoverPt = 0; binQoverPt < numBinsQoverPt_; binQoverPt++) {
-      const int qOverPt = qOverPt_.toSigned(binQoverPt);
-      const TTDTC::Stream& stream = streams[region_ * numBinsQoverPt_ + binQoverPt];
-      vector<StubHT*>& stubs = input_[binQoverPt];
+    for (int binInv2R = 0; binInv2R < numBinsInv2R_; binInv2R++) {
+      const int inv2R = inv2R_.toSigned(binInv2R);
+      const TTDTC::Stream& stream = streams[region_ * numBinsInv2R_ + binInv2R];
+      vector<StubHT*>& stubs = input_[binInv2R];
       stubs.reserve(stream.size());
       for (const TTDTC::Frame& frame : stream) {
         StubHT* stub = nullptr;
         if (frame.first.isNonnull()) {
-          stubsHT_.emplace_back(frame, dataFormats_, qOverPt);
+          stubsHT_.emplace_back(frame, dataFormats_, inv2R);
           stub = &stubsHT_.back();
         }
         stubs.push_back(stub);
@@ -55,19 +55,19 @@ namespace trackerTFP {
 
   void MiniHoughTransform::produce(TTDTC::Streams& accepted, TTDTC::Streams& lost) {
     // fill MHT cells
-    vector<deque<StubMHT*>> stubsCells(numBinsQoverPt_ * numCells_);
-    for (int channel = 0; channel < numBinsQoverPt_; channel++)
+    vector<deque<StubMHT*>> stubsCells(numBinsInv2R_ * numCells_);
+    for (int channel = 0; channel < numBinsInv2R_; channel++)
       fill(input_[channel], stubsCells, channel);
     // perform static load balancing
-    vector<vector<StubMHT*>> streamsSLB(numBinsQoverPt_);
-    for (int channel = 0; channel < numBinsQoverPt_; channel++) {
+    vector<vector<StubMHT*>> streamsSLB(numBinsInv2R_);
+    for (int channel = 0; channel < numBinsInv2R_; channel++) {
       vector<deque<StubMHT*>> tmp(numCells_);
       for (int k = 0; k < numCells_; k++)
-        swap(tmp[k], stubsCells[(channel / numCells_) * numBinsQoverPt_ + channel % numCells_ + k * numCells_]);
+        swap(tmp[k], stubsCells[(channel / numCells_) * numBinsInv2R_ + channel % numCells_ + k * numCells_]);
       slb(tmp, streamsSLB[channel], lost[channel]);
     }
     // dynamic load balancing stage 1
-    vector<vector<StubMHT*>> streamsDLB(numBinsQoverPt_);
+    vector<vector<StubMHT*>> streamsDLB(numBinsInv2R_);
     for (int node = 0; node < numNodes_; node++) {
       vector<vector<StubMHT*>> tmp(numChannel_);
       for (int k = 0; k < numChannel_; k++)
@@ -77,7 +77,7 @@ namespace trackerTFP {
         swap(tmp[k], streamsDLB[node * numChannel_ + k]);
     }
     // dynamic load balancing stage 2
-    vector<vector<StubMHT*>> streamsMHT(numBinsQoverPt_);
+    vector<vector<StubMHT*>> streamsMHT(numBinsInv2R_);
     for (int node = 0; node < numNodes_; node++) {
       vector<vector<StubMHT*>> tmp(numChannel_);
       for (int k = 0; k < numChannel_; k++)
@@ -87,9 +87,9 @@ namespace trackerTFP {
         swap(tmp[k], streamsMHT[node * numChannel_ + k]);
     }
     // fill output product
-    for (int channel = 0; channel < numBinsQoverPt_; channel++) {
+    for (int channel = 0; channel < numBinsInv2R_; channel++) {
       const vector<StubMHT*>& stubs = streamsMHT[channel];
-      TTDTC::Stream& stream = accepted[region_ * numBinsQoverPt_ + channel];
+      TTDTC::Stream& stream = accepted[region_ * numBinsInv2R_ + channel];
       stream.reserve(stubs.size());
       for (StubMHT* stub : stubs)
         stream.emplace_back(stub ? stub->frame() : TTDTC::Frame());
@@ -117,21 +117,21 @@ namespace trackerTFP {
         const double r = (*stub)->r();
         const double chi = (*stub)->phi();
         // identify finer track candidates for this stub
-        // 0 and 1 belong to smaller sub q/pt; 0 and 2 belong to smaller sub track phi
+        // 0 and 1 belong to bigger sub inv2R; 0 and 2 belong to smaller sub track phi
         vector<int> cells;
         cells.reserve(numCells_);
         const bool compA = 2. * abs(chi) < phiT_.base();
-        const bool compB = 2. * abs(chi) < abs(r * qOverPt_.base());
+        const bool compB = 2. * abs(chi) < abs(r * inv2R_.base());
         const bool compAB = compA && compB;
-        if (chi >= 0. && r <  0.) { cells.push_back(3); if (compA) cells.push_back(1); if(compAB) cells.push_back(2); }
-        if (chi >= 0. && r >= 0.) { cells.push_back(1); if (compA) cells.push_back(3); if(compAB) cells.push_back(0); }
-        if (chi <  0. && r <  0.) { cells.push_back(0); if (compA) cells.push_back(2); if(compAB) cells.push_back(1); }
-        if (chi <  0. && r >= 0.) { cells.push_back(2); if (compA) cells.push_back(0); if(compAB) cells.push_back(3); }
+        if (chi >= 0. && r >= 0.) { cells.push_back(3); if (compA) cells.push_back(1); if(compAB) cells.push_back(2); }
+        if (chi >= 0. && r <  0.) { cells.push_back(1); if (compA) cells.push_back(3); if(compAB) cells.push_back(0); }
+        if (chi <  0. && r >= 0.) { cells.push_back(0); if (compA) cells.push_back(2); if(compAB) cells.push_back(1); }
+        if (chi <  0. && r <  0.) { cells.push_back(2); if (compA) cells.push_back(0); if(compAB) cells.push_back(3); }
         // organise stubs in finer track candidates
         for (int cell : cells) {
-          const int qOverPt = cell / setup_->mhtNumBinsPhiT();
+          const int inv2R = cell / setup_->mhtNumBinsPhiT();
           const int phiT = cell % setup_->mhtNumBinsPhiT();
-          stubsMHT_.emplace_back(**stub, phiT, qOverPt);
+          stubsMHT_.emplace_back(**stub, phiT, inv2R);
           mhtCells[cell].push_back(&stubsMHT_.back());
         }
       }

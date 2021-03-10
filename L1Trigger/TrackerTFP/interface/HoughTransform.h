@@ -25,8 +25,8 @@ namespace trackerTFP {
     // remove and return first element of deque, returns nullptr if empty
     template<class T>
     T* pop_front(std::deque<T*>& ts) const;
-    // associate stubs with qOverPt and phiT bins
-    void fillIn(std::deque<StubGP*>& inputSector, std::vector<StubHT*>& acceptedSector, std::vector<StubHT*>& lostSector, int qOverPt);
+    // associate stubs with inv2R and phiT bins
+    void fillIn(std::deque<StubGP*>& inputSector, std::vector<StubHT*>& acceptedSector, std::vector<StubHT*>& lostSector, int inv2R);
     // identify tracks
     void readOut(const std::vector<StubHT*>& acceptedSector, const std::vector<StubHT*>& lostSector, std::deque<StubHT*>& acceptedAll, std::deque<StubHT*>& lostAll) const;
     // identify lost tracks
@@ -41,7 +41,7 @@ namespace trackerTFP {
     //
     const DataFormats* dataFormats_;
     //
-    DataFormat qOverPt_;
+    DataFormat inv2R_;
     //
     DataFormat phiT_;
     //

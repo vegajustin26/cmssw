@@ -127,7 +127,7 @@ namespace trackerTFP {
     for (int gap = 0; gap < numFramesInfra_; gap++) {
       ss << frame(nFrame);
       for (int link = 0; link < numLinks; link++)
-        ss << " 0v" << string(TTBV::S / 4, '0' );
+        ss << " 0v" << string(TTBV::S_ / 4, '0' );
       ss << endl;
     }
     return ss.str();
@@ -143,7 +143,7 @@ namespace trackerTFP {
   // converts bv into hex
   string Demonstrator::hex(const TTDTC::BV& bv) const {
     stringstream ss;
-    ss << " 1v" << setfill('0') << setw(TTBV::S / 4) << std::hex << bv.to_ullong();
+    ss << " 1v" << setfill('0') << setw(TTBV::S_ / 4) << std::hex << bv.to_ullong();
     return ss.str();
   }
 

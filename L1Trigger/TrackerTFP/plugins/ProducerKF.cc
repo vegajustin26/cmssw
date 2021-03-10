@@ -37,7 +37,8 @@ namespace trackerTFP {
   private:
     void beginRun(const Run&, const EventSetup&) override;
     void produce(Event&, const EventSetup&) override;
-    void endStream() { /*kalmanFilterFormats_->endJob();*/ }
+    void endStream() { kalmanFilterFormats_->endJob(); }
+    //void endStream() {}
 
     // ED input token of sf stubs and tracks
     EDGetTokenT<TTDTC::Streams> edGetTokenStubs_;

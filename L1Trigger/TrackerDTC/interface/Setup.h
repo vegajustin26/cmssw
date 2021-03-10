@@ -116,10 +116,30 @@ namespace trackerDTC {
     //
     const std::vector<SensorModule>& sensorModules() const { return sensorModules_; }
 
-    // Common track finding parameter
+    // Fimrware specific Parameter
 
-    // half lumi region size in cm
-    double beamWindowZ() const { return beamWindowZ_; }
+    // width of the 'A' port of an DSP slice
+    int widthDSPa() const { return widthDSPa_; }
+    // width of the 'A' port of an DSP slice using biased twos complement
+    int widthDSPab() const { return widthDSPab_; }
+    // width of the 'A' port of an DSP slice using biased binary
+    int widthDSPau() const { return widthDSPau_; }
+    // width of the 'B' port of an DSP slice
+    int widthDSPb() const { return widthDSPb_; }
+    // width of the 'B' port of an DSP slice using biased twos complement
+    int widthDSPbb() const { return widthDSPbb_; }
+    // width of the 'B' port of an DSP slice using biased binary
+    int widthDSPbu() const { return widthDSPbu_; }
+    // width of the 'C' port of an DSP slice
+    int widthDSPc() const { return widthDSPc_; }
+    // width of the 'C' port of an DSP slice using biased twos complement
+    int widthDSPcb() const { return widthDSPcb_; }
+    // width of the 'C' port of an DSP slice using biased binary
+    int widthDSPcu() const { return widthDSPcu_; }
+    // smallest address width of an BRAM36 configured as broadest simple dual port memory
+    int widthAddrBRAM36() const { return widthAddrBRAM36_; }
+    // smallest address width of an BRAM18 configured as broadest simple dual port memory
+    int widthAddrBRAM18() const { return widthAddrBRAM18_; }
     // number of frames betwen 2 resets of 18 BX packets
     int numFrames() const { return numFrames_; }
     // number of frames needed per reset
@@ -128,6 +148,15 @@ namespace trackerDTC {
     int numFramesIO() const { return numFramesIO_; }
     // number of valid frames per 8 BX packet
     int numFramesFE() const { return numFramesFE_; }
+    // maximum representable stub phi uncertainty
+    double maxdPhi() const { return maxdPhi_; }
+    // maximum representable stub z uncertainty
+    double maxdZ() const { return maxdZ_; }
+
+    // Common track finding parameter
+
+    // half lumi region size in cm
+    double beamWindowZ() const { return beamWindowZ_; }
     // converts GeV in 1/cm
     double invPtToDphi() const { return invPtToDphi_; }
     // region size in rad
@@ -160,27 +189,33 @@ namespace trackerDTC {
     // number of detector layers a reconstructbale particle may cross
     int numLayers() const { return numLayers_; }
     // number of bits used for stub r - ChosenRofPhi
-    int widthR() const { return widthR_; }
+    int tmttWidthR() const { return tmttWidthR_; }
     // number of bits used for stub phi w.r.t. phi sector centre
-    int widthPhi() const { return widthPhi_; }
+    int tmttWidthPhi() const { return tmttWidthPhi_; }
     // number of bits used for stub z
-    int widthZ() const { return widthZ_; }
+    int tmttWidthZ() const { return tmttWidthZ_; }
     // number of bits used for stub layer id
-    int widthLayerId() const { return widthLayerId_; }
+    int tmttWidthLayer() const { return tmttWidthLayer_; }
+    // number of bits used for stub eta sector
+    int tmttWidthSectorEta() const { return tmttWidthSectorEta_; }
+    // number of bits used for stub inv2R
+    int tmttWidthInv2R() const { return tmttWidthInv2R_; }
     // internal stub r precision in cm
-    double baseR() const { return baseR_; }
+    double tmttBaseR() const { return tmttBaseR_; }
     // internal stub z precision in cm
-    double baseZ() const { return baseZ_; }
+    double tmttBaseZ() const { return tmttBaseZ_; }
     // internal stub phi precision in rad
-    double basePhi() const { return basePhi_; }
+    double tmttBasePhi() const { return tmttBasePhi_; }
+    // internal stub inv2R precision in 1/cm
+    double tmttBaseInv2R() const { return tmttBaseInv2R_; }
+    // internal stub phiT precision in rad
+    double tmttBasePhiT() const { return tmttBasePhiT_; }
     // number of padded 0s in output data format
-    int dtcNumUnusedBits() const { return dtcNumUnusedBits_; }
+    int tmttNumUnusedBits() const { return tmttNumUnusedBits_; }
     // outer radius of outer tracker in cm
     double outerRadius() const { return outerRadius_; }
     // inner radius of outer tracker in cm
     double innerRadius() const { return innerRadius_; }
-    // range of stub z residual w.r.t. sector center which needs to be covered
-    double neededRangeChiZ() const { return neededRangeChiZ_; }
     // half length of outer tracker in cm
     double halfLength() const { return halfLength_; }
     // max strip/pixel length of outer tracker sensors in cm
@@ -285,8 +320,8 @@ namespace trackerDTC {
     int dtcDepthMemory() const { return dtcDepthMemory_; }
     // number of row bits used in look up table
     int dtcWidthRowLUT() const { return dtcWidthRowLUT_; }
-    // number of bits used for stub qOverPt. lut addr is col + bend = 11 => 1 BRAM -> 18 bits for min and max val -> 9
-    int dtcWidthQoverPt() const { return dtcWidthQoverPt_; }
+    // number of bits used for stub inv2R. lut addr is col + bend = 11 => 1 BRAM -> 18 bits for min and max val -> 9
+    int dtcWidthInv2R() const { return dtcWidthInv2R_; }
     // tk layout det id minus DetSetVec->detId
     int offsetDetIdDSV() const { return offsetDetIdDSV_; }
     // tk layout det id minus TrackerTopology lower det id
@@ -307,18 +342,27 @@ namespace trackerDTC {
     int dtcNumMergedRows() const { return dtcNumMergedRows_; }
     // number of bits used for phi of row slope
     int dtcWidthM() const { return dtcWidthM_; }
-    // internal stub q over pt precision in 1 /cm
-    double dtcBaseQoverPt() const { return dtcBaseQoverPt_; }
+    // internal stub inv2R precision in 1 /cm
+    double dtcBaseInv2R() const { return dtcBaseInv2R_; }
     // phi of row slope precision in rad / pitch unit
     double dtcBaseM() const { return dtcBaseM_; }
-    // number of bits for internal stub phi
-    int widthPhiDTC() const { return widthPhiDTC_; }
     // sensor modules connected to given dtc id
     const std::vector<SensorModule*>& dtcModules(int dtcId) const { return dtcModules_.at(dtcId); }
     // index = encoded layerId, inner value = decoded layerId for given tfp channel [0-47]
     const std::vector<int>& encodingLayerId(int tfpChannel) const;
     // total number of output channel
     int dtcNumStreams() const { return dtcNumStreams_; }
+
+    // Parameter specifying TFP
+
+    // number of bist used for phi0
+    int tfpWidthPhi0() const { return tfpWidthPhi0_; }
+    // umber of bist used for inv2R
+    int tfpWidthInv2R() const { return tfpWidthInv2R_; }
+    // number of bist used for cot(theta)
+    int tfpWidthCot() const { return tfpWidthCot_; }
+    // number of bist used for z0
+    int tfpWidthZ0() const { return tfpWidthZ0_; }
 
     // Parameter specifying GeometricProcessor
 
@@ -338,50 +382,28 @@ namespace trackerDTC {
     double maxZT() const { return maxZT_; }
     // cut on stub cot theta
     double maxCot() const { return maxCot_; }
-    // number of bits used for internal stub sector eta
-    int widthSectorEta() const { return widthSectorEta_; }
-    // number of bits to represent z residual w.r.t. sector center
-    int widthChiZ() const { return widthChiZ_; }
     // total number of sectors
     int numSectors() const { return numSectors_; }
-    // number of unused bits in GP output format
-    int gpNumUnusedBits() const { return gpNumUnusedBits_; }
     // cot(theta) of given eta sector
     double sectorCot(int eta) const { return sectorCots_.at(eta); }
-    // total number of gp output channel
-    int gpNumStreams() const { return gpNumStreams_; }
+    //
+    double neededRangeChiZ() const { return neededRangeChiZ_; }
 
     // Parameter specifying HoughTransform
 
-    // number of qOverPt bins used in hough transform
-    int htNumBinsQoverPt() const { return htNumBinsQoverPt_; }
+    // number of inv2R bins used in hough transform
+    int htNumBinsInv2R() const { return htNumBinsInv2R_; }
     // number of phiT bins used in hough transform
     int htNumBinsPhiT() const { return htNumBinsPhiT_; }
     // required number of stub layers to form a candidate
     int htMinLayers() const { return htMinLayers_; }
     // internal fifo depth
     int htDepthMemory() const { return htDepthMemory_; }
-    // number of bits used for candidate q over pt
-    int htWidthQoverPt() const { return htWidthQoverPt_; }
-    // number of bits used for candidate phiT
-    int htWidthPhiT() const { return htWidthPhiT_; }
-    // number of bits to represent phi residual w.r.t. ht candiate
-    int widthChiPhi() const { return widthChiPhi_; }
-    // q over pt bin width precision in 1 /cm
-    double htBaseQoverPt() const { return htBaseQoverPt_; }
-    // phiT bin width in rad
-    double htBasePhiT() const { return htBasePhiT_; }
-    // number of unused bits in HT output format
-    int htNumUnusedBits() const { return htNumUnusedBits_; }
-    // number of bits used for internal stub sector
-    int widthSector() const { return widthSector_; }
-    // total number of ht output channel
-    int htNumStreams() const { return htNumStreams_; }
 
     // Parameter specifying MiniHoughTransform
 
-    // number of finer qOverPt bins inside HT bin
-    int mhtNumBinsQoverPt() const { return mhtNumBinsQoverPt_; }
+    // number of finer inv2R bins inside HT bin
+    int mhtNumBinsInv2R() const { return mhtNumBinsInv2R_; }
     // number of finer phiT bins inside HT bin
     int mhtNumBinsPhiT() const { return mhtNumBinsPhiT_; }
     // number of dynamic load balancing steps
@@ -394,107 +416,35 @@ namespace trackerDTC {
     int mhtMinLayers() const { return mhtMinLayers_; }
     // number of mht cells
     int mhtNumCells() const { return mhtNumCells_; }
-    // number of bits used for candidate q over pt
-    int mhtWidthQoverPt() const { return mhtWidthQoverPt_; }
-    // number of bits used for candidate phiT
-    int mhtWidthPhiT() const { return mhtWidthPhiT_; }
-    // q over pt bin width precision in 1 /cm
-    double mhtBaseQoverPt() const { return mhtBaseQoverPt_; }
-    // phiT bin width in rad
-    double mhtBasePhiT() const { return mhtBasePhiT_; }
 
     // Parameter specifying SeedFilter
 
-    // used z0 and zT bin width = baseZ * 2 ** this
-    int sfBaseDiff() const { return sfBaseDiff_; }
+    //number of used zT bins
+    int sfWidthZT() const { return sfWidthZT_; }
+    // number of used cot bins
+    int sfWidthCot() const { return sfWidthCot_; }
     // required number of stub layers to form a candidate
     int sfMinLayers() const { return sfMinLayers_; }
     // max number of output tracks per node
     int sfMaxTracks() const { return sfMaxTracks_; }
+    // cut on number of stub per layer for input candidates
+    int sfMaxStubsPerLayer() const { return sfMaxStubsPerLayer_; }
 
     // Parameter specifying KalmanFilter
 
     // number of kf worker
     int kfNumWorker() const { return kfNumWorker_; }
-    // number of bits for internal reciprocal look up
-    int kfWidthLutInvPhi() const { return kfWidthLutInvPhi_; }
-    // number of bits for internal reciprocal look up
-    int kfWidthLutInvZ() const { return kfWidthLutInvZ_; }
-    // cut on number of input candidates
-    int kfNumTracks() const { return kfNumTracks_; }
     // required number of stub layers to form a track
     int kfMinLayers() const { return kfMinLayers_; }
     // maximum number of  layers added to a track
     int kfMaxLayers() const { return kfMaxLayers_; }
-    // cut on number of stub per layer for input candidates
-    int kfMaxStubsPerLayer() const { return kfMaxStubsPerLayer_; }
-    // maximum allowed skipped layers from inside to outside to form a track
-    int kfMaxSkippedLayers() const { return kfMaxSkippedLayers_; }
-    double kfBasem0() const { return kfBasem0_; }
-    double kfBasem1() const { return kfBasem1_; }
-    double kfBasev0() const { return kfBasev0_; }
-    double kfBasev1() const { return kfBasev1_; }
-    double kfBasex0() const { return kfBasex0_; }
-    double kfBasex1() const { return kfBasex1_; }
-    double kfBasex2() const { return kfBasex2_; }
-    double kfBasex3() const { return kfBasex3_; }
-    double kfBaseH00() const { return kfBaseH00_; }
-    double kfBaseH12() const { return kfBaseH12_; }
-    double kfBaser0() const { return kfBaser0_; }
-    double kfBaser1() const { return kfBaser1_; }
-    double kfBaser02() const { return kfBaser02_; }
-    double kfBaser12() const { return kfBaser12_; }
-    double kfBaseS00() const { return kfBaseS00_; }
-    double kfBaseS01() const { return kfBaseS01_; }
-    double kfBaseS12() const { return kfBaseS12_; }
-    double kfBaseS13() const { return kfBaseS13_; }
-    double kfBaseR00() const { return kfBaseR00_; }
-    double kfBaseR11() const { return kfBaseR11_; }
-    double kfBaseInvR00() const { return kfBaseInvR00_; }
-    double kfBaseInvR11() const { return kfBaseInvR11_; }
-    double kfBaseK00() const { return kfBaseK00_; }
-    double kfBaseK10() const { return kfBaseK10_; }
-    double kfBaseK21() const { return kfBaseK21_; }
-    double kfBaseK31() const { return kfBaseK31_; }
-    double kfBaseC00() const { return kfBaseC00_; }
-    double kfBaseC01() const { return kfBaseC01_; }
-    double kfBaseC11() const { return kfBaseC11_; }
-    double kfBaseC22() const { return kfBaseC22_; }
-    double kfBaseC23() const { return kfBaseC23_; }
-    double kfBaseC33() const { return kfBaseC33_; }
-    double kfBaseChi20() const { return kfBaseChi20_; }
-    double kfBaseChi21() const { return kfBaseChi21_; }
-    double kfBaseChi2() const { return kfBaseChi2_; }
+    // search window of each track parameter in initial uncertainties
+    double kfRangeFactor() const { return kfRangeFactor_; }
 
     // Parameter specifying DuplicateRemoval
 
     // internal memory depth
     int drDepthMemory() const { return drDepthMemory_; }
-    // number of bist used for phi0
-    int drWidthPhi0() const { return drWidthPhi0_; }
-    // umber of bist used for qOverPt
-    int drWidthQoverPt() const { return drWidthQoverPt_; }
-    // number of bist used for cot(theta)
-    int drWidthCot() const { return drWidthCot_; }
-    // number of bist used for z0
-    int drWidthZ0() const { return drWidthZ0_; }
-    double drBaseQoverPt() const { return drBaseQoverPt_; }
-    double drBasePhi0() const { return drBasePhi0_; }
-    double drBaseCot() const { return drBaseCot_; }
-    double drBaseZ0() const { return drBaseZ0_; }
-
-    // LR
-
-    int lrBaseDiffPhiT() const { return lrBaseDiffPhiT_; }
-    int lrBaseDiffQoverPt() const { return lrBaseDiffQoverPt_; }
-    int lrBaseDiffZT() const { return lrBaseDiffZT_; }
-    int lrBaseDiffCot() const { return lrBaseDiffCot_; }
-    int lrNumIterations() const { return lrNumIterations_; }
-    int lrMinLayers() const { return lrMinLayers_; }
-    int lrMinLayersPS() const { return lrMinLayersPS_; }
-    double lrResidPhi() const { return lrResidPhi_; }
-    double lrResidZ2S() const { return lrResidZ2S_; }
-    double lrResidZPS() const { return lrResidZPS_; }
 
   private:
     // checks consitency between history and current configuration for a specific module
@@ -588,11 +538,11 @@ namespace trackerDTC {
     // number of detector layers a reconstructbale particle may cross
     int numLayers_;
     // number of bits used for stub r - ChosenRofPhi
-    int widthR_;
+    int tmttWidthR_;
     // number of bits used for stub phi w.r.t. phi sector centre
-    int widthPhi_;
+    int tmttWidthPhi_;
     // number of bits used for stub z
-    int widthZ_;
+    int tmttWidthZ_;
 
     // Hybrid specific parameter
     edm::ParameterSet pSetHybrid_;
@@ -650,6 +600,28 @@ namespace trackerDTC {
 
     // Fimrware specific Parameter
     edm::ParameterSet pSetFW_;
+    // width of the 'A' port of an DSP slice
+    int widthDSPa_;
+    // width of the 'A' port of an DSP slice using biased twos complement
+    int widthDSPab_;
+    // width of the 'A' port of an DSP slice using biased binary
+    int widthDSPau_;
+    // width of the 'B' port of an DSP slice
+    int widthDSPb_;
+    // width of the 'B' port of an DSP slice using biased twos complement
+    int widthDSPbb_;
+    // width of the 'B' port of an DSP slice using biased binary
+    int widthDSPbu_;
+    // width of the 'C' port of an DSP slice
+    int widthDSPc_;
+    // width of the 'C' port of an DSP slice using biased twos complement
+    int widthDSPcb_;
+    // width of the 'C' port of an DSP slice using biased binary
+    int widthDSPcu_;
+    // smallest address width of an BRAM36 configured as broadest simple dual port memory
+    int widthAddrBRAM36_;
+    // smallest address width of an BRAM18 configured as broadest simple dual port memory
+    int widthAddrBRAM18_;
     // needed gap between events of emp-infrastructure firmware
     int numFramesInfra_;
     // LHC bunch crossing rate in MHz
@@ -680,6 +652,14 @@ namespace trackerDTC {
     double tiltApproxSlope_;
     //
     double tiltApproxIntercept_;
+    // minimum representable stub phi uncertainty
+    double mindPhi_;
+    // maximum representable stub phi uncertainty
+    double maxdPhi_;
+    // minimum representable stub z uncertainty
+    double mindZ_;
+    // maximum representable stub z uncertainty
+    double maxdZ_;
 
     // Parameter specifying front-end
     edm::ParameterSet pSetFE_;
@@ -718,8 +698,8 @@ namespace trackerDTC {
     int dtcDepthMemory_;
     // number of row bits used in look up table
     int dtcWidthRowLUT_;
-    // number of bits used for stub qOverPt. lut addr is col + bend = 11 => 1 BRAM -> 18 bits for min and max val -> 9
-    int dtcWidthQoverPt_;
+    // number of bits used for stub inv2R. lut addr is col + bend = 11 => 1 BRAM -> 18 bits for min and max val -> 9
+    int dtcWidthInv2R_;
     // tk layout det id minus DetSetVec->detId
     int offsetDetIdDSV_;
     // tk layout det id minus TrackerTopology lower det id
@@ -735,6 +715,17 @@ namespace trackerDTC {
     // slot number changing from 10 gbps to 5gbps (default: 3)
     int slotLimit10gbps_;
 
+    // Parameter specifying TFP
+    edm::ParameterSet pSetTFP_;
+    // number of bist used for phi0
+    int tfpWidthPhi0_;
+    // umber of bist used for qOverPt
+    int tfpWidthInv2R_;
+    // number of bist used for cot(theta)
+    int tfpWidthCot_;
+    // number of bist used for z0
+    int tfpWidthZ0_;
+
     // Parameter specifying GeometricProcessor
     edm::ParameterSet pSetGP_;
     // number of phi sectors used in hough transform
@@ -749,26 +740,22 @@ namespace trackerDTC {
     int gpDepthMemory_;
     // defining r-z sector shape
     std::vector<double> boundariesEta_;
-    // total number of gp output channel
-    int gpNumStreams_;
 
     // Parameter specifying HoughTransform
     edm::ParameterSet pSetHT_;
-    // number of qOverPt bins used in hough transform
-    int htNumBinsQoverPt_;
+    // number of inv2R bins used in hough transform
+    int htNumBinsInv2R_;
     // number of phiT bins used in hough transform
     int htNumBinsPhiT_;
     // required number of stub layers to form a candidate
     int htMinLayers_;
     // internal fifo depth
     int htDepthMemory_;
-    // total number of ht output channel
-    int htNumStreams_;
 
     // Parameter specifying MiniHoughTransform
     edm::ParameterSet pSetMHT_;
-    // number of finer qOverPt bins inside HT bin
-    int mhtNumBinsQoverPt_;
+    // number of finer inv2R bins inside HT bin
+    int mhtNumBinsInv2R_;
     // number of finer phiT bins inside HT bin
     int mhtNumBinsPhiT_;
     // number of dynamic load balancing steps
@@ -782,87 +769,32 @@ namespace trackerDTC {
 
     // Parameter specifying SeedFilter
     edm::ParameterSet pSetSF_;
-    // used z0 and zT bin width = baseZ * 2 ** this
-    int sfBaseDiff_;
+    //number of used zT bins
+    int sfWidthZT_;
+    // number of used cot bins
+    int sfWidthCot_;
     // required number of stub layers to form a candidate
     int sfMinLayers_;
     // max number of output tracks per node
     int sfMaxTracks_;
+    // cut on number of stub per layer for input candidates
+    int sfMaxStubsPerLayer_;
 
     // Parameter specifying KalmanFilter
     edm::ParameterSet pSetKF_;
     // number of kf worker
     int kfNumWorker_;
-    // number of bits for internal reciprocal look up
-    int kfWidthLutInvPhi_;
-    // number of bits for internal reciprocal look up
-    int kfWidthLutInvZ_;
-    // cut on number of input candidates
-    int kfNumTracks_;
     // required number of stub layers to form a track
     int kfMinLayers_;
     // maximum number of  layers added to a track
     int kfMaxLayers_;
-    // cut on number of stub per layer for input candidates
-    int kfMaxStubsPerLayer_;
-    // maximum allowed skipped layers from inside to outside to form a track
-    int kfMaxSkippedLayers_;
-    //
-    int kfWidthLayerCount_;
-    int kfBaseShiftr0_;
-    int kfBaseShiftr02_;
-    int kfBaseShiftv0_;
-    int kfBaseShiftS00_;
-    int kfBaseShiftS01_;
-    int kfBaseShiftK00_;
-    int kfBaseShiftK10_;
-    int kfBaseShiftR00_;
-    int kfBaseShiftInvR00_;
-    int kfBaseShiftChi20_;
-    int kfBaseShiftC00_;
-    int kfBaseShiftC01_;
-    int kfBaseShiftC11_;
-    int kfBaseShiftr1_;
-    int kfBaseShiftr12_;
-    int kfBaseShiftv1_;
-    int kfBaseShiftS12_;
-    int kfBaseShiftS13_;
-    int kfBaseShiftK21_;
-    int kfBaseShiftK31_;
-    int kfBaseShiftR11_;
-    int kfBaseShiftInvR11_;
-    int kfBaseShiftChi21_;
-    int kfBaseShiftC22_;
-    int kfBaseShiftC23_;
-    int kfBaseShiftC33_;
-    int kfBaseShiftChi2_;
+    // search window of each track parameter in initial uncertainties
+    double kfRangeFactor_;
 
     // Parameter specifying DuplicateRemoval
     edm::ParameterSet pSetDR_;
     // internal memory depth
     int drDepthMemory_;
-    // number of bist used for phi0
-    int drWidthPhi0_;
-    // umber of bist used for qOverPt
-    int drWidthQoverPt_;
-    // number of bist used for cot(theta)
-    int drWidthCot_;
-    // number of bist used for z0
-    int drWidthZ0_;
-
-    // LR
-
-    edm::ParameterSet pSetLR_;
-    int lrBaseDiffPhiT_;
-    int lrBaseDiffQoverPt_;
-    int lrBaseDiffZT_;
-    int lrBaseDiffCot_;
-    int lrNumIterations_;
-    int lrMinLayers_;
-    int lrMinLayersPS_;
-    double lrResidPhi_;
-    double lrResidZ2S_;
-    double lrResidZPS_;
 
     //
     // Derived constants
@@ -906,13 +838,25 @@ namespace trackerDTC {
     // number of bits used for stub layer id
     int widthLayerId_;
     // internal stub r precision in cm
-    double baseR_;
+    double tmttBaseR_;
     // internal stub z precision in cm
-    double baseZ_;
+    double tmttBaseZ_;
     // internal stub phi precision in rad
-    double basePhi_;
+    double tmttBasePhi_;
+    // internal stub inv2R precision in 1/cm
+    double tmttBaseInv2R_;
+    // internal stub phiT precision in rad
+    double tmttBasePhiT_;
     // number of padded 0s in output data format
     int dtcNumUnusedBits_;
+    // number of bits used for stub layer id
+    int tmttWidthLayer_;
+    // number of bits used for stub eta sector
+    int tmttWidthSectorEta_;
+    // number of bits used for stub inv2R
+    int tmttWidthInv2R_;
+    // number of padded 0s in output data format
+    int tmttNumUnusedBits_;
 
     // hybrid
 
@@ -953,12 +897,10 @@ namespace trackerDTC {
     int dtcNumMergedRows_;
     // number of bits used for phi of row slope
     int dtcWidthM_;
-    // internal stub q over pt precision in 1 /cm
-    double dtcBaseQoverPt_;
+    // internal stub inv2R precision in 1 /cm
+    double dtcBaseInv2R_;
     // phi of row slope precision in rad / pitch unit
     double dtcBaseM_;
-    // number of bits for internal stub phi
-    int widthPhiDTC_;
     // outer index = module window size, inner index = encoded bend, inner value = decoded bend, for ps modules
     std::vector<std::vector<double>> encodingsBendPS_;
     // outer index = module window size, inner index = encoded bend, inner value = decoded bend, for 2s modules
@@ -980,10 +922,6 @@ namespace trackerDTC {
     double maxZT_;
     // cut on stub cot theta
     double maxCot_;
-    // number of bits used for internal stub sector eta
-    int widthSectorEta_;
-    // number of bits to represent z residual w.r.t. sector center
-    int widthChiZ_;
     // total number of sectors
     int numSectors_;
     // number of unused bits in GP output format
@@ -991,89 +929,15 @@ namespace trackerDTC {
     // cot(theta) of eta sectors
     std::vector<double> sectorCots_;
 
-    // HT
-
-    // number of bits used for candidate q over pt
-    int htWidthQoverPt_;
-    // number of bits used for candidate phiT
-    int htWidthPhiT_;
-    // number of bits to represent phi residual w.r.t. ht candiate
-    int widthChiPhi_;
-    // q over pt bin width precision in 1 /cm
-    double htBaseQoverPt_;
-    // phiT bin width precision in rad
-    double htBasePhiT_;
-    // number of unused bits in HT output format
-    int htNumUnusedBits_;
-    // number of bits used for internal stub sector
-    int widthSector_;
-
     // MHT
 
     // number of mht cells
     int mhtNumCells_;
-    // number of bits used for candidate q over pt
-    int mhtWidthQoverPt_;
-    // number of bits used for candidate phiT
-    int mhtWidthPhiT_;
-    // q over pt bin width precision in 1 /cm
-    double mhtBaseQoverPt_;
-    // phiT bin width in rad
-    double mhtBasePhiT_;
-
-    // SF
 
     // KF
 
-    double kfBasem0_;
-    double kfBasem1_;
-    double kfBasev0_;
-    double kfBasev1_;
-    double kfBasex0_;
-    double kfBasex1_;
-    double kfBasex2_;
-    double kfBasex3_;
-    double kfBasex4_;
-    double kfBaseH00_;
-    double kfBaseH04_;
-    double kfBaseH12_;
-    double kfBaser0_;
-    double kfBaser1_;
-    double kfBaser02_;
-    double kfBaser12_;
-    double kfBaseS00_;
-    double kfBaseS01_;
-    double kfBaseS04_;
-    double kfBaseS12_;
-    double kfBaseS13_;
-    double kfBaseR00_;
-    double kfBaseR11_;
-    double kfBaseInvR00_;
-    double kfBaseInvR11_;
-    double kfBaseK00_;
-    double kfBaseK10_;
-    double kfBaseK21_;
-    double kfBaseK31_;
-    double kfBaseK40_;
-    double kfBaseC00_;
-    double kfBaseC01_;
-    double kfBaseC04_;
-    double kfBaseC11_;
-    double kfBaseC14_;
-    double kfBaseC44_;
-    double kfBaseC22_;
-    double kfBaseC23_;
-    double kfBaseC33_;
-    double kfBaseChi20_;
-    double kfBaseChi21_;
-    double kfBaseChi2_;
+    int kfWidthLayerCount_;
 
-    // DR
-
-    double drBaseQoverPt_;
-    double drBasePhi0_;
-    double drBaseCot_;
-    double drBaseZ0_;
   };
 
 }  // namespace trackerDTC

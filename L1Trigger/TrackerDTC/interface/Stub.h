@@ -65,8 +65,8 @@ namespace trackerDTC {
     double c_;
     // radius of a column of strips/pixel in cm
     double d_;
-    // range of stub qOverPt in 1/cm
-    std::pair<double, double> qOverPt_;
+    // range of stub inv2R in 1/cm
+    std::pair<double, double> inv2R_;
     // range of stub cot(theta)
     std::pair<double, double> cot_;
     // range of stub extrapolated phi to radius chosenRofPhi in rad

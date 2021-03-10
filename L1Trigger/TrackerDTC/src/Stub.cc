@@ -35,7 +35,7 @@ namespace trackerDTC {
     // radius of a column of strips/pixel in cm
     d_ = sm->r() + y * sm->sinTilt();
     // stub z in cm
-    z_ = digi(sm->z() + y * sm->cosTilt(), setup.baseZ());
+    z_ = digi(sm->z() + y * sm->cosTilt(), setup.tmttBaseZ());
 
     const double x0 = rowLUT_ * setup.baseRow() * setup.dtcNumMergedRows() * sm->pitchRow();
     const double x1 = (rowLUT_ + 1) * setup.baseRow() * setup.dtcNumMergedRows() * sm->pitchRow();
@@ -49,7 +49,7 @@ namespace trackerDTC {
     const double m = (phi1 - phi0) / setup.dtcNumMergedRows();
 
     // intercept of linearized stub phi in rad
-    c_ = digi(c, setup.basePhi());
+    c_ = digi(c, setup.tmttBasePhi());
     // slope of linearized stub phi in rad / strip
     m_ = digi(m, setup.dtcBaseM());
 
@@ -77,36 +77,36 @@ namespace trackerDTC {
 
     // stub r w.r.t. chosenRofPhi in cm
     static const double chosenRofPhi = hybrid_ ? setup.hybridChosenRofPhi() : setup.chosenRofPhi();
-    r_ = digi(r_ - chosenRofPhi, setup.baseR());
+    r_ = digi(r_ - chosenRofPhi, setup.tmttBaseR());
 
     // radial (cylindrical) component of sensor separation
     const double dr = sm->sep() / (sm->cosTilt() - sm->sinTilt() * z_ / d_);
-    // converts bend into qOverPt in 1/cm
-    const double qOverPtOverBend = sm->pitchRow() / dr / d_;
-    // qOverPt in 1/cm
-    const double qOverPt = bend_ * setup.baseBend() * qOverPtOverBend;
-    // qOverPt uncertainty in 1/cm
-    const double dQoverPt = setup.bendCut() * qOverPtOverBend;
+    // converts bend into inv2R in 1/cm
+    const double inv2ROverBend = sm->pitchRow() / dr / d_;
+    // inv2R in 1/cm
+    const double inv2R = -bend_ * setup.baseBend() * inv2ROverBend;
+    // inv2R uncertainty in 1/cm
+    const double dInv2R = setup.bendCut() * inv2ROverBend;
     const double minPt = hybrid_ ? setup.hybridMinPt() : setup.minPt();
-    const double maxQoverPt = setup.invPtToDphi() / minPt - setup.dtcBaseQoverPt() / 2.;
-    double qOverPtMin = digi(qOverPt - dQoverPt, setup.dtcBaseQoverPt());
-    double qOverPtMax = digi(qOverPt + dQoverPt, setup.dtcBaseQoverPt());
-    if (qOverPtMin >= maxQoverPt || qOverPtMax < -maxQoverPt)
+    const double maxInv2R = setup.invPtToDphi() / minPt - setup.dtcBaseInv2R() / 2.;
+    double inv2RMin = digi(inv2R - dInv2R, setup.dtcBaseInv2R());
+    double inv2RMax = digi(inv2R + dInv2R, setup.dtcBaseInv2R());
+    if (inv2RMin > maxInv2R || inv2RMax < -maxInv2R) {
       // did not pass pt cut
       valid_ = false;
-    else {
-      qOverPtMin = max(qOverPtMin, -maxQoverPt);
-      qOverPtMax = min(qOverPtMax, maxQoverPt);
+    } else {
+      inv2RMin = max(inv2RMin, -maxInv2R);
+      inv2RMax = min(inv2RMax, maxInv2R);
     }
-    // range of stub qOverPt in 1/cm
-    qOverPt_ = {qOverPtMin, qOverPtMax};
+    // range of stub inv2R in 1/cm
+    inv2R_ = {inv2RMin, inv2RMax};
 
     // stub phi w.r.t. detector region centre in rad
     phi_ = c_ + rowSub_ * m_;
 
     // range of stub extrapolated phi to radius chosenRofPhi in rad
-    phiT_.first = phi_ + r_ * qOverPt_.first;
-    phiT_.second = phi_ + r_ * qOverPt_.second;
+    phiT_.first = phi_ - r_ * inv2R_.first;
+    phiT_.second = phi_ - r_ * inv2R_.second;
     if (phiT_.first > phiT_.second)
       swap(phiT_.first, phiT_.second);
 
@@ -202,35 +202,35 @@ namespace trackerDTC {
         sectorsPhi.set(2);
     }
     // assign stub to eta sectors within a processing region
-    pair<int, int> setcorEta({0, setup_->numSectorsEta() - 1});
+    pair<int, int> sectorEta({0, setup_->numSectorsEta() - 1});
     for (int bin = 0; bin < setup_->numSectorsEta(); bin++)
       if (asinh(cot_.first) < setup_->boundarieEta(bin + 1)) {
-        setcorEta.first = bin;
+        sectorEta.first = bin;
         break;
       }
-    for (int bin = setcorEta.first; bin < setup_->numSectorsEta(); bin++)
+    for (int bin = sectorEta.first; bin < setup_->numSectorsEta(); bin++)
       if (asinh(cot_.second) < setup_->boundarieEta(bin + 1)) {
-        setcorEta.second = bin;
+        sectorEta.second = bin;
         break;
       }
     // stub phi w.r.t. processing region centre in rad
     const double phi = phi_ - (region - .5) * setup_->baseRegion();
     // convert stub variables into bit vectors
     const TTBV hwValid(1, 1);
-    const TTBV hwGap(0, setup_->dtcNumUnusedBits());
-    const TTBV hwLayer(layer, setup_->widthLayerId());
-    const TTBV hwSectorEtaMin(setcorEta.first, setup_->widthSectorEta());
-    const TTBV hwSectorEtaMax(setcorEta.second, setup_->widthSectorEta());
-    const TTBV hwR(r_, setup_->baseR(), setup_->widthR(), true);
-    const TTBV hwPhi(phi, setup_->basePhi(), setup_->widthPhiDTC(), true);
-    const TTBV hwZ(z_, setup_->baseZ(), setup_->widthZ(), true);
-    const TTBV hwQoverPtMin(qOverPt_.first, setup_->htBaseQoverPt(), setup_->htWidthQoverPt(), true);
-    const TTBV hwQoverPtMax(qOverPt_.second, setup_->htBaseQoverPt(), setup_->htWidthQoverPt(), true);
+    const TTBV hwGap(0, setup_->tmttNumUnusedBits());
+    const TTBV hwLayer(layer, setup_->tmttWidthLayer());
+    const TTBV hwSectorEtaMin(sectorEta.first, setup_->tmttWidthSectorEta());
+    const TTBV hwSectorEtaMax(sectorEta.second, setup_->tmttWidthSectorEta());
+    const TTBV hwR(r_, setup_->tmttBaseR(), setup_->tmttWidthR(), true);
+    const TTBV hwPhi(phi, setup_->tmttBasePhi(), setup_->tmttWidthPhi(), true);
+    const TTBV hwZ(z_, setup_->tmttBaseZ(), setup_->tmttWidthZ(), true);
+    const TTBV hwInv2RMin(inv2R_.first, setup_->tmttBaseInv2R(), setup_->tmttWidthInv2R(), true);
+    const TTBV hwInv2RMax(inv2R_.second, setup_->tmttBaseInv2R(), setup_->tmttWidthInv2R(), true);
     TTBV hwSectorPhis(0, setup_->numSectorsPhi());
     for (int sectorPhi = 0; sectorPhi < setup_->numSectorsPhi(); sectorPhi++)
       hwSectorPhis[sectorPhi] = sectorsPhi[region * setup_->numSectorsPhi() + sectorPhi];
     // assemble final bitset
-    return TTDTC::BV(hwGap.str() + hwValid.str() + hwR.str() + hwPhi.str() + hwZ.str() + hwLayer.str() + hwSectorPhis.str() + hwSectorEtaMin.str() + hwSectorEtaMax.str() + hwQoverPtMin.str() + hwQoverPtMax.str());
+    return TTDTC::BV(hwGap.str() + hwValid.str() + hwR.str() + hwPhi.str() + hwZ.str() + hwLayer.str() + hwSectorPhis.str() + hwSectorEtaMin.str() + hwSectorEtaMax.str() + hwInv2RMin.str() + hwInv2RMax.str());
   }
 
 }  // namespace trackerDTC

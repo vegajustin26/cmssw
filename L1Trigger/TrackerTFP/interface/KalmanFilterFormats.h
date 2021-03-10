@@ -22,17 +22,21 @@ namespace trackerTFP {
 
   class DataFormatKF {
   public:
-    DataFormatKF(bool twos);
-    ~DataFormatKF() {}
-    void updateRangeActual(double d);
-    //double digi(double val) const { return (std::floor(val / base_) + .5) * base_; }
-    double digi(double val) const { return val; }
+    DataFormatKF(const VariableKF& v, bool twos);
+    virtual ~DataFormatKF() {}
+    double digi(double val) const { return (std::floor(val / base_) + .5) * base_; }
+    //double digi(double val) const { return val; }
     bool twos() const { return twos_; }
     int width() const { return width_; }
     double base() const { return base_; }
     double range() const { return range_; }
     const std::pair<double, double>& rangeActual() const { return rangeActual_; }
+    // returns false if data format would oferflow for this double value
+    bool inRange(double d) const;
+    void updateRangeActual(double d);
+    int integer(double d) const { return floor(d / base_); }
   protected:
+    VariableKF v_;
     bool twos_;
     int width_;
     double base_;
@@ -45,6 +49,8 @@ namespace trackerTFP {
   public:
     FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);
     ~FormatKF() {}
+  private:
+    void calcRange() { range_ = base_ * pow( 2, width_ ); }
   };
 
   template<> FormatKF<VariableKF::x0>::FormatKF(const DataFormats* dataFormats, const edm::ParameterSet& iConfig);

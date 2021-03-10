@@ -2,12 +2,18 @@ import FWCore.ParameterSet.Config as cms
 
 TrackTriggerDataFormats_params = cms.PSet (
 
-  UseHybrid = cms.bool( True ),
+  UseHybrid = cms.bool( False ),
 
   SeedFilter = cms.PSet (
 
     WidthZT  = cms.int32( 5 ),
     WidthCot = cms.int32( 5 )
+
+  ),
+
+  KalmanFilter = cms.PSet (
+
+    RangeFactor = cms.double( 2.0 ) # search window of each track parameter in initial uncertainties
 
   ),
 

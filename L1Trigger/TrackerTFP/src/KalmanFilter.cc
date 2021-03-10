@@ -152,8 +152,37 @@ namespace trackerTFP {
           streamsStubs[offset + layer].emplace_back(TTDTC::Frame());
       }
     };
+    auto print = [this](const deque<State*>& stream) {
+      vector<stringstream> sss(15);
+      for (State* state : stream) {
+        static constexpr int w = 8;
+        if (!state) {
+          for (stringstream& ss : sss)
+            ss << setw(w) << " " << " ";
+          continue;
+        }
+        sss[0] << setw(w) << x0_->integer(state->x0()) << " ";
+        sss[1] << setw(w) << x1_->integer(state->x1()) << " ";
+        sss[2] << setw(w) << x2_->integer(state->x2()) << " ";
+        sss[3] << setw(w) << x3_->integer(state->x3()) << " ";
+        sss[4] << setw(w) << H00_->integer(state->H00()) << " ";
+        sss[5] << setw(w) << m0_->integer(state->m0()) << " ";
+        sss[6] << setw(w) << m1_->integer(state->m1()) << " ";
+        sss[7] << setw(w) << dataFormats_->format(Variable::dPhi, Process::kf).integer(state->dPhi()) << " ";
+        sss[8] << setw(w) << dataFormats_->format(Variable::dZ, Process::kf).integer(state->dZ()) << " ";
+        sss[9] << setw(w) << C00_->integer(state->C00()) << " ";
+        sss[10] << setw(w) << C01_->integer(state->C01()) << " ";
+        sss[11] << setw(w) << C11_->integer(state->C11()) << " ";
+        sss[12] << setw(w) << C22_->integer(state->C22()) << " ";
+        sss[13] << setw(w) << C23_->integer(state->C23()) << " ";
+        sss[14] << setw(w) << C33_->integer(state->C33()) << " ";
+      }
+      for (stringstream& ss : sss)
+        cout << ss.str() << endl;
+    };
     vector<deque<State*>> streams(inputTracks_.size());
-    for (int channel = 0; channel < (int)inputTracks_.size(); channel++) {
+    //for (int channel = 0; channel < (int)inputTracks_.size(); channel++) {
+    {int channel = 1;
       deque<State*>& stream = streams[channel];
       // proto state creation
       for (TrackKFin* track : inputTracks_[channel]) {
@@ -165,8 +194,13 @@ namespace trackerTFP {
         stream.push_back(state);
       }
       // state propagation
-      for (layer_ = 0; layer_ < setup_->numLayers(); layer_++)
+      for (layer_ = 0; layer_ < setup_->numLayers(); layer_++) {
+        print(stream);
         layer(stream);
+        cout << endl;
+        print(stream);
+        throw cms::Exception("...");
+      }
       // untruncated best state selection
       deque<State*> untruncatedStream = stream;
       accumulator(untruncatedStream);
@@ -235,43 +269,33 @@ namespace trackerTFP {
     const vector<StubKFin*>& stubs = track->layerStubs(layer);
     const TTBV& hitPattern = state->hitPattern();
     const int pos = distance(stubs.begin(), find(stubs.begin(), stubs.end(), stub)) + 1;
-    if (pos != (int)stubs.size()) {
-      states_.emplace_back(state, stubs[pos]);
-      state = &states_.back();
-    } else {
-      // picks first stub on next layer, nullifies state if skipping layer is not valid
+    StubKFin* stubNext = nullptr;
+    if (pos != (int)stubs.size())
+      stubNext = stubs[pos];
+    // picks next stub on different layer, nullifies state if skipping layer is not valid
+    else {
       bool valid(true);
-      // having already maximum number of skipped layers
-      TTBV maybePattern = state->track()->maybePattern();
-      maybePattern |= hitPattern;
-      if (maybePattern.count(0, layer + 1, false) >= setup_->kfMaxSkippedLayers())
-        valid = false;
-      // would create two skipped layer in a row
-      if ((layer > 0 && !maybePattern[layer - 1]) || !track->maybePattern(layer + 1))
+      // having already maximum number of added layers
+      if (hitPattern.count() == setup_->kfMaxLayers())
         valid = false;
       // not enough layers remain after skipping
       if (hitPattern.count() + track->hitPattern().count(layer + 1, setup_->numLayers()) < setup_->kfMaxLayers())
         valid = false;
-      StubKFin* stub = nullptr;
       if (valid) {
-        if (hitPattern.count() != setup_->kfMaxLayers()) {
-          for (int nextLayer = layer_ + 1; nextLayer < setup_->numLayers(); nextLayer++) {
-            if (track->hitPattern(nextLayer)) {
-              stub = track->layerStub(nextLayer);
-              // not enough ps layer
-              if (state->nPS() < 2 && !setup_->psModule(stub->ttStubRef()))
-                stub = nullptr;
-              break;
-            }
+        // pick next stub on next populated layer
+        for (int nextLayer = layer_ + 1; nextLayer < setup_->numLayers(); nextLayer++) {
+          if (track->hitPattern(nextLayer)) {
+            stubNext = track->layerStub(nextLayer);
+            break;
           }
         }
       }
-      if (stub) {
-        states_.emplace_back(state, stub);
-        state = &states_.back();
-      } else
-        state = nullptr;
     }
+    if (stubNext) {
+      states_.emplace_back(state, stubNext);
+      state = &states_.back();
+    } else
+      state = nullptr;
   }
 
   // best state selection
@@ -282,9 +306,6 @@ namespace trackerTFP {
     // update chi2
     for (State* state : stream)
       state->finish();
-    // sort in chi2
-    auto smallerChi2 = [](State* lhs, State* rhs) { return lhs->chi2() < rhs->chi2(); };
-    stable_sort(stream.begin(), stream.end(), smallerChi2);
     // sort in number of skipped layers
     auto lessSkippedLayers = [](State* lhs, State* rhs) { return lhs->numSkippedLayers() < rhs->numSkippedLayers(); };
     stable_sort(stream.begin(), stream.end(), lessSkippedLayers);
@@ -300,6 +321,9 @@ namespace trackerTFP {
   // updates state
   void KalmanFilter::update(State*& state) {
     // R-Z plane
+    static const double dH = H00_->digi(setup_->chosenRofPhi() - setup_->chosenRofZ());
+    const double H00 = H00_->digi(state->H00());
+    //const double H12 = H12_->digi(H00 + dH);
     const double H12 = H12_->digi(state->H12());
     const double m1 = m1_->digi(state->m1());
     const double v1 = v1_->digi(state->v1());
@@ -314,7 +338,7 @@ namespace trackerTFP {
     C33_->updateRangeActual(C33);
     H12_->updateRangeActual(H12);
     m1_->updateRangeActual(m1);
-    const double r1C = r1_->digi(m1  - x3);
+    const double r1C = x3_->digi(m1  - x3);
     const double r1 = r1_->digi(r1C - x2 * H12);
     const double S12 = S12_->digi(C23 + H12 * C22);
     const double S13 = S13_->digi(C33 + H12 * C23);
@@ -322,12 +346,12 @@ namespace trackerTFP {
     const double R11 = R11_->digi(R11C + H12 * S12);
     // imrpoved dynamic cancelling
     const int msbZ = (int)ceil(log2(R11 / R11_->base()));
-    const double R11Shifted = R11_->digi(R11 * pow(2., 18 - msbZ));
+    const double R11Shifted = R11_->digi(R11 * pow(2., 16 - msbZ));
     const double R11Rough = R11Rough_->digi(R11Shifted);
     const double invR11Approx = invR11Approx_->digi(1. / R11Rough);
     const double invR11Cor = invR11Cor_->digi(2. - invR11Approx * R11Shifted);
     const double invR11Shifted = invR11Approx * invR11Cor;
-    const double invR11 = invR11_->digi(invR11Shifted * pow(2., 18 - msbZ));
+    const double invR11 = invR11_->digi(invR11Shifted * pow(2., 16 - msbZ));
     //const double invR11 = invR11_->digi(1. / R11);
     const double K21 = K21_->digi(S12 * invR11);
     const double K31 = K31_->digi(S13 * invR11);
@@ -337,7 +361,6 @@ namespace trackerTFP {
     C23 = C23_->digi(C23 - S13 * K21);
     C33 = C33_->digi(C33 - S13 * K31);
     // R-Phi plane
-    const double H00 = H00_->digi(state->H00());
     const double m0 = m0_->digi(state->m0());
     const double v0 = v0_->digi(state->v0());
     double x0 = x0_->digi(state->x0());
@@ -351,7 +374,7 @@ namespace trackerTFP {
     C11_->updateRangeActual(C11);
     H00_->updateRangeActual(H00);
     m0_->updateRangeActual(m0);
-    const double r0C = r0_->digi(m0 - x1);
+    const double r0C = x1_->digi(m0 - x1);
     const double r0 = r0_->digi(r0C - x0 * H00);
     const double S00 = S00_->digi(C01  + H00 * C00);
     const double S01 = S01_->digi(C11  + H00 * C01);
@@ -359,12 +382,12 @@ namespace trackerTFP {
     const double R00 = R00_->digi(R00C + H00 * S00);
     // improved dynamic cancelling
     const int msbPhi = (int)ceil(log2(R00 / R00_->base()));
-    const double R00Shifted = R00_->digi(R00 * pow(2., 18 - msbPhi));
+    const double R00Shifted = R00_->digi(R00 * pow(2., 16 - msbPhi));
     const double R00Rough = R00Rough_->digi(R00Shifted);
     const double invR00Approx = invR00Approx_->digi(1. / R00Rough);
     const double invR00Cor = invR00Cor_->digi(2. - invR00Approx * R00Shifted);
     const double invR00Shifted = invR00Approx * invR00Cor;
-    const double invR00 = invR00_->digi(invR00Shifted * pow(2., 18 - msbPhi));
+    const double invR00 = invR00_->digi(invR00Shifted * pow(2., 16 - msbPhi));
     //const double invR00 = invR00_->digi(1. / R00);
     const double K00 = K00_->digi(S00 * invR00);
     const double K10 = K10_->digi(S01 * invR00);
@@ -375,8 +398,8 @@ namespace trackerTFP {
     C11 = C11_->digi(C11 - S01 * K10);
     // residual cut
     bool valid(true);
-    if (abs(r0) > dataFormats_->format(Variable::phi, Process::sf).range() ||
-        abs(r1) > dataFormats_->format(Variable::z, Process::sf).range())
+    if (!dataFormats_->format(Variable::phi, Process::sf).inRange(r0) ||
+        !dataFormats_->format(Variable::z, Process::sf).inRange(r1))
       valid = false;
     /*if (state->hitPattern().count() == 2) {
       if (abs(r1) > (setup_->psModule(state->stub()->ttStubRef()) ? 1. : 10.))
@@ -385,10 +408,10 @@ namespace trackerTFP {
         valid = false;
     }*/
     // parameter cut
-    if (abs(x0) > dataFormats_->format(Variable::qOverPt, Process::sf).base() ||
-        abs(x1) > dataFormats_->format(Variable::phiT, Process::sf).base() ||
-        abs(x2) > dataFormats_->format(Variable::cot, Process::sf).base() ||
-        abs(x3) > dataFormats_->format(Variable::zT, Process::sf).base())
+    if (!dataFormats_->format(Variable::inv2R, Process::sf).inRange(x0) ||
+        !dataFormats_->format(Variable::phiT, Process::sf).inRange(x1) ||
+        !dataFormats_->format(Variable::cot, Process::sf).inRange(x2) ||
+        !dataFormats_->format(Variable::zT, Process::sf).inRange(x3))
       valid = false;
     if (valid) {
       S12_->updateRangeActual(S12);
@@ -397,9 +420,9 @@ namespace trackerTFP {
       K31_->updateRangeActual(K31);
       R11_->updateRangeActual(R11);
       R11Rough_->updateRangeActual(R11Rough);
-      invR11_->updateRangeActual(invR11);
       invR11Approx_->updateRangeActual(invR11Approx);
       invR11Cor_->updateRangeActual(invR11Cor);
+      invR11_->updateRangeActual(invR11Shifted);
       r1_->updateRangeActual(r1);
       C22_->updateRangeActual(C22);
       C23_->updateRangeActual(C23);
@@ -412,9 +435,9 @@ namespace trackerTFP {
       K10_->updateRangeActual(K10);
       R00_->updateRangeActual(R00);
       R00Rough_->updateRangeActual(R00Rough);
-      invR00_->updateRangeActual(invR00);
       invR00Approx_->updateRangeActual(invR00Approx);
       invR00Cor_->updateRangeActual(invR00Cor);
+      invR00_->updateRangeActual(invR00Shifted);
       r0_->updateRangeActual(r0);
       C00_->updateRangeActual(C00);
       C01_->updateRangeActual(C01);
@@ -425,6 +448,36 @@ namespace trackerTFP {
       state = &states_.back();
     } else
       state = nullptr;
+    static constexpr int w = 8;
+    cout << "v0            " << setw(w) << v0_->integer(v0) << endl;
+    cout << "v1            " << setw(w) << v1_->integer(v1) << endl;
+    cout << "S00           " << setw(w) << S00_->integer(S00) << endl;
+    cout << "S01           " << setw(w) << S01_->integer(S01) << endl;
+    cout << "S12           " << setw(w) << S12_->integer(S12) << endl;
+    cout << "S12           " << setw(w) << S12 << endl;
+    cout << "S13           " << setw(w) << S13_->integer(S13) << endl;
+    cout << "r0            " << setw(w) << r0_->integer(r0) << endl;
+    cout << "r1            " << setw(w) << r1_->integer(r1) << endl;
+    cout << "R00           " << setw(w) << R00_->integer(R00) << endl;
+    cout << "R11           " << setw(w) << R11_->integer(R11) << endl;
+    cout << "Shift0        " << setw(2) << 16 - msbPhi << endl;
+    cout << "Shift1        " << setw(2) << 16 - msbZ << endl;
+    cout << "R00Shifted    " << setw(w) << R00_->integer(R00Shifted) << endl;
+    cout << "R11Shifted    " << setw(w) << R11_->integer(R11Shifted) << endl;
+    cout << "R00Rough      " << setw(w) << R00Rough_->integer(R00Rough) << endl;
+    cout << "R11Rough      " << setw(w) << R11Rough_->integer(R11Rough) << endl;
+    cout << "invR00Approx  " << setw(w) << invR00Approx_->integer(invR00Approx) << endl;
+    cout << "invR11Approx  " << setw(w) << invR11Approx_->integer(invR11Approx) << endl;
+    cout << "invR00Cor     " << setw(w) << invR00Cor_->integer(invR00Cor) << endl;
+    cout << "invR11Cor     " << setw(w) << invR11Cor_->integer(invR11Cor) << endl;
+    cout << "invR00Shifted " << setw(w) << floor(invR00Shifted / invR00Approx_->base() / invR00Cor_->base()) << endl;
+    cout << "invR11Shifted " << setw(w) << floor(invR11Shifted / invR11Approx_->base() / invR11Cor_->base()) << endl;
+    cout << "invR00        " << setw(w) << invR00_->integer(invR00) << endl;
+    cout << "invR11        " << setw(w) << invR11_->integer(invR11) << endl;
+    cout << "K00           " << setw(w) << K00_->integer(K00) << endl;
+    cout << "K10           " << setw(w) << K10_->integer(K10) << endl;
+    cout << "K21           " << setw(w) << K21_->integer(K21) << endl;
+    cout << "K31           " << setw(w) << K31_->integer(K21) << endl;
   }
 
   // remove and return first element of deque, returns nullptr if empty
