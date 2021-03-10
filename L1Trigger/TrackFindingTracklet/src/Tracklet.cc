@@ -313,7 +313,7 @@ void Tracklet::addMatch(int layer,
                         const trklet::Stub* stubptr) {
   assert(layer > 0 && layer <= N_LAYER);
   resid_[layer - 1].init(
-      settings_, layer, ideltaphi, ideltaz, stubid, dphi, dz, dphiapprox, dzapprox, stubptr);
+      settings_, layer-1, ideltaphi, ideltaz, stubid, dphi, dz, dphiapprox, dzapprox, stubptr);
 }
 
 void Tracklet::addMatchDisk(int disk,
@@ -323,31 +323,29 @@ void Tracklet::addMatchDisk(int disk,
                             double dr,
                             double dphiapprox,
                             double drapprox,
-                            double alpha,
                             int stubid,
-                            double zstub,
                             const trklet::Stub* stubptr) {
   assert(abs(disk) <= N_DISK);
-  diskresid_[abs(disk) - 1].init(settings_,
-                                 disk,
-                                 ideltaphi,
-                                 ideltar,
-                                 stubid,
-                                 dphi,
-                                 dr,
-                                 dphiapprox,
-                                 drapprox,
-                                 zstub,
-                                 alpha,
-                                 stubptr->alphanew(),
-                                 stubptr);
+
+  resid_[N_LAYER + abs(disk) - 1].init(settings_,
+				       N_LAYER + abs(disk) -1,
+				       ideltaphi,
+				       ideltar,
+				       stubid,
+				       dphi,
+				       dr,
+				       dphiapprox,
+				       drapprox,
+				       stubptr);  
 }
 
 int Tracklet::nMatches() {
   int nmatches = 0;
 
+  int ilay=0;
   for (const auto& iresid : resid_) {
-    if (iresid.valid()) {
+    ilay++;
+    if (iresid.valid()&&ilay<=N_LAYER) {
       nmatches++;
     }
   }
@@ -358,8 +356,10 @@ int Tracklet::nMatches() {
 int Tracklet::nMatchesDisk() {
   int nmatches = 0;
 
-  for (const auto& idiskresid : diskresid_) {
-    if (idiskresid.valid()) {
+  int ilay=0;
+  for (const auto& idiskresid : resid_) {
+    ilay++;
+    if (idiskresid.valid()&&ilay>N_LAYER) {
       nmatches++;
     }
   }
@@ -392,11 +392,11 @@ std::string Tracklet::fullmatchdiskstr(int disk) {
   tmp.set(trackletIndex_, settings_.nbitstrackletindex(), true, __LINE__, __FILE__);
   FPGAWord tcid;
   tcid.set(TCIndex_, settings_.nbitstcindex(), true, __LINE__, __FILE__);
-  const FPGAWord& stubr = diskresid_[disk - 1].stubptr()->r();
-  const bool isPS = diskresid_[disk - 1].stubptr()->isPSmodule();
-  std::string oss = tcid.str() + "|" + tmp.str() + "|" + diskresid_[disk - 1].fpgastubid().str() + "|" +
+  const FPGAWord& stubr = resid_[N_LAYER + disk - 1].stubptr()->r();
+  const bool isPS = resid_[N_LAYER + disk - 1].stubptr()->isPSmodule();
+  std::string oss = tcid.str() + "|" + tmp.str() + "|" + resid_[N_LAYER + disk - 1].fpgastubid().str() + "|" +
                     (isPS ? stubr.str() : ("00000000" + stubr.str())) + "|" +
-                    diskresid_[disk - 1].fpgaphiresid().str() + "|" + diskresid_[disk - 1].fpgarresid().str();
+                    resid_[N_LAYER + disk - 1].fpgaphiresid().str() + "|" + resid_[N_LAYER + disk - 1].fpgarzresid().str();
   return oss;
 }
 
@@ -413,11 +413,6 @@ std::vector<const L1TStub*> Tracklet::getL1Stubs() {
   for (const auto& iresid : resid_) {
     if (iresid.valid())
       tmp.push_back(iresid.stubptr()->l1tstub());
-  }
-
-  for (const auto& idiskresid : diskresid_) {
-    if (idiskresid.valid())
-      tmp.push_back(idiskresid.stubptr()->l1tstub());
   }
 
   return tmp;
@@ -451,17 +446,17 @@ std::map<int, int> Tracklet::getStubIDs() {
       //check disk
       if (i >= N_DISK)
         continue;  //i=[0..4] for disks
-      if (diskresid_[i].valid()) {
+      if (resid_[N_LAYER + i].valid()) {
         if (i == 3 && resid_[0].valid() && innerFPGAStub_->layer().value() == 1)
           continue;  // Don't add D4 if track has L1 stub
         // two extra bits to indicate if the matched stub is local or from neighbor
         int location = 1;  // local
-        location <<= diskresid_[i].fpgastubid().nbits();
+        location <<= resid_[N_LAYER + i].fpgastubid().nbits();
 
         if (itfit().value() < 0) {
-          stubIDs[-11 - i] = diskresid_[i].fpgastubid().value() + location;
+          stubIDs[-11 - i] = resid_[N_LAYER + i].fpgastubid().value() + location;
         } else {
-          stubIDs[11 + i] = diskresid_[i].fpgastubid().value() + location;
+          stubIDs[11 + i] = resid_[N_LAYER + i].fpgastubid().value() + location;
         }
       }
     }
@@ -488,15 +483,15 @@ std::map<int, int> Tracklet::getStubIDs() {
       //check disks
       if (i == 4 && resid_[1].valid())
         continue;  // Don't add D5 if track has L2 stub
-      if (diskresid_[i].valid()) {
+      if (resid_[N_LAYER + i].valid()) {
         // two extra bits to indicate if the matched stub is local or from neighbor
         int location = 1;  // local
-        location <<= diskresid_[i].fpgastubid().nbits();
+        location <<= resid_[N_LAYER + i].fpgastubid().nbits();
 
         if (innerStub_->disk() < 0) {
-          stubIDs[-11 - i] = diskresid_[i].fpgastubid().value() + location;
+          stubIDs[-11 - i] = resid_[N_LAYER + i].fpgastubid().value() + location;
         } else {
-          stubIDs[11 + i] = diskresid_[i].fpgastubid().value() + location;
+          stubIDs[11 + i] = resid_[N_LAYER + i].fpgastubid().value() + location;
         }
       }
     }
@@ -530,19 +525,19 @@ std::map<int, int> Tracklet::getStubIDs() {
       }
 
       //check disks
-      if (diskresid_[i].valid()) {
+      if (resid_[N_LAYER + i].valid()) {
         // two extra bits to indicate if the matched stub is local or from neighbor
         int location = 1;  // local
-        location <<= diskresid_[i].fpgastubid().nbits();
+        location <<= resid_[N_LAYER + i].fpgastubid().nbits();
 
         if (innerStub_->disk() < 0) {  // if negative overlap
           if (innerFPGAStub_->layer().value() != 2 || !resid_[0].valid() ||
               i != 3) {  // Don't add D4 if this is an L3L2 track with an L1 stub
-            stubIDs[-11 - i] = diskresid_[i].fpgastubid().value() + location;
+            stubIDs[-11 - i] = resid_[N_LAYER + i].fpgastubid().value() + location;
           }
         } else {
           if (innerFPGAStub_->layer().value() != 2 || !resid_[0].valid() || i != 3) {
-            stubIDs[11 + i] = diskresid_[i].fpgastubid().value() + location;
+            stubIDs[11 + i] = resid_[N_LAYER + i].fpgastubid().value() + location;
           }
         }
       }
@@ -661,7 +656,7 @@ const std::string Tracklet::diskstubstr(const unsigned disk) const {
   assert(disk < N_DISK);
 
   std::stringstream oss("");
-  if (!diskresid_[disk].valid())
+  if (!resid_[N_LAYER + disk].valid())
     oss << "0|0000000|0000000000|000000000000|000000000000|0000000";
   else {
     if (trackIndex_ < 0 || trackIndex_ > (int)settings_.ntrackletmax()) {
@@ -669,14 +664,14 @@ const std::string Tracklet::diskstubstr(const unsigned disk) const {
       assert(0);
     }
     const FPGAWord tmp(trackIndex_, settings_.nbitstrackletindex(), true, __LINE__, __FILE__);
-    const FPGAWord& stubr = diskresid_[disk].stubptr()->r();
-    const bool isPS = diskresid_[disk].stubptr()->isPSmodule();
+    const FPGAWord& stubr = resid_[N_LAYER + disk].stubptr()->r();
+    const bool isPS = resid_[N_LAYER + disk].stubptr()->isPSmodule();
     oss << "1|";  // valid bit
     oss << tmp.str() << "|";
-    oss << diskresid_[disk].fpgastubid().str() << "|";
+    oss << resid_[N_LAYER + disk].fpgastubid().str() << "|";
     oss << (isPS ? stubr.str() : ("00000000" + stubr.str())) << "|";
-    oss << diskresid_[disk].fpgaphiresid().str() << "|";
-    oss << diskresid_[disk].fpgarresid().str();
+    oss << resid_[N_LAYER + disk].fpgaphiresid().str() << "|";
+    oss << resid_[N_LAYER + disk].fpgarzresid().str();
   }
 
   return oss.str();

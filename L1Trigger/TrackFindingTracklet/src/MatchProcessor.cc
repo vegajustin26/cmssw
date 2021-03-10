@@ -706,9 +706,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
                              dr,
                              drphiapprox / stub->r(),
                              drapprox,
-                             stub->alpha(settings_.stripPitch(stub->isPSmodule())),
                              (phiregion_ << 7) + fpgastub->stubindex().value(),
-                             stub->z(),
                              fpgastub);
       if (settings_.debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "Accepted full match in disk " << getName() << " " << tracklet << " "

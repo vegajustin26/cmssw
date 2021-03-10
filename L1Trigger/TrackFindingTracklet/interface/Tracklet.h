@@ -16,7 +16,6 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackPars.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Projection.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Residual.h"
-#include "L1Trigger/TrackFindingTracklet/interface/DiskResidual.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 
 namespace trklet {
@@ -97,12 +96,7 @@ namespace trklet {
 
     bool matchdisk(int disk) const {
       assert(abs(disk) <= N_DISK);
-      return diskresid_[abs(disk) - 1].valid();
-    }
-
-    const DiskResidual& diskResid(int disk) const {
-      assert(matchdisk(disk));
-      return diskresid_[abs(disk) - 1];
+      return resid_[N_LAYER + abs(disk) - 1].valid();
     }
 
     void addMatch(int layer,
@@ -122,9 +116,7 @@ namespace trklet {
                       double dr,
                       double dphiapprox,
                       double drapprox,
-                      double alpha,
                       int stubid,
-                      double zstub,
                       const trklet::Stub* stubptr);
 
     int nMatches();
@@ -138,10 +130,10 @@ namespace trklet {
       return resid_[layer - 1].valid();
     }
 
-    const Residual& resid(int layer) {
-      assert(layer > 0 && layer <= N_LAYER);
-      assert(resid_[layer - 1].valid());
-      return resid_[layer - 1];
+    const Residual& resid(unsigned int layerdisk) {
+      assert(layerdisk < N_LAYER + N_DISK);
+      assert(resid_[layerdisk].valid());
+      return resid_[layerdisk];
     }
 
     std::vector<const L1TStub*> getL1Stubs();
@@ -303,10 +295,9 @@ namespace trklet {
 
     std::unique_ptr<Track> fpgatrack_;
 
-    Projection proj_[N_LAYER+N_DISK];
+    Projection proj_[N_LAYER + N_DISK];
     
-    Residual resid_[N_LAYER];
-    DiskResidual diskresid_[N_DISK];
+    Residual resid_[N_LAYER + N_DISK];
 
     Settings const& settings_;
   };
