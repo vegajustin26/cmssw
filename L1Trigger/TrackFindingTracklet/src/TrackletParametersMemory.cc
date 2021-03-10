@@ -18,22 +18,6 @@ void TrackletParametersMemory::clean() {
   tracklets_.clear();
 }
 
-void TrackletParametersMemory::writeMatches(Globals* globals, int& matchesL1, int& matchesL3, int& matchesL5) {
-  ofstream& out = globals->ofstream("nmatches.txt");
-  for (auto& tracklet : tracklets_) {
-    if ((tracklet->nMatches() + tracklet->nMatchesDisk()) > 0) {
-      if (tracklet->layer() == 1)
-        matchesL1++;
-      if (tracklet->layer() == 3)
-        matchesL3++;
-      if (tracklet->layer() == 5)
-        matchesL5++;
-    }
-    out << tracklet->layer() << " " << tracklet->disk() << " " << tracklet->nMatches() << " "
-        << tracklet->nMatchesDisk() << endl;
-  }
-}
-
 void TrackletParametersMemory::writeTPAR(bool first) {
   const string dirTP = settings_.memPath() + "TrackletParameters/";
 

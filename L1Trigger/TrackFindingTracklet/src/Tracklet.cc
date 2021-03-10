@@ -339,33 +339,6 @@ void Tracklet::addMatchDisk(int disk,
 				       stubptr);  
 }
 
-int Tracklet::nMatches() {
-  int nmatches = 0;
-
-  int ilay=0;
-  for (const auto& iresid : resid_) {
-    ilay++;
-    if (iresid.valid()&&ilay<=N_LAYER) {
-      nmatches++;
-    }
-  }
-
-  return nmatches;
-}
-
-int Tracklet::nMatchesDisk() {
-  int nmatches = 0;
-
-  int ilay=0;
-  for (const auto& idiskresid : resid_) {
-    ilay++;
-    if (idiskresid.valid()&&ilay>N_LAYER) {
-      nmatches++;
-    }
-  }
-  return nmatches;
-}
-
 std::string Tracklet::fullmatchstr(int layer) {
   assert(layer > 0 && layer <= N_LAYER);
 

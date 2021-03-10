@@ -741,12 +741,12 @@ namespace trklet {
         {"HitPattern", false},   {"ChiSq", false},      {"Seeds", false},
         {"FT", false},           {"Residuals", false},  {"StubBend", false},
         {"MC", false},           {"MP", false},         {"ME", false},
-        {"AP", false},           {"VMP", false},        {"NMatches", false},
+        {"AP", false},           {"VMP", false},        
         {"TrackProjOcc", false}, {"TC", false},         {"Pars", false},
         {"TPars", false},        {"TPD", false},        {"TrackletPars", false},
         {"TED", false},          {"TP", false},         {"TRE", false},
         {"VMR", false},          {"StubsLayer", false}, {"StubsLayerSector", false},
-        {"HitEff", false},       {"MatchEff", true},    {"Cabling", false},
+        {"HitEff", false},       {"MatchEff", false},    {"Cabling", false},
         {"IFit", false},         {"AS", false}};
 
     std::array<double, N_DSS_MOD> rDSSinner_mod_{{68.9391, 78.7750, 85.4550, 96.3150, 102.3160}};

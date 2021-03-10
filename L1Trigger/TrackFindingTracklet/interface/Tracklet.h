@@ -94,10 +94,6 @@ namespace trklet {
       return proj_[layerdisk];
     }
 
-    bool matchdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return resid_[N_LAYER + abs(disk) - 1].valid();
-    }
 
     void addMatch(int layer,
                   int ideltaphi,
@@ -118,10 +114,7 @@ namespace trklet {
                       double drapprox,
                       int stubid,
                       const trklet::Stub* stubptr);
-
-    int nMatches();
-    int nMatchesDisk();
-
+    
     std::string fullmatchstr(int layer);
     std::string fullmatchdiskstr(int disk);
 
@@ -130,6 +123,12 @@ namespace trklet {
       return resid_[layer - 1].valid();
     }
 
+    bool matchdisk(int disk) const {
+      assert(abs(disk) <= N_DISK);
+      return resid_[N_LAYER + abs(disk) - 1].valid();
+    }
+
+    
     const Residual& resid(unsigned int layerdisk) {
       assert(layerdisk < N_LAYER + N_DISK);
       assert(resid_[layerdisk].valid());

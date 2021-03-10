@@ -389,16 +389,6 @@ void Sector::writeCT(bool first) {
 }
 
 void Sector::clean() {
-  if (settings_.writeMonitorData("NMatches")) {
-    int matchesL1 = 0;
-    int matchesL3 = 0;
-    int matchesL5 = 0;
-    for (auto& i : TPAR_) {
-      i->writeMatches(globals_, matchesL1, matchesL3, matchesL5);
-    }
-    globals_->ofstream("nmatchessector.txt") << matchesL1 << " " << matchesL3 << " " << matchesL5 << endl;
-  }
-
   for (auto& mem : MemoriesV_) {
     mem->clean();
   }
