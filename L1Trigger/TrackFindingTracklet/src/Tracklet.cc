@@ -14,9 +14,6 @@ using namespace std;
 using namespace trklet;
 
 Tracklet::Tracklet(Settings const& settings,
-                   const L1TStub* innerStub,
-                   const L1TStub* middleStub,
-                   const L1TStub* outerStub,
                    const Stub* innerFPGAStub,
                    const Stub* middleFPGAStub,
                    const Stub* outerFPGAStub,
@@ -50,12 +47,9 @@ Tracklet::Tracklet(Settings const& settings,
 
   assert(disk_ || barrel_ || overlap_);
 
-  if (barrel_ && middleStub == nullptr)
-    assert(innerStub->layer() < N_LAYER);
+  if (barrel_ && middleFPGAStub == nullptr)
+    assert(innerFPGAStub->l1tstub()->layer() < N_LAYER);
 
-  innerStub_ = innerStub;
-  middleStub_ = middleStub;
-  outerStub_ = outerStub;
   innerFPGAStub_ = innerFPGAStub;
   middleFPGAStub_ = middleFPGAStub;
   outerFPGAStub_ = outerFPGAStub;
@@ -71,13 +65,6 @@ Tracklet::Tracklet(Settings const& settings,
   fpgapars_.t().set(it, settings_.nbitst(), false, __LINE__, __FILE__);
 
   fpgatrack_ = nullptr;
-
-  if (innerStub_)
-    assert(innerStub_->layer() < N_LAYER || innerStub_->disk() < N_DISK);
-  if (middleStub_)
-    assert(middleStub_->layer() < N_LAYER || middleStub_->disk() < N_DISK);
-  if (outerStub_)
-    assert(outerStub_->layer() < N_LAYER || outerStub_->disk() < N_DISK);
 
   seedIndex_ = calcSeedIndex();
 
@@ -122,7 +109,7 @@ int Tracklet::tpseed() {
   set<int> tpsetstubinner;
   set<int> tpsetstubouter;
 
-  vector<int> tps = innerStub_->tps();
+  vector<int> tps = innerFPGAStub_->l1tstub()->tps();
   for (auto tp : tps) {
     if (tp != 0) {
       tpsetstubinner.insert(tp);
@@ -130,7 +117,7 @@ int Tracklet::tpseed() {
     }
   }
 
-  tps = outerStub_->tps();
+  tps = outerFPGAStub_->l1tstub()->tps();
   for (auto tp : tps) {
     if (tp != 0) {
       tpsetstubouter.insert(tp);
@@ -160,14 +147,14 @@ bool Tracklet::stubtruthmatch(const L1TStub* stub) {
       tpset.insert(abs(tp));
     }
   }
-  tps = innerStub_->tps();
+  tps = innerFPGAStub_->l1tstub()->tps();
   for (auto tp : tps) {
     if (tp != 0) {
       tpsetstubinner.insert(tp);
       tpset.insert(abs(tp));
     }
   }
-  tps = outerStub_->tps();
+  tps = outerFPGAStub_->l1tstub()->tps();
   for (auto tp : tps) {
     if (tp != 0) {
       tpsetstubouter.insert(tp);
@@ -347,12 +334,12 @@ std::string Tracklet::fullmatchdiskstr(int disk) {
 std::vector<const L1TStub*> Tracklet::getL1Stubs() {
   std::vector<const L1TStub*> tmp;
 
-  if (innerStub_)
-    tmp.push_back(innerStub_);
-  if (middleStub_)
-    tmp.push_back(middleStub_);
-  if (outerStub_)
-    tmp.push_back(outerStub_);
+  if (innerFPGAStub_)
+    tmp.push_back(innerFPGAStub_->l1tstub());
+  if (middleFPGAStub_)
+    tmp.push_back(middleFPGAStub_->l1tstub());
+  if (outerFPGAStub_)
+    tmp.push_back(outerFPGAStub_->l1tstub());
 
   for (const auto& iresid : resid_) {
     if (iresid.valid())
@@ -432,7 +419,7 @@ std::map<int, int> Tracklet::getStubIDs() {
         int location = 1;  // local
         location <<= resid_[N_LAYER + i].fpgastubid().nbits();
 
-        if (innerStub_->disk() < 0) {
+        if (innerFPGAStub_->l1tstub()->disk() < 0) {
           stubIDs[-11 - i] = resid_[N_LAYER + i].fpgastubid().value() + location;
         } else {
           stubIDs[11 + i] = resid_[N_LAYER + i].fpgastubid().value() + location;
@@ -474,7 +461,7 @@ std::map<int, int> Tracklet::getStubIDs() {
         int location = 1;  // local
         location <<= resid_[N_LAYER + i].fpgastubid().nbits();
 
-        if (innerStub_->disk() < 0) {  // if negative overlap
+        if (innerFPGAStub_->l1tstub()->disk() < 0) {  // if negative overlap
           if (innerFPGAStub_->layer().value() != 2 || !resid_[0].valid() ||
               i != 3) {  // Don't add D4 if this is an L3L2 track with an L1 stub
             stubIDs[-11 - i] = resid_[N_LAYER + i].fpgastubid().value() + location;
@@ -763,17 +750,17 @@ Track Tracklet::makeTrack(const vector<const L1TStub*>& l1stubs) {
 }
 
 int Tracklet::layer() const {
-  int l1 = (innerFPGAStub_ && innerFPGAStub_->layerdisk() < N_LAYER) ? innerStub_->layerdisk() + 1 : 999,
-      l2 = (middleFPGAStub_ && middleFPGAStub_->layerdisk() < N_LAYER) ? middleStub_->layerdisk() + 1 : 999,
-      l3 = (outerFPGAStub_ && outerFPGAStub_->layerdisk() < N_LAYER) ? outerStub_->layerdisk() + 1 : 999,
+  int l1 = (innerFPGAStub_ && innerFPGAStub_->layerdisk() < N_LAYER) ? innerFPGAStub_->l1tstub()->layerdisk() + 1 : 999,
+      l2 = (middleFPGAStub_ && middleFPGAStub_->layerdisk() < N_LAYER) ? middleFPGAStub_->l1tstub()->layerdisk() + 1 : 999,
+      l3 = (outerFPGAStub_ && outerFPGAStub_->layerdisk() < N_LAYER) ? outerFPGAStub_->l1tstub()->layerdisk() + 1 : 999,
       l = min(min(l1, l2), l3);
   return (l < 999 ? l : 0);
 }
 
 int Tracklet::disk() const {
-  int d1 = (innerFPGAStub_ && (innerFPGAStub_->layerdisk() >= N_LAYER)) ? innerStub_->disk() : 999,
-      d2 = (middleFPGAStub_ && (middleFPGAStub_->layerdisk() >= N_LAYER)) ? middleStub_->disk() : 999,
-      d3 = (outerFPGAStub_ && (outerFPGAStub_->layerdisk() >= N_LAYER)) ? outerStub_->disk() : 999, d = 999;
+  int d1 = (innerFPGAStub_ && (innerFPGAStub_->layerdisk() >= N_LAYER)) ? innerFPGAStub_->l1tstub()->disk() : 999,
+      d2 = (middleFPGAStub_ && (middleFPGAStub_->layerdisk() >= N_LAYER)) ? middleFPGAStub_->l1tstub()->disk() : 999,
+      d3 = (outerFPGAStub_ && (outerFPGAStub_->layerdisk() >= N_LAYER)) ? outerFPGAStub_->l1tstub()->disk() : 999, d = 999;
   if (abs(d1) < min(abs(d2), abs(d3)))
     d = d1;
   if (abs(d2) < min(abs(d1), abs(d3)))
@@ -784,10 +771,10 @@ int Tracklet::disk() const {
 }
 
 int Tracklet::disk2() const {
-  if (innerStub_->disk() > 0) {
-    return innerStub_->disk() + 1;
+  if (innerFPGAStub_->l1tstub()->disk() > 0) {
+    return innerFPGAStub_->l1tstub()->disk() + 1;
   }
-  return innerStub_->disk() - 1;
+  return innerFPGAStub_->l1tstub()->disk() - 1;
 }
 
 void Tracklet::setTrackletIndex(unsigned int index) {
@@ -842,9 +829,9 @@ unsigned int Tracklet::calcSeedIndex() const {
   assert(innerFPGAStub_ != nullptr);
   assert(outerFPGAStub_ != nullptr);
   if (middleFPGAStub_ && seedlayer == 2 && abs(seeddisk) == 1) {
-    int l1 = (innerFPGAStub_ && innerFPGAStub_->layerdisk() < N_LAYER) ? innerStub_->layerdisk() + 1 : 999,
-        l2 = (middleFPGAStub_ && middleFPGAStub_->layerdisk() < N_LAYER) ? middleStub_->layerdisk() + 1 : 999,
-        l3 = (outerFPGAStub_ && outerFPGAStub_->layerdisk() < N_LAYER) ? outerStub_->layerdisk() + 1 : 999;
+    int l1 = (innerFPGAStub_ && innerFPGAStub_->layerdisk() < N_LAYER) ? innerFPGAStub_->l1tstub()->layerdisk() + 1 : 999,
+        l2 = (middleFPGAStub_ && middleFPGAStub_->layerdisk() < N_LAYER) ? middleFPGAStub_->l1tstub()->layerdisk() + 1 : 999,
+        l3 = (outerFPGAStub_ && outerFPGAStub_->layerdisk() < N_LAYER) ? outerFPGAStub_->l1tstub()->layerdisk() + 1 : 999;
     if (l1 + l2 + l3 < 1998) {  // If two stubs are layer stubs
       seedindex = 10;           // L2L3D1
     } else {

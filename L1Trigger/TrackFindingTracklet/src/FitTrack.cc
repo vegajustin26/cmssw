@@ -456,13 +456,13 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
     r[i] = settings_.rmean(layers[i] - 1);
     if (layers[i] == tracklet->layer()) {
       if (tracklet->isOverlap()) {
-        realrstub[i] = tracklet->outerStub()->r();
+        realrstub[i] = tracklet->outerFPGAStub()->l1tstub()->r();
       } else {
-        realrstub[i] = tracklet->innerStub()->r();
+        realrstub[i] = tracklet->innerFPGAStub()->l1tstub()->r();
       }
     }
     if (layers[i] == tracklet->layer() + 1) {
-      realrstub[i] = tracklet->outerStub()->r();
+      realrstub[i] = tracklet->outerFPGAStub()->l1tstub()->r();
     }
     if (tracklet->match(layers[i] - 1) && layers[i] < 4) {
       const Stub* stubptr = tracklet->resid(layers[i] - 1).stubptr();

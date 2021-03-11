@@ -27,9 +27,6 @@ namespace trklet {
   class Tracklet {
   public:
     Tracklet(Settings const& settings,
-             const L1TStub* innerStub,
-             const L1TStub* middleStub,
-             const L1TStub* outerStub,
              const Stub* innerFPGAStub,
              const Stub* middleFPGAStub,
              const Stub* outerFPGAStub,
@@ -60,13 +57,10 @@ namespace trklet {
 
     bool stubtruthmatch(const L1TStub* stub);
 
-    const L1TStub* innerStub() { return innerStub_; }
     const Stub* innerFPGAStub() { return innerFPGAStub_; }
 
-    const L1TStub* middleStub() { return middleStub_; }
     const Stub* middleFPGAStub() { return middleFPGAStub_; }
 
-    const L1TStub* outerStub() { return outerStub_; }
     const Stub* outerFPGAStub() { return outerFPGAStub_; }
 
     std::string addressstr();
@@ -236,9 +230,11 @@ namespace trklet {
     const Stub* middleFPGAStub_;
     const Stub* outerFPGAStub_;
 
+    /*
     const L1TStub* innerStub_;
     const L1TStub* middleStub_;
     const L1TStub* outerStub_;
+    */
 
     int trackletIndex_;
     int TCIndex_;

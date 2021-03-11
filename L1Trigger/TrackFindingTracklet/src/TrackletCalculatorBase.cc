@@ -664,9 +664,6 @@ bool TrackletCalculatorBase::barrelSeeding(const Stub* innerFPGAStub,
   }
 
   Tracklet* tracklet = new Tracklet(settings_,
-                                    innerStub,
-                                    nullptr,
-                                    outerStub,
                                     innerFPGAStub,
                                     nullptr,
                                     outerFPGAStub,
@@ -1059,9 +1056,6 @@ bool TrackletCalculatorBase::diskSeeding(const Stub* innerFPGAStub,
   }
 
   Tracklet* tracklet = new Tracklet(settings_,
-                                    innerStub,
-                                    nullptr,
-                                    outerStub,
                                     innerFPGAStub,
                                     nullptr,
                                     outerFPGAStub,
@@ -1421,9 +1415,6 @@ bool TrackletCalculatorBase::overlapSeeding(const Stub* innerFPGAStub,
   }
 
   Tracklet* tracklet = new Tracklet(settings_,
-                                    innerStub,
-                                    nullptr,
-                                    outerStub,
                                     innerFPGAStub,
                                     nullptr,
                                     outerFPGAStub,
