@@ -101,17 +101,11 @@ namespace trklet {
     std::string fullmatchstr(int layer);
     std::string fullmatchdiskstr(int disk);
 
-    bool match(int layer) {
-      assert(layer > 0 && layer <= N_LAYER);
-      return resid_[layer - 1].valid();
+    bool match(unsigned int layerdisk) {
+      assert(layerdisk < N_LAYER + N_DISK);
+      return resid_[layerdisk].valid();
     }
 
-    bool matchdisk(int disk) const {
-      assert(abs(disk) <= N_DISK);
-      return resid_[N_LAYER + abs(disk) - 1].valid();
-    }
-
-    
     const Residual& resid(unsigned int layerdisk) {
       assert(layerdisk < N_LAYER + N_DISK);
       assert(resid_[layerdisk].valid());

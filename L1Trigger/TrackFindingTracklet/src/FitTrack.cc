@@ -200,7 +200,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
         layers[nlayers++] = l;
         continue;
       }
-      if (tracklet->match(l)) {
+      if (tracklet->match(l-1)) {
         const Residual& resid = tracklet->resid(l-1);
         lmatches.set(N_LAYER - l);
         layermask |= (1 << (N_LAYER - l));
@@ -224,8 +224,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
 
       if (ndisks + nlayers >= N_FITSTUB)
         continue;
-      if (tracklet->matchdisk(d)) {
-        const Residual& resid = tracklet->resid(N_LAYER + d -1);
+      if (tracklet->match(N_LAYER + d - 1)) {
+        const Residual& resid = tracklet->resid(N_LAYER + d - 1);
 	double pitch = settings_.stripPitch(resid.stubptr()->l1tstub()->isPSmodule());
         if (std::abs(resid.stubptr()->l1tstub()->alpha(pitch)) < 1e-20) {
           dmatches.set(2 * d - 1);
@@ -264,11 +264,11 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
 
   if (tracklet->isDisk()) {
     for (unsigned int l = 1; l <= 2; l++) {
-      if (tracklet->match(l)) {
+      if (tracklet->match(l - 1)) {
         lmatches.set(N_LAYER - l);
 
         layermask |= (1 << (N_LAYER - l));
-        const Residual& resid = tracklet->resid(l-1);
+        const Residual& resid = tracklet->resid(l - 1);
         phiresid[nlayers] = resid.phiresidapprox();
         zresid[nlayers] = resid.rzresidapprox();
         phiresidexact[nlayers] = resid.phiresid();
@@ -299,7 +299,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
 
       if (ndisks + nlayers >= N_FITSTUB)
         continue;
-      if (tracklet->matchdisk(d)) {
+      if (tracklet->match(N_LAYER + abs(d) - 1)) {
         const Residual& resid = tracklet->resid(N_LAYER + abs(d) - 1);
 	double pitch = settings_.stripPitch(resid.stubptr()->l1tstub()->isPSmodule());
         if (std::abs(resid.stubptr()->l1tstub()->alpha(pitch)) < 1e-20) {
@@ -341,10 +341,10 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
         layers[nlayers++] = l;
         continue;
       }
-      if (tracklet->match(l)) {
+      if (tracklet->match(l - 1)) {
         lmatches.set(N_LAYER - l);
         layermask |= (1 << (N_LAYER - l));
-        const Residual& resid = tracklet->resid(l-1);
+        const Residual& resid = tracklet->resid(l - 1);
         assert(std::abs(resid.phiresidapprox()) < 0.2);
         phiresid[nlayers] = resid.phiresidapprox();
         zresid[nlayers] = resid.rzresidapprox();
@@ -374,8 +374,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
 
       if (ndisks + nlayers >= N_FITSTUB)
         continue;
-      if (tracklet->matchdisk(d)) {
-        const Residual& resid = tracklet->resid(N_LAYER + abs(d) -1);
+      if (tracklet->match(N_LAYER + abs(d) - 1)) {
+        const Residual& resid = tracklet->resid(N_LAYER + abs(d) - 1);
 	double pitch = settings_.stripPitch(resid.stubptr()->l1tstub()->isPSmodule());
         if (std::abs(resid.stubptr()->l1tstub()->alpha(pitch)) < 1e-20) {
           dmatches.set(2 * (N_DISK - d1));
@@ -464,8 +464,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
     if (layers[i] == tracklet->layer() + 1) {
       realrstub[i] = tracklet->outerStub()->r();
     }
-    if (tracklet->match(layers[i]) && layers[i] < 4) {
-      const Stub* stubptr = tracklet->resid(layers[i]-1).stubptr();
+    if (tracklet->match(layers[i] - 1) && layers[i] < 4) {
+      const Stub* stubptr = tracklet->resid(layers[i] - 1).stubptr();
       realrstub[i] = stubptr->l1tstub()->r();
       assert(std::abs(realrstub[i] - r[i]) < 5.0);
     }
