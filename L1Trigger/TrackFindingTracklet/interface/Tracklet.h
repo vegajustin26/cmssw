@@ -94,27 +94,10 @@ namespace trklet {
       return proj_[layerdisk];
     }
 
+    void addMatch(unsigned int layerdisk, int ideltaphi, int ideltarz,
+		  double dphi, double drz, double dphiapprox, double drzapprox,
+		  int stubid, const trklet::Stub* stubptr);
 
-    void addMatch(int layer,
-                  int ideltaphi,
-                  int ideltaz,
-                  double dphi,
-                  double dz,
-                  double dphiapprox,
-                  double dzapprox,
-                  int stubid,
-                  const trklet::Stub* stubptr);
-
-    void addMatchDisk(int disk,
-                      int ideltaphi,
-                      int ideltar,
-                      double dphi,
-                      double dr,
-                      double dphiapprox,
-                      double drapprox,
-                      int stubid,
-                      const trklet::Stub* stubptr);
-    
     std::string fullmatchstr(int layer);
     std::string fullmatchdiskstr(int disk);
 

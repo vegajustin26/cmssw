@@ -302,41 +302,12 @@ std::string Tracklet::trackletprojstrD(int disk) const {
   return oss;
 }
 
-void Tracklet::addMatch(int layer,
-                        int ideltaphi,
-                        int ideltaz,
-                        double dphi,
-                        double dz,
-                        double dphiapprox,
-                        double dzapprox,
-                        int stubid,
-                        const trklet::Stub* stubptr) {
-  assert(layer > 0 && layer <= N_LAYER);
-  resid_[layer - 1].init(
-      settings_, layer-1, ideltaphi, ideltaz, stubid, dphi, dz, dphiapprox, dzapprox, stubptr);
-}
-
-void Tracklet::addMatchDisk(int disk,
-                            int ideltaphi,
-                            int ideltar,
-                            double dphi,
-                            double dr,
-                            double dphiapprox,
-                            double drapprox,
-                            int stubid,
-                            const trklet::Stub* stubptr) {
-  assert(abs(disk) <= N_DISK);
-
-  resid_[N_LAYER + abs(disk) - 1].init(settings_,
-				       N_LAYER + abs(disk) -1,
-				       ideltaphi,
-				       ideltar,
-				       stubid,
-				       dphi,
-				       dr,
-				       dphiapprox,
-				       drapprox,
-				       stubptr);  
+void Tracklet::addMatch(unsigned int layerdisk, int ideltaphi, int ideltarz,
+			double dphi, double drz, double dphiapprox, double drzapprox,
+			int stubid, const trklet::Stub* stubptr) {
+  assert(layerdisk < N_LAYER + N_DISK);
+  resid_[layerdisk].init(settings_, layerdisk, ideltaphi, ideltarz,
+			 stubid, dphi, drz, dphiapprox, drzapprox, stubptr);
 }
 
 std::string Tracklet::fullmatchstr(int layer) {

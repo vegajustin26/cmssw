@@ -319,13 +319,8 @@ void MatchCalculator::execute() {
       if (imatch) {
         countsel++;
 
-        tracklet->addMatch(layerdisk_ + 1,
-                           ideltaphi,
-                           ideltaz,
-                           dphi,
-                           dz,
-                           dphiapprox,
-                           dzapprox,
+        tracklet->addMatch(layerdisk_, ideltaphi, ideltaz,
+                           dphi, dz, dphiapprox, dzapprox,
                            (phiregion_ << 7) + fpgastub->stubindex().value(),
                            mergedMatches[j].second);
 
@@ -487,15 +482,11 @@ void MatchCalculator::execute() {
           edm::LogVerbatim("Tracklet") << "MatchCalculator found match in disk " << getName();
         }
 
-        tracklet->addMatchDisk(disk,
-                               ideltaphi,
-                               ideltar,
-                               drphi / stub->r(),
-                               dr,
-                               drphiapprox / stub->r(),
-                               drapprox,
-                               (phiregion_ << 7) + fpgastub->stubindex().value(),
-                               fpgastub);
+        tracklet->addMatch(layerdisk_, ideltaphi, ideltar,
+			    drphi / stub->r(), dr, drphiapprox / stub->r(), drapprox,
+			    (phiregion_ << 7) + fpgastub->stubindex().value(),
+			    fpgastub);
+	
         if (settings_.debugTracklet()) {
           edm::LogVerbatim("Tracklet") << "Accepted full match in disk " << getName() << " " << tracklet << " "
                                        << iSector_;

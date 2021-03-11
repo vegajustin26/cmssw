@@ -535,16 +535,11 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     }
 
     if (imatch) {
-      tracklet->addMatch(layerdisk_ + 1,
-                         ideltaphi,
-                         ideltaz,
-                         dphi,
-                         dz,
-                         dphiapprox,
-                         dzapprox,
-                         (phiregion_ << 7) + fpgastub->stubindex().value(),
-                         fpgastub);
-
+      tracklet->addMatch(layerdisk_, ideltaphi, ideltaz,
+			 dphi, dz, dphiapprox, dzapprox,
+			 (phiregion_ << 7) + fpgastub->stubindex().value(),
+			 fpgastub);
+      
       if (settings_.debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "Accepted full match in layer " << getName() << " " << tracklet << " "
                                      << iSector_;
@@ -699,15 +694,11 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
       assert(std::abs(dphi) < 0.25);
       assert(std::abs(dphiapprox) < 0.25);
 
-      tracklet->addMatchDisk(disk,
-                             ideltaphi,
-                             ideltar,
-                             drphi / stub->r(),
-                             dr,
-                             drphiapprox / stub->r(),
-                             drapprox,
-                             (phiregion_ << 7) + fpgastub->stubindex().value(),
-                             fpgastub);
+      tracklet->addMatch(layerdisk_, ideltaphi, ideltar,
+			 drphi / stub->r(), dr, drphiapprox / stub->r(), drapprox,
+			 (phiregion_ << 7) + fpgastub->stubindex().value(),
+			 fpgastub);
+      
       if (settings_.debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "Accepted full match in disk " << getName() << " " << tracklet << " "
                                      << iSector_;
