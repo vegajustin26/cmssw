@@ -159,6 +159,7 @@ namespace trklet {
     int TCIndex_;
     int layer_;
     int disk_;
+    unsigned int iSeed_;
     double rproj_[N_LAYER - 2];
     int lproj_[N_LAYER - 2];
     double zproj_[N_DISK - 2];

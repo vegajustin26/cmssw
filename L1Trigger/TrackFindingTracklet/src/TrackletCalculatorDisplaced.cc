@@ -38,22 +38,22 @@ TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name,
     disk_ = name1[4] - '0';
 
   // set TC index
-  int iSeed = -1;
+  int iSeed_ = 0;
 
   int iTC = name1[9] - 'A';
 
   if (name1.substr(3, 6) == "L3L4L2")
-    iSeed = 8;
+    iSeed_ = 8;
   else if (name1.substr(3, 6) == "L5L6L4")
-    iSeed = 9;
+    iSeed_ = 9;
   else if (name1.substr(3, 6) == "L2L3D1")
-    iSeed = 10;
+    iSeed_ = 10;
   else if (name1.substr(3, 6) == "D1D2L2")
-    iSeed = 11;
+    iSeed_ = 11;
 
-  assert(iSeed != -1);
-
-  TCIndex_ = (iSeed << 4) + iTC;
+  assert(iSeed_ != 0);
+  
+  TCIndex_ = (iSeed_ << 4) + iTC;
   assert(TCIndex_ >= 128 && TCIndex_ < 191);
 
   assert((layer_ != 0) || (disk_ != 0));
@@ -61,7 +61,7 @@ TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name,
   toR_.clear();
   toZ_.clear();
 
-  if (iSeed == 8 || iSeed == 9) {
+  if (iSeed_ == 8 || iSeed_ == 9) {
     if (layer_ == 3) {
       rzmeanInv_[0] = 1.0 / settings_.rmean(2 - 1);
       rzmeanInv_[1] = 1.0 / settings_.rmean(3 - 1);
@@ -100,7 +100,7 @@ TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name,
       toR_.push_back(rproj_[i]);
   }
 
-  if (iSeed == 10 || iSeed == 11) {
+  if (iSeed_ == 10 || iSeed_ == 11) {
     if (layer_ == 2) {
       rzmeanInv_[0] = 1.0 / settings_.rmean(2 - 1);
       rzmeanInv_[1] = 1.0 / settings_.rmean(3 - 1);
@@ -714,6 +714,7 @@ bool TrackletCalculatorDisplaced::LLLSeeding(const Stub* innerFPGAStub,
   }
 
   Tracklet* tracklet = new Tracklet(settings_,
+				    iSeed_,
                                     innerFPGAStub,
                                     middleFPGAStub,
                                     outerFPGAStub,
@@ -1119,6 +1120,7 @@ bool TrackletCalculatorDisplaced::DDLSeeding(const Stub* innerFPGAStub,
   }
 
   Tracklet* tracklet = new Tracklet(settings_,
+				    iSeed_,
                                     innerFPGAStub,
                                     middleFPGAStub,
                                     outerFPGAStub,
@@ -1515,6 +1517,7 @@ bool TrackletCalculatorDisplaced::LLDSeeding(const Stub* innerFPGAStub,
   }
 
   Tracklet* tracklet = new Tracklet(settings_,
+				    iSeed_,
                                     innerFPGAStub,
                                     middleFPGAStub,
                                     outerFPGAStub,

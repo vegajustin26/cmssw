@@ -27,6 +27,7 @@ namespace trklet {
   class Tracklet {
   public:
     Tracklet(Settings const& settings,
+	     unsigned int iSeed,
              const Stub* innerFPGAStub,
              const Stub* middleFPGAStub,
              const Stub* outerFPGAStub,
@@ -189,7 +190,6 @@ namespace trklet {
 
     int layer() const;
     int disk() const;
-    int disk2() const;
 
     bool isBarrel() const { return barrel_; }
     bool isOverlap() const { return overlap_; }
@@ -215,8 +215,6 @@ namespace trklet {
 
     unsigned int seedIndex() const { return seedIndex_; }
 
-    unsigned int calcSeedIndex() const;
-
   private:
     unsigned int seedIndex_;
 
@@ -229,12 +227,6 @@ namespace trklet {
     const Stub* innerFPGAStub_;
     const Stub* middleFPGAStub_;
     const Stub* outerFPGAStub_;
-
-    /*
-    const L1TStub* innerStub_;
-    const L1TStub* middleStub_;
-    const L1TStub* outerStub_;
-    */
 
     int trackletIndex_;
     int TCIndex_;

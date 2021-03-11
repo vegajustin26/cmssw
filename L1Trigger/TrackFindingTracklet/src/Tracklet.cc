@@ -14,6 +14,7 @@ using namespace std;
 using namespace trklet;
 
 Tracklet::Tracklet(Settings const& settings,
+		   unsigned int iSeed,
                    const Stub* innerFPGAStub,
                    const Stub* middleFPGAStub,
                    const Stub* outerFPGAStub,
@@ -36,6 +37,9 @@ Tracklet::Tracklet(Settings const& settings,
                    bool disk,
                    bool overlap)
     : settings_(settings) {
+
+  seedIndex_ = iSeed;
+  
   overlap_ = overlap;
   disk_ = disk;
   assert(!(disk && overlap));
@@ -65,8 +69,6 @@ Tracklet::Tracklet(Settings const& settings,
   fpgapars_.t().set(it, settings_.nbitst(), false, __LINE__, __FILE__);
 
   fpgatrack_ = nullptr;
-
-  seedIndex_ = calcSeedIndex();
 
   triplet_ = (seedIndex_ >= 8);
 
@@ -770,13 +772,6 @@ int Tracklet::disk() const {
   return (d < 999 ? d : 0);
 }
 
-int Tracklet::disk2() const {
-  if (innerFPGAStub_->l1tstub()->disk() > 0) {
-    return innerFPGAStub_->l1tstub()->disk() + 1;
-  }
-  return innerFPGAStub_->l1tstub()->disk() - 1;
-}
-
 void Tracklet::setTrackletIndex(unsigned int index) {
   trackletIndex_ = index;
   assert(index <= settings_.ntrackletmax());
@@ -801,48 +796,3 @@ void Tracklet::setTrackIndex(int index) {
 
 int Tracklet::trackIndex() const { return trackIndex_; }
 
-unsigned int Tracklet::calcSeedIndex() const {
-  int seedindex = -1;
-  int seedlayer = layer();
-  int seeddisk = disk();
-
-  if (seedlayer == 1 && seeddisk == 0)
-    seedindex = 0;  //L1L2
-  if (seedlayer == 3 && seeddisk == 0)
-    seedindex = 2;  //L3L4
-  if (seedlayer == 5 && seeddisk == 0)
-    seedindex = 3;  //L5L6
-  if (seedlayer == 0 && abs(seeddisk) == 1)
-    seedindex = 4;  //D1D2
-  if (seedlayer == 0 && abs(seeddisk) == 3)
-    seedindex = 5;  //D3D4
-  if (seedlayer == 1 && abs(seeddisk) == 1)
-    seedindex = 6;  //L1D1
-  if (seedlayer == 2 && abs(seeddisk) == 1)
-    seedindex = 7;  //L2D1
-  if (seedlayer == 2 && abs(seeddisk) == 0)
-    seedindex = 1;  //L2L3
-  if (middleFPGAStub_ && seedlayer == 2 && seeddisk == 0)
-    seedindex = 8;  // L3L4L2
-  if (middleFPGAStub_ && seedlayer == 4 && seeddisk == 0)
-    seedindex = 9;  // L5L6L4
-  assert(innerFPGAStub_ != nullptr);
-  assert(outerFPGAStub_ != nullptr);
-  if (middleFPGAStub_ && seedlayer == 2 && abs(seeddisk) == 1) {
-    int l1 = (innerFPGAStub_ && innerFPGAStub_->layerdisk() < N_LAYER) ? innerFPGAStub_->l1tstub()->layerdisk() + 1 : 999,
-        l2 = (middleFPGAStub_ && middleFPGAStub_->layerdisk() < N_LAYER) ? middleFPGAStub_->l1tstub()->layerdisk() + 1 : 999,
-        l3 = (outerFPGAStub_ && outerFPGAStub_->layerdisk() < N_LAYER) ? outerFPGAStub_->l1tstub()->layerdisk() + 1 : 999;
-    if (l1 + l2 + l3 < 1998) {  // If two stubs are layer stubs
-      seedindex = 10;           // L2L3D1
-    } else {
-      seedindex = 11;  // D1D2L2
-    }
-  }
-
-  if (seedindex < 0) {
-    throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " seedlayer abs(seeddisk) : " << seedlayer
-                                      << " " << abs(seeddisk);
-  }
-
-  return seedindex;
-}
