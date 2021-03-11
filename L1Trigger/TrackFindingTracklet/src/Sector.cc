@@ -176,7 +176,7 @@ void Sector::writeLink(const Stub& fpgastub) {
 
   FPGAWord ldcode(lcode, 2, true);
 
-  string dataword = "1|" + ldcode.str() + "|" + fpgastub.str();
+  string dataword = fpgastub.str() + "|" + ldcode.str() + "|1" ;
 
   (*DTCLink_ofstreams_.find(dtcname)->second) << dataword << " " << trklet::hexFormat(dataword) << endl;
 }
