@@ -3,6 +3,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 
+#include "L1Trigger/TrackFindingTracklet/interface/DTCLinkMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/InputLinkMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllInnerStubsMemory.h"
@@ -19,6 +20,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackFitMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/CleanTrackMemory.h"
 
+#include "L1Trigger/TrackFindingTracklet/interface/InputRouter.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMRouterCM.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMRouter.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEngine.h"
@@ -63,11 +65,6 @@ Sector::~Sector() = default;
 bool Sector::addStub(L1TStub stub, string dtc) {
   unsigned int layerdisk = stub.layerdisk();
 
-  double stubphi = stub.phi();
-  if (stubphi - phimin_ > M_PI) {
-    stubphi -= 2 * M_PI;
-  }
-
   if (layerdisk < N_LAYER && globals_->phiCorr(layerdisk) == nullptr) {
     globals_->phiCorr(layerdisk) = new VMRouterPhiCorrTable(settings_);
 
@@ -88,21 +85,13 @@ bool Sector::addStub(L1TStub stub, string dtc) {
     fpgastub.setPhiCorr(iphicorr);
   }
 
-  FPGAWord phi = fpgastub.phicorr();
-  int ireg = phi.value() >> (phi.nbits() - settings_.nbitsallstubs(layerdisk));
-
   int nadd = 0;
-  for (unsigned int i = 0; i < IL_.size(); i++) {
-    const string& name = IL_[i]->getName();
+  for (unsigned int i = 0; i < DL_.size(); i++) {
+    const string& name = DL_[i]->getName();
     if (name.find("_" + dtc) == string::npos)
       continue;
-    if ((name[3] == 'L' && name[4] - '1' == (int)layerdisk) ||
-        (name[3] == 'D' && name[4] - '1' == (int)layerdisk - 6)) {
-      if (name[8] - 'A' == ireg) {
-        IL_[i]->addStub(stub, fpgastub);
-        nadd++;
-      }
-    }
+    DL_[i]->addStub(stub, fpgastub);
+    nadd++;
   }
 
   assert(nadd == 1);
@@ -182,7 +171,9 @@ void Sector::writeLink(const Stub& fpgastub) {
 }
 
 void Sector::addMem(string memType, string memName) {
-  if (memType == "InputLink:") {
+  if (memType == "DTCLink:") {
+    addMemToVec(DL_, memName, settings_, isector_, phimin_, phimax_);
+  } else if (memType == "InputLink:") {
     addMemToVec(IL_, memName, settings_, isector_, phimin_, phimax_);
   } else if (memType == "AllStubs:") {
     addMemToVec(AS_, memName, settings_, isector_);
@@ -219,7 +210,9 @@ void Sector::addMem(string memType, string memName) {
 }
 
 void Sector::addProc(string procType, string procName) {
-  if (procType == "VMRouter:") {
+  if (procType == "InputRouter:") {
+    addProcToVec(IR_, procName, settings_, globals_, isector_);
+  } else if (procType == "VMRouter:") {
     addProcToVec(VMR_, procName, settings_, globals_, isector_);
   } else if (procType == "VMRouterCM:") {
     addProcToVec(VMRCM_, procName, settings_, globals_, isector_);
@@ -298,7 +291,13 @@ MemoryBase* Sector::getMem(string memName) {
   return nullptr;
 }
 
-void Sector::writeInputStubs(bool first) {
+void Sector::writeDTCStubs(bool first) {
+  for (auto& i : DL_) {
+    i->writeStubs(first);
+  }
+}
+
+void Sector::writeIRStubs(bool first) {
   for (auto& i : IL_) {
     i->writeStubs(first);
   }
@@ -391,6 +390,12 @@ void Sector::writeCT(bool first) {
 void Sector::clean() {
   for (auto& mem : MemoriesV_) {
     mem->clean();
+  }
+}
+
+void Sector::executeIR() {
+  for (auto& i : IR_) {
+    i->execute();
   }
 }
 

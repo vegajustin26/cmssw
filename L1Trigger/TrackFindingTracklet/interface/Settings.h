@@ -724,7 +724,7 @@ namespace trklet {
     unsigned int maxstepoffset_{0};
 
     //Number of processing steps for one event (108=18TM*240MHz/40MHz)
-    std::unordered_map<std::string, unsigned int> maxstep_{{"Link", 108},
+    std::unordered_map<std::string, unsigned int> maxstep_{{"IR", 168},
                                                            {"VMR", 108},
                                                            {"TE", 108},
                                                            {"TC", 108},
@@ -746,7 +746,7 @@ namespace trklet {
         {"TPars", false},        {"TPD", false},        {"TrackletPars", false},
         {"TED", false},          {"TP", false},         {"TRE", false},
         {"VMR", false},          {"StubsLayer", false}, {"StubsLayerSector", false},
-        {"HitEff", false},       {"MatchEff", false},    {"Cabling", false},
+        {"HitEff", false},       {"MatchEff", false},   {"Cabling", false},
         {"IFit", false},         {"AS", false}};
 
     std::array<double, N_DSS_MOD> rDSSinner_mod_{{68.9391, 78.7750, 85.4550, 96.3150, 102.3160}};

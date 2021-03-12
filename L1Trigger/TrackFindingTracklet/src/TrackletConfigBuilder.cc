@@ -1019,14 +1019,12 @@ void TrackletConfigBuilder::writeCTMemories(std::ostream& os, std::ostream& memo
   }
 }
 
-void TrackletConfigBuilder::writeILMemories(std::ostream& os, std::ostream& memories, std::ostream&) {
+void TrackletConfigBuilder::writeILMemories(std::ostream& os, std::ostream& memories, std::ostream& modules) {
   //FIXME these should not be hardcoded - but for now wanted to avoid reading file
   string dtcname[52];
   unsigned int layerdisk[52];
   double phimin[52];
   double phimax[52];
-
-  //FIXME layerdisk numbering should be 0 to 10
 
   dtcname[0] = "PS10G_1";
   layerdisk[0] = 0;
@@ -1239,6 +1237,22 @@ void TrackletConfigBuilder::writeILMemories(std::ostream& os, std::ostream& memo
 
   double dphi = 0.5 * dphisectorHG_ - M_PI / NSector_;
 
+  string olddtc="";
+  for (unsigned int i = 0; i < 52; i++) {
+    if (olddtc!=dtcname[i]) {
+      modules << "InputRouter: IR_"<<dtcname[i]<<"_A" << std::endl;
+      modules << "InputRouter: IR_"<<dtcname[i]<<"_B" << std::endl;
+      memories << "DTCLink: DL_"<<dtcname[i]<<"_A [36]" << std::endl;
+      memories << "DTCLink: DL_"<<dtcname[i]<<"_B [36]" << std::endl;
+      os << "DL_" << dtcname[i] << "_A"
+	 << " input=> output=> IR_" << dtcname[i] << "_A.stubin" << std::endl;
+      os << "DL_" << dtcname[i] << "_B"
+	 << " input=> output=> IR_" << dtcname[i] << "_B.stubin" << std::endl;
+    }
+    olddtc=dtcname[i];
+  }
+
+  
   for (unsigned int i = 0; i < 52; i++) {
     double phimintmp = phimin[i] + dphi;
     double phimaxtmp = phimax[i] + dphi;
@@ -1251,14 +1265,14 @@ void TrackletConfigBuilder::writeILMemories(std::ostream& os, std::ostream& memo
         memories << "InputLink: IL_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << "_" << dtcname[i] << "_A"
                  << " [36]" << std::endl;
         os << "IL_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << "_" << dtcname[i] << "_A"
-           << " input=> output=> VMR_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << ".stubin" << std::endl;
+           << " input=> IR_"<<dtcname[i] << "_A.stubout output=> VMR_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << ".stubin" << std::endl;
       }
 
       if (allStubs_[layerdisk[i]][iReg].first > phimintmp) {
         memories << "InputLink: IL_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << "_" << dtcname[i] << "_B"
                  << " [36]" << std::endl;
         os << "IL_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << "_" << dtcname[i] << "_B"
-           << " input=> output=> VMR_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << ".stubin" << std::endl;
+           << " input=> IR_"<<dtcname[i] << "_B.stubout output=> VMR_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << ".stubin" << std::endl;
       }
     }
   }

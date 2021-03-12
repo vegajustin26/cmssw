@@ -240,11 +240,21 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   // Now start the tracklet processing
 
   // VM router
+  InputRouterTimer_.start();
+  for (unsigned int k = 0; k < N_SECTOR; k++) {
+    sectors_[k]->executeIR();
+    if (settings_->writeMem() && k == settings_->writememsect()) {
+      sectors_[k]->writeDTCStubs(first);
+      sectors_[k]->writeIRStubs(first);
+    }
+  }
+  InputRouterTimer_.stop();
+
+
   VMRouterTimer_.start();
   for (unsigned int k = 0; k < N_SECTOR; k++) {
     sectors_[k]->executeVMR();
     if (settings_->writeMem() && k == settings_->writememsect()) {
-      sectors_[k]->writeInputStubs(first);
       sectors_[k]->writeVMSTE(first);
       sectors_[k]->writeVMSME(first);
       sectors_[k]->writeAS(first);
@@ -436,7 +446,10 @@ void TrackletEventProcessor::printSummary() {
                                << addStubTimer_.tottime() << "\n"
                                << "VMRouter              " << setw(10) << VMRouterTimer_.ntimes() << setw(20)
                                << setprecision(3) << VMRouterTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << VMRouterTimer_.tottime();
+                               << VMRouterTimer_.tottime() << "\n"
+                               << "InputRouter           " << setw(10) << InputRouterTimer_.ntimes() << setw(20)
+                               << setprecision(3) << InputRouterTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
+                               << InputRouterTimer_.tottime();
   if (settings_->combined()) {
     edm::LogVerbatim("Tracklet") << "TrackletProcessor     " << setw(10) << TPTimer_.ntimes() << setw(20)
                                  << setprecision(3) << TPTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)

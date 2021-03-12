@@ -47,6 +47,7 @@ namespace trklet {
 
     Timer cleanTimer_;
     Timer addStubTimer_;
+    Timer InputRouterTimer_;
     Timer VMRouterTimer_;
     Timer TETimer_;
     Timer TEDTimer_;

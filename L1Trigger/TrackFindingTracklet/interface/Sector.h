@@ -24,6 +24,7 @@ namespace trklet {
   class Stub;
 
   //Memory modules
+  class DTCLinkMemory;
   class InputLinkMemory;
   class AllStubsMemory;
   class AllInnerStubsMemory;
@@ -41,6 +42,7 @@ namespace trklet {
   class CleanTrackMemory;
 
   //Processing modules
+  class InputRouter;
   class VMRouter;
   class VMRouterCM;
   class TrackletEngine;
@@ -77,7 +79,8 @@ namespace trklet {
     ProcessBase* getProc(std::string procName);
     MemoryBase* getMem(std::string memName);
 
-    void writeInputStubs(bool first);
+    void writeDTCStubs(bool first);
+    void writeIRStubs(bool first);
     void writeVMSTE(bool first);
     void writeVMSME(bool first);
     void writeAS(bool first);
@@ -96,6 +99,7 @@ namespace trklet {
     void clean();
 
     // execute the different tracklet processing modules
+    void executeIR();
     void executeVMR();
     void executeTE();
     void executeTED();
@@ -143,6 +147,7 @@ namespace trklet {
 
     std::map<std::string, MemoryBase*> Memories_;
     std::vector<MemoryBase*> MemoriesV_;
+    std::vector<std::unique_ptr<DTCLinkMemory> > DL_;
     std::vector<std::unique_ptr<InputLinkMemory> > IL_;
     std::vector<std::unique_ptr<AllStubsMemory> > AS_;
     std::vector<std::unique_ptr<AllInnerStubsMemory> > AIS_;
@@ -160,6 +165,7 @@ namespace trklet {
     std::vector<std::unique_ptr<CleanTrackMemory> > CT_;
 
     std::map<std::string, ProcessBase*> Processes_;
+    std::vector<std::unique_ptr<InputRouter> > IR_;
     std::vector<std::unique_ptr<VMRouter> > VMR_;
     std::vector<std::unique_ptr<VMRouterCM> > VMRCM_;
     std::vector<std::unique_ptr<TrackletEngine> > TE_;
