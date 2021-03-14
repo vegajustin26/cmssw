@@ -30,11 +30,46 @@ void DTCLinkMemory::addStub(const L1TStub& al1stub, const Stub& stub) {
 }
 
 void DTCLinkMemory::writeStubs(bool first) {
+
+  //FIXME should be in settings
+  static map<string, vector<int> > dtclayers{{"PS10G_1", {0, 6, 8, 10}},
+                                             {"PS10G_2", {0, 7, 9}},
+	                                     {"PS10G_3", {1, 7}},
+	                                     {"PS10G_4", {6, 8, 10}},
+	                                     {"PS_1", {2, 7}},
+	                                     {"PS_2", {2, 9}},
+		                             {"2S_1", {3, 4}},
+		                             {"2S_2", {4}},
+		                             {"2S_3", {5}},
+		                             {"2S_4", {5, 8}},
+			                     {"2S_5", {6, 9}},
+			                     {"2S_6", {7, 10}}};
+
+  
   const string dirIS = settings_.memPath() + "InputStubs/";
   openFile(first, dirIS, "Link_");
 
   for (unsigned int j = 0; j < stubs_.size(); j++) {
-    string stub = stubs_[j]->str();
+    string dtcname = stubs_[j]->l1tstub()->DTClink();
+    int layerdisk = stubs_[j]->l1tstub()->layerdisk();
+
+    int start = dtcname.substr(0, 3) == "neg" ? 3 : 0;
+
+    string dtcbase = dtcname.substr(start, dtcname.size() - 2 - start);
+
+    vector<int> layers = dtclayers[dtcbase];
+
+    int lcode = -1;
+    for (unsigned int index = 0; index < layers.size(); index++) {
+      if (layerdisk == layers[index]) {
+	lcode = index;
+      }
+    }
+    assert(lcode != -1);
+
+    FPGAWord ldcode(lcode, 2, true);
+    
+    string stub = stubs_[j]->str()+"|"+ldcode.str()+"|1";
     out_ << std::setfill('0') << std::setw(2);
     out_ << hex << j << dec;
     out_ << " " << stub << " " << trklet::hexFormat(stub) << endl;

@@ -96,79 +96,9 @@ bool Sector::addStub(L1TStub stub, string dtc) {
 
   assert(nadd == 1);
 
-  if (settings_.writeMem() && isector_ == (int)settings_.writememsect()) {
-    writeLink(fpgastub);
-  }
-
   return true;
 }
 
-void Sector::writeLinkNewEvent(int event) {
-  if (DTCLink_ofstreams_.size() == 0) {
-    //FIXME should be in settings
-    static string dtcbasenames[12] = {
-        "PS10G_1", "PS10G_2", "PS10G_3", "PS10G_4", "PS_1", "PS_2", "2S_1", "2S_2", "2S_3", "2S_4", "2S_5", "2S_6"};
-    for (const auto& dtcbasename : dtcbasenames) {
-      for (int neg = 0; neg < 2; neg++) {
-        string dtcnametmp = (neg == 0 ? "" : "neg") + dtcbasename;
-        for (int ab = 0; ab < 2; ab++) {
-          string dtcname = dtcnametmp + (ab == 0 ? "_A" : "_B");
-	  string dirName = settings_.memPath() + "InputStubs/";
-          string fname = dirName + "Link_" + dtcname + "_" + to_string(isector_ + 1) + ".dat";
-          ofstream* out = new ofstream;
-          openfile(*out, true, dirName,fname, __FILE__, __LINE__);
-          DTCLink_ofstreams_[dtcname] = out;
-        }
-      }
-    }
-  }
-
-  for (auto& out : DTCLink_ofstreams_) {
-    FPGAWord bx(event % 8, 3, true);
-    (*out.second) << "BX " << bx.str() << " Event : " << event << endl;
-  }
-}
-
-void Sector::writeLink(const Stub& fpgastub) {
-  //FIXME should be in settings
-  static map<string, vector<int> > dtclayers{{"PS10G_1", {0, 6, 8, 10}},
-                                             {"PS10G_2", {0, 7, 9}},
-                                             {"PS10G_3", {1, 7}},
-                                             {"PS10G_4", {6, 8, 10}},
-                                             {"PS_1", {2, 7}},
-                                             {"PS_2", {2, 9}},
-                                             {"2S_1", {3, 4}},
-                                             {"2S_2", {4}},
-                                             {"2S_3", {5}},
-                                             {"2S_4", {5, 8}},
-                                             {"2S_5", {6, 9}},
-                                             {"2S_6", {7, 10}}};
-
-  string dtcname = fpgastub.l1tstub()->DTClink();
-  int layerdisk = fpgastub.l1tstub()->layerdisk();
-
-  int start = dtcname.substr(0, 3) == "neg" ? 3 : 0;
-
-  string dtcbase = dtcname.substr(start, dtcname.size() - 2 - start);
-
-  vector<int> layers = dtclayers[dtcbase];
-
-  int lcode = -1;
-  for (unsigned int index = 0; index < layers.size(); index++) {
-    if (layerdisk == layers[index]) {
-      lcode = index;
-    }
-  }
-  assert(lcode != -1);
-
-  assert(DTCLink_ofstreams_.find(dtcname) != DTCLink_ofstreams_.end());
-
-  FPGAWord ldcode(lcode, 2, true);
-
-  string dataword = fpgastub.str() + "|" + ldcode.str() + "|1" ;
-
-  (*DTCLink_ofstreams_.find(dtcname)->second) << dataword << " " << trklet::hexFormat(dataword) << endl;
-}
 
 void Sector::addMem(string memType, string memName) {
   if (memType == "DTCLink:") {

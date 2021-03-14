@@ -198,10 +198,6 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   }
   cleanTimer_.stop();
 
-  if (settings_->writeMem()) {
-    sectors_[settings_->writememsect()]->writeLinkNewEvent(eventnum_);
-  }
-
   addStubTimer_.start();
 
   vector<int> layerstubs(N_LAYER + N_DISK, 0);

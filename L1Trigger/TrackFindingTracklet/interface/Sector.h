@@ -135,9 +135,6 @@ namespace trklet {
       Processes_[procName] = procvec.back().get();
     }
 
-    void writeLinkNewEvent(int event);
-    void writeLink(const Stub& fpgastub);
-
   private:
     int isector_;
     Settings const& settings_;
@@ -181,7 +178,6 @@ namespace trklet {
     std::vector<std::unique_ptr<FitTrack> > FT_;
     std::vector<std::unique_ptr<PurgeDuplicate> > PD_;
 
-    std::unordered_map<std::string, std::ofstream*> DTCLink_ofstreams_;
   };
 };  // namespace trklet
 #endif
