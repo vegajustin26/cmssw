@@ -20,8 +20,7 @@ using namespace trklet;
 
 MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals* global, unsigned int iSector)
     : ProcessBase(name, settings, global, iSector) {
-  phioffset_ = phimin_;
-
+ 
   phiregion_ = name[8] - 'A';
   layerdisk_ = initLayerDisk(3);
 
@@ -58,7 +57,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     }
   }
 
-  if (iSector_ == 0 && layerdisk_ < N_LAYER && settings_.writeTable()) {
+  if (layerdisk_ < N_LAYER && settings_.writeTable()) {
     ofstream outphicut = openfile(settings_.tablePath(), getName() + "_phicut.tab", __FILE__, __LINE__);
 
     outphicut << "{" << endl;
@@ -85,7 +84,7 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     outzcut.close();
   }
 
-  if (iSector_ == 0 && layerdisk_ >= N_LAYER && settings_.writeTable()) {
+  if (layerdisk_ >= N_LAYER && settings_.writeTable()) {
     ofstream outPSphicut = openfile(settings_.tablePath(), getName() + "_PSphicut.tab", __FILE__, __LINE__);
 
     outPSphicut << "{" << endl;
@@ -186,7 +185,7 @@ void MatchCalculator::addInput(MemoryBase* memory, string input) {
   throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find input " << input;
 }
 
-void MatchCalculator::execute() {
+void MatchCalculator::execute(double phioffset) {
   unsigned int countall = 0;
   unsigned int countsel = 0;
 
@@ -231,7 +230,7 @@ void MatchCalculator::execute() {
 
       //Floating point calculations
 
-      double phi = stub->phi() - phioffset_;
+      double phi = stub->phi() - phioffset;
       double r = stub->r();
       double z = stub->z();
 
@@ -325,8 +324,7 @@ void MatchCalculator::execute() {
                            mergedMatches[j].second);
 
         if (settings_.debugTracklet()) {
-          edm::LogVerbatim("Tracklet") << "Accepted full match in layer " << getName() << " " << tracklet << " "
-                                       << iSector_;
+          edm::LogVerbatim("Tracklet") << "Accepted full match in layer " << getName() << " " << tracklet;
         }
 
         fullMatches_[seedindex]->addMatch(tracklet, mergedMatches[j].second);
@@ -387,7 +385,7 @@ void MatchCalculator::execute() {
 
       //Perform floating point calculations here
 
-      double phi = stub->phi() - phioffset_;
+      double phi = stub->phi() - phioffset;
       double z = stub->z();
       double r = stub->r();
 
@@ -406,7 +404,7 @@ void MatchCalculator::execute() {
 
       if (std::abs(dz) > settings_.dzmax()) {
         throw cms::Exception("LogicError")
-            << __FILE__ << " " << __LINE__ << " " << name_ << "_" << iSector_ << " " << tracklet->getISeed()
+            << __FILE__ << " " << __LINE__ << " " << name_ << " " << tracklet->getISeed()
             << "\n stub " << stub->z() << " disk " << disk << " " << dz;
       }
 
@@ -488,8 +486,7 @@ void MatchCalculator::execute() {
 			    fpgastub);
 	
         if (settings_.debugTracklet()) {
-          edm::LogVerbatim("Tracklet") << "Accepted full match in disk " << getName() << " " << tracklet << " "
-                                       << iSector_;
+          edm::LogVerbatim("Tracklet") << "Accepted full match in disk " << getName() << " " << tracklet;
         }
 
         fullMatches_[seedindex]->addMatch(tracklet, mergedMatches[j].second);

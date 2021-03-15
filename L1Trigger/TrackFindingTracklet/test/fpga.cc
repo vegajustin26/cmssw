@@ -214,7 +214,7 @@ int main(const int argc, const char **argv) {
 
     eventProcessor.event(ev);
 
-    std::vector<Track *> &tracks = eventProcessor.tracks();
+    const std::vector<Track>& tracks = eventProcessor.tracks();
 
     // ---------------------------------------------------------
     // Block for producing ROOT-Tree
@@ -256,18 +256,18 @@ int main(const int argc, const char **argv) {
           bool effloose = false;
           int itrackmatch = -1;
           for (unsigned int itrack = 0; itrack < tracks.size(); itrack++) {
-            const std::vector<const L1TStub *> &stubs = tracks[itrack]->stubs();
+            const std::vector<L1TStub> &stubs = tracks[itrack].stubs();
             if (seed == -1) {
-              if (tracks[itrack]->duplicate())
+              if (tracks[itrack].duplicate())
                 continue;
             } else {
-              if (seed != tracks[itrack]->seed())
+              if (seed != tracks[itrack].seed())
                 continue;
             }
 
             unsigned int nmatch = 0;
             for (auto stub : stubs) {
-              if (stub->tpmatch(simtrackid)) {
+              if (stub.tpmatch(simtrackid)) {
                 nmatch++;
               }
             }
@@ -293,14 +293,14 @@ int main(const int argc, const char **argv) {
           }
 
           if (itrackmatch >= 0) {
-            dpt = tracks[itrackmatch]->pt(settings) - q * simtrack.pt();
-            dphi = tracks[itrackmatch]->phi0(settings) - simtrack.phi();
+            dpt = tracks[itrackmatch].pt(settings) - q * simtrack.pt();
+            dphi = tracks[itrackmatch].phi0(settings) - simtrack.phi();
             if (dphi > M_PI)
               dphi -= 2 * M_PI;
             if (dphi < -M_PI)
               dphi += 2 * M_PI;
-            deta = tracks[itrackmatch]->eta(settings) - simtrack.eta();
-            dz0 = tracks[itrackmatch]->z0(settings) - simtrack.vz();
+            deta = tracks[itrackmatch].eta(settings) - simtrack.eta();
+            dz0 = tracks[itrackmatch].z0(settings) - simtrack.vz();
           }
 
           out << eventnum << " " << simeventid << " " << seed << " " << simtrackid << " " << simtrack.type() << " "
@@ -312,18 +312,20 @@ int main(const int argc, const char **argv) {
     }
 
     int ntrack = 0;
+    int i = 0;
     for (auto &track : tracks) {
+      i++;
       if (settings.writeMonitorData("Pars")) {
-        outpars << track->duplicate() << " " << track->eta(settings) << " " << track->phi0(settings) << " "
-                << track->z0(settings) << " " << angle0to2pi::make0To2pi(track->phi0(settings)) / (2 * M_PI / N_SECTOR)
-                << " " << track->rinv(settings);
+        outpars << track.duplicate() << " " << track.eta(settings) << " " << track.phi0(settings) << " "
+                << track.z0(settings) << " " << angle0to2pi::make0To2pi(track.phi0(settings)) / (2 * M_PI / N_SECTOR)
+                << " " << track.rinv(settings);
       }
-      if (!track->duplicate()) {
+      if (!track.duplicate()) {
         ntrack++;
       }
     }
 
-    edm::LogVerbatim("Tracklet") << "Number of found tracks : " << tracks.size() << " unique " << ntrack;
+    edm::LogVerbatim("Tracklet") << "Number of found tracks : " << tracks.size() << " unique " << ntrack << " ";
   }
 
   eventProcessor.printSummary();

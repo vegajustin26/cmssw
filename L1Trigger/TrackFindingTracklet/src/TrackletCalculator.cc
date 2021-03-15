@@ -43,8 +43,7 @@ TrackletCalculator::TrackletCalculator(string name, Settings const& settings, Gl
   }
 
   // write the drinv and invt inverse tables
-  if ((settings_.writeInvTable() || settings_.writeHLSInvTable() || settings_.writeTable()) && iTC_ == 0 &&
-      iSector_ == 0) {
+  if ((settings_.writeInvTable() || settings_.writeHLSInvTable() || settings_.writeTable()) && iTC_ == 0 ) {
     void (*writeLUT)(const VarInv&, const string&) = nullptr;
     if (settings.writeInvTable()) {  // Verilog version
       writeLUT = [](const VarInv& x, const string& basename) -> void {
@@ -62,7 +61,7 @@ TrackletCalculator::TrackletCalculator(string name, Settings const& settings, Gl
 
   // write the firmware design for the calculation of the tracklet parameters
   // and projections
-  if ((settings_.writeVerilog() || settings_.writeHLS()) && iTC_ == 0 && iSector_ == 0) {
+  if ((settings_.writeVerilog() || settings_.writeHLS()) && iTC_ == 0) {
     void (*writeDesign)(const vector<VarBase*>&, const string&) = nullptr;
     if (settings.writeVerilog()) {  // Verilog version
       writeDesign = [](const vector<VarBase*>& v, const string& basename) -> void {
@@ -152,11 +151,15 @@ void TrackletCalculator::addInput(MemoryBase* memory, string input) {
   throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find intput : " << input;
 }
 
-void TrackletCalculator::execute() {
+void TrackletCalculator::execute(unsigned int iSector, double phimin, double phimax) {
   unsigned int countall = 0;
   unsigned int countsel = 0;
 
-  bool print = (iSector_ == 3) && (getName() == "TC_L1L2G");
+  phimin_ = phimin;
+  phimax_ = phimax;
+  iSector_ = iSector;
+  
+  bool print = (iSector == 3) && (getName() == "TC_L1L2G");
   print = false;
 
   for (auto& stubpair : stubpairs_) {
@@ -173,7 +176,7 @@ void TrackletCalculator::execute() {
       const L1TStub* outerStub = outerFPGAStub->l1tstub();
 
       if (settings_.debugTracklet()) {
-        edm::LogVerbatim("Tracklet") << "TrackletCalculator execute " << getName() << "[" << iSector_ << "]";
+        edm::LogVerbatim("Tracklet") << "TrackletCalculator execute " << getName() << "[" << iSector << "]";
       }
 
       if (innerFPGAStub->layerdisk() < N_LAYER && (getName() != "TC_D1L2A" && getName() != "TC_D1L2B")) {

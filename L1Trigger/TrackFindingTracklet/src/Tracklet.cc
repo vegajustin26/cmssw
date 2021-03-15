@@ -736,7 +736,16 @@ Track Tracklet::makeTrack(const vector<const L1TStub*>& l1stubs) {
                        fpgafitpars_.d0().value(),
                        fpgafitpars_.t().value(),
                        fpgafitpars_.z0().value());
+  
+  // If fitter produced no stub list, take it from original tracklet.
+  vector<const L1TStub*> tmp= l1stubs.empty() ? getL1Stubs() : l1stubs;
 
+  vector<L1TStub> tmp2;
+
+  for(auto stub : tmp) {
+    tmp2.push_back(*stub);
+  }
+  
   Track tmpTrack(
       ipars,
       ichisqrphifit_.value(),
@@ -745,7 +754,7 @@ Track Tracklet::makeTrack(const vector<const L1TStub*>& l1stubs) {
       chisqrzfit_,
       hitpattern_,
       getStubIDs(),
-      (l1stubs.empty()) ? getL1Stubs() : l1stubs,  // If fitter produced no stub list, take it from original tracklet.
+      tmp2,  
       getISeed());
 
   return tmpTrack;

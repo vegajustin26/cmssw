@@ -45,8 +45,13 @@
 using namespace std;
 using namespace trklet;
 
-Sector::Sector(unsigned int i, Settings const& settings, Globals* globals) : settings_(settings), globals_(globals) {
-  isector_ = i;
+Sector::Sector(Settings const& settings, Globals* globals) : isector_(-1), settings_(settings), globals_(globals) {}
+
+Sector::~Sector() = default;
+
+void Sector::setSector(unsigned int isector){
+  assert(isector<N_SECTOR);
+  isector_ = isector;
   double dphi = 2 * M_PI / N_SECTOR;
   double dphiHG = 0.5 * settings_.dphisectorHG() - M_PI / N_SECTOR;
   phimin_ = isector_ * dphi - dphiHG;
@@ -58,9 +63,10 @@ Sector::Sector(unsigned int i, Settings const& settings, Globals* globals) : set
   if (phimin_ > phimax_) {
     phimin_ -= 2 * M_PI;
   }
+  
 }
 
-Sector::~Sector() = default;
+
 
 bool Sector::addStub(L1TStub stub, string dtc) {
   unsigned int layerdisk = stub.layerdisk();
@@ -364,13 +370,13 @@ void Sector::executeTRE() {
 
 void Sector::executeTP() {
   for (auto& i : TP_) {
-    i->execute();
+    i->execute(isector_, phimin_, phimax_);
   }
 }
 
 void Sector::executeTC() {
   for (auto& i : TC_) {
-    i->execute();
+    i->execute(isector_, phimin_, phimax_);
   }
 
   if (settings_.writeMonitorData("TrackProjOcc")) {
@@ -383,7 +389,7 @@ void Sector::executeTC() {
 
 void Sector::executeTCD() {
   for (auto& i : TCD_) {
-    i->execute();
+    i->execute(isector_, phimin_, phimax_);
   }
 }
 
@@ -401,13 +407,13 @@ void Sector::executeME() {
 
 void Sector::executeMC() {
   for (auto& i : MC_) {
-    i->execute();
+    i->execute(phimin_);
   }
 }
 
 void Sector::executeMP() {
   for (auto& i : MP_) {
-    i->execute();
+    i->execute(phimin_);
   }
 }
 
@@ -417,9 +423,9 @@ void Sector::executeFT() {
   }
 }
 
-void Sector::executePD(std::vector<Track*>& tracks) {
+void Sector::executePD(std::vector<Track>& tracks) {
   for (auto& i : PD_) {
-    i->execute(tracks);
+    i->execute(tracks, isector_);
   }
 }
 

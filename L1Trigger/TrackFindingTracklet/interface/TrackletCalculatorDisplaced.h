@@ -28,7 +28,7 @@ namespace trklet {
     void addOutput(MemoryBase* memory, std::string output) override;
     void addInput(MemoryBase* memory, std::string input) override;
 
-    void execute();
+    void execute(unsigned int iSector, double phimin, double phimax);
 
     void addDiskProj(Tracklet* tracklet, int disk);
     bool addLayerProj(Tracklet* tracklet, int layer);
@@ -166,6 +166,9 @@ namespace trklet {
     int dproj_[N_DISK - 2];
     double rzmeanInv_[N_DISK - 2];
 
+    unsigned int iSector_;
+    double phimin_, phimax_;
+    
     std::vector<double> toR_;
     std::vector<double> toZ_;
 

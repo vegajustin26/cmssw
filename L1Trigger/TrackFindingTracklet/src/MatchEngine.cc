@@ -122,7 +122,7 @@ void MatchEngine::execute() {
   unsigned int countall = 0;
   unsigned int countpass = 0;
 
-  bool print = (iSector_ == 3) && (getName() == "ME_L3PHIC20");
+  bool print = (getName() == "ME_L3PHIC20");
   print = false;
 
   constexpr unsigned int kNBitsBuffer = 3;
@@ -338,7 +338,7 @@ void MatchEngine::execute() {
           std::pair<Tracklet*, int> tmp(proj, vmprojs_->getAllProjIndex(projindex));
           if (settings_.writeMonitorData("Seeds")) {
             ofstream fout("seeds.txt", ofstream::app);
-            fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << proj->getISeed() << endl;
+            fout << __FILE__ << ":" << __LINE__ << " " << name_ << " " << proj->getISeed() << endl;
             fout.close();
           }
           candmatches_->addMatch(tmp, vmstub.stub());

@@ -36,10 +36,6 @@ namespace trklet {
 
   protected:
     std::string name_;
-    unsigned int iSector_;
-
-    double phimin_;
-    double phimax_;
 
     Settings const& settings_;
     Globals* globals_;

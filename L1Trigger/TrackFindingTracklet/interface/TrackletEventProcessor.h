@@ -30,7 +30,7 @@ namespace trklet {
 
     void printSummary();
 
-    std::vector<Track*>& tracks() { return tracks_; }
+    const std::vector<Track>& tracks() const { return tracks_; }
 
   private:
     void configure(std::istream& inwire, std::istream& inmem, std::istream& inproc);
@@ -39,7 +39,7 @@ namespace trklet {
 
     std::unique_ptr<Globals> globals_;
 
-    std::vector<std::unique_ptr<Sector> > sectors_;
+    std::unique_ptr<Sector> sector_;
 
     HistBase* histbase_{};
 
@@ -62,9 +62,8 @@ namespace trklet {
     Timer FTTimer_;
     Timer PDTimer_;
 
-    std::vector<Track*> tracks_;
+    std::vector<Track> tracks_;
 
-    //std::map<std::string, std::vector<int> > dtclayerdisk_;
   };
 
 };  // namespace trklet

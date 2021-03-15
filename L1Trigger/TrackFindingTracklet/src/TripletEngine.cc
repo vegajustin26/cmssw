@@ -233,7 +233,7 @@ void TripletEngine::execute() {
                 edm::LogVerbatim("Tracklet") << "Adding layer-layer pair in " << getName();
               if (settings_.writeMonitorData("Seeds")) {
                 ofstream fout("seeds.txt", ofstream::app);
-                fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
+                fout << __FILE__ << ":" << __LINE__ << " " << name_ << " " << iSeed_ << endl;
                 fout.close();
               }
               stubtriplets_->addStubs(thirdvmstub.stub(),
@@ -316,7 +316,7 @@ void TripletEngine::execute() {
                 edm::LogVerbatim("Tracklet") << "Adding layer-disk pair in " << getName();
               if (settings_.writeMonitorData("Seeds")) {
                 ofstream fout("seeds.txt", ofstream::app);
-                fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
+                fout << __FILE__ << ":" << __LINE__ << " " << name_ << " " << iSeed_ << endl;
                 fout.close();
               }
               stubtriplets_->addStubs(thirdvmstub.stub(),
@@ -400,7 +400,7 @@ void TripletEngine::execute() {
                 edm::LogVerbatim("Tracklet") << "Adding layer-disk pair in " << getName();
               if (settings_.writeMonitorData("Seeds")) {
                 ofstream fout("seeds.txt", ofstream::app);
-                fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
+                fout << __FILE__ << ":" << __LINE__ << " " << name_ << " " << iSeed_ << endl;
                 fout.close();
               }
               stubtriplets_->addStubs(thirdvmstub.stub(),
@@ -463,7 +463,7 @@ void TripletEngine::writeTables() {
   ofstream fout;
   stringstream tableName;
 
-  tableName << "table/table_" << name_ << "_" << iSector_ << ".txt";
+  tableName << "table/table_" << name_ << ".txt";
 
   fout.open(tableName.str(), ofstream::out);
   for (const auto &entry : table_)
@@ -472,7 +472,7 @@ void TripletEngine::writeTables() {
 
   for (const auto &tedName : spTable_) {
     tableName.str("");
-    tableName << "table/table_" << tedName.first << "_" << name_ << "_" << iSector_ << ".txt";
+    tableName << "table/table_" << tedName.first << "_" << name_ << ".txt";
 
     fout.open(tableName.str(), ofstream::out);
     for (const auto &entry : tedName.second) {

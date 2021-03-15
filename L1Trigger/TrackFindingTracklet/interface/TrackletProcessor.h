@@ -33,7 +33,7 @@ namespace trklet {
 
     void addInput(MemoryBase* memory, std::string input) override;
 
-    void execute();
+    void execute(unsigned int iSector, double phimin, double phimax);
 
     void writeTETable();
 

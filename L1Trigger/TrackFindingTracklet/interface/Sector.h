@@ -60,10 +60,13 @@ namespace trklet {
 
   class Sector {
   public:
-    Sector(unsigned int i, Settings const& settings, Globals* globals);
+    Sector(Settings const& settings, Globals* globals);
 
     ~Sector();
 
+    //Set the sector
+    void setSector(unsigned int isector);
+    
     bool addStub(L1TStub stub, std::string dtc);  //TODO - should be pointer or string
 
     // Creates all required memory modules based on wiring map (args: module type, module instance)
@@ -112,7 +115,7 @@ namespace trklet {
     void executeMC();
     void executeMP();
     void executeFT();
-    void executePD(std::vector<Track*>& tracks);
+    void executePD(std::vector<Track>& tracks);
 
     std::vector<Tracklet*> getAllTracklets() const;
     std::vector<const Stub*> getStubs() const;

@@ -878,7 +878,7 @@ void FitTrack::execute() {
     for (auto& imatch : fullmatch1_) {
       edm::LogVerbatim("Tracklet") << imatch->getName() << " " << imatch->nMatches();
     }
-    edm::LogVerbatim("Tracklet") << getName() << "[" << iSector_ << "] matches : " << matches1.size() << " "
+    edm::LogVerbatim("Tracklet") << getName() << " matches : " << matches1.size() << " "
                                  << matches2.size() << " " << matches3.size() << " " << matches4.size();
   }
 
@@ -1010,7 +1010,7 @@ void FitTrack::execute() {
         assert(trackfit_ != nullptr);
         if (settings_.writeMonitorData("Seeds")) {
           ofstream fout("seeds.txt", ofstream::app);
-          fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << bestTracklet->getISeed()
+          fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << " " << bestTracklet->getISeed()
                << endl;
           fout.close();
         }

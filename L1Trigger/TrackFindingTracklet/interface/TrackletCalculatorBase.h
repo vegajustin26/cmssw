@@ -131,6 +131,9 @@ namespace trklet {
 
     int TCIndex_;
 
+    unsigned int iSector_;
+    double phimin_, phimax_;
+
     TrackletParametersMemory* trackletpars_;
 
     //First index is layer/disk second is phi region

@@ -265,7 +265,7 @@ void TrackletEngine::setVMPhiBin() {
   innervmstubs_->setbendtable(vmbendinner);
   outervmstubs_->setbendtable(vmbendouter);
 
-  if (iSector_ == 0 && settings_.writeTable())
+  if (settings_.writeTable())
     writeTETable();
 }
 

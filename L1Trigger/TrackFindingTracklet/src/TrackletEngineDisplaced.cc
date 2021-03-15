@@ -191,7 +191,7 @@ void TrackletEngineDisplaced::execute() {
               if (!settings_.enableTripletTables() || settings_.writeTripletTables() || table_.at(index).count(isp)) {
                 if (settings_.writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
-                  fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
+                  fout << __FILE__ << ":" << __LINE__ << " " << name_ << " " << iSeed_ << endl;
                   fout.close();
                 }
                 stubpairs_.at(isp)->addStubPair(firstvmstub, secondvmstub, index, getName());
@@ -272,7 +272,7 @@ void TrackletEngineDisplaced::execute() {
                   (index < table_.size() && table_.at(index).count(isp))) {
                 if (settings_.writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
-                  fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
+                  fout << __FILE__ << ":" << __LINE__ << " " << name_ << " " << iSeed_ << endl;
                   fout.close();
                 }
                 stubpairs_.at(isp)->addStubPair(firstvmstub, secondvmstub, index, getName());
@@ -285,7 +285,7 @@ void TrackletEngineDisplaced::execute() {
 
       } else if (disk1_ == 1 && disk2_ == 2) {
         if (settings_.debugTracklet())
-          edm::LogVerbatim("Tracklet") << getName() << "[" << iSector_ << "] Disk-disk pair";
+          edm::LogVerbatim("Tracklet") << getName() << " Disk-disk pair";
 
         int lookupbits = firstvmstub.vmbits().value() & 511;
         bool negdisk = firstvmstub.stub()->disk().value() < 0;
@@ -354,7 +354,7 @@ void TrackletEngineDisplaced::execute() {
                   (index < table_.size() && table_.at(index).count(isp))) {
                 if (settings_.writeMonitorData("Seeds")) {
                   ofstream fout("seeds.txt", ofstream::app);
-                  fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " " << iSeed_ << endl;
+                  fout << __FILE__ << ":" << __LINE__ << " " << name_ << " " << iSeed_ << endl;
                   fout.close();
                 }
                 stubpairs_.at(isp)->addStubPair(firstvmstub, secondvmstub, index, getName());

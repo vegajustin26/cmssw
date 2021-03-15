@@ -78,12 +78,7 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     globals_->histograms() = histbase_;
   }
 
-  // create the sector processors (1 sector processor = 1 board)
-  sectors_.resize(N_SECTOR);
-
-  for (unsigned int i = 0; i < N_SECTOR; i++) {
-    sectors_[i] = make_unique<Sector>(i, *settings_, globals_.get());
-  }
+  sector_ = make_unique<Sector>(*settings_, globals_.get());
 
   if (settings_->extended()) {
     ifstream inmem(settings_->memoryModulesFile().c_str());
@@ -132,9 +127,7 @@ void TrackletEventProcessor::configure(istream& inwire, istream& inmem, istream&
     if (settings_->writetrace()) {
       edm::LogVerbatim("Tracklet") << "Read memory: " << memType << " " << memName;
     }
-    for (auto& sector : sectors_) {
-      sector->addMem(memType, memName);
-    }
+    sector_->addMem(memType, memName);
   }
 
   // get the processing modules
@@ -150,9 +143,7 @@ void TrackletEventProcessor::configure(istream& inwire, istream& inmem, istream&
     if (settings_->writetrace()) {
       edm::LogVerbatim("Tracklet") << "Read process: " << procType << " " << procName;
     }
-    for (auto& sector : sectors_) {
-      sector->addProc(procType, procName);
-    }
+    sector_->addProc(procType, procName);
   }
 
   // get the wiring information
@@ -178,9 +169,7 @@ void TrackletEventProcessor::configure(istream& inwire, istream& inmem, istream&
       ss >> tmp2 >> procout;
     }
 
-    for (auto& sector : sectors_) {
-      sector->addWire(mem, procin, procout);
-    }
+    sector_->addWire(mem, procin, procout);
   }
 }
 
@@ -192,241 +181,208 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   eventnum_++;
   bool first = (eventnum_ == 1);
 
-  cleanTimer_.start();
   for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->clean();
-  }
-  cleanTimer_.stop();
+    
+    sector_->setSector(k);
 
-  addStubTimer_.start();
-
-  vector<int> layerstubs(N_LAYER + N_DISK, 0);
-  vector<int> layerstubssector(N_SECTOR * (N_LAYER + N_DISK), 0);
-
-  for (int j = 0; j < ev.nstubs(); j++) {
-    L1TStub stub = ev.stub(j);
-
-    string dtc = stub.DTClink();
-    unsigned int isector = stub.region();
-
-    layerstubs[stub.layerdisk()]++;
-    layerstubssector[isector * (N_LAYER + N_DISK) + stub.layerdisk()]++;
-
-    sectors_[isector]->addStub(stub, dtc);
-  }
-
-  if (settings_->writeMonitorData("StubsLayerSector")) {
-    for (unsigned int index = 0; index < layerstubssector.size(); index++) {
-      int layerdisk = index % (N_LAYER + N_DISK);
-      int sector = index / (N_LAYER + N_DISK);
-      globals_->ofstream("stubslayersector.txt")
+    cleanTimer_.start();
+    sector_->clean();
+    cleanTimer_.stop();
+    
+    addStubTimer_.start();
+    
+    vector<int> layerstubs(N_LAYER + N_DISK, 0);
+    vector<int> layerstubssector(N_SECTOR * (N_LAYER + N_DISK), 0);
+    
+    for (int j = 0; j < ev.nstubs(); j++) {
+      L1TStub stub = ev.stub(j);
+      unsigned int isector = stub.region();
+      if (isector!=k) {
+	continue;
+      }
+      
+      string dtc = stub.DTClink();
+      
+      layerstubs[stub.layerdisk()]++;
+      layerstubssector[isector * (N_LAYER + N_DISK) + stub.layerdisk()]++;
+      
+      sector_->addStub(stub, dtc);
+    }
+    
+    if (settings_->writeMonitorData("StubsLayerSector")) {
+      for (unsigned int index = 0; index < layerstubssector.size(); index++) {
+	int layerdisk = index % (N_LAYER + N_DISK);
+	int sector = index / (N_LAYER + N_DISK);
+	globals_->ofstream("stubslayersector.txt")
           << layerdisk << " " << sector << " " << layerstubssector[index] << endl;
-    }
-  }
-
-  if (settings_->writeMonitorData("StubsLayer")) {
-    for (unsigned int layerdisk = 0; layerdisk < layerstubs.size(); layerdisk++) {
-      globals_->ofstream("stubslayer.txt") << layerdisk << " " << layerstubs[layerdisk] << endl;
-    }
-  }
-
-  addStubTimer_.stop();
-
-  // ----------------------------------------------------------------------------------------
-  // Now start the tracklet processing
-
-  // VM router
-  InputRouterTimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeIR();
-    if (settings_->writeMem() && k == settings_->writememsect()) {
-      sectors_[k]->writeDTCStubs(first);
-      sectors_[k]->writeIRStubs(first);
-    }
-  }
-  InputRouterTimer_.stop();
-
-
-  VMRouterTimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeVMR();
-    if (settings_->writeMem() && k == settings_->writememsect()) {
-      sectors_[k]->writeVMSTE(first);
-      sectors_[k]->writeVMSME(first);
-      sectors_[k]->writeAS(first);
-      sectors_[k]->writeAIS(first);
-    }
-  }
-  VMRouterTimer_.stop();
-
-  // tracklet engine
-  TETimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeTE();
-  }
-  TETimer_.stop();
-
-  // tracklet engine displaced
-  TEDTimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeTED();
-  }
-  TEDTimer_.stop();
-
-  // triplet engine
-  TRETimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeTRE();
-    if (settings_->writeMem() && k == settings_->writememsect()) {
-      sectors_[k]->writeST(first);
-    }
-  }
-  TRETimer_.stop();
-
-  // tracklet processor (alternative implementation to TE+TC)
-  TPTimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeTP();
-  }
-  TPTimer_.stop();
-
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    if (settings_->writeMem() && k == settings_->writememsect()) {
-      sectors_[k]->writeSP(first);
-    }
-  }
-
-  // tracklet calculator
-  TCTimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeTC();
-  }
-  TCTimer_.stop();
-
-  int nTP = globals_->event()->nsimtracks();
-  for (int iTP = 0; iTP < nTP; iTP++) {
-    L1SimTrack simtrk = globals_->event()->simtrack(iTP);
-    if (simtrk.pt() < 2.0)
-      continue;
-    if (std::abs(simtrk.vz()) > 15.0)
-      continue;
-    if (hypot(simtrk.vx(), simtrk.vy()) > 0.1)
-      continue;
-    bool electron = (abs(simtrk.type()) == 11);
-    bool muon = (abs(simtrk.type()) == 13);
-    bool pion = (abs(simtrk.type()) == 211);
-    bool kaon = (abs(simtrk.type()) == 321);
-    bool proton = (abs(simtrk.type()) == 2212);
-    if (!(electron || muon || pion || kaon || proton))
-      continue;
-    int nlayers = 0;
-    int ndisks = 0;
-    int simtrackid = simtrk.trackid();
-    unsigned int hitmask = ev.layersHit(simtrackid, nlayers, ndisks);
-    if (nlayers + ndisks < 4)
-      continue;
-
-    if (settings_->writeMonitorData("HitEff")) {
-      static ofstream outhit("hiteff.txt");
-      outhit << simtrk.eta() << " " << (hitmask & 1) << " " << (hitmask & 2) << " " << (hitmask & 4) << " "
-             << (hitmask & 8) << " " << (hitmask & 16) << " " << (hitmask & 32) << " " << (hitmask & 64) << " "
-             << (hitmask & 128) << " " << (hitmask & 256) << " " << (hitmask & 512) << " " << (hitmask & 1024) << endl;
-    }
-
-    std::unordered_set<int> matchseed;
-    for (unsigned int k = 0; k < N_SECTOR; k++) {
-      std::unordered_set<int> matchseedtmp = sectors_[k]->seedMatch(iTP);
-      matchseed.insert(matchseedtmp.begin(), matchseedtmp.end());
-    }
-    if (settings_->bookHistos()) {
-      for (int iseed = 0; iseed < 8; iseed++) {
-        bool eff = matchseed.find(iseed) != matchseed.end();
-        globals_->histograms()->fillSeedEff(iseed, simtrk.eta(), eff);
       }
     }
-  }
 
-  // tracklet calculator displaced
-  TCDTimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeTCD();
-  }
-  TCDTimer_.stop();
-
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    if (settings_->writeMem() && k == settings_->writememsect()) {
-      sectors_[k]->writeTPAR(first);
-      sectors_[k]->writeTPROJ(first);
+    if (settings_->writeMonitorData("StubsLayer")) {
+      for (unsigned int layerdisk = 0; layerdisk < layerstubs.size(); layerdisk++) {
+	globals_->ofstream("stubslayer.txt") << layerdisk << " " << layerstubs[layerdisk] << endl;
+      }
     }
-  }
 
-  // projection router
-  PRTimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executePR();
+    addStubTimer_.stop();
+
+    // ----------------------------------------------------------------------------------------
+    // Now start the tracklet processing
+
+    // VM router
+    InputRouterTimer_.start();
+    sector_->executeIR();
     if (settings_->writeMem() && k == settings_->writememsect()) {
-      sectors_[k]->writeVMPROJ(first);
-      sectors_[k]->writeAP(first);
+      sector_->writeDTCStubs(first);
+      sector_->writeIRStubs(first);
     }
-  }
-  PRTimer_.stop();
+    InputRouterTimer_.stop();
 
-  // match engine
-  METimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeME();
+
+    VMRouterTimer_.start();
+    sector_->executeVMR();
     if (settings_->writeMem() && k == settings_->writememsect()) {
-      sectors_[k]->writeCM(first);
+      sector_->writeVMSTE(first);
+      sector_->writeVMSME(first);
+      sector_->writeAS(first);
+      sector_->writeAIS(first);
     }
-  }
-  METimer_.stop();
+    VMRouterTimer_.stop();
 
-  // match calculator
-  MCTimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeMC();
-  }
-  MCTimer_.stop();
+    // tracklet engine
+    TETimer_.start();
+    sector_->executeTE();
+    TETimer_.stop();
+    
+    // tracklet engine displaced
+    TEDTimer_.start();
+    sector_->executeTED();
+    TEDTimer_.stop();
 
-  // match processor (alternative to ME+MC)
-  MPTimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeMP();
-  }
-  MPTimer_.stop();
-
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
+    // triplet engine
+    TRETimer_.start();
+    sector_->executeTRE();
     if (settings_->writeMem() && k == settings_->writememsect()) {
-      sectors_[k]->writeMC(first);
+      sector_->writeST(first);
     }
-  }
+    TRETimer_.stop();
 
-  // fit track
-  FTTimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executeFT();
+    // tracklet processor (alternative implementation to TE+TC)
+    TPTimer_.start();
+    sector_->executeTP();
+    TPTimer_.stop();
+
+    if (settings_->writeMem() && k == settings_->writememsect()) {
+      sector_->writeSP(first);
+    }
+    
+    // tracklet calculator
+    TCTimer_.start();
+    sector_->executeTC();
+    TCTimer_.stop();
+    
+    int nTP = globals_->event()->nsimtracks();
+    for (int iTP = 0; iTP < nTP; iTP++) {
+      L1SimTrack simtrk = globals_->event()->simtrack(iTP);
+      if (simtrk.pt() < 2.0)
+	continue;
+      if (std::abs(simtrk.vz()) > 15.0)
+	continue;
+      if (hypot(simtrk.vx(), simtrk.vy()) > 0.1)
+	continue;
+      bool electron = (abs(simtrk.type()) == 11);
+      bool muon = (abs(simtrk.type()) == 13);
+      bool pion = (abs(simtrk.type()) == 211);
+      bool kaon = (abs(simtrk.type()) == 321);
+      bool proton = (abs(simtrk.type()) == 2212);
+      if (!(electron || muon || pion || kaon || proton))
+	continue;
+      int nlayers = 0;
+      int ndisks = 0;
+      int simtrackid = simtrk.trackid();
+      unsigned int hitmask = ev.layersHit(simtrackid, nlayers, ndisks);
+      if (nlayers + ndisks < 4)
+	continue;
+      
+      if (settings_->writeMonitorData("HitEff")) {
+	static ofstream outhit("hiteff.txt");
+	outhit << simtrk.eta() << " " << (hitmask & 1) << " " << (hitmask & 2) << " " << (hitmask & 4) << " "
+	       << (hitmask & 8) << " " << (hitmask & 16) << " " << (hitmask & 32) << " " << (hitmask & 64) << " "
+	       << (hitmask & 128) << " " << (hitmask & 256) << " " << (hitmask & 512) << " " << (hitmask & 1024) << endl;
+      }
+      
+      std::unordered_set<int> matchseed;
+      std::unordered_set<int> matchseedtmp = sector_->seedMatch(iTP);
+      matchseed.insert(matchseedtmp.begin(), matchseedtmp.end());
+      if (settings_->bookHistos()) {
+	for (int iseed = 0; iseed < 8; iseed++) {
+	  bool eff = matchseed.find(iseed) != matchseed.end();
+	  globals_->histograms()->fillSeedEff(iseed, simtrk.eta(), eff);
+	}
+      }
+    }
+
+    // tracklet calculator displaced
+    TCDTimer_.start();
+    sector_->executeTCD();
+    TCDTimer_.stop();
+
+    if (settings_->writeMem() && k == settings_->writememsect()) {
+      sector_->writeTPAR(first);
+      sector_->writeTPROJ(first);
+    }
+
+    // projection router
+    PRTimer_.start();
+    sector_->executePR();
+    if (settings_->writeMem() && k == settings_->writememsect()) {
+      sector_->writeVMPROJ(first);
+      sector_->writeAP(first);
+    }
+    PRTimer_.stop();
+
+    // match engine
+    METimer_.start();
+    sector_->executeME();
+    if (settings_->writeMem() && k == settings_->writememsect()) {
+      sector_->writeCM(first);
+    }
+    METimer_.stop();
+
+    // match calculator
+    MCTimer_.start();
+    sector_->executeMC();
+    MCTimer_.stop();
+    
+    // match processor (alternative to ME+MC)
+    MPTimer_.start();
+    sector_->executeMP();
+    MPTimer_.stop();
+
+    if (settings_->writeMem() && k == settings_->writememsect()) {
+      sector_->writeMC(first);
+    }
+
+    // fit track
+    FTTimer_.start();
+    sector_->executeFT();
     if ((settings_->writeMem() || settings_->writeMonitorData("IFit")) && k == settings_->writememsect()) {
-      sectors_[k]->writeTF(first);
+      sector_->writeTF(first);
     }
-  }
-  FTTimer_.stop();
+    FTTimer_.stop();
 
-  // purge duplicate
-  PDTimer_.start();
-  for (unsigned int k = 0; k < N_SECTOR; k++) {
-    sectors_[k]->executePD(tracks_);
+    // purge duplicate
+    PDTimer_.start();
+    sector_->executePD(tracks_);
     if (((settings_->writeMem() || settings_->writeMonitorData("IFit")) && k == settings_->writememsect()) ||
-        settings_->writeMonitorData("CT")) {
-      sectors_[k]->writeCT(first);
+	settings_->writeMonitorData("CT")) {
+      sector_->writeCT(first);
     }
+    PDTimer_.stop();
   }
-  PDTimer_.stop();
 }
 
 void TrackletEventProcessor::printSummary() {
-  //if (settings_->writeMonitorData("Cabling")) {
-  //  cabling_->writephirange();
-  //}
 
   if (settings_->bookHistos()) {
     globals_->histograms()->close();

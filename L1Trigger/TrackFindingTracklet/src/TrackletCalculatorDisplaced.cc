@@ -220,9 +220,13 @@ void TrackletCalculatorDisplaced::addInput(MemoryBase* memory, string input) {
   throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find input : " << input;
 }
 
-void TrackletCalculatorDisplaced::execute() {
+void TrackletCalculatorDisplaced::execute(unsigned int iSector, double phimin, double phimax) {
   unsigned int countall = 0;
   unsigned int countsel = 0;
+
+  phimin_ = phimin;
+  phimax_ = phimax;
+  iSector_ = iSector;
 
   for (auto& stubtriplet : stubtriplets_) {
     if (trackletpars_->nTracklets() >= settings_.ntrackletmax()) {

@@ -30,7 +30,7 @@ namespace trklet {
     void addOutput(MemoryBase* memory, std::string output) override;
     void addInput(MemoryBase* memory, std::string input) override;
 
-    void execute();
+    void execute(double phimin);
 
     bool matchCalculator(Tracklet* tracklet, const Stub* fpgastub);
 
@@ -74,6 +74,8 @@ namespace trklet {
     //used for bend consistency with rinv
     std::vector<bool> table_;
 
+    double phimin_;
+    
     unsigned int nMatchEngines_;
     std::vector<MatchEngineUnit> matchengines_;
 

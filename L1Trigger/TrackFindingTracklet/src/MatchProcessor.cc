@@ -51,7 +51,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
     }
   }
 
-  if (iSector_ == 0 && barrel_ && settings_.writeTable()) {
+  if (barrel_ && settings_.writeTable()) {
     ofstream outphicut = openfile(settings_.tablePath(), getName() + "_phicut.tab", __FILE__, __LINE__);
 
     outphicut << "{" << endl;
@@ -192,7 +192,7 @@ void MatchProcessor::addInput(MemoryBase* memory, string input) {
   throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find input: " << input;
 }
 
-void MatchProcessor::execute() {
+void MatchProcessor::execute(double phimin) {
   assert(vmstubs_.size() == 1);
 
   /*
@@ -211,6 +211,8 @@ void MatchProcessor::execute() {
 
   //bool print = getName()=="MP_L3PHIC" && iSector_==3;
 
+  phimin_ = phimin;
+  
   Tracklet* oldTracklet = nullptr;
 
   unsigned int countme = 0;
@@ -466,9 +468,9 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     double z = stub->z();
 
     if (settings_.useapprox()) {
-      double dphi = reco::reduceRange(phi - fpgastub->phiapprox(phimin_, phimax_));
+      double dphi = reco::reduceRange(phi - fpgastub->phiapprox(phimin_, 0.0));
       assert(std::abs(dphi) < 0.001);
-      phi = fpgastub->phiapprox(phimin_, phimax_);
+      phi = fpgastub->phiapprox(phimin_, 0.0);
       z = fpgastub->zapprox();
       r = fpgastub->rapprox();
     }
@@ -541,8 +543,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
 			 fpgastub);
       
       if (settings_.debugTracklet()) {
-        edm::LogVerbatim("Tracklet") << "Accepted full match in layer " << getName() << " " << tracklet << " "
-                                     << iSector_;
+        edm::LogVerbatim("Tracklet") << "Accepted full match in layer " << getName() << " " << tracklet;
       }
 
       int iSeed = tracklet->getISeed();
@@ -607,9 +608,9 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     double r = stub->r();
 
     if (settings_.useapprox()) {
-      double dphi = reco::reduceRange(phi - fpgastub->phiapprox(phimin_, phimax_));
+      double dphi = reco::reduceRange(phi - fpgastub->phiapprox(phimin_, 0.0));
       assert(std::abs(dphi) < 0.001);
-      phi = fpgastub->phiapprox(phimin_, phimax_);
+      phi = fpgastub->phiapprox(phimin_, 0.0);
       z = fpgastub->zapprox();
       r = fpgastub->rapprox();
     }
@@ -621,7 +622,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     double dz = z - sign * settings_.zmean(layerdisk_ - N_LAYER);
 
     if (std::abs(dz) > settings_.dzmax()) {
-      edm::LogProblem("Tracklet") << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << iSector_ << " "
+      edm::LogProblem("Tracklet") << __FILE__ << ":" << __LINE__ << " " << name_ << " "
                                   << tracklet->getISeed();
       edm::LogProblem("Tracklet") << "stub " << stub->z() << " disk " << disk << " " << dz;
       assert(std::abs(dz) < settings_.dzmax());
@@ -700,8 +701,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
 			 fpgastub);
       
       if (settings_.debugTracklet()) {
-        edm::LogVerbatim("Tracklet") << "Accepted full match in disk " << getName() << " " << tracklet << " "
-                                     << iSector_;
+        edm::LogVerbatim("Tracklet") << "Accepted full match in disk " << getName() << " " << tracklet;
       }
 
       int iSeed = tracklet->getISeed();

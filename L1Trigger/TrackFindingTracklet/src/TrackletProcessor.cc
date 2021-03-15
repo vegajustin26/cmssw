@@ -182,10 +182,14 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
   throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " Could not find input : " << input;
 }
 
-void TrackletProcessor::execute() {
-  bool print = (iSector_ == 3) && (getName() == "TP_L1L2D");
+void TrackletProcessor::execute(unsigned int iSector, double phimin, double phimax) {
+  bool print = (iSector == 3) && (getName() == "TP_L1L2D");
   print = false;
 
+  phimin_ = phimin;
+  phimax_ = phimax;
+  iSector_ = iSector;
+  
   if (!settings_.useSeed(iSeed_))
     return;
 
@@ -228,7 +232,7 @@ void TrackletProcessor::execute() {
   bool goodtedata___ = false;
 
   bool tebuffernearfull;
-
+  
   for (unsigned int istep = 0; istep < settings_.maxStep("TP"); istep++) {
     if (print) {
       CircularBuffer<TEData>& tedatabuffer = std::get<0>(tebuffer_);
@@ -309,7 +313,7 @@ void TrackletProcessor::execute() {
         edm::LogVerbatim("Tracklet") << "TrackletProcessor execute done";
       }
     }
-
+    
     //
     // The second block fills the teunit if data in buffer and process TEUnit step
     //
@@ -336,7 +340,7 @@ void TrackletProcessor::execute() {
     // The third block here checks if we have input stubs to process
     //
     //
-
+      
     if (goodtedata___)
       tedatabuffer.store(tedata___);
 
@@ -345,8 +349,6 @@ void TrackletProcessor::execute() {
     unsigned int& istub = std::get<1>(tebuffer_);
     unsigned int& imem = std::get<2>(tebuffer_);
     unsigned int imemend = std::get<4>(tebuffer_);
-
-    //if (print) cout << "istep="<<istep<<" istub="<<istub<<endl;
 
     if ((!tebuffernearfull) && imem < imemend && istub < innerallstubs_[imem]->nStubs()) {
       ninnerstubs++;
@@ -449,7 +451,6 @@ void TrackletProcessor::execute() {
         }
 
         if (tedata.regions_.size() > 0) {
-          //if (print) cout << "Add to TEBuffer stub : "<<stub->allStubIndex().value()<<endl;
           ntedata++;
           goodtedata = true;
         }
@@ -462,7 +463,7 @@ void TrackletProcessor::execute() {
     } else if ((!tebuffernearfull) && imem < imemend && istub == 0) {
       imem++;
     }
-
+    
     goodtedata___ = goodtedata__;
     goodtedata__ = goodtedata;
 
@@ -497,7 +498,7 @@ void TrackletProcessor::execute() {
   //
   // Done with processing - collect performance statistics
   //
-
+  
   if (settings_.writeMonitorData("TP")) {
     globals_->ofstream("trackletprocessor.txt") << getName() << " " << ninnerstubs   //# inner stubs
                                                 << " " << outervmstubs_->nVMStubs()  //# outer stubs
