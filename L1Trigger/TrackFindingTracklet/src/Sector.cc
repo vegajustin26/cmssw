@@ -419,7 +419,7 @@ void Sector::executeMP() {
 
 void Sector::executeFT() {
   for (auto& i : FT_) {
-    i->execute();
+    i->execute(isector_);
   }
 }
 

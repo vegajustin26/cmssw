@@ -569,7 +569,7 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     ev.write(asciiEventOut_);
   }
 
-  std::vector<trklet::Track*>& tracks = eventProcessor.tracks();
+  const std::vector<trklet::Track>& tracks = eventProcessor.tracks();
 
   // this performs the actual tracklet event processing
   eventProcessor.event(ev);
@@ -577,20 +577,20 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   int ntracks = 0;
 
   for (auto track : tracks) {
-    if (track->duplicate())
+    if (track.duplicate())
       continue;
 
     ntracks++;
 
     // this is where we create the TTTrack object
-    double tmp_rinv = track->rinv(settings);
-    double tmp_phi = track->phi0(settings);
-    double tmp_tanL = track->tanL(settings);
-    double tmp_z0 = track->z0(settings);
-    double tmp_d0 = track->d0(settings);
-    double tmp_chi2rphi = track->chisqrphi();
-    double tmp_chi2rz = track->chisqrz();
-    unsigned int tmp_hit = track->hitpattern();
+    double tmp_rinv = track.rinv(settings);
+    double tmp_phi = track.phi0(settings);
+    double tmp_tanL = track.tanL(settings);
+    double tmp_z0 = track.z0(settings);
+    double tmp_d0 = track.d0(settings);
+    double tmp_chi2rphi = track.chisqrphi();
+    double tmp_chi2rz = track.chisqrz();
+    unsigned int tmp_hit = track.hitpattern();
 
     TTTrack<Ref_Phase2TrackerDigi_> aTrack(tmp_rinv,
                                            tmp_phi,
@@ -606,18 +606,18 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
                                            settings.nHelixPar(),
                                            settings.bfield());
 
-    unsigned int trksector = track->sector();
-    unsigned int trkseed = (unsigned int)abs(track->seed());
+    unsigned int trksector = track.sector();
+    unsigned int trkseed = (unsigned int)abs(track.seed());
 
     aTrack.setPhiSector(trksector);
     aTrack.setTrackSeedType(trkseed);
 
-    const vector<const trklet::L1TStub*>& stubptrs = track->stubs();
+    const vector<trklet::L1TStub>& stubptrs = track.stubs();
     vector<trklet::L1TStub> stubs;
 
     stubs.reserve(stubptrs.size());
     for (auto stubptr : stubptrs) {
-      stubs.push_back(*stubptr);
+      stubs.push_back(stubptr);
     }
 
     stubMapType::const_iterator it;
