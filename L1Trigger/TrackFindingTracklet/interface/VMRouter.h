@@ -57,8 +57,8 @@ namespace trklet {
 
     VMRouterTable vmrtable_;
 
-    //The input stub memories
-    std::vector<InputLinkMemory*> stubinputs_;
+    //The input stub memories the two tmp inputs are used to build the order needed in HLS
+    std::vector<InputLinkMemory*> stubinputs_, stubinputtmp_, stubinputdisk2stmp_;
 
     //The all stub memories
     std::vector<AllStubsMemory*> allstubs_;
