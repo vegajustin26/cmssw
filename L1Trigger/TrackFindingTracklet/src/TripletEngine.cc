@@ -10,8 +10,8 @@
 using namespace std;
 using namespace trklet;
 
-TripletEngine::TripletEngine(string name, Settings const &settings, Globals *global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {
+TripletEngine::TripletEngine(string name, Settings const &settings, Globals *global)
+    : ProcessBase(name, settings, global) {
   stubpairs_.clear();
   thirdvmstubs_.clear();
   layer1_ = 0;

@@ -8,8 +8,8 @@
 using namespace std;
 using namespace trklet;
 
-TrackletParametersMemory::TrackletParametersMemory(string name, Settings const& settings, unsigned int iSector)
-    : MemoryBase(name, settings, iSector) {}
+TrackletParametersMemory::TrackletParametersMemory(string name, Settings const& settings)
+    : MemoryBase(name, settings) {}
 
 void TrackletParametersMemory::clean() {
   for (auto& tracklet : tracklets_) {
@@ -18,7 +18,9 @@ void TrackletParametersMemory::clean() {
   tracklets_.clear();
 }
 
-void TrackletParametersMemory::writeTPAR(bool first) {
+void TrackletParametersMemory::writeTPAR(bool first, unsigned int iSector) {
+
+  iSector_ = iSector;
   const string dirTP = settings_.memPath() + "TrackletParameters/";
 
   std::ostringstream oss;

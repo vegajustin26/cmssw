@@ -22,8 +22,8 @@
 using namespace std;
 using namespace trklet;
 
-PurgeDuplicate::PurgeDuplicate(std::string name, Settings const& settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {}
+PurgeDuplicate::PurgeDuplicate(std::string name, Settings const& settings, Globals* global)
+    : ProcessBase(name, settings, global) {}
 
 void PurgeDuplicate::addOutput(MemoryBase* memory, std::string output) {
   if (settings_.writetrace()) {

@@ -23,7 +23,7 @@ namespace trklet {
 
   class TrackletProcessor : public TrackletCalculatorBase {
   public:
-    TrackletProcessor(std::string name, Settings const& settings, Globals* globals, unsigned int iSector);
+    TrackletProcessor(std::string name, Settings const& settings, Globals* globals);
 
     ~TrackletProcessor() override = default;
 

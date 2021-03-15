@@ -13,8 +13,8 @@
 using namespace trklet;
 using namespace std;
 
-TrackletEngine::TrackletEngine(string name, Settings const& settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {
+TrackletEngine::TrackletEngine(string name, Settings const& settings, Globals* global)
+    : ProcessBase(name, settings, global) {
   stubpairs_ = nullptr;
   innervmstubs_ = nullptr;
   outervmstubs_ = nullptr;

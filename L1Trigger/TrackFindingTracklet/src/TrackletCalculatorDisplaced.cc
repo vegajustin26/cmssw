@@ -15,9 +15,8 @@ using namespace trklet;
 
 TrackletCalculatorDisplaced::TrackletCalculatorDisplaced(string name,
                                                          Settings const& settings,
-                                                         Globals* global,
-                                                         unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {
+                                                         Globals* global)
+    : ProcessBase(name, settings, global) {
   for (unsigned int ilayer = 0; ilayer < N_LAYER; ilayer++) {
     vector<TrackletProjectionsMemory*> tmp(settings.nallstubs(ilayer), nullptr);
     trackletprojlayers_.push_back(tmp);

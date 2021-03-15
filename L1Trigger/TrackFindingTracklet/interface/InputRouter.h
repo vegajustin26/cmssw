@@ -19,7 +19,7 @@ namespace trklet {
 
   class InputRouter : public ProcessBase {
   public:
-    InputRouter(std::string name, Settings const& settings, Globals* global, unsigned int iSector);
+    InputRouter(std::string name, Settings const& settings, Globals* global);
 
     ~InputRouter() override = default;
 

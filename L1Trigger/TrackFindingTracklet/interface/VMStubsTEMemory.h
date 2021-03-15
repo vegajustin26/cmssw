@@ -15,7 +15,7 @@ namespace trklet {
 
   class VMStubsTEMemory : public MemoryBase {
   public:
-    VMStubsTEMemory(std::string name, Settings const& settings, unsigned int iSector);
+    VMStubsTEMemory(std::string name, Settings const& settings);
 
     ~VMStubsTEMemory() override = default;
 
@@ -37,7 +37,7 @@ namespace trklet {
 
     void clean() override;
 
-    void writeStubs(bool first);
+    void writeStubs(bool first, unsigned int iSector);
 
     int phibin() const { return phibin_; }
 

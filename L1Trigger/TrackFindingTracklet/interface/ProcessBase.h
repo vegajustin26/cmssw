@@ -11,7 +11,7 @@ namespace trklet {
 
   class ProcessBase {
   public:
-    ProcessBase(std::string name, Settings const& settings, Globals* global, unsigned int iSector);
+    ProcessBase(std::string name, Settings const& settings, Globals* global);
 
     virtual ~ProcessBase() = default;
 

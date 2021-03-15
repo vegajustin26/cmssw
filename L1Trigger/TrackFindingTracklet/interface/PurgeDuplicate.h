@@ -19,7 +19,7 @@ namespace trklet {
 
   class PurgeDuplicate : public ProcessBase {
   public:
-    PurgeDuplicate(std::string name, Settings const& settings, Globals* global, unsigned int iSector);
+    PurgeDuplicate(std::string name, Settings const& settings, Globals* global);
 
     ~PurgeDuplicate() override = default;
 

@@ -16,9 +16,8 @@ using namespace trklet;
 
 TrackletCalculatorBase::TrackletCalculatorBase(string name,
                                                Settings const& settings,
-                                               Globals* global,
-                                               unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {}
+                                               Globals* global)
+    : ProcessBase(name, settings, global) {}
 
 void TrackletCalculatorBase::exacttracklet(double r1,
                                            double z1,

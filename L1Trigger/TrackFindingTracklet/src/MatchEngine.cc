@@ -15,8 +15,8 @@
 using namespace std;
 using namespace trklet;
 
-MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {
+MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global)
+    : ProcessBase(name, settings, global) {
   layerdisk_ = initLayerDisk(3);
 
   barrel_ = layerdisk_ < N_LAYER;

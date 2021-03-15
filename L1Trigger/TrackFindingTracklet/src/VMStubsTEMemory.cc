@@ -6,8 +6,8 @@
 using namespace std;
 using namespace trklet;
 
-VMStubsTEMemory::VMStubsTEMemory(string name, Settings const& settings, unsigned int iSector)
-    : MemoryBase(name, settings, iSector) {
+VMStubsTEMemory::VMStubsTEMemory(string name, Settings const& settings)
+    : MemoryBase(name, settings) {
   //set the layer or disk that the memory is in
   initLayerDisk(6, layer_, disk_);
 
@@ -218,7 +218,9 @@ void VMStubsTEMemory::clean() {
   }
 }
 
-void VMStubsTEMemory::writeStubs(bool first) {
+void VMStubsTEMemory::writeStubs(bool first, unsigned int iSector) {
+
+  iSector_ = iSector;
   const string dirVM = settings_.memPath() + "VMStubsTE/";
   openFile(first, dirVM, "VMStubs_");
 
@@ -277,7 +279,7 @@ void VMStubsTEMemory::setbendtable(std::vector<bool> vmbendtable) {
     vmbendtable_[i] = vmbendtable[i];
   }
 
-  if (iSector_ == 0 && settings_.writeTable())
+  if (settings_.writeTable())
     writeVMBendTable();
 }
 

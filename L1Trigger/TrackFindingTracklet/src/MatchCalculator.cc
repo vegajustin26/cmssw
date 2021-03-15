@@ -18,8 +18,8 @@
 using namespace std;
 using namespace trklet;
 
-MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {
+MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals* global)
+    : ProcessBase(name, settings, global) {
  
   phiregion_ = name[8] - 'A';
   layerdisk_ = initLayerDisk(3);

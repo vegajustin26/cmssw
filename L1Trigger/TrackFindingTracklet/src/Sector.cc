@@ -108,37 +108,37 @@ bool Sector::addStub(L1TStub stub, string dtc) {
 
 void Sector::addMem(string memType, string memName) {
   if (memType == "DTCLink:") {
-    addMemToVec(DL_, memName, settings_, isector_, phimin_, phimax_);
+    addMemToVec(DL_, memName, settings_, phimin_, phimax_);
   } else if (memType == "InputLink:") {
-    addMemToVec(IL_, memName, settings_, isector_, phimin_, phimax_);
+    addMemToVec(IL_, memName, settings_, phimin_, phimax_);
   } else if (memType == "AllStubs:") {
-    addMemToVec(AS_, memName, settings_, isector_);
+    addMemToVec(AS_, memName, settings_);
   } else if (memType == "AllInnerStubs:") {
-    addMemToVec(AIS_, memName, settings_, isector_);
+    addMemToVec(AIS_, memName, settings_);
   } else if (memType == "VMStubsTE:") {
-    addMemToVec(VMSTE_, memName, settings_, isector_);
+    addMemToVec(VMSTE_, memName, settings_);
   } else if (memType == "VMStubsME:") {
-    addMemToVec(VMSME_, memName, settings_, isector_);
+    addMemToVec(VMSME_, memName, settings_);
   } else if (memType == "StubPairs:" || memType == "StubPairsDisplaced:") {
-    addMemToVec(SP_, memName, settings_, isector_);
+    addMemToVec(SP_, memName, settings_);
   } else if (memType == "StubTriplets:") {
-    addMemToVec(ST_, memName, settings_, isector_);
+    addMemToVec(ST_, memName, settings_);
   } else if (memType == "TrackletParameters:") {
-    addMemToVec(TPAR_, memName, settings_, isector_);
+    addMemToVec(TPAR_, memName, settings_);
   } else if (memType == "TrackletProjections:") {
-    addMemToVec(TPROJ_, memName, settings_, isector_);
+    addMemToVec(TPROJ_, memName, settings_);
   } else if (memType == "AllProj:") {
-    addMemToVec(AP_, memName, settings_, isector_);
+    addMemToVec(AP_, memName, settings_);
   } else if (memType == "VMProjections:") {
-    addMemToVec(VMPROJ_, memName, settings_, isector_);
+    addMemToVec(VMPROJ_, memName, settings_);
   } else if (memType == "CandidateMatch:") {
-    addMemToVec(CM_, memName, settings_, isector_);
+    addMemToVec(CM_, memName, settings_);
   } else if (memType == "FullMatch:") {
-    addMemToVec(FM_, memName, settings_, isector_);
+    addMemToVec(FM_, memName, settings_);
   } else if (memType == "TrackFit:") {
-    addMemToVec(TF_, memName, settings_, isector_, phimin_, phimax_);
+    addMemToVec(TF_, memName, settings_, phimin_, phimax_);
   } else if (memType == "CleanTrack:") {
-    addMemToVec(CT_, memName, settings_, isector_, phimin_, phimax_);
+    addMemToVec(CT_, memName, settings_, phimin_, phimax_);
   } else {
     edm::LogPrint("Tracklet") << "Don't know of memory type: " << memType;
     exit(0);
@@ -147,36 +147,36 @@ void Sector::addMem(string memType, string memName) {
 
 void Sector::addProc(string procType, string procName) {
   if (procType == "InputRouter:") {
-    addProcToVec(IR_, procName, settings_, globals_, isector_);
+    addProcToVec(IR_, procName, settings_, globals_);
   } else if (procType == "VMRouter:") {
-    addProcToVec(VMR_, procName, settings_, globals_, isector_);
+    addProcToVec(VMR_, procName, settings_, globals_);
   } else if (procType == "VMRouterCM:") {
-    addProcToVec(VMRCM_, procName, settings_, globals_, isector_);
+    addProcToVec(VMRCM_, procName, settings_, globals_);
   } else if (procType == "TrackletEngine:") {
-    addProcToVec(TE_, procName, settings_, globals_, isector_);
+    addProcToVec(TE_, procName, settings_, globals_);
   } else if (procType == "TrackletEngineDisplaced:") {
-    addProcToVec(TED_, procName, settings_, globals_, isector_);
+    addProcToVec(TED_, procName, settings_, globals_);
   } else if (procType == "TripletEngine:") {
-    addProcToVec(TRE_, procName, settings_, globals_, isector_);
+    addProcToVec(TRE_, procName, settings_, globals_);
   } else if (procType == "TrackletCalculator:") {
-    addProcToVec(TC_, procName, settings_, globals_, isector_);
+    addProcToVec(TC_, procName, settings_, globals_);
   } else if (procType == "TrackletProcessor:") {
-    addProcToVec(TP_, procName, settings_, globals_, isector_);
+    addProcToVec(TP_, procName, settings_, globals_);
   } else if (procType == "TrackletCalculatorDisplaced:") {
-    addProcToVec(TCD_, procName, settings_, globals_, isector_);
+    addProcToVec(TCD_, procName, settings_, globals_);
   } else if (procType == "ProjectionRouter:") {
-    addProcToVec(PR_, procName, settings_, globals_, isector_);
+    addProcToVec(PR_, procName, settings_, globals_);
   } else if (procType == "MatchEngine:") {
-    addProcToVec(ME_, procName, settings_, globals_, isector_);
+    addProcToVec(ME_, procName, settings_, globals_);
   } else if (procType == "MatchCalculator:" ||
              procType == "DiskMatchCalculator:") {  //TODO should not be used in configurations
-    addProcToVec(MC_, procName, settings_, globals_, isector_);
+    addProcToVec(MC_, procName, settings_, globals_);
   } else if (procType == "MatchProcessor:") {
-    addProcToVec(MP_, procName, settings_, globals_, isector_);
+    addProcToVec(MP_, procName, settings_, globals_);
   } else if (procType == "FitTrack:") {
-    addProcToVec(FT_, procName, settings_, globals_, isector_);
+    addProcToVec(FT_, procName, settings_, globals_);
   } else if (procType == "PurgeDuplicate:") {
-    addProcToVec(PD_, procName, settings_, globals_, isector_);
+    addProcToVec(PD_, procName, settings_, globals_);
   } else {
     edm::LogPrint("Tracklet") << "Don't know of processing type: " << procType;
     exit(0);
@@ -229,97 +229,97 @@ MemoryBase* Sector::getMem(string memName) {
 
 void Sector::writeDTCStubs(bool first) {
   for (auto& i : DL_) {
-    i->writeStubs(first);
+    i->writeStubs(first, isector_);
   }
 }
 
 void Sector::writeIRStubs(bool first) {
   for (auto& i : IL_) {
-    i->writeStubs(first);
+    i->writeStubs(first, isector_);
   }
 }
 
 void Sector::writeVMSTE(bool first) {
   for (auto& i : VMSTE_) {
-    i->writeStubs(first);
+    i->writeStubs(first, isector_);
   }
 }
 
 void Sector::writeVMSME(bool first) {
   for (auto& i : VMSME_) {
-    i->writeStubs(first);
+    i->writeStubs(first, isector_);
   }
 }
 
 void Sector::writeAS(bool first) {
   for (auto& i : AS_) {
-    i->writeStubs(first);
+    i->writeStubs(first, isector_);
   }
 }
 
 void Sector::writeAIS(bool first) {
   for (auto& i : AIS_) {
-    i->writeStubs(first);
+    i->writeStubs(first, isector_);
   }
 }
 
 void Sector::writeSP(bool first) {
   for (auto& i : SP_) {
-    i->writeSP(first);
+    i->writeSP(first, isector_);
   }
 }
 
 void Sector::writeST(bool first) {
   for (auto& i : ST_) {
-    i->writeST(first);
+    i->writeST(first, isector_);
   }
 }
 
 void Sector::writeTPAR(bool first) {
   for (auto& i : TPAR_) {
-    i->writeTPAR(first);
+    i->writeTPAR(first, isector_);
   }
 }
 
 void Sector::writeTPROJ(bool first) {
   for (auto& i : TPROJ_) {
-    i->writeTPROJ(first);
+    i->writeTPROJ(first, isector_);
   }
 }
 
 void Sector::writeAP(bool first) {
   for (auto& i : AP_) {
-    i->writeAP(first);
+    i->writeAP(first, isector_);
   }
 }
 
 void Sector::writeVMPROJ(bool first) {
   for (auto& i : VMPROJ_) {
-    i->writeVMPROJ(first);
+    i->writeVMPROJ(first, isector_);
   }
 }
 
 void Sector::writeCM(bool first) {
   for (auto& i : CM_) {
-    i->writeCM(first);
+    i->writeCM(first, isector_);
   }
 }
 
 void Sector::writeMC(bool first) {
   for (auto& i : FM_) {
-    i->writeMC(first);
+    i->writeMC(first, isector_);
   }
 }
 
 void Sector::writeTF(bool first) {
   for (auto& i : TF_) {
-    i->writeTF(first);
+    i->writeTF(first, isector_);
   }
 }
 
 void Sector::writeCT(bool first) {
   for (auto& i : CT_) {
-    i->writeCT(first);
+    i->writeCT(first, isector_);
   }
 }
 

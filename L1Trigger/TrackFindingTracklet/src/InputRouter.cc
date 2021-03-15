@@ -12,8 +12,8 @@
 using namespace std;
 using namespace trklet;
 
-InputRouter::InputRouter(string name, Settings const& settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {
+InputRouter::InputRouter(string name, Settings const& settings, Globals* global)
+    : ProcessBase(name, settings, global) {
 }
 
 void InputRouter::addOutput(MemoryBase* memory, string output) {

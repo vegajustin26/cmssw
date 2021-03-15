@@ -13,8 +13,8 @@
 using namespace std;
 using namespace trklet;
 
-MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector), fullmatches_(12), inputProjBuffer_(3) {
+MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* global)
+    : ProcessBase(name, settings, global), fullmatches_(12), inputProjBuffer_(3) {
   phiregion_ = name[8] - 'A';
 
   layerdisk_ = initLayerDisk(3);

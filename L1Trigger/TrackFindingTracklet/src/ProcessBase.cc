@@ -11,7 +11,7 @@
 using namespace trklet;
 using namespace std;
 
-ProcessBase::ProcessBase(string name, Settings const& settings, Globals* global, unsigned int iSector)
+ProcessBase::ProcessBase(string name, Settings const& settings, Globals* global)
     : name_(name), settings_(settings), globals_(global) {}
 
 unsigned int ProcessBase::nbits(unsigned int power) {

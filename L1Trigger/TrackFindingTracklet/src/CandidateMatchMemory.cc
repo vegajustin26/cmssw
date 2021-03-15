@@ -11,8 +11,8 @@
 using namespace std;
 using namespace trklet;
 
-CandidateMatchMemory::CandidateMatchMemory(string name, Settings const& settings, unsigned int iSector)
-    : MemoryBase(name, settings, iSector) {}
+CandidateMatchMemory::CandidateMatchMemory(string name, Settings const& settings)
+    : MemoryBase(name, settings) {}
 
 void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, const Stub* stub) {
   std::pair<std::pair<Tracklet*, int>, const Stub*> tmp(tracklet, stub);
@@ -28,7 +28,9 @@ void CandidateMatchMemory::addMatch(std::pair<Tracklet*, int> tracklet, const St
   matches_.push_back(tmp);
 }
 
-void CandidateMatchMemory::writeCM(bool first) {
+void CandidateMatchMemory::writeCM(bool first, unsigned int iSector) {
+
+  iSector_ = iSector;
   const string dirM = settings_.memPath() + "Matches/";
 
   std::ostringstream oss;

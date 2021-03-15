@@ -15,7 +15,7 @@ namespace trklet {
 
   class AllInnerStubsMemory : public MemoryBase {
   public:
-    AllInnerStubsMemory(std::string name, Settings const& settings, unsigned int iSector);
+    AllInnerStubsMemory(std::string name, Settings const& settings);
 
     ~AllInnerStubsMemory() override = default;
 
@@ -27,7 +27,7 @@ namespace trklet {
 
     void clean() override { stubs_.clear(); }
 
-    void writeStubs(bool first);
+    void writeStubs(bool first, unsigned int iSector);
 
   private:
     std::vector<const Stub*> stubs_;

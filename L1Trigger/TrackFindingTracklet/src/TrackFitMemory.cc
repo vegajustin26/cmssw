@@ -7,13 +7,15 @@
 using namespace std;
 using namespace trklet;
 
-TrackFitMemory::TrackFitMemory(string name, Settings const& settings, unsigned int iSector, double phimin, double phimax)
-    : MemoryBase(name, settings, iSector) {
+TrackFitMemory::TrackFitMemory(string name, Settings const& settings, double phimin, double phimax)
+    : MemoryBase(name, settings) {
   phimin_ = phimin;
   phimax_ = phimax;
 }
 
-void TrackFitMemory::writeTF(bool first) {
+void TrackFitMemory::writeTF(bool first, unsigned int iSector) {
+
+  iSector_ = iSector;
   const string dirFT = settings_.memPath() + "FitTrack/";
 
   std::ostringstream oss;

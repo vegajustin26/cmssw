@@ -10,8 +10,8 @@
 using namespace std;
 using namespace trklet;
 
-ProjectionRouter::ProjectionRouter(string name, Settings const& settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {
+ProjectionRouter::ProjectionRouter(string name, Settings const& settings, Globals* global)
+    : ProcessBase(name, settings, global) {
   layerdisk_ = initLayerDisk(3);
 
   vmprojs_.resize(settings_.nvmme(layerdisk_), nullptr);

@@ -14,8 +14,8 @@
 using namespace trklet;
 using namespace std;
 
-DTCLinkMemory::DTCLinkMemory(string name, Settings const& settings, unsigned int iSector, double, double)
-    : MemoryBase(name, settings, iSector) {
+DTCLinkMemory::DTCLinkMemory(string name, Settings const& settings, double, double)
+    : MemoryBase(name, settings) {
 }
 
 void DTCLinkMemory::addStub(const L1TStub& al1stub, const Stub& stub) {
@@ -29,8 +29,9 @@ void DTCLinkMemory::addStub(const L1TStub& al1stub, const Stub& stub) {
   }
 }
 
-void DTCLinkMemory::writeStubs(bool first) {
+void DTCLinkMemory::writeStubs(bool first, unsigned int iSector) {
 
+  iSector_ = iSector;
   //FIXME should be in settings
   static map<string, vector<int> > dtclayers{{"PS10G_1", {0, 6, 8, 10}},
                                              {"PS10G_2", {0, 7, 9}},

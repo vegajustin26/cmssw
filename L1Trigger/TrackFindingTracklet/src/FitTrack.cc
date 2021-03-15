@@ -11,8 +11,8 @@
 using namespace std;
 using namespace trklet;
 
-FitTrack::FitTrack(string name, Settings const& settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector), trackfit_(nullptr) {}
+FitTrack::FitTrack(string name, Settings const& settings, Globals* global)
+    : ProcessBase(name, settings, global), trackfit_(nullptr) {}
 
 void FitTrack::addOutput(MemoryBase* memory, string output) {
   if (settings_.writetrace()) {

@@ -7,8 +7,8 @@
 using namespace std;
 using namespace trklet;
 
-TrackletProjectionsMemory::TrackletProjectionsMemory(string name, Settings const& settings, unsigned int iSector)
-    : MemoryBase(name, settings, iSector) {
+TrackletProjectionsMemory::TrackletProjectionsMemory(string name, Settings const& settings)
+    : MemoryBase(name, settings) {
   size_t pos = find_nth(name, 0, "_", 1);
   assert(pos != string::npos);
   initLayerDisk(pos + 1, layer_, disk_);
@@ -34,7 +34,9 @@ void TrackletProjectionsMemory::addProj(Tracklet* tracklet) {
 
 void TrackletProjectionsMemory::clean() { tracklets_.clear(); }
 
-void TrackletProjectionsMemory::writeTPROJ(bool first) {
+void TrackletProjectionsMemory::writeTPROJ(bool first, unsigned int iSector) {
+
+  iSector_ = iSector;
   const string dirTP = settings_.memPath() + "TrackletProjections/";
 
   std::ostringstream oss;

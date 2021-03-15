@@ -14,14 +14,16 @@
 using namespace trklet;
 using namespace std;
 
-InputLinkMemory::InputLinkMemory(string name, Settings const& settings, unsigned int iSector, double, double)
-    : MemoryBase(name, settings, iSector) {}
+InputLinkMemory::InputLinkMemory(string name, Settings const& settings, double, double)
+    : MemoryBase(name, settings) {}
 
 void InputLinkMemory::addStub(Stub* stub) {
   stubs_.push_back(stub);
 }
 
-void InputLinkMemory::writeStubs(bool first) {
+void InputLinkMemory::writeStubs(bool first, unsigned int iSector) {
+
+  iSector_ = iSector;
   const string dirIS = settings_.memPath() + "InputStubs/";
   openFile(first, dirIS, "InputStubs_");
 

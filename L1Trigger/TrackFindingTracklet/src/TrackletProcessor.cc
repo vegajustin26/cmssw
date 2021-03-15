@@ -16,8 +16,8 @@
 using namespace std;
 using namespace trklet;
 
-TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Globals* globals, unsigned int iSector)
-    : TrackletCalculatorBase(name, settings, globals, iSector),
+TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Globals* globals)
+    : TrackletCalculatorBase(name, settings, globals),
       tebuffer_(CircularBuffer<TEData>(3), 0, 0, 0, 0),
       vmrtable_(settings) {
   iAllStub_ = -1;

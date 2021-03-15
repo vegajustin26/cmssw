@@ -23,7 +23,7 @@ namespace trklet {
 
   class MatchProcessor : public ProcessBase {
   public:
-    MatchProcessor(std::string name, Settings const& settings, Globals* global, unsigned int iSector);
+    MatchProcessor(std::string name, Settings const& settings, Globals* global);
 
     ~MatchProcessor() override = default;
 

@@ -6,10 +6,12 @@
 using namespace std;
 using namespace trklet;
 
-StubPairsMemory::StubPairsMemory(string name, Settings const& settings, unsigned int iSector)
-    : MemoryBase(name, settings, iSector) {}
+StubPairsMemory::StubPairsMemory(string name, Settings const& settings)
+    : MemoryBase(name, settings) {}
 
-void StubPairsMemory::writeSP(bool first) {
+void StubPairsMemory::writeSP(bool first, unsigned int iSector) {
+
+  iSector_ = iSector;
   const string dirSP = settings_.memPath() + "StubPairs/";
 
   std::ostringstream oss;

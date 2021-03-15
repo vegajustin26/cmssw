@@ -34,7 +34,7 @@ namespace trklet {
 
   class VMRouter : public ProcessBase {
   public:
-    VMRouter(std::string name, Settings const& settings, Globals* global, unsigned int iSector);
+    VMRouter(std::string name, Settings const& settings, Globals* global);
 
     ~VMRouter() override = default;
 

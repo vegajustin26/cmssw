@@ -17,7 +17,7 @@ namespace trklet {
 
   class FitTrack : public ProcessBase {
   public:
-    FitTrack(std::string name, Settings const& settings, Globals* global, unsigned int iSector);
+    FitTrack(std::string name, Settings const& settings, Globals* global);
 
     ~FitTrack() override = default;
 

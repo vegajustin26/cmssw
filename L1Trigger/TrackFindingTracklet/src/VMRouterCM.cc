@@ -14,8 +14,8 @@
 using namespace std;
 using namespace trklet;
 
-VMRouterCM::VMRouterCM(string name, Settings const& settings, Globals* global, unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector), vmrtable_(settings) {
+VMRouterCM::VMRouterCM(string name, Settings const& settings, Globals* global)
+    : ProcessBase(name, settings, global), vmrtable_(settings) {
   layerdisk_ = initLayerDisk(4);
 
   vmstubsMEPHI_.resize(1, nullptr);

@@ -14,9 +14,8 @@ using namespace trklet;
 
 TrackletEngineDisplaced::TrackletEngineDisplaced(string name,
                                                  Settings const& settings,
-                                                 Globals* global,
-                                                 unsigned int iSector)
-    : ProcessBase(name, settings, global, iSector) {
+                                                 Globals* global)
+    : ProcessBase(name, settings, global) {
   stubpairs_.clear();
   firstvmstubs_.clear();
   secondvmstubs_ = nullptr;

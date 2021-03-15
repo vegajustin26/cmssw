@@ -16,7 +16,7 @@ namespace trklet {
 
   class DTCLinkMemory : public MemoryBase {
   public:
-    DTCLinkMemory(std::string name, Settings const& settings, unsigned int iSector, double, double);
+    DTCLinkMemory(std::string name, Settings const& settings, double, double);
 
     ~DTCLinkMemory() override = default;
 
@@ -26,7 +26,7 @@ namespace trklet {
 
     Stub* getStub(unsigned int i) { return stubs_[i]; }
 
-    void writeStubs(bool first);
+    void writeStubs(bool first, unsigned int iSector);
 
     void clean() override;
 

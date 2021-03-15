@@ -8,13 +8,15 @@ using namespace std;
 using namespace trklet;
 
 CleanTrackMemory::CleanTrackMemory(
-    string name, Settings const& settings, unsigned int iSector, double phimin, double phimax)
-    : MemoryBase(name, settings, iSector) {
+    string name, Settings const& settings, double phimin, double phimax)
+    : MemoryBase(name, settings) {
   phimin_ = phimin;
   phimax_ = phimax;
 }
 
-void CleanTrackMemory::writeCT(bool first) {
+void CleanTrackMemory::writeCT(bool first, unsigned int iSector) {
+
+  iSector_ = iSector;
   const string dirCT = settings_.memPath() + "CleanTrack/";
 
   std::ostringstream oss;
