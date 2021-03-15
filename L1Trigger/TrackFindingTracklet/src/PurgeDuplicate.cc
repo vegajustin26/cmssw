@@ -342,7 +342,7 @@ void PurgeDuplicate::execute(std::vector<Track>& outputtracks_, unsigned int iSe
         // Add all tracks to standalone root file output
         outtrack->setStubIDpremerge(inputstubidslists_[itrk]);
         outtrack->setStubIDprefit(mergedstubidslists_[itrk]);
-        outputtracks_.push_back(outtrack);
+        outputtracks_.push_back(*outtrack);
       }
     }
   }
