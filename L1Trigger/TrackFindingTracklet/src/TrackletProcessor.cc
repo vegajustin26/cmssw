@@ -41,7 +41,7 @@ TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Glob
 
   vmrtable_.init(layerdisk1_);
 
-  nbitsrzbin_ = NFINERZBITS;
+  nbitsrzbin_ = N_RZBITS;
   if (iSeed_ == 4 || iSeed_ == 5)
     nbitsrzbin_ = 2;
 
@@ -54,6 +54,9 @@ TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Glob
 
   TCIndex_ = (iSeed_ << 4) + iTC_;
   assert(TCIndex_ >= 0 && TCIndex_ <= (int)settings_.ntrackletmax());
+
+  maxStep_ = settings_.maxStep("TP");
+  
 }
 
 void TrackletProcessor::addOutputProjection(TrackletProjectionsMemory*& outputProj, MemoryBase* memory) {
@@ -138,23 +141,9 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
                               pttableinnernew_,
                               pttableouternew_,
                               outervmstubs_);
-    if (iSeed_ == 0)
-      teunits_.resize(5, teunit);
-    if (iSeed_ == 1)
-      teunits_.resize(2, teunit);
-    if (iSeed_ == 2)
-      teunits_.resize(5, teunit);
-    if (iSeed_ == 3)
-      teunits_.resize(3, teunit);
-    if (iSeed_ == 4)
-      teunits_.resize(3, teunit);
-    if (iSeed_ == 5)
-      teunits_.resize(2, teunit);
-    if (iSeed_ == 6)
-      teunits_.resize(3, teunit);
-    if (iSeed_ == 7)
-      teunits_.resize(2, teunit);
 
+    teunits_.resize(settings_.teunits(iSeed_),teunit);
+    
     return;
   }
 
@@ -183,6 +172,7 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
 }
 
 void TrackletProcessor::execute(unsigned int iSector, double phimin, double phimax) {
+
   bool print = (iSector == 3) && (getName() == "TP_L1L2D");
   print = false;
 
@@ -233,7 +223,7 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
 
   bool tebuffernearfull;
   
-  for (unsigned int istep = 0; istep < settings_.maxStep("TP"); istep++) {
+  for (unsigned int istep = 0; istep < maxStep_; istep++) {
     if (print) {
       CircularBuffer<TEData>& tedatabuffer = std::get<0>(tebuffer_);
       unsigned int& istub = std::get<1>(tebuffer_);
@@ -389,23 +379,24 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
         unsigned int lutwidth = settings_.lutwidthtab(0, iSeed_);
         FPGAWord lookupbits(lutval, lutwidth, true, __LINE__, __FILE__);
 
-        int rzfinebinfirst = lookupbits.bits(0, 3);  //finephi
-        int next = lookupbits.bits(3, 1);            //next r/z bin
-        int start = lookupbits.bits(4, nbitsrzbin_);
-        int rzdiffmax = lookupbits.bits(4 + nbitsrzbin_, 3);
+        int rzfinebinfirst = lookupbits.bits(0, NFINERZBITS);      //finerz
+        int next = lookupbits.bits(NFINERZBITS, 1);                //use next r/z bin
+        int start = lookupbits.bits(NFINERZBITS + 1, nbitsrzbin_); //rz bin
+        int rzdiffmax = lookupbits.bits(NFINERZBITS + 1 + nbitsrzbin_, NFINERZBITS);
 
         if ((iSeed_ == 4 || iSeed_ == 5) && negdisk) {  //TODO - need to store negative disk
-          start += 4;
+          start += (1<<nbitsrzbin_);
         }
         int last = start + next;
 
-        int nbins = 8;
+        int nbins = (1<<N_RZBITS);
 
         unsigned int useregindex = (innerfinephi << innerbend.nbits()) + innerbend.value();
         if (iSeed_ >= 4) {
           //FIXME If the lookupbits were rationally organized this would be much simpler
-          int ir = ((start & 3) << 1) + (rzfinebinfirst >> 2);
-          useregindex = (useregindex << 3) + ir;
+	  unsigned int nrbits=3;
+          int ir = ((start & ((1<<(nrbits-1))-1)) << 1) + (rzfinebinfirst >> (NFINERZBITS-1));
+          useregindex = (useregindex << nrbits) + ir;
         }
 
         assert(useregindex < useregion_.size());
@@ -423,7 +414,6 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
 
         for (int ibin = start; ibin <= last; ibin++) {
           for (unsigned int ireg = 0; ireg < settings_.nvmte(1, iSeed_); ireg++) {
-            assert(ireg < 8);
             if (!(usereg & (1 << ireg))) {
               mask = "0" + mask;
               continue;

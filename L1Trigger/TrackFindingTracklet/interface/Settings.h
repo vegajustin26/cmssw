@@ -30,6 +30,7 @@ namespace trklet {
   constexpr unsigned int NRINVBITS = 5;     //number of bit for rinv in bend match table
   constexpr unsigned int NFINERZBITS = 3;   //number of bit for r or z within a r/z bin
   constexpr unsigned int NFINEPHIBITS = 3;  //number of bits for phi within a vm bin
+  constexpr unsigned int N_RZBITS = 3;      //number of bit for the r/z bins
 
   constexpr unsigned int N_VMSTUBSMAX = 15;  // maximum number of stubs in VM bin
 
@@ -141,7 +142,9 @@ namespace trklet {
       assert(layerdisk >= 0);
       return layerdisk;
     }
-
+    
+    unsigned int teunits(unsigned int iSeed) const { return teunits_[iSeed]; }
+    
     unsigned int NTC(int seed) const { return ntc_[seed]; }
 
     unsigned int projlayers(unsigned int iSeed, unsigned int i) const { return projlayers_[iSeed][i]; }
@@ -553,6 +556,9 @@ namespace trklet {
     int chisqphifactbits_{14};
     int chisqzfactbits_{14};
 
+    std::array<unsigned int, N_SEED> teunits_{
+      {5, 2, 5, 3, 3, 2, 3, 2, 0, 0, 0, 0}}; //teunits used by seed 
+    
     std::array<unsigned int, N_LAYER + N_DISK> vmrlutzbits_{
         {7, 7, 7, 7, 7, 7, 3, 3, 3, 3, 3}};  // zbits used by LUT in VMR
     std::array<unsigned int, N_LAYER + N_DISK> vmrlutrbits_{
