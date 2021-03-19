@@ -192,7 +192,7 @@ void MatchProcessor::addInput(MemoryBase* memory, string input) {
   throw cms::Exception("BadConfig") << __FILE__ << " " << __LINE__ << " could not find input: " << input;
 }
 
-void MatchProcessor::execute(double phimin) {
+void MatchProcessor::execute(unsigned int iSector, double phimin) {
   assert(vmstubs_.size() == 1);
 
   /*
@@ -209,8 +209,9 @@ void MatchProcessor::execute(double phimin) {
     
   */
 
-  //bool print = getName()=="MP_L3PHIC" && iSector_==3;
-
+  bool print = getName()=="MP_L3PHIC" && iSector==3;
+  print = false;
+  
   phimin_ = phimin;
   
   Tracklet* oldTracklet = nullptr;
@@ -225,12 +226,12 @@ void MatchProcessor::execute(double phimin) {
 
   inputProjBuffer_.reset();
 
-  for (unsigned int i = 0; i < inputprojs_.size(); i++) {
-    countinputproj += inputprojs_[i]->nTracklets();
+  for (const auto& inputproj: inputprojs_) {
+    countinputproj += inputproj->nTracklets();
   }
 
-  for (unsigned int iME = 0; iME < nMatchEngines_; iME++) {
-    matchengines_[iME].reset();
+  for (auto& matchengine : matchengines_) {
+    matchengine.reset();
   }
 
   for (unsigned int istep = 0; istep < settings_.maxStep("MP"); istep++) {
@@ -255,6 +256,13 @@ void MatchProcessor::execute(double phimin) {
 
             FPGAWord fpgaphi = proj->proj(layerdisk_).fpgaphiproj();
 
+	    if (print) cout << "PROJECTION "<<projMem->getName()<<": "<<proj->proj(layerdisk_).fpgaphiproj().value()
+			    << " " << proj->proj(layerdisk_).fpgarzproj().value()
+			    << " " << proj->proj(layerdisk_).fpgaphiprojder().value()
+			    << " " << proj->proj(layerdisk_).fpgarzprojder().value()
+			    << "TC index trackletIndex : "<<proj->TCIndex()<<" "<<proj->trackletIndex()
+			    <<endl;
+	    
             unsigned int iphi = (fpgaphi.value() >> (fpgaphi.nbits() - nvmbits_)) & (nvmbins_ - 1);
 
             int nextrabits = 2;
@@ -264,16 +272,15 @@ void MatchProcessor::execute(double phimin) {
 
             unsigned int ivmPlus = iphi;
 
-            int plusShift = 0;
-            int negShift = 0;
-
+	    int shift = 0;
+	    
             if (extrabits == ((1U << nextrabits) - 1) && iphi != ((1U << settings_.nbitsvmme(layerdisk_)) - 1)) {
-              plusShift = 1;
+	      shift = 1;
               ivmPlus++;
             }
             unsigned int ivmMinus = iphi;
             if (extrabits == 0 && iphi != 0) {
-              negShift = -1;
+	      shift = -1;
               ivmMinus--;
             }
 
@@ -317,31 +324,19 @@ void MatchProcessor::execute(double phimin) {
               nbins = 16;
 
             VMStubsMEMemory* stubmem = vmstubs_[0];
-            bool usefirstPlus = stubmem->nStubsBin(ivmPlus * nbins + slot) != 0;
-            bool usesecondPlus = (second && (stubmem->nStubsBin(ivmPlus * nbins + slot + 1) != 0));
             bool usefirstMinus = stubmem->nStubsBin(ivmMinus * nbins + slot) != 0;
             bool usesecondMinus = (second && (stubmem->nStubsBin(ivmMinus * nbins + slot + 1) != 0));
+            bool usefirstPlus = ivmPlus != ivmMinus && stubmem->nStubsBin(ivmPlus * nbins + slot) != 0;
+            bool usesecondPlus = ivmPlus != ivmMinus && (second && (stubmem->nStubsBin(ivmPlus * nbins + slot + 1) != 0));
 
-            if (usefirstPlus) {
-              ProjectionTemp tmpProj(
-                  proj, slot, projrinv, projfinerz, projfinephi, ivmPlus, plusShift, usesecondPlus, isPSseed);
-              inputProjBuffer_.store(tmpProj);
-            } else if (usesecondPlus) {
-              ProjectionTemp tmpProj(
-                  proj, slot + 1, projrinv, projfinerz - 8, projfinephi, ivmPlus, plusShift, false, isPSseed);
-              inputProjBuffer_.store(tmpProj);
-            }
-            if (ivmPlus != ivmMinus) {
-              if (usefirstMinus) {
-                ProjectionTemp tmpProj(
-                    proj, slot, projrinv, projfinerz, projfinephi, ivmMinus, negShift, usesecondMinus, isPSseed);
-                inputProjBuffer_.store(tmpProj);
-              } else if (usesecondMinus) {
-                ProjectionTemp tmpProj(
-                    proj, slot + 1, projrinv, projfinerz - 8, projfinephi, ivmMinus, negShift, false, isPSseed);
-                inputProjBuffer_.store(tmpProj);
-              }
-            }
+	    bool useProj = usefirstPlus || usesecondPlus || usefirstMinus || usesecondMinus;
+	    
+	    if (useProj) {
+              ProjectionTemp tmpProj(proj, slot, projrinv, projfinerz, projfinephi,
+				     ivmMinus, shift, usefirstMinus, usefirstPlus, usesecondMinus, usesecondPlus, isPSseed);
+		inputProjBuffer_.store(tmpProj);
+	    }
+	    
             iproj++;
             if (iproj == projMem->nTracklets()) {
               iproj = 0;
@@ -375,13 +370,19 @@ void MatchProcessor::execute(double phimin) {
         if (layerdisk_ >= 6)
           nbins = 16;
 
+	if (print) cout << "istep = "<<istep<<" Initialize matchengine : "<<iME<<endl;
         matchengines_[iME].init(stubmem,
-                                tmpProj.iphi() * nbins + tmpProj.slot(),
+				nbins,
+				tmpProj.slot(),
+                                tmpProj.iphi(),
+                                tmpProj.shift(),
                                 tmpProj.projrinv(),
                                 tmpProj.projfinerz(),
                                 tmpProj.projfinephi(),
-                                tmpProj.shift(),
-                                tmpProj.usesecond(),
+                                tmpProj.use(0,0),
+                                tmpProj.use(0,1),
+                                tmpProj.use(1,0),
+                                tmpProj.use(1,1),
                                 tmpProj.isPSseed(),
                                 tmpProj.proj());
         addedProjection = true;
@@ -419,7 +420,8 @@ void MatchProcessor::execute(double phimin) {
       }
       oldTracklet = tracklet;
 
-      bool match = matchCalculator(tracklet, fpgastub);
+      if (print) cout << "istep = "<<istep<<" Call matchCalculator on iME:"<<iMEbest<<endl;
+      bool match = matchCalculator(tracklet, fpgastub, print, istep);
 
       if (settings_.debugTracklet() && match) {
         edm::LogVerbatim("Tracklet") << getName() << " have match";
@@ -444,9 +446,11 @@ void MatchProcessor::execute(double phimin) {
   }
 }
 
-bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
+bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, bool print, unsigned int istep) {
   const L1TStub* stub = fpgastub->l1tstub();
 
+  if (print) cout << "matchCalculator tcid trackletindex stubindex : "<<tracklet->TCIndex()<<" "<<tracklet->trackletIndex()<<" "<<fpgastub->allStubIndex().value()<<endl;
+  
   if (layerdisk_ < N_LAYER) {
     const Projection& proj = tracklet->proj(layerdisk_);
     int ir = fpgastub->r().value();
@@ -461,6 +465,8 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
     int ideltaz = fpgastub->z().value() - iz;
     int ideltaphi = (fpgastub->phi().value() - iphi) << phishift_;
 
+    if (print) cout << "ideltaphi : " << fpgastub->phi().value()<<" "<<iphi<<" "<<icorr<<endl;
+    
     //Floating point calculations
 
     double phi = stub->phi();
@@ -521,6 +527,9 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
           << endl;
     }
 
+    if (print) cout << "delta phi : "<< ideltaphi << " " << phimatchcut_[seedindex] << endl;
+    if (print) cout << "delta z   : "<< (ideltaz << dzshift_) << " " << zmatchcut_[seedindex] << endl;
+    
     bool imatch = ((unsigned int)std::abs(ideltaphi) <= phimatchcut_[seedindex]) &&
                   ((unsigned int)std::abs(ideltaz << dzshift_) <= zmatchcut_[seedindex]);
 
@@ -548,6 +557,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub) {
 
       int iSeed = tracklet->getISeed();
       assert(fullmatches_[iSeed] != nullptr);
+      if (print) cout << "istep = "<<istep<<" Add match for iSeed : "<<iSeed<<endl;
       fullmatches_[iSeed]->addMatch(tracklet, fpgastub);
 
       return true;

@@ -14,8 +14,11 @@ namespace trklet {
                    int projfinerz,
                    unsigned int projfinephi,
                    unsigned int iphi,
-                   int shift,
-                   bool usesecond,
+		   int shift,
+                   bool usefirstMinus,
+                   bool usefirstPlus,
+                   bool usesecondMinus,
+                   bool usesecondPlus,
                    bool isPSseed);
 
     ProjectionTemp();
@@ -28,8 +31,8 @@ namespace trklet {
     int projfinerz() const { return projfinerz_; }
     unsigned int projfinephi() const { return projfinephi_; }
     unsigned int iphi() const { return iphi_; }
-    unsigned int shift() const { return shift_; }
-    bool usesecond() const { return usesecond_; }
+    int shift() const { return shift_; }
+    bool use(unsigned int nextrzbin, unsigned int nextiphibin) const { return use_[nextrzbin][nextiphibin]; }
     bool isPSseed() const { return isPSseed_; }
 
   private:
@@ -40,7 +43,7 @@ namespace trklet {
     unsigned int projfinephi_;
     unsigned int iphi_;
     int shift_;
-    bool usesecond_;
+    bool use_[2][2];
     bool isPSseed_;
   };
 };  // namespace trklet

@@ -30,9 +30,9 @@ namespace trklet {
     void addOutput(MemoryBase* memory, std::string output) override;
     void addInput(MemoryBase* memory, std::string input) override;
 
-    void execute(double phimin);
+    void execute(unsigned int iSector, double phimin);
 
-    bool matchCalculator(Tracklet* tracklet, const Stub* fpgastub);
+    bool matchCalculator(Tracklet* tracklet, const Stub* fpgastub, bool print, unsigned int istep);
 
   private:
     unsigned int layerdisk_;

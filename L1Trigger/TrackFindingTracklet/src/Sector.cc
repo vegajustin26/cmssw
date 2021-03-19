@@ -413,7 +413,7 @@ void Sector::executeMC() {
 
 void Sector::executeMP() {
   for (auto& i : MP_) {
-    i->execute(phimin_);
+    i->execute(isector_, phimin_);
   }
 }
 
