@@ -256,12 +256,12 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
 
             FPGAWord fpgaphi = proj->proj(layerdisk_).fpgaphiproj();
 
-	    if (print) cout << "PROJECTION "<<projMem->getName()<<": "<<proj->proj(layerdisk_).fpgaphiproj().value()
-			    << " " << proj->proj(layerdisk_).fpgarzproj().value()
-			    << " " << proj->proj(layerdisk_).fpgaphiprojder().value()
-			    << " " << proj->proj(layerdisk_).fpgarzprojder().value()
-			    << "TC index trackletIndex : "<<proj->TCIndex()<<" "<<proj->trackletIndex()
-			    <<endl;
+	    //if (print) cout << "PROJECTION "<<projMem->getName()<<": "<<proj->proj(layerdisk_).fpgaphiproj().value()
+	    //			    << " " << proj->proj(layerdisk_).fpgarzproj().value()
+	    //		    << " " << proj->proj(layerdisk_).fpgaphiprojder().value()
+	    //		    << " " << proj->proj(layerdisk_).fpgarzprojder().value()
+	    //		    << "TC index trackletIndex : "<<proj->TCIndex()<<" "<<proj->trackletIndex()
+	    //		    <<endl;
 	    
             unsigned int iphi = (fpgaphi.value() >> (fpgaphi.nbits() - nvmbits_)) & (nvmbins_ - 1);
 
@@ -270,6 +270,8 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
 
             unsigned int extrabits = fpgaphi.bits(fpgaphi.nbits() - overlapbits, nextrabits);
 
+	    if (print) cout << "iphi extrabits: "<<iphi<<" "<<extrabits<<endl;
+	    
             unsigned int ivmPlus = iphi;
 
 	    int shift = 0;
@@ -284,9 +286,11 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
               ivmMinus--;
             }
 
+	    
             int projrinv = -1;
             if (barrel_) {
-              projrinv = (1 << (nrinv_ - 1)) + (proj->fpgarinv().value() >> (proj->fpgarinv().nbits() - nrinv_));
+	      FPGAWord phider = proj->proj(layerdisk_).fpgaphiprojder();
+	      projrinv = (1 << (nrinv_ - 1)) - 1 - (phider.value() >> (phider.nbits() - nrinv_));
             } else {
               //The next lines looks up the predicted bend based on:
               // 1 - r projections
@@ -313,6 +317,10 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
 
             unsigned int slot = proj->proj(layerdisk_).fpgarzbin1projvm().value();
             bool second = proj->proj(layerdisk_).fpgarzbin2projvm().value();
+
+	    if (print) cout << "istep="<<istep<<" TrkId stubindex : "<<128*proj->TCIndex()+proj->trackletIndex()
+			    <<" ivmMinus ivmPlus shift "<<ivmMinus<<" "<<ivmPlus<<" "<<shift
+			    <<"second: "<<second<<" iphiproj="<<fpgaphi.value()<<endl;
 
             unsigned int projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + 3))) & 7;
             int projfinerz = proj->proj(layerdisk_).fpgafinerzvm().value();
@@ -356,7 +364,7 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
     for (unsigned int iME = 0; iME < nMatchEngines_; iME++) {
       if (!matchengines_[iME].idle())
         countme++;
-      matchengines_[iME].step();
+      matchengines_[iME].step(print);
       //if match engine empty and we have queued projections add to match engine
       if ((!addedProjection) && matchengines_[iME].idle() && (!inputProjBuffer_.empty())) {
         ProjectionTemp tmpProj = inputProjBuffer_.read();
@@ -370,7 +378,7 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
         if (layerdisk_ >= 6)
           nbins = 16;
 
-	if (print) cout << "istep = "<<istep<<" Initialize matchengine : "<<iME<<endl;
+	//if (print) cout << "istep = "<<istep<<" Initialize matchengine : "<<iME<<endl;
         matchengines_[iME].init(stubmem,
 				nbins,
 				tmpProj.slot(),
@@ -420,7 +428,7 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
       }
       oldTracklet = tracklet;
 
-      if (print) cout << "istep = "<<istep<<" Call matchCalculator on iME:"<<iMEbest<<endl;
+      //if (print) cout << "istep = "<<istep<<" Call matchCalculator on iME:"<<iMEbest<<endl;
       bool match = matchCalculator(tracklet, fpgastub, print, istep);
 
       if (settings_.debugTracklet() && match) {
@@ -449,7 +457,7 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
 bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, bool print, unsigned int istep) {
   const L1TStub* stub = fpgastub->l1tstub();
 
-  if (print) cout << "matchCalculator tcid trackletindex stubindex : "<<tracklet->TCIndex()<<" "<<tracklet->trackletIndex()<<" "<<fpgastub->allStubIndex().value()<<endl;
+  if (print) cout << "MatchCalculator istep="<<istep<<" TrkId stubindex : "<<128*tracklet->TCIndex()+tracklet->trackletIndex()<<" "<<fpgastub->allStubIndex().value()<<endl;
   
   if (layerdisk_ < N_LAYER) {
     const Projection& proj = tracklet->proj(layerdisk_);
@@ -465,7 +473,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, b
     int ideltaz = fpgastub->z().value() - iz;
     int ideltaphi = (fpgastub->phi().value() - iphi) << phishift_;
 
-    if (print) cout << "ideltaphi : " << fpgastub->phi().value()<<" "<<iphi<<" "<<icorr<<endl;
+    //if (print) cout << "ideltaphi : " << fpgastub->phi().value()<<" "<<iphi<<" "<<icorr<<endl;
     
     //Floating point calculations
 

@@ -53,7 +53,7 @@ void MatchEngineUnit::init(VMStubsMEMemory* vmstubsmemory,
   proj_ = proj;
 }
 
-void MatchEngineUnit::step() {
+void MatchEngineUnit::step(bool print) {
   if (idle() || candmatches_.almostfull())
     return;
 
@@ -105,6 +105,10 @@ void MatchEngineUnit::step() {
       pass = idrz >= -3 && idrz <= 3;
     }
   }
+
+  if (print) cout <<"MEU TrkId stubindex : "<<128*proj_->TCIndex()+proj_->trackletIndex()<<" "<<vmstub.stubindex().value()
+		  <<"   "<<((pass && dphicut) && table_[index])<<" index="<<index<<" projrinv bend : "<<projrinv_<<" "<<vmstub.bend().value()
+		  <<"  shift_ isPSseed_ :"<<shift_<<" "<<isPSseed_<<" slot="<<slot<<endl;
 
   //Check if stub bend and proj rinv consistent
   if ((pass && dphicut) && table_[index]) {

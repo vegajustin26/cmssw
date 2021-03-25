@@ -48,7 +48,7 @@ namespace trklet {
 
     void reset();
 
-    void step();
+    void step(bool print);
 
   private:
     VMStubsMEMemory* vmstubsmemory_;
