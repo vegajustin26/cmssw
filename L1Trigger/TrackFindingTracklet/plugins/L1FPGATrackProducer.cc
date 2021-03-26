@@ -81,7 +81,6 @@
 // Tracklet emulation
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Sector.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Cabling.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Track.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletEventProcessor.h"
 
@@ -150,10 +149,6 @@ private:
   edm::FileInPath memoryModulesFile;
   edm::FileInPath processingModulesFile;
   edm::FileInPath wiresFile;
-
-  edm::FileInPath DTCLinkFile;
-  edm::FileInPath moduleCablingFile;
-  edm::FileInPath DTCLinkLayerDiskFile;
 
   edm::FileInPath tableTEDFile;
   edm::FileInPath tableTREFile;
@@ -228,10 +223,6 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   memoryModulesFile = iConfig.getParameter<edm::FileInPath>("memoryModulesFile");
   wiresFile = iConfig.getParameter<edm::FileInPath>("wiresFile");
 
-  DTCLinkFile = iConfig.getParameter<edm::FileInPath>("DTCLinkFile");
-  moduleCablingFile = iConfig.getParameter<edm::FileInPath>("moduleCablingFile");
-  DTCLinkLayerDiskFile = iConfig.getParameter<edm::FileInPath>("DTCLinkLayerDiskFile");
-
   extended_ = iConfig.getParameter<bool>("Extended");
   nHelixPar_ = iConfig.getParameter<unsigned int>("Hnpar");
 
@@ -250,9 +241,6 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   settings.setExtended(extended_);
   settings.setNHelixPar(nHelixPar_);
 
-  settings.setDTCLinkFile(DTCLinkFile.fullPath());
-  settings.setModuleCablingFile(moduleCablingFile.fullPath());
-  settings.setDTCLinkLayerDiskFile(DTCLinkLayerDiskFile.fullPath());
   settings.setFitPatternFile(fitPatternFile.fullPath());
   settings.setProcessingModulesFile(processingModulesFile.fullPath());
   settings.setMemoryModulesFile(memoryModulesFile.fullPath());
@@ -274,10 +262,7 @@ L1FPGATrackProducer::L1FPGATrackProducer(edm::ParameterSet const& iConfig)
   }
 
   if (settings.debugTracklet()) {
-    edm::LogVerbatim("Tracklet") << "cabling DTC links :     " << DTCLinkFile.fullPath()
-                                 << "\n module cabling :     " << moduleCablingFile.fullPath()
-                                 << "\n DTC link layer disk :     " << DTCLinkLayerDiskFile.fullPath()
-                                 << "\n fit pattern :     " << fitPatternFile.fullPath()
+    edm::LogVerbatim("Tracklet") << "fit pattern :     " << fitPatternFile.fullPath()
                                  << "\n process modules : " << processingModulesFile.fullPath()
                                  << "\n memory modules :  " << memoryModulesFile.fullPath()
                                  << "\n wires          :  " << wiresFile.fullPath();

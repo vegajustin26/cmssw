@@ -50,9 +50,6 @@ namespace trklet {
     ~Settings() = default;
 
     // processing & memory modules, wiring, etc.
-    std::string DTCLinkFile() const { return DTCLinkFile_; }
-    std::string const& moduleCablingFile() const { return moduleCablingFile_; }
-    std::string const& DTCLinkLayerDiskFile() const { return DTCLinkLayerDiskFile_; }
     std::string const& fitPatternFile() const { return fitPatternFile_; }
     std::string const& processingModulesFile() const { return processingModulesFile_; }
     std::string const& memoryModulesFile() const { return memoryModulesFile_; }
@@ -60,11 +57,6 @@ namespace trklet {
     std::string const& tableTEDFile() const { return tableTEDFile_; }
     std::string const& tableTREFile() const { return tableTREFile_; }
 
-    void setDTCLinkFile(std::string DTCLinkFileName) { DTCLinkFile_ = DTCLinkFileName; }
-    void setModuleCablingFile(std::string moduleCablingFileName) { moduleCablingFile_ = moduleCablingFileName; }
-    void setDTCLinkLayerDiskFile(std::string DTCLinkLayerDiskFileName) {
-      DTCLinkLayerDiskFile_ = DTCLinkLayerDiskFileName;
-    }
     void setFitPatternFile(std::string fitPatternFileName) { fitPatternFile_ = fitPatternFileName; }
     void setProcessingModulesFile(std::string processingModulesFileName) {
       processingModulesFile_ = processingModulesFileName;
@@ -420,9 +412,6 @@ namespace trklet {
     }
 
   private:
-    std::string DTCLinkFile_;
-    std::string moduleCablingFile_;
-    std::string DTCLinkLayerDiskFile_;
     std::string fitPatternFile_;
     std::string processingModulesFile_;
     std::string memoryModulesFile_;
@@ -752,7 +741,7 @@ namespace trklet {
         {"TPars", false},        {"TPD", false},        {"TrackletPars", false},
         {"TED", false},          {"TP", false},         {"TRE", false},
         {"VMR", false},          {"StubsLayer", false}, {"StubsLayerSector", false},
-        {"HitEff", false},       {"MatchEff", false},   {"Cabling", false},
+        {"HitEff", false},       {"MatchEff", false},
         {"IFit", false},         {"AS", false}};
 
     std::array<double, N_DSS_MOD> rDSSinner_mod_{{68.9391, 78.7750, 85.4550, 96.3150, 102.3160}};

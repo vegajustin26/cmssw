@@ -54,9 +54,6 @@ int main(const int argc, const char **argv) {
   // ---------------------------------------------------------
   // these are options that are read from python configuration files for the CMSSW running, set manually for the standalone version
 
-  settings.setDTCLinkFile("../data/calcNumDTCLinks.txt");
-  settings.setModuleCablingFile("../data/modules_T5v3_27SP_nonant_tracklet.dat");
-  settings.setDTCLinkLayerDiskFile("../data/dtclinklayerdisk.dat");
   settings.setFitPatternFile("../data/fitpattern.txt");
   settings.setProcessingModulesFile("../data/processingmodules_" + settings.geomext() + ".dat");
   settings.setMemoryModulesFile("../data/memorymodules_" + settings.geomext() + ".dat");
@@ -66,10 +63,6 @@ int main(const int argc, const char **argv) {
     settings.setTableTEDFile("../data/table_TED/table_TED_Dummy.txt");
     settings.setTableTREFile("../data/table_TRE/table_TRE_Dummy.txt");
   }
-
-  edm::LogVerbatim("Tracklet") << "cabling DTC links :     " << settings.DTCLinkFile();
-  edm::LogVerbatim("Tracklet") << "module cabling :     " << settings.moduleCablingFile();
-  edm::LogVerbatim("Tracklet") << "DTC link layer disk :     " << settings.DTCLinkLayerDiskFile();
 
   edm::LogVerbatim("Tracklet") << "fit pattern :     " << settings.fitPatternFile();
   edm::LogVerbatim("Tracklet") << "process modules : " << settings.processingModulesFile();

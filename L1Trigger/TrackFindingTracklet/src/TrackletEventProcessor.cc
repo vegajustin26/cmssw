@@ -98,18 +98,18 @@ void TrackletEventProcessor::init(Settings const& theSettings) {
     //Write configurations to file.
     if (settings_->writeConfig()) {
       std::ofstream wires = openfile(settings_->tablePath(), "wires.dat", __FILE__, __LINE__);
-      std::ofstream memories = openfile(settings_->tablePath(), "memories.dat", __FILE__, __LINE__);
-      std::ofstream modules = openfile(settings_->tablePath(), "modules.dat", __FILE__, __LINE__);
+      std::ofstream memorymodules = openfile(settings_->tablePath(), "memorymodules.dat", __FILE__, __LINE__);
+      std::ofstream processingmodules = openfile(settings_->tablePath(), "processingmodules.dat", __FILE__, __LINE__);
 
-      config.writeAll(wires, memories, modules);
+      config.writeAll(wires, memorymodules, processingmodules);
     }
 
     std::stringstream wires;
-    std::stringstream memories;
-    std::stringstream modules;
+    std::stringstream memorymodules;
+    std::stringstream processingmodules;
 
-    config.writeAll(wires, memories, modules);
-    configure(wires, memories, modules);
+    config.writeAll(wires, memorymodules, processingmodules);
+    configure(wires, memorymodules, processingmodules);
   }
 }
 
