@@ -51,14 +51,18 @@ namespace trackFindingTracklet {
 
   private:
     //
-    void formTracks(const vector<StubKFin>& stubs, vector<vector<TTStubRef>>& tracks) const;
+    void formTracks(const StreamsTrack& streamsTrack, const TTDTC::Streams& streamsStubs, vector<vector<TTStubRef>>& tracks, int channel) const;
     //
     void associate(const vector<vector<TTStubRef>>& tracks, const StubAssociation* ass, set<TPPtr>& tps, int& sum) const;
 
     // ED input token of stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenAccepted_;
+    EDGetTokenT<TTDTC::Streams> edGetTokenAcceptedStubs_;
+    // ED input token of tracks
+    EDGetTokenT<StreamsTrack> edGetTokenAcceptedTracks_;
     // ED input token of lost stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenLost_;
+    EDGetTokenT<TTDTC::Streams> edGetTokenLostStubs_;
+    // ED input token of lost tracks
+    EDGetTokenT<StreamsTrack> edGetTokenLostTracks_;
     // ED input token of TTStubRef to selected TPPtr association
     EDGetTokenT<StubAssociation> edGetTokenSelection_;
     // ED input token of TTStubRef to recontructable TPPtr association
@@ -94,10 +98,14 @@ namespace trackFindingTracklet {
     usesResource("TFileService");
     // book in- and output ED products
     const string& label = iConfig.getParameter<string>("LabelKFin");
-    const string& branchAccepted = iConfig.getParameter<string>("BranchAcceptedStubs");
-    const string& branchLost = iConfig.getParameter<string>("BranchLostStubs");
-    edGetTokenAccepted_ = consumes<TTDTC::Streams>(InputTag(label, branchAccepted));
-    edGetTokenLost_ = consumes<TTDTC::Streams>(InputTag(label, branchLost));
+    const string& branchAcceptedStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
+    const string& branchAcceptedTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
+    const string& branchLostStubs = iConfig.getParameter<string>("BranchLostStubs");
+    const string& branchLostTracks = iConfig.getParameter<string>("BranchLostTracks");
+    edGetTokenAcceptedStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchAcceptedStubs));
+    edGetTokenAcceptedTracks_ = consumes<StreamsTrack>(InputTag(label, branchAcceptedTracks));
+    edGetTokenLostStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchLostStubs));
+    edGetTokenLostTracks_ = consumes<StreamsTrack>(InputTag(label, branchLostTracks));
     if (useMCTruth_) {
       const auto& inputTagSelecttion = iConfig.getParameter<InputTag>("InputTagSelection");
       const auto& inputTagReconstructable = iConfig.getParameter<InputTag>("InputTagReconstructable");
@@ -147,10 +155,18 @@ namespace trackFindingTracklet {
 
   void AnalyzerKFin::analyze(const Event& iEvent, const EventSetup& iSetup) {
     // read in ht products
-    Handle<TTDTC::Streams> handleAccepted;
-    iEvent.getByToken<TTDTC::Streams>(edGetTokenAccepted_, handleAccepted);
-    Handle<TTDTC::Streams> handleLost;
-    iEvent.getByToken<TTDTC::Streams>(edGetTokenLost_, handleLost);
+    Handle<TTDTC::Streams> handleAcceptedStubs;
+    iEvent.getByToken<TTDTC::Streams>(edGetTokenAcceptedStubs_, handleAcceptedStubs);
+    const TTDTC::Streams& acceptedStubs = *handleAcceptedStubs;
+    Handle<StreamsTrack> handleAcceptedTracks;
+    iEvent.getByToken<StreamsTrack>(edGetTokenAcceptedTracks_, handleAcceptedTracks);
+    const StreamsTrack& acceptedTracks = *handleAcceptedTracks;
+    Handle<TTDTC::Streams> handleLostStubs;
+    iEvent.getByToken<TTDTC::Streams>(edGetTokenLostStubs_, handleLostStubs);
+    const TTDTC::Streams& lostStubs = *handleLostStubs;
+    Handle<StreamsTrack> handleLostTracks;
+    iEvent.getByToken<StreamsTrack>(edGetTokenLostTracks_, handleLostTracks);
+    const StreamsTrack& lostTracks = *handleLostTracks;
     // read in MCTruth
     const StubAssociation* selection = nullptr;
     const StubAssociation* reconstructable = nullptr;
@@ -170,42 +186,19 @@ namespace trackFindingTracklet {
     int allMatched(0);
     int allTracks(0);
     for (int region = 0; region < setup_->numRegions(); region++) {
+      const int offset = region * trackBuilderChannel_->numChannels();
       int nStubs(0);
       int nTracks(0);
       int nLost(0);
       for (int channel = 0; channel < trackBuilderChannel_->numChannels(); channel++) {
-        const int offset = (region * trackBuilderChannel_->numChannels() + channel) * setup_->numLayers();
-        vector<StubKFin> stubs;
-        vector<StubKFin> trunc;
-        int nStubsChannel(0);
-        int nLostChannel(0);
-        for (int layer = 0; layer < setup_->numLayers(); layer++) {
-          const int index = offset + layer;
-          const TTDTC::Stream& accepted = handleAccepted->at(index);
-          hisChannel_->Fill(accepted.size());
-          profChannel_->Fill(index, accepted.size());
-          nStubsChannel += accepted.size();
-          nLostChannel += handleLost->at(index).size();
-        }
-        nStubs += nStubsChannel;
-        stubs.reserve(nStubsChannel);
-        trunc.reserve(nLostChannel);
-        for (int layer = 0; layer < setup_->numLayers(); layer++) {
-          const int index = offset + layer;
-          const TTDTC::Stream& accepted = handleAccepted->at(index);
-          const TTDTC::Stream& truncated = handleLost->at(index);
-          transform(accepted.begin(), accepted.end(), back_inserter(stubs), [this, layer](const TTDTC::Frame& frame){ return StubKFin(frame, dataFormats_, layer); });
-          transform(truncated.begin(), truncated.end(), back_inserter(trunc), [this, layer](const TTDTC::Frame& frame){ return StubKFin(frame, dataFormats_, layer); });
-        }
-        stable_sort(stubs.begin(), stubs.end(), [](const StubKFin& lhs, const StubKFin& rhs){ return lhs.trackId() < rhs.trackId(); });
-        stable_sort(trunc.begin(), trunc.end(), [](const StubKFin& lhs, const StubKFin& rhs){ return lhs.trackId() < rhs.trackId(); });
         vector<vector<TTStubRef>> tracks;
+        formTracks(acceptedTracks, acceptedStubs, tracks, offset + channel);
         vector<vector<TTStubRef>> lost;
-        formTracks(stubs, tracks);
-        formTracks(trunc, lost);
+        formTracks(lostTracks, lostStubs, lost, offset + channel);
         nTracks += tracks.size();
-        allTracks += tracks.size();
+        nStubs += accumulate(tracks.begin(), tracks.end(), 0, [](int& sum, const vector<TTStubRef>& track){ return sum += (int)track.size(); });
         nLost += lost.size();
+        allTracks += tracks.size();
         if (!useMCTruth_)
           continue;
         int tmp(0);
@@ -267,16 +260,32 @@ namespace trackFindingTracklet {
   }
 
   //
-  void AnalyzerKFin::formTracks(const vector<StubKFin>& stubs, vector<vector<TTStubRef>>& tracks) const {
-    for (auto it = stubs.begin(); it != stubs.end();) {
-      const auto start = it;
-      const int id = it->trackId();
-      auto different = [id](const StubKFin& stub){ return id != stub.trackId(); };
-      it = find_if(it, stubs.end(), different);
-      vector<TTStubRef> ttStubRefs;
-      ttStubRefs.reserve(distance(start, it));
-      transform(start, it, back_inserter(ttStubRefs), [](const StubKFin& stub){ return stub.ttStubRef(); });
-      tracks.push_back(ttStubRefs);
+  void AnalyzerKFin::formTracks(const StreamsTrack& streamsTrack, const TTDTC::Streams& streamsStubs, vector<vector<TTStubRef>>& tracks, int channel) const {
+    const int offset = channel * setup_->numLayers();
+    const StreamTrack& streamTrack = streamsTrack[channel];
+    const int numTracks = accumulate(streamTrack.begin(), streamTrack.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); });
+    tracks.reserve(numTracks);
+    for (int frame = 0; frame < (int)streamTrack.size(); frame++) {
+      const FrameTrack& frameTrack = streamTrack[frame];
+      if (frameTrack.first.isNull())
+        continue;
+      const auto end = find_if(next(streamTrack.begin(), frame + 1), streamTrack.end(), [](const FrameTrack& frame){ return frame.first.isNonnull(); });
+      const int size = distance(next(streamTrack.begin(), frame), end);
+      int numStubs(0);
+      for (int layer = 0; layer < setup_->numLayers(); layer++) {
+        const TTDTC::Stream& stream = streamsStubs[offset + layer];
+        numStubs += accumulate(stream.begin() + frame, stream.begin() + frame + size, 0, [](int& sum, const TTDTC::Frame& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); });
+      }
+      vector<TTStubRef> stubs;
+      stubs.reserve(numStubs);
+      for (int layer = 0; layer < setup_->numLayers(); layer++) {
+        for (int f = frame; f < frame + size; f++) {
+          const TTDTC::Frame& stub = streamsStubs[offset + layer][f];
+          if (stub.first.isNonnull())
+            stubs.push_back(stub.first);
+        }
+      }
+      tracks.push_back(stubs);
     }
   }
 

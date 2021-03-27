@@ -16,7 +16,7 @@ namespace trackerTFP {
     //
     State(State* state);
     // proto state constructor
-    State(const DataFormats* dataFormats, TrackKFin* track);
+    State(const DataFormats* dataFormats, TrackKFin* track, int trackId);
     // combinatoric state constructor
     State(State* state, StubKFin* stub);
     // updated state constructor
@@ -48,7 +48,11 @@ namespace trackerTFP {
     //
     const TTBV& hitPattern() const { return hitPattern_; }
     //
-    int trackId() const { return track_->trackId(); }
+    int trackId() const { return trackId_; }
+    //
+    TTBV maybePattern() const { return track_->maybePattern(); }
+    //
+    int sector() const { return sectorPhi() * setup_->numSectorsEta() + sectorEta(); }
     //
     const std::vector<int>& layerMap() const { return layerMap_; }
     //
@@ -86,7 +90,7 @@ namespace trackerTFP {
     //
     double C33() const { return C33_; }
     //
-    double H12() const { return r() + setup_->chosenRofPhi() - setup_->chosenRofZ(); }
+    double H12() const { return r() + (dataFormats_->hybrid() ? setup_->hybridChosenRofPhi() : setup_->chosenRofPhi()) - setup_->chosenRofZ(); }
     //
     double H00() const { return r(); }
     //
@@ -104,7 +108,7 @@ namespace trackerTFP {
     double v1() const { return pow(stub_->dZ(), 2); }
     //double v1() const { return setup_->v1(stub_->ttStubRef(), track_->cotGlobal()); }
     //
-    FrameTrack frame() const;
+    FrameTrack frame() const { return TrackKF(*track_, x1_, x0_, x3_, x2_).frame(); }
     //
     std::vector<StubKF> stubs() const;
 
@@ -115,6 +119,8 @@ namespace trackerTFP {
     const trackerDTC::Setup* setup_;
     // found mht track
     TrackKFin* track_;
+    //
+    int trackId_;
     // previous state, nullptr for first states
     State* parent_;
     // stub to add

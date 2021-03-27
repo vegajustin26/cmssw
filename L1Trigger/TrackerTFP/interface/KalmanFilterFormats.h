@@ -24,7 +24,7 @@ namespace trackerTFP {
   public:
     DataFormatKF(const VariableKF& v, bool twos);
     virtual ~DataFormatKF() {}
-    double digi(double val) const { return (std::floor(val / base_) + .5) * base_; }
+    double digi(double val) const { return (std::floor(val / base_ + 1.e-12) + .5) * base_; }
     //double digi(double val) const { return val; }
     bool twos() const { return twos_; }
     int width() const { return width_; }

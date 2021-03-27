@@ -20,6 +20,7 @@
 #include <iterator>
 #include <cmath>
 #include <numeric>
+#include <algorithm>
 
 using namespace std;
 using namespace edm;
@@ -119,10 +120,10 @@ namespace trackerTFP {
     const DataFormat& dfdPhi = dataFormats_->format(Variable::dPhi, Process::kfin);
     const DataFormat& dfdZ = dataFormats_->format(Variable::dZ, Process::kfin);
     // empty KFin products
-    TTDTC::Streams streamAcceptedStubs(dataFormats_->numStreams(Process::kf) * setup_->numLayers());
-    StreamsTrack streamAcceptedTracks(dataFormats_->numStreams(Process::kf));
-    TTDTC::Streams streamLostStubs(dataFormats_->numStreams(Process::kf) * setup_->numLayers());
-    StreamsTrack streamLostTracks(dataFormats_->numStreams(Process::kf));
+    TTDTC::Streams streamAcceptedStubs(dataFormats_->numStreamsStubs(Process::kf));
+    StreamsTrack streamAcceptedTracks(dataFormats_->numStreamsTracks(Process::kf));
+    TTDTC::Streams streamLostStubs(dataFormats_->numStreamsStubs(Process::kf));
+    StreamsTrack streamLostTracks(dataFormats_->numStreamsTracks(Process::kf));
     // read in SFout Product and produce KFin product
     if (setup_->configurationSupported()) {
       Handle<TTDTC::Streams> handleStubs;
@@ -131,8 +132,7 @@ namespace trackerTFP {
       Handle<vector<TTTrack<Ref_Phase2TrackerDigi_>>> handleTTTracks;
       iEvent.getByToken<vector<TTTrack<Ref_Phase2TrackerDigi_>>>(edGetTokenTTTracks_, handleTTTracks);
       const vector<TTTrack<Ref_Phase2TrackerDigi_>>& ttTracks = *handleTTTracks.product();
-      //for (int region = 0; region < setup_->numRegions(); region++) {
-      {const int region = 0;
+      for (int region = 0; region < setup_->numRegions(); region++) {
         // Unpack input SF data into vector
         int nStubsSF(0);
         for (int channel = 0; channel < dataFormats_->numChannel(Process::sf); channel++) {
@@ -162,12 +162,10 @@ namespace trackerTFP {
           const int binZT = dfzT.toUnsigned(dfzT.integer(ttTrack.z0()));
           const int binCot = dfcot.toUnsigned(dfcot.integer(ttTrack.tanL()));
           StubSF* stubSF = nullptr;
-          TTBV hitPattern(0, setup_->numLayers());
           vector<int> layerCounts(setup_->numLayers(), 0);
           for (const TTStubRef& ttStubRef : ttTrack.getStubRefs()) {
             const int layerId = setup_->layerId(ttStubRef);
             const int layerIdKF = layerEncoding_->layerIdKF(binEta, binZT, binCot, layerId);
-            hitPattern.set(layerIdKF);
             if (layerCounts[layerIdKF] == setup_->sfMaxStubsPerLayer())
               continue;
             layerCounts[layerIdKF]++;
@@ -180,25 +178,34 @@ namespace trackerTFP {
             const double cot = dfcot.floating(stubSF->cot()) + setup_->sectorCot(binEta);
             const double dPhi = dfdPhi.digi(setup_->dPhi(ttStubRef, inv2R));
             const double dZ = dfdZ.digi(setup_->dZ(ttStubRef, cot));
-            const StubKFin stubKFin(*stubSF, dPhi, dZ, ttTrack.hitPattern(), layerIdKF);
+            const StubKFin stubKFin(*stubSF, dPhi, dZ, layerIdKF);
             stubs.emplace_back(stubKFin.frame());
           }
-          const TTBV& layerMap = setup_->layerMap(hitPattern, layerCounts);
+          const int size = *max_element(layerCounts.begin(), layerCounts.end());
+          int layerIdKF(0);
+          for (int layerCount : layerCounts) {
+            deque<TTDTC::Frame>& stubs = dequesStubs[sectorPhi * setup_->numLayers() + layerIdKF++];
+            const int nGaps = size - layerCount;
+            stubs.insert(stubs.end(), nGaps, TTDTC::Frame());
+          }
           const TTBV& maybePattern = layerEncoding_->maybePattern(binEta, binZT, binCot);
-          TrackKFin track(*stubSF, TTTrackRef(handleTTTracks, i++), hitPattern, layerMap, maybePattern);
+          const TrackKFin track(*stubSF, TTTrackRef(handleTTTracks, i++), maybePattern);
           tracks.emplace_back(track.frame());
-          break;
+          const int nGaps = size - 1;
+          tracks.insert(tracks.end(), nGaps, FrameTrack());
         }
         // transform deques to vectors & emulate truncation
         for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {
           const int index = region * dataFormats_->numChannel(Process::kf) + channel;
           deque<FrameTrack>& tracks = dequesTracks[channel];
-          const auto limitTracks = next(tracks.begin(), min((int)tracks.size(), enableTruncation_ ? setup_->numFrames() : 0));
+          //const auto limitTracks = next(tracks.begin(), min((int)tracks.size(), enableTruncation_ ? setup_->numFrames() : 0));
+          const auto limitTracks = next(tracks.begin(), min((int)tracks.size(), enableTruncation_ ? setup_->numFramesIO() : 0));
           streamAcceptedTracks[index] = StreamTrack(tracks.begin(), limitTracks);
           streamLostTracks[index] = StreamTrack(limitTracks, tracks.end());
           for (int l = 0; l < setup_->numLayers(); l++) {
             deque<TTDTC::Frame>& stubs = dequesStubs[channel * setup_->numLayers() + l];
-            const auto limitStubs = next(stubs.begin(), min((int)stubs.size(), enableTruncation_ ? setup_->numFrames() : 0));
+            //const auto limitStubs = next(stubs.begin(), min((int)stubs.size(), enableTruncation_ ? setup_->numFrames() : 0));
+            const auto limitStubs = next(stubs.begin(), min((int)stubs.size(), enableTruncation_ ? setup_->numFramesIO() : 0));
             streamAcceptedStubs[index * setup_->numLayers() + l] = TTDTC::Stream(stubs.begin(), limitStubs);
             streamLostStubs[index * setup_->numLayers() + l] = TTDTC::Stream(limitStubs, stubs.end());
           }

@@ -109,10 +109,10 @@ namespace trackerTFP {
       for (const StreamTrack& stream : streamsTracks)
         nTracks += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
       ttTracks.reserve(nTracks);
-      for (int region = 0; region < setup_->numRegions(); region++) {
+      for (int channel = 0; channel < dataFormats_->numStreamsTracks(Process::kf); channel++) {
         int pos(0);
-        const int offset = region * setup_->numLayers();
-        for (const FrameTrack& frameTrack : streamsTracks[region]) {
+        const int offset = channel * setup_->numLayers();
+        for (const FrameTrack& frameTrack : streamsTracks[channel]) {
           vector<StubKF> stubs;
           stubs.reserve(setup_->numLayers());
           for (int layer = 0; layer < setup_->numLayers(); layer++) {

@@ -170,7 +170,9 @@ namespace trackerTFP {
             const double chi = sz - (zT + sr * cot);
             const double dZ = zT_.base() + cot_.base() * abs(sr) + setup_->dZ(stub->ttStubRef(), cotGlobal);
             if (abs(chi) < dZ / 2.) {
-              const int layer = distance(layerEncoding.begin(), find(layerEncoding.begin(), layerEncoding.end(), layerId(stub)));
+              int layer = distance(layerEncoding.begin(), find(layerEncoding.begin(), layerEncoding.end(), layerId(stub)));
+              if (layer >= setup_->numLayers())
+                layer = setup_->numLayers() - 1;
               const double v = setup_->v1(stub->ttStubRef(), cotGlobal);
               const double cov = pow(cot_.base() * stub->r(), 2) + pow(zT_.base(), 2);
               const double chi2 = pow(chi, 2) / (v + cov);

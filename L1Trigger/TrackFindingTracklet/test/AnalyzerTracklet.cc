@@ -51,7 +51,7 @@ namespace trackFindingTracklet {
 
   private:
     // gets all TPs associated too any of the tracks & number of tracks matching at least one TP
-    void associate(const vector<vector<TTStubRef>>& tracks, const StubAssociation* ass, set<TPPtr>& tps, int& nMatchTrk) const;
+    void associate(const vector<vector<TTStubRef>>& tracks, const StubAssociation* ass, set<TPPtr>& tps, int& nMatchTrk, bool perfect = false) const;
 
     // ED input token of tracks
     EDGetTokenT<TTTracks> edGetToken_;
@@ -118,7 +118,7 @@ namespace trackFindingTracklet {
     Service<TFileService> fs;
     TFileDirectory dir;
     dir = fs->mkdir("Tracklet");
-    prof_ = dir.make<TProfile>("Counts", ";", 9, 0.5, 9.5);
+    prof_ = dir.make<TProfile>("Counts", ";", 10, 0.5, 10.5);
     prof_->GetXaxis()->SetBinLabel(1, "Stubs");
     prof_->GetXaxis()->SetBinLabel(2, "Tracks");
     prof_->GetXaxis()->SetBinLabel(3, "Lost Tracks");
@@ -128,6 +128,7 @@ namespace trackFindingTracklet {
     prof_->GetXaxis()->SetBinLabel(7, "Found selected TPs");
     prof_->GetXaxis()->SetBinLabel(8, "Lost TPs");
     prof_->GetXaxis()->SetBinLabel(9, "All TPs");
+    prof_->GetXaxis()->SetBinLabel(10, "Perfectly Found selected TPs");
     // channel occupancy
     constexpr int maxOcc = 180;
     const int numChannels = setup_->numRegions();
@@ -183,6 +184,7 @@ namespace trackFindingTracklet {
     // analyze tracklet products and associate found tracks with reconstrucable TrackingParticles
     set<TPPtr> tpPtrs;
     set<TPPtr> tpPtrsSelection;
+    set<TPPtr> tpPtrsPerfect;
     int nAllMatched(0);
     // convert vector of tracks to vector of vector of associated stubs
     vector<vector<TTStubRef>> tracks;
@@ -191,6 +193,7 @@ namespace trackFindingTracklet {
     if (useMCTruth_) {
       int tmp(0);
       associate(tracks, selection, tpPtrsSelection, tmp);
+      associate(tracks, selection, tpPtrsPerfect, tmp, true);
       associate(tracks, reconstructable, tpPtrs, nAllMatched);
     }
     for (const TPPtr& tpPtr : tpPtrsSelection)
@@ -201,6 +204,7 @@ namespace trackFindingTracklet {
     prof_->Fill(7, tpPtrsSelection.size());
     // no access to lost tp
     prof_->Fill(8, 0);
+    prof_->Fill(10, tpPtrsPerfect.size());
     nEvents_++;
   }
 
@@ -216,34 +220,51 @@ namespace trackFindingTracklet {
     const double numTracksMatched = prof_->GetBinContent(4);
     const double numTPsAll = prof_->GetBinContent(6);
     const double numTPsEff = prof_->GetBinContent(7);
+    const double numTPsEffPerfect = prof_->GetBinContent(10);
     const double errStubs = prof_->GetBinError(1);
     const double errTracks = prof_->GetBinError(2);
     const double fracFake = (totalTracks - numTracksMatched) / totalTracks;
     const double fracDup = (numTracksMatched - numTPsAll) / totalTracks;
     const double eff = numTPsEff / totalTPs;
     const double errEff = sqrt(eff * (1. - eff) / totalTPs / nEvents_);
+    const double effPerfect = numTPsEffPerfect / totalTPs;
+    const double errEffPerfect = sqrt(effPerfect * (1. - effPerfect) / totalTPs / nEvents_);
     const vector<double> nums = {numStubs, numTracks};
     const vector<double> errs = {errStubs, errTracks};
     const int wNums = ceil(log10(*max_element(nums.begin(), nums.end()))) + 5;
     const int wErrs = ceil(log10(*max_element(errs.begin(), errs.end()))) + 5;
     log_ << "                      Tracklet  SUMMARY                      " << endl;
-    log_ << "number of stubs       per TFP = " << setw(wNums) << numStubs << " +- " << setw(wErrs) << errStubs << endl;
-    log_ << "number of tracks      per TFP = " << setw(wNums) << numTracks << " +- " << setw(wErrs) << errTracks << endl;
-    log_ << "          tracking efficiency = " << setw(wNums) << eff << " +- " << setw(wErrs) << errEff << endl;
-    log_ << "                    fake rate = " << setw(wNums) << fracFake << endl;
-    log_ << "               duplicate rate = " << setw(wNums) << fracDup << endl;
+    log_ << "number of stubs     per TFP = " << setw(wNums) << numStubs << " +- " << setw(wErrs) << errStubs << endl;
+    log_ << "number of tracks    per TFP = " << setw(wNums) << numTracks << " +- " << setw(wErrs) << errTracks << endl;
+    log_ << "current tracking efficiency = " << setw(wNums) << effPerfect << " +- " << setw(wErrs) << errEffPerfect << endl;
+    log_ << "max     tracking efficiency = " << setw(wNums) << eff << " +- " << setw(wErrs) << errEff << endl;
+    log_ << "                  fake rate = " << setw(wNums) << fracFake << endl;
+    log_ << "             duplicate rate = " << setw(wNums) << fracDup << endl;
     log_ << "=============================================================";
     LogPrint("L1Trigger/TrackFindingTracklet") << log_.str();
   }
 
   // gets all TPs associated too any of the tracks & number of tracks matching at least one TP
-  void AnalyzerTracklet::associate(const vector<vector<TTStubRef>>& tracks, const StubAssociation* ass, set<TPPtr>& tps, int& nMatchTrk) const {
+  void AnalyzerTracklet::associate(const vector<vector<TTStubRef>>& tracks, const StubAssociation* ass, set<TPPtr>& tps, int& nMatchTrk, bool perfect) const {
     for (const vector<TTStubRef>& ttStubRefs : tracks) {
       const vector<TPPtr>& tpPtrs = ass->associate(ttStubRefs);
       if (tpPtrs.empty())
         continue;
-      nMatchTrk++;
-      copy(tpPtrs.begin(), tpPtrs.end(), inserter(tps, tps.begin()));
+      if (perfect) {
+        for (const TPPtr& tpPtr : tpPtrs) {
+          int wrong2S(0);
+          int wrongPS(0);
+          const vector<TTStubRef>& ttStubRefsTP = ass->findTTStubRefs(tpPtr);
+          for (const TTStubRef& ttStubRef : ttStubRefs)
+            if (find(ttStubRefsTP.begin(), ttStubRefsTP.end(), ttStubRef) == ttStubRefsTP.end())
+              setup_->psModule(ttStubRef) ? wrongPS++ : wrong2S++;
+          if (wrong2S <= 0 && wrong2S <= 1)
+            tps.insert(tpPtr);
+        }
+      } else {
+        nMatchTrk++;
+        copy(tpPtrs.begin(), tpPtrs.end(), inserter(tps, tps.begin()));
+      }
     }
   }
 

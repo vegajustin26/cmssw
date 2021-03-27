@@ -10,6 +10,7 @@ namespace trackerTFP {
     dataFormats_(state->dataFormats_),
     setup_(state->setup_),
     track_(state->track_),
+    trackId_(state->trackId_),
     parent_(state->parent_),
     stub_(state->stub_),
     layerMap_(state->layerMap_),
@@ -29,10 +30,11 @@ namespace trackerTFP {
   {}
 
   // proto state constructor
-  State::State(const DataFormats* dataFormats, TrackKFin* track) :
+  State::State(const DataFormats* dataFormats, TrackKFin* track, int trackId) :
     dataFormats_(dataFormats),
     setup_(dataFormats->setup()),
     track_(track),
+    trackId_(trackId),
     parent_(nullptr),
     stub_(nullptr),
     layerMap_(setup_->numLayers()),
@@ -96,12 +98,6 @@ namespace trackerTFP {
   }
 
   //
-  FrameTrack State::frame() const {
-    TrackKF track(*track_, x1_, x0_, x3_, x2_);
-    return track.frame();
-  }
-
-  //
   vector<StubKF> State::stubs() const {
     vector<StubKF> stubs;
     stubs.reserve(hitPattern_.count());
@@ -115,15 +111,17 @@ namespace trackerTFP {
 
   //
   void State::finish() {
-    State* p = parent_;
-    while (p) {
-      const double r0 = p->m0() - (x1_ + x0_ * p->H00());
-      const double r1 = p->m1() - (x3_ + x2_ * p->H12());
-      if (abs(r0) < p->dPhi() / 2. && abs(r1) < p->dZ() / 2.)
-        numConsistentLayers_++;
-      p = p->parent();
-    }
-    numSkippedLayers_ = hitPattern_.count(0, hitPattern_.pmEncode(), false);
+    const vector<StubKF> stubs = this->stubs();
+    auto consistent = [this](int& sum, const StubKF& stub) {
+      auto inRange = [](float v, float r, float d){ return abs(v) <= (r + d) / 2.; };
+      const bool inRange0 = inRange(stub.phi(), stub.dPhi(), dataFormats_->format(Variable::dPhi, Process::kf).base());
+      const bool inRange1 = inRange(stub.z(), stub.dZ(), dataFormats_->format(Variable::dZ, Process::kf).base());
+      return sum += (inRange0 && inRange1 ? 1 : 0);
+    };
+    numConsistentLayers_ = accumulate(stubs.begin(), stubs.end(), 0, consistent);
+    TTBV pattern = hitPattern_;
+    pattern |= maybePattern();
+    numSkippedLayers_ = pattern.count(0, hitPattern_.pmEncode(), false);
   }
 
 } // namespace trackerTFP

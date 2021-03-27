@@ -22,8 +22,8 @@ public:
   static constexpr int S_ = 64;  // Frame width of emp infrastructure f/w, max number of bits a TTBV can handle
 
 private:
-  bool twos_;          // Two's complement (true) or binary (false)
-  int size_;           // number or bits
+  bool twos_;           // Two's complement (true) or binary (false)
+  int size_;            // number or bits
   std::bitset<S_> bs_;  // underlying storage
 
 public:

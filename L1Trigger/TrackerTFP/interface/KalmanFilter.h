@@ -13,13 +13,11 @@ namespace trackerTFP {
   // Class to fit in a region tracks
   class KalmanFilter {
   public:
-    KalmanFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region, int numChannel);
+    KalmanFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region);
     ~KalmanFilter(){}
 
-    // read in and organize input stubs
-    void consume(const TTDTC::Streams& stubs, const TTDTC::Streams& lost);
-    // read in and organize input tracks
-    void consume(const StreamsTrack& tracks);
+    // read in and organize input tracks and stubs
+    void consume(const StreamsTrack& streamsTrack, const TTDTC::Streams& streamsStub);
     // fill output products
     void produce(TTDTC::Streams& accpetedStubs, StreamsTrack& acceptedTracks, TTDTC::Streams& lostStubs, StreamsTrack& lostTracks);
 
@@ -57,11 +55,7 @@ namespace trackerTFP {
     //
     std::deque<State> states_;
     //
-    std::vector<std::vector<StubKFin*>> inputStubs_;
-    //
-    std::vector<std::vector<TrackKFin*>> inputTracks_;
-    //
-    std::vector<std::vector<StubKFin*>> channelStubs_;
+    std::vector<std::vector<TrackKFin*>> input_;
     //
     int layer_;
     //

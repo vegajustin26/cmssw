@@ -37,12 +37,10 @@ namespace trackerTFP {
   private:
     void beginRun(const Run&, const EventSetup&) override;
     void produce(Event&, const EventSetup&) override;
-    void endStream() { kalmanFilterFormats_->endJob(); }
-    //void endStream() {}
+    void endStream() {}
 
     // ED input token of sf stubs and tracks
     EDGetTokenT<TTDTC::Streams> edGetTokenStubs_;
-    EDGetTokenT<TTDTC::Streams> edGetTokenLost_;
     EDGetTokenT<StreamsTrack> edGetTokenTracks_;
     // ED output token for accepted stubs and tracks
     EDPutTokenT<TTDTC::Streams> edPutTokenAcceptedStubs_;
@@ -75,7 +73,6 @@ namespace trackerTFP {
     const string& branchLostTracks = iConfig.getParameter<string>("BranchLostTracks");
     // book in- and output ED products
     edGetTokenStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchAcceptedStubs));
-    edGetTokenLost_ = consumes<TTDTC::Streams>(InputTag(label, branchLostStubs));
     edGetTokenTracks_ = consumes<StreamsTrack>(InputTag(label, branchAcceptedTracks));
     edPutTokenAcceptedStubs_ = produces<TTDTC::Streams>(branchAcceptedStubs);
     edPutTokenAcceptedTracks_ = produces<StreamsTrack>(branchAcceptedTracks);
@@ -106,29 +103,24 @@ namespace trackerTFP {
   }
 
   void ProducerKF::produce(Event& iEvent, const EventSetup& iSetup) {
-    const int numStreamsTracks = setup_->numRegions();
-    const int numStreamsStubs = numStreamsTracks * setup_->numLayers();
     // empty KF products
-    TTDTC::Streams acceptedStubs(numStreamsStubs);
-    StreamsTrack acceptedTracks(numStreamsTracks);
-    TTDTC::Streams lostStubs(numStreamsStubs);
-    StreamsTrack lostTracks(numStreamsTracks);
+    TTDTC::Streams acceptedStubs(dataFormats_->numStreamsStubs(Process::kf));
+    StreamsTrack acceptedTracks(dataFormats_->numStreamsTracks(Process::kf));
+    TTDTC::Streams lostStubs(dataFormats_->numStreamsStubs(Process::kf));
+    StreamsTrack lostTracks(dataFormats_->numStreamsTracks(Process::kf));
     // read in SF Product and produce KF product
     if (setup_->configurationSupported()) {
       Handle<TTDTC::Streams> handleStubs;
       iEvent.getByToken<TTDTC::Streams>(edGetTokenStubs_, handleStubs);
-      Handle<TTDTC::Streams> handleLost;
-      iEvent.getByToken<TTDTC::Streams>(edGetTokenLost_, handleLost);
+      const TTDTC::Streams& stubs = *handleStubs;
       Handle<StreamsTrack> handleTracks;
       iEvent.getByToken<StreamsTrack>(edGetTokenTracks_, handleTracks);
-      const int numChannel = handleTracks->size() / setup_->numRegions();
+      const StreamsTrack& tracks = *handleTracks;
       for (int region = 0; region < setup_->numRegions(); region++) {
         // object to fit tracks in a processing region
-        KalmanFilter kf(iConfig_, setup_, dataFormats_, kalmanFilterFormats_, region, numChannel);
-        // read in and organize input stubs
-        kf.consume(*handleStubs, *handleLost);
-        // read in and organize input tracks
-        kf.consume(*handleTracks);
+        KalmanFilter kf(iConfig_, setup_, dataFormats_, kalmanFilterFormats_, region);
+        // read in and organize input tracks and stubs
+        kf.consume(tracks, stubs);
         // fill output products
         kf.produce(acceptedStubs, acceptedTracks, lostStubs, lostTracks);
       }

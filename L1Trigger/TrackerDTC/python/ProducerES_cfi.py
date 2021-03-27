@@ -65,7 +65,7 @@ TrackTrigger_params = cms.PSet (
 
   # Parameter specifying TrackingParticle used for Efficiency measurements
   TrackingParticle = cms.PSet (
-    MinPt       = cms.double(  3.  ), # pt cut in GeV
+    MinPt       = cms.double(  2.  ), # pt cut in GeV
     MaxEta      = cms.double(  2.4 ), # eta cut
     MaxVertR    = cms.double(  1.  ), # cut on vertex pos r in cm
     MaxVertZ    = cms.double( 30.  ), # cut on vertex pos z in cm
@@ -97,7 +97,8 @@ TrackTrigger_params = cms.PSet (
     TiltApproxSlope     = cms.double(   0.886            ), # 
     TiltApproxIntercept = cms.double(   0.504            ), # 
     MindPhi             = cms.double(  0.0001            ), # minimum representable stub phi uncertainty
-    MaxdPhi             = cms.double(  0.01              ), # maximum representable stub phi uncertainty
+    #MaxdPhi             = cms.double(  0.01              ), # maximum representable stub phi uncertainty
+    MaxdPhi             = cms.double(  0.02              ), # maximum representable stub phi uncertainty
     MindZ               = cms.double(  0.1               ), # minimum representable stub z uncertainty
     MaxdZ               = cms.double( 30.                )  # maximum representable stub z uncertainty
   ),
@@ -147,7 +148,7 @@ TrackTrigger_params = cms.PSet (
     ChosenRofZ    = cms.double(  50. ), # critical radius defining r-z sector shape in cm
     RangeChiZ     = cms.double( 160. ), # range of stub z residual w.r.t. sector center which needs to be covered
     DepthMemory   = cms.int32 (  64  ), # fifo depth in stub router firmware
-    BoundariesEta = cms.vdouble( -2.40, -2.08, -1.68, -1.26, -0.90, -0.62, -0.41, -0.20, 0.0, 0.20, 0.41, 0.62, 0.90, 1.26, 1.68, 2.08, 2.40 ) # defining r-z sector shape
+    BoundariesEta = cms.vdouble( -2.50, -2.08, -1.68, -1.26, -0.90, -0.62, -0.41, -0.20, 0.0, 0.20, 0.41, 0.62, 0.90, 1.26, 1.68, 2.08, 2.50 ) # defining r-z sector shape
   ),
 
   # Parmeter specifying HoughTransform

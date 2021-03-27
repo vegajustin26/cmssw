@@ -158,7 +158,7 @@ namespace trackerTFP {
     prof_->GetXaxis()->SetBinLabel(9, "All TPs");
     // channel occupancy
     constexpr int maxOcc = 180;
-    const int numChannels = setup_->numRegions();
+    const int numChannels = dataFormats_->numChannel(Process::kf);
     hisChannel_ = dir.make<TH1F>("His Channel Occupancy", ";", maxOcc, -.5, maxOcc - .5);
     profChannel_ = dir.make<TProfile>("Prof Channel Occupancy", ";", numChannels, -.5, numChannels - .5);
     // resoultions
@@ -189,10 +189,12 @@ namespace trackerTFP {
     // read in kf products
     Handle<TTDTC::Streams> handleAcceptedStubs;
     iEvent.getByToken<TTDTC::Streams>(edGetTokenAcceptedStubs_, handleAcceptedStubs);
+    const TTDTC::Streams& acceptedStubs = *handleAcceptedStubs;
     Handle<StreamsTrack> handleAcceptedTracks;
     iEvent.getByToken<StreamsTrack>(edGetTokenAcceptedTracks_, handleAcceptedTracks);
     Handle<TTDTC::Streams> handleLostStubs;
     iEvent.getByToken<TTDTC::Streams>(edGetTokenLostStubs_, handleLostStubs);
+    const TTDTC::Streams& lostStubs = *handleLostStubs;
     Handle<StreamsTrack> handleLostTracks;
     iEvent.getByToken<StreamsTrack>(edGetTokenLostTracks_, handleLostTracks);
     // read in MCTruth
@@ -215,9 +217,8 @@ namespace trackerTFP {
     set<TPPtr> tpPtrsLost;
     int allMatched(0);
     int allTracks(0);
-    int region(0);
-    auto consume = [this, &region](const StreamTrack& tracks, const TTDTC::Streams& streams, TTTracks& ttTracks) {
-      const int offset = region * setup_->numLayers();
+    auto consume = [this](const StreamTrack& tracks, const TTDTC::Streams& streams, int channel, TTTracks& ttTracks) {
+      const int offset = channel * setup_->numLayers();
       int pos(0);
       for (const FrameTrack& frameTrack : tracks) {
         vector<StubKF> stubs;
@@ -232,37 +233,43 @@ namespace trackerTFP {
         pos++;
       }
     };
-    for (; region < setup_->numRegions(); region++) {
-      const StreamTrack& accepted = handleAcceptedTracks->at(region);
-      const StreamTrack& lost = handleLostTracks->at(region);
-      hisChannel_->Fill(accepted.size());
-      profChannel_->Fill(region, accepted.size());
-      TTTracks tracks;
-      const int nTracks = accumulate(accepted.begin(), accepted.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
-      tracks.reserve(nTracks);
-      consume(accepted, *handleAcceptedStubs, tracks);
-      TTTracks tracksLost;
-      const int nLost = accumulate(lost.begin(), lost.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
-      tracksLost.reserve(nLost);
-      consume(lost, *handleLostStubs, tracksLost);
-      allTracks += nTracks;
-      if (!useMCTruth_)
-        continue;
-      int tmp(0);
-      associate(tracks, selection, tpPtrsSelection, tmp, hisRes_, profResZ0_);
-      associate(tracksLost, selection, tpPtrsLost, tmp, vector<TH1F*>(), nullptr);
-      associate(tracks, reconstructable, tpPtrs, allMatched, vector<TH1F*>(), nullptr);
-      prof_->Fill(2, nTracks);
-      prof_->Fill(3, nLost);
+    for (int region = 0; region < setup_->numRegions(); region++) {
+      int nStubsRegion(0);
+      int nTracksRegion(0);
+      int nLostRegion(0);
+      for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {
+        const int index = region * dataFormats_->numChannel(Process::kf) + channel;
+        const StreamTrack& accepted = handleAcceptedTracks->at(index);
+        const StreamTrack& lost = handleLostTracks->at(index);
+        hisChannel_->Fill(accepted.size());
+        profChannel_->Fill(channel, accepted.size());
+        TTTracks tracks;
+        const int nTracks = accumulate(accepted.begin(), accepted.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
+        nTracksRegion += nTracks;
+        tracks.reserve(nTracks);
+        consume(accepted, acceptedStubs, index, tracks);
+        nStubsRegion += accumulate(tracks.begin(), tracks.end(), 0, [](int& sum, const auto& ttTrack){ return sum += (int)ttTrack.getStubRefs().size(); });
+        TTTracks tracksLost;
+        const int nLost = accumulate(lost.begin(), lost.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
+        nLostRegion += nLost;
+        tracksLost.reserve(nLost);
+        consume(lost, lostStubs, index, tracksLost);
+        allTracks += nTracks;
+        if (!useMCTruth_)
+          continue;
+        int tmp(0);
+        associate(tracks, selection, tpPtrsSelection, tmp, hisRes_, profResZ0_);
+        associate(tracksLost, selection, tpPtrsLost, tmp, vector<TH1F*>(), nullptr);
+        associate(tracks, reconstructable, tpPtrs, allMatched, vector<TH1F*>(), nullptr);
+      }
+      prof_->Fill(1, nStubsRegion);
+      prof_->Fill(2, nTracksRegion);
+      prof_->Fill(3, nLostRegion);
     }
     for (const TPPtr& tpPtr : tpPtrsSelection)
       fill(tpPtr, hisEffEta_, hisEffInv2R_);
     deque<TPPtr> tpPtrsRealLost;
     set_difference(tpPtrsLost.begin(), tpPtrsLost.end(), tpPtrs.begin(), tpPtrs.end(), back_inserter(tpPtrsRealLost));
-    /*recovered.reserve(tpPtrsLost.size());
-    set_intersection(tpPtrsLost.begin(), tpPtrsLost.end(), tpPtrs.begin(), tpPtrs.end(), back_inserter(recovered));
-    for(const TPPtr& tpPtr : recovered)
-      tpPtrsLost.erase(tpPtr);*/
     prof_->Fill(4, allMatched);
     prof_->Fill(5, allTracks);
     prof_->Fill(6, tpPtrs.size());

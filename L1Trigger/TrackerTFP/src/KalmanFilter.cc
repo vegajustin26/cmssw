@@ -15,15 +15,13 @@ using namespace trackerDTC;
 
 namespace trackerTFP {
 
-  KalmanFilter::KalmanFilter(const ParameterSet& iConfig, const Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region, int numChannel) :
+  KalmanFilter::KalmanFilter(const ParameterSet& iConfig, const Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region) :
     enableTruncation_(iConfig.getParameter<bool>("EnableTruncation")),
     setup_(setup),
     dataFormats_(dataFormats),
     kalmanFilterFormats_(kalmanFilterFormats),
     region_(region),
-    inputStubs_(numChannel * setup_->numLayers()),
-    inputTracks_(numChannel),
-    channelStubs_(numChannel),
+    input_(dataFormats_->numChannel(Process::kf)),
     layer_(0),
     x0_(&kalmanFilterFormats_->format(VariableKF::x0)),
     x1_(&kalmanFilterFormats_->format(VariableKF::x1)),
@@ -62,84 +60,61 @@ namespace trackerTFP {
     C23_(&kalmanFilterFormats_->format(VariableKF::C23)),
     C33_(&kalmanFilterFormats_->format(VariableKF::C33)) {}
 
-  // read in and organize input stubs
-  void KalmanFilter::consume(const TTDTC::Streams& stubs, const TTDTC::Streams& lost) {
-    auto valid = [](int& sum, const TTDTC::Frame& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
-    int nStubs(0);
-    for (int channel = 0; channel < (int)inputStubs_.size(); channel++) {
-      const TTDTC::Stream& stream = stubs[region_ * inputStubs_.size() + channel];
-      const TTDTC::Stream& streamLost = lost[region_ * inputStubs_.size() + channel];
-      nStubs += accumulate(stream.begin(), stream.end(), 0, valid);
-      nStubs += accumulate(streamLost.begin(), streamLost.end(), 0, valid);
-    }
-    stubs_.reserve(nStubs);
-    for (int channel = 0; channel < (int)inputStubs_.size(); channel++) {
-      const int layerId = channel % setup_->numLayers();
-      const TTDTC::Stream& stream = stubs[region_ * inputStubs_.size() + channel];
-      const TTDTC::Stream& streamLost = lost[region_ * inputStubs_.size() + channel];
-      vector<StubKFin*>& input = inputStubs_[channel];
-      input.reserve(stream.size());
-      for (const TTDTC::Frame& frame : stream) {
-        StubKFin* stub = nullptr;
-        if (frame.first.isNonnull()) {
-          stubs_.emplace_back(frame, dataFormats_, layerId);
-          stub = &stubs_.back();
-        }
-        input.push_back(stub);
-      }
-      for (const TTDTC::Frame& frame : streamLost) {
-        stubs_.emplace_back(frame, dataFormats_, layerId);
-        input.push_back(&stubs_.back());
-      }
-    }
-    for (int channel = 0; channel < (int)inputTracks_.size(); channel++) {
-      const int offset = channel * setup_->numLayers();
-      vector<StubKFin*>& stubs = channelStubs_[channel];
-      int nStubs(0);
-      for (int layer = 0; layer < setup_->numLayers(); layer++) {
-        const vector<StubKFin*>& stream = inputStubs_[offset + layer];
-        nStubs += accumulate(stream.begin(), stream.end(), 0, [](int& sum, StubKFin* stub){ return sum += stub ? 1 : 0; });
-      }
-      stubs.reserve(nStubs);
-      for (int layer = 0; layer < setup_->numLayers(); layer++)
-        for (StubKFin* stub : inputStubs_[offset + layer])
-          if (stub)
-            stubs.push_back(stub);
-    }
-  }
-
-  // read in and organize input tracks
-  void KalmanFilter::consume(const StreamsTrack& tracks) {
-    auto valid = [](int& sum, const FrameTrack& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
+  // read in and organize input tracks and stubs
+  void KalmanFilter::consume(const StreamsTrack& streamsTrack, const TTDTC::Streams& streamsStub) {
+    auto valid = [](const auto& frame){ return frame.first.isNonnull(); };
+    auto acc = [](int& sum, const auto& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
     int nTracks(0);
-    for (int channel = 0; channel < (int)inputTracks_.size(); channel++) {
-      const StreamTrack& stream = tracks[region_ * inputTracks_.size() + channel];
-      nTracks += accumulate(stream.begin(), stream.end(), 0, valid);
+    int nStubs(0);
+    const int offset = region_ * dataFormats_->numChannel(Process::kf);
+    for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {
+      const int channelTrack = offset + channel;
+      const StreamTrack& streamTracks = streamsTrack[channelTrack];
+      nTracks += accumulate(streamTracks.begin(), streamTracks.end(), 0, acc);
+      for (int layer = 0; layer < setup_->numLayers(); layer++) {
+        const int channelStub = channelTrack * setup_->numLayers() + layer;
+        const TTDTC::Stream& streamStubs = streamsStub[channelStub];
+        nStubs += accumulate(streamStubs.begin(), streamStubs.end(), 0, acc);
+      }
     }
     tracks_.reserve(nTracks);
-    for (int channel = 0; channel < (int)inputTracks_.size(); channel++) {
-      const vector<StubKFin*>& stubs = channelStubs_[channel];
-      const StreamTrack& stream = tracks[region_ * inputTracks_.size() + channel];
-      vector<TrackKFin*>& tracks = inputTracks_[channel];
-      tracks.reserve(stream.size());
-      for (const FrameTrack& frame : stream) {
-        TrackKFin* track = nullptr;
-        if (frame.first.isNonnull()) {
-          tracks_.emplace_back(frame, dataFormats_, stubs);
-          track = &tracks_.back();
+    stubs_.reserve(nStubs);
+    for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {
+      const int channelTrack = offset + channel;
+      const StreamTrack& streamTracks = streamsTrack[channelTrack];
+      vector<TrackKFin*>& tracks = input_[channel];
+      tracks.reserve(streamTracks.size());
+      for (int frame = 0; frame < (int)streamTracks.size(); frame++) {
+        const FrameTrack& frameTrack = streamTracks[frame];
+        if (frameTrack.first.isNull())
+          continue;
+        const auto end = find_if(next(streamTracks.begin(), frame + 1), streamTracks.end(), valid);
+        const int size = distance(next(streamTracks.begin(), frame), end);
+        tracks.insert(tracks.end(), size - 1, nullptr);
+        deque<StubKFin*> stubs;
+        for (int layer = 0; layer < setup_->numLayers(); layer++) {
+          const int channelStub = channelTrack * setup_->numLayers() + layer;
+          const TTDTC::Stream& streamStubs = streamsStub[channelStub];
+          for (int i = frame; i < frame + size; i++) {
+            const TTDTC::Frame& frameStub = streamStubs[i];
+            if (frameStub.first.isNull())
+              break;
+            stubs_.emplace_back(frameStub, dataFormats_, layer);
+            stubs.push_back(&stubs_.back());
+          }
         }
-        tracks.push_back(track);
+        tracks_.emplace_back(frameTrack, dataFormats_, vector<StubKFin*>(stubs.begin(), stubs.end()));
+        tracks.push_back(&tracks_.back());
       }
     }
   }
 
   // fill output products
   void KalmanFilter::produce(TTDTC::Streams& acceptedStubs, StreamsTrack& acceptedTracks, TTDTC::Streams& lostStubs, StreamsTrack& lostTracks) {
-    deque<State*> statesLost;
-    deque<State*> statesAccepted;
-    auto put = [this](const deque<State*>& states, TTDTC::Streams& streamsStubs, StreamsTrack& streamsTracks) {
-      const int offset = region_ * setup_->numLayers();
-      StreamTrack& tracks = streamsTracks[region_];
+    auto put = [this](const deque<State*>& states, TTDTC::Streams& streamsStubs, StreamsTrack& streamsTracks, int channel) {
+      const int streamId = region_ * dataFormats_->numChannel(Process::kf) + channel;
+      const int offset = streamId * setup_->numLayers();
+      StreamTrack& tracks = streamsTracks[streamId];
       tracks.reserve(states.size());
       for (int layer = 0; layer < setup_->numLayers(); layer++)
         streamsStubs[offset + layer].reserve(states.size());
@@ -152,84 +127,46 @@ namespace trackerTFP {
           streamsStubs[offset + layer].emplace_back(TTDTC::Frame());
       }
     };
-    auto print = [this](const deque<State*>& stream) {
-      vector<stringstream> sss(15);
-      for (State* state : stream) {
-        static constexpr int w = 8;
-        if (!state) {
-          for (stringstream& ss : sss)
-            ss << setw(w) << " " << " ";
-          continue;
-        }
-        sss[0] << setw(w) << x0_->integer(state->x0()) << " ";
-        sss[1] << setw(w) << x1_->integer(state->x1()) << " ";
-        sss[2] << setw(w) << x2_->integer(state->x2()) << " ";
-        sss[3] << setw(w) << x3_->integer(state->x3()) << " ";
-        sss[4] << setw(w) << H00_->integer(state->H00()) << " ";
-        sss[5] << setw(w) << m0_->integer(state->m0()) << " ";
-        sss[6] << setw(w) << m1_->integer(state->m1()) << " ";
-        sss[7] << setw(w) << dataFormats_->format(Variable::dPhi, Process::kf).integer(state->dPhi()) << " ";
-        sss[8] << setw(w) << dataFormats_->format(Variable::dZ, Process::kf).integer(state->dZ()) << " ";
-        sss[9] << setw(w) << C00_->integer(state->C00()) << " ";
-        sss[10] << setw(w) << C01_->integer(state->C01()) << " ";
-        sss[11] << setw(w) << C11_->integer(state->C11()) << " ";
-        sss[12] << setw(w) << C22_->integer(state->C22()) << " ";
-        sss[13] << setw(w) << C23_->integer(state->C23()) << " ";
-        sss[14] << setw(w) << C33_->integer(state->C33()) << " ";
-      }
-      for (stringstream& ss : sss)
-        cout << ss.str() << endl;
-    };
-    vector<deque<State*>> streams(inputTracks_.size());
-    //for (int channel = 0; channel < (int)inputTracks_.size(); channel++) {
-    {int channel = 1;
-      deque<State*>& stream = streams[channel];
+    for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {
+      deque<State*> stream;
+      deque<State*> lost;
       // proto state creation
-      for (TrackKFin* track : inputTracks_[channel]) {
+      int trackId(0);
+      for (TrackKFin* track : input_[channel]) {
         State* state = nullptr;
         if (track) {
-          states_.emplace_back(dataFormats_, track);
+          states_.emplace_back(dataFormats_, track, trackId++);
           state = &states_.back();
         }
         stream.push_back(state);
       }
       // state propagation
-      for (layer_ = 0; layer_ < setup_->numLayers(); layer_++) {
-        print(stream);
+      for (layer_ = 0; layer_ < setup_->numLayers(); layer_++)
         layer(stream);
-        cout << endl;
-        print(stream);
-        throw cms::Exception("...");
-      }
       // untruncated best state selection
       deque<State*> untruncatedStream = stream;
       accumulator(untruncatedStream);
       // apply truncation
       if (enableTruncation_ && (int)stream.size() > setup_->numFrames())
+      //if (enableTruncation_ && (int)stream.size() > setup_->numFramesIO())
         stream.resize(setup_->numFrames());
       // best state per candidate selection
       accumulator(stream);
+      deque<State*> truncatedStream = stream;
       // storing of best states missed due to truncation
       sort(untruncatedStream.begin(), untruncatedStream.end());
-      sort(stream.begin(), stream.end());
-      set_difference(untruncatedStream.begin(), untruncatedStream.end(), stream.begin(), stream.end(), back_inserter(statesLost));
+      sort(truncatedStream.begin(), truncatedStream.end());
+      set_difference(untruncatedStream.begin(), untruncatedStream.end(), truncatedStream.begin(), truncatedStream.end(), back_inserter(lost));
+      // store found tracks
+      put(stream, acceptedStubs, acceptedTracks, channel);
+      // store lost tracks
+      put(lost, lostStubs, lostTracks, channel);
     }
-    // stream merging
-    for (const deque<State*>& stream : streams)
-      copy(stream.begin(), stream.end(), back_inserter(statesAccepted));
-    // apply truncation originated from merging
-    if (enableTruncation_ && (int)statesAccepted.size() > setup_->numFrames()) {
-      const auto it = next(statesAccepted.begin(), setup_->numFrames());
-      copy(it, statesAccepted.end(), back_inserter(statesLost));
-      statesAccepted.erase(it, statesAccepted.end());
-    }
-    put(statesAccepted, acceptedStubs, acceptedTracks);
-    put(statesLost, lostStubs, lostTracks);
   }
 
   // adds a layer to states
   void KalmanFilter::layer(deque<State*>& stream) {
-    static const int latency = 5;
+    static constexpr int latency = 5;
     // dynamic state container for clock accurate emulation
     deque<State*> streamOutput;
     deque<State*> stack;
@@ -321,9 +258,6 @@ namespace trackerTFP {
   // updates state
   void KalmanFilter::update(State*& state) {
     // R-Z plane
-    static const double dH = H00_->digi(setup_->chosenRofPhi() - setup_->chosenRofZ());
-    const double H00 = H00_->digi(state->H00());
-    //const double H12 = H12_->digi(H00 + dH);
     const double H12 = H12_->digi(state->H12());
     const double m1 = m1_->digi(state->m1());
     const double v1 = v1_->digi(state->v1());
@@ -345,14 +279,11 @@ namespace trackerTFP {
     const double R11C = S13_->digi(v1 + S13);
     const double R11 = R11_->digi(R11C + H12 * S12);
     // imrpoved dynamic cancelling
-    const int msbZ = (int)ceil(log2(R11 / R11_->base()));
-    const double R11Shifted = R11_->digi(R11 * pow(2., 16 - msbZ));
-    const double R11Rough = R11Rough_->digi(R11Shifted);
+    const int msbZ = max(0, (int)ceil(log2(R11 / R11_->base())));
+    const double R11Rough = R11Rough_->digi(R11 * pow(2., 16 - msbZ));
     const double invR11Approx = invR11Approx_->digi(1. / R11Rough);
-    const double invR11Cor = invR11Cor_->digi(2. - invR11Approx * R11Shifted);
-    const double invR11Shifted = invR11Approx * invR11Cor;
-    const double invR11 = invR11_->digi(invR11Shifted * pow(2., 16 - msbZ));
-    //const double invR11 = invR11_->digi(1. / R11);
+    const double invR11Cor = invR11Cor_->digi(2. - invR11Approx * R11Rough);
+    const double invR11 = invR11_->digi(invR11Approx * invR11Cor * pow(2., 16 - msbZ));
     const double K21 = K21_->digi(S12 * invR11);
     const double K31 = K31_->digi(S13 * invR11);
     x2 = x2_->digi(x2 + r1 * K21);
@@ -361,6 +292,7 @@ namespace trackerTFP {
     C23 = C23_->digi(C23 - S13 * K21);
     C33 = C33_->digi(C33 - S13 * K31);
     // R-Phi plane
+    const double H00 = H00_->digi(state->H00());
     const double m0 = m0_->digi(state->m0());
     const double v0 = v0_->digi(state->v0());
     double x0 = x0_->digi(state->x0());
@@ -381,14 +313,11 @@ namespace trackerTFP {
     const double R00C = S01_->digi(v0 + S01);
     const double R00 = R00_->digi(R00C + H00 * S00);
     // improved dynamic cancelling
-    const int msbPhi = (int)ceil(log2(R00 / R00_->base()));
-    const double R00Shifted = R00_->digi(R00 * pow(2., 16 - msbPhi));
-    const double R00Rough = R00Rough_->digi(R00Shifted);
+    const int msbPhi = max(0, (int)ceil(log2(R00 / R00_->base())));
+    const double R00Rough = R00Rough_->digi(R00 * pow(2., 16 - msbPhi));
     const double invR00Approx = invR00Approx_->digi(1. / R00Rough);
-    const double invR00Cor = invR00Cor_->digi(2. - invR00Approx * R00Shifted);
-    const double invR00Shifted = invR00Approx * invR00Cor;
-    const double invR00 = invR00_->digi(invR00Shifted * pow(2., 16 - msbPhi));
-    //const double invR00 = invR00_->digi(1. / R00);
+    const double invR00Cor = invR00Cor_->digi(2. - invR00Approx * R00Rough);
+    const double invR00 = invR00_->digi(invR00Approx * invR00Cor * pow(2., 16 - msbPhi));
     const double K00 = K00_->digi(S00 * invR00);
     const double K10 = K10_->digi(S01 * invR00);
     x0 = x0_->digi(x0 + r0 * K00);
@@ -396,88 +325,40 @@ namespace trackerTFP {
     C00 = C00_->digi(C00 - S00 * K00);
     C01 = C01_->digi(C01 - S01 * K00);
     C11 = C11_->digi(C11 - S01 * K10);
-    // residual cut
-    bool valid(true);
-    if (!dataFormats_->format(Variable::phi, Process::sf).inRange(r0) ||
-        !dataFormats_->format(Variable::z, Process::sf).inRange(r1))
-      valid = false;
-    /*if (state->hitPattern().count() == 2) {
-      if (abs(r1) > (setup_->psModule(state->stub()->ttStubRef()) ? 1. : 10.))
-        valid = false;
-      if (abs(r0) > 5.e-3)
-        valid = false;
-    }*/
-    // parameter cut
-    if (!dataFormats_->format(Variable::inv2R, Process::sf).inRange(x0) ||
-        !dataFormats_->format(Variable::phiT, Process::sf).inRange(x1) ||
-        !dataFormats_->format(Variable::cot, Process::sf).inRange(x2) ||
-        !dataFormats_->format(Variable::zT, Process::sf).inRange(x3))
-      valid = false;
-    if (valid) {
-      S12_->updateRangeActual(S12);
-      S13_->updateRangeActual(S13);
-      K21_->updateRangeActual(K21);
-      K31_->updateRangeActual(K31);
-      R11_->updateRangeActual(R11);
-      R11Rough_->updateRangeActual(R11Rough);
-      invR11Approx_->updateRangeActual(invR11Approx);
-      invR11Cor_->updateRangeActual(invR11Cor);
-      invR11_->updateRangeActual(invR11Shifted);
-      r1_->updateRangeActual(r1);
-      C22_->updateRangeActual(C22);
-      C23_->updateRangeActual(C23);
-      C33_->updateRangeActual(C33);
-      x2_->updateRangeActual(x2);
-      x3_->updateRangeActual(x3);
-      S00_->updateRangeActual(S00);
-      S01_->updateRangeActual(S01);
-      K00_->updateRangeActual(K00);
-      K10_->updateRangeActual(K10);
-      R00_->updateRangeActual(R00);
-      R00Rough_->updateRangeActual(R00Rough);
-      invR00Approx_->updateRangeActual(invR00Approx);
-      invR00Cor_->updateRangeActual(invR00Cor);
-      invR00_->updateRangeActual(invR00Shifted);
-      r0_->updateRangeActual(r0);
-      C00_->updateRangeActual(C00);
-      C01_->updateRangeActual(C01);
-      C11_->updateRangeActual(C11);
-      x0_->updateRangeActual(x0);
-      x1_->updateRangeActual(x1);
-      states_.emplace_back(State(state, (initializer_list<double>){x0, x1, x2, x3, C00, C11, C22, C33, C01, C23}));
-      state = &states_.back();
-    } else
-      state = nullptr;
-    static constexpr int w = 8;
-    cout << "v0            " << setw(w) << v0_->integer(v0) << endl;
-    cout << "v1            " << setw(w) << v1_->integer(v1) << endl;
-    cout << "S00           " << setw(w) << S00_->integer(S00) << endl;
-    cout << "S01           " << setw(w) << S01_->integer(S01) << endl;
-    cout << "S12           " << setw(w) << S12_->integer(S12) << endl;
-    cout << "S12           " << setw(w) << S12 << endl;
-    cout << "S13           " << setw(w) << S13_->integer(S13) << endl;
-    cout << "r0            " << setw(w) << r0_->integer(r0) << endl;
-    cout << "r1            " << setw(w) << r1_->integer(r1) << endl;
-    cout << "R00           " << setw(w) << R00_->integer(R00) << endl;
-    cout << "R11           " << setw(w) << R11_->integer(R11) << endl;
-    cout << "Shift0        " << setw(2) << 16 - msbPhi << endl;
-    cout << "Shift1        " << setw(2) << 16 - msbZ << endl;
-    cout << "R00Shifted    " << setw(w) << R00_->integer(R00Shifted) << endl;
-    cout << "R11Shifted    " << setw(w) << R11_->integer(R11Shifted) << endl;
-    cout << "R00Rough      " << setw(w) << R00Rough_->integer(R00Rough) << endl;
-    cout << "R11Rough      " << setw(w) << R11Rough_->integer(R11Rough) << endl;
-    cout << "invR00Approx  " << setw(w) << invR00Approx_->integer(invR00Approx) << endl;
-    cout << "invR11Approx  " << setw(w) << invR11Approx_->integer(invR11Approx) << endl;
-    cout << "invR00Cor     " << setw(w) << invR00Cor_->integer(invR00Cor) << endl;
-    cout << "invR11Cor     " << setw(w) << invR11Cor_->integer(invR11Cor) << endl;
-    cout << "invR00Shifted " << setw(w) << floor(invR00Shifted / invR00Approx_->base() / invR00Cor_->base()) << endl;
-    cout << "invR11Shifted " << setw(w) << floor(invR11Shifted / invR11Approx_->base() / invR11Cor_->base()) << endl;
-    cout << "invR00        " << setw(w) << invR00_->integer(invR00) << endl;
-    cout << "invR11        " << setw(w) << invR11_->integer(invR11) << endl;
-    cout << "K00           " << setw(w) << K00_->integer(K00) << endl;
-    cout << "K10           " << setw(w) << K10_->integer(K10) << endl;
-    cout << "K21           " << setw(w) << K21_->integer(K21) << endl;
-    cout << "K31           " << setw(w) << K31_->integer(K21) << endl;
+    // create updated state
+    states_.emplace_back(State(state, (initializer_list<double>){x0, x1, x2, x3, C00, C11, C22, C33, C01, C23}));
+    state = &states_.back();
+    // report internal values
+    S12_->updateRangeActual(S12);
+    S13_->updateRangeActual(S13);
+    K21_->updateRangeActual(K21);
+    K31_->updateRangeActual(K31);
+    R11_->updateRangeActual(R11);
+    R11Rough_->updateRangeActual(R11Rough);
+    invR11Approx_->updateRangeActual(invR11Approx);
+    invR11Cor_->updateRangeActual(invR11Cor);
+    invR11_->updateRangeActual(invR11);
+    r1_->updateRangeActual(r1);
+    C22_->updateRangeActual(C22);
+    C23_->updateRangeActual(C23);
+    C33_->updateRangeActual(C33);
+    x2_->updateRangeActual(x2);
+    x3_->updateRangeActual(x3);
+    S00_->updateRangeActual(S00);
+    S01_->updateRangeActual(S01);
+    K00_->updateRangeActual(K00);
+    K10_->updateRangeActual(K10);
+    R00_->updateRangeActual(R00);
+    R00Rough_->updateRangeActual(R00Rough);
+    invR00Approx_->updateRangeActual(invR00Approx);
+    invR00Cor_->updateRangeActual(invR00Cor);
+    invR00_->updateRangeActual(invR00);
+    r0_->updateRangeActual(r0);
+    C00_->updateRangeActual(C00);
+    C01_->updateRangeActual(C01);
+    C11_->updateRangeActual(C11);
+    x0_->updateRangeActual(x0);
+    x1_->updateRangeActual(x1);
   }
 
   // remove and return first element of deque, returns nullptr if empty

@@ -18,7 +18,7 @@ namespace trackerTFP {
     dirOut_(dirIPBB_ + "out.txt"),
     dirPre_(dirIPBB_ + "pre.txt"),
     dirDiff_(dirIPBB_ + "diff.txt"),
-    numFrames_(setup->numFrames()),
+    numFrames_(setup->numFramesIO()),
     numFramesInfra_(setup->numFramesInfra()),
     numRegions_(setup->numRegions()) {}
 

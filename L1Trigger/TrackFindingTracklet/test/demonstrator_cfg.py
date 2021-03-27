@@ -16,26 +16,22 @@ process.load( 'Configuration.StandardSequences.L1TrackTrigger_cff' )
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag( process.GlobalTag, 'auto:phase2_realistic', '' )
 
+
+
 # load code that produces DTCStubs
 process.load( 'L1Trigger.TrackerDTC.ProducerED_cff' )
-# cosutmize TT algorithm
-from L1Trigger.TrackerDTC.Customize_cff import *
-producerUseTMTT(process)
-analyzerUseTMTT(process)
-#--- Load code that produces tfp Stubs
-process.load( 'L1Trigger.TrackerTFP.Producer_cff' )
-#--- Load code that demonstrates tfp Stubs
+# L1 tracking => hybrid emulation 
+process.load("L1Trigger.TrackFindingTracklet.L1HybridEmulationTracks_cff")
+# load code that fits hybrid tracks
+process.load( 'L1Trigger.TrackFindingTracklet.ProducerKF_cff' )
+#--- Load code that compares s/w with f/w
 process.load( 'L1Trigger.TrackerTFP.Demonstrator_cff' )
 
 # build schedule
 process.tt = cms.Sequence (  process.TrackerDTCProducer
-                           + process.TrackerTFPProducerGP
-                           + process.TrackerTFPProducerHT
-                           + process.TrackerTFPProducerMHT
-                           + process.TrackerTFPProducerSF
-                           + process.TrackerTFPProducerSFout
-                           + process.TrackerTFPProducerKFin
-                           + process.TrackerTFPProducerKF
+                           + process.L1TrackletTracks
+                           + process.TrackFindingTrackletProducerKFin
+                           + process.TrackFindingTrackletProducerKF
                           )
 process.demo = cms.Path( process.tt + process.TrackerTFPDemonstrator )
 process.schedule = cms.Schedule( process.demo )

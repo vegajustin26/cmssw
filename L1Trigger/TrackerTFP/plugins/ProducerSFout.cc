@@ -119,8 +119,7 @@ namespace trackerTFP {
             const double cot = dfCot.floating(start->cot());
             const double phiT = dfPhiT.floating(start->phiT());
             const double inv2R = dfinv2R.floating(start->inv2R());
-            const int trackId = channel * setup_->sfMaxTracks() + i;
-            ttTracks.emplace_back(inv2R, phiT, cot, zT, 0., 0., 0., 0., 0., trackId, 0, 0.);
+            ttTracks.emplace_back(inv2R, phiT, cot, zT, 0., 0., 0., 0., 0., 0, 0, 0.);
             ttTracks.back().setStubRefs(ttStubRefs);
             ttTracks.back().setPhiSector(start->sectorPhi() + region * setup_->numSectorsPhi());
             ttTracks.back().setEtaSector(start->sectorEta());

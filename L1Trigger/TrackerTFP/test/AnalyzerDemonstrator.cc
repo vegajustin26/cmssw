@@ -64,9 +64,9 @@ namespace trackerTFP {
     const string& branchTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
     edGetTokenStubsIn_ = consumes<TTDTC::Streams>(InputTag(labelIn, branchStubs));
     edGetTokenStubsOut_ = consumes<TTDTC::Streams>(InputTag(labelOut, branchStubs));
-    if (labelIn == "TrackerTFPProducerKFin" || labelIn == "TrackerTFPProducerKF")
+    if (labelIn == "TrackerTFPProducerKFin" || labelIn == "TrackerTFPProducerKF" || labelIn == "TrackFindingTrackletProducerKFin" || labelIn == "TrackFindingTrackletProducerKF")
       edGetTokenTracksIn_ = consumes<StreamsTrack>(InputTag(labelIn, branchTracks));
-    if (labelOut == "TrackerTFPProducerKF" || labelOut == "TrackerTFPProducerDR")
+    if (labelOut == "TrackerTFPProducerKF" || labelOut == "TrackerTFPProducerDR" || labelOut == "TrackFindingTrackletProducerKF")
       edGetTokenTracksOut_ = consumes<StreamsTrack>(InputTag(labelOut, branchTracks));
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
@@ -103,9 +103,9 @@ namespace trackerTFP {
       iEvent.getByToken<StreamsTrack>(tokenTracks, handleTracks);
       numChannelTracks = handleTracks->size();
     }
-    bits.reserve(numChannelTracks + numChannelStubs);
     numChannelTracks /= setup_->numRegions();
     numChannelStubs /= (setup_->numRegions() * (tracks ? numChannelTracks : 1));
+    bits.reserve(numChannelTracks + numChannelStubs);
     for (int region = 0; region < setup_->numRegions(); region++) {
       const int offsetTracks = region * numChannelTracks;
       for (int channelTracks = 0; channelTracks < numChannelTracks; channelTracks++) {

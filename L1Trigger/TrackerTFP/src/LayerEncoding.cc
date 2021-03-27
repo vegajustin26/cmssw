@@ -84,8 +84,16 @@ namespace trackerTFP {
           // layerEncoding is given by sorted layer ids crossed by any booundary
           set<int> layerEncoding;
           set_union(layers[0].begin(), layers[0].end(), layers[1].begin(), layers[1].end(), inserter(layerEncoding, layerEncoding.end()));
-          layerEncoding_[binEta][binZT][binCot] = vector<int>(layerEncoding.begin(), layerEncoding.end());
-          maybeLayer_[binEta][binZT][binCot] = vector<int>(maybeLayer.begin(), maybeLayer.end());
+          vector<int>& le = layerEncoding_[binEta][binZT][binCot];
+          le = vector<int>(layerEncoding.begin(), layerEncoding.end());
+          vector<int>& ml = maybeLayer_[binEta][binZT][binCot];
+          ml.reserve(maybeLayer.size());
+          for (int m : maybeLayer) {
+            int layer = distance(le.begin(), find(le.begin(), le.end(), m));
+            if (layer >= setup_->numLayers())
+              layer = setup_->numLayers() - 1;
+            ml.push_back(layer);
+          }
         }
       }
     }

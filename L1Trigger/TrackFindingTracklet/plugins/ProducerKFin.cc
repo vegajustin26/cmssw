@@ -119,8 +119,6 @@ namespace trackFindingTracklet {
   }
 
   void ProducerKFin::produce(Event& iEvent, const EventSetup& iSetup) {
-    auto toFrameStub = [](StubKFin* stub) { return stub->frame(); };
-    auto toFrameTrack = [](const TrackKFin& track){ return track.frame(); };
     // dataformat used for track cotTheta wrt eta sector centre
     const DataFormat& dfcot = dataFormats_->format(Variable::cot, Process::kfin);
     // dataformat used for track z at raiud chosenRofZ wrt eta sector centre
@@ -133,10 +131,6 @@ namespace trackFindingTracklet {
     const DataFormat& dfphi = dataFormats_->format(Variable::phi, Process::kfin);
     // dataformat used for stub z residual wrt track
     const DataFormat& dfz = dataFormats_->format(Variable::z, Process::kfin);
-    // dataformat used for stub phi uncertainty
-    const DataFormat& dfdPhi = dataFormats_->format(Variable::z, Process::kfin);
-    // dataformat used for stub z uncertainty
-    const DataFormat& dfdZ = dataFormats_->format(Variable::z, Process::kfin);
     const int numStreamsTracks = setup_->numRegions() * trackBuilderChannel_->numChannels();
     const int numStreamsStubs = numStreamsTracks * setup_->numLayers();
     // empty KFin products
@@ -148,7 +142,7 @@ namespace trackFindingTracklet {
     if (setup_->configurationSupported()) {
       Handle<TTTracks> handleTTTracks;
       iEvent.getByToken<TTTracks>(edGetTokenTTTracks_, handleTTTracks);
-      const TTTracks& ttTracks = *handleTTTracks.product();
+      const TTTracks& ttTracks = *handleTTTracks;
       // Assign input tracks to channels according to TrackBuilder step.
       vector<TTTrackRefs> ttTrackRefsStreams(numStreamsTracks);
       vector<int> nTTTracksStreams(numStreamsTracks, 0);
@@ -165,21 +159,12 @@ namespace trackFindingTracklet {
           ttTrackRefsStreams[channelId].emplace_back(TTTrackRef(handleTTTracks, i++));
       for (channelId = 0; channelId < numStreamsTracks; channelId++) {
         // Create vector of stubs/tracks in KF format from TTTracks
-        const TTTrackRefs& ttTrackRefs = ttTrackRefsStreams[channelId];
-        vector<TrackKFin> tracks;
-        tracks.reserve(ttTrackRefs.size());
-        vector<StubKFin> stubs;
-        const int nStubs = accumulate(ttTrackRefs.begin(), ttTrackRefs.end(), 0, [](int& sum, const TTTrackRef& ttTrackRef){ return sum += ttTrackRef->getStubRefs().size(); });
-        stubs.reserve(nStubs);
-        int trackId(0);
-        vector<int> numLayerStubs(setup_->numLayers(), 0);
-        for (const TTTrackRef& ttTrackRef : ttTrackRefs) {
-          // prevent more than 256 tracks per channel
-          if (trackId >= dataFormats_->format(Variable::trackId, Process::kfin).range())
-            continue;
+        deque<FrameTrack> streamTracks;
+        vector<deque<TTDTC::Frame>> streamsStubs(setup_->numLayers());
+        for (const TTTrackRef& ttTrackRef : ttTrackRefsStreams[channelId]) {
           // get rz parameter
-          const double cotGlobal = dfcot.digi(ttTrackRef->tanL());
-          const double zTGlobal = dfzT.digi(ttTrackRef->z0() + setup_->chosenRofZ() * cotGlobal);
+          const double cotGlobal = ttTrackRef->tanL();
+          const double zTGlobal = ttTrackRef->z0() + setup_->chosenRofZ() * cotGlobal;
           int binEta(-1);
           for (; binEta < setup_->numSectorsEta(); binEta++)
             if (zTGlobal < sinh(setup_->boundarieEta(binEta + 1)) * setup_->chosenRofZ())
@@ -195,75 +180,83 @@ namespace trackFindingTracklet {
           const int binZT = dfzT.toUnsigned(dfzT.integer(zT));
           const int binCot = dfcot.toUnsigned(dfcot.integer(cot));
           // get set of kf layers for this rough r-z track parameter
-          const vector<int>& layerEncoding = layerEncoding_->layerEncoding(binEta, binZT, binCot);
+          const vector<int>& le = layerEncoding_->layerEncoding(binEta, binZT, binCot);
           // get rphi parameter
-          const double qOverPt = dfinv2R.digi(ttTrackRef->rInv() / 2.);
+          const double inv2R = -ttTrackRef->rInv() / 2.;
           // calculcate track phi at radius hybridChosenRofPhi with respect to phi sector centre
-          double phiT = dfphiT.digi(deltaPhi(ttTrackRef->phi() - setup_->hybridChosenRofPhi() * qOverPt - ttTrackRef->phiSector() * setup_->baseRegion()));
+          double phiT = deltaPhi(ttTrackRef->phi() + setup_->hybridChosenRofPhi() * inv2R - ttTrackRef->phiSector() * setup_->baseRegion());
           const int sectorPhi = phiT < 0. ? 0 : 1; // dirty hack
           phiT -= (sectorPhi - .5) * setup_->baseSector();
           // cut on nonant size and pt
-          if (!dfphiT.inRange(phiT) || !dfinv2R.inRange(qOverPt))
+          if (!dfphiT.inRange(phiT) || !dfinv2R.inRange(inv2R))
             continue;
-          // loop over stubs
+          // check hitPattern
           TTBV hitPattern(0, setup_->numLayers());
-          vector<int> layerMap(setup_->numLayers(), 0);
           for (const TTStubRef& ttStubRef : ttTrackRef->getStubRefs()) {
             const GlobalPoint& gp = setup_->stubPos(ttStubRef);
-            const double r = gp.perp() - setup_->hybridChosenRofPhi();
-            const double phi = deltaPhi(gp.phi() - (ttTrackRef->phi() - qOverPt * gp.perp()));
+            const double phi = deltaPhi(gp.phi() - (ttTrackRef->phi() + inv2R * gp.perp()));
             const double z = gp.z() - (ttTrackRef->z0() + cotGlobal * gp.perp());
-            // layers consitent with rough r-z track parameters are counted from 0 onwards
-            int layer = distance(layerEncoding.begin(), find(layerEncoding.begin(), layerEncoding.end(), setup_->layerId(ttStubRef)));
-            // put stubs from layer 7 to layer 6 since layer 7 almost never has stubs
-            if (layer >= setup_->numLayers())
-              layer = setup_->numLayers() - 1;
             // cut on phi and z residuals
             if (!dfphi.inRange(phi) || !dfz.inRange(z))
               continue;
+            // layers consitent with rough r-z track parameters are counted from 0 onwards
+            int layer = distance(le.begin(), find(le.begin(), le.end(), setup_->layerId(ttStubRef)));
+            // put stubs from layer 7 to layer 6 since layer 7 almost never has stubs
+            if (layer >= setup_->numLayers())
+              layer = setup_->numLayers() - 1;
             hitPattern.set(layer);
-            int& nLayerStubs = layerMap[layer];
-            // cut on max 4 stubs per layer
-            if (nLayerStubs == setup_->sfMaxStubsPerLayer())
+          }
+          if (hitPattern.count() < setup_->kfMinLayers())
+            continue;
+          // create Stubs
+          vector<int> layerCounts(setup_->numLayers(), 0);
+          for (const TTStubRef& ttStubRef : ttTrackRef->getStubRefs()) {
+            const GlobalPoint& gp = setup_->stubPos(ttStubRef);
+            const double r = gp.perp() - setup_->hybridChosenRofPhi();
+            const double phi = deltaPhi(gp.phi() - (ttTrackRef->phi() + inv2R * gp.perp()));
+            const double z = gp.z() - (ttTrackRef->z0() + cotGlobal * gp.perp());
+            // cut on phi and z residuals
+            if (!dfphi.inRange(phi) || !dfz.inRange(z))
               continue;
-            nLayerStubs++;
-            numLayerStubs[layer]++;
-            const double dPhi = dfdPhi.digi(setup_->dPhi(ttStubRef, qOverPt));
-            const double dZ = dfdZ.digi(setup_->dZ(ttStubRef, cotGlobal));
-            stubs.emplace_back(ttStubRef, dataFormats_, r, phi, z, dPhi, dZ, trackId, layer);
+            // layers consitent with rough r-z track parameters are counted from 0 onwards
+            int layer = distance(le.begin(), find(le.begin(), le.end(), setup_->layerId(ttStubRef)));
+            // put stubs from layer 7 to layer 6 since layer 7 almost never has stubs
+            if (layer >= setup_->numLayers())
+              layer = setup_->numLayers() - 1;
+            // cut on max 4 stubs per layer
+            if (layerCounts[layer] >= setup_->sfMaxStubsPerLayer())
+              continue;
+            layerCounts[layer]++;
+            const double dPhi = setup_->dPhi(ttStubRef, inv2R);
+            const double dZ = setup_->dZ(ttStubRef, cotGlobal);
+            const StubKFin stubKFin(ttStubRef, dataFormats_, r, phi, z, dPhi, dZ, layer);
+            streamsStubs[layer].emplace_back(stubKFin.frame());
+          }
+          const int size = *max_element(layerCounts.begin(), layerCounts.end());
+          for (int layer = 0; layer < setup_->numLayers(); layer++) {
+            deque<TTDTC::Frame>& stubs = streamsStubs[layer];
+            const int nGaps = size - layerCounts[layer];
+            stubs.insert(stubs.end(), nGaps, TTDTC::Frame());
           }
           const TTBV& maybePattern = layerEncoding_->maybePattern(binEta, binZT, binCot);
-          tracks.emplace_back(ttTrackRef, dataFormats_, hitPattern, setup_->layerMap(hitPattern, layerMap), maybePattern, phiT, qOverPt, zT, cot, sectorPhi, binEta, trackId++);
+          const TrackKFin track(ttTrackRef, dataFormats_, maybePattern, phiT, inv2R, zT, cot, sectorPhi, binEta);
+          streamTracks.emplace_back(track.frame());
+          const int nGaps = size - 1;
+          streamTracks.insert(streamTracks.end(), nGaps, FrameTrack());
         }
-        // truncate and transform stubs
-        vector<vector<StubKFin*>> layerStubs(setup_->numLayers());
-        for (int layer = 0; layer < setup_->numLayers(); layer++)
-          layerStubs[layer].reserve(numLayerStubs[layer]);
-        for (StubKFin& stub : stubs)
-          layerStubs[stub.layer()].push_back(&stub);
-        const int offset = channelId * setup_->numLayers();
+        // transform deques to vectors & emulate truncation
+        const auto limitTracks = next(streamTracks.begin(), min((int)streamTracks.size(), enableTruncation_ ? setup_->numFrames() : 0));
+        //const auto limitTracks = next(streamTracks.begin(), min((int)streamTracks.size(), enableTruncation_ ? setup_->numFramesIO() : 0));
+        streamAcceptedTracks[channelId] = StreamTrack(streamTracks.begin(), limitTracks);
+        streamLostTracks[channelId] = StreamTrack(limitTracks, streamTracks.end());
         for (int layer = 0; layer < setup_->numLayers(); layer++) {
-          TTDTC::Stream& acceptedStubs = streamAcceptedStubs[offset + layer];
-          TTDTC::Stream& lostStubs = streamLostStubs[offset + layer];
-          vector<StubKFin*>& stubsLayer = layerStubs[layer];
-          if (enableTruncation_ && (int)stubsLayer.size() > setup_->numFrames()) {
-            const auto it = next(stubsLayer.begin(), setup_->numFrames());
-            lostStubs.reserve(setup_->numFrames() - (int)stubsLayer.size());
-            transform(it, stubsLayer.end(), back_inserter(lostStubs), toFrameStub);
-            stubsLayer.erase(it, stubsLayer.end());
-          }
-          transform(stubsLayer.begin(), stubsLayer.end(), back_inserter(acceptedStubs), toFrameStub);
+          const int index = channelId * setup_->numLayers() + layer;
+          deque<TTDTC::Frame>& stubs = streamsStubs[layer];
+          const auto limitStubs = next(stubs.begin(), min((int)stubs.size(), enableTruncation_ ? setup_->numFrames() : 0));
+          //const auto limitStubs = next(stubs.begin(), min((int)stubs.size(), enableTruncation_ ? setup_->numFramesIO() : 0));
+          streamAcceptedStubs[index] = TTDTC::Stream(stubs.begin(), limitStubs);
+          streamLostStubs[index] = TTDTC::Stream(limitStubs, stubs.end());
         }
-        // truncate and transform tracks
-        StreamTrack& acceptedTracks = streamAcceptedTracks[channelId];
-        StreamTrack& lostTracks = streamLostTracks[channelId];
-        if (enableTruncation_ && (int)tracks.size() > setup_->numFrames()) {
-          const auto it = next(tracks.begin(), setup_->numFrames());
-          lostTracks.reserve(setup_->numFrames() - (int)tracks.size());
-          transform(it, tracks.end(), back_inserter(lostTracks), toFrameTrack);
-          tracks.erase(it, tracks.end());
-        }
-        transform(tracks.begin(), tracks.end(), back_inserter(acceptedTracks), toFrameTrack);
       }
     }
     // store products
