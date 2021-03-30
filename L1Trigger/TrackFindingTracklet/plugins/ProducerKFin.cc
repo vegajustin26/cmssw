@@ -30,7 +30,7 @@ using namespace trackerTFP;
 namespace trackFindingTracklet {
 
   /*! \class  trackFindingTracklet::ProducerKFin
-   *  \brief  transforms hybrid TTTracks into KF input
+   *  \brief  Transforms format of TTTracks from Tracklet pattern reco. to that expected by KF input.
    *  \author Thomas Schuh
    *  \date   2020, Oct
    */

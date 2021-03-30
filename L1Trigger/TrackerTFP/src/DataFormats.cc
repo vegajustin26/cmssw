@@ -1,4 +1,5 @@
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
+#include "L1Trigger/TrackTrigger/interface/StubPtConsistency.h"
 
 #include <vector>
 #include <deque>
@@ -456,10 +457,8 @@ namespace trackerTFP {
     const int dofZ = nLayer - nParZ;
     chi2phi /= dofPhi;
     chi2z /= dofZ;
-    const int sectorPhi = frame_.first->phiSector();
-    const int sectorEta = frame_.first->etaSector();
     const double invR = -this->inv2R() * 2.;
-    const double phi0 = deltaPhi(this->phiT() + this->inv2R() * dataFormats_->chosenRofPhi() + dataFormats_->format(Variable::phiT, Process::ht).range() * (sectorPhi - .5));
+    const double phi0 = deltaPhi(this->phiT() - this->inv2R() * dataFormats_->chosenRofPhi() + dataFormats_->format(Variable::phiT, Process::ht).range() * (this->sectorPhi() - .5));
     const double cot = this->cot() + setup()->sectorCot(this->sectorEta());
     const double z0 = this->zT() - this->cot() * setup()->chosenRofZ();
     static constexpr double trkMVA1 = 0.;
@@ -467,10 +466,12 @@ namespace trackerTFP {
     static constexpr double trkMVA3 = 0.;
     const int hitPattern = hitVector.val();
     const double bField = setup()->bField();
-    TTTrack<Ref_Phase2TrackerDigi_> ttTrack(invR, phi0, cot, z0, chi2phi, chi2z, trkMVA1, trkMVA2, trkMVA3, hitPattern, nPar, bField);
+    TTTrack<Ref_Phase2TrackerDigi_> ttTrack(invR, phi0, cot, z0, 0., chi2phi, chi2z, trkMVA1, trkMVA2, trkMVA3, hitPattern, nPar, bField);
     ttTrack.setStubRefs(ttStubRefs);
-    ttTrack.setPhiSector(sectorPhi);
-    ttTrack.setEtaSector(sectorEta);
+    ttTrack.setPhiSector(frame_.first->phiSector());
+    ttTrack.setEtaSector(this->sectorEta());
+    ttTrack.setStubPtConsistency(
+        StubPtConsistency::getConsistency(ttTrack, setup()->trackerGeometry(), setup()->trackerTopology(), bField, nPar));
     return ttTrack;
   }
 

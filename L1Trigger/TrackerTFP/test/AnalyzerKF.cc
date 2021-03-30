@@ -97,6 +97,7 @@ namespace trackerTFP {
     TH1F* hisEffInv2RTotal_;
     TEfficiency* effInv2R_;
     TH1F* hisChi2_;
+    TH1F* hisPhi_;
 
     // printout
     stringstream log_;
@@ -179,6 +180,8 @@ namespace trackerTFP {
     effInv2R_ = dir.make<TEfficiency>("EffInv2R", ";", 32, -rangeInv2R / 2., rangeInv2R / 2.);
     // chi2
     hisChi2_ = dir.make<TH1F>("HisChi2", ";", 100, -.5, 99.5);
+    const double rangePhi = dataFormats_->format(Variable::phi0, Process::dr).range();
+    hisPhi_ = dir.make<TH1F>("HisPhi", ";", 100, -rangePhi, rangePhi);
   }
 
   void AnalyzerKF::analyze(const Event& iEvent, const EventSetup& iSetup) {
@@ -248,6 +251,8 @@ namespace trackerTFP {
         nTracksRegion += nTracks;
         tracks.reserve(nTracks);
         consume(accepted, acceptedStubs, index, tracks);
+        for (const TTTrack<Ref_Phase2TrackerDigi_>& ttTrack : tracks)
+          hisPhi_->Fill(ttTrack.momentum().phi());
         nStubsRegion += accumulate(tracks.begin(), tracks.end(), 0, [](int& sum, const auto& ttTrack){ return sum += (int)ttTrack.getStubRefs().size(); });
         TTTracks tracksLost;
         const int nLost = accumulate(lost.begin(), lost.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });

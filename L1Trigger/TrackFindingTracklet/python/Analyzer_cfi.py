@@ -1,3 +1,4 @@
+# ParameterSet used by AnalyzerKFin and AnalyzerTracklet
 import FWCore.ParameterSet.Config as cms
 
 TrackFindingTrackletAnalyzer_params = cms.PSet (

@@ -405,7 +405,7 @@ namespace trackerDTC {
     }
   }
 
-  // create encodingsLayerId
+  // create map indicating all tracker layers read by each DTC.
   void Setup::encodeLayerId() {
     vector<vector<DTCELinkId>> dtcELinkIds(numDTCs_);
     for (vector<DTCELinkId>& dtcELinkId : dtcELinkIds)
