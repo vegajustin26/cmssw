@@ -143,11 +143,11 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
       if (layerdisk == 1 || layerdisk == 2 || layerdisk == 3 || layerdisk == 5) {
         std::string fnamesuffix = "L" + to_string(layerdisk + 1);
         writeVMTable(settings_.tablePath(), "VMTableOuter" + fnamesuffix + ".tab", vmrtable_);
-        // write disk teouter tables (D1, D2, D4)
-        if (layerdisk == 6 || layerdisk == 7 || layerdisk == 9) {
-          std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1);
-          writeVMTable(settings_.tablePath(), "VMTableOuter" + fnamesuffix + ".tab", vmrtabletedisk_);
-        }
+      }
+      // write disk teouter tables (D1, D2, D4)
+      if (layerdisk == 6 || layerdisk == 7 || layerdisk == 9) {
+	std::string fnamesuffix = "D" + to_string(layerdisk - N_LAYER + 1);
+	writeVMTable(settings_.tablePath(), "VMTableOuter" + fnamesuffix + ".tab", vmrtabletedisk_);
       }
     } else {
       std::string fname = "VMRME_";
