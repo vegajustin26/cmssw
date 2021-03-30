@@ -67,7 +67,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.Even
 process.source = cms.Source(
   "PoolSource",
   fileNames = cms.untracked.vstring( options.inputMC ),
-  #skipEvents = cms.untracked.uint32( 1 ),
+  #skipEvents = cms.untracked.uint32( 914 ),
   secondaryFileNames = cms.untracked.vstring(),
   duplicateCheckMode = cms.untracked.string( 'noDuplicateCheck' )
 )

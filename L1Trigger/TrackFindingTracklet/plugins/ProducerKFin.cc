@@ -194,10 +194,16 @@ namespace trackFindingTracklet {
           TTBV hitPattern(0, setup_->numLayers());
           for (const TTStubRef& ttStubRef : ttTrackRef->getStubRefs()) {
             const GlobalPoint& gp = setup_->stubPos(ttStubRef);
+            const double rphi = gp.perp() - dataFormats_->chosenRofPhi();
+            const double rz = gp.perp() - setup_->chosenRofZ();
             const double phi = deltaPhi(gp.phi() - (ttTrackRef->phi() + inv2R * gp.perp()));
             const double z = gp.z() - (ttTrackRef->z0() + cotGlobal * gp.perp());
+            const double dPhi = setup_->dPhi(ttStubRef, inv2R);
+            const double dZ = setup_->dZ(ttStubRef, cotGlobal);
+            const double rangePhi = abs(rphi) * dfinv2R.base() + dfphiT.base() + dPhi;
+            const double rangeZ = abs(rz) * dfcot.base() + dfzT.base() + dZ;
             // cut on phi and z residuals
-            if (!dfphi.inRange(phi) || !dfz.inRange(z))
+            if (abs(phi) > rangePhi / 2. || abs(z) > rangeZ / 2.)
               continue;
             // layers consitent with rough r-z track parameters are counted from 0 onwards
             int layer = distance(le.begin(), find(le.begin(), le.end(), setup_->layerId(ttStubRef)));
@@ -212,11 +218,16 @@ namespace trackFindingTracklet {
           vector<int> layerCounts(setup_->numLayers(), 0);
           for (const TTStubRef& ttStubRef : ttTrackRef->getStubRefs()) {
             const GlobalPoint& gp = setup_->stubPos(ttStubRef);
-            const double r = gp.perp() - setup_->hybridChosenRofPhi();
+            const double rphi = gp.perp() - dataFormats_->chosenRofPhi();
+            const double rz = gp.perp() - setup_->chosenRofZ();
             const double phi = deltaPhi(gp.phi() - (ttTrackRef->phi() + inv2R * gp.perp()));
             const double z = gp.z() - (ttTrackRef->z0() + cotGlobal * gp.perp());
+            const double dPhi = setup_->dPhi(ttStubRef, inv2R);
+            const double dZ = setup_->dZ(ttStubRef, cotGlobal);
+            const double rangePhi = abs(rphi) * dfinv2R.base() + dfphiT.base() + dPhi;
+            const double rangeZ = abs(rz) * dfcot.base() + dfzT.base() + dZ;
             // cut on phi and z residuals
-            if (!dfphi.inRange(phi) || !dfz.inRange(z))
+            if (abs(phi) > rangePhi / 2. || abs(z) > rangeZ / 2.)
               continue;
             // layers consitent with rough r-z track parameters are counted from 0 onwards
             int layer = distance(le.begin(), find(le.begin(), le.end(), setup_->layerId(ttStubRef)));
@@ -227,9 +238,7 @@ namespace trackFindingTracklet {
             if (layerCounts[layer] >= setup_->sfMaxStubsPerLayer())
               continue;
             layerCounts[layer]++;
-            const double dPhi = setup_->dPhi(ttStubRef, inv2R);
-            const double dZ = setup_->dZ(ttStubRef, cotGlobal);
-            const StubKFin stubKFin(ttStubRef, dataFormats_, r, phi, z, dPhi, dZ, layer);
+            const StubKFin stubKFin(ttStubRef, dataFormats_, rphi, phi, z, dPhi, dZ, layer);
             streamsStubs[layer].emplace_back(stubKFin.frame());
           }
           const int size = *max_element(layerCounts.begin(), layerCounts.end());

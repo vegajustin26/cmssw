@@ -105,6 +105,7 @@ namespace trackerTFP {
   template<> Format<Variable::r, Process::ht>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
   template<> Format<Variable::phi, Process::ht>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
   template<> Format<Variable::phi, Process::mht>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
+  template<> Format<Variable::phi, Process::sf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
   template<> Format<Variable::phi, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
   template<> Format<Variable::phi, Process::gp>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
   template<> Format<Variable::phi, Process::dtc>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
@@ -142,7 +143,7 @@ namespace trackerTFP {
     static constexpr std::array<std::array<Process, +Process::end>, +Variable::end> config_ = {{
     //  Process::fe  Process::dtc  Process::pp   Process::gp  Process::ht  Process::mht  Process::sf   Process::kfin  Process::kf    Process::dr
       {{Process::x,  Process::ht,  Process::ht,  Process::ht, Process::ht, Process::ht,  Process::ht,  Process::ht,   Process::ht,   Process::x }}, // Variable::r
-      {{Process::x,  Process::dtc, Process::dtc, Process::gp, Process::ht, Process::mht, Process::mht, Process::mht,  Process::kf,   Process::x }}, // Variable::phi
+      {{Process::x,  Process::dtc, Process::dtc, Process::gp, Process::ht, Process::mht, Process::sf,  Process::sf,   Process::kf,   Process::x }}, // Variable::phi
       {{Process::x,  Process::dtc, Process::dtc, Process::gp, Process::gp, Process::gp,  Process::sf,  Process::sf,   Process::kf,   Process::x }}, // Variable::z
       {{Process::x,  Process::ht,  Process::ht,  Process::ht, Process::ht, Process::ht,  Process::ht,  Process::x,    Process::x,    Process::x }}, // Variable::layer
       {{Process::x,  Process::dtc, Process::dtc, Process::x,  Process::x,  Process::x,   Process::x,   Process::x,    Process::x,    Process::x }}, // Variable::sectorsPhi
