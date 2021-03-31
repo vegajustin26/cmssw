@@ -118,11 +118,11 @@ namespace trackFindingTracklet {
       for (const StreamTrack& stream : streamsTracks)
         nTracks += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
       ttTracks.reserve(nTracks);
-      // convert kf track frames per region and stub frames per region and layer to TTTracks
-      for (int region = 0; region < setup_->numRegions(); region++) {
-        const int offset = region * setup_->numLayers();
+      // convert kf track frames per channel and stub frames per channel and layer to TTTracks
+      for (int channel = 0; channel < (int)streamsTracks.size(); channel++) {
+        const int offset = channel * setup_->numLayers();
         int iTrk(0);
-        for (const FrameTrack& frameTrack : streamsTracks[region]) {
+        for (const FrameTrack& frameTrack : streamsTracks[channel]) {
           if (frameTrack.first.isNull())
             continue;
           // convert stub frames to kf stubs

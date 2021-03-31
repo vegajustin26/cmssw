@@ -582,13 +582,13 @@ namespace trackerDTC {
   }
 
   //
-  double Setup::dPhi(const TTStubRef& ttStubRef, double qOverPt) const {
+  double Setup::dPhi(const TTStubRef& ttStubRef, double inv2R) const {
     const DetId& detId = ttStubRef->getDetId();
     SensorModule* sm = sensorModule(detId + 1);
     const double r = stubPos(ttStubRef).perp();
     const double sigma = sm->pitchRow() / r;
-    const double scat = 0.00075 * abs(qOverPt) / invPtToDphi_;
-    const double extra = sm->barrel() ? 0. : sm->pitchCol() * abs(qOverPt);
+    const double scat = 0.00075 * abs(inv2R) / invPtToDphi_;
+    const double extra = sm->barrel() ? 0. : sm->pitchCol() * abs(inv2R);
     const double digi = tmttBasePhi_;
     const double dPhi = sigma + scat + extra + digi;
     if (dPhi >= maxdPhi_ || dPhi < mindPhi_) {
@@ -602,13 +602,13 @@ namespace trackerDTC {
   }
 
   //
-  double Setup::v0(const TTStubRef& ttStubRef, double qOverPt) const {
+  double Setup::v0(const TTStubRef& ttStubRef, double inv2R) const {
     const DetId& detId = ttStubRef->getDetId();
     SensorModule* sm = sensorModule(detId + 1);
     const double r = stubPos(ttStubRef).perp();
     const double sigma = pow(sm->pitchRow() / r, 2) / 12.;
-    const double scat = pow(0.00075 * qOverPt / invPtToDphi_, 2);
-    const double extra = sm->barrel() ? 0. : pow(sm->pitchCol() * qOverPt, 2);
+    const double scat = pow(0.00075 * inv2R / invPtToDphi_, 2);
+    const double extra = sm->barrel() ? 0. : pow(sm->pitchCol() * inv2R, 2);
     const double digi = pow(tmttBasePhi_, 2);
     return sigma + scat + extra + digi;
 

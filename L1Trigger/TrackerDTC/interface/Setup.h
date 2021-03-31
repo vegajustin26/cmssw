@@ -110,9 +110,9 @@ namespace trackerDTC {
     //
     double v1(const TTStubRef& ttStubRef, double cot) const;
     //
-    double dPhi(const TTStubRef& ttStubRef, double qOverPt) const;
+    double dPhi(const TTStubRef& ttStubRef, double inv2R) const;
     //
-    double v0(const TTStubRef& ttStubRef, double qOverPt) const;
+    double v0(const TTStubRef& ttStubRef, double inv2R) const;
     //
     const std::vector<SensorModule>& sensorModules() const { return sensorModules_; }
 

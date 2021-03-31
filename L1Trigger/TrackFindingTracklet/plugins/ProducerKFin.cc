@@ -127,10 +127,6 @@ namespace trackFindingTracklet {
     const DataFormat& dfinv2R = dataFormats_->format(Variable::inv2R, Process::kfin);
     // dataformat used for track phi at radius schoenRofPhi wrt phi sector centre
     const DataFormat& dfphiT = dataFormats_->format(Variable::phiT, Process::kfin);
-    // dataformat used for stub phi residual wrt track
-    const DataFormat& dfphi = dataFormats_->format(Variable::phi, Process::kfin);
-    // dataformat used for stub z residual wrt track
-    const DataFormat& dfz = dataFormats_->format(Variable::z, Process::kfin);
     const int numStreamsTracks = setup_->numRegions() * trackBuilderChannel_->numChannels();
     const int numStreamsStubs = numStreamsTracks * setup_->numLayers();
     // empty KFin products
