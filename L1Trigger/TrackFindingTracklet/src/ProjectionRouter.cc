@@ -132,6 +132,11 @@ void ProjectionRouter::execute() {
 
       vmprojs_[iphivm]->addTracklet(tracklet, allprojcount);
 
+      if (settings_.debugTracklet()) {
+	edm::LogVerbatim("Tracklet") << getName() << " projection to "
+				     << vmprojs_[iphivm]->getName() << " iphivm " << iphivm;
+      }
+      
       allprojcount++;
     }
   }

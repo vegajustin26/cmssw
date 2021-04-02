@@ -245,10 +245,20 @@ void VMRouter::execute() {
 
       assert(vmstubsMEPHI_[ivmPlus] != nullptr);
       vmstubsMEPHI_[ivmPlus]->addStub(vmstub, vmbin);
-
+      if (settings_.debugTracklet()) {
+	edm::LogVerbatim("Tracklet") << getName() << " adding stub to "
+				     << vmstubsMEPHI_[ivmPlus]->getName() << " ivmPlus" << ivmPlus
+				     << " bin=" << vmbin;
+      }
+      
       if (ivmMinus != ivmPlus) {
         assert(vmstubsMEPHI_[ivmMinus] != nullptr);
         vmstubsMEPHI_[ivmMinus]->addStub(vmstub, vmbin);
+	if (settings_.debugTracklet()) {
+	  edm::LogVerbatim("Tracklet") << getName() << " adding stub to "
+				       << vmstubsMEPHI_[ivmMinus]->getName() << " ivmMinus" << ivmMinus
+				       << " bin=" << vmbin;
+	}
       }
 
       //Fill the TE VM memories
