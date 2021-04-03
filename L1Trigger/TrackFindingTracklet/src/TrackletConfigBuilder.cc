@@ -899,8 +899,9 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
       for (unsigned int iReg = 0; iReg < NRegions_[l2]; iReg++) {
         unsigned int nmem = 0;
         //Hack since we use same module twice
-        if (iSeed == 7)
+        if (iSeed == 7) {
           nmem = 2;
+	}
 
         for (unsigned iTC = 0; iTC < nTCReg; iTC++) {
           nmem++;
@@ -948,6 +949,10 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
 
           unsigned int nmem = 0;
 
+	  if (iSeed == 7) {
+	    nmem = 4;
+	  }
+	  
           for (unsigned int iTE = 0; iTE < TE_[iSeed].size(); iTE++) {
             unsigned int TE1 = TE_[iSeed][iTE].first;
             unsigned int TE2 = TE_[iSeed][iTE].second;
