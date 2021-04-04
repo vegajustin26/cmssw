@@ -5,15 +5,15 @@ using namespace std;
 using namespace trklet;
 
 void Residual::init(Settings const& settings,
-                         unsigned int layerdisk,
-                         int iphiresid,
-                         int irzresid,
-                         int istubid,
-                         double phiresid,
-                         double rzresid,
-                         double phiresidapprox,
-                         double rzresidapprox,
-                         const Stub* stubptr) {
+                    unsigned int layerdisk,
+                    int iphiresid,
+                    int irzresid,
+                    int istubid,
+                    double phiresid,
+                    double rzresid,
+                    double phiresidapprox,
+                    double rzresidapprox,
+                    const Stub* stubptr) {
   assert(layerdisk < N_LAYER + N_DISK);
 
   if (valid_ && (std::abs(iphiresid) > std::abs(fpgaphiresid_.value())))

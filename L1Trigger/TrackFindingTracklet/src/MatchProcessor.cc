@@ -209,11 +209,11 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
     
   */
 
-  bool print = getName()=="MP_L3PHIC" && iSector==3;
+  bool print = getName() == "MP_L3PHIC" && iSector == 3;
   print = false;
-  
+
   phimin_ = phimin;
-  
+
   Tracklet* oldTracklet = nullptr;
 
   unsigned int countme = 0;
@@ -226,7 +226,7 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
 
   inputProjBuffer_.reset();
 
-  for (const auto& inputproj: inputprojs_) {
+  for (const auto& inputproj : inputprojs_) {
     countinputproj += inputproj->nTracklets();
   }
 
@@ -256,13 +256,13 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
 
             FPGAWord fpgaphi = proj->proj(layerdisk_).fpgaphiproj();
 
-	    //if (print) cout << "PROJECTION "<<projMem->getName()<<": "<<proj->proj(layerdisk_).fpgaphiproj().value()
-	    //			    << " " << proj->proj(layerdisk_).fpgarzproj().value()
-	    //		    << " " << proj->proj(layerdisk_).fpgaphiprojder().value()
-	    //		    << " " << proj->proj(layerdisk_).fpgarzprojder().value()
-	    //		    << "TC index trackletIndex : "<<proj->TCIndex()<<" "<<proj->trackletIndex()
-	    //		    <<endl;
-	    
+            //if (print) cout << "PROJECTION "<<projMem->getName()<<": "<<proj->proj(layerdisk_).fpgaphiproj().value()
+            //			    << " " << proj->proj(layerdisk_).fpgarzproj().value()
+            //		    << " " << proj->proj(layerdisk_).fpgaphiprojder().value()
+            //		    << " " << proj->proj(layerdisk_).fpgarzprojder().value()
+            //		    << "TC index trackletIndex : "<<proj->TCIndex()<<" "<<proj->trackletIndex()
+            //		    <<endl;
+
             unsigned int iphi = (fpgaphi.value() >> (fpgaphi.nbits() - nvmbits_)) & (nvmbins_ - 1);
 
             int nextrabits = 2;
@@ -270,40 +270,41 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
 
             unsigned int extrabits = fpgaphi.bits(fpgaphi.nbits() - overlapbits, nextrabits);
 
-	    if (print) cout << "iphi extrabits: "<<iphi<<" "<<extrabits<<endl;
-	    
+            if (print)
+              cout << "iphi extrabits: " << iphi << " " << extrabits << endl;
+
             unsigned int ivmPlus = iphi;
 
-	    int shift = 0;
-	    
+            int shift = 0;
+
             if (extrabits == ((1U << nextrabits) - 1) && iphi != ((1U << settings_.nbitsvmme(layerdisk_)) - 1)) {
-	      shift = 1;
+              shift = 1;
               ivmPlus++;
             }
             unsigned int ivmMinus = iphi;
             if (extrabits == 0 && iphi != 0) {
-	      shift = -1;
+              shift = -1;
               ivmMinus--;
             }
 
-	    
             int projrinv = -1;
             if (barrel_) {
-	      FPGAWord phider = proj->proj(layerdisk_).fpgaphiprojder();
-	      projrinv = (1 << (nrinv_ - 1)) - 1 - (phider.value() >> (phider.nbits() - nrinv_));
+              FPGAWord phider = proj->proj(layerdisk_).fpgaphiprojder();
+              projrinv = (1 << (nrinv_ - 1)) - 1 - (phider.value() >> (phider.nbits() - nrinv_));
             } else {
               //The next lines looks up the predicted bend based on:
               // 1 - r projections
               // 2 - phi derivative
               // 3 - the sign - i.e. if track is forward or backward
 
-              int rindex = (proj->proj(layerdisk_).fpgarzproj().value() >> (proj->proj(layerdisk_).fpgarzproj().nbits() - nrbits_)) &
+              int rindex = (proj->proj(layerdisk_).fpgarzproj().value() >>
+                            (proj->proj(layerdisk_).fpgarzproj().nbits() - nrbits_)) &
                            ((1 << nrbits_) - 1);
 
               int phiderindex = (proj->proj(layerdisk_).fpgaphiprojder().value() >>
                                  (proj->proj(layerdisk_).fpgaphiprojder().nbits() - nphiderbits_)) &
                                 ((1 << nphiderbits_) - 1);
-	      
+
               int signindex = proj->proj(layerdisk_).fpgarzprojder().value() < 0;
 
               int bendindex = (signindex << (nphiderbits_ + nrbits_)) + (rindex << (nphiderbits_)) + phiderindex;
@@ -311,16 +312,16 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
               projrinv = globals_->projectionRouterBendTable()->bendLoookup(layerdisk_ - N_LAYER, bendindex);
 
               proj->proj(layerdisk_).setBendIndex(projrinv);
-
             }
             assert(projrinv >= 0);
 
             unsigned int slot = proj->proj(layerdisk_).fpgarzbin1projvm().value();
             bool second = proj->proj(layerdisk_).fpgarzbin2projvm().value();
 
-	    if (print) cout << "istep="<<istep<<" TrkId stubindex : "<<128*proj->TCIndex()+proj->trackletIndex()
-			    <<" ivmMinus ivmPlus shift "<<ivmMinus<<" "<<ivmPlus<<" "<<shift
-			    <<"second: "<<second<<" iphiproj="<<fpgaphi.value()<<endl;
+            if (print)
+              cout << "istep=" << istep << " TrkId stubindex : " << 128 * proj->TCIndex() + proj->trackletIndex()
+                   << " ivmMinus ivmPlus shift " << ivmMinus << " " << ivmPlus << " " << shift << "second: " << second
+                   << " iphiproj=" << fpgaphi.value() << endl;
 
             unsigned int projfinephi = (fpgaphi.value() >> (fpgaphi.nbits() - (nvmbits_ + 3))) & 7;
             int projfinerz = proj->proj(layerdisk_).fpgafinerzvm().value();
@@ -335,16 +336,27 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
             bool usefirstMinus = stubmem->nStubsBin(ivmMinus * nbins + slot) != 0;
             bool usesecondMinus = (second && (stubmem->nStubsBin(ivmMinus * nbins + slot + 1) != 0));
             bool usefirstPlus = ivmPlus != ivmMinus && stubmem->nStubsBin(ivmPlus * nbins + slot) != 0;
-            bool usesecondPlus = ivmPlus != ivmMinus && (second && (stubmem->nStubsBin(ivmPlus * nbins + slot + 1) != 0));
+            bool usesecondPlus =
+                ivmPlus != ivmMinus && (second && (stubmem->nStubsBin(ivmPlus * nbins + slot + 1) != 0));
 
-	    bool useProj = usefirstPlus || usesecondPlus || usefirstMinus || usesecondMinus;
-	    
-	    if (useProj) {
-              ProjectionTemp tmpProj(proj, slot, projrinv, projfinerz, projfinephi,
-				     ivmMinus, shift, usefirstMinus, usefirstPlus, usesecondMinus, usesecondPlus, isPSseed);
-		inputProjBuffer_.store(tmpProj);
-	    }
-	    
+            bool useProj = usefirstPlus || usesecondPlus || usefirstMinus || usesecondMinus;
+
+            if (useProj) {
+              ProjectionTemp tmpProj(proj,
+                                     slot,
+                                     projrinv,
+                                     projfinerz,
+                                     projfinephi,
+                                     ivmMinus,
+                                     shift,
+                                     usefirstMinus,
+                                     usefirstPlus,
+                                     usesecondMinus,
+                                     usesecondPlus,
+                                     isPSseed);
+              inputProjBuffer_.store(tmpProj);
+            }
+
             iproj++;
             if (iproj == projMem->nTracklets()) {
               iproj = 0;
@@ -378,19 +390,19 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
         if (layerdisk_ >= 6)
           nbins = 16;
 
-	//if (print) cout << "istep = "<<istep<<" Initialize matchengine : "<<iME<<endl;
+        //if (print) cout << "istep = "<<istep<<" Initialize matchengine : "<<iME<<endl;
         matchengines_[iME].init(stubmem,
-				nbins,
-				tmpProj.slot(),
+                                nbins,
+                                tmpProj.slot(),
                                 tmpProj.iphi(),
                                 tmpProj.shift(),
                                 tmpProj.projrinv(),
                                 tmpProj.projfinerz(),
                                 tmpProj.projfinephi(),
-                                tmpProj.use(0,0),
-                                tmpProj.use(0,1),
-                                tmpProj.use(1,0),
-                                tmpProj.use(1,1),
+                                tmpProj.use(0, 0),
+                                tmpProj.use(0, 1),
+                                tmpProj.use(1, 0),
+                                tmpProj.use(1, 1),
                                 tmpProj.isPSseed(),
                                 tmpProj.proj());
         addedProjection = true;
@@ -457,8 +469,11 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
 bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, bool print, unsigned int istep) {
   const L1TStub* stub = fpgastub->l1tstub();
 
-  if (print) cout << "MatchCalculator istep="<<istep<<" TrkId stubindex : "<<128*tracklet->TCIndex()+tracklet->trackletIndex()<<" "<<fpgastub->allStubIndex().value()<<endl;
-  
+  if (print)
+    cout << "MatchCalculator istep=" << istep
+         << " TrkId stubindex : " << 128 * tracklet->TCIndex() + tracklet->trackletIndex() << " "
+         << fpgastub->allStubIndex().value() << endl;
+
   if (layerdisk_ < N_LAYER) {
     const Projection& proj = tracklet->proj(layerdisk_);
     int ir = fpgastub->r().value();
@@ -474,7 +489,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, b
     int ideltaphi = (fpgastub->phi().value() - iphi) << phishift_;
 
     //if (print) cout << "ideltaphi : " << fpgastub->phi().value()<<" "<<iphi<<" "<<icorr<<endl;
-    
+
     //Floating point calculations
 
     double phi = stub->phi();
@@ -500,8 +515,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, b
 
     double dz = z - (proj.rzproj() + dr * proj.rzprojder());
 
-    double dphiapprox =
-        reco::reduceRange(phi - (proj.phiprojapprox() + dr * proj.phiprojderapprox()));
+    double dphiapprox = reco::reduceRange(phi - (proj.phiprojapprox() + dr * proj.phiprojderapprox()));
 
     double dzapprox = z - (proj.rzprojapprox() + dr * proj.rzprojderapprox());
 
@@ -535,9 +549,11 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, b
           << endl;
     }
 
-    if (print) cout << "delta phi : "<< ideltaphi << " " << phimatchcut_[seedindex] << endl;
-    if (print) cout << "delta z   : "<< (ideltaz << dzshift_) << " " << zmatchcut_[seedindex] << endl;
-    
+    if (print)
+      cout << "delta phi : " << ideltaphi << " " << phimatchcut_[seedindex] << endl;
+    if (print)
+      cout << "delta z   : " << (ideltaz << dzshift_) << " " << zmatchcut_[seedindex] << endl;
+
     bool imatch = ((unsigned int)std::abs(ideltaphi) <= phimatchcut_[seedindex]) &&
                   ((unsigned int)std::abs(ideltaz << dzshift_) <= zmatchcut_[seedindex]);
 
@@ -554,18 +570,24 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, b
     }
 
     if (imatch) {
-      tracklet->addMatch(layerdisk_, ideltaphi, ideltaz,
-			 dphi, dz, dphiapprox, dzapprox,
-			 (phiregion_ << 7) + fpgastub->stubindex().value(),
-			 fpgastub);
-      
+      tracklet->addMatch(layerdisk_,
+                         ideltaphi,
+                         ideltaz,
+                         dphi,
+                         dz,
+                         dphiapprox,
+                         dzapprox,
+                         (phiregion_ << 7) + fpgastub->stubindex().value(),
+                         fpgastub);
+
       if (settings_.debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "Accepted full match in layer " << getName() << " " << tracklet;
       }
 
       int iSeed = tracklet->getISeed();
       assert(fullmatches_[iSeed] != nullptr);
-      if (print) cout << "istep = "<<istep<<" Add match for iSeed : "<<iSeed<<endl;
+      if (print)
+        cout << "istep = " << istep << " Add match for iSeed : " << iSeed << endl;
       fullmatches_[iSeed]->addMatch(tracklet, fpgastub);
 
       return true;
@@ -586,7 +608,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, b
     int iz = fpgastub->z().value();
 
     const Projection& proj = tracklet->proj(layerdisk_);
-    
+
     int iphi = proj.fpgaphiproj().value();
     int iphicorr = (iz * proj.fpgaphiprojder().value()) >> icorrshift_;
 
@@ -640,8 +662,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, b
     double dz = z - sign * settings_.zmean(layerdisk_ - N_LAYER);
 
     if (std::abs(dz) > settings_.dzmax()) {
-      edm::LogProblem("Tracklet") << __FILE__ << ":" << __LINE__ << " " << name_ << " "
-                                  << tracklet->getISeed();
+      edm::LogProblem("Tracklet") << __FILE__ << ":" << __LINE__ << " " << name_ << " " << tracklet->getISeed();
       edm::LogProblem("Tracklet") << "stub " << stub->z() << " disk " << disk << " " << dz;
       assert(std::abs(dz) < settings_.dzmax());
     }
@@ -655,8 +676,7 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, b
 
     double dphi = reco::reduceRange(phi - phiproj);
 
-    double dphiapprox =
-        reco::reduceRange(phi - (proj.phiprojapprox() + dz * proj.phiprojderapprox()));
+    double dphiapprox = reco::reduceRange(phi - (proj.phiprojapprox() + dz * proj.phiprojderapprox()));
 
     double drphi = dphi * stub->r();
     double drphiapprox = dphiapprox * stub->r();
@@ -713,11 +733,16 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, b
       assert(std::abs(dphi) < 0.25);
       assert(std::abs(dphiapprox) < 0.25);
 
-      tracklet->addMatch(layerdisk_, ideltaphi, ideltar,
-			 drphi / stub->r(), dr, drphiapprox / stub->r(), drapprox,
-			 (phiregion_ << 7) + fpgastub->stubindex().value(),
-			 fpgastub);
-      
+      tracklet->addMatch(layerdisk_,
+                         ideltaphi,
+                         ideltar,
+                         drphi / stub->r(),
+                         dr,
+                         drphiapprox / stub->r(),
+                         drapprox,
+                         (phiregion_ << 7) + fpgastub->stubindex().value(),
+                         fpgastub);
+
       if (settings_.debugTracklet()) {
         edm::LogVerbatim("Tracklet") << "Accepted full match in disk " << getName() << " " << tracklet;
       }

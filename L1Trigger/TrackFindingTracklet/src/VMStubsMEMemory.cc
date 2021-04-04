@@ -6,8 +6,7 @@
 using namespace std;
 using namespace trklet;
 
-VMStubsMEMemory::VMStubsMEMemory(string name, Settings const& settings)
-    : MemoryBase(name, settings) {
+VMStubsMEMemory::VMStubsMEMemory(string name, Settings const& settings) : MemoryBase(name, settings) {
   unsigned int layerdisk = initLayerDisk(6);
   if (layerdisk < N_LAYER) {
     binnedstubs_.resize(settings_.NLONGVMBINS());
@@ -18,7 +17,6 @@ VMStubsMEMemory::VMStubsMEMemory(string name, Settings const& settings)
 }
 
 void VMStubsMEMemory::writeStubs(bool first, unsigned int iSector) {
-
   iSector_ = iSector;
   const string dirVM = settings_.memPath() + "VMStubsME/";
 

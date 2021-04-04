@@ -49,8 +49,8 @@ Sector::Sector(Settings const& settings, Globals* globals) : isector_(-1), setti
 
 Sector::~Sector() = default;
 
-void Sector::setSector(unsigned int isector){
-  assert(isector<N_SECTOR);
+void Sector::setSector(unsigned int isector) {
+  assert(isector < N_SECTOR);
   isector_ = isector;
   double dphi = 2 * M_PI / N_SECTOR;
   double dphiHG = 0.5 * settings_.dphisectorHG() - M_PI / N_SECTOR;
@@ -63,10 +63,7 @@ void Sector::setSector(unsigned int isector){
   if (phimin_ > phimax_) {
     phimin_ -= 2 * M_PI;
   }
-  
 }
-
-
 
 bool Sector::addStub(L1TStub stub, string dtc) {
   unsigned int layerdisk = stub.layerdisk();
@@ -104,7 +101,6 @@ bool Sector::addStub(L1TStub stub, string dtc) {
 
   return true;
 }
-
 
 void Sector::addMem(string memType, string memName) {
   if (memType == "DTCLink:") {

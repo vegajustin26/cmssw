@@ -14,7 +14,6 @@ TrackFitMemory::TrackFitMemory(string name, Settings const& settings, double phi
 }
 
 void TrackFitMemory::writeTF(bool first, unsigned int iSector) {
-
   iSector_ = iSector;
   const string dirFT = settings_.memPath() + "FitTrack/";
 

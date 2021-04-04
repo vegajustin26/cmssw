@@ -7,8 +7,7 @@
 using namespace std;
 using namespace trklet;
 
-VMProjectionsMemory::VMProjectionsMemory(string name, Settings const& settings)
-    : MemoryBase(name, settings) {
+VMProjectionsMemory::VMProjectionsMemory(string name, Settings const& settings) : MemoryBase(name, settings) {
   initLayerDisk(7, layer_, disk_);
 }
 
@@ -22,7 +21,6 @@ void VMProjectionsMemory::addTracklet(Tracklet* tracklet, unsigned int allprojin
 }
 
 void VMProjectionsMemory::writeVMPROJ(bool first, unsigned int iSector) {
-
   iSector_ = iSector;
   const string dirVM = settings_.memPath() + "VMProjections/";
 

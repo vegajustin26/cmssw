@@ -93,7 +93,7 @@ void ProjectionRouter::execute() {
       } else {
         int disk = layerdisk_ - (N_LAYER - 1);
 
-	Projection& proj =  tracklet->proj(layerdisk_);
+        Projection& proj = tracklet->proj(layerdisk_);
         fpgaphi = proj.fpgaphiproj();
 
         //The next lines looks up the predicted bend based on:
@@ -101,11 +101,9 @@ void ProjectionRouter::execute() {
         // 2 - phi derivative
         // 3 - the sign - i.e. if track is forward or backward
 
-        int rindex = (proj.fpgarzproj().value() >> (proj.fpgarzproj().nbits() - nrbits_)) &
-                     ((1 << nrbits_) - 1);
+        int rindex = (proj.fpgarzproj().value() >> (proj.fpgarzproj().nbits() - nrbits_)) & ((1 << nrbits_) - 1);
 
-        int phiderindex = (proj.fpgaphiprojder().value() >>
-                           (proj.fpgaphiprojder().nbits() - nphiderbits_)) &
+        int phiderindex = (proj.fpgaphiprojder().value() >> (proj.fpgaphiprojder().nbits() - nphiderbits_)) &
                           ((1 << nphiderbits_) - 1);
 
         int signindex = (proj.fpgarzprojder().value() < 0);
@@ -133,10 +131,10 @@ void ProjectionRouter::execute() {
       vmprojs_[iphivm]->addTracklet(tracklet, allprojcount);
 
       if (settings_.debugTracklet()) {
-	edm::LogVerbatim("Tracklet") << getName() << " projection to "
-				     << vmprojs_[iphivm]->getName() << " iphivm " << iphivm;
+        edm::LogVerbatim("Tracklet") << getName() << " projection to " << vmprojs_[iphivm]->getName() << " iphivm "
+                                     << iphivm;
       }
-      
+
       allprojcount++;
     }
   }

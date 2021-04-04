@@ -6,8 +6,7 @@
 using namespace std;
 using namespace trklet;
 
-VMStubsTEMemory::VMStubsTEMemory(string name, Settings const& settings)
-    : MemoryBase(name, settings) {
+VMStubsTEMemory::VMStubsTEMemory(string name, Settings const& settings) : MemoryBase(name, settings) {
   //set the layer or disk that the memory is in
   initLayerDisk(6, layer_, disk_);
 
@@ -219,7 +218,6 @@ void VMStubsTEMemory::clean() {
 }
 
 void VMStubsTEMemory::writeStubs(bool first, unsigned int iSector) {
-
   iSector_ = iSector;
   const string dirVM = settings_.memPath() + "VMStubsTE/";
   openFile(first, dirVM, "VMStubs_");

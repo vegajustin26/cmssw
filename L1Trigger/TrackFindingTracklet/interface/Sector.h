@@ -66,7 +66,7 @@ namespace trklet {
 
     //Set the sector
     void setSector(unsigned int isector);
-    
+
     bool addStub(L1TStub stub, std::string dtc);  //TODO - should be pointer or string
 
     // Creates all required memory modules based on wiring map (args: module type, module instance)
@@ -180,7 +180,6 @@ namespace trklet {
     std::vector<std::unique_ptr<MatchProcessor> > MP_;
     std::vector<std::unique_ptr<FitTrack> > FT_;
     std::vector<std::unique_ptr<PurgeDuplicate> > PD_;
-
   };
 };  // namespace trklet
 #endif

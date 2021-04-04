@@ -14,7 +14,7 @@ namespace trklet {
                    int projfinerz,
                    unsigned int projfinephi,
                    unsigned int iphi,
-		   int shift,
+                   int shift,
                    bool usefirstMinus,
                    bool usefirstPlus,
                    bool usesecondMinus,

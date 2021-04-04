@@ -15,7 +15,7 @@ GEOMETRY = "D49"
 # Set L1 tracking algorithm: 
 # 'HYBRID' (baseline, 4par fit) or 'HYBRID_DISPLACED' (extended, 5par fit). 
 # (Or legacy algos 'TMTT' or 'TRACKLET').
-L1TRKALGO = 'HYBRID'  
+L1TRKALGO = 'HYBRID_DISPLACED'  
 
 WRITE_DATA = False
 
@@ -72,6 +72,8 @@ if GEOMETRY == "D49":
 
   # Or read specified .root file:
   inputMC = ["/store/relval/CMSSW_11_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_113X_mcRun4_realistic_v3_2026D49PU200-v1/00000/001edbad-174e-46af-932a-6ce8e04aee1c.root"] 
+  #inputMC = ["/store/relval/CMSSW_11_2_0_pre8/RelValSingleMuPt10/GEN-SIM-RECO/112X_mcRun4_realistic_v3_2026D49noPU-v1/00000/007d817e-9c59-4dec-959b-0f227942cdf0.root"]
+  #inputMC = ["/store/relval/CMSSW_11_3_0_pre3/RelValSingleMuPt10/GEN-SIM-DIGI-RAW/113X_mcRun4_realistic_v3_2026D49noPU-v1/00000/04514913-efc7-49fc-8df4-90efe43ca047.root"]
 
 else:
   print "this is not a valid geometry!!!"    

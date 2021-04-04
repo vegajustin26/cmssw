@@ -117,7 +117,7 @@ namespace trklet {
     };
 
     void setBendIndex(int bendindex) { fpgabendindex_.set(bendindex, 5, true, __LINE__, __FILE__); }
-    
+
     const FPGAWord& getBendIndex() const { return fpgabendindex_; }
 
   protected:
@@ -147,7 +147,6 @@ namespace trklet {
 
     //used by projections to disks
     FPGAWord fpgabendindex_;
-    
   };
 };  // namespace trklet
 #endif

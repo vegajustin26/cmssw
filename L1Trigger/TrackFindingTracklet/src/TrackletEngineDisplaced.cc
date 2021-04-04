@@ -12,9 +12,7 @@
 using namespace std;
 using namespace trklet;
 
-TrackletEngineDisplaced::TrackletEngineDisplaced(string name,
-                                                 Settings const& settings,
-                                                 Globals* global)
+TrackletEngineDisplaced::TrackletEngineDisplaced(string name, Settings const& settings, Globals* global)
     : ProcessBase(name, settings, global) {
   stubpairs_.clear();
   firstvmstubs_.clear();

@@ -7,15 +7,13 @@
 using namespace std;
 using namespace trklet;
 
-CleanTrackMemory::CleanTrackMemory(
-    string name, Settings const& settings, double phimin, double phimax)
+CleanTrackMemory::CleanTrackMemory(string name, Settings const& settings, double phimin, double phimax)
     : MemoryBase(name, settings) {
   phimin_ = phimin;
   phimax_ = phimax;
 }
 
 void CleanTrackMemory::writeCT(bool first, unsigned int iSector) {
-
   iSector_ = iSector;
   const string dirCT = settings_.memPath() + "CleanTrack/";
 

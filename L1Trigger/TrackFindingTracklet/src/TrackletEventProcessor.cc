@@ -182,45 +182,44 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
   bool first = (eventnum_ == 1);
 
   for (unsigned int k = 0; k < N_SECTOR; k++) {
-    
     sector_->setSector(k);
 
     cleanTimer_.start();
     sector_->clean();
     cleanTimer_.stop();
-    
+
     addStubTimer_.start();
-    
+
     vector<int> layerstubs(N_LAYER + N_DISK, 0);
     vector<int> layerstubssector(N_SECTOR * (N_LAYER + N_DISK), 0);
-    
+
     for (int j = 0; j < ev.nstubs(); j++) {
       L1TStub stub = ev.stub(j);
       unsigned int isector = stub.region();
-      if (isector!=k) {
-	continue;
+      if (isector != k) {
+        continue;
       }
-      
+
       string dtc = stub.DTClink();
-      
+
       layerstubs[stub.layerdisk()]++;
       layerstubssector[isector * (N_LAYER + N_DISK) + stub.layerdisk()]++;
-      
+
       sector_->addStub(stub, dtc);
     }
-    
+
     if (settings_->writeMonitorData("StubsLayerSector")) {
       for (unsigned int index = 0; index < layerstubssector.size(); index++) {
-	int layerdisk = index % (N_LAYER + N_DISK);
-	int sector = index / (N_LAYER + N_DISK);
-	globals_->ofstream("stubslayersector.txt")
-          << layerdisk << " " << sector << " " << layerstubssector[index] << endl;
+        int layerdisk = index % (N_LAYER + N_DISK);
+        int sector = index / (N_LAYER + N_DISK);
+        globals_->ofstream("stubslayersector.txt")
+            << layerdisk << " " << sector << " " << layerstubssector[index] << endl;
       }
     }
 
     if (settings_->writeMonitorData("StubsLayer")) {
       for (unsigned int layerdisk = 0; layerdisk < layerstubs.size(); layerdisk++) {
-	globals_->ofstream("stubslayer.txt") << layerdisk << " " << layerstubs[layerdisk] << endl;
+        globals_->ofstream("stubslayer.txt") << layerdisk << " " << layerstubs[layerdisk] << endl;
       }
     }
 
@@ -238,7 +237,6 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     }
     InputRouterTimer_.stop();
 
-
     VMRouterTimer_.start();
     sector_->executeVMR();
     if (settings_->writeMem() && k == settings_->writememsect()) {
@@ -253,7 +251,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     TETimer_.start();
     sector_->executeTE();
     TETimer_.stop();
-    
+
     // tracklet engine displaced
     TEDTimer_.start();
     sector_->executeTED();
@@ -275,50 +273,51 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     if (settings_->writeMem() && k == settings_->writememsect()) {
       sector_->writeSP(first);
     }
-    
+
     // tracklet calculator
     TCTimer_.start();
     sector_->executeTC();
     TCTimer_.stop();
-    
+
     int nTP = globals_->event()->nsimtracks();
     for (int iTP = 0; iTP < nTP; iTP++) {
       L1SimTrack simtrk = globals_->event()->simtrack(iTP);
       if (simtrk.pt() < 2.0)
-	continue;
+        continue;
       if (std::abs(simtrk.vz()) > 15.0)
-	continue;
+        continue;
       if (hypot(simtrk.vx(), simtrk.vy()) > 0.1)
-	continue;
+        continue;
       bool electron = (abs(simtrk.type()) == 11);
       bool muon = (abs(simtrk.type()) == 13);
       bool pion = (abs(simtrk.type()) == 211);
       bool kaon = (abs(simtrk.type()) == 321);
       bool proton = (abs(simtrk.type()) == 2212);
       if (!(electron || muon || pion || kaon || proton))
-	continue;
+        continue;
       int nlayers = 0;
       int ndisks = 0;
       int simtrackid = simtrk.trackid();
       unsigned int hitmask = ev.layersHit(simtrackid, nlayers, ndisks);
       if (nlayers + ndisks < 4)
-	continue;
-      
+        continue;
+
       if (settings_->writeMonitorData("HitEff")) {
-	static ofstream outhit("hiteff.txt");
-	outhit << simtrk.eta() << " " << (hitmask & 1) << " " << (hitmask & 2) << " " << (hitmask & 4) << " "
-	       << (hitmask & 8) << " " << (hitmask & 16) << " " << (hitmask & 32) << " " << (hitmask & 64) << " "
-	       << (hitmask & 128) << " " << (hitmask & 256) << " " << (hitmask & 512) << " " << (hitmask & 1024) << endl;
+        static ofstream outhit("hiteff.txt");
+        outhit << simtrk.eta() << " " << (hitmask & 1) << " " << (hitmask & 2) << " " << (hitmask & 4) << " "
+               << (hitmask & 8) << " " << (hitmask & 16) << " " << (hitmask & 32) << " " << (hitmask & 64) << " "
+               << (hitmask & 128) << " " << (hitmask & 256) << " " << (hitmask & 512) << " " << (hitmask & 1024)
+               << endl;
       }
-      
+
       std::unordered_set<int> matchseed;
       std::unordered_set<int> matchseedtmp = sector_->seedMatch(iTP);
       matchseed.insert(matchseedtmp.begin(), matchseedtmp.end());
       if (settings_->bookHistos()) {
-	for (int iseed = 0; iseed < 8; iseed++) {
-	  bool eff = matchseed.find(iseed) != matchseed.end();
-	  globals_->histograms()->fillSeedEff(iseed, simtrk.eta(), eff);
-	}
+        for (int iseed = 0; iseed < 8; iseed++) {
+          bool eff = matchseed.find(iseed) != matchseed.end();
+          globals_->histograms()->fillSeedEff(iseed, simtrk.eta(), eff);
+        }
       }
     }
 
@@ -353,7 +352,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     MCTimer_.start();
     sector_->executeMC();
     MCTimer_.stop();
-    
+
     // match processor (alternative to ME+MC)
     MPTimer_.start();
     sector_->executeMP();
@@ -375,7 +374,7 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
     PDTimer_.start();
     sector_->executePD(tracks_);
     if (((settings_->writeMem() || settings_->writeMonitorData("IFit")) && k == settings_->writememsect()) ||
-	settings_->writeMonitorData("CT")) {
+        settings_->writeMonitorData("CT")) {
       sector_->writeCT(first);
     }
     PDTimer_.stop();
@@ -383,7 +382,6 @@ void TrackletEventProcessor::event(SLHCEvent& ev) {
 }
 
 void TrackletEventProcessor::printSummary() {
-
   if (settings_->bookHistos()) {
     globals_->histograms()->close();
   }
@@ -398,7 +396,7 @@ void TrackletEventProcessor::printSummary() {
                                << addStubTimer_.tottime() << "\n"
                                << "InputRouter           " << setw(10) << InputRouterTimer_.ntimes() << setw(20)
                                << setprecision(3) << InputRouterTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
-                               << InputRouterTimer_.tottime() << "\n" 
+                               << InputRouterTimer_.tottime() << "\n"
                                << "VMRouter              " << setw(10) << VMRouterTimer_.ntimes() << setw(20)
                                << setprecision(3) << VMRouterTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
                                << VMRouterTimer_.tottime();
@@ -410,27 +408,32 @@ void TrackletEventProcessor::printSummary() {
                                  << setprecision(3) << MPTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
                                  << MPTimer_.tottime();
   } else {
-    edm::LogVerbatim("Tracklet")
-      << "TrackletEngine        " << setw(10) << TETimer_.ntimes() << setw(20) << setprecision(3)
-      << TETimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << TETimer_.tottime();
+    edm::LogVerbatim("Tracklet") << "TrackletEngine        " << setw(10) << TETimer_.ntimes() << setw(20)
+                                 << setprecision(3) << TETimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
+                                 << TETimer_.tottime();
     if (settings_->extended()) {
-      edm::LogVerbatim("Tracklet")
-	<< "TrackletEngineDisplaced" << setw(10) << TEDTimer_.ntimes() << setw(20) << setprecision(3)
-	<< TEDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << TEDTimer_.tottime() << "\n"
-	<< "TripletEngine         " << setw(10) << TRETimer_.ntimes() << setw(20) << setprecision(3)
-	<< TRETimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << TRETimer_.tottime() << "\n"
-	<< "TrackletCalculatorDisplaced" << setw(10) << TCDTimer_.ntimes() << setw(20) << setprecision(3)
-	<< TCDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << TCDTimer_.tottime();
+      edm::LogVerbatim("Tracklet") << "TrackletEngineDisplaced" << setw(10) << TEDTimer_.ntimes() << setw(20)
+                                   << setprecision(3) << TEDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
+                                   << TEDTimer_.tottime() << "\n"
+                                   << "TripletEngine         " << setw(10) << TRETimer_.ntimes() << setw(20)
+                                   << setprecision(3) << TRETimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
+                                   << TRETimer_.tottime() << "\n"
+                                   << "TrackletCalculatorDisplaced" << setw(10) << TCDTimer_.ntimes() << setw(20)
+                                   << setprecision(3) << TCDTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
+                                   << TCDTimer_.tottime();
     }
-    edm::LogVerbatim("Tracklet")
-      << "TrackletCalculator    " << setw(10) << TCTimer_.ntimes() << setw(20) << setprecision(3)
-      << TCTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << TCTimer_.tottime() << "\n"
-      << "ProjectionRouter      " << setw(10) << PRTimer_.ntimes() << setw(20) << setprecision(3)
-      << PRTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << PRTimer_.tottime() << "\n"
-      << "MatchEngine           " << setw(10) << METimer_.ntimes() << setw(20) << setprecision(3)
-      << METimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << METimer_.tottime() << "\n"
-      << "MatchCalculator       " << setw(10) << MCTimer_.ntimes() << setw(20) << setprecision(3)
-      << MCTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3) << MCTimer_.tottime();
+    edm::LogVerbatim("Tracklet") << "TrackletCalculator    " << setw(10) << TCTimer_.ntimes() << setw(20)
+                                 << setprecision(3) << TCTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
+                                 << TCTimer_.tottime() << "\n"
+                                 << "ProjectionRouter      " << setw(10) << PRTimer_.ntimes() << setw(20)
+                                 << setprecision(3) << PRTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
+                                 << PRTimer_.tottime() << "\n"
+                                 << "MatchEngine           " << setw(10) << METimer_.ntimes() << setw(20)
+                                 << setprecision(3) << METimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
+                                 << METimer_.tottime() << "\n"
+                                 << "MatchCalculator       " << setw(10) << MCTimer_.ntimes() << setw(20)
+                                 << setprecision(3) << MCTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)
+                                 << MCTimer_.tottime();
   }
   edm::LogVerbatim("Tracklet") << "FitTrack              " << setw(10) << FTTimer_.ntimes() << setw(20)
                                << setprecision(3) << FTTimer_.avgtime() * 1000.0 << setw(20) << setprecision(3)

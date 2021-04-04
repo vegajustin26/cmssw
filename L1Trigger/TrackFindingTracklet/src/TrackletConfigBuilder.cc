@@ -901,7 +901,7 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
         //Hack since we use same module twice
         if (iSeed == 7) {
           nmem = 2;
-	}
+        }
 
         for (unsigned iTC = 0; iTC < nTCReg; iTC++) {
           nmem++;
@@ -949,10 +949,10 @@ void TrackletConfigBuilder::writeVMSMemories(std::ostream& os, std::ostream& mem
 
           unsigned int nmem = 0;
 
-	  if (iSeed == 7) {
-	    nmem = 4;
-	  }
-	  
+          if (iSeed == 7) {
+            nmem = 4;
+          }
+
           for (unsigned int iTE = 0; iTE < TE_[iSeed].size(); iTE++) {
             unsigned int TE1 = TE_[iSeed][iTE].first;
             unsigned int TE2 = TE_[iSeed][iTE].second;
@@ -1242,22 +1242,21 @@ void TrackletConfigBuilder::writeILMemories(std::ostream& os, std::ostream& memo
 
   double dphi = 0.5 * dphisectorHG_ - M_PI / NSector_;
 
-  string olddtc="";
+  string olddtc = "";
   for (unsigned int i = 0; i < 52; i++) {
-    if (olddtc!=dtcname[i]) {
-      modules << "InputRouter: IR_"<<dtcname[i]<<"_A" << std::endl;
-      modules << "InputRouter: IR_"<<dtcname[i]<<"_B" << std::endl;
-      memories << "DTCLink: DL_"<<dtcname[i]<<"_A [36]" << std::endl;
-      memories << "DTCLink: DL_"<<dtcname[i]<<"_B [36]" << std::endl;
+    if (olddtc != dtcname[i]) {
+      modules << "InputRouter: IR_" << dtcname[i] << "_A" << std::endl;
+      modules << "InputRouter: IR_" << dtcname[i] << "_B" << std::endl;
+      memories << "DTCLink: DL_" << dtcname[i] << "_A [36]" << std::endl;
+      memories << "DTCLink: DL_" << dtcname[i] << "_B [36]" << std::endl;
       os << "DL_" << dtcname[i] << "_A"
-	 << " input=> output=> IR_" << dtcname[i] << "_A.stubin" << std::endl;
+         << " input=> output=> IR_" << dtcname[i] << "_A.stubin" << std::endl;
       os << "DL_" << dtcname[i] << "_B"
-	 << " input=> output=> IR_" << dtcname[i] << "_B.stubin" << std::endl;
+         << " input=> output=> IR_" << dtcname[i] << "_B.stubin" << std::endl;
     }
-    olddtc=dtcname[i];
+    olddtc = dtcname[i];
   }
 
-  
   for (unsigned int i = 0; i < 52; i++) {
     double phimintmp = phimin[i] + dphi;
     double phimaxtmp = phimax[i] + dphi;
@@ -1270,14 +1269,16 @@ void TrackletConfigBuilder::writeILMemories(std::ostream& os, std::ostream& memo
         memories << "InputLink: IL_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << "_" << dtcname[i] << "_A"
                  << " [36]" << std::endl;
         os << "IL_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << "_" << dtcname[i] << "_A"
-           << " input=> IR_"<<dtcname[i] << "_A.stubout output=> VMR_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << ".stubin" << std::endl;
+           << " input=> IR_" << dtcname[i] << "_A.stubout output=> VMR_" << LayerName(layerdisk[i]) << "PHI"
+           << iTCStr(iReg) << ".stubin" << std::endl;
       }
 
       if (allStubs_[layerdisk[i]][iReg].first > phimintmp) {
         memories << "InputLink: IL_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << "_" << dtcname[i] << "_B"
                  << " [36]" << std::endl;
         os << "IL_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << "_" << dtcname[i] << "_B"
-           << " input=> IR_"<<dtcname[i] << "_B.stubout output=> VMR_" << LayerName(layerdisk[i]) << "PHI" << iTCStr(iReg) << ".stubin" << std::endl;
+           << " input=> IR_" << dtcname[i] << "_B.stubout output=> VMR_" << LayerName(layerdisk[i]) << "PHI"
+           << iTCStr(iReg) << ".stubin" << std::endl;
       }
     }
   }

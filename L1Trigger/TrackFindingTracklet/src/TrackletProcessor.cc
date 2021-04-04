@@ -56,7 +56,6 @@ TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Glob
   assert(TCIndex_ >= 0 && TCIndex_ <= (int)settings_.ntrackletmax());
 
   maxStep_ = settings_.maxStep("TP");
-  
 }
 
 void TrackletProcessor::addOutputProjection(TrackletProjectionsMemory*& outputProj, MemoryBase* memory) {
@@ -142,8 +141,8 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
                               pttableouternew_,
                               outervmstubs_);
 
-    teunits_.resize(settings_.teunits(iSeed_),teunit);
-    
+    teunits_.resize(settings_.teunits(iSeed_), teunit);
+
     return;
   }
 
@@ -172,14 +171,13 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
 }
 
 void TrackletProcessor::execute(unsigned int iSector, double phimin, double phimax) {
-
   bool print = (iSector == 3) && (getName() == "TP_L1L2D");
   print = false;
 
   phimin_ = phimin;
   phimax_ = phimax;
   iSector_ = iSector;
-  
+
   if (!settings_.useSeed(iSeed_))
     return;
 
@@ -222,7 +220,7 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
   bool goodtedata___ = false;
 
   bool tebuffernearfull;
-  
+
   for (unsigned int istep = 0; istep < maxStep_; istep++) {
     if (print) {
       CircularBuffer<TEData>& tedatabuffer = std::get<0>(tebuffer_);
@@ -303,7 +301,7 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
         edm::LogVerbatim("Tracklet") << "TrackletProcessor execute done";
       }
     }
-    
+
     //
     // The second block fills the teunit if data in buffer and process TEUnit step
     //
@@ -330,7 +328,7 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
     // The third block here checks if we have input stubs to process
     //
     //
-      
+
     if (goodtedata___)
       tedatabuffer.store(tedata___);
 
@@ -379,23 +377,23 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
         unsigned int lutwidth = settings_.lutwidthtab(0, iSeed_);
         FPGAWord lookupbits(lutval, lutwidth, true, __LINE__, __FILE__);
 
-        int rzfinebinfirst = lookupbits.bits(0, NFINERZBITS);      //finerz
-        int next = lookupbits.bits(NFINERZBITS, 1);                //use next r/z bin
-        int start = lookupbits.bits(NFINERZBITS + 1, nbitsrzbin_); //rz bin
+        int rzfinebinfirst = lookupbits.bits(0, NFINERZBITS);       //finerz
+        int next = lookupbits.bits(NFINERZBITS, 1);                 //use next r/z bin
+        int start = lookupbits.bits(NFINERZBITS + 1, nbitsrzbin_);  //rz bin
         int rzdiffmax = lookupbits.bits(NFINERZBITS + 1 + nbitsrzbin_, NFINERZBITS);
 
         if ((iSeed_ == 4 || iSeed_ == 5) && negdisk) {  //TODO - need to store negative disk
-          start += (1<<nbitsrzbin_);
+          start += (1 << nbitsrzbin_);
         }
         int last = start + next;
 
-        int nbins = (1<<N_RZBITS);
+        int nbins = (1 << N_RZBITS);
 
         unsigned int useregindex = (innerfinephi << innerbend.nbits()) + innerbend.value();
         if (iSeed_ >= 4) {
           //FIXME If the lookupbits were rationally organized this would be much simpler
-	  unsigned int nrbits=3;
-          int ir = ((start & ((1<<(nrbits-1))-1)) << 1) + (rzfinebinfirst >> (NFINERZBITS-1));
+          unsigned int nrbits = 3;
+          int ir = ((start & ((1 << (nrbits - 1)) - 1)) << 1) + (rzfinebinfirst >> (NFINERZBITS - 1));
           useregindex = (useregindex << nrbits) + ir;
         }
 
@@ -453,7 +451,7 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
     } else if ((!tebuffernearfull) && imem < imemend && istub == 0) {
       imem++;
     }
-    
+
     goodtedata___ = goodtedata__;
     goodtedata__ = goodtedata;
 
@@ -488,7 +486,7 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
   //
   // Done with processing - collect performance statistics
   //
-  
+
   if (settings_.writeMonitorData("TP")) {
     globals_->ofstream("trackletprocessor.txt") << getName() << " " << ninnerstubs   //# inner stubs
                                                 << " " << outervmstubs_->nVMStubs()  //# outer stubs

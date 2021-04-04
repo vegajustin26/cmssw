@@ -9,11 +9,11 @@ ProjectionTemp::ProjectionTemp(Tracklet* proj,
                                int projfinerz,
                                unsigned int projfinephi,
                                unsigned int iphi,
-			       int shift,
-			       bool usefirstMinus,
-			       bool usefirstPlus,
-			       bool usesecondMinus,
-			       bool usesecondPlus,
+                               int shift,
+                               bool usefirstMinus,
+                               bool usefirstPlus,
+                               bool usesecondMinus,
+                               bool usesecondPlus,
                                bool isPSseed) {
   proj_ = proj;
   slot_ = slot;

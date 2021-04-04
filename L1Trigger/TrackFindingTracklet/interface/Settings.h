@@ -134,9 +134,9 @@ namespace trklet {
       assert(layerdisk >= 0);
       return layerdisk;
     }
-    
+
     unsigned int teunits(unsigned int iSeed) const { return teunits_[iSeed]; }
-    
+
     unsigned int NTC(int seed) const { return ntc_[seed]; }
 
     unsigned int projlayers(unsigned int iSeed, unsigned int i) const { return projlayers_[iSeed][i]; }
@@ -545,9 +545,8 @@ namespace trklet {
     int chisqphifactbits_{14};
     int chisqzfactbits_{14};
 
-    std::array<unsigned int, N_SEED> teunits_{
-      {5, 2, 5, 3, 3, 2, 3, 2, 0, 0, 0, 0}}; //teunits used by seed 
-    
+    std::array<unsigned int, N_SEED> teunits_{{5, 2, 5, 3, 3, 2, 3, 2, 0, 0, 0, 0}};  //teunits used by seed
+
     std::array<unsigned int, N_LAYER + N_DISK> vmrlutzbits_{
         {7, 7, 7, 7, 7, 7, 3, 3, 3, 3, 3}};  // zbits used by LUT in VMR
     std::array<unsigned int, N_LAYER + N_DISK> vmrlutrbits_{
@@ -731,18 +730,21 @@ namespace trklet {
                                                            {"TRE", 108}};
 
     // If set to true this will generate debub printout in text files
-    std::unordered_map<std::string, bool> writeMonitorData_{
-        {"IL", false},           {"TE", false},         {"CT", false},
-        {"HitPattern", false},   {"ChiSq", false},      {"Seeds", false},
-        {"FT", false},           {"Residuals", false},  {"StubBend", false},
-        {"MC", false},           {"MP", false},         {"ME", false},
-        {"AP", false},           {"VMP", false},        
-        {"TrackProjOcc", false}, {"TC", false},         {"Pars", false},
-        {"TPars", false},        {"TPD", false},        {"TrackletPars", false},
-        {"TED", false},          {"TP", false},         {"TRE", false},
-        {"VMR", false},          {"StubsLayer", false}, {"StubsLayerSector", false},
-        {"HitEff", false},       {"MatchEff", false},
-        {"IFit", false},         {"AS", false}};
+    std::unordered_map<std::string, bool> writeMonitorData_{{"IL", false},           {"TE", false},
+                                                            {"CT", false},           {"HitPattern", false},
+                                                            {"ChiSq", false},        {"Seeds", false},
+                                                            {"FT", false},           {"Residuals", false},
+                                                            {"StubBend", false},     {"MC", false},
+                                                            {"MP", false},           {"ME", false},
+                                                            {"AP", false},           {"VMP", false},
+                                                            {"TrackProjOcc", false}, {"TC", false},
+                                                            {"Pars", false},         {"TPars", false},
+                                                            {"TPD", false},          {"TrackletPars", false},
+                                                            {"TED", false},          {"TP", false},
+                                                            {"TRE", false},          {"VMR", false},
+                                                            {"StubsLayer", false},   {"StubsLayerSector", false},
+                                                            {"HitEff", false},       {"MatchEff", false},
+                                                            {"IFit", false},         {"AS", false}};
 
     std::array<double, N_DSS_MOD> rDSSinner_mod_{{68.9391, 78.7750, 85.4550, 96.3150, 102.3160}};
     std::array<double, N_DSS_MOD> rDSSouter_mod_{{66.4903, 76.7750, 84.4562, 94.9920, 102.3160}};

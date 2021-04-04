@@ -15,8 +15,7 @@
 using namespace std;
 using namespace trklet;
 
-MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global)
-    : ProcessBase(name, settings, global) {
+MatchEngine::MatchEngine(string name, Settings const& settings, Globals* global) : ProcessBase(name, settings, global) {
   layerdisk_ = initLayerDisk(3);
 
   barrel_ = layerdisk_ < N_LAYER;
@@ -245,10 +244,9 @@ void MatchEngine::execute() {
 
         projfinerz = proj->proj(layerdisk_).fpgafinerzvm().value();
 
-        projrinv =
-            barrel_
-	  ? ((1<<(nrinv_-1)) + ((-2*proj->proj(layerdisk_).fpgaphiprojder().value()) >> (proj->proj(layerdisk_).fpgaphiprojder().nbits() - (nrinv_-1))))
-                : proj->proj(layerdisk_).getBendIndex().value();
+        projrinv = barrel_ ? ((1 << (nrinv_ - 1)) + ((-2 * proj->proj(layerdisk_).fpgaphiprojder().value()) >>
+                                                     (proj->proj(layerdisk_).fpgaphiprojder().nbits() - (nrinv_ - 1))))
+                           : proj->proj(layerdisk_).getBendIndex().value();
         assert(projrinv >= 0);
         if (settings_.extended() && projrinv == (1 << nrinv_)) {
           if (settings_.debugTracklet()) {

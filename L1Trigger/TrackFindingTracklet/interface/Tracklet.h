@@ -27,7 +27,7 @@ namespace trklet {
   class Tracklet {
   public:
     Tracklet(Settings const& settings,
-	     unsigned int iSeed,
+             unsigned int iSeed,
              const Stub* innerFPGAStub,
              const Stub* middleFPGAStub,
              const Stub* outerFPGAStub,
@@ -46,7 +46,7 @@ namespace trklet {
              int id0,
              int iz0,
              int it,
-	     Projection projs[N_LAYER+N_DISK],
+             Projection projs[N_LAYER + N_DISK],
              bool disk,
              bool overlap = false);
 
@@ -80,7 +80,7 @@ namespace trklet {
     std::string trackletprojstrdisk(int disk) const { return trackletprojstrD(disk); }
 
     bool validProj(int layerdisk) const {
-      assert(layerdisk >= 0 && layerdisk < N_LAYER+N_DISK);
+      assert(layerdisk >= 0 && layerdisk < N_LAYER + N_DISK);
       return proj_[layerdisk].valid();
     }
 
@@ -89,9 +89,15 @@ namespace trklet {
       return proj_[layerdisk];
     }
 
-    void addMatch(unsigned int layerdisk, int ideltaphi, int ideltarz,
-		  double dphi, double drz, double dphiapprox, double drzapprox,
-		  int stubid, const trklet::Stub* stubptr);
+    void addMatch(unsigned int layerdisk,
+                  int ideltaphi,
+                  int ideltarz,
+                  double dphi,
+                  double drz,
+                  double dphiapprox,
+                  double drzapprox,
+                  int stubid,
+                  const trklet::Stub* stubptr);
 
     std::string fullmatchstr(int layer);
     std::string fullmatchdiskstr(int disk);
@@ -260,7 +266,7 @@ namespace trklet {
     std::unique_ptr<Track> fpgatrack_;
 
     Projection proj_[N_LAYER + N_DISK];
-    
+
     Residual resid_[N_LAYER + N_DISK];
 
     Settings const& settings_;

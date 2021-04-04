@@ -25,7 +25,7 @@ namespace trklet {
               unsigned int nrzbin,
               unsigned int rzbin,
               unsigned int iphi,
-	      int shift,
+              int shift,
               int projrinv,
               int projfinerz,
               int projfinephi,
@@ -57,7 +57,7 @@ namespace trklet {
     unsigned int rzbin_;
     unsigned int phibin_;
     int shift_;
-    
+
     unsigned int istub_;
     unsigned int iuse_;
 
@@ -77,7 +77,7 @@ namespace trklet {
     std::vector<bool> table_;
 
     //save the candidate matches
-    CircularBuffer<std::pair<Tracklet*, const Stub*> > candmatches_;
+    CircularBuffer<std::pair<Tracklet*, const Stub*>> candmatches_;
   };
 
 };  // namespace trklet

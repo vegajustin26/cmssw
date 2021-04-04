@@ -14,7 +14,7 @@ using namespace std;
 using namespace trklet;
 
 Tracklet::Tracklet(Settings const& settings,
-		   unsigned int iSeed,
+                   unsigned int iSeed,
                    const Stub* innerFPGAStub,
                    const Stub* middleFPGAStub,
                    const Stub* outerFPGAStub,
@@ -33,13 +33,12 @@ Tracklet::Tracklet(Settings const& settings,
                    int id0,
                    int iz0,
                    int it,
-                   Projection projs[N_LAYER+N_DISK],
+                   Projection projs[N_LAYER + N_DISK],
                    bool disk,
                    bool overlap)
     : settings_(settings) {
-
   seedIndex_ = iSeed;
-  
+
   overlap_ = overlap;
   disk_ = disk;
   assert(!(disk && overlap));
@@ -86,7 +85,7 @@ Tracklet::Tracklet(Settings const& settings,
   for (unsigned int i = 0; i < N_LAYER - 2; i++) {
     if (projlayer_[i] == 0)
       continue;
-    if (!projs[projlayer_[i]-1].valid())
+    if (!projs[projlayer_[i] - 1].valid())
       continue;
 
     proj_[projlayer_[i] - 1] = projs[projlayer_[i] - 1];
@@ -95,10 +94,10 @@ Tracklet::Tracklet(Settings const& settings,
   for (unsigned int i = 0; i < N_DISK; i++) {
     if (projdisk_[i] == 0)
       continue;
-    if (!projs[N_LAYER + projdisk_[i] -1].valid())
+    if (!projs[N_LAYER + projdisk_[i] - 1].valid())
       continue;
 
-    proj_[N_LAYER + projdisk_[i] - 1] = projs[N_LAYER + projdisk_[i] -1];
+    proj_[N_LAYER + projdisk_[i] - 1] = projs[N_LAYER + projdisk_[i] - 1];
   }
 
   ichisqrphifit_.set(-1, 8, false);
@@ -237,8 +236,8 @@ std::string Tracklet::vmstrlayer(int layer, unsigned int allstubindex) {
   FPGAWord tmp;
   tmp.set(irinvvm, 5, true, __LINE__, __FILE__);
   std::string oss = index.str() + "|" + proj_[layer - 1].fpgarzbin1projvm().str() + "|" +
-    proj_[layer - 1].fpgarzbin2projvm().str() + "|" + proj_[layer - 1].fpgafinerzvm().str() 
-    + "|" + proj_[layer-1].fpgafinephivm().str() + "|" + tmp.str() + "|" + std::to_string(PSseed());
+                    proj_[layer - 1].fpgarzbin2projvm().str() + "|" + proj_[layer - 1].fpgafinerzvm().str() + "|" +
+                    proj_[layer - 1].fpgafinephivm().str() + "|" + tmp.str() + "|" + std::to_string(PSseed());
   return oss;
 }
 
@@ -250,9 +249,10 @@ std::string Tracklet::vmstrdisk(int disk, unsigned int allstubindex) {
   } else {
     index.set(allstubindex, 7, true, __LINE__, __FILE__);
   }
-  std::string oss = index.str() + "|" + proj_[N_LAYER + disk - 1].fpgarzbin1projvm().str() + "|" +
-    proj_[N_LAYER + disk - 1].fpgarzbin2projvm().str() + "|" + proj_[N_LAYER + disk - 1].fpgafinerzvm().str()
-    + "|" + proj_[N_LAYER + disk - 1].fpgafinephivm().str() + "|" + proj_[N_LAYER + disk - 1].getBendIndex().str();
+  std::string oss =
+      index.str() + "|" + proj_[N_LAYER + disk - 1].fpgarzbin1projvm().str() + "|" +
+      proj_[N_LAYER + disk - 1].fpgarzbin2projvm().str() + "|" + proj_[N_LAYER + disk - 1].fpgafinerzvm().str() + "|" +
+      proj_[N_LAYER + disk - 1].fpgafinephivm().str() + "|" + proj_[N_LAYER + disk - 1].getBendIndex().str();
   return oss;
 }
 
@@ -286,17 +286,23 @@ std::string Tracklet::trackletprojstrD(int disk) const {
     tcid.set(TCIndex_, 7, true, __LINE__, __FILE__);
   }
   std::string oss = tcid.str() + "|" + tmp.str() + "|" + proj_[N_LAYER + abs(disk) - 1].fpgaphiproj().str() + "|" +
-                    proj_[N_LAYER + abs(disk) - 1].fpgarzproj().str() + "|" + proj_[N_LAYER + abs(disk) - 1].fpgaphiprojder().str() +
-                    "|" + proj_[N_LAYER + abs(disk) - 1].fpgarzprojder().str();
+                    proj_[N_LAYER + abs(disk) - 1].fpgarzproj().str() + "|" +
+                    proj_[N_LAYER + abs(disk) - 1].fpgaphiprojder().str() + "|" +
+                    proj_[N_LAYER + abs(disk) - 1].fpgarzprojder().str();
   return oss;
 }
 
-void Tracklet::addMatch(unsigned int layerdisk, int ideltaphi, int ideltarz,
-			double dphi, double drz, double dphiapprox, double drzapprox,
-			int stubid, const trklet::Stub* stubptr) {
+void Tracklet::addMatch(unsigned int layerdisk,
+                        int ideltaphi,
+                        int ideltarz,
+                        double dphi,
+                        double drz,
+                        double dphiapprox,
+                        double drzapprox,
+                        int stubid,
+                        const trklet::Stub* stubptr) {
   assert(layerdisk < N_LAYER + N_DISK);
-  resid_[layerdisk].init(settings_, layerdisk, ideltaphi, ideltarz,
-			 stubid, dphi, drz, dphiapprox, drzapprox, stubptr);
+  resid_[layerdisk].init(settings_, layerdisk, ideltaphi, ideltarz, stubid, dphi, drz, dphiapprox, drzapprox, stubptr);
 }
 
 std::string Tracklet::fullmatchstr(int layer) {
@@ -310,8 +316,8 @@ std::string Tracklet::fullmatchstr(int layer) {
   FPGAWord tcid;
   tcid.set(TCIndex_, settings_.nbitstcindex(), true, __LINE__, __FILE__);
   std::string oss = tcid.str() + "|" + tmp.str() + "|" + resid_[layer - 1].fpgastubid().str() + "|" +
-                    resid_[layer - 1].stubptr()->r().str() + "|" + resid_[layer - 1].fpgaphiresid().str() +
-                    "|" + resid_[layer - 1].fpgarzresid().str();
+                    resid_[layer - 1].stubptr()->r().str() + "|" + resid_[layer - 1].fpgaphiresid().str() + "|" +
+                    resid_[layer - 1].fpgarzresid().str();
   return oss;
 }
 
@@ -329,7 +335,8 @@ std::string Tracklet::fullmatchdiskstr(int disk) {
   const bool isPS = resid_[N_LAYER + disk - 1].stubptr()->isPSmodule();
   std::string oss = tcid.str() + "|" + tmp.str() + "|" + resid_[N_LAYER + disk - 1].fpgastubid().str() + "|" +
                     (isPS ? stubr.str() : ("00000000" + stubr.str())) + "|" +
-                    resid_[N_LAYER + disk - 1].fpgaphiresid().str() + "|" + resid_[N_LAYER + disk - 1].fpgarzresid().str();
+                    resid_[N_LAYER + disk - 1].fpgaphiresid().str() + "|" +
+                    resid_[N_LAYER + disk - 1].fpgarzresid().str();
   return oss;
 }
 
@@ -736,33 +743,33 @@ Track Tracklet::makeTrack(const vector<const L1TStub*>& l1stubs) {
                        fpgafitpars_.d0().value(),
                        fpgafitpars_.t().value(),
                        fpgafitpars_.z0().value());
-  
+
   // If fitter produced no stub list, take it from original tracklet.
-  vector<const L1TStub*> tmp= l1stubs.empty() ? getL1Stubs() : l1stubs;
+  vector<const L1TStub*> tmp = l1stubs.empty() ? getL1Stubs() : l1stubs;
 
   vector<L1TStub> tmp2;
 
-  for(auto stub : tmp) {
+  for (auto stub : tmp) {
     tmp2.push_back(*stub);
   }
-  
-  Track tmpTrack(
-      ipars,
-      ichisqrphifit_.value(),
-      ichisqrzfit_.value(),
-      chisqrphifit_,
-      chisqrzfit_,
-      hitpattern_,
-      getStubIDs(),
-      tmp2,  
-      getISeed());
+
+  Track tmpTrack(ipars,
+                 ichisqrphifit_.value(),
+                 ichisqrzfit_.value(),
+                 chisqrphifit_,
+                 chisqrzfit_,
+                 hitpattern_,
+                 getStubIDs(),
+                 tmp2,
+                 getISeed());
 
   return tmpTrack;
 }
 
 int Tracklet::layer() const {
   int l1 = (innerFPGAStub_ && innerFPGAStub_->layerdisk() < N_LAYER) ? innerFPGAStub_->l1tstub()->layerdisk() + 1 : 999,
-      l2 = (middleFPGAStub_ && middleFPGAStub_->layerdisk() < N_LAYER) ? middleFPGAStub_->l1tstub()->layerdisk() + 1 : 999,
+      l2 = (middleFPGAStub_ && middleFPGAStub_->layerdisk() < N_LAYER) ? middleFPGAStub_->l1tstub()->layerdisk() + 1
+                                                                       : 999,
       l3 = (outerFPGAStub_ && outerFPGAStub_->layerdisk() < N_LAYER) ? outerFPGAStub_->l1tstub()->layerdisk() + 1 : 999,
       l = min(min(l1, l2), l3);
   return (l < 999 ? l : 0);
@@ -771,7 +778,8 @@ int Tracklet::layer() const {
 int Tracklet::disk() const {
   int d1 = (innerFPGAStub_ && (innerFPGAStub_->layerdisk() >= N_LAYER)) ? innerFPGAStub_->l1tstub()->disk() : 999,
       d2 = (middleFPGAStub_ && (middleFPGAStub_->layerdisk() >= N_LAYER)) ? middleFPGAStub_->l1tstub()->disk() : 999,
-      d3 = (outerFPGAStub_ && (outerFPGAStub_->layerdisk() >= N_LAYER)) ? outerFPGAStub_->l1tstub()->disk() : 999, d = 999;
+      d3 = (outerFPGAStub_ && (outerFPGAStub_->layerdisk() >= N_LAYER)) ? outerFPGAStub_->l1tstub()->disk() : 999,
+      d = 999;
   if (abs(d1) < min(abs(d2), abs(d3)))
     d = d1;
   if (abs(d2) < min(abs(d1), abs(d3)))
@@ -804,4 +812,3 @@ void Tracklet::setTrackIndex(int index) {
 }
 
 int Tracklet::trackIndex() const { return trackIndex_; }
-

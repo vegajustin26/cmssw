@@ -136,16 +136,16 @@ void VMRouter::addInput(MemoryBase* memory, string input) {
     InputLinkMemory* tmp1 = dynamic_cast<InputLinkMemory*>(memory);
     assert(tmp1 != nullptr);
     if (tmp1 != nullptr) {
-      if (layerdisk_>N_LAYER && tmp1->getName().find("2S_")!=string::npos) {
-	stubinputdisk2stmp_.push_back(tmp1);
+      if (layerdisk_ > N_LAYER && tmp1->getName().find("2S_") != string::npos) {
+        stubinputdisk2stmp_.push_back(tmp1);
       } else {
-	stubinputtmp_.push_back(tmp1);
+        stubinputtmp_.push_back(tmp1);
       }
     }
     //This gymnastic is done to ensure that in the disks the PS stubs are processed before
     //the 2S stubs. This is needed by the current HLS implemenation of the VM router.
-    stubinputs_=stubinputtmp_;
-    for(auto& mem : stubinputdisk2stmp_) {
+    stubinputs_ = stubinputtmp_;
+    for (auto& mem : stubinputdisk2stmp_) {
       stubinputs_.push_back(mem);
     }
     return;
@@ -246,19 +246,17 @@ void VMRouter::execute() {
       assert(vmstubsMEPHI_[ivmPlus] != nullptr);
       vmstubsMEPHI_[ivmPlus]->addStub(vmstub, vmbin);
       if (settings_.debugTracklet()) {
-	edm::LogVerbatim("Tracklet") << getName() << " adding stub to "
-				     << vmstubsMEPHI_[ivmPlus]->getName() << " ivmPlus" << ivmPlus
-				     << " bin=" << vmbin;
+        edm::LogVerbatim("Tracklet") << getName() << " adding stub to " << vmstubsMEPHI_[ivmPlus]->getName()
+                                     << " ivmPlus" << ivmPlus << " bin=" << vmbin;
       }
-      
+
       if (ivmMinus != ivmPlus) {
         assert(vmstubsMEPHI_[ivmMinus] != nullptr);
         vmstubsMEPHI_[ivmMinus]->addStub(vmstub, vmbin);
-	if (settings_.debugTracklet()) {
-	  edm::LogVerbatim("Tracklet") << getName() << " adding stub to "
-				       << vmstubsMEPHI_[ivmMinus]->getName() << " ivmMinus" << ivmMinus
-				       << " bin=" << vmbin;
-	}
+        if (settings_.debugTracklet()) {
+          edm::LogVerbatim("Tracklet") << getName() << " adding stub to " << vmstubsMEPHI_[ivmMinus]->getName()
+                                       << " ivmMinus" << ivmMinus << " bin=" << vmbin;
+        }
       }
 
       //Fill the TE VM memories

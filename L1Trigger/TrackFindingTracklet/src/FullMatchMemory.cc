@@ -9,8 +9,7 @@
 using namespace std;
 using namespace trklet;
 
-FullMatchMemory::FullMatchMemory(string name, Settings const& settings)
-    : MemoryBase(name, settings) {
+FullMatchMemory::FullMatchMemory(string name, Settings const& settings) : MemoryBase(name, settings) {
   size_t pos = find_nth(name, 0, "_", 1);
   assert(pos != string::npos);
   initLayerDisk(pos + 1, layer_, disk_);
@@ -40,7 +39,6 @@ void FullMatchMemory::addMatch(Tracklet* tracklet, const Stub* stub) {
 }
 
 void FullMatchMemory::writeMC(bool first, unsigned int iSector) {
-
   iSector_ = iSector;
   const string dirM = settings_.memPath() + "Matches/";
 

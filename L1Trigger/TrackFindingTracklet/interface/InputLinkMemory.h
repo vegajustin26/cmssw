@@ -21,7 +21,7 @@ namespace trklet {
 
     ~InputLinkMemory() override = default;
 
-    void addStub(Stub *stub);
+    void addStub(Stub* stub);
 
     unsigned int nStubs() const { return stubs_.size(); }
 

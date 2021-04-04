@@ -75,7 +75,7 @@ namespace trklet {
     std::vector<bool> table_;
 
     double phimin_;
-    
+
     unsigned int nMatchEngines_;
     std::vector<MatchEngineUnit> matchengines_;
 

@@ -200,8 +200,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
         layers[nlayers++] = l;
         continue;
       }
-      if (tracklet->match(l-1)) {
-        const Residual& resid = tracklet->resid(l-1);
+      if (tracklet->match(l - 1)) {
+        const Residual& resid = tracklet->resid(l - 1);
         lmatches.set(N_LAYER - l);
         layermask |= (1 << (N_LAYER - l));
         phiresid[nlayers] = resid.phiresidapprox();
@@ -226,7 +226,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
         continue;
       if (tracklet->match(N_LAYER + d - 1)) {
         const Residual& resid = tracklet->resid(N_LAYER + d - 1);
-	double pitch = settings_.stripPitch(resid.stubptr()->l1tstub()->isPSmodule());
+        double pitch = settings_.stripPitch(resid.stubptr()->l1tstub()->isPSmodule());
         if (std::abs(resid.stubptr()->l1tstub()->alpha(pitch)) < 1e-20) {
           dmatches.set(2 * d - 1);
           diskmask |= (1 << (2 * (N_DISK - d) + 1));
@@ -301,7 +301,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
         continue;
       if (tracklet->match(N_LAYER + abs(d) - 1)) {
         const Residual& resid = tracklet->resid(N_LAYER + abs(d) - 1);
-	double pitch = settings_.stripPitch(resid.stubptr()->l1tstub()->isPSmodule());
+        double pitch = settings_.stripPitch(resid.stubptr()->l1tstub()->isPSmodule());
         if (std::abs(resid.stubptr()->l1tstub()->alpha(pitch)) < 1e-20) {
           dmatches.set(2 * d1 - 1);
           diskmask |= (1 << (2 * (N_DISK - d1) + 1));
@@ -376,7 +376,7 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
         continue;
       if (tracklet->match(N_LAYER + abs(d) - 1)) {
         const Residual& resid = tracklet->resid(N_LAYER + abs(d) - 1);
-	double pitch = settings_.stripPitch(resid.stubptr()->l1tstub()->isPSmodule());
+        double pitch = settings_.stripPitch(resid.stubptr()->l1tstub()->isPSmodule());
         if (std::abs(resid.stubptr()->l1tstub()->alpha(pitch)) < 1e-20) {
           dmatches.set(2 * (N_DISK - d1));
           diskmask |= (1 << (2 * (N_DISK - d1) + 1));
@@ -874,14 +874,14 @@ void FitTrack::execute(unsigned int iSector) {
   const std::vector<Tracklet*>& matches3 = orderedMatches(fullmatch3_);
   const std::vector<Tracklet*>& matches4 = orderedMatches(fullmatch4_);
 
-  iSector_ =  iSector;
+  iSector_ = iSector;
 
   if (settings_.debugTracklet() && (matches1.size() + matches2.size() + matches3.size() + matches4.size()) > 0) {
     for (auto& imatch : fullmatch1_) {
       edm::LogVerbatim("Tracklet") << imatch->getName() << " " << imatch->nMatches();
     }
-    edm::LogVerbatim("Tracklet") << getName() << " matches : " << matches1.size() << " "
-                                 << matches2.size() << " " << matches3.size() << " " << matches4.size();
+    edm::LogVerbatim("Tracklet") << getName() << " matches : " << matches1.size() << " " << matches2.size() << " "
+                                 << matches3.size() << " " << matches4.size();
   }
 
   unsigned int indexArray[4];
@@ -1012,8 +1012,8 @@ void FitTrack::execute(unsigned int iSector) {
         assert(trackfit_ != nullptr);
         if (settings_.writeMonitorData("Seeds")) {
           ofstream fout("seeds.txt", ofstream::app);
-          fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_" << " " << bestTracklet->getISeed()
-               << endl;
+          fout << __FILE__ << ":" << __LINE__ << " " << name_ << "_"
+               << " " << bestTracklet->getISeed() << endl;
           fout.close();
         }
         bestTracklet->setTrackIndex(trackfit_->nTracks());

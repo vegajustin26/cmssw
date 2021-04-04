@@ -14,7 +14,7 @@ void MatchEngineUnit::init(VMStubsMEMemory* vmstubsmemory,
                            unsigned int nrzbins,
                            unsigned int rzbin,
                            unsigned int phibin,
-			   int shift,
+                           int shift,
                            int projrinv,
                            int projfinerz,
                            int projfinephi,
@@ -37,18 +37,18 @@ void MatchEngineUnit::init(VMStubsMEMemory* vmstubsmemory,
   projfinephi_ = projfinephi;
   use_.clear();
   if (usefirstMinus) {
-    use_.emplace_back(0,0);
+    use_.emplace_back(0, 0);
   }
   if (usefirstPlus) {
-    use_.emplace_back(0,1);
+    use_.emplace_back(0, 1);
   }
   if (usesecondMinus) {
-    use_.emplace_back(1,0);
+    use_.emplace_back(1, 0);
   }
   if (usesecondPlus) {
-    use_.emplace_back(1,1);
+    use_.emplace_back(1, 1);
   }
-  assert(use_.size()!=0);
+  assert(use_.size() != 0);
   isPSseed_ = isPSseed;
   proj_ = proj;
 }
@@ -57,17 +57,17 @@ void MatchEngineUnit::step(bool print) {
   if (idle() || candmatches_.almostfull())
     return;
 
-  unsigned int slot = (phibin_+use_[iuse_].second)*nrzbins_+rzbin_+use_[iuse_].first;
+  unsigned int slot = (phibin_ + use_[iuse_].second) * nrzbins_ + rzbin_ + use_[iuse_].first;
 
   int projfinerz = projfinerz_ - (1 << NFINERZBITS) * use_[iuse_].first;
   int projfinephi = projfinephi_;
-  if (use_[iuse_].second==0) {
-    if (shift_==-1) {
+  if (use_[iuse_].second == 0) {
+    if (shift_ == -1) {
       projfinephi -= (1 << NFINEPHIBITS);
     }
   } else {
     //When we get here shift_ is either 1 or -1
-    if (shift_==1) {
+    if (shift_ == 1) {
       projfinephi += (1 << NFINEPHIBITS);
     }
   }
@@ -78,7 +78,7 @@ void MatchEngineUnit::step(bool print) {
   int stubfinerz = vmstub.finerz().value();
   int stubfinephi = vmstub.finephi().value();
 
-  int deltaphi = stubfinephi - projfinephi; 
+  int deltaphi = stubfinephi - projfinephi;
 
   bool dphicut = (abs(deltaphi) < 3);
 
@@ -106,9 +106,11 @@ void MatchEngineUnit::step(bool print) {
     }
   }
 
-  if (print) cout <<"MEU TrkId stubindex : "<<128*proj_->TCIndex()+proj_->trackletIndex()<<" "<<vmstub.stubindex().value()
-		  <<"   "<<((pass && dphicut) && table_[index])<<" index="<<index<<" projrinv bend : "<<projrinv_<<" "<<vmstub.bend().value()
-		  <<"  shift_ isPSseed_ :"<<shift_<<" "<<isPSseed_<<" slot="<<slot<<endl;
+  if (print)
+    cout << "MEU TrkId stubindex : " << 128 * proj_->TCIndex() + proj_->trackletIndex() << " "
+         << vmstub.stubindex().value() << "   " << ((pass && dphicut) && table_[index]) << " index=" << index
+         << " projrinv bend : " << projrinv_ << " " << vmstub.bend().value() << "  shift_ isPSseed_ :" << shift_ << " "
+         << isPSseed_ << " slot=" << slot << endl;
 
   //Check if stub bend and proj rinv consistent
   if ((pass && dphicut) && table_[index]) {
@@ -119,7 +121,7 @@ void MatchEngineUnit::step(bool print) {
   istub_++;
   if (istub_ >= vmstubsmemory_->nStubsBin(slot)) {
     iuse_++;
-    if (iuse_<use_.size()) {
+    if (iuse_ < use_.size()) {
       istub_ = 0;
     } else {
       idle_ = true;

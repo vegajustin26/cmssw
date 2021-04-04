@@ -7,11 +7,9 @@
 using namespace std;
 using namespace trklet;
 
-StubTripletsMemory::StubTripletsMemory(string name, Settings const& settings)
-    : MemoryBase(name, settings) {}
+StubTripletsMemory::StubTripletsMemory(string name, Settings const& settings) : MemoryBase(name, settings) {}
 
 void StubTripletsMemory::writeST(bool first, unsigned int iSector) {
-
   iSector_ = iSector;
   const string dirSP = settings_.memPath() + "StubPairs/";
 

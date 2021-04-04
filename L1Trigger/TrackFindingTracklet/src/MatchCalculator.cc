@@ -20,7 +20,6 @@ using namespace trklet;
 
 MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals* global)
     : ProcessBase(name, settings, global) {
- 
   phiregion_ = name[8] - 'A';
   layerdisk_ = initLayerDisk(3);
 
@@ -248,13 +247,11 @@ void MatchCalculator::execute(double phioffset) {
       double dr = r - settings_.rmean(layerdisk_);
       assert(std::abs(dr) < settings_.drmax());
 
-      double dphi =
-          reco::reduceRange(phi - (proj.phiproj() + dr * proj.phiprojder()));
+      double dphi = reco::reduceRange(phi - (proj.phiproj() + dr * proj.phiprojder()));
 
       double dz = z - (proj.rzproj() + dr * proj.rzprojder());
 
-      double dphiapprox = reco::reduceRange(
-          phi - (proj.phiprojapprox() + dr * proj.phiprojderapprox()));
+      double dphiapprox = reco::reduceRange(phi - (proj.phiprojapprox() + dr * proj.phiprojderapprox()));
 
       double dzapprox = z - (proj.rzprojapprox() + dr * proj.rzprojderapprox());
 
@@ -318,8 +315,13 @@ void MatchCalculator::execute(double phioffset) {
       if (imatch) {
         countsel++;
 
-        tracklet->addMatch(layerdisk_, ideltaphi, ideltaz,
-                           dphi, dz, dphiapprox, dzapprox,
+        tracklet->addMatch(layerdisk_,
+                           ideltaphi,
+                           ideltaz,
+                           dphi,
+                           dz,
+                           dphiapprox,
+                           dzapprox,
                            (phiregion_ << 7) + fpgastub->stubindex().value(),
                            mergedMatches[j].second);
 
@@ -403,9 +405,8 @@ void MatchCalculator::execute(double phioffset) {
       double dz = z - sign * settings_.zmean(layerdisk_ - N_LAYER);
 
       if (std::abs(dz) > settings_.dzmax()) {
-        throw cms::Exception("LogicError")
-            << __FILE__ << " " << __LINE__ << " " << name_ << " " << tracklet->getISeed()
-            << "\n stub " << stub->z() << " disk " << disk << " " << dz;
+        throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << " " << name_ << " " << tracklet->getISeed()
+                                           << "\n stub " << stub->z() << " disk " << disk << " " << dz;
       }
 
       double phiproj = proj.phiproj() + dz * proj.phiprojder();
@@ -418,8 +419,7 @@ void MatchCalculator::execute(double phioffset) {
 
       double dphi = reco::reduceRange(phi - phiproj);
 
-      double dphiapprox =
-          reco::reduceRange(phi - (proj.phiprojapprox() + dz * proj.phiprojderapprox()));
+      double dphiapprox = reco::reduceRange(phi - (proj.phiprojapprox() + dz * proj.phiprojderapprox()));
 
       double drapprox = stub->r() - (proj.rzprojapprox() + dz * proj.rzprojderapprox());
 
@@ -480,11 +480,16 @@ void MatchCalculator::execute(double phioffset) {
           edm::LogVerbatim("Tracklet") << "MatchCalculator found match in disk " << getName();
         }
 
-        tracklet->addMatch(layerdisk_, ideltaphi, ideltar,
-			    drphi / stub->r(), dr, drphiapprox / stub->r(), drapprox,
-			    (phiregion_ << 7) + fpgastub->stubindex().value(),
-			    fpgastub);
-	
+        tracklet->addMatch(layerdisk_,
+                           ideltaphi,
+                           ideltar,
+                           drphi / stub->r(),
+                           dr,
+                           drphiapprox / stub->r(),
+                           drapprox,
+                           (phiregion_ << 7) + fpgastub->stubindex().value(),
+                           fpgastub);
+
         if (settings_.debugTracklet()) {
           edm::LogVerbatim("Tracklet") << "Accepted full match in disk " << getName() << " " << tracklet;
         }

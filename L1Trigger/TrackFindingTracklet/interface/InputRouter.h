@@ -29,13 +29,11 @@ namespace trklet {
     void execute();
 
   private:
-
     //The input stub memories
     DTCLinkMemory* dtcstubs_;
 
     //The all stub memories - the ints are layerdisk and phiregion
     std::vector<std::pair<std::pair<unsigned int, unsigned int>, InputLinkMemory*> > irstubs_;
-
   };
 };  // namespace trklet
 #endif

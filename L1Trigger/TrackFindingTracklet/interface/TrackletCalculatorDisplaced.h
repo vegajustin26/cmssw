@@ -168,7 +168,7 @@ namespace trklet {
 
     unsigned int iSector_;
     double phimin_, phimax_;
-    
+
     std::vector<double> toR_;
     std::vector<double> toZ_;
 

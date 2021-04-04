@@ -44,7 +44,7 @@ namespace trklet {
     int iAllStub_;
 
     unsigned int maxStep_;
-    
+
     VMStubsTEMemory* outervmstubs_;
 
     //                                 istub          imem          start imem    end imem

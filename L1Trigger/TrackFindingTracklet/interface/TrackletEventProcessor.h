@@ -63,7 +63,6 @@ namespace trklet {
     Timer PDTimer_;
 
     std::vector<Track> tracks_;
-
   };
 
 };  // namespace trklet

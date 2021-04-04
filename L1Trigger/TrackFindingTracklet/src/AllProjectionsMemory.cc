@@ -10,13 +10,11 @@
 using namespace trklet;
 using namespace std;
 
-AllProjectionsMemory::AllProjectionsMemory(string name, Settings const& settings)
-    : MemoryBase(name, settings) {
+AllProjectionsMemory::AllProjectionsMemory(string name, Settings const& settings) : MemoryBase(name, settings) {
   initLayerDisk(3, layer_, disk_);
 }
 
 void AllProjectionsMemory::writeAP(bool first, unsigned int iSector) {
-
   iSector_ = iSector;
   const string dirTP = settings_.memPath() + "TrackletProjections/";
 

@@ -109,10 +109,9 @@ int main(const int argc, const char **argv) {
   for (int eventnum = 0; eventnum < nevents && !in->eof(); eventnum++) {
     SLHCEvent ev(*in);
 
-    
     //auto simtrk = ev.simtrack(0);
     //if (std::abs(std::abs(simtrk.eta())-1.3)>0.1) continue;
-    
+
     // -----------------------------------------------------------------
     // setup ROOT Tree and Add Monte Carlo tracks to the ROOT-Tree Event
 #ifdef USEROOT
@@ -211,7 +210,7 @@ int main(const int argc, const char **argv) {
 
     eventProcessor.event(ev);
 
-    const std::vector<Track>& tracks = eventProcessor.tracks();
+    const std::vector<Track> &tracks = eventProcessor.tracks();
 
     // ---------------------------------------------------------
     // Block for producing ROOT-Tree

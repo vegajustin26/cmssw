@@ -6,8 +6,7 @@
 using namespace std;
 using namespace trklet;
 
-AllStubsMemory::AllStubsMemory(string name, Settings const& settings)
-    : MemoryBase(name, settings) {}
+AllStubsMemory::AllStubsMemory(string name, Settings const& settings) : MemoryBase(name, settings) {}
 
 void AllStubsMemory::writeStubs(bool first, unsigned int iSector) {
   iSector_ = iSector;

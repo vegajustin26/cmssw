@@ -19,7 +19,6 @@ void TrackletParametersMemory::clean() {
 }
 
 void TrackletParametersMemory::writeTPAR(bool first, unsigned int iSector) {
-
   iSector_ = iSector;
   const string dirTP = settings_.memPath() + "TrackletParameters/";
 
