@@ -380,8 +380,8 @@ void MatchCalculator::execute(double phioffset) {
       int ideltar = (irstub >> 1) - ir;
 
       if (!stub->isPSmodule()) {
-        int ialphanew = fpgastub->alphanew().value();
-        int iphialphacor = ((ideltar * ialphanew * ialphafact) >> settings_.alphashift());
+        int ialpha = fpgastub->alpha().value();
+        int iphialphacor = ((ideltar * ialpha * ialphafact) >> settings_.alphashift());
         ideltaphi += iphialphacor;
       }
 

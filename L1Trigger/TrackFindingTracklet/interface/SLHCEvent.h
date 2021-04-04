@@ -62,8 +62,6 @@ namespace trklet {
 
     int eventnum() const { return eventnum_; }
 
-    //int getSimtrackFromSimtrackid(int simtrackid, int eventid = 0) const;
-
   private:
     int eventnum_;
     std::vector<L1SimTrack> simtracks_;

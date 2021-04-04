@@ -636,8 +636,8 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, b
     int ideltar = (irstub * settings_.kr()) / settings_.krprojshiftdisk() - ir;
 
     if (!stub->isPSmodule()) {
-      int ialphanew = fpgastub->alphanew().value();
-      int iphialphacor = ((ideltar * ialphanew * ialphafact) >> settings_.alphashift());
+      int ialpha = fpgastub->alpha().value();
+      int iphialphacor = ((ideltar * ialpha * ialphafact) >> settings_.alphashift());
       ideltaphi += iphialphacor;
     }
 

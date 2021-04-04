@@ -43,6 +43,8 @@ namespace trklet {
     unsigned int projfinephi_;
     unsigned int iphi_;
     int shift_;
+    //Projection may use two bins in rz and phi if the projection is near a boundary
+    //The use_[rz][phi] array indicates which bins are used.
     bool use_[2][2];
     bool isPSseed_;
   };

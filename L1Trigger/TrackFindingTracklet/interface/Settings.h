@@ -266,6 +266,7 @@ namespace trklet {
     void setNbitsseedextended(unsigned int nbitsseed) { nbitsseedextended_ = nbitsseed; }
 
     double dphisectorHG() const {
+      //These values are used in the DTC emulation code. 
       double rsectmin = 21.8;
       double rsectmax = 112.7;
       return 2 * M_PI / N_SECTOR + rinvmax() * std::max(rcrit_ - rsectmin, rsectmax - rcrit_);
@@ -386,16 +387,16 @@ namespace trklet {
     double krprojshiftdisk() const { return 2 * kr(); }
 
     double benddecode(int ibend, int layerdisk, bool isPSmodule) const {
-      if (layerdisk > 5 && (!isPSmodule))
-        layerdisk += 5;
+      if (layerdisk >= N_LAYER && (!isPSmodule))
+        layerdisk += (N_LAYER - 1);
       double bend = benddecode_[layerdisk][ibend];
       assert(bend < 99.0);
       return bend;
     }
 
     double bendcut(int ibend, int layerdisk, bool isPSmodule) const {
-      if (layerdisk > 5 && (!isPSmodule))
-        layerdisk += 5;
+      if (layerdisk >= N_LAYER && (!isPSmodule))
+        layerdisk += (N_LAYER - 1);
       double bendcut = bendcut_[layerdisk][ibend];
       if (bendcut <= 0.0)
         std::cout << "bendcut : " << layerdisk << " " << ibend << " " << isPSmodule << std::endl;
@@ -718,7 +719,8 @@ namespace trklet {
     unsigned int maxstepoffset_{0};
 
     //Number of processing steps for one event (108=18TM*240MHz/40MHz)
-    std::unordered_map<std::string, unsigned int> maxstep_{{"IR", 168},
+    std::unordered_map<std::string, unsigned int> maxstep_{{"IR", 168},  //IR will run at a higher clock speed to handle
+	                                                                 //input links running at 25 Gbits/s
                                                            {"VMR", 108},
                                                            {"TE", 108},
                                                            {"TC", 108},

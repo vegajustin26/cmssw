@@ -231,8 +231,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
           dmatches.set(2 * d - 1);
           diskmask |= (1 << (2 * (N_DISK - d) + 1));
         } else {
-          int ialpha = resid.stubptr()->alphanew().value();
-          int nalpha = resid.stubptr()->alphanew().nbits();
+          int ialpha = resid.stubptr()->alpha().value();
+          int nalpha = resid.stubptr()->alpha().nbits();
           nalpha = nalpha - settings_.alphaBitsTable();
           ialpha = (1 << (settings_.alphaBitsTable() - 1)) + (ialpha >> nalpha);
 
@@ -306,8 +306,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
           dmatches.set(2 * d1 - 1);
           diskmask |= (1 << (2 * (N_DISK - d1) + 1));
         } else {
-          int ialpha = resid.stubptr()->alphanew().value();
-          int nalpha = resid.stubptr()->alphanew().nbits();
+          int ialpha = resid.stubptr()->alpha().value();
+          int nalpha = resid.stubptr()->alpha().nbits();
           nalpha = nalpha - settings_.alphaBitsTable();
           ialpha = (1 << (settings_.alphaBitsTable() - 1)) + (ialpha >> nalpha);
 
@@ -383,8 +383,8 @@ void FitTrack::trackFitChisq(Tracklet* tracklet, std::vector<const Stub*>&, std:
           FPGAWord tmp;
           tmp.set(diskmask, 10);
         } else {
-          int ialpha = resid.stubptr()->alphanew().value();
-          int nalpha = resid.stubptr()->alphanew().nbits();
+          int ialpha = resid.stubptr()->alpha().value();
+          int nalpha = resid.stubptr()->alpha().nbits();
           nalpha = nalpha - settings_.alphaBitsTable();
           ialpha = (1 << (settings_.alphaBitsTable() - 1)) + (ialpha >> nalpha);
 

@@ -61,7 +61,7 @@ namespace trklet {
     const FPGAWord& z() const { return z_; }
     const FPGAWord& phi() const { return phi_; }
     const FPGAWord& phicorr() const { return phicorr_; }
-    const FPGAWord& alphanew() const { return alpha_; }  //FIXME should remove new
+    const FPGAWord& alpha() const { return alpha_; }
 
     const FPGAWord& stubindex() const { return stubindex_; }
     const FPGAWord& layer() const { return layer_; }
