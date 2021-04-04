@@ -1,5 +1,4 @@
 #include "L1Trigger/TrackFindingTracklet/interface/L1TStub.h"
-#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
 
 using namespace std;
 using namespace trklet;
@@ -27,8 +26,8 @@ L1TStub::L1TStub(std::string DTClink,
   iphi_ = -1;
   iz_ = -1;
   layer_ = layerdisk;
-  if (layerdisk > 5) {
-    layer_ = 1000 + layerdisk - 5;
+  if (layerdisk >= N_LAYER) {
+    layer_ = 1000 + layerdisk - N_LAYER + 1;
     if (z < 0.0)
       layer_ += 1000;
   }

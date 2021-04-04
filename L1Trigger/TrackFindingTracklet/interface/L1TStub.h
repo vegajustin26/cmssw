@@ -1,6 +1,8 @@
 #ifndef L1Trigger_TrackFindingTracklet_interface_L1TStub_h
 #define L1Trigger_TrackFindingTracklet_interface_L1TStub_h
 
+#include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+
 #include <iostream>
 #include <fstream>
 #include <cassert>
@@ -38,10 +40,10 @@ namespace trklet {
 
     unsigned int layer() const { return layer_; }
     int disk() const {
-      if (layerdisk_ < 6) {
+      if (layerdisk_ < N_LAYER) {
         return 0;
       }
-      int disk = layerdisk_ - 5;
+      int disk = layerdisk_ - N_LAYER + 1;
       if (z_ < 0.0) {
         return -disk;
       }

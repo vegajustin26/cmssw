@@ -1,4 +1,4 @@
-// This holds two classes: L1SimTrack (truth level simulated track), and SLHCEvent (support for maintaining standalone running)
+// Stores MC truth information, pt, eta, phi, vx, vy, vz, as well as particle type and track id
 #ifndef L1Trigger_TrackFindingTracklet_interface_L1SimTrack_h
 #define L1Trigger_TrackFindingTracklet_interface_L1SimTrack_h
 
