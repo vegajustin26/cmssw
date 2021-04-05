@@ -88,11 +88,6 @@ void Projection::init(Settings const& settings,
     int rbin2 = 8.0 * (irzproj * settings.krprojshiftdisk() + roffset - settings.rmindiskvm()) /
                 (settings.rmaxdisk() - settings.rmindiskvm());
 
-    if (irzproj * settings.krprojshiftdisk() < 20.0) {
-      edm::LogPrint("Tracklet") << " WARNING : irproj = " << irzproj << " " << irzproj * settings.krprojshiftdisk()
-                                << " " << layerdisk;
-    }
-
     if (rbin1 < 0) {
       rbin1 = 0;
     }

@@ -182,20 +182,20 @@ void VMRouterCM::execute() {
           continue;
 
         int absz = std::abs(stub->z().value());
-        if (layerdisk_ == 1 && absz < 50.0 / settings_.kz(layerdisk_))
+        if (layerdisk_ == 1 && absz <  VMROUTERCUTZL2 / settings_.kz(layerdisk_))
           continue;
-        if ((layerdisk_ == 2 || layerdisk_ == 4) && absz > 95.0 / settings_.kz(layerdisk_))
+        if ((layerdisk_ == 2 || layerdisk_ == 4) && absz > VMROUTERCUTZL1L3L5 / settings_.kz(layerdisk_))
           continue;
-        if ((layerdisk_ == 6 || layerdisk_ == 8) && stub->r().value() > 55.0 / settings_.kr())
+        if ((layerdisk_ == 6 || layerdisk_ == 8) && stub->r().value() > VMROUTERCUTRD1D3 / settings_.kr())
           continue;
         if ((layerdisk_ == 6 || layerdisk_ == 8) && stub->r().value() < 2 * int(N_DSS_MOD))
           continue;
         if (layerdisk_ == 0) {
           if (memtype == 'M' || memtype == 'R' || memtype == 'L') {
-            if (absz < 70.0 / settings_.kz(layerdisk_))
+            if (absz < VMROUTERCUTZL1 / settings_.kz(layerdisk_))
               continue;
           } else {
-            if (absz > 95.0 / settings_.kz(layerdisk_))
+            if (absz > VMROUTERCUTZL1L3L5 / settings_.kz(layerdisk_))
               continue;
           }
         }

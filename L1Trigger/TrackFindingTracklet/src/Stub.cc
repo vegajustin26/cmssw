@@ -60,13 +60,11 @@ Stub::Stub(L1TStub& stub, Settings const& settings, Globals& globals) : settings
 
   int newphi = phibits.to_ulong();
 
-  int newalpha = alphabits.to_ulong();  //-(1<<(nalphabits-1));
+  int newalpha = alphabits.to_ulong();
   if (newalpha >= (1 << (nalphabits - 1)))
     newalpha = newalpha - (1 << nalphabits);
 
   l1tstub_ = &stub;
-
-  //int ibendnew = bendencode(newbend*bendfact, stub.isPSmodule());
 
   bend_.set(newbend, nbendbits, true, __LINE__, __FILE__);
 
@@ -92,8 +90,6 @@ Stub::Stub(L1TStub& stub, Settings const& settings, Globals& globals) : settings
 
   if (settings.writeMonitorData("StubBend")) {
     unsigned int nsimtrks = globals.event()->nsimtracks();
-
-    //cout << "Have L1 stub" << endl;
 
     for (unsigned int isimtrk = 0; isimtrk < nsimtrks; isimtrk++) {
       const L1SimTrack& simtrk = globals.event()->simtrack(isimtrk);

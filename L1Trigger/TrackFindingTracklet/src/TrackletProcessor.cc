@@ -342,7 +342,6 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
       ninnerstubs++;
 
       const Stub* stub = innerallstubs_[imem]->getStub(istub);
-      //const Stub* stub = innerallstubs_[imem]->getStub(innerallstubs_[imem]->nStubs()-istub-1);
 
       if (settings_.debugTracklet()) {
         edm::LogVerbatim("Tracklet") << getName() << " Have stub in " << innerallstubs_[imem]->getName();
@@ -367,7 +366,7 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
       }
 
       int lutval = -1;
-      if (iSeed_ < 6) {  //FIXME should only be one table...
+      if (iSeed_ < 6) {  //FIXME should only be one table - but will need coordination with HLS code.
         lutval = vmrtable_.lookupinner(indexz, indexr);
       } else {
         lutval = vmrtable_.lookupinneroverlap(indexz, indexr);

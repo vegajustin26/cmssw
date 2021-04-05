@@ -44,13 +44,9 @@ void TrackletEngineUnit::reset() {
   candpairs_.reset();
 }
 
-void TrackletEngineUnit::step(bool print, int istep, int iTE) {
-  //if (print) cout << "istep="<<istep<<" iTE="<<iTE<<" rptr wptr : "<<candpairs_.rptr()<<" "<<candpairs_.wptr()<<endl;
+void TrackletEngineUnit::step(bool, int, int iTE) {
 
   if (goodpair__) {
-    if (print)
-      cout << "istep=" << istep << " TEUnit save iTE inner outer : " << iTE << " "
-           << candpair__.first->allStubIndex().value() << " " << candpair__.second->allStubIndex().value() << endl;
     candpairs_.store(candpair__);
   }
 
@@ -60,9 +56,6 @@ void TrackletEngineUnit::step(bool print, int istep, int iTE) {
   goodpair_ = false;
 
   if (idle_ || nearfull_) {
-    if (print)
-      cout << "istep=" << istep << " TEUnit step iTE=" << iTE << " idle nearfull: " << idle_ << " " << nearfull_
-           << " rptr wptr:" << candpairs_.rptr() << " " << candpairs_.wptr() << endl;
     return;
   }
 
@@ -123,10 +116,6 @@ void TrackletEngineUnit::step(bool print, int istep, int iTE) {
       goodpair_ = true;
     }
   }
-  if (print)
-    cout << "istep=" << istep << " TEUnit step iTE=" << iTE
-         << " inner istub nstub : " << tedata_.stub_->allStubIndex().value() << " " << istub_ << " " << nstub_
-         << " nreg regionsize" << nreg_ << " " << tedata_.regions_.size() << endl;
 
   istub_++;
   assert(nstub_ <= N_VMSTUBSMAX);

@@ -85,7 +85,6 @@ void VMRouterTable::init(unsigned int layerdisk, std::string const& name) {
         if (bin < 0)
           bin = 0;
         if (bin >= NBINS / 2)
-          //bin = NBINS / 2 - 1;
           bin = 0;
         vmrtabletedisk_.push_back(bin);
       }

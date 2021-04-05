@@ -366,11 +366,11 @@ std::map<int, int> Tracklet::getStubIDs() {
   // E.g. An L3L4 track has 0=L1, 1=L2, 2=L4, 3=L5 for the barrels (for proj*_[i])
 
   if (innerFPGAStub_)
-    assert(innerFPGAStub_->stubindex().nbits() == 7);
+    assert(innerFPGAStub_->stubindex().nbits() == N_BITSMEMADDRESS);
   if (middleFPGAStub_)
-    assert(middleFPGAStub_->stubindex().nbits() == 7);
+    assert(middleFPGAStub_->stubindex().nbits() == N_BITSMEMADDRESS);
   if (outerFPGAStub_)
-    assert(outerFPGAStub_->stubindex().nbits() == 7);
+    assert(outerFPGAStub_->stubindex().nbits() == N_BITSMEMADDRESS);
 
   if (barrel_) {
     for (int i = 0; i < N_LAYER; i++) {
@@ -394,9 +394,9 @@ std::map<int, int> Tracklet::getStubIDs() {
         location <<= resid_[N_LAYER + i].fpgastubid().nbits();
 
         if (itfit().value() < 0) {
-          stubIDs[-11 - i] = resid_[N_LAYER + i].fpgastubid().value() + location;
+          stubIDs[-(N_LAYER + N_DISK) - i] = resid_[N_LAYER + i].fpgastubid().value() + location;
         } else {
-          stubIDs[11 + i] = resid_[N_LAYER + i].fpgastubid().value() + location;
+          stubIDs[N_LAYER + N_DISK + i] = resid_[N_LAYER + i].fpgastubid().value() + location;
         }
       }
     }

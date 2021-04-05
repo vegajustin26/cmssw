@@ -37,6 +37,11 @@ namespace trklet {
 
   constexpr double sixth = 1.0 / 6.0;  //Commonly used factor
 
+  constexpr double VMROUTERCUTZL2 = 50.0;  //Min L2 z for inner allstub
+  constexpr double VMROUTERCUTZL1L3L5 = 95.0; //Max z for inner barrel layers
+  constexpr double VMROUTERCUTZL1 = 70.0; //Max z for L1 barrel seeding
+  constexpr double VMROUTERCUTRD1D3 = 55.0; //Max r for disk seeds
+     
   class Settings {
   public:
     Settings() {

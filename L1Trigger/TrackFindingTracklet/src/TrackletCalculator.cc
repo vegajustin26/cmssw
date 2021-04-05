@@ -159,8 +159,9 @@ void TrackletCalculator::execute(unsigned int iSector, double phimin, double phi
   phimax_ = phimax;
   iSector_ = iSector;
 
-  bool print = (iSector == 3) && (getName() == "TC_L1L2G");
-  print = false;
+  //Helpfull to have for debugging the HLS code - will keep here for now.
+  //bool print = (iSector == 3) && (getName() == "TC_L1L2G");
+  //print = false;
 
   for (auto& stubpair : stubpairs_) {
     if (trackletpars_->nTracklets() >= settings_.ntrackletmax()) {
@@ -188,11 +189,6 @@ void TrackletCalculator::execute(unsigned int iSector, double phimin, double phi
         } else {
           //barrel+barrel seeding
           bool accept = barrelSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
-          if (print) {
-            cout << stubpair->getName() << " i inner outer : " << countall << " "
-                 << innerFPGAStub->allStubIndex().value() << " " << outerFPGAStub->allStubIndex().value()
-                 << " accept = " << accept << endl;
-          }
           if (accept)
             countsel++;
         }

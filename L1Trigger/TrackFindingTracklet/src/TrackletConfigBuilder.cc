@@ -486,10 +486,6 @@ void TrackletConfigBuilder::writeSPDMemories(std::ostream& wires, std::ostream& 
           for (unsigned int ivm2 = 0; ivm2 < nvm2; ivm2++) {
             int count = 0;
 
-            std::cout << "layerdisk1 layerdisk2 TEDName : " << layerdisk1 << " " << layerdisk2 << " "
-                      << TEDName(layerdisk1, ireg1, ireg1 * nvm1 + ivm1, layerdisk2, ireg2, ireg2 * nvm2 + ivm2, iSeed)
-                      << std::endl;
-
             modules << "TrackletEngineDisplaced: "
                     << TEDName(layerdisk1, ireg1, ireg1 * nvm1 + ivm1, layerdisk2, ireg2, ireg2 * nvm2 + ivm2, iSeed)
                     << std::endl;
@@ -570,7 +566,6 @@ void TrackletConfigBuilder::writeSPDMemories(std::ostream& wires, std::ostream& 
     }
 
     unsigned int nST = stubTriplets[iSeed].size();
-    cout << "iSeed nST : " << iSeed << " " << nST << endl;
     for (unsigned int iST = 0; iST < nST; iST++) {
       unsigned int iTC = (iST * nTC) / nST;
       assert(iTC < nTC);
@@ -723,7 +718,6 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
 
             if (ilayer == l1) {
               int ratio = NRegions_[l1] / NRegions_[l2];
-              //std::cout << "ratio : "<<ratio << std::endl;
               int min = iTCReg * ratio - 1 + jTCReg;
               int max = (iTCReg + 1) * ratio - (nTCReg - jTCReg - 1);
               if ((int)iReg < min || (int)iReg > max)
@@ -774,7 +768,6 @@ void TrackletConfigBuilder::writeASMemories(std::ostream& os, std::ostream& memo
                   }
                 }
               }
-              //cout << "iseed ratio max min : "<<iSeed<<" "<<ratio<<" "<<max<<" "<<min<<endl;
               assert(ext != "");
             }
 

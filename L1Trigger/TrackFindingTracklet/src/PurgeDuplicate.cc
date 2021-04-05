@@ -484,10 +484,10 @@ double PurgeDuplicate::getPhiRes(Tracklet* curTracklet, const Stub* curStub) {
   stubphi = curStub->l1tstub()->phi();
   // Get region that the stub is in (Layer 1->6, Disk 1->5)
   int Layer = curStub->layerdisk() + 1;
-  if (Layer > 6) {
+  if (Layer > N_LAYER) {
     Layer = 0;
   }
-  int Disk = curStub->layerdisk() - 5;
+  int Disk = curStub->layerdisk() - (N_LAYER - 1);
   if (Disk < 0) {
     Disk = 0;
   }
