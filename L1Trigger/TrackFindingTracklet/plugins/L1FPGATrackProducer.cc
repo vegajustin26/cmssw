@@ -460,7 +460,10 @@ void L1FPGATrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
         assert(layerdisk != -1);
 
         //Get the 36 bit word - skip the lowest 3 buts (status and layer code)
-        string stubword = stub.second.to_string().substr(64 - 36 - 3, 36);
+	constexpr int DTCLinkWordSize = 64;
+	constexpr int StubWordSize = 36;
+	constexpr int LayerandStatusCodeSize = 3;
+        string stubword = stub.second.to_string().substr(DTCLinkWordSize - StubWordSize - LayerandStatusCodeSize, StubWordSize);
         string stubwordhex = "";
 
         //Loop over the 9 words in the 36 bit stub word

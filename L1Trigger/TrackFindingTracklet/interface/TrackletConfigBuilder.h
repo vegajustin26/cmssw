@@ -81,22 +81,32 @@ namespace trklet {
     // The next group of fcn formats a string to write out names of different
     // memories and processing modules
     //
+
+    //Seed string, eg. L1L2
     std::string iSeedStr(unsigned int iSeed);
 
+    //Return unsigned as string
     std::string numStr(unsigned int i);
 
+    //Retunr iTC as string - ie A, B, C, etc
     std::string iTCStr(unsigned int iTC);
 
+    //The region string A, B, C etc for layers and disks; X, Y, Z etc for overlap
     std::string iRegStr(unsigned int iReg, unsigned int iSeed);
 
+    //TC Name
     std::string TCName(unsigned int iSeed, unsigned int iTC);
 
+    //Name of layer or disk, e.g. L1 or D1
     std::string LayerName(unsigned int ilayer);
 
+    //Tracklet projection name
     std::string TPROJName(unsigned int iSeed, unsigned int iTC, unsigned int ilayer, unsigned int ireg);
 
+    //Projection router name
     std::string PRName(unsigned int ilayer, unsigned int ireg);
 
+    //StubPair Name
     std::string SPName(unsigned int l1,
                        unsigned int ireg1,
                        unsigned int ivm1,
@@ -105,6 +115,7 @@ namespace trklet {
                        unsigned int ivm2,
                        unsigned int iseed);
 
+    //StubPaur displaced name
     std::string SPDName(unsigned int l1,
                         unsigned int ireg1,
                         unsigned int ivm1,
@@ -116,6 +127,7 @@ namespace trklet {
                         unsigned int ivm3,
                         unsigned int iseed);
 
+    //Stub Triplet name
     std::string STName(unsigned int l1,
                        unsigned int ireg1,
                        unsigned int l2,
@@ -125,6 +137,7 @@ namespace trklet {
                        unsigned int iseed,
                        unsigned int count);
 
+    //TrackletEngine name
     std::string TEName(unsigned int l1,
                        unsigned int ireg1,
                        unsigned int ivm1,
@@ -133,6 +146,7 @@ namespace trklet {
                        unsigned int ivm2,
                        unsigned int iseed);
 
+    //Triplet engine name
     std::string TREName(unsigned int l1,
                         unsigned int ireg1,
                         unsigned int l2,
@@ -140,6 +154,7 @@ namespace trklet {
                         unsigned int iseed,
                         unsigned int count);
 
+    //TrackletEngine displaced name
     std::string TEDName(unsigned int l1,
                         unsigned int ireg1,
                         unsigned int ivm1,
@@ -148,10 +163,13 @@ namespace trklet {
                         unsigned int ivm2,
                         unsigned int iseed);
 
+    //Tracklet parameter memory name
     std::string TParName(unsigned int l1, unsigned int l2, unsigned int l3, unsigned int itc);
 
+    //TrackletCalculator displaced name
     std::string TCDName(unsigned int l1, unsigned int l2, unsigned int l3, unsigned int itc);
 
+    //TrackletProjection name
     std::string TPROJName(unsigned int l1,
                           unsigned int l2,
                           unsigned int l3,
@@ -159,8 +177,10 @@ namespace trklet {
                           unsigned int projlay,
                           unsigned int projreg);
 
+    //FitTrack module name
     std::string FTName(unsigned int l1, unsigned int l2, unsigned int l3);
 
+    //TrackletCalculator name
     std::string TCNAme(unsigned int iseed, unsigned int iTC);
 
     //

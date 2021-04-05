@@ -186,10 +186,6 @@ void MatchEngine::execute() {
       if (second)
         rzlast += 1;
 
-      if (print) {
-        cout << "istep rzfirst rzlast : " << istep << " " << rzfirst << " " << rzlast << endl;
-      }
-
       //Check if there are stubs in the memory
       int nstubfirst = vmstubs_->nStubsBin(rzfirst);
       int nstublast = vmstubs_->nStubsBin(rzlast);
@@ -296,10 +292,6 @@ void MatchEngine::execute() {
       bool passphi = (std::abs(deltaphi) < mindeltaphicut) || (std::abs(deltaphi) > maxdeltaphicut);
 
       unsigned int index = (projrinv << nbits) + vmstub.bend().value();
-
-      //if (layerdisk_>5) {
-      //	cout << "layerdisk: "<<layerdisk_<<" "<<projrinv<<" "<<vmstub.bend().value()<<" "<<(isPSmodule ? tablePS_[index] : table2S_[index])<<endl;
-      //}
 
       //Check if stub z position consistent
       int idrz = stubfinerz - projfinerzadj;

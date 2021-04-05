@@ -28,7 +28,7 @@ void DTCLinkMemory::addStub(const L1TStub& al1stub, const Stub& stub) {
 
 void DTCLinkMemory::writeStubs(bool first, unsigned int iSector) {
   iSector_ = iSector;
-  //FIXME should be in settings
+
   static map<string, vector<int> > dtclayers{{"PS10G_1", {0, 6, 8, 10}},
                                              {"PS10G_2", {0, 7, 9}},
                                              {"PS10G_3", {1, 7}},
@@ -49,8 +49,10 @@ void DTCLinkMemory::writeStubs(bool first, unsigned int iSector) {
     string dtcname = stubs_[j]->l1tstub()->DTClink();
     int layerdisk = stubs_[j]->l1tstub()->layerdisk();
 
+    //If the string starts with 'neg' skip the first three character
     int start = dtcname.substr(0, 3) == "neg" ? 3 : 0;
 
+    //For the dtcbase name remove the leading 'neg' if in the name and the trailing '_A' or '_B'
     string dtcbase = dtcname.substr(start, dtcname.size() - 2 - start);
 
     vector<int> layers = dtclayers[dtcbase];

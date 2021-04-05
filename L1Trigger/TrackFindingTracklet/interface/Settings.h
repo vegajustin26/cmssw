@@ -33,6 +33,7 @@ namespace trklet {
   constexpr unsigned int N_RZBITS = 3;      //number of bit for the r/z bins
 
   constexpr unsigned int N_VMSTUBSMAX = 15;  // maximum number of stubs in VM bin
+  constexpr unsigned int N_BITSMEMADDRESS = 7; // Number of bits for address in memories
 
   constexpr double sixth = 1.0 / 6.0;  //Commonly used factor
 
