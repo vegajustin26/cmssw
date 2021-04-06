@@ -98,6 +98,18 @@ namespace trackerTFP {
   }
 
   //
+  vector<StubKFin*> State::stubsIn() const {
+    vector<StubKFin*> stubs;
+    stubs.reserve(hitPattern_.count());
+    State* s = parent_;
+    while (s) {
+      stubs.push_back(s->stub());
+      s = s->parent();
+    }
+    return stubs;
+  }
+
+  //
   vector<StubKF> State::stubs() const {
     vector<StubKF> stubs;
     stubs.reserve(hitPattern_.count());

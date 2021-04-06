@@ -10,6 +10,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/Common/interface/Handle.h"
 
+#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 
 #include <string>
@@ -78,7 +79,7 @@ namespace trackerTFP {
   void ProducerAS::produce(Event& iEvent, const EventSetup& iSetup) {
     // empty KFTTTrack product
     TTTrackMap ttTrackMap;
-    // read in KFin and KF Product and produce AssociatorKF product
+    // read in KF Product and produce AssociatorKF product
     if (setup_->configurationSupported()) {
       Handle<StreamsTrack> handleKF;
       iEvent.getByToken<StreamsTrack>(edGetTokenKF_, handleKF);

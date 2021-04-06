@@ -1,6 +1,7 @@
 #ifndef L1Trigger_TrackerDTC_DTC_h
 #define L1Trigger_TrackerDTC_DTC_h
 
+#include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerDTC/interface/Stub.h"
 

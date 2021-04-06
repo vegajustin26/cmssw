@@ -1,4 +1,3 @@
-// record of trackerDTC::Setup
 #ifndef L1Trigger_TrackerDTC_SetupRcd_h
 #define L1Trigger_TrackerDTC_SetupRcd_h
 
@@ -23,6 +22,7 @@ namespace trackerDTC {
                              TTStubAlgorithmRecord>
       Rcds;
 
+  // record of trackerDTC::Setup
   class SetupRcd : public edm::eventsetup::DependentRecordImplementation<SetupRcd, Rcds> {};
 
 }  // namespace trackerDTC

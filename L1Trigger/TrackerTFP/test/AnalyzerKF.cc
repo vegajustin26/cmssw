@@ -234,6 +234,26 @@ namespace trackerTFP {
         TrackKF track(frameTrack, dataFormats_);
         ttTracks.emplace_back(track.ttTrack(stubs));
         pos++;
+        const double m0KF = track.inv2R();
+        const double c0KF = deltaPhi(track.phiT() + (frameTrack.first->phiSector() * 2 + track.sectorPhi() - .5) * setup_->baseSector() - track.inv2R() * setup_->hybridChosenRofPhi());
+        const double m1KF = track.cot();
+        const double c1KF = track.zT() - track.cot() * setup_->chosenRofZ();
+        const double m0KFin = -.5 * frameTrack.first->rInv();
+        const double c0KFin = frameTrack.first->phi();
+        const double m1KFin = frameTrack.first->tanL();
+        const double c1KFin = frameTrack.first->z0();
+        /*cout << "m0KF = " << m0KF << endl;
+        cout << "c0KF = " << c0KF << endl;
+        cout << "m1KF = " << m1KF << endl;
+        cout << "c1KF = " << c1KF << endl;
+        cout << "m0KFin = " << m0KFin << endl;
+        cout << "c0KFin = " << c0KFin << endl;
+        cout << "m1KFin = " << m1KFin << endl;
+        cout << "c1KFin = " << c1KFin << endl;*/
+        //for (const StubKF& stub : stubs)
+          //cout << stub.r() + setup_->hybridChosenRofPhi() << " " << deltaPhi(stub.phi() + (c0KF - stub.r() * m0KF)) << " " << stub.z() + (c1KF - (stub.r() + setup_->hybridChosenRofPhi() - setup_->chosenRofZ()) * m1KF) << endl;
+          //cout << stub.r() << " " << stub.phi() << " " << stub.z() << endl;
+        //cout << endl;
       }
     };
     for (int region = 0; region < setup_->numRegions(); region++) {

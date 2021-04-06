@@ -35,7 +35,7 @@ process.dtc = cms.Sequence( process.TrackerDTCProducer + process.TrackerDTCAnaly
 process.tracklet = cms.Sequence( process.L1TrackletTracks + process.TrackFindingTrackletAnalyzerTracklet )
 process.interIn = cms.Sequence( process.TrackFindingTrackletProducerKFin + process.TrackFindingTrackletAnalyzerKFin )
 process.kf = cms.Sequence( process.TrackFindingTrackletProducerKF + process.TrackFindingTrackletAnalyzerKF )
-process.interOut = cms.Sequence( process.TrackFindingTrackletProducerKFout + process.TrackFindingTrackletProducerAS )
+process.interOut = cms.Sequence( process.TrackFindingTrackletProducerKFout + process.TrackFindingTrackletProducerAS + process.TrackFindingTrackletAnalyzerTT )
 process.tt = cms.Path( process.mc + process.dtc + process.tracklet + process.interIn + process.kf + process.interOut )
 process.schedule = cms.Schedule( process.tt )
 
@@ -67,7 +67,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.Even
 process.source = cms.Source(
   "PoolSource",
   fileNames = cms.untracked.vstring( options.inputMC ),
-  #skipEvents = cms.untracked.uint32( 914 ),
+  #skipEvents = cms.untracked.uint32( 1 ),
   secondaryFileNames = cms.untracked.vstring(),
   duplicateCheckMode = cms.untracked.string( 'noDuplicateCheck' )
 )

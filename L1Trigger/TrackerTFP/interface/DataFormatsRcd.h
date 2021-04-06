@@ -9,6 +9,7 @@ namespace trackerTFP {
 
   typedef edm::mpl::Vector<trackerDTC::SetupRcd> RcdsDataFormats;
 
+  // record of trackerTFP::DataFormats
   class DataFormatsRcd : public edm::eventsetup::DependentRecordImplementation<DataFormatsRcd, RcdsDataFormats> {};
 
 }  // namespace trackerTFP

@@ -104,6 +104,8 @@ namespace trackerTFP {
           }
         }
         tracks_.emplace_back(frameTrack, dataFormats_, vector<StubKFin*>(stubs.begin(), stubs.end()));
+        /*cout << "KFin " << tracks_.back().inv2R() << " " << tracks_.back().phiT() << endl;
+        cout << "KFin " << -.5 * frameTrack.first->rInv() << endl;*/
         tracks.push_back(&tracks_.back());
       }
     }
@@ -240,6 +242,14 @@ namespace trackerTFP {
     // accumulator delivers contigious stream of best state per track
     // remove gaps and not final states
     stream.erase(remove_if(stream.begin(), stream.end(), [this](State* state){ return !state || state->hitPattern().count() < setup_->kfMaxLayers(); }), stream.end());
+    /*auto toLessPS = [this](State* state) {
+      int nPS(0);
+      for (const StubKF& stub : state->stubs())
+        if (setup_->psModule(stub.ttStubRef()))
+          nPS++;
+      return nPS < 2;
+    };
+    stream.erase(remove_if(stream.begin(), stream.end(), toLessPS), stream.end());*/
     // update chi2
     for (State* state : stream)
       state->finish();
@@ -253,6 +263,8 @@ namespace trackerTFP {
     stable_sort(stream.begin(), stream.end(), [](State* lhs, State* rhs){ return lhs->trackId() < rhs->trackId(); });
     // keep first state (best due to previous sorts) per track id
     stream.erase(unique(stream.begin(), stream.end(), [](State* lhs, State* rhs){ return lhs->track() == rhs->track(); }), stream.end());
+    //for (State* state : stream)
+      //cout << state->x0() << " " << state->x1() << " " << dataFormats_->chosenRofPhi() << endl;
   }
 
   // updates state

@@ -108,9 +108,15 @@ namespace trackerTFP {
     double v1() const { return pow(stub_->dZ(), 2); }
     //double v1() const { return setup_->v1(stub_->ttStubRef(), track_->cotGlobal()); }
     //
-    FrameTrack frame() const { return TrackKF(*track_, x1_, x0_, x3_, x2_).frame(); }
+    FrameTrack frame() const {
+      TrackKF track(*track_, x1_, x0_, x3_, x2_);
+      //std::cout << "KF " << track.inv2R() << " " << track.phiT() << std::endl;
+      return track.frame();
+      }
     //
     std::vector<StubKF> stubs() const;
+    //
+    std::vector<StubKFin*> stubsIn() const;
 
   private:
     //

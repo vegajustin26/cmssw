@@ -168,8 +168,8 @@ namespace trackFindingTracklet {
           // cut on outer eta sector boundaries
           if (binEta == -1 || binEta == setup_->numSectorsEta())
             continue;
-          const double cot = cotGlobal - setup_->sectorCot(binEta);
-          const double zT = zTGlobal - setup_->sectorCot(binEta) * setup_->chosenRofZ();
+          const double cot = dfcot.digi(cotGlobal - setup_->sectorCot(binEta));
+          const double zT = dfzT.digi(zTGlobal - setup_->sectorCot(binEta) * setup_->chosenRofZ());
           // cut on eta and |z0| < 15 cm
           if (!dfzT.inRange(zT) || !dfcot.inRange(cot))
             continue;
@@ -178,26 +178,30 @@ namespace trackFindingTracklet {
           // get set of kf layers for this rough r-z track parameter
           const vector<int>& le = layerEncoding_->layerEncoding(binEta, binZT, binCot);
           // get rphi parameter
-          const double inv2R = -ttTrackRef->rInv() / 2.;
+          double inv2R = dfinv2R.digi(-ttTrackRef->rInv() / 2.);
           // calculcate track phi at radius hybridChosenRofPhi with respect to phi sector centre
-          double phiT = deltaPhi(ttTrackRef->phi() + setup_->hybridChosenRofPhi() * inv2R - ttTrackRef->phiSector() * setup_->baseRegion());
+          double phiT = dfphiT.digi(deltaPhi(ttTrackRef->phi() + dataFormats_->chosenRofPhi() * inv2R - ttTrackRef->phiSector() * setup_->baseRegion()));
           const int sectorPhi = phiT < 0. ? 0 : 1; // dirty hack
           phiT -= (sectorPhi - .5) * setup_->baseSector();
           // cut on nonant size and pt
           if (!dfphiT.inRange(phiT) || !dfinv2R.inRange(inv2R))
             continue;
+          const double offsetPhi = (ttTrackRef->phiSector() * setup_->numSectorsPhi() + sectorPhi - .5) * setup_->baseSector();
           // check hitPattern
           TTBV hitPattern(0, setup_->numLayers());
+          static constexpr double scalePhi = 4.0;
+          static constexpr double scaleZ = 2.0;
           for (const TTStubRef& ttStubRef : ttTrackRef->getStubRefs()) {
             const GlobalPoint& gp = setup_->stubPos(ttStubRef);
             const double rphi = gp.perp() - dataFormats_->chosenRofPhi();
             const double rz = gp.perp() - setup_->chosenRofZ();
-            const double phi = deltaPhi(gp.phi() - (ttTrackRef->phi() + inv2R * gp.perp()));
-            const double z = gp.z() - (ttTrackRef->z0() + cotGlobal * gp.perp());
+            const double phi = deltaPhi(gp.phi() - offsetPhi - (phiT + inv2R * rphi));
+            const double offsetZ = setup_->sectorCot(binEta) * gp.perp();
+            const double z = gp.z() - offsetZ - (zT + cot * rz);
             const double dPhi = setup_->dPhi(ttStubRef, inv2R);
             const double dZ = setup_->dZ(ttStubRef, cotGlobal);
-            const double rangePhi = abs(rphi) * dfinv2R.base() + dfphiT.base() + dPhi;
-            const double rangeZ = abs(rz) * dfcot.base() + dfzT.base() + dZ;
+            const double rangePhi = abs(rphi) * dfinv2R.base() * scalePhi + dfphiT.base() * scalePhi + dPhi;
+            const double rangeZ = abs(rz) * dfcot.base() * scaleZ + dfzT.base() * scaleZ + dZ;
             // cut on phi and z residuals
             if (abs(phi) > rangePhi / 2. || abs(z) > rangeZ / 2.)
               continue;
@@ -208,6 +212,7 @@ namespace trackFindingTracklet {
               layer = setup_->numLayers() - 1;
             hitPattern.set(layer);
           }
+          //cout << hitPattern << endl;
           if (hitPattern.count() < setup_->kfMinLayers())
             continue;
           // create Stubs
@@ -216,12 +221,13 @@ namespace trackFindingTracklet {
             const GlobalPoint& gp = setup_->stubPos(ttStubRef);
             const double rphi = gp.perp() - dataFormats_->chosenRofPhi();
             const double rz = gp.perp() - setup_->chosenRofZ();
-            const double phi = deltaPhi(gp.phi() - (ttTrackRef->phi() + inv2R * gp.perp()));
-            const double z = gp.z() - (ttTrackRef->z0() + cotGlobal * gp.perp());
+            const double phi = deltaPhi(gp.phi() - offsetPhi - (phiT + inv2R * rphi));
+            const double offsetZ = setup_->sectorCot(binEta) * gp.perp();
+            const double z = gp.z() - offsetZ - (zT + cot * rz);
             const double dPhi = setup_->dPhi(ttStubRef, inv2R);
             const double dZ = setup_->dZ(ttStubRef, cotGlobal);
-            const double rangePhi = abs(rphi) * dfinv2R.base() + dfphiT.base() + dPhi;
-            const double rangeZ = abs(rz) * dfcot.base() + dfzT.base() + dZ;
+            const double rangePhi = abs(rphi) * dfinv2R.base() * scalePhi + dfphiT.base() * scalePhi + dPhi;
+            const double rangeZ = abs(rz) * dfcot.base() * scaleZ + dfzT.base() * scaleZ + dZ;
             // cut on phi and z residuals
             if (abs(phi) > rangePhi / 2. || abs(z) > rangeZ / 2.)
               continue;

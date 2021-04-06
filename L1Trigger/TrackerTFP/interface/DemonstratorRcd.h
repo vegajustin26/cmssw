@@ -9,6 +9,7 @@ namespace trackerTFP {
 
   typedef edm::mpl::Vector<trackerDTC::SetupRcd> RcdsDemonstrator;
 
+  // record of trackerTFP::Demonstrator
   class DemonstratorRcd : public edm::eventsetup::DependentRecordImplementation<DemonstratorRcd, RcdsDemonstrator> {};
 
 }  // namespace trackerTFP

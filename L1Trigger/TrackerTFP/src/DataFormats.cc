@@ -458,7 +458,7 @@ namespace trackerTFP {
     chi2phi /= dofPhi;
     chi2z /= dofZ;
     const double invR = -this->inv2R() * 2.;
-    const double phi0 = deltaPhi(this->phiT() - this->inv2R() * dataFormats_->chosenRofPhi() + dataFormats_->format(Variable::phiT, Process::ht).range() * (this->sectorPhi() - .5));
+    const double phi0 = deltaPhi(this->phiT() - this->inv2R() * dataFormats_->chosenRofPhi() + setup()->baseSector() * (this->sectorPhi() - .5));
     const double cot = this->cot() + setup()->sectorCot(this->sectorEta());
     const double z0 = this->zT() - this->cot() * setup()->chosenRofZ();
     static constexpr double d0 = 0.;
@@ -652,6 +652,8 @@ namespace trackerTFP {
     range_ = zT.base() + cot.base() * rangeR + setup->maxdZ();
     const Format<Variable::z, Process::dtc> dtc(iConfig, setup);
     base_ = dtc.base();
+    if (iConfig.getParameter<bool>("UseHybrid"))
+      range_ *= 2;
     width_ = ceil(log2(range_ / base_));
   }
 
@@ -664,6 +666,8 @@ namespace trackerTFP {
     range_ = phiT.base() + inv2R.base() * rangeR + setup->maxdPhi();
     const Format<Variable::phi, Process::dtc> dtc(iConfig, setup);
     base_ = dtc.base();
+    if (iConfig.getParameter<bool>("UseHybrid"))
+      range_ *= 4;
     width_ = ceil(log2(range_ / base_));
   }
 
