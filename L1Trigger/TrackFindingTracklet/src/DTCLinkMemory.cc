@@ -29,19 +29,6 @@ void DTCLinkMemory::addStub(const L1TStub& al1stub, const Stub& stub) {
 void DTCLinkMemory::writeStubs(bool first, unsigned int iSector) {
   iSector_ = iSector;
 
-  static map<string, vector<int> > dtclayers{{"PS10G_1", {0, 6, 8, 10}},
-                                             {"PS10G_2", {0, 7, 9}},
-                                             {"PS10G_3", {1, 7}},
-                                             {"PS10G_4", {6, 8, 10}},
-                                             {"PS_1", {2, 7}},
-                                             {"PS_2", {2, 9}},
-                                             {"2S_1", {3, 4}},
-                                             {"2S_2", {4}},
-                                             {"2S_3", {5}},
-                                             {"2S_4", {5, 8}},
-                                             {"2S_5", {6, 9}},
-                                             {"2S_6", {7, 10}}};
-
   const string dirIS = settings_.memPath() + "InputStubs/";
   openFile(first, dirIS, "Link_");
 
@@ -55,7 +42,7 @@ void DTCLinkMemory::writeStubs(bool first, unsigned int iSector) {
     //For the dtcbase name remove the leading 'neg' if in the name and the trailing '_A' or '_B'
     string dtcbase = dtcname.substr(start, dtcname.size() - 2 - start);
 
-    vector<int> layers = dtclayers[dtcbase];
+    const vector<int>& layers = settings_.dtcLayers(dtcbase);
 
     int lcode = -1;
     for (unsigned int index = 0; index < layers.size(); index++) {

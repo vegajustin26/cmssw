@@ -8,6 +8,8 @@
 #include <cassert>
 #include <cmath>
 #include <unordered_map>
+#include <map>
+#include <vector>
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
@@ -409,7 +411,13 @@ namespace trklet {
       assert(bendcut > 0.0);
       return bendcut;
     }
-
+    
+    const std::vector<int>& dtcLayers(const std::string& dtcName) const {
+      auto iter=dtclayers_.find(dtcName);
+      assert(iter!=dtclayers_.end());
+      return iter->second;
+    }
+    
     double bendcutte(int ibend, int layerdisk, bool isPSmodule) const { return bendcut(ibend, layerdisk, isPSmodule); }
 
     double bendcutme(int ibend, int layerdisk, bool isPSmodule) const {
@@ -463,6 +471,19 @@ namespace trklet {
         {{{2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 3, 2}},  // (3 = #stubs/triplet, only row 1+2 used for tracklet)
          {{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2}},
          {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1}}}};
+
+    std::map<std::string, std::vector<int> > dtclayers_{{"PS10G_1", {0, 6, 8, 10}},
+	{"PS10G_2", {0, 7, 9}},
+	{"PS10G_3", {1, 7}},
+	{"PS10G_4", {6, 8, 10}},
+	{"PS_1", {2, 7}},
+	{"PS_2", {2, 9}},
+	{"2S_1", {3, 4}},
+	{"2S_2", {4}},
+	{"2S_3", {5}},
+	{"2S_4", {5, 8}},
+	{"2S_5", {6, 9}},
+	{"2S_6", {7, 10}}};
 
     double rmindiskvm_{22.5};
     double rmaxdiskvm_{67.0};

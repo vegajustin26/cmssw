@@ -44,7 +44,7 @@ void TrackletEngineUnit::reset() {
   candpairs_.reset();
 }
 
-void TrackletEngineUnit::step(bool, int, int iTE) {
+void TrackletEngineUnit::step(bool, int, int) {
 
   if (goodpair__) {
     candpairs_.store(candpair__);
