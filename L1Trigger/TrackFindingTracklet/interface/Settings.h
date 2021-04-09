@@ -38,6 +38,7 @@ namespace trklet {
   constexpr unsigned int N_BITSMEMADDRESS = 7; // Number of bits for address in memories
 
   constexpr double sixth = 1.0 / 6.0;  //Commonly used factor
+  constexpr double third = 1.0 / 3.0;  //Commonly used factor
 
   constexpr double VMROUTERCUTZL2 = 50.0;  //Min L2 z for inner allstub
   constexpr double VMROUTERCUTZL1L3L5 = 95.0; //Max z for inner barrel layers

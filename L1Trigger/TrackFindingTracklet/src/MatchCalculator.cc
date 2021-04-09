@@ -448,7 +448,7 @@ void MatchCalculator::execute(double phioffset) {
       double drcut = idrcut * settings_.krprojshiftdisk();
 
       bool match, imatch;
-      if (std::abs(dphi) < 0.25 && std::abs(dphiapprox) < 0.25) {  //Changed the Asserts into if statements
+      if (std::abs(dphi) < third*settings_.dphisectorHG() && std::abs(dphiapprox) < third*settings_.dphisectorHG()) {  //1/3 of sector size to catch errors
         if (settings_.writeMonitorData("Residuals")) {
           double pt = 0.01 * settings_.c() * settings_.bfield() / std::abs(tracklet->rinv());
 

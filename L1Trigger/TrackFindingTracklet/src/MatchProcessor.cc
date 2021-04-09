@@ -699,11 +699,11 @@ bool MatchProcessor::matchCalculator(Tracklet* tracklet, const Stub* fpgastub, b
         edm::LogVerbatim("Tracklet") << "MatchCalculator found match in disk " << getName();
       }
 
-      if (std::abs(dphi) >= 0.25) {
+      if (std::abs(dphi) >= third*settings_.dphisectorHG()) {
         edm::LogPrint("Tracklet") << "dphi " << dphi << " ISeed " << tracklet->getISeed();
       }
-      assert(std::abs(dphi) < 0.25);
-      assert(std::abs(dphiapprox) < 0.25);
+      assert(std::abs(dphi) < third*settings_.dphisectorHG());
+      assert(std::abs(dphiapprox) < third*settings_.dphisectorHG());
 
       tracklet->addMatch(layerdisk_,
                          ideltaphi,
