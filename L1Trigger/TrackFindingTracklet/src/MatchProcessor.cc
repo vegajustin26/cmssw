@@ -89,9 +89,9 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
       }
     }
   } else {
-    constexpr int nprojbends = 1<<NRINVBITS;
-    constexpr int npsbends = N_BENDBITS_PS;
-    constexpr int n2sbends = N_BENDBITS_2S;
+    constexpr int nprojbends = 1 << NRINVBITS;
+    constexpr int npsbends = 1 << N_BENDBITS_PS;
+    constexpr int n2sbends = 1 << N_BENDBITS_2S;
     table_.resize(nprojbends * n2sbends * 2, false); //Factor of 2 is to have both 2s and ps bends in same table
     for (unsigned int iprojbend = 0; iprojbend < nprojbends; iprojbend++) {
       double projbend = 0.5 * (iprojbend - rinvhalf);
@@ -316,9 +316,10 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
 
             bool isPSseed = proj->PSseed();
 
-            int nbins = (1<N_RZBITS);
-            if (layerdisk_ >= N_LAYER)
+            int nbins = (1 << N_RZBITS);
+            if (layerdisk_ >= N_LAYER) {
               nbins*=2; //twice as many bins in disks (since there are two disks)
+	    }
 
             VMStubsMEMemory* stubmem = vmstubs_[0];
             bool usefirstMinus = stubmem->nStubsBin(ivmMinus * nbins + slot) != 0;
@@ -374,9 +375,10 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
           edm::LogVerbatim("Tracklet") << getName() << " adding projection to match engine";
         }
 
-        int nbins = 8;
-        if (layerdisk_ >= 6)
-          nbins = 16;
+        int nbins = (1 << N_RZBITS);
+        if (layerdisk_ >= N_LAYER) {
+          nbins*=2; //twice as many bins in disks (since there are two disks)
+	}
 
         matchengines_[iME].init(stubmem,
                                 nbins,
