@@ -437,6 +437,10 @@ namespace trackerTFP {
 
   // conversion to TTTrack with given stubs
   TTTrack<Ref_Phase2TrackerDigi_> TrackKF::ttTrack(const vector<StubKF>& stubs) const {
+    const double invR = -this->inv2R() * 2.;
+    const double phi0 = deltaPhi(this->phiT() - this->inv2R() * dataFormats_->chosenRofPhi() + setup()->baseSector() * (this->sectorPhi() - .5));
+    const double cot = this->cot() + setup()->sectorCot(this->sectorEta());
+    const double z0 = this->zT() - this->cot() * setup()->chosenRofZ();
     TTBV hitVector(0, setup()->numLayers());
     double chi2phi(0.);
     double chi2z(0.);
@@ -447,7 +451,7 @@ namespace trackerTFP {
       hitVector.set(stub.layer());
       const TTStubRef& ttStubRef = stub.ttStubRef();
       chi2phi += pow(stub.phi(), 2) / setup()->v0(ttStubRef, this->inv2R());
-      chi2z += pow(stub.z(), 2) / setup()->v1(ttStubRef, this->inv2R());
+      chi2z += pow(stub.z(), 2) / setup()->v1(ttStubRef, cot);
       ttStubRefs.push_back(ttStubRef);
     }
     static constexpr int nParPhi = 2;
@@ -457,10 +461,6 @@ namespace trackerTFP {
     const int dofZ = nLayer - nParZ;
     chi2phi /= dofPhi;
     chi2z /= dofZ;
-    const double invR = -this->inv2R() * 2.;
-    const double phi0 = deltaPhi(this->phiT() - this->inv2R() * dataFormats_->chosenRofPhi() + setup()->baseSector() * (this->sectorPhi() - .5));
-    const double cot = this->cot() + setup()->sectorCot(this->sectorEta());
-    const double z0 = this->zT() - this->cot() * setup()->chosenRofZ();
     static constexpr double d0 = 0.;
     static constexpr double trkMVA1 = 0.;
     static constexpr double trkMVA2 = 0.;
