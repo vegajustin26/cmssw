@@ -19,7 +19,8 @@ using namespace trklet;
 TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Globals* globals)
     : TrackletCalculatorBase(name, settings, globals),
       tebuffer_(CircularBuffer<TEData>(3), 0, 0, 0, 0),
-      vmrtable_(settings) {
+      innerTable_(settings), innerOverlapTable_(settings) {
+  
   iAllStub_ = -1;
 
   for (unsigned int ilayer = 0; ilayer < N_LAYER; ilayer++) {
@@ -39,8 +40,6 @@ TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Glob
   nbitszfinebintable_ = settings_.vmrlutzbits(layerdisk1_);
   nbitsrfinebintable_ = settings_.vmrlutrbits(layerdisk1_);
 
-  vmrtable_.init(layerdisk1_);
-
   nbitsrzbin_ = N_RZBITS;
   if (iSeed_ == 4 || iSeed_ == 5)
     nbitsrzbin_ = 2;
@@ -48,6 +47,14 @@ TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Glob
   innerphibits_ = settings_.nfinephi(0, iSeed_);
   outerphibits_ = settings_.nfinephi(1, iSeed_);
 
+  if (layerdisk1_ == 0 || layerdisk1_ == 1 || layerdisk1_ == 2 || layerdisk1_ == 4 || layerdisk1_ == 6 || layerdisk1_ == 8) {
+    innerTable_.initVMRTable(layerdisk1_, TrackletLUT::VMRTableType::inner);       //projection to next layer/disk
+  }
+
+  if (layerdisk1_ == 0 || layerdisk1_ == 1 ) {
+    innerOverlapTable_.initVMRTable(layerdisk1_, TrackletLUT::VMRTableType::inneroverlap);  //projection to disk from layer
+  }
+  
   // set TC index
   iTC_ = name_[7] - 'A';
   assert(iTC_ >= 0 && iTC_ < 14);
@@ -367,9 +374,9 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
 
       int lutval = -1;
       if (iSeed_ < 6) {  //FIXME should only be one table - but will need coordination with HLS code.
-        lutval = vmrtable_.lookupinner(indexz, indexr);
+	lutval = innerTable_.lookup((indexz<<nbitsrfinebintable_) + indexr);
       } else {
-        lutval = vmrtable_.lookupinneroverlap(indexz, indexr);
+	lutval = innerOverlapTable_.lookup((indexz<<nbitsrfinebintable_) + indexr);
       }
 
       if (lutval != -1) {

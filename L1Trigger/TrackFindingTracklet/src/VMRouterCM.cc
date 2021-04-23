@@ -15,7 +15,8 @@ using namespace std;
 using namespace trklet;
 
 VMRouterCM::VMRouterCM(string name, Settings const& settings, Globals* global)
-    : ProcessBase(name, settings, global), vmrtable_(settings) {
+  : ProcessBase(name, settings, global), meTable_(settings), diskTable_(settings) {
+
   layerdisk_ = initLayerDisk(4);
 
   vmstubsMEPHI_.resize(1, nullptr);
@@ -23,12 +24,16 @@ VMRouterCM::VMRouterCM(string name, Settings const& settings, Globals* global)
   overlapbits_ = 7;
   nextrabits_ = overlapbits_ - (settings_.nbitsallstubs(layerdisk_) + settings_.nbitsvmme(layerdisk_));
 
-  vmrtable_.init(layerdisk_);
+  meTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::me);                    //used for ME and outer TE barrel
 
+  if (layerdisk_>= N_LAYER) {
+    diskTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::disk);         //outer disk used by D1, D2, and D4
+  }
+  
   nbitszfinebintable_ = settings_.vmrlutzbits(layerdisk_);
   nbitsrfinebintable_ = settings_.vmrlutrbits(layerdisk_);
 
-  nvmmebins_ = settings_.NLONGVMBINS() * ((layerdisk_ >= 6) ? 2 : 1);  //number of long z/r bins in VM
+  nvmmebins_ = settings_.NLONGVMBINS() * ((layerdisk_ >= N_LAYER) ? 2 : 1);  //number of long z/r bins in VM
 }
 
 void VMRouterCM::addOutput(MemoryBase* memory, string output) {
@@ -235,8 +240,8 @@ void VMRouterCM::execute() {
       assert(indexz < (1 << nbitszfinebintable_));
       assert(indexr < (1 << nbitsrfinebintable_));
 
-      int melut = vmrtable_.lookup(indexz, indexr);
-
+      int melut = meTable_.lookup((indexz<<nbitsrfinebintable_)+indexr);
+      
       assert(melut >= 0);
 
       int vmbin = melut >> NFINERZBITS;
@@ -273,7 +278,7 @@ void VMRouterCM::execute() {
         if (layerdisk_ < N_LAYER) {
           lutval = melut;
         } else {
-          lutval = vmrtable_.lookupdisk(indexz, indexr);
+	  lutval = diskTable_.lookup((indexz<<nbitsrfinebintable_)+indexr);
           if (lutval == 0) {
             continue;
           }

@@ -14,7 +14,9 @@ using namespace std;
 using namespace trklet;
 
 VMRouter::VMRouter(string name, Settings const& settings, Globals* global)
-    : ProcessBase(name, settings, global), vmrtable_(settings) {
+  : ProcessBase(name, settings, global), meTable_(settings), diskTable_(settings),
+    innerTable_(settings), innerOverlapTable_(settings), innerThirdTable_(settings) {
+  
   layerdisk_ = initLayerDisk(4);
 
   vmstubsMEPHI_.resize(settings_.nvmme(layerdisk_), nullptr);
@@ -22,7 +24,23 @@ VMRouter::VMRouter(string name, Settings const& settings, Globals* global)
   overlapbits_ = 7;
   nextrabits_ = overlapbits_ - (settings_.nbitsallstubs(layerdisk_) + settings_.nbitsvmme(layerdisk_));
 
-  vmrtable_.init(layerdisk_, name);
+  meTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::me);                    //used for ME and outer TE barrel
+
+  if (layerdisk_>= N_LAYER) {
+    diskTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::disk);         //outer disk used by D1, D2, and D4
+  }
+  
+  if (layerdisk_ == 0 || layerdisk_ == 1 || layerdisk_ == 2 || layerdisk_ == 4 || layerdisk_ == 6 || layerdisk_ == 8) {
+    innerTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::inner);       //projection to next layer/disk
+  }
+
+  if (layerdisk_ == 0 || layerdisk_ == 1 ) {
+    innerOverlapTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::inneroverlap);  //projection to disk from layer
+  }
+
+  if (layerdisk_ == 1 || layerdisk_ == 2 || layerdisk_ == 4 || layerdisk_ == 6 ) {
+    innerThirdTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::innerthird);  //projection to third layer/disk 
+  }
 
   nbitszfinebintable_ = settings_.vmrlutzbits(layerdisk_);
   nbitsrfinebintable_ = settings_.vmrlutrbits(layerdisk_);
@@ -224,8 +242,7 @@ void VMRouter::execute() {
       assert(indexz < (1 << nbitszfinebintable_));
       assert(indexr < (1 << nbitsrfinebintable_));
 
-      int melut = vmrtable_.lookup(indexz, indexr);
-
+      int melut = meTable_.lookup((indexz<<nbitsrfinebintable_)+indexr);
       assert(melut >= 0);
 
       int vmbin = melut >> 3;
@@ -289,21 +306,21 @@ void VMRouter::execute() {
                 }
               }
             } else {
-              lutval = vmrtable_.lookupdisk(indexz, indexr);
+	      lutval = diskTable_.lookup((indexz<<nbitsrfinebintable_)+indexr);
             }
           }
           if (lutval == -1)
             continue;
         } else {
           if (iseed < 6 || iseed > 7) {
-            lutval = vmrtable_.lookupinner(indexz, indexr);
+	    lutval = innerTable_.lookup((indexz<<nbitsrfinebintable_)+indexr);
           } else {
-            lutval = vmrtable_.lookupinneroverlap(indexz, indexr);
+	    lutval = innerOverlapTable_.lookup((indexz<<nbitsrfinebintable_)+indexr);
           }
           if (lutval == -1)
             continue;
           if (settings_.extended() && (iseed == 2 || iseed == 3 || iseed == 10 || iseed == 4)) {
-            int lutval2 = vmrtable_.lookupinnerThird(indexz, indexr);
+	    int lutval2 = innerThirdTable_.lookup((indexz<<nbitsrfinebintable_)+indexr);
             if (lutval2 == -1)
               continue;
             lutval += (lutval2 << 10);
