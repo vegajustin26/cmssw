@@ -17,7 +17,6 @@
 
 namespace trklet {
 
-  class TETableBase;
   class TrackDerTable;
   class ProjectionRouterBendTable;
   class SLHCEvent;
