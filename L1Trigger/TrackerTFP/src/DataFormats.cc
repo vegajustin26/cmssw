@@ -471,6 +471,7 @@ namespace trackerTFP {
     ttTrack.setStubRefs(ttStubRefs);
     ttTrack.setPhiSector(frame_.first->phiSector());
     ttTrack.setEtaSector(this->sectorEta());
+    ttTrack.setTrackSeedType(frame_.first->trackSeedType());
     ttTrack.setStubPtConsistency(
         StubPtConsistency::getConsistency(ttTrack, setup()->trackerGeometry(), setup()->trackerTopology(), bField, nPar));
     return ttTrack;
