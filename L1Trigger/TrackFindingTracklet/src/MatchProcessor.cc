@@ -14,7 +14,7 @@ using namespace std;
 using namespace trklet;
 
 MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* global)
-    : ProcessBase(name, settings, global), fullmatches_(12), inputProjBuffer_(3) {
+  : ProcessBase(name, settings, global), fullmatches_(12), luttable_(settings), inputProjBuffer_(3) {
   phiregion_ = name[8] - 'A';
 
   layerdisk_ = initLayerDisk(3);
@@ -32,11 +32,12 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
     icorzshift_ = ilog2(settings_.krprojshiftdisk() / (settings_.kz() * settings_.krder()));
   }
 
+  luttable_.initBendMatch(layerdisk_);
+
   nrbits_ = 5;
   nphiderbits_ = 6;
 
   nrinv_ = NRINVBITS;
-  double rinvhalf = 0.5 * ((1 << nrinv_) - 1);
 
   for (unsigned int iSeed = 0; iSeed < 12; iSeed++) {
     if (layerdisk_ < N_LAYER) {
@@ -75,57 +76,6 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
     outzcut.close();
   }
 
-  if (barrel_) {
-    unsigned int nbits = (layerdisk_ < N_PSLAYER) ? N_BENDBITS_PS : N_BENDBITS_2S;
-
-    for (unsigned int irinv = 0; irinv < (1u << nrinv_); irinv++) {
-      double rinv = (irinv - rinvhalf) * (1 << (settings_.nbitsrinv() - nrinv_)) * settings_.krinvpars();
-      double stripPitch = settings_.stripPitch(layerdisk_ < N_PSLAYER);
-      double projbend = bendstrip(settings_.rmean(layerdisk_), rinv, stripPitch);
-      for (unsigned int ibend = 0; ibend < (unsigned int)(1 << nbits); ibend++) {
-        double stubbend = settings_.benddecode(ibend, layerdisk_, layerdisk_ < (int)N_PSLAYER);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, layerdisk_ < (int)N_PSLAYER);
-        table_.push_back(pass);
-      }
-    }
-  } else {
-    constexpr int nprojbends = 1 << NRINVBITS;
-    constexpr int npsbends = 1 << N_BENDBITS_PS;
-    constexpr int n2sbends = 1 << N_BENDBITS_2S;
-    table_.resize(nprojbends * n2sbends * 2, false); //Factor of 2 is to have both 2s and ps bends in same table
-    for (unsigned int iprojbend = 0; iprojbend < nprojbends; iprojbend++) {
-      double projbend = 0.5 * (iprojbend - rinvhalf);
-      for (unsigned int ibend = 0; ibend < npsbends; ibend++) {
-        double stubbend = settings_.benddecode(ibend, layerdisk_, true);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, true);
-        table_[nprojbends*n2sbends + npsbends * iprojbend + ibend] = pass;
-      }
-      for (unsigned int ibend = 0; ibend < n2sbends; ibend++) {
-        double stubbend = settings_.benddecode(ibend, layerdisk_, false);
-        bool pass = std::abs(stubbend - projbend) < settings_.bendcutme(ibend, layerdisk_, false);
-        table_[n2sbends * iprojbend + ibend] = pass;
-      }
-    }
-  }
-
-  if (settings_.writeTable()) {
-    char layerdisk = barrel_ ? '0' + layerdisk_ + 1 : '0' + layerdisk_ - N_LAYER + 1;
-    string fname = barrel_ ? "METable_L" : "METable_D";
-    fname += layerdisk;
-    fname += ".tab";
-
-    ofstream out = openfile(settings_.tablePath(), fname, __FILE__, __LINE__);
-    out << "{" << endl;
-    for (unsigned int i = 0; i < table_.size(); i++) {
-      if (i != 0) {
-        out << "," << endl;
-      }
-      out << table_[i];
-    }
-    out << "};" << endl;
-    out.close();
-  }
-
   for (unsigned int i = 0; i < N_DSS_MOD * 2; i++) {
     ialphafactinner_[i] = (1 << settings_.alphashift()) * settings_.krprojshiftdisk() * settings_.half2SmoduleWidth() /
                           (1 << (settings_.nbitsalpha() - 1)) / (settings_.rDSSinner(i) * settings_.rDSSinner(i)) /
@@ -141,7 +91,7 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
 
   nMatchEngines_ = 4;
   for (unsigned int iME = 0; iME < nMatchEngines_; iME++) {
-    MatchEngineUnit tmpME(barrel_, layerdisk_, table_);
+    MatchEngineUnit tmpME(barrel_, layerdisk_, luttable_);
     matchengines_.push_back(tmpME);
   }
 

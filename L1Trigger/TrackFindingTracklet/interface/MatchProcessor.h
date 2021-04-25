@@ -9,6 +9,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletProjectionsMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/VMStubsMEMemory.h"
 #include "L1Trigger/TrackFindingTracklet/interface/AllStubsMemory.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletLUT.h"
 
 #include <vector>
 
@@ -71,9 +72,9 @@ namespace trklet {
     //Memory for the full matches
     std::vector<FullMatchMemory*> fullmatches_;
 
-    //used for bend consistency with rinv
-    std::vector<bool> table_;
-
+    //LUT for bend consistency
+    TrackletLUT luttable_;
+    
     double phimin_;
 
     unsigned int nMatchEngines_;
