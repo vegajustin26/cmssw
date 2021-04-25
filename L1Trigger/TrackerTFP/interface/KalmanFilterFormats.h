@@ -1,6 +1,11 @@
 #ifndef L1Trigger_TrackerTFP_KalmanFilterFormats_h
 #define L1Trigger_TrackerTFP_KalmanFilterFormats_h
 
+/*----------------------------------------------------------------------
+Classes to calculate and provide dataformats used by Kalman Filter emulator
+enabling tuning of bit widths
+----------------------------------------------------------------------*/
+
 #include "FWCore/Framework/interface/data_default_record_trait.h"
 #include "L1Trigger/TrackerTFP/interface/KalmanFilterFormatsRcd.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"

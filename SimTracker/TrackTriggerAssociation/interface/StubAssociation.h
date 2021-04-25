@@ -20,24 +20,34 @@ namespace tt {
     StubAssociation(const trackerDTC::Setup* setup) : setup_(setup) {}
     ~StubAssociation() {}
 
+    // insert a TPPtr and its associated collection of TTstubRefs into the underlayering maps
     void insert(const TPPtr& tpPtr, const std::vector<TTStubRef>& ttSTubRefs);
+    // returns map containing TTStubRef and their associated collection of TPPtrs
     const std::map<TTStubRef, std::vector<TPPtr>>& getTTStubToTrackingParticlesMap() const { return mapTTStubRefsTPPtrs_; }
+    // returns map containing TPPtr and their associated collection of TTStubRefs
     const std::map<TPPtr, std::vector<TTStubRef>>& getTrackingParticleToTTStubsMap() const { return mapTPPtrsTTStubRefs_; }
+    // returns collection of TPPtrs associated to given TTstubRef
     const std::vector<TPPtr>& findTrackingParticlePtrs(const TTStubRef& ttStubRef) const;
+    // returns collection of TTStubRefs associated to given TPPtr
     const std::vector<TTStubRef>& findTTStubRefs(const TPPtr& tpPtr) const;
+    // total number of stubs associated with TPs
     int numStubs() const { return mapTTStubRefsTPPtrs_.size(); };
+    // total number of TPs associated with stubs
     int numTPs() const { return mapTPPtrsTTStubRefs_.size(); };
-    //
+    // returns all TPs which are matched treating stub collection as track
     std::vector<TPPtr> associate(const std::vector<TTStubRef>& ttStubRefs) const;
-    //
-    std::vector<TPPtr> associate(const std::vector<TTStubRef>& ttStubRefs, double minPt, int minLayers) const;
 
   private:
+    // stores, calculates and provides run-time constants
     const trackerDTC::Setup* setup_;
+    // map containing TTStubRef and their associated collection of TPPtrs
     std::map<TTStubRef, std::vector<TPPtr>> mapTTStubRefsTPPtrs_;
+    // map containing TPPtr and their associated collection of TTStubRefs
     std::map<TPPtr, std::vector<TTStubRef>> mapTPPtrsTTStubRefs_;
-    const std::vector<TPPtr> nullTPPtrs_;
-    const std::vector<TTStubRef> nullTTStubRefs_;
+    // empty container of TPPtr
+    const std::vector<TPPtr> emptyTPPtrs_;
+    // empty container of TTStubRef
+    const std::vector<TTStubRef> emptyTTStubRefs_;
   };
 
 } // namespace tt

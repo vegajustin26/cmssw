@@ -222,7 +222,7 @@ public:
     return *this;
   }
 
-  // manipulation: biased absolute value
+  // manipulation: absolute value of biased twos' complement. Converts twos' complenet into binary.
   TTBV& abs() {
     if (twos_) {
       twos_ = false;

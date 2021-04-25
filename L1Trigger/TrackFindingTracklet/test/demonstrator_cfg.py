@@ -1,9 +1,4 @@
-################################################################################################
-# To run execute do
-# cmsRun L1Trigger/L1TTrackerTFP/test/gp_cfg.py
-# where the arguments take default values if you don't specify them. You can change defaults below.
-#################################################################################################
-
+# this compares event by event the output of the C++ emulation with the ModelSim simulation of the firmware
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process( "Demo" )

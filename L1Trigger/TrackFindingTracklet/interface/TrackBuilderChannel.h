@@ -12,6 +12,7 @@ namespace trackFindingTracklet {
 
   /*! \class  trackFindingTracklet::TrackBuilderChannel
    *  \brief  Class to assign tracklet tracks to channel
+   *          based on ther Pt or seed type,
    *  \author Thomas Schuh
    *  \date   2020, Nov
    */

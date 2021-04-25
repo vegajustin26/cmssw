@@ -1,3 +1,4 @@
+# configuration of Demonstrator.
 import FWCore.ParameterSet.Config as cms
 
 TrackTriggerDemonstrator_params = cms.PSet (

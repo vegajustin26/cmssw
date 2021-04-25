@@ -14,7 +14,6 @@
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
-#include "L1Trigger/TrackerTFP/interface/LayerEncoding.h"
 
 #include <string>
 #include <numeric>
@@ -50,16 +49,12 @@ namespace trackerTFP {
     ESGetToken<Setup, SetupRcd> esGetTokenSetup_;
     // DataFormats token
     ESGetToken<DataFormats, DataFormatsRcd> esGetTokenDataFormats_;
-    // LayerEncoding token
-    ESGetToken<LayerEncoding, LayerEncodingRcd> esGetTokenLayerEncoding_;
     // configuration
     ParameterSet iConfig_;
     // helper class to store configurations
     const Setup* setup_;
     // helper class to extract structured data from TTDTC::Frames
     const DataFormats* dataFormats_;
-    //
-    const LayerEncoding* layerEncoding_;
   };
 
   ProducerTT::ProducerTT(const ParameterSet& iConfig) :
@@ -75,11 +70,9 @@ namespace trackerTFP {
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
     esGetTokenDataFormats_ = esConsumes<DataFormats, DataFormatsRcd, Transition::BeginRun>();
-    esGetTokenLayerEncoding_ = esConsumes<LayerEncoding, LayerEncodingRcd, Transition::BeginRun>();
     // initial ES products
     setup_ = nullptr;
     dataFormats_ = nullptr;
-    layerEncoding_ = nullptr;
   }
 
   void ProducerTT::beginRun(const Run& iRun, const EventSetup& iSetup) {
@@ -92,8 +85,6 @@ namespace trackerTFP {
       setup_->checkHistory(iRun.processHistory());
     // helper class to extract structured data from TTDTC::Frames
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
-    //
-    layerEncoding_ = &iSetup.getData(esGetTokenLayerEncoding_);
   }
 
   void ProducerTT::produce(Event& iEvent, const EventSetup& iSetup) {
@@ -112,19 +103,19 @@ namespace trackerTFP {
         nTracks += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
       ttTracks.reserve(nTracks);
       for (int channel = 0; channel < dataFormats_->numStreamsTracks(Process::kf); channel++) {
-        int pos(0);
+        int iTrk(0);
         const int offset = channel * setup_->numLayers();
         for (const FrameTrack& frameTrack : streamsTracks[channel]) {
           vector<StubKF> stubs;
           stubs.reserve(setup_->numLayers());
           for (int layer = 0; layer < setup_->numLayers(); layer++) {
-            const TTDTC::Frame& frameStub = streamsStubs[offset + layer][pos];
+            const TTDTC::Frame& frameStub = streamsStubs[offset + layer][iTrk];
             if (frameStub.first.isNonnull())
               stubs.emplace_back(frameStub, dataFormats_, layer);
           }
           TrackKF track(frameTrack, dataFormats_);
           ttTracks.emplace_back(track.ttTrack(stubs));
-          pos++;
+          iTrk++;
         }
       }
     }

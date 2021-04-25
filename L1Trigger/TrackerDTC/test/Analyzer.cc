@@ -215,6 +215,7 @@ namespace trackerDTC {
         eff_[e]->SetTotalHistogram(*hisEffMC_[e], "f");
       }
     }
+    log_ << "'Lost' below refers to truncation losses" << endl;
     // printout MC summary
     endJobMC();
     // printout DTC summary

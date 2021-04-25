@@ -2,56 +2,51 @@
 
 #include <map>
 #include <vector>
+#include <utility>
+#include <numeric>
 
 using namespace std;
 using namespace trackerDTC;
 
 namespace tt {
 
+  // insert a TPPtr and its associated collection of TTstubRefs into the underlayering maps
   void StubAssociation::insert(const TPPtr& tpPtr, const vector<TTStubRef>& ttSTubRefs) {
     mapTPPtrsTTStubRefs_.insert({tpPtr, ttSTubRefs});
     for (const TTStubRef& ttSTubRef : ttSTubRefs)
       mapTTStubRefsTPPtrs_[ttSTubRef].push_back(tpPtr);
   }
 
+  // returns collection of TPPtrs associated to given TTstubRef
   const vector<TPPtr>& StubAssociation::findTrackingParticlePtrs(const TTStubRef& ttStubRef) const {
     const auto it = mapTTStubRefsTPPtrs_.find(ttStubRef);
-    return it != mapTTStubRefsTPPtrs_.end() ? it->second : nullTPPtrs_;
+    return it != mapTTStubRefsTPPtrs_.end() ? it->second : emptyTPPtrs_;
   }
 
+  // returns collection of TTStubRefs associated to given TPPtr
   const vector<TTStubRef>& StubAssociation::findTTStubRefs(const TPPtr& tpPtr) const {
     const auto it = mapTPPtrsTTStubRefs_.find(tpPtr);
-    return it != mapTPPtrsTTStubRefs_.end() ? it->second : nullTTStubRefs_;
+    return it != mapTPPtrsTTStubRefs_.end() ? it->second : emptyTTStubRefs_;
   }
 
-  //
+  // returns all TPs which are matched treating stub collection as track
   vector<TPPtr> StubAssociation::associate(const vector<TTStubRef>& ttStubRefs) const {
+    // count associated layer for each TP
     map<TPPtr, set<int>> m;
     for (const TTStubRef& ttStubRef : ttStubRefs)
       for (const TPPtr& tpPtr : findTrackingParticlePtrs(ttStubRef))
         m[tpPtr].insert(setup_->layerId(ttStubRef));
+    // count matched TPs
+    auto sum = [this](int& sum, const pair<TPPtr, set<int>>& p) {
+      return sum += ((int)p.second.size() < setup_->tpMinLayers() ? 0 : 1);
+    };
+    const int nTPs = accumulate(m.begin(), m.end(), 0, sum);
     vector<TPPtr> tpPtrs;
-    tpPtrs.reserve(m.size());
+    tpPtrs.reserve(nTPs);
+    // fill and return matched TPs
     for (const auto& p : m)
       if ((int)p.second.size() >= setup_->tpMinLayers())
         tpPtrs.push_back(p.first);
-    tpPtrs.shrink_to_fit();
-    return tpPtrs;
-  }
-
-  //
-  vector<TPPtr> StubAssociation::associate(const vector<TTStubRef>& ttStubRefs, double minPt, int minLayers) const {
-    map<TPPtr, set<int>> m;
-    for (const TTStubRef& ttStubRef : ttStubRefs)
-      for (const TPPtr& tpPtr : findTrackingParticlePtrs(ttStubRef))
-        if (tpPtr->pt() >= minPt)
-          m[tpPtr].insert(setup_->layerId(ttStubRef));
-    vector<TPPtr> tpPtrs;
-    tpPtrs.reserve(m.size());
-    for (const auto& p : m)
-      if ((int)p.second.size() >= minLayers)
-        tpPtrs.push_back(p.first);
-    tpPtrs.shrink_to_fit();
     return tpPtrs;
   }
 

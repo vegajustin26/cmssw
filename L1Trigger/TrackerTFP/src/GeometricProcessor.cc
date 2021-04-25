@@ -35,6 +35,7 @@ namespace trackerTFP {
           stub = &stubsPP_.back();
         }
         for (int sector = 0; sector < dataFormats_->numChannel(Process::gp); sector++)
+          // adding gaps (nullptr) if no stub available or not in sector to emulate f/w
           input_[sector][channel].push_back(stub && stub->inSector(sector) ? stub : nullptr);
       }
     }
@@ -66,7 +67,7 @@ namespace trackerTFP {
       // clock accurate firmware emulation, each while trip describes one clock tick, one stub in and one stub out per tick
       while(!all_of(inputs.begin(), inputs.end(), [](const deque<StubPP*>& stubs){ return stubs.empty(); }) or
             !all_of(stacks.begin(), stacks.end(), [](const deque<StubGP*>& stubs){ return stubs.empty(); })) {
-        // fill input fifo
+        // fill input fifos
         for (int channel = 0; channel < dataFormats_->numChannel(Process::pp); channel++) {
           deque<StubGP*>& stack = stacks[channel];
           StubPP* stub = pop_front(inputs[channel]);
@@ -77,7 +78,7 @@ namespace trackerTFP {
             stack.push_back(&stubsGP_.back());
           }
         }
-        // merge input fifos to one stream
+        // merge input fifos to one stream, prioritizing higher input channel over lower channel
         bool nothingToRoute(true);
         for (int channel = dataFormats_->numChannel(Process::pp) - 1; channel >= 0; channel--) {
           StubGP* stub = pop_front(stacks[channel]);
@@ -101,12 +102,9 @@ namespace trackerTFP {
         it = (*--it) ? acceptedSector.begin() : acceptedSector.erase(it);
       // fill products
       auto put = [](const vector<StubGP*>& stubs, TTDTC::Stream& stream) {
-        //auto toFrame = [](StubGP* stub){ return stub ? stub->frame() : TTDTC::Frame(); };
+        auto toFrame = [](StubGP* stub){ return stub ? stub->frame() : TTDTC::Frame(); };
         stream.reserve(stubs.size());
-        for (StubGP* stub : stubs)
-          if (stub)
-            stream.emplace_back(stub->frame());
-        //transform(stubs.begin(), stubs.end(), back_inserter(stream), toFrame);
+        transform(stubs.begin(), stubs.end(), back_inserter(stream), toFrame);
       };
       const int index = region_ * dataFormats_->numChannel(Process::gp) + sector;
       put(acceptedSector, accepted[index]);

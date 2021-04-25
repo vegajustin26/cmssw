@@ -11,6 +11,11 @@
 
 namespace trackerTFP {
 
+  /*! \class  trackerTFP::Demonstrator
+   *  \brief  Compares emulator with f/w
+   *  \author Thomas Schuh
+   *  \date   2021, April
+   */
   class Demonstrator {
   public:
     Demonstrator(){}

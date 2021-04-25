@@ -22,7 +22,7 @@ using namespace trackerDTC;
 namespace trackerTFP {
 
   /*! \class  trackerTFP::ProducerAS
-   *  \brief  Associate fitted TTTracks with found TTTracks
+   *  \brief  Associate TTTracks produced by fitter with those input to fitter.
    *  \author Thomas Schuh
    *  \date   2020, Oct
    */

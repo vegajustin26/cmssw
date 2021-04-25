@@ -12,7 +12,6 @@
 
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
-#include "L1Trigger/TrackerTFP/interface/LayerEncoding.h"
 
 #include <string>
 #include <numeric>
@@ -55,11 +54,6 @@ namespace trackFindingTracklet {
     const Setup* setup_;
     // helper class to extract structured data from TTDTC::Frames
     const DataFormats* dataFormats_;
-    // used data formats
-    const DataFormat* zT_;
-    const DataFormat* cot_;
-    const DataFormat* phi_;
-    const DataFormat* z_;
   };
 
   ProducerKFout::ProducerKFout(const ParameterSet& iConfig) :
@@ -78,11 +72,6 @@ namespace trackFindingTracklet {
     // initial ES products
     setup_ = nullptr;
     dataFormats_ = nullptr;
-    // used data formats
-    zT_ = nullptr;
-    cot_ = nullptr;
-    phi_ = nullptr;
-    z_ = nullptr;
   }
 
   void ProducerKFout::beginRun(const Run& iRun, const EventSetup& iSetup) {
@@ -95,11 +84,6 @@ namespace trackFindingTracklet {
       setup_->checkHistory(iRun.processHistory());
     // helper class to extract structured data from TTDTC::Frames
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
-    // used data formats
-    zT_ = &dataFormats_->format(Variable::zT, Process::kfin);
-    cot_ = &dataFormats_->format(Variable::cot, Process::kfin);
-    phi_ = &dataFormats_->format(Variable::phi, Process::sf);
-    z_ = &dataFormats_->format(Variable::z, Process::sf);
   }
 
   void ProducerKFout::produce(Event& iEvent, const EventSetup& iSetup) {

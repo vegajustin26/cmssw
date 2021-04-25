@@ -3,6 +3,7 @@
 
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
+#include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
 
 #include <vector>
 #include <set>
