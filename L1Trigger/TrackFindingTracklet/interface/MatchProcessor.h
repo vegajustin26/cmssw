@@ -72,6 +72,9 @@ namespace trklet {
     //Memory for the full matches
     std::vector<FullMatchMemory*> fullmatches_;
 
+    //disk projectionrinv table
+    TrackletLUT rinvbendlut_;
+
     //LUT for bend consistency
     TrackletLUT luttable_;
     

@@ -18,7 +18,6 @@
 namespace trklet {
 
   class TrackDerTable;
-  class ProjectionRouterBendTable;
   class SLHCEvent;
   class HistBase;
   class Settings;
@@ -41,8 +40,6 @@ namespace trklet {
     TrackDerTable*& trackDerTable() { return trackDerTable_; }
 
     TrackletLUT*& phiCorr(unsigned int layer) { return thePhiCorr_[layer]; }
-
-    ProjectionRouterBendTable*& projectionRouterBendTable() { return projectionRouterBendTable_; }
 
     std::map<std::string, std::vector<int> >& ILindex() { return ILindex_; }
 
@@ -96,8 +93,6 @@ namespace trklet {
     HistBase* theHistBase_{nullptr};
 
     TrackDerTable* trackDerTable_{nullptr};
-
-    ProjectionRouterBendTable* projectionRouterBendTable_{nullptr};
 
 #ifdef USEHYBRID
     std::unique_ptr<tmtt::Settings> tmttSettings_;

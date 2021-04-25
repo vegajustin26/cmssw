@@ -15,6 +15,8 @@ namespace trklet {
   
     ~TrackletLUT() = default;
 
+    void initProjectionBend(double k_phider, unsigned int idisk, unsigned int nrbits, unsigned int nphiderbits);
+    
     void initBendMatch(unsigned int layerdisk);
     
     enum VMRTableType { me, disk, inner, inneroverlap, innerthird };

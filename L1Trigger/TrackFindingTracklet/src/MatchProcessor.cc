@@ -1,12 +1,12 @@
 #include "L1Trigger/TrackFindingTracklet/interface/MatchProcessor.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Globals.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
-#include "L1Trigger/TrackFindingTracklet/interface/ProjectionRouterBendTable.h"
 #include "L1Trigger/TrackFindingTracklet/interface/HistBase.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
+#include "L1Trigger/TrackFindingTracklet/interface/IMATH_TrackletCalculator.h"
 
 #include <filesystem>
 
@@ -14,7 +14,7 @@ using namespace std;
 using namespace trklet;
 
 MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* global)
-  : ProcessBase(name, settings, global), fullmatches_(12), luttable_(settings), inputProjBuffer_(3) {
+  : ProcessBase(name, settings, global), fullmatches_(12), rinvbendlut_(settings), luttable_(settings), inputProjBuffer_(3) {
   phiregion_ = name[8] - 'A';
 
   layerdisk_ = initLayerDisk(3);
@@ -36,6 +36,10 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
 
   nrbits_ = 5;
   nphiderbits_ = 6;
+
+  if (!barrel_) {
+    rinvbendlut_.initProjectionBend(global->ITC_L1L2()->der_phiD_final.K(), layerdisk_-N_LAYER, nrbits_, nphiderbits_);
+  }
 
   nrinv_ = NRINVBITS;
 
@@ -95,11 +99,6 @@ MatchProcessor::MatchProcessor(string name, Settings const& settings, Globals* g
     matchengines_.push_back(tmpME);
   }
 
-  if (globals_->projectionRouterBendTable() == nullptr) {
-    auto* bendTablePtr = new ProjectionRouterBendTable();
-    bendTablePtr->init(settings_, globals_, nrbits_, nphiderbits_);
-    globals_->projectionRouterBendTable() = bendTablePtr;
-  }
 }
 
 void MatchProcessor::addOutput(MemoryBase* memory, string output) {
@@ -252,8 +251,8 @@ void MatchProcessor::execute(unsigned int iSector, double phimin) {
 
               int bendindex = (signindex << (nphiderbits_ + nrbits_)) + (rindex << (nphiderbits_)) + phiderindex;
 
-              projrinv = globals_->projectionRouterBendTable()->bendLoookup(layerdisk_ - N_LAYER, bendindex);
-
+	      projrinv = rinvbendlut_.lookup(bendindex);
+	      
               proj->proj(layerdisk_).setBendIndex(projrinv);
             }
             assert(projrinv >= 0);

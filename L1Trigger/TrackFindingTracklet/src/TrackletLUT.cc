@@ -9,6 +9,54 @@ using namespace trklet;
 
 TrackletLUT::TrackletLUT(const Settings& settings) : settings_(settings) {}
 
+void TrackletLUT::initProjectionBend(double k_phider,
+				     unsigned int idisk,
+                                     unsigned int nrbits,
+                                     unsigned int nphiderbits) {
+
+  unsigned int nsignbins = 2;
+  unsigned int nrbins = 1 << (nrbits);
+  unsigned int nphiderbins = 1 << (nphiderbits);
+  
+  for (unsigned int isignbin = 0; isignbin < nsignbins; isignbin++) {
+    for (unsigned int irbin = 0; irbin < nrbins; irbin++) {
+      int ir = irbin;
+      if (ir > (1 << (nrbits - 1)))
+	ir -= (1 << nrbits);
+      ir = ir << (settings_.nrbitsstub(N_LAYER) - nrbits);
+      for (unsigned int iphiderbin = 0; iphiderbin < nphiderbins; iphiderbin++) {
+	int iphider = iphiderbin;
+	if (iphider > (1 << (nphiderbits - 1)))
+	  iphider -= (1 << nphiderbits);
+	iphider = iphider << (settings_.nbitsphiprojderL123() - nphiderbits);
+	
+	double rproj = ir * settings_.krprojshiftdisk();
+	double phider = iphider * k_phider; //globals->ITC_L1L2()->der_phiD_final.K();
+	double t = settings_.zmean(idisk) / rproj;
+	
+	if (isignbin)
+	  t = -t;
+	
+	double rinv = -phider * (2.0 * t);
+	
+	double stripPitch = (rproj < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
+	double bendproj = bendstrip(rproj, rinv, stripPitch);
+	
+	int ibendproj = 2.0 * bendproj + 15.5;
+	if (ibendproj < 0)
+	  ibendproj = 0;
+	if (ibendproj > 31)
+	  ibendproj = 31;
+	
+	table_.push_back(ibendproj);
+      }
+    }
+  }
+}
+
+
+
+
 void TrackletLUT::initBendMatch(unsigned int layerdisk) {
   
   unsigned int nrinv = NRINVBITS;
