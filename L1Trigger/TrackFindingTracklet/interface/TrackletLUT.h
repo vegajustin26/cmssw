@@ -12,9 +12,24 @@ namespace trklet {
     public:
 
     TrackletLUT(const Settings& settings);
+
+    TrackletLUT& operator=(const TrackletLUT& other) {
+
+      name_ = other.name_;
+      table_ = other.table_;
+      nbits_ = other.nbits_;
+      positive_ = other.positive_;
+      
+      return *this;
+    }
   
     ~TrackletLUT() = default;
 
+    void initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
+		     unsigned int innerphibits, unsigned int outerphibits,
+		     double innerphimin, double innerphimax, double outerphimin, double outerphimax);
+
+    
     void initProjectionBend(double k_phider, unsigned int idisk, unsigned int nrbits, unsigned int nphiderbits);
     
     void initBendMatch(unsigned int layerdisk);

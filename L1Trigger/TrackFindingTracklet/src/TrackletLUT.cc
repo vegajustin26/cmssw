@@ -9,6 +9,138 @@ using namespace trklet;
 
 TrackletLUT::TrackletLUT(const Settings& settings) : settings_(settings) {}
 
+void TrackletLUT::initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
+			      unsigned int innerphibits, unsigned int outerphibits,
+			      double innerphimin, double innerphimax, double outerphimin, double outerphimax) {
+
+  int outerrbits = 3;
+  if (iSeed < 4) {
+    outerrbits = 0;
+  }
+
+  int outerrbins = (1 << outerrbits);
+  int innerphibins = (1 << innerphibits);
+  int outerphibins = (1 << outerphibits);
+
+  //double innerphimin, innerphimax;
+  //innervmstubs_->getPhiRange(innerphimin, innerphimax, iSeed_, 0);
+
+  //double outerphimin, outerphimax;
+  //outervmstubs_->getPhiRange(outerphimin, outerphimax, iSeed_, 1);
+
+  double phiinner[2];
+  double phiouter[2];
+  double router[2];
+
+  unsigned int nbendbitsinner = 3;
+  unsigned int nbendbitsouter = 3;
+  if (iSeed == 2) {
+    nbendbitsouter = 4;
+  }
+  if (iSeed == 3) {
+    nbendbitsinner = 4;
+    nbendbitsouter = 4;
+  }
+
+  if (fillTEMem) {
+    if (fillInner) {
+      table_.resize((1 << nbendbitsinner), false);
+    } else {
+      table_.resize((1 << nbendbitsouter), false);
+    }
+  }
+    
+  for (int iphiinnerbin = 0; iphiinnerbin < innerphibins; iphiinnerbin++) {
+    phiinner[0] = innerphimin + iphiinnerbin * (innerphimax - innerphimin) / innerphibins;
+    phiinner[1] = innerphimin + (iphiinnerbin + 1) * (innerphimax - innerphimin) / innerphibins;
+    for (int iphiouterbin = 0; iphiouterbin < outerphibins; iphiouterbin++) {
+      phiouter[0] = outerphimin + iphiouterbin * (outerphimax - outerphimin) / outerphibins;
+      phiouter[1] = outerphimin + (iphiouterbin + 1) * (outerphimax - outerphimin) / outerphibins;
+      for (int irouterbin = 0; irouterbin < outerrbins; irouterbin++) {
+        if (iSeed >= 4) {
+          router[0] =
+              settings_.rmindiskvm() + irouterbin * (settings_.rmaxdiskvm() - settings_.rmindiskvm()) / outerrbins;
+          router[1] = settings_.rmindiskvm() +
+                      (irouterbin + 1) * (settings_.rmaxdiskvm() - settings_.rmindiskvm()) / outerrbins;
+        } else {
+          router[0] = settings_.rmean(layerdisk2);
+          router[1] = settings_.rmean(layerdisk2);
+        }
+
+        double bendinnermin = 20.0;
+        double bendinnermax = -20.0;
+        double bendoutermin = 20.0;
+        double bendoutermax = -20.0;
+        double rinvmin = 1.0;
+        for (int i1 = 0; i1 < 2; i1++) {
+          for (int i2 = 0; i2 < 2; i2++) {
+            for (int i3 = 0; i3 < 2; i3++) {
+              double rinner = 0.0;
+              if (iSeed == 4 || iSeed == 5) {
+                rinner = router[i3] * settings_.zmean(layerdisk1 - N_LAYER) / settings_.zmean(layerdisk2 - N_LAYER);
+              } else {
+                rinner = settings_.rmean(layerdisk1);
+              }
+              double rinv1 = -rinv(phiinner[i1], phiouter[i2], rinner, router[i3]);
+              double pitchinner =
+                  (rinner < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
+              double pitchouter =
+                  (router[i3] < settings_.rcrit()) ? settings_.stripPitch(true) : settings_.stripPitch(false);
+              double abendinner = bendstrip(rinner, rinv1, pitchinner);
+              double abendouter = bendstrip(router[i3], rinv1, pitchouter);
+              if (abendinner < bendinnermin)
+                bendinnermin = abendinner;
+              if (abendinner > bendinnermax)
+                bendinnermax = abendinner;
+              if (abendouter < bendoutermin)
+                bendoutermin = abendouter;
+              if (abendouter > bendoutermax)
+                bendoutermax = abendouter;
+              if (std::abs(rinv1) < rinvmin) {
+                rinvmin = std::abs(rinv1);
+              }
+            }
+          }
+        }
+
+        bool passptcut = rinvmin < settings_.rinvcutte();
+
+	if (fillInner) {
+	  for (int ibend = 0; ibend < (1 << nbendbitsinner); ibend++) {
+	    double bend = settings_.benddecode(ibend, layerdisk1, nbendbitsinner == 3);
+	    
+	    bool passinner = bend > bendinnermin - settings_.bendcutte(ibend, layerdisk1, nbendbitsinner == 3) &&
+	      bend < bendinnermax + settings_.bendcutte(ibend, layerdisk1, nbendbitsinner == 3);
+
+	    if (fillTEMem) {
+	      if (passinner) {
+		table_[ibend] = 1;
+	      }
+	    } else {
+	      table_.push_back(passinner && passptcut);
+	    }
+	  }
+	} else {
+	  for (int ibend = 0; ibend < (1 << nbendbitsouter); ibend++) {
+	    double bend = settings_.benddecode(ibend, layerdisk2, nbendbitsouter == 3);
+	    
+	    bool passouter = bend > bendoutermin - settings_.bendcutte(ibend, layerdisk2, nbendbitsouter == 3) &&
+	      bend < bendoutermax + settings_.bendcutte(ibend, layerdisk2, nbendbitsouter == 3);
+	    if (fillTEMem) {
+	      if (passouter) {
+		table_[ibend] = 1;
+	      }
+	    } else {
+	      table_.push_back(passouter && passptcut);
+	    }
+	  }
+	}
+      }
+    }
+  }
+}
+
+
 void TrackletLUT::initProjectionBend(double k_phider,
 				     unsigned int idisk,
                                      unsigned int nrbits,
