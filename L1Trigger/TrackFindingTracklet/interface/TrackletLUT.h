@@ -25,6 +25,13 @@ namespace trklet {
   
     ~TrackletLUT() = default;
 
+    void initTPlut(bool fillInner, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
+		   unsigned int nbitsfinephidiff); 
+
+    void initTPregionlut(unsigned int iSeed, unsigned int layerdisk2,
+			 unsigned int iAllStub, unsigned int nbitsfinephidiff, unsigned int nbitsfinephi,
+			 const TrackletLUT& tplutinner);
+    
     void initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
 		     unsigned int innerphibits, unsigned int outerphibits,
 		     double innerphimin, double innerphimax, double outerphimin, double outerphimax);
