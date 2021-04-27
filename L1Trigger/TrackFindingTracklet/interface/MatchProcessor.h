@@ -51,14 +51,14 @@ namespace trklet {
     int icorzshift_;
     int phishift_;
 
-    unsigned int phimatchcut_[N_SEED];
-    unsigned int zmatchcut_[N_SEED];
+    TrackletLUT phimatchcuttable_;
+    TrackletLUT zmatchcuttable_;
 
-    unsigned int rphicutPS_[N_SEED];
-    unsigned int rphicut2S_[N_SEED];
-    unsigned int rcutPS_[N_SEED];
-    unsigned int rcut2S_[N_SEED];
-
+    TrackletLUT rphicutPStable_;
+    TrackletLUT rphicut2Stable_;
+    TrackletLUT rcutPStable_;
+    TrackletLUT rcut2Stable_;
+    
     int nrbits_;
     int nphiderbits_;
 

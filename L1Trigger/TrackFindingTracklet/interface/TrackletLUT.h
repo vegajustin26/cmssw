@@ -25,6 +25,10 @@ namespace trklet {
   
     ~TrackletLUT() = default;
 
+    enum MatchType { barrelphi, barrelz, disk2Sphi, disk2Sr, diskPSphi, diskPSr };
+    
+    void initmatchcut(unsigned int layerdisk, MatchType type);
+
     void initTPlut(bool fillInner, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
 		   unsigned int nbitsfinephidiff); 
 

@@ -9,6 +9,31 @@ using namespace trklet;
 
 TrackletLUT::TrackletLUT(const Settings& settings) : settings_(settings) {}
 
+void TrackletLUT::initmatchcut(unsigned int layerdisk, MatchType type) {
+  
+  for (unsigned int iSeed = 0; iSeed < 12; iSeed++) {
+    if (type==barrelphi) {
+      table_.push_back(settings_.rphimatchcut(iSeed, layerdisk) / (settings_.kphi1() * settings_.rmean(layerdisk)));
+    }
+    if (type==barrelz) {    
+      table_.push_back(settings_.zmatchcut(iSeed, layerdisk) / settings_.kz());
+    }
+    if (type==diskPSphi) {
+      table_.push_back(settings_.rphicutPS(iSeed, layerdisk - N_LAYER) / (settings_.kphi() * settings_.kr()));
+    }
+    if (type==disk2Sphi) {
+      table_.push_back(settings_.rphicut2S(iSeed, layerdisk - N_LAYER) / (settings_.kphi() * settings_.kr()));
+    }
+    if (type==disk2Sr) {
+      table_.push_back(settings_.rcut2S(iSeed, layerdisk - N_LAYER) / settings_.krprojshiftdisk());
+    }
+    if (type==diskPSr) {
+      table_.push_back(settings_.rcutPS(iSeed, layerdisk - N_LAYER) / settings_.krprojshiftdisk());
+    }
+  }
+
+}
+
 
 void TrackletLUT::initTPlut(bool fillInner, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
 			    unsigned int nbitsfinephidiff) {
