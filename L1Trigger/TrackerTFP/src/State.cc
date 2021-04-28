@@ -5,7 +5,7 @@ using namespace trackerDTC;
 
 namespace trackerTFP {
 
-  //
+  // default constructor
   State::State(State* state) :
     dataFormats_(state->dataFormats_),
     setup_(state->setup_),
@@ -54,7 +54,7 @@ namespace trackerTFP {
     C33_  = pow(dataFormats_->base(Variable::zT, Process::sf), 2);
     C01_  = 0.;
     C23_  = 0.;
-    // first stub
+    // first stub from first layer on input track with stubs
     stub_ = track->layerStub(track->hitPattern().plEncode());
   }
 
@@ -85,7 +85,7 @@ namespace trackerTFP {
     hitPattern_.set(layer);
     const vector<StubKFin*>& stubs = track_->layerStubs(layer);
     layerMap_[layer] = distance(stubs.begin(), find(stubs.begin(), stubs.end(), stub_));
-    // pick next stub
+    // pick next stub (first stub in next layer with stub)
     stub_ = nullptr;
     if (hitPattern_.count() == setup_->kfMaxLayers())
       return;
@@ -97,19 +97,7 @@ namespace trackerTFP {
     }
   }
 
-  //
-  vector<StubKFin*> State::stubsIn() const {
-    vector<StubKFin*> stubs;
-    stubs.reserve(hitPattern_.count());
-    State* s = parent_;
-    while (s) {
-      stubs.push_back(s->stub());
-      s = s->parent();
-    }
-    return stubs;
-  }
-
-  //
+  // collection of stubs added so far to state
   vector<StubKF> State::stubs() const {
     vector<StubKF> stubs;
     stubs.reserve(hitPattern_.count());
@@ -121,18 +109,20 @@ namespace trackerTFP {
     return stubs;
   }
 
-  //
+  // Determine quality of completed state
   void State::finish() {
     const vector<StubKF> stubs = this->stubs();
     auto consistent = [this](int& sum, const StubKF& stub) {
-      auto inRange = [](float v, float r, float d){ return abs(v) <= (r + d) / 2.; };
-      const bool inRange0 = inRange(stub.phi(), stub.dPhi(), dataFormats_->format(Variable::dPhi, Process::kf).base());
-      const bool inRange1 = inRange(stub.z(), stub.dZ(), dataFormats_->format(Variable::dZ, Process::kf).base());
+      auto inConsistentRange = [](float v, float r, float d){ return abs(v) <= (r + d) / 2.; };
+      // Check stub consistent with helix, allowing for stub & digi uncertainty
+      const bool inRange0 = inConsistentRange(stub.phi(), stub.dPhi(), dataFormats_->format(Variable::dPhi, Process::kf).base());
+      const bool inRange1 = inConsistentRange(stub.z(), stub.dZ(), dataFormats_->format(Variable::dZ, Process::kf).base());
       return sum += (inRange0 && inRange1 ? 1 : 0);
     };
     numConsistentLayers_ = accumulate(stubs.begin(), stubs.end(), 0, consistent);
     TTBV pattern = hitPattern_;
     pattern |= maybePattern();
+    // Skipped layers before final stub on state
     numSkippedLayers_ = pattern.count(0, hitPattern_.pmEncode(), false);
   }
 

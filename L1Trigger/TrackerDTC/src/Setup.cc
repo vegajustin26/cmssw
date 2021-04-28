@@ -53,6 +53,7 @@ namespace trackerDTC {
         matchedLayersPS_(pSetTF_.getParameter<int>("MatchedLayersPS")),
         unMatchedStubs_(pSetTF_.getParameter<int>("UnMatchedStubs")),
         unMatchedStubsPS_(pSetTF_.getParameter<int>("UnMatchedStubsPS")),
+        scattering_(pSetTF_.getParameter<double>("Scattering")),
         // TMTT specific parameter
         pSetTMTT_(iConfig.getParameter<ParameterSet>("TMTT")),
         minPt_(pSetTMTT_.getParameter<double>("MinPt")),
@@ -496,21 +497,21 @@ namespace trackerDTC {
     tpSelectorLoose_ = TrackingParticleSelector(ptMin, ptMax, -etaMax, etaMax, tip, lip, minHit, false, false, false, stableOnly);
   }
 
-  //
+  // stub layer id (barrel: 1 - 6, endcap: 11 - 15)
   int Setup::layerId(const TTStubRef& ttStubRef) const {
     const DetId& detId = ttStubRef->getDetId();
     return detId.subdetId() == StripSubdetector::TOB ? trackerTopology_->layer(detId)
                                                      : trackerTopology_->tidWheel(detId) + offsetLayerDisks_;
   }
 
-  //
-  int Setup::barrel(const TTStubRef& ttStubRef) const {
+  // true if stub from barrel module
+  bool Setup::barrel(const TTStubRef& ttStubRef) const {
     const DetId& detId = ttStubRef->getDetId();
     return detId.subdetId() == StripSubdetector::TOB;
   }
 
-  //
-  int Setup::psModule(const TTStubRef& ttStubRef) const {
+  // true if stub from barrel module
+  bool Setup::psModule(const TTStubRef& ttStubRef) const {
     const DetId& detId = ttStubRef->getDetId();
     return trackerGeometry_->getDetectorType(detId) == TrackerGeometry::ModuleType::Ph2PSP;
   }
@@ -555,7 +556,27 @@ namespace trackerDTC {
     return ints;
   }
 
-  //
+  // stub projected phi uncertainty
+  double Setup::dPhi(const TTStubRef& ttStubRef, double inv2R) const {
+    const DetId& detId = ttStubRef->getDetId();
+    SensorModule* sm = sensorModule(detId + 1);
+    const double r = stubPos(ttStubRef).perp();
+    const double sigma = sm->pitchRow() / r;
+    const double scat = scattering_ * abs(inv2R) / invPtToDphi_;
+    const double extra = sm->barrel() ? 0. : sm->pitchCol() * abs(inv2R);
+    const double digi = tmttBasePhi_;
+    const double dPhi = sigma + scat + extra + digi;
+    if (dPhi >= maxdPhi_ || dPhi < mindPhi_) {
+      cms::Exception exception("out_of_range");
+      exception.addContext("trackerDTC::Setup::dPhi");
+      exception << "Stub phi uncertainty " << dPhi << " "
+                << "is out of range " << mindPhi_ << " to " << maxdPhi_ << ".";
+      throw exception;
+    }
+    return dPhi;
+  }
+
+  // stub projected z uncertainty
   double Setup::dZ(const TTStubRef& ttStubRef, double cot) const {
     const DetId& detId = ttStubRef->getDetId();
     SensorModule* sm = sensorModule(detId + 1);
@@ -572,46 +593,26 @@ namespace trackerDTC {
     return dZ;
   }
 
-  //
-  double Setup::v1(const TTStubRef& ttStubRef, double cot) const {
-    const DetId& detId = ttStubRef->getDetId();
-    SensorModule* sm = sensorModule(detId + 1);
-    const double sigma = pow(sm->pitchCol() * sm->tiltCorrection(cot), 2) / 12.;
-    const double digi = pow(tmttBaseZ_, 2);
-    return sigma + digi;
-  }
-
-  //
-  double Setup::dPhi(const TTStubRef& ttStubRef, double inv2R) const {
-    const DetId& detId = ttStubRef->getDetId();
-    SensorModule* sm = sensorModule(detId + 1);
-    const double r = stubPos(ttStubRef).perp();
-    const double sigma = sm->pitchRow() / r;
-    const double scat = 0.00075 * abs(inv2R) / invPtToDphi_;
-    const double extra = sm->barrel() ? 0. : sm->pitchCol() * abs(inv2R);
-    const double digi = tmttBasePhi_;
-    const double dPhi = sigma + scat + extra + digi;
-    if (dPhi >= maxdPhi_ || dPhi < mindPhi_) {
-      cms::Exception exception("out_of_range");
-      exception.addContext("trackerDTC::Setup::dPhi");
-      exception << "Stub phi uncertainty " << dPhi << " "
-                << "is out of range " << mindPhi_ << " to " << maxdPhi_ << ".";
-      throw exception;
-    }
-    return dPhi;
-  }
-
-  //
+  // stub projected chi2phi wheight
   double Setup::v0(const TTStubRef& ttStubRef, double inv2R) const {
     const DetId& detId = ttStubRef->getDetId();
     SensorModule* sm = sensorModule(detId + 1);
     const double r = stubPos(ttStubRef).perp();
     const double sigma = pow(sm->pitchRow() / r, 2) / 12.;
-    const double scat = pow(0.00075 * inv2R / invPtToDphi_, 2);
+    const double scat = pow(scattering_ * inv2R / invPtToDphi_, 2);
     const double extra = sm->barrel() ? 0. : pow(sm->pitchCol() * inv2R, 2);
-    const double digi = pow(tmttBasePhi_, 2);
+    const double digi = pow(tmttBasePhi_ / 12., 2);
     return sigma + scat + extra + digi;
 
+  }
+
+  // stub projected chi2z wheight
+  double Setup::v1(const TTStubRef& ttStubRef, double cot) const {
+    const DetId& detId = ttStubRef->getDetId();
+    SensorModule* sm = sensorModule(detId + 1);
+    const double sigma = pow(sm->pitchCol() * sm->tiltCorrection(cot), 2) / 12.;
+    const double digi = pow(tmttBaseZ_ / 12., 2);
+    return sigma + digi;
   }
 
   // checks if stub collection is considered forming a reconstructable track 

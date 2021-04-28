@@ -26,6 +26,7 @@ namespace trackerTFP {
     z_(dataFormats_->format(Variable::z, Process::sf)),
     input_(dataFormats_->numChannel(Process::mht)) {}
 
+  // read in and organize input product
   void SeedFilter::consume(const TTDTC::Streams& streams) {
     auto valid = [](int& sum, const TTDTC::Frame& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
     int nStubs(0);
@@ -49,6 +50,7 @@ namespace trackerTFP {
     }
   }
 
+  // fill output products
   void SeedFilter::produce(TTDTC::Streams& accepted, TTDTC::Streams& lost) {
     auto kill = [this](const vector<StubSF*>& stubs) {
       TTBV hitPattern(0, setup_->numLayers());
@@ -65,12 +67,6 @@ namespace trackerTFP {
       // at least 2 ps stubs (two stubs in first 3 layers?)
       if ((int)psLayers.size() < 2)
         return true;
-      // prepare cuts on skipped layers by taking maybe layers into account
-      StubSF* stub = stubs.front();
-      const vector<int>& maybeLayer = layerEncoding_->maybeLayer(stub->sectorEta(), zT_.toUnsigned(stub->zT()), cot_.toUnsigned(stub->cot()));
-      const int pos = hitPattern.encode(setup_->kfMinLayers());
-      for (int layer : maybeLayer)
-        hitPattern.set(layer);
       return false;
     };
     auto lessSkippedLayers = [this](const vector<StubSF*>& lhs, const vector<StubSF*>& rhs) {
@@ -142,6 +138,7 @@ namespace trackerTFP {
                     seeds.emplace_back(inner, outer);
         vector<vector<StubSF*>> seedTracks;
         seedTracks.reserve(seeds.size());
+        int pos(0);
         for (const pair<StubMHT*, StubMHT*>& seed : seeds) {
           const double r1 = seed.first->r() + dT;
           const double r2 = seed.second->r() + dT;
@@ -179,7 +176,10 @@ namespace trackerTFP {
               stubsSF_.emplace_back(*stub, layer, zT_.integer(zT), cot_.integer(cot), chi2);
               stubsSF.push_back(&stubsSF_.back());
             }
+            pos++;
           }
+          if (pos >= setup_->numFrames())
+            break;
           set<int> ids;
           for (StubSF* stub : stubsSF)
             ids.insert(stub->layer());
@@ -206,7 +206,7 @@ namespace trackerTFP {
     }
   }
 
-  //
+  // stub layerId (barrel: 1-6, endcap: 11-15)
   int SeedFilter::layerId(StubMHT* stub) const {
     int layer = stub->layer();
     bool barrel = setup_->barrel(stub->ttStubRef());

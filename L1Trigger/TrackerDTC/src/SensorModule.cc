@@ -114,7 +114,7 @@ namespace trackerDTC {
     const vector<int>& encodingLayerId = setup.encodingLayerId(dtcId_);
     const auto pos = find(encodingLayerId.begin(), encodingLayerId.end(), layerId_);
     encodedLayerId_ = distance(encodingLayerId.begin(), pos);
-    //
+    // calculate tilt correction parameter used to project r to z uncertainty
     tiltCorrectionSlope_ = barrel_ ? 0. : 1.;
     tiltCorrectionIntercept_ = barrel_ ? 1. : 0.;
     if (typeTilt == tiltedMinus || typeTilt == tiltedPlus) {

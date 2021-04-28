@@ -10,7 +10,7 @@
 
 namespace trackerTFP {
 
-  // Class to find in a region finer rough candidates in r-z
+  // Class to clean up MHT track candidates with rough tracking in r-z
   class SeedFilter {
   public:
     SeedFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, const LayerEncoding* layerEncoding, int region);
@@ -22,33 +22,33 @@ namespace trackerTFP {
     void produce(TTDTC::Streams& accepted, TTDTC::Streams& lost);
 
   private:
-    //
+    // stub layerId (barrel: 1-6, endcap: 11-15)
     int layerId(StubMHT* stub) const;
     // remove and return first element of deque, returns nullptr if empty
     template<class T>
     T* pop_front(std::deque<T*>& ts) const;
 
-    //
+    // true if truncation is enbaled
     bool enableTruncation_;
-    // 
+    // provides run-time constants
     const trackerDTC::Setup* setup_;
-    //
+    // provides dataformats
     const DataFormats* dataFormats_;
-    //
+    // provides layer encoding
     const LayerEncoding* layerEncoding_;
-    //
+    // processing region (0 - 8)
     int region_;
-    //
+    // dataformat of cot
     DataFormat cot_;
-    //
+    // dataformat of zT
     DataFormat zT_;
-    //
+    // dataformat of z
     DataFormat z_;
-    // 
+    // container of input stubs
     std::vector<StubMHT> stubsMHT_;
-    // 
+    // container of output stubs
     std::deque<StubSF> stubsSF_;
-    //
+    // h/w liked organized pointer to input stubs
     std::vector<std::vector<StubMHT*>> input_;
   };
 

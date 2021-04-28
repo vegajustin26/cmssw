@@ -19,6 +19,7 @@ namespace trackerTFP {
     region_(region),
     input_(dataFormats_->numChannel(Process::gp), vector<deque<StubPP*>>(dataFormats_->numChannel(Process::pp))) {}
 
+  // read in and organize input product (fill vector input_)
   void GeometricProcessor::consume(const TTDTC& ttDTC) {
     auto validFrame = [](int& sum, const TTDTC::Frame& frame){ return sum += frame.first.isNonnull() ? 1 : 0; };
     int nStubsPP(0);
@@ -52,6 +53,7 @@ namespace trackerTFP {
     stubsGP_.reserve(nStubsGP);
   }
 
+  // fill output products
   void GeometricProcessor::produce(TTDTC::Streams& accepted, TTDTC::Streams& lost) {
     for (int sector = 0; sector < dataFormats_->numChannel(Process::gp); sector++) {
       vector<deque<StubPP*>>& inputs = input_[sector];

@@ -23,7 +23,8 @@ TrackTrigger_params = cms.PSet (
     MatchedLayers    = cms.int32 (  4  ), # required number of layers a found track has to have in common with a TP to consider it matched to it
     MatchedLayersPS  = cms.int32 (  0  ), # required number of ps layers a found track has to have in common with a TP to consider it matched to it
     UnMatchedStubs   = cms.int32 (  1  ), # allowed number of stubs a found track may have not in common with its matched TP
-    UnMatchedStubsPS = cms.int32 (  0  )  # allowed number of PS stubs a found track may have not in common with its matched TP
+    UnMatchedStubsPS = cms.int32 (  0  ), # allowed number of PS stubs a found track may have not in common with its matched TP
+    Scattering       = cms.double( 0.00075 ) #
   ),
 
   # TMTT specific parameter

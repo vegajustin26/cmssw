@@ -130,9 +130,9 @@ namespace trackerDTC {
     double offsetZ_;
     // bend window size in half strip units
     int windowSize_;
-    //
+    // tilt correction parameter used to project r to z uncertainty
     double tiltCorrectionSlope_;
-    //
+    // tilt correction parameter used to project r to z uncertainty
     double tiltCorrectionIntercept_;
   };
 

@@ -16,7 +16,7 @@ namespace trackerTFP {
     GeometricProcessor(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup_, const DataFormats* dataFormats, int region);
     ~GeometricProcessor(){}
 
-    // read in and organize input product
+    // read in and organize input product (fill vector input_)
     void consume(const TTDTC& ttDTC);
     // fill output products
     void produce(TTDTC::Streams& accepted, TTDTC::Streams& lost);
@@ -26,19 +26,19 @@ namespace trackerTFP {
     template<class T>
     T* pop_front(std::deque<T*>& ts) const;
 
-    //
+    // true if truncation is enbaled
     bool enableTruncation_;
-    // 
+    // provides run-time constants
     const trackerDTC::Setup* setup_;
-    //
+    // provides dataformats
     const DataFormats* dataFormats_;
-    // 
+    // processing region (0 - 8)
     const int region_;
-    // 
+    // storage of input stubs
     std::vector<StubPP> stubsPP_;
-    // 
+    // storage of output stubs
     std::vector<StubGP> stubsGP_;
-    // 
+    // h/w liked organized pointer to input stubs
     std::vector<std::vector<std::deque<StubPP*>>> input_;
   };
 

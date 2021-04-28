@@ -10,7 +10,7 @@
 
 namespace trackerTFP {
 
-  // Class to fit in a region tracks
+  // Class to do helix fit to all tracks in a region.
   class KalmanFilter {
   public:
     KalmanFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region);
@@ -30,35 +30,37 @@ namespace trackerTFP {
     T* pop_front(std::vector<T*>& ts) const;
 
     // adds a layer to states
-    void layer(std::deque<State*>& stream);
-    // repicks combinatoric stubs for state
+    void addLayer(std::deque<State*>& stream);
+    // Assign next combinatoric (i.e. not first in layer) stub to state
     void comb(State*& state);
     // best state selection
     void accumulator(std::deque<State*>& stream);
     // updates state
     void update(State*& state);
 
-    //
+    // true if truncation is enbaled
     bool enableTruncation_;
-    // 
+    // provides run-time constants
     const trackerDTC::Setup* setup_;
-    //
+    // provides dataformats
     const DataFormats* dataFormats_;
-    //
+    // provides dataformats of Kalman filter internals
     KalmanFilterFormats* kalmanFilterFormats_;
-    //
+    // processing region (0 - 8)
     int region_;
-    //
+    // container of input stubs
     std::vector<StubKFin> stubs_;
-    //
+    // container of input tracks
     std::vector<TrackKFin> tracks_;
-    //
+    // container of all Kalman Filter states
     std::deque<State> states_;
-    //
+    // h/w liked organized pointer to input stubs
     std::vector<std::vector<TrackKFin*>> input_;
-    //
+    // current layer used during state propagation
     int layer_;
-    //
+
+    // dataformats of Kalman filter internals
+
     DataFormatKF* x0_;
     DataFormatKF* x1_;
     DataFormatKF* x2_;

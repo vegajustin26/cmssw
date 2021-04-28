@@ -25,7 +25,7 @@ namespace trackerTFP {
     input_(dataFormats_->numChannel(Process::ht), vector<deque<StubGP*>>(dataFormats_->numChannel(Process::gp)))
   {}
 
-  // read in and organize input product
+  // read in and organize input product (fill vector input_)
   void HoughTransform::consume(const TTDTC::Streams& streams) {
     const int offset = region_ * dataFormats_->numChannel(Process::gp);
     auto validFrame = [](int& sum, const TTDTC::Frame& frame){ return sum += frame.first.isNonnull() ? 1 : 0; };
@@ -39,6 +39,7 @@ namespace trackerTFP {
       const int sectorPhi = sector % setup_->numSectorsPhi();
       const int sectorEta = sector / setup_->numSectorsPhi();
       for (const TTDTC::Frame& frame : streams[offset + sector]) {
+        // Store input stubs in vector, so rest of HT algo can work with pointers to them (saves CPU)
         StubGP* stub = nullptr;
         if (frame.first.isNonnull()) {
           stubsGP_.emplace_back(frame, dataFormats_, sectorPhi, sectorEta);
@@ -74,7 +75,7 @@ namespace trackerTFP {
         acceptedSector.reserve(size);
         lostSector.reserve(size);
         // associate stubs with inv2R and phiT bins
-        fillIn(inputSector, acceptedSector, lostSector, inv2R);
+        fillIn(inv2R, inputSector, acceptedSector, lostSector);
         // Process::ht collects all stubs before readout starts -> remove all gaps
         acceptedSector.erase(remove(acceptedSector.begin(), acceptedSector.end(), nullptr), acceptedSector.end());
         // identify tracks
@@ -97,8 +98,8 @@ namespace trackerTFP {
     }
   }
 
-  // associate stubs with inv2R and phiT bins
-  void HoughTransform::fillIn(deque<StubGP*>& inputSector, vector<StubHT*>& acceptedSector, vector<StubHT*>& lostSector, int inv2R) {
+  // associate stubs with phiT bins in this inv2R column
+  void HoughTransform::fillIn(int inv2R, deque<StubGP*>& inputSector, vector<StubHT*>& acceptedSector, vector<StubHT*>& lostSector) {
     // fifo, used to store stubs which belongs to a second possible track
     deque<StubHT*> stack;
     // clock accurate firmware emulation, each while trip describes one clock tick, one stub in and one stub out per tick
@@ -110,6 +111,7 @@ namespace trackerTFP {
         const int major = phiT_.integer(phiT);
         if (phiT_.inRange(major)) {
           // major candidate has pt > threshold (3 GeV)
+          // stubHT records which HT bin this stub is added to
           stubsHT_.emplace_back(*stubGP, major, inv2R);
           stubHT = &stubsHT_.back();
         }
@@ -140,7 +142,7 @@ namespace trackerTFP {
   // identify tracks
   void HoughTransform::readOut(const vector<StubHT*>& acceptedSector, const vector<StubHT*>& lostSector, deque<StubHT*>& acceptedAll, deque<StubHT*>& lostAll) const {
     // used to recognise in which order tracks are found
-    TTBV patternPhiTs(0, setup_->htNumBinsPhiT());
+    TTBV trkFoundPhiTs(0, setup_->htNumBinsPhiT());
     // hitPattern for all possible tracks, used to find tracks
     vector<TTBV> patternHits(setup_->htNumBinsPhiT(), TTBV(0, setup_->numLayers()));
     // found unsigned phiTs, ordered in time
@@ -159,9 +161,9 @@ namespace trackerTFP {
       TTBV& pattern = patternHits[binPhiT];
       pattern.set(stub->layer());
       tracks[binPhiT].push_back(stub);
-      if (pattern.count() >= setup_->htMinLayers() && !patternPhiTs[binPhiT]) {
+      if (pattern.count() >= setup_->htMinLayers() && !trkFoundPhiTs[binPhiT]) {
         // first time track found
-        patternPhiTs.set(binPhiT);
+        trkFoundPhiTs.set(binPhiT);
         binsPhiT.push_back(binPhiT);
       }
     }
@@ -173,10 +175,10 @@ namespace trackerTFP {
     // look for lost tracks
     for (StubHT* stub : lostSector) {
       const int binPhiT = phiT_.toUnsigned(stub->phiT());
-      if (!patternPhiTs[binPhiT])
+      if (!trkFoundPhiTs[binPhiT])
         tracks[binPhiT].push_back(stub);
     }
-    for (int binPhiT : patternPhiTs.ids(false)) {
+    for (int binPhiT : trkFoundPhiTs.ids(false)) {
       const vector<StubHT*>& track = tracks[binPhiT];
       set<int> layers;
       auto toLayer = [](StubHT* stub){ return stub->layer(); };

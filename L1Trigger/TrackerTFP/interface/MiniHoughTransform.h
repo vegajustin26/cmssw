@@ -10,13 +10,13 @@
 
 namespace trackerTFP {
 
-  // Class to find in a region finer rough candidates in r-phi
+  // Class to refine HT track candidates in r-phi, by subdividing each HT cell into a finer granularity array
   class MiniHoughTransform {
   public:
     MiniHoughTransform(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, int region);
     ~MiniHoughTransform(){}
 
-    // read in and organize input product
+    // read in and organize input product (fill vector input_)
     void consume(const TTDTC::Streams& streams);
     // fill output products
     void produce(TTDTC::Streams& accepted, TTDTC::Streams& lost);
@@ -25,41 +25,39 @@ namespace trackerTFP {
     // remove and return first element of deque, returns nullptr if empty
     template<class T>
     T* pop_front(std::deque<T*>& ts) const;
-    //
-    void fill(const std::vector<StubHT*>& input, std::vector<std::deque<StubMHT*>>& output, int channel);
-    //
+    // perform finer pattern recognition per track
+    void fill(int channel, const std::vector<StubHT*>& input, std::vector<std::deque<StubMHT*>>& output);
+    // Static load balancing of inputs: mux 4 streams to 1 stream
     void slb(std::vector<std::deque<StubMHT*>>& inputs, std::vector<StubMHT*>& accepted, TTDTC::Stream& lost) const;
-    //
+    // Dynamic load balancing of inputs: swapping parts of streams to balance the amount of tracks per stream
     void dlb(std::vector<std::vector<StubMHT*>>& streams) const;
 
-    //
+    // true if truncation is enbaled
     bool enableTruncation_;
-    // 
+    // provides run-time constants
     const trackerDTC::Setup* setup_;
-    //
+    // provides dataformats
     const DataFormats* dataFormats_;
-    //
+    // dataformat of inv2R
     DataFormat inv2R_;
-    //
+    // dataformat of phiT
     DataFormat phiT_;
-    //
+    // processing region (0 - 8)
     int region_;
-    //
+    // number of inv2R bins used in HT
     int numBinsInv2R_;
-    //
+    // number of cells used in MHT
     int numCells_;
-    //
+    // number of dynamic load balancing nodes
     int numNodes_;
-    //
+    // number of channel per dynamic load balancing node
     int numChannel_;
-    // 
+    // container of input stubs
     std::vector<StubHT> stubsHT_;
-    // 
+    // container of output stubs
     std::vector<StubMHT> stubsMHT_;
-    //
+    // h/w liked organized pointer to input stubs
     std::vector<std::vector<StubHT*>> input_;
-    //
-    std::vector<StubMHT*> test_;
   };
 
 }

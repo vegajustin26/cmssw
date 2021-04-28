@@ -28,6 +28,7 @@ namespace trackerTFP {
     numChannel_(setup_->mhtNumDLBChannel()),
     input_(numBinsInv2R_) {}
 
+  // read in and organize input product (fill vector input_)
   void MiniHoughTransform::consume(const TTDTC::Streams& streams) {
     auto valid = [](int& sum, const TTDTC::Frame& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
     int nStubsHT(0);
@@ -42,6 +43,7 @@ namespace trackerTFP {
       const TTDTC::Stream& stream = streams[region_ * numBinsInv2R_ + binInv2R];
       vector<StubHT*>& stubs = input_[binInv2R];
       stubs.reserve(stream.size());
+      // Store input stubs in vector, so rest of MHT algo can work with pointers to them (saves CPU)
       for (const TTDTC::Frame& frame : stream) {
         StubHT* stub = nullptr;
         if (frame.first.isNonnull()) {
@@ -53,15 +55,17 @@ namespace trackerTFP {
     }
   }
 
+  // fill output products
   void MiniHoughTransform::produce(TTDTC::Streams& accepted, TTDTC::Streams& lost) {
     // fill MHT cells
     vector<deque<StubMHT*>> stubsCells(numBinsInv2R_ * numCells_);
     for (int channel = 0; channel < numBinsInv2R_; channel++)
-      fill(input_[channel], stubsCells, channel);
+      fill(channel, input_[channel], stubsCells);
     // perform static load balancing
     vector<vector<StubMHT*>> streamsSLB(numBinsInv2R_);
     for (int channel = 0; channel < numBinsInv2R_; channel++) {
       vector<deque<StubMHT*>> tmp(numCells_);
+      // gather streams to mux together: same MHT cell of 4 adjacent MHT input streams
       for (int k = 0; k < numCells_; k++)
         swap(tmp[k], stubsCells[(channel / numCells_) * numBinsInv2R_ + channel % numCells_ + k * numCells_]);
       slb(tmp, streamsSLB[channel], lost[channel]);
@@ -70,6 +74,7 @@ namespace trackerTFP {
     vector<vector<StubMHT*>> streamsDLB(numBinsInv2R_);
     for (int node = 0; node < numNodes_; node++) {
       vector<vector<StubMHT*>> tmp(numChannel_);
+      // gather streams to dynamically balance them
       for (int k = 0; k < numChannel_; k++)
         swap(tmp[k], streamsSLB[(node / numCells_) * numNodes_ + node % numCells_ + k * numCells_]);
       dlb(tmp);
@@ -80,6 +85,7 @@ namespace trackerTFP {
     vector<vector<StubMHT*>> streamsMHT(numBinsInv2R_);
     for (int node = 0; node < numNodes_; node++) {
       vector<vector<StubMHT*>> tmp(numChannel_);
+      // gather streams to dynamically balance them
       for (int k = 0; k < numChannel_; k++)
         swap(tmp[k], streamsDLB[node + k * numNodes_]);
       dlb(tmp);
@@ -97,7 +103,7 @@ namespace trackerTFP {
   }
 
   // perform finer pattern recognition per track
-  void MiniHoughTransform::fill(const vector<StubHT*>& stubs, vector<deque<StubMHT*>>& streams, int channel) {
+  void MiniHoughTransform::fill(int channel, const vector<StubHT*>& stubs, vector<deque<StubMHT*>>& streams) {
     if (stubs.empty())
       return;
     int id;
@@ -117,7 +123,7 @@ namespace trackerTFP {
         const double r = (*stub)->r();
         const double chi = (*stub)->phi();
         // identify finer track candidates for this stub
-        // 0 and 1 belong to bigger sub inv2R; 0 and 2 belong to smaller sub track phi
+        // 0 and 1 belong to the MHT cells with larger inv2R; 0 and 2 belong to those with smaller track PhiT
         vector<int> cells;
         cells.reserve(numCells_);
         const bool compA = 2. * abs(chi) < phiT_.base();
@@ -180,7 +186,7 @@ namespace trackerTFP {
     }
   }
 
-  // mux 4 streams to 1 stream
+  // Static load balancing of inputs: mux 4 streams to 1 stream
   void MiniHoughTransform::slb(vector<deque<StubMHT*>>& inputs, vector<StubMHT*>& accepted, TTDTC::Stream& lost) const {
     if (all_of(inputs.begin(), inputs.end(), [](const deque<StubMHT*>& stubs){ return stubs.empty(); }))
       return;
@@ -237,7 +243,7 @@ namespace trackerTFP {
       it = (*--it) == nullptr ? accepted.erase(it) : accepted.begin();
   }
 
-  //
+  // Dynamic load balancing of inputs: swapping parts of streams to balance the amount of tracks per stream
   void MiniHoughTransform::dlb(vector<vector<StubMHT*>>& streams) const {
     if (all_of(streams.begin(), streams.end(), [](const vector<StubMHT*>& stubs){ return stubs.empty(); }))
       return;

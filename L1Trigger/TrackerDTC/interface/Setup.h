@@ -89,14 +89,14 @@ namespace trackerDTC {
     bool reconstructable(const std::vector<TTStubRef>& ttStubRefs) const;
     // checks if tracking particle is selected for efficiency measurements
     bool useForAlgEff(const TrackingParticle& tp) const;
-    //
+    // checks if tracking particle is selected for fake and duplicate rate measurements
     bool useForReconstructable(const TrackingParticle& tp) const { return tpSelectorLoose_(tp); }
-    //
+    // stub layer id (barrel: 1 - 6, endcap: 11 - 15)
     int layerId(const TTStubRef& ttStubRef) const;
-    //
-    int barrel(const TTStubRef& ttStubRef) const;
-    //
-    int psModule(const TTStubRef& ttStubRef) const;
+    // true if stub from barrel module
+    bool barrel(const TTStubRef& ttStubRef) const;
+    // true if stub from barrel module
+    bool psModule(const TTStubRef& ttStubRef) const;
     //
     TTBV layerMap(const std::vector<int>& ints) const;
     //
@@ -105,14 +105,14 @@ namespace trackerDTC {
     std::vector<int> layerMap(const TTBV& hitPattern, const TTBV& ttBV) const;
     //
     std::vector<int> layerMap(const TTBV& ttBV) const;
-    //
-    double dZ(const TTStubRef& ttStubRef, double cot) const;
-    //
-    double v1(const TTStubRef& ttStubRef, double cot) const;
-    //
+    // stub projected phi uncertainty
     double dPhi(const TTStubRef& ttStubRef, double inv2R) const;
-    //
+    // stub projected z uncertainty
+    double dZ(const TTStubRef& ttStubRef, double cot) const;
+    // stub projected chi2phi wheight
     double v0(const TTStubRef& ttStubRef, double inv2R) const;
+    // stub projected chi2z wheight
+    double v1(const TTStubRef& ttStubRef, double cot) const;
     //
     const std::vector<SensorModule>& sensorModules() const { return sensorModules_; }
 
@@ -526,6 +526,8 @@ namespace trackerDTC {
     int unMatchedStubs_;
     // allowed number of PS stubs a found track may have not in common with its matched TP
     int unMatchedStubsPS_;
+    // scattering term used to add stub phi uncertainty depending on assumed track inv2R
+    double scattering_;
 
     // TMTT specific parameter
     edm::ParameterSet pSetTMTT_;
@@ -648,9 +650,9 @@ namespace trackerDTC {
     double maxPitch_;
     // max strip/pixel length of outer tracker sensors in cm
     double maxLength_;
-    //
+    // approximated tilt correction parameter used to project r to z uncertainty
     double tiltApproxSlope_;
-    //
+    // approximated tilt correction parameter used to project r to z uncertainty
     double tiltApproxIntercept_;
     // minimum representable stub phi uncertainty
     double mindPhi_;
@@ -804,7 +806,7 @@ namespace trackerDTC {
     bool configurationSupported_;
     // selector to partly select TPs for efficiency measurements
     TrackingParticleSelector tpSelector_;
-    // 
+    // selector to partly select TPs for fake and duplicate rate measurements
     TrackingParticleSelector tpSelectorLoose_;
 
     // TTStubAlgorithm

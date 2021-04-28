@@ -393,8 +393,8 @@ namespace trackerTFP {
   public:
     // construct StubHT from Frame
     StubHT(const TTDTC::Frame& frame, const DataFormats* dataFormats, int inv2R);
-    // construct StubHT from StubGP
-    StubHT(const StubGP& stub, int inv2R, int phiT);
+    // construct StubHT from StubGP and HT cell assignment
+    StubHT(const StubGP& stub, int phiT, int inv2R);
     ~StubHT(){}
     // stub qOver pt
     int inv2R() const { return inv2R_; }
@@ -424,7 +424,7 @@ namespace trackerTFP {
   public:
     // construct StubMHT from Frame
     StubMHT(const TTDTC::Frame& frame, const DataFormats* dataFormats);
-    // construct StubMHT from StubHT
+    // construct StubMHT from StubHT and MHT cell assignment
     StubMHT(const StubHT& stub, int phiT, int inv2R);
     ~StubMHT(){}
     // stub radius wrt choenRofPhi

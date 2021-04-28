@@ -231,7 +231,7 @@ namespace trackerTFP {
     fillTrackId();
   }
 
-  // construct StubHT from StubGP
+  // construct StubHT from StubGP and HT cell assignment
   StubHT::StubHT(const StubGP& stub, int phiT, int inv2R) :
     Stub(stub, stub.r(), stub.phi(), stub.z(), stub.layer(), stub.sectorPhi(), stub.sectorEta(), phiT),
     inv2R_(inv2R)
@@ -253,11 +253,12 @@ namespace trackerTFP {
     fillTrackId();
   }
 
-  // construct StubMHT from StubHT
+  // construct StubMHT from StubHT and MHT cell assignment
   StubMHT::StubMHT(const StubHT& stub, int phiT, int inv2R) :
     Stub(stub, stub.r(), stub.phi(), stub.z(), stub.layer(), stub.sectorPhi(), stub.sectorEta(), stub.phiT(), stub.inv2R())
   {
     const Setup* setup = dataFormats_->setup();
+    // update track (phIT, inv2R), and phi residuals w.r.t. track, to reflect MHT cell assignment.
     get<6>(data_) = this->phiT() * setup->mhtNumBinsPhiT() + phiT;
     get<7>(data_) = this->inv2R() * setup->mhtNumBinsInv2R() + inv2R;
     get<1>(data_) -= base(Variable::inv2R) * (inv2R - .5) * r() + base(Variable::phiT) * (phiT - .5);
