@@ -12,6 +12,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -29,22 +30,22 @@ namespace trackerTFP {
     input_(numBinsInv2R_) {}
 
   // read in and organize input product (fill vector input_)
-  void MiniHoughTransform::consume(const TTDTC::Streams& streams) {
-    auto valid = [](int& sum, const TTDTC::Frame& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
+  void MiniHoughTransform::consume(const StreamsStub& streams) {
+    auto valid = [](int& sum, const FrameStub& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
     int nStubsHT(0);
     for (int binInv2R = 0; binInv2R < numBinsInv2R_; binInv2R++) {
-      const TTDTC::Stream& stream = streams[region_ * numBinsInv2R_ + binInv2R];
+      const StreamStub& stream = streams[region_ * numBinsInv2R_ + binInv2R];
       nStubsHT += accumulate(stream.begin(), stream.end(), 0, valid);
     }
     stubsHT_.reserve(nStubsHT);
     stubsMHT_.reserve(nStubsHT * numCells_);
     for (int binInv2R = 0; binInv2R < numBinsInv2R_; binInv2R++) {
       const int inv2R = inv2R_.toSigned(binInv2R);
-      const TTDTC::Stream& stream = streams[region_ * numBinsInv2R_ + binInv2R];
+      const StreamStub& stream = streams[region_ * numBinsInv2R_ + binInv2R];
       vector<StubHT*>& stubs = input_[binInv2R];
       stubs.reserve(stream.size());
       // Store input stubs in vector, so rest of MHT algo can work with pointers to them (saves CPU)
-      for (const TTDTC::Frame& frame : stream) {
+      for (const FrameStub& frame : stream) {
         StubHT* stub = nullptr;
         if (frame.first.isNonnull()) {
           stubsHT_.emplace_back(frame, dataFormats_, inv2R);
@@ -56,7 +57,7 @@ namespace trackerTFP {
   }
 
   // fill output products
-  void MiniHoughTransform::produce(TTDTC::Streams& accepted, TTDTC::Streams& lost) {
+  void MiniHoughTransform::produce(StreamsStub& accepted, StreamsStub& lost) {
     // fill MHT cells
     vector<deque<StubMHT*>> stubsCells(numBinsInv2R_ * numCells_);
     for (int channel = 0; channel < numBinsInv2R_; channel++)
@@ -95,10 +96,10 @@ namespace trackerTFP {
     // fill output product
     for (int channel = 0; channel < numBinsInv2R_; channel++) {
       const vector<StubMHT*>& stubs = streamsMHT[channel];
-      TTDTC::Stream& stream = accepted[region_ * numBinsInv2R_ + channel];
+      StreamStub& stream = accepted[region_ * numBinsInv2R_ + channel];
       stream.reserve(stubs.size());
       for (StubMHT* stub : stubs)
-        stream.emplace_back(stub ? stub->frame() : TTDTC::Frame());
+        stream.emplace_back(stub ? stub->frame() : FrameStub());
     }
   }
 
@@ -187,7 +188,7 @@ namespace trackerTFP {
   }
 
   // Static load balancing of inputs: mux 4 streams to 1 stream
-  void MiniHoughTransform::slb(vector<deque<StubMHT*>>& inputs, vector<StubMHT*>& accepted, TTDTC::Stream& lost) const {
+  void MiniHoughTransform::slb(vector<deque<StubMHT*>>& inputs, vector<StubMHT*>& accepted, StreamStub& lost) const {
     if (all_of(inputs.begin(), inputs.end(), [](const deque<StubMHT*>& stubs){ return stubs.empty(); }))
       return;
     auto size = [](int& sum, const deque<StubMHT*>& stubs){ return sum += stubs.size(); };

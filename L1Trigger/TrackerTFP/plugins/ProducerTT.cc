@@ -10,7 +10,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/Common/interface/Handle.h"
 
-#include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
@@ -21,6 +20,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -40,7 +40,7 @@ namespace trackerTFP {
     void endJob() {}
 
     // ED input token of kf stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenStubs_;
+    EDGetTokenT<StreamsStub> edGetTokenStubs_;
     // ED input token of kf tracks
     EDGetTokenT<StreamsTrack> edGetTokenTracks_;
     // ED output token for TTTracks
@@ -53,7 +53,7 @@ namespace trackerTFP {
     ParameterSet iConfig_;
     // helper class to store configurations
     const Setup* setup_;
-    // helper class to extract structured data from TTDTC::Frames
+    // helper class to extract structured data from tt::Frames
     const DataFormats* dataFormats_;
   };
 
@@ -64,7 +64,7 @@ namespace trackerTFP {
     const string& branchStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
     const string& branchTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
     // book in- and output ED products
-    edGetTokenStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchStubs));
+    edGetTokenStubs_ = consumes<StreamsStub>(InputTag(label, branchStubs));
     edGetTokenTracks_ = consumes<StreamsTrack>(InputTag(label, branchTracks));
     edPutToken_ = produces<TTTracks>(branchTracks);
     // book ES products
@@ -83,7 +83,7 @@ namespace trackerTFP {
     // check process history if desired
     if (iConfig_.getParameter<bool>("CheckHistory"))
       setup_->checkHistory(iRun.processHistory());
-    // helper class to extract structured data from TTDTC::Frames
+    // helper class to extract structured data from tt::Frames
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
   }
 
@@ -95,9 +95,9 @@ namespace trackerTFP {
       Handle<StreamsTrack> handleTracks;
       iEvent.getByToken<StreamsTrack>(edGetTokenTracks_, handleTracks);
       const StreamsTrack& streamsTracks = *handleTracks.product();
-      Handle<TTDTC::Streams> handleStubs;
-      iEvent.getByToken<TTDTC::Streams>(edGetTokenTracks_, handleStubs);
-      const TTDTC::Streams& streamsStubs = *handleStubs.product();
+      Handle<StreamsStub> handleStubs;
+      iEvent.getByToken<StreamsStub>(edGetTokenTracks_, handleStubs);
+      const StreamsStub& streamsStubs = *handleStubs.product();
       int nTracks(0);
       for (const StreamTrack& stream : streamsTracks)
         nTracks += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
@@ -109,7 +109,7 @@ namespace trackerTFP {
           vector<StubKF> stubs;
           stubs.reserve(setup_->numLayers());
           for (int layer = 0; layer < setup_->numLayers(); layer++) {
-            const TTDTC::Frame& frameStub = streamsStubs[offset + layer][iTrk];
+            const FrameStub& frameStub = streamsStubs[offset + layer][iTrk];
             if (frameStub.first.isNonnull())
               stubs.emplace_back(frameStub, dataFormats_, layer);
           }

@@ -82,7 +82,7 @@ namespace trackerTFP {
     // squared stub projected z uncertainty instead of wheight (wrong but simpler)
     double v1() const { return pow(stub_->dZ(), 2); }
     // output frame
-    FrameTrack frame() const { return TrackKF(*track_, x1_, x0_, x3_, x2_).frame(); }
+    tt::FrameTrack frame() const { return TrackKF(*track_, x1_, x0_, x3_, x2_).frame(); }
     // collection of stubs added so far to state
     std::vector<StubKF> stubs() const;
 

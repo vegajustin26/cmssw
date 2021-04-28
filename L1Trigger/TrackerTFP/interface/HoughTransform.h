@@ -3,7 +3,7 @@
 
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
-#include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
+#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 
 #include <vector>
 #include <set>
@@ -18,9 +18,9 @@ namespace trackerTFP {
     ~HoughTransform(){}
 
     // read in and organize input product
-    void consume(const TTDTC::Streams& streams);
+    void consume(const tt::StreamsStub& streams);
     // fill output products
-    void produce(TTDTC::Streams& accepted, TTDTC::Streams& lost);
+    void produce(tt::StreamsStub& accepted, tt::StreamsStub& lost);
 
   private:
     // remove and return first element of deque, returns nullptr if empty

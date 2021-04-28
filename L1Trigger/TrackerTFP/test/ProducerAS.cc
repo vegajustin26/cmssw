@@ -18,6 +18,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -40,8 +41,8 @@ namespace trackerTFP {
     EDGetTokenT<StreamsTrack> edGetTokenKF_;
     // ED input token of kf TTtracks
     EDGetTokenT<TTTracks> edGetTokenTT_;
-    // ED output token for TTTrackMap
-    EDPutTokenT<TTTrackMap> edPutToken_;
+    // ED output token for TTTrackRefMap
+    EDPutTokenT<TTTrackRefMap> edPutToken_;
     // Setup token
     ESGetToken<Setup, SetupRcd> esGetTokenSetup_;
     // configuration
@@ -59,7 +60,7 @@ namespace trackerTFP {
     // book in- and output ED products
     edGetTokenKF_ = consumes<StreamsTrack>(InputTag(labelKF, branch));
     edGetTokenTT_ = consumes<TTTracks>(InputTag(labelTT, branch));
-    edPutToken_ = produces<TTTrackMap>(branch);
+    edPutToken_ = produces<TTTrackRefMap>(branch);
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
     // initial ES products
@@ -78,7 +79,7 @@ namespace trackerTFP {
 
   void ProducerAS::produce(Event& iEvent, const EventSetup& iSetup) {
     // empty KFTTTrack product
-    TTTrackMap ttTrackMap;
+    TTTrackRefMap ttTrackMap;
     // read in KF Product and produce AssociatorKF product
     if (setup_->configurationSupported()) {
       Handle<StreamsTrack> handleKF;

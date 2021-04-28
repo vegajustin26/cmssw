@@ -7,6 +7,7 @@
 
 using namespace edm;
 using namespace std;
+using namespace tt;
 
 namespace trackerDTC {
 
@@ -137,7 +138,7 @@ namespace trackerDTC {
   }
 
   // returns bit accurate representation of Stub
-  TTDTC::BV Stub::frame(int region) const { return hybrid_ ? formatHybrid(region) : formatTMTT(region); }
+  Frame Stub::frame(int region) const { return hybrid_ ? formatHybrid(region) : formatTMTT(region); }
 
   // returns true if stub belongs to region
   bool Stub::inRegion(int region) const { return find(regions_.begin(), regions_.end(), region) != regions_.end(); }
@@ -146,7 +147,7 @@ namespace trackerDTC {
   double Stub::digi(double value, double precision) const { return (floor(value / precision) + .5) * precision; }
 
   // returns 64 bit stub in hybrid data format
-  TTDTC::BV Stub::formatHybrid(int region) const {
+  Frame Stub::formatHybrid(int region) const {
     const SensorModule::Type type = sm_->type();
     // stub phi w.r.t. processing region border in rad
     double phi = phi_ - (region - .5) * setup_->baseRegion() + setup_->hybridRangePhi() / 2.;
@@ -160,11 +161,11 @@ namespace trackerDTC {
     const TTBV hwGap(0, setup_->hybridNumUnusedBits(type));
     const TTBV hwValid(1, 1);
     // assemble final bitset
-    return TTDTC::BV(hwGap.str() + hwR.str() + hwZ.str() + hwPhi.str() + hwAlpha.str() + hwBend.str() + hwLayer.str() +
+    return Frame(hwGap.str() + hwR.str() + hwZ.str() + hwPhi.str() + hwAlpha.str() + hwBend.str() + hwLayer.str() +
                      hwValid.str());
   }
 
-  TTDTC::BV Stub::formatTMTT(int region) const {
+  Frame Stub::formatTMTT(int region) const {
     int layerM = sm_->layerId();
     // convert unique layer id [1-6,11-15] into reduced layer id [0-6]
     // a fiducial track may not cross more then 7 detector layers, for stubs from a given track the reduced layer id is actually unique
@@ -230,7 +231,7 @@ namespace trackerDTC {
     for (int sectorPhi = 0; sectorPhi < setup_->numSectorsPhi(); sectorPhi++)
       hwSectorPhis[sectorPhi] = sectorsPhi[region * setup_->numSectorsPhi() + sectorPhi];
     // assemble final bitset
-    return TTDTC::BV(hwGap.str() + hwValid.str() + hwR.str() + hwPhi.str() + hwZ.str() + hwLayer.str() + hwSectorPhis.str() + hwSectorEtaMin.str() + hwSectorEtaMax.str() + hwInv2RMin.str() + hwInv2RMax.str());
+    return Frame(hwGap.str() + hwValid.str() + hwR.str() + hwPhi.str() + hwZ.str() + hwLayer.str() + hwSectorPhis.str() + hwSectorEtaMin.str() + hwSectorEtaMax.str() + hwInv2RMin.str() + hwInv2RMax.str());
   }
 
 }  // namespace trackerDTC

@@ -51,16 +51,16 @@ namespace trackFindingTracklet {
 
   private:
     //
-    void formTracks(const StreamsTrack& streamsTrack, const TTDTC::Streams& streamsStubs, vector<vector<TTStubRef>>& tracks, int channel) const;
+    void formTracks(const StreamsTrack& streamsTrack, const StreamsStub& streamsStubs, vector<vector<TTStubRef>>& tracks, int channel) const;
     //
     void associate(const vector<vector<TTStubRef>>& tracks, const StubAssociation* ass, set<TPPtr>& tps, int& sum) const;
 
     // ED input token of stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenAcceptedStubs_;
+    EDGetTokenT<StreamsStub> edGetTokenAcceptedStubs_;
     // ED input token of tracks
     EDGetTokenT<StreamsTrack> edGetTokenAcceptedTracks_;
     // ED input token of lost stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenLostStubs_;
+    EDGetTokenT<StreamsStub> edGetTokenLostStubs_;
     // ED input token of lost tracks
     EDGetTokenT<StreamsTrack> edGetTokenLostTracks_;
     // ED input token of TTStubRef to selected TPPtr association
@@ -75,7 +75,7 @@ namespace trackFindingTracklet {
     ESGetToken<TrackBuilderChannel, TrackBuilderChannelRcd> esGetTokenTrackBuilderChannel_;
     // stores, calculates and provides run-time constants
     const Setup* setup_;
-    // helper class to extract structured data from TTDTC::Frames
+    // helper class to extract structured data from tt::Frames
     const DataFormats* dataFormats_;
     // helper class to assign tracklet track to channel
     const TrackBuilderChannel* trackBuilderChannel_;
@@ -102,9 +102,9 @@ namespace trackFindingTracklet {
     const string& branchAcceptedTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
     const string& branchLostStubs = iConfig.getParameter<string>("BranchLostStubs");
     const string& branchLostTracks = iConfig.getParameter<string>("BranchLostTracks");
-    edGetTokenAcceptedStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchAcceptedStubs));
+    edGetTokenAcceptedStubs_ = consumes<StreamsStub>(InputTag(label, branchAcceptedStubs));
     edGetTokenAcceptedTracks_ = consumes<StreamsTrack>(InputTag(label, branchAcceptedTracks));
-    edGetTokenLostStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchLostStubs));
+    edGetTokenLostStubs_ = consumes<StreamsStub>(InputTag(label, branchLostStubs));
     edGetTokenLostTracks_ = consumes<StreamsTrack>(InputTag(label, branchLostTracks));
     if (useMCTruth_) {
       const auto& inputTagSelecttion = iConfig.getParameter<InputTag>("InputTagSelection");
@@ -128,7 +128,7 @@ namespace trackFindingTracklet {
   void AnalyzerKFin::beginRun(const Run& iEvent, const EventSetup& iSetup) {
     // helper class to store configurations
     setup_ = &iSetup.getData(esGetTokenSetup_);
-    // helper class to extract structured data from TTDTC::Frames
+    // helper class to extract structured data from tt::Frames
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
     // helper class to assign tracklet track to channel
     trackBuilderChannel_ = &iSetup.getData(esGetTokenTrackBuilderChannel_);
@@ -155,15 +155,15 @@ namespace trackFindingTracklet {
 
   void AnalyzerKFin::analyze(const Event& iEvent, const EventSetup& iSetup) {
     // read in ht products
-    Handle<TTDTC::Streams> handleAcceptedStubs;
-    iEvent.getByToken<TTDTC::Streams>(edGetTokenAcceptedStubs_, handleAcceptedStubs);
-    const TTDTC::Streams& acceptedStubs = *handleAcceptedStubs;
+    Handle<StreamsStub> handleAcceptedStubs;
+    iEvent.getByToken<StreamsStub>(edGetTokenAcceptedStubs_, handleAcceptedStubs);
+    const StreamsStub& acceptedStubs = *handleAcceptedStubs;
     Handle<StreamsTrack> handleAcceptedTracks;
     iEvent.getByToken<StreamsTrack>(edGetTokenAcceptedTracks_, handleAcceptedTracks);
     const StreamsTrack& acceptedTracks = *handleAcceptedTracks;
-    Handle<TTDTC::Streams> handleLostStubs;
-    iEvent.getByToken<TTDTC::Streams>(edGetTokenLostStubs_, handleLostStubs);
-    const TTDTC::Streams& lostStubs = *handleLostStubs;
+    Handle<StreamsStub> handleLostStubs;
+    iEvent.getByToken<StreamsStub>(edGetTokenLostStubs_, handleLostStubs);
+    const StreamsStub& lostStubs = *handleLostStubs;
     Handle<StreamsTrack> handleLostTracks;
     iEvent.getByToken<StreamsTrack>(edGetTokenLostTracks_, handleLostTracks);
     const StreamsTrack& lostTracks = *handleLostTracks;
@@ -260,7 +260,7 @@ namespace trackFindingTracklet {
   }
 
   //
-  void AnalyzerKFin::formTracks(const StreamsTrack& streamsTrack, const TTDTC::Streams& streamsStubs, vector<vector<TTStubRef>>& tracks, int channel) const {
+  void AnalyzerKFin::formTracks(const StreamsTrack& streamsTrack, const StreamsStub& streamsStubs, vector<vector<TTStubRef>>& tracks, int channel) const {
     const int offset = channel * setup_->numLayers();
     const StreamTrack& streamTrack = streamsTrack[channel];
     const int numTracks = accumulate(streamTrack.begin(), streamTrack.end(), 0, [](int& sum, const FrameTrack& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); });
@@ -273,14 +273,14 @@ namespace trackFindingTracklet {
       const int size = distance(next(streamTrack.begin(), frame), end);
       int numStubs(0);
       for (int layer = 0; layer < setup_->numLayers(); layer++) {
-        const TTDTC::Stream& stream = streamsStubs[offset + layer];
-        numStubs += accumulate(stream.begin() + frame, stream.begin() + frame + size, 0, [](int& sum, const TTDTC::Frame& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); });
+        const StreamStub& stream = streamsStubs[offset + layer];
+        numStubs += accumulate(stream.begin() + frame, stream.begin() + frame + size, 0, [](int& sum, const FrameStub& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); });
       }
       vector<TTStubRef> stubs;
       stubs.reserve(numStubs);
       for (int layer = 0; layer < setup_->numLayers(); layer++) {
         for (int f = frame; f < frame + size; f++) {
-          const TTDTC::Frame& stub = streamsStubs[offset + layer][f];
+          const FrameStub& stub = streamsStubs[offset + layer][f];
           if (stub.first.isNonnull())
             stubs.push_back(stub.first);
         }

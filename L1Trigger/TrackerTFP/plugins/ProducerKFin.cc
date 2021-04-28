@@ -10,7 +10,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/Common/interface/Handle.h"
 
-#include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
@@ -27,6 +26,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -48,10 +48,10 @@ namespace trackerTFP {
     // ED input token of TTTracks
     EDGetTokenT<vector<TTTrack<Ref_Phase2TrackerDigi_>>> edGetTokenTTTracks_;
     // ED input token of Stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenStubs_;
+    EDGetTokenT<StreamsStub> edGetTokenStubs_;
     // ED output token for stubs
-    EDPutTokenT<TTDTC::Streams> edPutTokenAcceptedStubs_;
-    EDPutTokenT<TTDTC::Streams> edPutTokenLostStubs_;
+    EDPutTokenT<StreamsStub> edPutTokenAcceptedStubs_;
+    EDPutTokenT<StreamsStub> edPutTokenLostStubs_;
     // ED output token for tracks
     EDPutTokenT<StreamsTrack> edPutTokenAcceptedTracks_;
     EDPutTokenT<StreamsTrack> edPutTokenLostTracks_;
@@ -65,7 +65,7 @@ namespace trackerTFP {
     ParameterSet iConfig_;
     // helper class to store configurations
     const Setup* setup_;
-    // helper class to extract structured data from TTDTC::Frames
+    // helper class to extract structured data from tt::Frames
     const DataFormats* dataFormats_;
     // helper class to encode layer
     const LayerEncoding* layerEncoding_;
@@ -84,10 +84,10 @@ namespace trackerTFP {
     const string& branchLostTracks = iConfig.getParameter<string>("BranchLostTracks");
     // book in- and output ED products
     edGetTokenTTTracks_ = consumes<vector<TTTrack<Ref_Phase2TrackerDigi_>>>(InputTag(labelTTTracks, branchAcceptedTracks));
-    edGetTokenStubs_ = consumes<TTDTC::Streams>(InputTag(labelStubs, branchAcceptedStubs));
-    edPutTokenAcceptedStubs_ = produces<TTDTC::Streams>(branchAcceptedStubs);
+    edGetTokenStubs_ = consumes<StreamsStub>(InputTag(labelStubs, branchAcceptedStubs));
+    edPutTokenAcceptedStubs_ = produces<StreamsStub>(branchAcceptedStubs);
     edPutTokenAcceptedTracks_ = produces<StreamsTrack>(branchAcceptedTracks);
-    edPutTokenLostStubs_ = produces<TTDTC::Streams>(branchLostStubs);
+    edPutTokenLostStubs_ = produces<StreamsStub>(branchLostStubs);
     edPutTokenLostTracks_ = produces<StreamsTrack>(branchLostTracks);
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
@@ -109,7 +109,7 @@ namespace trackerTFP {
     // check process history if desired
     if (iConfig_.getParameter<bool>("CheckHistory"))
       setup_->checkHistory(iRun.processHistory());
-    // helper class to extract structured data from TTDTC::Frames
+    // helper class to extract structured data from tt::Frames
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
     // helper class to encode layer
     layerEncoding_ = &iSetup.getData(esGetTokenLayerEncoding_);
@@ -122,15 +122,15 @@ namespace trackerTFP {
     const DataFormat& dfdPhi = dataFormats_->format(Variable::dPhi, Process::kfin);
     const DataFormat& dfdZ = dataFormats_->format(Variable::dZ, Process::kfin);
     // empty KFin products
-    TTDTC::Streams streamAcceptedStubs(dataFormats_->numStreamsStubs(Process::kf));
+    StreamsStub streamAcceptedStubs(dataFormats_->numStreamsStubs(Process::kf));
     StreamsTrack streamAcceptedTracks(dataFormats_->numStreamsTracks(Process::kf));
-    TTDTC::Streams streamLostStubs(dataFormats_->numStreamsStubs(Process::kf));
+    StreamsStub streamLostStubs(dataFormats_->numStreamsStubs(Process::kf));
     StreamsTrack streamLostTracks(dataFormats_->numStreamsTracks(Process::kf));
     // read in SFout Product and produce KFin product
     if (setup_->configurationSupported()) {
-      Handle<TTDTC::Streams> handleStubs;
-      iEvent.getByToken<TTDTC::Streams>(edGetTokenStubs_, handleStubs);
-      const TTDTC::Streams& streams = *handleStubs.product();
+      Handle<StreamsStub> handleStubs;
+      iEvent.getByToken<StreamsStub>(edGetTokenStubs_, handleStubs);
+      const StreamsStub& streams = *handleStubs.product();
       Handle<vector<TTTrack<Ref_Phase2TrackerDigi_>>> handleTTTracks;
       iEvent.getByToken<vector<TTTrack<Ref_Phase2TrackerDigi_>>>(edGetTokenTTTracks_, handleTTTracks);
       const vector<TTTrack<Ref_Phase2TrackerDigi_>>& ttTracks = *handleTTTracks.product();
@@ -139,18 +139,18 @@ namespace trackerTFP {
         int nStubsSF(0);
         for (int channel = 0; channel < dataFormats_->numChannel(Process::sf); channel++) {
           const int index = region * dataFormats_->numChannel(Process::sf) + channel;
-          const TTDTC::Stream& stream = streams[index];
-          nStubsSF += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const TTDTC::Frame& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
+          const StreamStub& stream = streams[index];
+          nStubsSF += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const FrameStub& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
         }
         vector<StubSF> stubsSF;
         stubsSF.reserve(nStubsSF);
         for (int channel = 0; channel < dataFormats_->numChannel(Process::sf); channel++) {
           const int index = region * dataFormats_->numChannel(Process::sf) + channel;
-          for (const TTDTC::Frame& frame : streams[index])
+          for (const FrameStub& frame : streams[index])
             if (frame.first.isNonnull())
               stubsSF.emplace_back(frame, dataFormats_);
         }
-        vector<deque<TTDTC::Frame>> dequesStubs(dataFormats_->numChannel(Process::kf) * setup_->numLayers());
+        vector<deque<FrameStub>> dequesStubs(dataFormats_->numChannel(Process::kf) * setup_->numLayers());
         vector<deque<FrameTrack>> dequesTracks(dataFormats_->numChannel(Process::kf));
         int i(0);
         for (const TTTrack<Ref_Phase2TrackerDigi_>& ttTrack : ttTracks) {
@@ -171,7 +171,7 @@ namespace trackerTFP {
             if (layerCounts[layerIdKF] == setup_->sfMaxStubsPerLayer())
               continue;
             layerCounts[layerIdKF]++;
-            deque<TTDTC::Frame>& stubs = dequesStubs[sectorPhi * setup_->numLayers() + layerIdKF];
+            deque<FrameStub>& stubs = dequesStubs[sectorPhi * setup_->numLayers() + layerIdKF];
             auto identical = [ttStubRef, ttTrack](const StubSF& stub){
               return (int)ttTrack.trackSeedType() == stub.trackId() && ttStubRef == stub.ttStubRef();
             };
@@ -186,9 +186,9 @@ namespace trackerTFP {
           const int size = *max_element(layerCounts.begin(), layerCounts.end());
           int layerIdKF(0);
           for (int layerCount : layerCounts) {
-            deque<TTDTC::Frame>& stubs = dequesStubs[sectorPhi * setup_->numLayers() + layerIdKF++];
+            deque<FrameStub>& stubs = dequesStubs[sectorPhi * setup_->numLayers() + layerIdKF++];
             const int nGaps = size - layerCount;
-            stubs.insert(stubs.end(), nGaps, TTDTC::Frame());
+            stubs.insert(stubs.end(), nGaps, FrameStub());
           }
           const TTBV& maybePattern = layerEncoding_->maybePattern(binEta, binZT, binCot);
           const TrackKFin track(*stubSF, TTTrackRef(handleTTTracks, i++), maybePattern);
@@ -205,11 +205,11 @@ namespace trackerTFP {
           streamAcceptedTracks[index] = StreamTrack(tracks.begin(), limitTracks);
           streamLostTracks[index] = StreamTrack(limitTracks, tracks.end());
           for (int l = 0; l < setup_->numLayers(); l++) {
-            deque<TTDTC::Frame>& stubs = dequesStubs[channel * setup_->numLayers() + l];
+            deque<FrameStub>& stubs = dequesStubs[channel * setup_->numLayers() + l];
             //const auto limitStubs = next(stubs.begin(), min((int)stubs.size(), enableTruncation_ ? setup_->numFrames() : 0));
             const auto limitStubs = next(stubs.begin(), min((int)stubs.size(), enableTruncation_ ? setup_->numFramesIO() : 0));
-            streamAcceptedStubs[index * setup_->numLayers() + l] = TTDTC::Stream(stubs.begin(), limitStubs);
-            streamLostStubs[index * setup_->numLayers() + l] = TTDTC::Stream(limitStubs, stubs.end());
+            streamAcceptedStubs[index * setup_->numLayers() + l] = StreamStub(stubs.begin(), limitStubs);
+            streamLostStubs[index * setup_->numLayers() + l] = StreamStub(limitStubs, stubs.end());
           }
         }
       }

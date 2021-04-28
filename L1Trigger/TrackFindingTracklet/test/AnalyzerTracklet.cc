@@ -161,7 +161,7 @@ namespace trackFindingTracklet {
     }
     //
     const TTTracks& ttTracks = *handle.product();
-    vector<TTTrackRefs> ttTrackRefsRegions(setup_->numRegions());
+    vector<vector<TTTrackRef>> ttTrackRefsRegions(setup_->numRegions());
     vector<int> nTTTracksRegions(setup_->numRegions(), 0);
     for (const TTTrack<Ref_Phase2TrackerDigi_>& ttTrack : ttTracks)
       nTTTracksRegions[ttTrack.phiSector()]++;
@@ -171,7 +171,7 @@ namespace trackFindingTracklet {
     for (const TTTrack<Ref_Phase2TrackerDigi_>& ttTrack : ttTracks)
       ttTrackRefsRegions[ttTrack.phiSector()].emplace_back(TTTrackRef(handle, i++));
     for (int region = 0; region < setup_->numRegions(); region++) {
-      const TTTrackRefs& ttTrackRefs = ttTrackRefsRegions[region];
+      const vector<TTTrackRef>& ttTrackRefs = ttTrackRefsRegions[region];
       const int nStubs = accumulate(ttTrackRefs.begin(), ttTrackRefs.end(), 0, [](int& sum, const TTTrackRef& ttTrackRef){ return sum += ttTrackRef->getStubRefs().size(); });
       const int nTracks = ttTrackRefs.size();
       hisChannel_->Fill(nTracks);

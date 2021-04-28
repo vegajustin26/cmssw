@@ -43,6 +43,7 @@
 
 using namespace std;
 using namespace edm;
+using namespace tt;
 
 namespace trackerDTC {
 
@@ -92,7 +93,7 @@ namespace trackerDTC {
     // analyze DTC products and find still reconstrucable TrackingParticles
     void analyzeStubs(const TTDTC*, const TTDTC*, const map<TTStubRef, set<TPPtr>>&, map<TPPtr, set<TTStubRef>>&);
     // fill stub related histograms
-    void analyzeStream(const TTDTC::Stream& stream, int region, int channel, int& sum, TH2F* th2f);
+    void analyzeStream(const StreamStub& stream, int region, int channel, int& sum, TH2F* th2f);
     // returns layerId [1-6, 11-15] of stub
     int layerId(const TTStubRef& ttStubRef) const;
     // analyze survived TPs
@@ -327,10 +328,10 @@ namespace trackerDTC {
       int nStubs(0);
       int nLost(0);
       for (int channel = 0; channel < setup_.numDTCsPerTFP(); channel++) {
-        const TTDTC::Stream& stream = accepted->stream(region, channel);
+        const StreamStub& stream = accepted->stream(region, channel);
         hisChannel_->Fill(stream.size());
         profChannel_->Fill(region * setup_.numDTCsPerTFP() + channel, stream.size());
-        for (const TTDTC::Frame& frame : stream) {
+        for (const FrameStub& frame : stream) {
           if (frame.first.isNull())
             continue;
           const auto it = mapStubsTPs.find(frame.first);
@@ -348,8 +349,8 @@ namespace trackerDTC {
   }
 
   // fill stub related histograms
-  void Analyzer::analyzeStream(const TTDTC::Stream& stream, int region, int channel, int& sum, TH2F* th2f) {
-    for (const TTDTC::Frame& frame : stream) {
+  void Analyzer::analyzeStream(const StreamStub& stream, int region, int channel, int& sum, TH2F* th2f) {
+    for (const FrameStub& frame : stream) {
       if (frame.first.isNull())
         continue;
       sum++;

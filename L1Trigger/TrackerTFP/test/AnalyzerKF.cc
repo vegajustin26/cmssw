@@ -55,11 +55,11 @@ namespace trackerTFP {
     void associate(const TTTracks& ttTracks, const StubAssociation* ass, set<TPPtr>& tps, int& sum, const vector<TH1F*>& his, TProfile* prof) const;
 
     // ED input token of accepted Tracks
-    EDGetTokenT<TTDTC::Streams> edGetTokenAcceptedStubs_;
+    EDGetTokenT<StreamsStub> edGetTokenAcceptedStubs_;
     // ED input token of accepted Stubs
     EDGetTokenT<StreamsTrack> edGetTokenAcceptedTracks_;
     // ED input token of lost Stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenLostStubs_;
+    EDGetTokenT<StreamsStub> edGetTokenLostStubs_;
     // ED input token of lost Tracks
     EDGetTokenT<StreamsTrack> edGetTokenLostTracks_;
     // ED input token of TTStubRef to selected TPPtr association
@@ -115,9 +115,9 @@ namespace trackerTFP {
     const string& branchAcceptedTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
     const string& branchLostStubs = iConfig.getParameter<string>("BranchLostStubs");
     const string& branchLostTracks = iConfig.getParameter<string>("BranchLostTracks");
-    edGetTokenAcceptedStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchAcceptedStubs));
+    edGetTokenAcceptedStubs_ = consumes<StreamsStub>(InputTag(label, branchAcceptedStubs));
     edGetTokenAcceptedTracks_ = consumes<StreamsTrack>(InputTag(label, branchAcceptedTracks));
-    edGetTokenLostStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchLostStubs));
+    edGetTokenLostStubs_ = consumes<StreamsStub>(InputTag(label, branchLostStubs));
     edGetTokenLostTracks_ = consumes<StreamsTrack>(InputTag(label, branchLostTracks));
     if (useMCTruth_) {
       const auto& inputTagSelecttion = iConfig.getParameter<InputTag>("InputTagSelection");
@@ -190,14 +190,14 @@ namespace trackerTFP {
       hisInv2R->Fill(tpPtr->charge() / tpPtr->pt() * setup_->invPtToDphi());
     };
     // read in kf products
-    Handle<TTDTC::Streams> handleAcceptedStubs;
-    iEvent.getByToken<TTDTC::Streams>(edGetTokenAcceptedStubs_, handleAcceptedStubs);
-    const TTDTC::Streams& acceptedStubs = *handleAcceptedStubs;
+    Handle<StreamsStub> handleAcceptedStubs;
+    iEvent.getByToken<StreamsStub>(edGetTokenAcceptedStubs_, handleAcceptedStubs);
+    const StreamsStub& acceptedStubs = *handleAcceptedStubs;
     Handle<StreamsTrack> handleAcceptedTracks;
     iEvent.getByToken<StreamsTrack>(edGetTokenAcceptedTracks_, handleAcceptedTracks);
-    Handle<TTDTC::Streams> handleLostStubs;
-    iEvent.getByToken<TTDTC::Streams>(edGetTokenLostStubs_, handleLostStubs);
-    const TTDTC::Streams& lostStubs = *handleLostStubs;
+    Handle<StreamsStub> handleLostStubs;
+    iEvent.getByToken<StreamsStub>(edGetTokenLostStubs_, handleLostStubs);
+    const StreamsStub& lostStubs = *handleLostStubs;
     Handle<StreamsTrack> handleLostTracks;
     iEvent.getByToken<StreamsTrack>(edGetTokenLostTracks_, handleLostTracks);
     // read in MCTruth
@@ -220,14 +220,14 @@ namespace trackerTFP {
     set<TPPtr> tpPtrsLost;
     int allMatched(0);
     int allTracks(0);
-    auto consume = [this](const StreamTrack& tracks, const TTDTC::Streams& streams, int channel, TTTracks& ttTracks) {
+    auto consume = [this](const StreamTrack& tracks, const StreamsStub& streams, int channel, TTTracks& ttTracks) {
       const int offset = channel * setup_->numLayers();
       int pos(0);
       for (const FrameTrack& frameTrack : tracks) {
         vector<StubKF> stubs;
         stubs.reserve(setup_->numLayers());
         for (int layer = 0; layer < setup_->numLayers(); layer++) {
-          const TTDTC::Frame& frameStub = streams[offset + layer][pos];
+          const FrameStub& frameStub = streams[offset + layer][pos];
           if (frameStub.first.isNonnull())
             stubs.emplace_back(frameStub, dataFormats_, layer);
         }

@@ -10,7 +10,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/Common/interface/Handle.h"
 
-#include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
@@ -23,6 +22,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -42,11 +42,11 @@ namespace trackerTFP {
     virtual void endJob() {}
 
     // ED input token of mht stubs
-    EDGetTokenT<TTDTC::Streams> edGetToken_;
+    EDGetTokenT<StreamsStub> edGetToken_;
     // ED output token for accepted stubs
-    EDPutTokenT<TTDTC::Streams> edPutTokenAccepted_;
+    EDPutTokenT<StreamsStub> edPutTokenAccepted_;
     // ED output token for lost stubs
-    EDPutTokenT<TTDTC::Streams> edPutTokenLost_;
+    EDPutTokenT<StreamsStub> edPutTokenLost_;
     // Setup token
     ESGetToken<Setup, SetupRcd> esGetTokenSetup_;
     // DataFormats token
@@ -57,7 +57,7 @@ namespace trackerTFP {
     ParameterSet iConfig_;
     // helper class to store configurations
     const Setup* setup_;
-    // helper class to extract structured data from TTDTC::Frames
+    // helper class to extract structured data from tt::Frames
     const DataFormats* dataFormats_;
     //
     const LayerEncoding* layerEncoding_;
@@ -70,9 +70,9 @@ namespace trackerTFP {
     const string& branchAccepted = iConfig.getParameter<string>("BranchAcceptedStubs");
     const string& branchLost = iConfig.getParameter<string>("BranchLostStubs");
     // book in- and output ED products
-    edGetToken_ = consumes<TTDTC::Streams>(InputTag(label, branchAccepted));
-    edPutTokenAccepted_ = produces<TTDTC::Streams>(branchAccepted);
-    edPutTokenLost_ = produces<TTDTC::Streams>(branchLost);
+    edGetToken_ = consumes<StreamsStub>(InputTag(label, branchAccepted));
+    edPutTokenAccepted_ = produces<StreamsStub>(branchAccepted);
+    edPutTokenLost_ = produces<StreamsStub>(branchLost);
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
     esGetTokenDataFormats_ = esConsumes<DataFormats, DataFormatsRcd, Transition::BeginRun>();
@@ -91,7 +91,7 @@ namespace trackerTFP {
     // check process history if desired
     if (iConfig_.getParameter<bool>("CheckHistory"))
       setup_->checkHistory(iRun.processHistory());
-    // helper class to extract structured data from TTDTC::Frames
+    // helper class to extract structured data from tt::Frames
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
     //
     layerEncoding_ = &iSetup.getData(esGetTokenLayerEncoding_);
@@ -99,13 +99,13 @@ namespace trackerTFP {
 
   void ProducerSF::produce(Event& iEvent, const EventSetup& iSetup) {
     // empty SF products
-    TTDTC::Streams accepted(dataFormats_->numStreams(Process::mht));
-    TTDTC::Streams lost(dataFormats_->numStreams(Process::mht));
+    StreamsStub accepted(dataFormats_->numStreams(Process::mht));
+    StreamsStub lost(dataFormats_->numStreams(Process::mht));
     // read in MHT Product and produce SF product
     if (setup_->configurationSupported()) {
-      Handle<TTDTC::Streams> handle;
-      iEvent.getByToken<TTDTC::Streams>(edGetToken_, handle);
-      const TTDTC::Streams& streams = *handle.product();
+      Handle<StreamsStub> handle;
+      iEvent.getByToken<StreamsStub>(edGetToken_, handle);
+      const StreamsStub& streams = *handle.product();
       for (int region = 0; region < setup_->numRegions(); region++) {
         // object to find in a region finer rough candidates in r-z
         SeedFilter sf(iConfig_, setup_, dataFormats_, layerEncoding_, region);

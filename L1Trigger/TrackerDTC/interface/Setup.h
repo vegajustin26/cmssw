@@ -80,7 +80,7 @@ namespace trackerDTC {
     // TrackerTopology
     const TrackerTopology* trackerTopology() const { return trackerTopology_; }
     // returns bit accurate position of a stub from a given tfp identifier region [0-8] channel [0-47]
-    GlobalPoint stubPos(bool hybrid, const TTDTC::Frame& frame, int tfpRegion, int tfpChannel) const;
+    GlobalPoint stubPos(bool hybrid, const tt::FrameStub& frame, int tfpRegion, int tfpChannel) const;
     // returns global TTStub position
     GlobalPoint stubPos(const TTStubRef& ttStubRef) const;
     // empty trackerDTC EDProduct

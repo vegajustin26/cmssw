@@ -7,6 +7,7 @@
 
 using namespace std;
 using namespace edm;
+using namespace tt;
 
 namespace trackerDTC {
 
@@ -150,10 +151,10 @@ namespace trackerDTC {
   void DTC::produce(const Stubss& stubss, TTDTC& product) {
     int channel(0);
     auto toFrame = [&channel](Stub* stub) {
-      return stub ? make_pair(stub->ttStubRef(), stub->frame(channel)) : TTDTC::Frame();
+      return stub ? make_pair(stub->ttStubRef(), stub->frame(channel)) : FrameStub();
     };
     for (const Stubs& stubs : stubss) {
-      TTDTC::Stream stream;
+      StreamStub stream;
       stream.reserve(stubs.size());
       transform(stubs.begin(), stubs.end(), back_inserter(stream), toFrame);
       product.setStream(region_, board_, channel++, stream);

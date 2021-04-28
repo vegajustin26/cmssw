@@ -9,6 +9,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -21,15 +22,15 @@ namespace trackerTFP {
 
   // read in and organize input product (fill vector input_)
   void GeometricProcessor::consume(const TTDTC& ttDTC) {
-    auto validFrame = [](int& sum, const TTDTC::Frame& frame){ return sum += frame.first.isNonnull() ? 1 : 0; };
+    auto validFrame = [](int& sum, const FrameStub& frame){ return sum += frame.first.isNonnull() ? 1 : 0; };
     int nStubsPP(0);
     for (int channel = 0; channel < dataFormats_->numChannel(Process::pp); channel++) {
-      const TTDTC::Stream& stream = ttDTC.stream(region_, channel);
+      const StreamStub& stream = ttDTC.stream(region_, channel);
       nStubsPP += accumulate(stream.begin(), stream.end(), 0, validFrame);
     }
     stubsPP_.reserve(nStubsPP);
     for (int channel = 0; channel < dataFormats_->numChannel(Process::pp); channel++) {
-      for (const TTDTC::Frame& frame : ttDTC.stream(region_, channel)) {
+      for (const FrameStub& frame : ttDTC.stream(region_, channel)) {
         StubPP* stub = nullptr;
         if (frame.first.isNonnull()) {
           stubsPP_.emplace_back(frame, dataFormats_);
@@ -54,7 +55,7 @@ namespace trackerTFP {
   }
 
   // fill output products
-  void GeometricProcessor::produce(TTDTC::Streams& accepted, TTDTC::Streams& lost) {
+  void GeometricProcessor::produce(StreamsStub& accepted, StreamsStub& lost) {
     for (int sector = 0; sector < dataFormats_->numChannel(Process::gp); sector++) {
       vector<deque<StubPP*>>& inputs = input_[sector];
       vector<deque<StubGP*>> stacks(dataFormats_->numChannel(Process::pp));
@@ -103,8 +104,8 @@ namespace trackerTFP {
       for(auto it = acceptedSector.end(); it != acceptedSector.begin();)
         it = (*--it) ? acceptedSector.begin() : acceptedSector.erase(it);
       // fill products
-      auto put = [](const vector<StubGP*>& stubs, TTDTC::Stream& stream) {
-        auto toFrame = [](StubGP* stub){ return stub ? stub->frame() : TTDTC::Frame(); };
+      auto put = [](const vector<StubGP*>& stubs, StreamStub& stream) {
+        auto toFrame = [](StubGP* stub){ return stub ? stub->frame() : FrameStub(); };
         stream.reserve(stubs.size());
         transform(stubs.begin(), stubs.end(), back_inserter(stream), toFrame);
       };

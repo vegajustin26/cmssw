@@ -2,6 +2,7 @@
 #define L1Trigger_TrackerDTC_Stub_h
 
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "SimTracker/TrackTriggerAssociation/interface/TTTypes.h"
 
 #include <utility>
 #include <vector>
@@ -21,7 +22,7 @@ namespace trackerDTC {
     // stub bend in quarter pitch units
     int bend() const { return bend_; }
     // bit accurate representation of Stub
-    TTDTC::BV frame(int region) const;
+    tt::Frame frame(int region) const;
     // checks stubs region assignment
     bool inRegion(int region) const;
 
@@ -29,9 +30,9 @@ namespace trackerDTC {
     // truncates double precision to f/w integer equivalent
     double digi(double value, double precision) const;
     // 64 bit stub in hybrid data format
-    TTDTC::BV formatHybrid(int region) const;
+    tt::Frame formatHybrid(int region) const;
     // 64 bit stub in tmtt data format
-    TTDTC::BV formatTMTT(int region) const;
+    tt::Frame formatTMTT(int region) const;
 
     // stores, calculates and provides run-time constants
     const Setup* setup_;

@@ -8,6 +8,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -23,7 +24,7 @@ namespace trackerTFP {
     numRegions_(setup->numRegions()) {}
 
   // plays input through modelsim and compares result with output
-  void Demonstrator::analyze(const vector<vector<TTDTC::BV>>& input, const vector<vector<TTDTC::BV>>& output) const {
+  void Demonstrator::analyze(const vector<vector<Frame>>& input, const vector<vector<Frame>>& output) const {
     stringstream ss;
     // converts input into stringstream
     convert(input, ss);
@@ -36,7 +37,7 @@ namespace trackerTFP {
   }
 
   // converts streams of bv into stringstream
-  void Demonstrator::convert(const vector<vector<TTDTC::BV>>& bits, stringstream& ss) const {
+  void Demonstrator::convert(const vector<vector<Frame>>& bits, stringstream& ss) const {
     // reset ss
     ss.str("");
     ss.clear();
@@ -53,8 +54,8 @@ namespace trackerTFP {
         // write one frame for all channel
         ss << this->frame(nFrame);
         for (int channel = 0; channel < numChannel; channel++) {
-          const vector<TTDTC::BV>& bvs = bits[offset + channel];
-          ss << (frame < (int)bvs.size() ? hex(bvs[frame]) : hex(TTDTC::BV()));
+          const vector<Frame>& bvs = bits[offset + channel];
+          ss << (frame < (int)bvs.size() ? hex(bvs[frame]) : hex(Frame()));
         }
         ss << endl;
       }
@@ -141,7 +142,7 @@ namespace trackerTFP {
   }
 
   // converts bv into hex
-  string Demonstrator::hex(const TTDTC::BV& bv) const {
+  string Demonstrator::hex(const Frame& bv) const {
     stringstream ss;
     ss << " 1v" << setfill('0') << setw(TTBV::S_ / 4) << std::hex << bv.to_ullong();
     return ss.str();

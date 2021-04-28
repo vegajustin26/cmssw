@@ -20,6 +20,7 @@ using namespace std;
 using namespace edm;
 using namespace trackerDTC;
 using namespace trackerTFP;
+using namespace tt;
 
 namespace trackFindingTracklet {
 
@@ -39,7 +40,7 @@ namespace trackFindingTracklet {
     void endJob() {}
 
     // ED input token of kf stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenStubs_;
+    EDGetTokenT<StreamsStub> edGetTokenStubs_;
     // ED input token of kf tracks
     EDGetTokenT<StreamsTrack> edGetTokenTracks_;
     // ED output token for TTTracks
@@ -63,7 +64,7 @@ namespace trackFindingTracklet {
     const string& branchStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
     const string& branchTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
     // book in- and output ED products
-    edGetTokenStubs_ = consumes<TTDTC::Streams>(InputTag(label, branchStubs));
+    edGetTokenStubs_ = consumes<StreamsStub>(InputTag(label, branchStubs));
     edGetTokenTracks_ = consumes<StreamsTrack>(InputTag(label, branchTracks));
     edPutToken_ = produces<TTTracks>(branchTracks);
     // book ES products
@@ -91,9 +92,9 @@ namespace trackFindingTracklet {
     TTTracks ttTracks;
     // read in KF Product and produce KFout product
     if (setup_->configurationSupported()) {
-      Handle<TTDTC::Streams> handleStubs;
-      iEvent.getByToken<TTDTC::Streams>(edGetTokenStubs_, handleStubs);
-      const TTDTC::Streams& streamsStubs = *handleStubs.product();
+      Handle<StreamsStub> handleStubs;
+      iEvent.getByToken<StreamsStub>(edGetTokenStubs_, handleStubs);
+      const StreamsStub& streamsStubs = *handleStubs.product();
       Handle<StreamsTrack> handleTracks;
       iEvent.getByToken<StreamsTrack>(edGetTokenTracks_, handleTracks);
       const StreamsTrack& streamsTracks = *handleTracks.product();
@@ -113,7 +114,7 @@ namespace trackFindingTracklet {
           vector<StubKF> stubs;
           stubs.reserve(setup_->numLayers());
           for (int layer = 0; layer < setup_->numLayers(); layer++) {
-            const TTDTC::Frame& frameStub = streamsStubs[offset + layer][iTrk];
+            const FrameStub& frameStub = streamsStubs[offset + layer][iTrk];
             if (frameStub.first.isNonnull())
               stubs.emplace_back(frameStub, dataFormats_, layer);
           }

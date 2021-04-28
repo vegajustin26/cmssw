@@ -3,6 +3,7 @@
 
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
+#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 
 #include <vector>
 #include <set>
@@ -17,9 +18,9 @@ namespace trackerTFP {
     ~MiniHoughTransform(){}
 
     // read in and organize input product (fill vector input_)
-    void consume(const TTDTC::Streams& streams);
+    void consume(const tt::StreamsStub& streams);
     // fill output products
-    void produce(TTDTC::Streams& accepted, TTDTC::Streams& lost);
+    void produce(tt::StreamsStub& accepted, tt::StreamsStub& lost);
 
   private:
     // remove and return first element of deque, returns nullptr if empty
@@ -28,7 +29,7 @@ namespace trackerTFP {
     // perform finer pattern recognition per track
     void fill(int channel, const std::vector<StubHT*>& input, std::vector<std::deque<StubMHT*>>& output);
     // Static load balancing of inputs: mux 4 streams to 1 stream
-    void slb(std::vector<std::deque<StubMHT*>>& inputs, std::vector<StubMHT*>& accepted, TTDTC::Stream& lost) const;
+    void slb(std::vector<std::deque<StubMHT*>>& inputs, std::vector<StubMHT*>& accepted, tt::StreamStub& lost) const;
     // Dynamic load balancing of inputs: swapping parts of streams to balance the amount of tracks per stream
     void dlb(std::vector<std::vector<StubMHT*>>& streams) const;
 

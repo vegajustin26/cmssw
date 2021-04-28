@@ -12,6 +12,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -27,19 +28,19 @@ namespace trackerTFP {
     input_(dataFormats_->numChannel(Process::mht)) {}
 
   // read in and organize input product
-  void SeedFilter::consume(const TTDTC::Streams& streams) {
-    auto valid = [](int& sum, const TTDTC::Frame& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
+  void SeedFilter::consume(const StreamsStub& streams) {
+    auto valid = [](int& sum, const FrameStub& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
     int nStubs(0);
     for (int channel = 0; channel < dataFormats_->numChannel(Process::mht); channel++) {
-      const TTDTC::Stream& stream = streams[region_ * dataFormats_->numChannel(Process::mht) + channel];
+      const StreamStub& stream = streams[region_ * dataFormats_->numChannel(Process::mht) + channel];
       nStubs += accumulate(stream.begin(), stream.end(), 0, valid);
     }
     stubsMHT_.reserve(nStubs);
     for (int channel = 0; channel < dataFormats_->numChannel(Process::mht); channel++) {
-      const TTDTC::Stream& stream = streams[region_ * dataFormats_->numChannel(Process::mht) + channel];
+      const StreamStub& stream = streams[region_ * dataFormats_->numChannel(Process::mht) + channel];
       vector<StubMHT*>& stubs = input_[channel];
       stubs.reserve(stream.size());
-      for (const TTDTC::Frame& frame : stream) {
+      for (const FrameStub& frame : stream) {
         StubMHT* stub = nullptr;
         if (frame.first.isNonnull()) {
           stubsMHT_.emplace_back(frame, dataFormats_);
@@ -51,7 +52,7 @@ namespace trackerTFP {
   }
 
   // fill output products
-  void SeedFilter::produce(TTDTC::Streams& accepted, TTDTC::Streams& lost) {
+  void SeedFilter::produce(StreamsStub& accepted, StreamsStub& lost) {
     auto kill = [this](const vector<StubSF*>& stubs) {
       TTBV hitPattern(0, setup_->numLayers());
       set<int> psLayers;
@@ -100,8 +101,8 @@ namespace trackerTFP {
     static const vector<pair<int, int>> seedingLayers = {{1, 2}, {1, 3}, {2, 3}, {1, 11}, {2, 11}, {1, 12}, {2, 12}, {11, 12}};
     const double dT = setup_->chosenRofPhi() - setup_->chosenRofZ();
     for (int channel = 0; channel < dataFormats_->numChannel(Process::mht); channel++) {
-      TTDTC::Stream& acceptedStream = accepted[region_ * dataFormats_->numChannel(Process::mht) + channel];
-      TTDTC::Stream& lostStream = lost[region_ * dataFormats_->numChannel(Process::mht) + channel];
+      StreamStub& acceptedStream = accepted[region_ * dataFormats_->numChannel(Process::mht) + channel];
+      StreamStub& lostStream = lost[region_ * dataFormats_->numChannel(Process::mht) + channel];
       deque<StubSF*> output;
       vector<StubMHT*>& stubs = input_[channel];
       stubs.erase(remove(stubs.begin(), stubs.end(), nullptr), stubs.end());

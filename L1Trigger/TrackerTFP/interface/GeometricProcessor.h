@@ -19,7 +19,7 @@ namespace trackerTFP {
     // read in and organize input product (fill vector input_)
     void consume(const TTDTC& ttDTC);
     // fill output products
-    void produce(TTDTC::Streams& accepted, TTDTC::Streams& lost);
+    void produce(tt::StreamsStub& accepted, tt::StreamsStub& lost);
 
   private:
     // remove and return first element of deque, returns nullptr if empty

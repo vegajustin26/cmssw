@@ -12,6 +12,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -26,19 +27,19 @@ namespace trackerTFP {
   {}
 
   // read in and organize input product (fill vector input_)
-  void HoughTransform::consume(const TTDTC::Streams& streams) {
+  void HoughTransform::consume(const StreamsStub& streams) {
     const int offset = region_ * dataFormats_->numChannel(Process::gp);
-    auto validFrame = [](int& sum, const TTDTC::Frame& frame){ return sum += frame.first.isNonnull() ? 1 : 0; };
+    auto validFrame = [](int& sum, const FrameStub& frame){ return sum += frame.first.isNonnull() ? 1 : 0; };
     int nStubsGP(0);
     for (int sector = 0; sector < dataFormats_->numChannel(Process::gp); sector++) {
-      const TTDTC::Stream& stream = streams[offset + sector];
+      const StreamStub& stream = streams[offset + sector];
       nStubsGP += accumulate(stream.begin(), stream.end(), 0, validFrame);
     }
     stubsGP_.reserve(nStubsGP);
     for (int sector = 0; sector < dataFormats_->numChannel(Process::gp); sector++) {
       const int sectorPhi = sector % setup_->numSectorsPhi();
       const int sectorEta = sector / setup_->numSectorsPhi();
-      for (const TTDTC::Frame& frame : streams[offset + sector]) {
+      for (const FrameStub& frame : streams[offset + sector]) {
         // Store input stubs in vector, so rest of HT algo can work with pointers to them (saves CPU)
         StubGP* stub = nullptr;
         if (frame.first.isNonnull()) {
@@ -63,7 +64,7 @@ namespace trackerTFP {
   }
 
   // fill output products
-  void HoughTransform::produce(TTDTC::Streams& accepted, TTDTC::Streams& lost) {
+  void HoughTransform::produce(StreamsStub& accepted, StreamsStub& lost) {
     for (int binInv2R = 0; binInv2R < dataFormats_->numChannel(Process::ht); binInv2R++) {
       const int inv2R = inv2R_.toSigned(binInv2R);
       deque<StubHT*> acceptedAll;
@@ -86,10 +87,10 @@ namespace trackerTFP {
       copy_if(limit, acceptedAll.end(), back_inserter(lostAll), [](StubHT* stub){ return stub; });
       acceptedAll.erase(limit, acceptedAll.end());
       // store found tracks
-      auto put = [](const deque<StubHT*>& stubs, TTDTC::Stream& stream){
+      auto put = [](const deque<StubHT*>& stubs, StreamStub& stream){
         stream.reserve(stubs.size());
         for (StubHT* stub : stubs)
-          stream.emplace_back(stub ? stub->frame() : TTDTC::Frame());
+          stream.emplace_back(stub ? stub->frame() : FrameStub());
       };
       const int offset = region_ * dataFormats_->numChannel(Process::ht);
       put(acceptedAll, accepted[offset + binInv2R]);

@@ -2,6 +2,7 @@
 #include "FWCore/Utilities/interface/Exception.h"
 #include "DataFormats/Provenance/interface/ProcessConfiguration.h"
 #include "DataFormats/L1TrackTrigger/interface/TTBV.h"
+#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 
 #include <cmath>
 #include <algorithm>
@@ -13,6 +14,7 @@
 
 using namespace std;
 using namespace edm;
+using namespace tt;
 
 namespace trackerDTC {
 
@@ -730,7 +732,7 @@ namespace trackerDTC {
   }
 
   // returns bit accurate position of a stub from a given tfp identifier region [0-8] channel [0-47]
-  GlobalPoint Setup::stubPos(bool hybrid, const TTDTC::Frame& frame, int tfpRegion, int tfpChannel) const {
+  GlobalPoint Setup::stubPos(bool hybrid, const FrameStub& frame, int tfpRegion, int tfpChannel) const {
     GlobalPoint p;
     if (frame.first.isNull())
       return p;

@@ -194,16 +194,16 @@ namespace trackerTFP {
     bool hybrid() const { return iConfig_.getParameter<bool>("UseHybrid"); }
     // converts bits to ntuple of variables
     template<typename ...Ts>
-    void convertStub(const TTDTC::BV& bv, std::tuple<Ts...>& data, Process p) const;
+    void convertStub(const tt::Frame& bv, std::tuple<Ts...>& data, Process p) const;
     // converts ntuple of variables to bits
     template<typename... Ts>
-    void convertStub(const std::tuple<Ts...>& data, TTDTC::BV& bv, Process p) const;
+    void convertStub(const std::tuple<Ts...>& data, tt::Frame& bv, Process p) const;
     // converts bits to ntuple of variables
     template<typename ...Ts>
-    void convertTrack(const TTDTC::BV& bv, std::tuple<Ts...>& data, Process p) const;
+    void convertTrack(const tt::Frame& bv, std::tuple<Ts...>& data, Process p) const;
     // converts ntuple of variables to bits
     template<typename... Ts>
-    void convertTrack(const std::tuple<Ts...>& data, TTDTC::BV& bv, Process p) const;
+    void convertTrack(const std::tuple<Ts...>& data, tt::Frame& bv, Process p) const;
     // access to run-time constants
     const trackerDTC::Setup* setup() const { return setup_; }
     // number of bits being used for specific variable flavour
@@ -277,7 +277,7 @@ namespace trackerTFP {
   class Stub {
   public:
     // construct Stub from Frame
-    Stub(const TTDTC::Frame& frame, const DataFormats* dataFormats, Process p);
+    Stub(const tt::FrameStub& frame, const DataFormats* dataFormats, Process p);
     template<typename ...Others>
     // construct Stub from other Stub
     Stub(const Stub<Others...>& stub, Ts... data);
@@ -292,11 +292,11 @@ namespace trackerTFP {
     // stub flavour
     Process p() const { return p_; }
     // acess to frame
-    const TTDTC::Frame& frame() const { return frame_; }
+    const tt::FrameStub& frame() const { return frame_; }
     // access to TTStubRef
     const TTStubRef& ttStubRef() const { return frame_.first; }
     // access to bitvector
-    const TTDTC::BV& bv() const { return frame_.second; }
+    const tt::Frame& bv() const { return frame_.second; }
     // id of collection this stub belongs to
     int trackId() const { return trackId_; }
   protected:
@@ -311,7 +311,7 @@ namespace trackerTFP {
     // stub flavour
     Process p_;
     // underlying TTStubRef and bitvector
-    TTDTC::Frame frame_;
+    tt::FrameStub frame_;
     // ntuple of variables this stub is assemled of
     std::tuple<Ts...> data_;
     // id of collection this stub belongs to
@@ -322,7 +322,7 @@ namespace trackerTFP {
   class StubPP : public Stub<double, double, double, int, TTBV, int, int, int, int> {
   public:
     // construct StubPP from Frame
-    StubPP(const TTDTC::Frame& frame, const DataFormats* dataFormats);
+    StubPP(const tt::FrameStub& frame, const DataFormats* dataFormats);
     ~StubPP(){}
     // true if stub belongs to given sector
     bool inSector(int sector) const { return sectors_[sector]; }
@@ -355,7 +355,7 @@ namespace trackerTFP {
   class StubGP : public Stub<double, double, double, int, int, int> {
   public:
     // construct StubGP from Frame
-    StubGP(const TTDTC::Frame& frame, const DataFormats* dataFormats, int sectorPhi, int sectorEta);
+    StubGP(const tt::FrameStub& frame, const DataFormats* dataFormats, int sectorPhi, int sectorEta);
     // construct StubGO from StubPP
     StubGP(const StubPP& stub, int sectorPhi, int sectorEta);
     ~StubGP(){}
@@ -392,7 +392,7 @@ namespace trackerTFP {
   class StubHT : public Stub<double, double, double, int, int, int, int> {
   public:
     // construct StubHT from Frame
-    StubHT(const TTDTC::Frame& frame, const DataFormats* dataFormats, int inv2R);
+    StubHT(const tt::FrameStub& frame, const DataFormats* dataFormats, int inv2R);
     // construct StubHT from StubGP and HT cell assignment
     StubHT(const StubGP& stub, int phiT, int inv2R);
     ~StubHT(){}
@@ -423,7 +423,7 @@ namespace trackerTFP {
   class StubMHT : public Stub<double, double, double, int, int, int, int, int> {
   public:
     // construct StubMHT from Frame
-    StubMHT(const TTDTC::Frame& frame, const DataFormats* dataFormats);
+    StubMHT(const tt::FrameStub& frame, const DataFormats* dataFormats);
     // construct StubMHT from StubHT and MHT cell assignment
     StubMHT(const StubHT& stub, int phiT, int inv2R);
     ~StubMHT(){}
@@ -452,7 +452,7 @@ namespace trackerTFP {
   class StubSF : public Stub<double, double, double, int, int, int, int, int, int, int> {
   public:
     // construct StubSF from Frame
-    StubSF(const TTDTC::Frame& frame, const DataFormats* dataFormats);
+    StubSF(const tt::FrameStub& frame, const DataFormats* dataFormats);
     // construct StubSF from StubMHT
     StubSF(const StubMHT& stub, int layer, int zT, int cot, double chi2);
     ~StubSF(){}
@@ -489,7 +489,7 @@ namespace trackerTFP {
   class StubKFin : public Stub<double, double, double, double, double> {
   public:
     // construct StubKFin from Frame
-    StubKFin(const TTDTC::Frame& frame, const DataFormats* dataFormats, int layer);
+    StubKFin(const tt::FrameStub& frame, const DataFormats* dataFormats, int layer);
     // construct StubKFin from StubSF
     StubKFin(const StubSF& stub, double dPhi, double dZ, int layer);
     // construct StubKFin from TTStubRef
@@ -516,7 +516,7 @@ namespace trackerTFP {
   class StubKF : public Stub<double, double, double, double, double> {
   public:
     // construct StubKF from Frame
-    StubKF(const TTDTC::Frame& frame, const DataFormats* dataFormats, int layer);
+    StubKF(const tt::FrameStub& frame, const DataFormats* dataFormats, int layer);
     // construct StubKF from StubKFin
     StubKF(const StubKFin& stub, double inv2R, double phiT, double cot, double zT);
     ~StubKF(){}
@@ -542,7 +542,7 @@ namespace trackerTFP {
   class Track {
   public:
     // construct Track from Frame
-    Track(const FrameTrack& frame, const DataFormats* dataFormats, Process p);
+    Track(const tt::FrameTrack& frame, const DataFormats* dataFormats, Process p);
     // construct Track from other Track
     template<typename ...Others>
     Track(const Track<Others...>& track, Ts... data);
@@ -559,11 +559,11 @@ namespace trackerTFP {
     // track flavour
     Process p() const { return p_; }
     // acces to frame
-    const FrameTrack& frame() const { return frame_; }
+    const tt::FrameTrack& frame() const { return frame_; }
     // access to TTTrackRef
     const TTTrackRef& ttTrackRef() const { return frame_.first; }
     // access to bitvector
-    const TTDTC::BV& bv() const { return frame_.second; }
+    const tt::Frame& bv() const { return frame_.second; }
     // access to ntuple of variables this track is assemled of
     const std::tuple<Ts...>& data() const { return data_; }
   protected:
@@ -582,7 +582,7 @@ namespace trackerTFP {
     // track flavour
     Process p_;
     // underlying TTTrackRef and bitvector
-    FrameTrack frame_;
+    tt::FrameTrack frame_;
     // ntuple of variables this track is assemled of
     std::tuple<Ts...> data_;
   };
@@ -590,7 +590,7 @@ namespace trackerTFP {
   class TrackKFin : public Track<TTBV, int, int, double, double, double, double> {
   public:
     // construct TrackKFin from Frame
-    TrackKFin(const FrameTrack& frame, const DataFormats* dataFormats, const std::vector<StubKFin*>& stubs);
+    TrackKFin(const tt::FrameTrack& frame, const DataFormats* dataFormats, const std::vector<StubKFin*>& stubs);
     // construct TrackKFin from StubKFin
     TrackKFin(const StubSF& stub, const TTTrackRef& ttTrackRef, const TTBV& maybePattern);
     // construct TrackKFin from TTTrackRef
@@ -637,7 +637,7 @@ namespace trackerTFP {
   class TrackKF : public Track<int, int, int, double, double, double, double> {
   public:
     // construct TrackKF from Frame
-    TrackKF(const FrameTrack& frame, const DataFormats* dataFormats);
+    TrackKF(const tt::FrameTrack& frame, const DataFormats* dataFormats);
     // construct TrackKF from TrackKFKFin
     TrackKF(const TrackKFin& track, double phiT, double inv2R, double zT, double cot);
     ~TrackKF(){}
@@ -664,7 +664,7 @@ namespace trackerTFP {
   class TrackDR : public Track<double, double, double, double> {
   public:
     // construct TrackDR from Frame
-    TrackDR(const FrameTrack& frame, const DataFormats* dataFormats);
+    TrackDR(const tt::FrameTrack& frame, const DataFormats* dataFormats);
     // construct TrackDR from TrackKF
     TrackDR(const TrackKF& track);
     ~TrackDR(){}

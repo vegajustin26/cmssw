@@ -4,6 +4,7 @@
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
 #include "L1Trigger/TrackerTFP/interface/LayerEncoding.h"
+#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 
 #include <vector>
 #include <deque>
@@ -17,9 +18,9 @@ namespace trackerTFP {
     ~SeedFilter(){}
 
     // read in and organize input product
-    void consume(const TTDTC::Streams& streams);
+    void consume(const tt::StreamsStub& streams);
     // fill output products
-    void produce(TTDTC::Streams& accepted, TTDTC::Streams& lost);
+    void produce(tt::StreamsStub& accepted, tt::StreamsStub& lost);
 
   private:
     // stub layerId (barrel: 1-6, endcap: 11-15)

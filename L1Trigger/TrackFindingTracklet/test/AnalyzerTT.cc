@@ -40,8 +40,8 @@ namespace trackFindingTracklet {
 
   private:
 
-    // ED input token of TTTrackMap
-    EDGetTokenT<TTTrackMap> edGetTokenTTTrackMap_;
+    // ED input token of TTTrackRefMap
+    EDGetTokenT<TTTrackRefMap> edGetTokenTTTrackMap_;
     // ED input token of TTStubRef to selected TPPtr association
     EDGetTokenT<StubAssociation> edGetTokenStubAssociation_;
     // Setup token
@@ -68,7 +68,7 @@ namespace trackFindingTracklet {
     const auto& label = iConfig.getParameter<string>("LabelAS");
     const auto& branch = iConfig.getParameter<string>("BranchAcceptedTracks");
     const auto& inputTag = iConfig.getParameter<InputTag>("InputTagSelection");
-    edGetTokenTTTrackMap_ = consumes<TTTrackMap>(InputTag(label, branch));
+    edGetTokenTTTrackMap_ = consumes<TTTrackRefMap>(InputTag(label, branch));
     edGetTokenStubAssociation_ = consumes<StubAssociation>(inputTag);
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
@@ -94,8 +94,8 @@ namespace trackFindingTracklet {
   }
 
   void AnalyzerTT::analyze(const Event& iEvent, const EventSetup& iSetup) {
-    Handle<TTTrackMap> handleTTTrackMap;
-    iEvent.getByToken<TTTrackMap>(edGetTokenTTTrackMap_, handleTTTrackMap);
+    Handle<TTTrackRefMap> handleTTTrackMap;
+    iEvent.getByToken<TTTrackRefMap>(edGetTokenTTTrackMap_, handleTTTrackMap);
     Handle<StubAssociation> handleStubAssociation;
     iEvent.getByToken<StubAssociation>(edGetTokenStubAssociation_, handleStubAssociation);
     for (const pair<TTTrackRef, TTTrackRef>& p : *handleTTTrackMap) {

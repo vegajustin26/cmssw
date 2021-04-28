@@ -13,6 +13,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -95,7 +96,7 @@ namespace trackerTFP {
 
   // converts bits to ntuple of variables
   template<typename ...Ts>
-  void DataFormats::convertStub(const TTDTC::BV& bv, tuple<Ts...>& data, Process p) const {
+  void DataFormats::convertStub(const Frame& bv, tuple<Ts...>& data, Process p) const {
     TTBV ttBV(bv);
     extractStub(ttBV, data, p);
   }
@@ -111,7 +112,7 @@ namespace trackerTFP {
 
   // converts ntuple of variables to bits
   template<typename... Ts>
-  void DataFormats::convertStub(const std::tuple<Ts...>& data, TTDTC::BV& bv, Process p) const {
+  void DataFormats::convertStub(const std::tuple<Ts...>& data, Frame& bv, Process p) const {
     TTBV ttBV(1, numUnusedBitsStubs_[+p]);
     attachStub(data, ttBV, p);
     bv = ttBV.bs();
@@ -128,7 +129,7 @@ namespace trackerTFP {
 
   // converts bits to ntuple of variables
   template<typename ...Ts>
-  void DataFormats::convertTrack(const TTDTC::BV& bv, tuple<Ts...>& data, Process p) const {
+  void DataFormats::convertTrack(const Frame& bv, tuple<Ts...>& data, Process p) const {
     TTBV ttBV(bv);
     extractTrack(ttBV, data, p);
   }
@@ -144,7 +145,7 @@ namespace trackerTFP {
 
   // converts ntuple of variables to bits
   template<typename... Ts>
-  void DataFormats::convertTrack(const std::tuple<Ts...>& data, TTDTC::BV& bv, Process p) const {
+  void DataFormats::convertTrack(const std::tuple<Ts...>& data, Frame& bv, Process p) const {
     TTBV ttBV(1, numUnusedBitsTracks_[+p]);
     attachTrack(data, ttBV, p);
     bv = ttBV.bs();
@@ -161,7 +162,7 @@ namespace trackerTFP {
 
   // construct Stub from Frame
   template<typename ...Ts>
-  Stub<Ts...>::Stub(const TTDTC::Frame& frame, const DataFormats* dataFormats, Process p) :
+  Stub<Ts...>::Stub(const FrameStub& frame, const DataFormats* dataFormats, Process p) :
     dataFormats_(dataFormats),
     p_(p),
     frame_(frame),
@@ -176,7 +177,7 @@ namespace trackerTFP {
   Stub<Ts...>::Stub(const Stub<Others...>& stub, Ts... data) :
     dataFormats_(stub.dataFormats()),
     p_(++stub.p()),
-    frame_(stub.frame().first, TTDTC::BV()),
+    frame_(stub.frame().first, Frame()),
     data_(data...),
     trackId_(0)
   {
@@ -187,14 +188,14 @@ namespace trackerTFP {
   Stub<Ts...>::Stub(const TTStubRef& ttStubRef, const DataFormats* dataFormats, Process p, Ts... data) :
     dataFormats_(dataFormats),
     p_(p),
-    frame_(ttStubRef, TTDTC::BV()),
+    frame_(ttStubRef, Frame()),
     data_(data...),
     trackId_(0)
   {
   }
 
   // construct StubPP from Frame
-  StubPP::StubPP(const TTDTC::Frame& frame, const DataFormats* formats) :
+  StubPP::StubPP(const FrameStub& frame, const DataFormats* formats) :
     Stub(frame, formats, Process::pp)
   {
     for(int sectorEta = sectorEtaMin(); sectorEta <= sectorEtaMax(); sectorEta++)
@@ -203,7 +204,7 @@ namespace trackerTFP {
   }
 
   // construct StubGP from Frame
-  StubGP::StubGP(const TTDTC::Frame& frame, const DataFormats* formats, int sectorPhi, int sectorEta) :
+  StubGP::StubGP(const FrameStub& frame, const DataFormats* formats, int sectorPhi, int sectorEta) :
     Stub(frame, formats, Process::gp), sectorPhi_(sectorPhi), sectorEta_(sectorEta)
   {
     const Setup* setup = dataFormats_->setup();
@@ -225,7 +226,7 @@ namespace trackerTFP {
   }
 
   // construct StubHT from Frame
-  StubHT::StubHT(const TTDTC::Frame& frame, const DataFormats* formats, int inv2R) :
+  StubHT::StubHT(const FrameStub& frame, const DataFormats* formats, int inv2R) :
     Stub(frame, formats, Process::ht), inv2R_(inv2R)
   {
     fillTrackId();
@@ -247,7 +248,7 @@ namespace trackerTFP {
   }
 
   // construct StubMHT from Frame
-  StubMHT::StubMHT(const TTDTC::Frame& frame, const DataFormats* formats) :
+  StubMHT::StubMHT(const FrameStub& frame, const DataFormats* formats) :
     Stub(frame, formats, Process::mht)
   {
     fillTrackId();
@@ -273,7 +274,7 @@ namespace trackerTFP {
   }
 
   // construct StubSF from Frame
-  StubSF::StubSF(const TTDTC::Frame& frame, const DataFormats* formats) :
+  StubSF::StubSF(const FrameStub& frame, const DataFormats* formats) :
     Stub(frame, formats, Process::sf), chi2_(0.)
   {
     fillTrackId();
@@ -298,7 +299,7 @@ namespace trackerTFP {
   }
 
   // construct StubKFin from Frame
-  StubKFin::StubKFin(const TTDTC::Frame& frame, const DataFormats* formats, int layer) :
+  StubKFin::StubKFin(const FrameStub& frame, const DataFormats* formats, int layer) :
     Stub(frame, formats, Process::kfin),
     layer_(layer) {}
 
@@ -319,7 +320,7 @@ namespace trackerTFP {
   }
 
   // construct StubKF from Frame
-  StubKF::StubKF(const TTDTC::Frame& frame, const DataFormats* formats, int layer) :
+  StubKF::StubKF(const FrameStub& frame, const DataFormats* formats, int layer) :
     Stub(frame, formats, Process::kf), layer_(layer) {}
 
   // construct StubKF from StubKFin
@@ -351,7 +352,7 @@ namespace trackerTFP {
   Track<Ts...>::Track(const Track<Others...>& track, Ts... data) :
     dataFormats_(track.dataFormats()),
     p_(++track.p()),
-    frame_(track.frame().first, TTDTC::BV()),
+    frame_(track.frame().first, Frame()),
     data_(data...) {}
 
   // construct Track from Stub
@@ -360,7 +361,7 @@ namespace trackerTFP {
   Track<Ts...>::Track(const Stub<Others...>& stub, const TTTrackRef& ttTrackRef, Ts... data) :
     dataFormats_(stub.dataFormats()),
     p_(++stub.p()),
-    frame_(ttTrackRef, TTDTC::BV()),
+    frame_(ttTrackRef, Frame()),
     data_(data...) {}
 
   // construct Track from TTTrackRef
@@ -368,7 +369,7 @@ namespace trackerTFP {
   Track<Ts...>::Track(const TTTrackRef& ttTrackRef, const DataFormats* dataFormats, Process p, Ts... data) :
     dataFormats_(dataFormats),
     p_(p),
-    frame_(ttTrackRef, TTDTC::BV()),
+    frame_(ttTrackRef, Frame()),
     data_(data...) {}
 
   // construct TrackKFin from Frame

@@ -22,10 +22,10 @@ namespace trackerTFP {
     Demonstrator(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
     ~Demonstrator(){}
     // plays input through modelsim and compares result with output
-    void analyze(const std::vector<std::vector<TTDTC::BV>>& input, const std::vector<std::vector<TTDTC::BV>>& output) const;
+    void analyze(const std::vector<std::vector<tt::Frame>>& input, const std::vector<std::vector<tt::Frame>>& output) const;
   private:
     // converts streams of bv into stringstream
-    void convert(const std::vector<std::vector<TTDTC::BV>>& bits, std::stringstream& ss) const;
+    void convert(const std::vector<std::vector<tt::Frame>>& bits, std::stringstream& ss) const;
     // plays stringstream through modelsim
     void sim(const std::stringstream& ss) const;
     // compares stringstream with modelsim output
@@ -37,7 +37,7 @@ namespace trackerTFP {
     // creates frame number
     std::string frame(int& nFrame) const;
     // converts bv into hex
-    std::string hex(const TTDTC::BV& bv) const;
+    std::string hex(const tt::Frame& bv) const;
 
     // path to ipbb proj area
     std::string dirIPBB_;

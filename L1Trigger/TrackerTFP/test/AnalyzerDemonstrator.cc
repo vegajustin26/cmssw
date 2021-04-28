@@ -17,6 +17,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -36,13 +37,13 @@ namespace trackerTFP {
 
   private:
     //
-    void convert(const Event& iEvent, const EDGetTokenT<StreamsTrack>& tokenTracks, const EDGetTokenT<TTDTC::Streams>& tokenStubs, vector<vector<TTDTC::BV>>& bits) const;
+    void convert(const Event& iEvent, const EDGetTokenT<StreamsTrack>& tokenTracks, const EDGetTokenT<StreamsStub>& tokenStubs, vector<vector<Frame>>& bits) const;
     //
     template<typename T>
-    void convert(const T& collection, vector<vector<TTDTC::BV>>& bits) const;
+    void convert(const T& collection, vector<vector<Frame>>& bits) const;
     // ED input token of Tracks
-    EDGetTokenT<TTDTC::Streams> edGetTokenStubsIn_;
-    EDGetTokenT<TTDTC::Streams> edGetTokenStubsOut_;
+    EDGetTokenT<StreamsStub> edGetTokenStubsIn_;
+    EDGetTokenT<StreamsStub> edGetTokenStubsOut_;
     // ED input token of Stubs
     EDGetTokenT<StreamsTrack> edGetTokenTracksIn_;
     EDGetTokenT<StreamsTrack> edGetTokenTracksOut_;
@@ -62,8 +63,8 @@ namespace trackerTFP {
     const string& labelOut = iConfig.getParameter<string>("LabelOut");
     const string& branchStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
     const string& branchTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
-    edGetTokenStubsIn_ = consumes<TTDTC::Streams>(InputTag(labelIn, branchStubs));
-    edGetTokenStubsOut_ = consumes<TTDTC::Streams>(InputTag(labelOut, branchStubs));
+    edGetTokenStubsIn_ = consumes<StreamsStub>(InputTag(labelIn, branchStubs));
+    edGetTokenStubsOut_ = consumes<StreamsStub>(InputTag(labelOut, branchStubs));
     if (labelIn == "TrackerTFPProducerKFin" || labelIn == "TrackerTFPProducerKF" || labelIn == "TrackFindingTrackletProducerKFin" || labelIn == "TrackFindingTrackletProducerKF")
       edGetTokenTracksIn_ = consumes<StreamsTrack>(InputTag(labelIn, branchTracks));
     if (labelOut == "TrackerTFPProducerKF" || labelOut == "TrackerTFPProducerDR" || labelOut == "TrackFindingTrackletProducerKF")
@@ -84,19 +85,19 @@ namespace trackerTFP {
   }
 
   void AnalyzerDemonstrator::analyze(const Event& iEvent, const EventSetup& iSetup) {
-    vector<vector<TTDTC::BV>> input;
-    vector<vector<TTDTC::BV>> output;
+    vector<vector<Frame>> input;
+    vector<vector<Frame>> output;
     convert(iEvent, edGetTokenTracksIn_, edGetTokenStubsIn_, input);
     convert(iEvent, edGetTokenTracksOut_, edGetTokenStubsOut_, output);
     demonstrator_->analyze(input, output);
   }
 
   //
-  void AnalyzerDemonstrator::convert(const Event& iEvent, const EDGetTokenT<StreamsTrack>& tokenTracks, const EDGetTokenT<TTDTC::Streams>& tokenStubs, vector<vector<TTDTC::BV>>& bits) const {
+  void AnalyzerDemonstrator::convert(const Event& iEvent, const EDGetTokenT<StreamsTrack>& tokenTracks, const EDGetTokenT<StreamsStub>& tokenStubs, vector<vector<Frame>>& bits) const {
     const bool tracks = !tokenTracks.isUninitialized();
-    Handle<TTDTC::Streams> handleStubs;
+    Handle<StreamsStub> handleStubs;
     Handle<StreamsTrack> handleTracks;
-    iEvent.getByToken<TTDTC::Streams>(tokenStubs, handleStubs);
+    iEvent.getByToken<StreamsStub>(tokenStubs, handleStubs);
     int numChannelStubs = handleStubs->size();
     int numChannelTracks(0);
     if (tracks) {
@@ -120,9 +121,9 @@ namespace trackerTFP {
 
   //
   template<typename T>
-  void AnalyzerDemonstrator::convert(const T& collection, vector<vector<TTDTC::BV>>& bits) const {
+  void AnalyzerDemonstrator::convert(const T& collection, vector<vector<Frame>>& bits) const {
     bits.emplace_back();
-    vector<TTDTC::BV>& bvs = bits.back();
+    vector<Frame>& bvs = bits.back();
     bvs.reserve(collection.size());
     transform(collection.begin(), collection.end(), back_inserter(bvs), [](const auto& frame){ return frame.second; });
   }

@@ -12,6 +12,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -61,7 +62,7 @@ namespace trackerTFP {
     C33_(&kalmanFilterFormats_->format(VariableKF::C33)) {}
 
   // read in and organize input product (fill vector input_)
-  void KalmanFilter::consume(const StreamsTrack& streamsTrack, const TTDTC::Streams& streamsStub) {
+  void KalmanFilter::consume(const StreamsTrack& streamsTrack, const StreamsStub& streamsStub) {
     auto valid = [](const auto& frame){ return frame.first.isNonnull(); };
     auto acc = [](int& sum, const auto& frame){ return sum += (frame.first.isNonnull() ? 1 : 0); };
     int nTracks(0);
@@ -73,7 +74,7 @@ namespace trackerTFP {
       nTracks += accumulate(streamTracks.begin(), streamTracks.end(), 0, acc);
       for (int layer = 0; layer < setup_->numLayers(); layer++) {
         const int channelStub = channelTrack * setup_->numLayers() + layer;
-        const TTDTC::Stream& streamStubs = streamsStub[channelStub];
+        const StreamStub& streamStubs = streamsStub[channelStub];
         nStubs += accumulate(streamStubs.begin(), streamStubs.end(), 0, acc);
       }
     }
@@ -97,10 +98,10 @@ namespace trackerTFP {
         deque<StubKFin*> stubs;
         for (int layer = 0; layer < setup_->numLayers(); layer++) {
           const int channelStub = channelTrack * setup_->numLayers() + layer;
-          const TTDTC::Stream& streamStubs = streamsStub[channelStub];
+          const StreamStub& streamStubs = streamsStub[channelStub];
           // Get stubs on this track
           for (int i = frame; i < frame + maxStubsPerLayer; i++) {
-            const TTDTC::Frame& frameStub = streamStubs[i];
+            const FrameStub& frameStub = streamStubs[i];
             if (frameStub.first.isNull())
               break;
             // Store input stubs, so remainder of KF algo can work with pointers to them (saves CPU)
@@ -116,8 +117,8 @@ namespace trackerTFP {
   }
 
   // fill output products
-  void KalmanFilter::produce(TTDTC::Streams& acceptedStubs, StreamsTrack& acceptedTracks, TTDTC::Streams& lostStubs, StreamsTrack& lostTracks) {
-    auto put = [this](const deque<State*>& states, TTDTC::Streams& streamsStubs, StreamsTrack& streamsTracks, int channel) {
+  void KalmanFilter::produce(StreamsStub& acceptedStubs, StreamsTrack& acceptedTracks, StreamsStub& lostStubs, StreamsTrack& lostTracks) {
+    auto put = [this](const deque<State*>& states, StreamsStub& streamsStubs, StreamsTrack& streamsTracks, int channel) {
       const int streamId = region_ * dataFormats_->numChannel(Process::kf) + channel;
       const int offset = streamId * setup_->numLayers();
       StreamTrack& tracks = streamsTracks[streamId];
@@ -130,7 +131,7 @@ namespace trackerTFP {
           streamsStubs[offset + stub.layer()].emplace_back(stub.frame());
         // adding a gap to all layer without a stub
         for (int layer : state->hitPattern().ids(false))
-          streamsStubs[offset + layer].emplace_back(TTDTC::Frame());
+          streamsStubs[offset + layer].emplace_back(FrameStub());
       }
     };
     for (int channel = 0; channel < dataFormats_->numChannel(Process::kf); channel++) {
@@ -173,6 +174,7 @@ namespace trackerTFP {
 
   // adds a layer to states
   void KalmanFilter::addLayer(deque<State*>& stream) {
+    // Latency of KF Associator block firmware
     static constexpr int latency = 5;
     // dynamic state container for clock accurate emulation
     deque<State*> streamOutput;
@@ -180,7 +182,6 @@ namespace trackerTFP {
     deque<State*> stack;
     // static delay container
     vector<State*> delay(latency, nullptr);
-    delay.reserve(latency + 1);
     // each trip corresponds to a f/w clock tick
     // done if no states to process left, taking as much time as needed
     while (!stream.empty() || !stack.empty() || !all_of(delay.begin(), delay.end(), [](const State* state){ return state == nullptr; })) {

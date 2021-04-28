@@ -22,6 +22,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -43,9 +44,9 @@ namespace trackerTFP {
     // ED input token of DTC stubs
     EDGetTokenT<TTDTC> edGetToken_;
     // ED output token for accepted stubs
-    EDPutTokenT<TTDTC::Streams> edPutTokenAccepted_;
+    EDPutTokenT<StreamsStub> edPutTokenAccepted_;
     // ED output token for lost stubs
-    EDPutTokenT<TTDTC::Streams> edPutTokenLost_;
+    EDPutTokenT<StreamsStub> edPutTokenLost_;
     // Setup token
     ESGetToken<Setup, SetupRcd> esGetTokenSetup_;
     // DataFormats token
@@ -54,7 +55,7 @@ namespace trackerTFP {
     ParameterSet iConfig_;
     // helper classe to store configurations
     const Setup* setup_;
-    // helper class to extract structured data from TTDTC::Frames
+    // helper class to extract structured data from tt::Frames
     const DataFormats* dataFormats_;
   };
 
@@ -66,8 +67,8 @@ namespace trackerTFP {
     const string& branchLost = iConfig.getParameter<string>("BranchLostStubs");
     // book in- and output ED products
     edGetToken_ = consumes<TTDTC>(InputTag(label, branchAccepted));
-    edPutTokenAccepted_ = produces<TTDTC::Streams>(branchAccepted);
-    edPutTokenLost_ = produces<TTDTC::Streams>(branchLost);
+    edPutTokenAccepted_ = produces<StreamsStub>(branchAccepted);
+    edPutTokenLost_ = produces<StreamsStub>(branchLost);
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
     esGetTokenDataFormats_ = esConsumes<DataFormats, DataFormatsRcd, Transition::BeginRun>();
@@ -88,8 +89,8 @@ namespace trackerTFP {
 
   void ProducerGP::produce(Event& iEvent, const EventSetup& iSetup) {
     // empty GP products
-    TTDTC::Streams accepted(dataFormats_->numStreams(Process::gp));
-    TTDTC::Streams lost(dataFormats_->numStreams(Process::gp));
+    StreamsStub accepted(dataFormats_->numStreams(Process::gp));
+    StreamsStub lost(dataFormats_->numStreams(Process::gp));
     // read in DTC Product and produce TFP product
     if (setup_->configurationSupported()) {
       Handle<TTDTC> handle;

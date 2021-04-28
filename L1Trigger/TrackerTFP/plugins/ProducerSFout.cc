@@ -10,7 +10,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/Common/interface/Handle.h"
 
-#include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 #include "L1Trigger/TrackerDTC/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
@@ -22,6 +21,7 @@
 using namespace std;
 using namespace edm;
 using namespace trackerDTC;
+using namespace tt;
 
 namespace trackerTFP {
 
@@ -41,7 +41,7 @@ namespace trackerTFP {
     virtual void endJob() {}
 
     // ED input token of sf stubs
-    EDGetTokenT<TTDTC::Streams> edGetToken_;
+    EDGetTokenT<StreamsStub> edGetToken_;
     // ED output token of TTTracks
     EDPutTokenT<vector<TTTrack<Ref_Phase2TrackerDigi_>>> edPutToken_;
     // Setup token
@@ -52,7 +52,7 @@ namespace trackerTFP {
     ParameterSet iConfig_;
     // helper class to store configurations
     const Setup* setup_;
-    // helper class to extract structured data from TTDTC::Frames
+    // helper class to extract structured data from tt::Frames
     const DataFormats* dataFormats_;
   };
 
@@ -63,7 +63,7 @@ namespace trackerTFP {
     const string& branchAcceptedStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
     const string& branchAcceptedTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
     // book in- and output ED products
-    edGetToken_ = consumes<TTDTC::Streams>(InputTag(label, branchAcceptedStubs));
+    edGetToken_ = consumes<StreamsStub>(InputTag(label, branchAcceptedStubs));
     edPutToken_ = produces<vector<TTTrack<Ref_Phase2TrackerDigi_>>>(branchAcceptedTracks);
     // book ES products
     esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
@@ -81,7 +81,7 @@ namespace trackerTFP {
     // check process history if desired
     if (iConfig_.getParameter<bool>("CheckHistory"))
       setup_->checkHistory(iRun.processHistory());
-    // helper class to extract structured data from TTDTC::Frames
+    // helper class to extract structured data from tt::Frames
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
   }
 
@@ -94,17 +94,17 @@ namespace trackerTFP {
     deque<TTTrack<Ref_Phase2TrackerDigi_>> ttTracks;
     // read in SF Product and produce SFout product
     if (setup_->configurationSupported()) {
-      Handle<TTDTC::Streams> handle;
-      iEvent.getByToken<TTDTC::Streams>(edGetToken_, handle);
-      const TTDTC::Streams& streams = *handle.product();
+      Handle<StreamsStub> handle;
+      iEvent.getByToken<StreamsStub>(edGetToken_, handle);
+      const StreamsStub& streams = *handle.product();
       for (int region = 0; region < setup_->numRegions(); region++ ) {
         for (int channel = 0; channel < dataFormats_->numChannel(Process::sf); channel++) {
           const int index = region * dataFormats_->numChannel(Process::sf) + channel;
           // convert stream to stubs
-          const TTDTC::Stream& stream = streams[index];
+          const StreamStub& stream = streams[index];
           vector<StubSF> stubs;
           stubs.reserve(stream.size());
-          for (const TTDTC::Frame& frame : stream)
+          for (const FrameStub& frame : stream)
             if(frame.first.isNonnull())
               stubs.emplace_back(frame, dataFormats_);
           // form tracks

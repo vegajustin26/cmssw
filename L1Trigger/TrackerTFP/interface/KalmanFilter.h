@@ -5,6 +5,7 @@
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
 #include "L1Trigger/TrackerTFP/interface/KalmanFilterFormats.h"
 #include "L1Trigger/TrackerTFP/interface/State.h"
+#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 
 #include <deque>
 
@@ -17,9 +18,9 @@ namespace trackerTFP {
     ~KalmanFilter(){}
 
     // read in and organize input tracks and stubs
-    void consume(const StreamsTrack& streamsTrack, const TTDTC::Streams& streamsStub);
+    void consume(const tt::StreamsTrack& streamsTrack, const tt::StreamsStub& streamsStub);
     // fill output products
-    void produce(TTDTC::Streams& accpetedStubs, StreamsTrack& acceptedTracks, TTDTC::Streams& lostStubs, StreamsTrack& lostTracks);
+    void produce(tt::StreamsStub& accpetedStubs, tt::StreamsTrack& acceptedTracks, tt::StreamsStub& lostStubs, tt::StreamsTrack& lostTracks);
 
   private:
     // remove and return first element of deque, returns nullptr if empty

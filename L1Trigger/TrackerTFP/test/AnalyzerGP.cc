@@ -46,9 +46,9 @@ namespace trackerTFP {
 
   private:
     // ED input token of stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenAccepted_;
+    EDGetTokenT<StreamsStub> edGetTokenAccepted_;
     // ED input token of lost stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenLost_;
+    EDGetTokenT<StreamsStub> edGetTokenLost_;
     // ED input token of TTStubRef to selected TPPtr association
     EDGetTokenT<StubAssociation> edGetTokenAss_;
     // Setup token
@@ -76,8 +76,8 @@ namespace trackerTFP {
     const string& label = iConfig.getParameter<string>("LabelGP");
     const string& branchAccepted = iConfig.getParameter<string>("BranchAcceptedStubs");
     const string& branchLost = iConfig.getParameter<string>("BranchLostStubs");
-    edGetTokenAccepted_ = consumes<TTDTC::Streams>(InputTag(label, branchAccepted));
-    edGetTokenLost_ = consumes<TTDTC::Streams>(InputTag(label, branchLost));
+    edGetTokenAccepted_ = consumes<StreamsStub>(InputTag(label, branchAccepted));
+    edGetTokenLost_ = consumes<StreamsStub>(InputTag(label, branchLost));
     if (useMCTruth_) {
       const auto& inputTagAss = iConfig.getParameter<InputTag>("InputTagSelection");
       edGetTokenAss_ = consumes<StubAssociation>(inputTagAss);
@@ -111,10 +111,10 @@ namespace trackerTFP {
 
   void AnalyzerGP::analyze(const Event& iEvent, const EventSetup& iSetup) {
     // read in gp products
-    Handle<TTDTC::Streams> handleAccepted;
-    iEvent.getByToken<TTDTC::Streams>(edGetTokenAccepted_, handleAccepted);
-    Handle<TTDTC::Streams> handleLost;
-    iEvent.getByToken<TTDTC::Streams>(edGetTokenLost_, handleLost);
+    Handle<StreamsStub> handleAccepted;
+    iEvent.getByToken<StreamsStub>(edGetTokenAccepted_, handleAccepted);
+    Handle<StreamsStub> handleLost;
+    iEvent.getByToken<StreamsStub>(edGetTokenLost_, handleLost);
     // read in MCTruth
     const StubAssociation* stubAssociation = nullptr;
     if (useMCTruth_) {
@@ -131,10 +131,10 @@ namespace trackerTFP {
       map<TPPtr, vector<TTStubRef>> mapTPsTTStubs;
       for (int channel = 0; channel < setup_->numSectors(); channel++) {
         const int index = region * setup_->numSectors() + channel;
-        const TTDTC::Stream& accepted = handleAccepted->at(index);
+        const StreamStub& accepted = handleAccepted->at(index);
         hisChannel_->Fill(accepted.size());
         profChannel_->Fill(channel, accepted.size());
-        for (const TTDTC::Frame& frame : accepted) {
+        for (const FrameStub& frame : accepted) {
           if (frame.first.isNull())
             continue;
           nStubs++;

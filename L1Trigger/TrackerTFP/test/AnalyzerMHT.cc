@@ -50,15 +50,15 @@ namespace trackerTFP {
 
   private:
     //
-    void formTracks(const TTDTC::Stream& stream, vector<vector<TTStubRef>>& tracks) const;
+    void formTracks(const StreamStub& stream, vector<vector<TTStubRef>>& tracks) const;
     //
     void associate(const vector<vector<TTStubRef>>& tracks, const StubAssociation* ass, set<TPPtr>& tps, int& sum) const;
 
 
     // ED input token of stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenAccepted_;
+    EDGetTokenT<StreamsStub> edGetTokenAccepted_;
     // ED input token of lost stubs
-    EDGetTokenT<TTDTC::Streams> edGetTokenLost_;
+    EDGetTokenT<StreamsStub> edGetTokenLost_;
     // ED input token of TTStubRef to selected TPPtr association
     EDGetTokenT<StubAssociation> edGetTokenSelection_;
     // ED input token of TTStubRef to recontructable TPPtr association
@@ -95,8 +95,8 @@ namespace trackerTFP {
     const string& label = iConfig.getParameter<string>("LabelMHT");
     const string& branchAccepted = iConfig.getParameter<string>("BranchAcceptedStubs");
     const string& branchLost = iConfig.getParameter<string>("BranchLostStubs");
-    edGetTokenAccepted_ = consumes<TTDTC::Streams>(InputTag(label, branchAccepted));
-    edGetTokenLost_ = consumes<TTDTC::Streams>(InputTag(label, branchLost));
+    edGetTokenAccepted_ = consumes<StreamsStub>(InputTag(label, branchAccepted));
+    edGetTokenLost_ = consumes<StreamsStub>(InputTag(label, branchLost));
     if (useMCTruth_) {
       const auto& inputTagSelecttion = iConfig.getParameter<InputTag>("InputTagSelection");
       const auto& inputTagReconstructable = iConfig.getParameter<InputTag>("InputTagReconstructable");
@@ -147,10 +147,10 @@ namespace trackerTFP {
   void AnalyzerMHT::analyze(const Event& iEvent, const EventSetup& iSetup) {
     auto fill = [this](const TPPtr& tpPtr, TH1F* his) { his->Fill(tpPtr->eta()); };
     // read in ht products
-    Handle<TTDTC::Streams> handleAccepted;
-    iEvent.getByToken<TTDTC::Streams>(edGetTokenAccepted_, handleAccepted);
-    Handle<TTDTC::Streams> handleLost;
-    iEvent.getByToken<TTDTC::Streams>(edGetTokenLost_, handleLost);
+    Handle<StreamsStub> handleAccepted;
+    iEvent.getByToken<StreamsStub>(edGetTokenAccepted_, handleAccepted);
+    Handle<StreamsStub> handleLost;
+    iEvent.getByToken<StreamsStub>(edGetTokenLost_, handleLost);
     // read in MCTruth
     const StubAssociation* selection = nullptr;
     const StubAssociation* reconstructable = nullptr;
@@ -177,10 +177,10 @@ namespace trackerTFP {
       int nLost(0);
       for (int channel = 0; channel < dataFormats_->numChannel(Process::mht); channel++) {
         const int index = region * dataFormats_->numChannel(Process::mht) + channel;
-        const TTDTC::Stream& accepted = handleAccepted->at(index);
+        const StreamStub& accepted = handleAccepted->at(index);
         hisChannel_->Fill(accepted.size());
         profChannel_->Fill(channel, accepted.size());
-        nStubs += accumulate(accepted.begin(), accepted.end(), 0, [](int& sum, const TTDTC::Frame& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
+        nStubs += accumulate(accepted.begin(), accepted.end(), 0, [](int& sum, const FrameStub& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
         vector<vector<TTStubRef>> tracks;
         vector<vector<TTStubRef>> lost;
         formTracks(accepted, tracks);
@@ -254,10 +254,10 @@ namespace trackerTFP {
   }
 
   //
-  void AnalyzerMHT::formTracks(const TTDTC::Stream& stream, vector<vector<TTStubRef>>& tracks) const {
+  void AnalyzerMHT::formTracks(const StreamStub& stream, vector<vector<TTStubRef>>& tracks) const {
     vector<StubMHT> stubs;
     stubs.reserve(stream.size());
-    for (const TTDTC::Frame& frame : stream)
+    for (const FrameStub& frame : stream)
       if(frame.first.isNonnull())
         stubs.emplace_back(frame, dataFormats_);
     for (auto it = stubs.begin(); it != stubs.end();) {
