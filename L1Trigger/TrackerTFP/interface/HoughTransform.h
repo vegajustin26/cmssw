@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackerTFP_HoughTransform_h
 #define L1Trigger_TrackerTFP_HoughTransform_h
 
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 
@@ -14,7 +14,7 @@ namespace trackerTFP {
   // Class to find initial rough candidates in r-phi in a region
   class HoughTransform {
   public:
-    HoughTransform(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, int region);
+    HoughTransform(const edm::ParameterSet& iConfig, const tt::Setup* setup, const DataFormats* dataFormats, int region);
     ~HoughTransform(){}
 
     // read in and organize input product
@@ -38,7 +38,7 @@ namespace trackerTFP {
     // true if truncation is enbaled
     bool enableTruncation_;
     // provides run-time constants
-    const trackerDTC::Setup* setup_;
+    const tt::Setup* setup_;
     // provides dataformats
     const DataFormats* dataFormats_;
     // data format of inv2R

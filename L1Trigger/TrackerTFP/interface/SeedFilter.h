@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackerTFP_SeedFilter_h
 #define L1Trigger_TrackerTFP_SeedFilter_h
 
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
 #include "L1Trigger/TrackerTFP/interface/LayerEncoding.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
@@ -14,7 +14,7 @@ namespace trackerTFP {
   // Class to clean up MHT track candidates with rough tracking in r-z
   class SeedFilter {
   public:
-    SeedFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, const LayerEncoding* layerEncoding, int region);
+    SeedFilter(const edm::ParameterSet& iConfig, const tt::Setup* setup, const DataFormats* dataFormats, const LayerEncoding* layerEncoding, int region);
     ~SeedFilter(){}
 
     // read in and organize input product
@@ -32,7 +32,7 @@ namespace trackerTFP {
     // true if truncation is enbaled
     bool enableTruncation_;
     // provides run-time constants
-    const trackerDTC::Setup* setup_;
+    const tt::Setup* setup_;
     // provides dataformats
     const DataFormats* dataFormats_;
     // provides layer encoding

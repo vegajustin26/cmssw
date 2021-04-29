@@ -6,7 +6,6 @@
 #include <numeric>
 
 using namespace std;
-using namespace trackerDTC;
 
 namespace tt {
 

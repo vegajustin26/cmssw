@@ -12,7 +12,7 @@
 
 #include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
 #include "L1Trigger/TrackerTFP/interface/GeometricProcessor.h"
 
@@ -21,7 +21,6 @@
 
 using namespace std;
 using namespace edm;
-using namespace trackerDTC;
 using namespace tt;
 
 namespace trackerTFP {

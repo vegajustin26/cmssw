@@ -12,7 +12,7 @@
 
 #include "FWCore/Utilities/interface/mplVector.h"
 
-namespace trackerDTC {
+namespace tt {
 
   typedef edm::mpl::Vector<TrackerDigiGeometryRecord,
                              TrackerTopologyRcd,
@@ -22,9 +22,9 @@ namespace trackerDTC {
                              TTStubAlgorithmRecord>
       Rcds;
 
-  // record of trackerDTC::Setup
+  // record of tt::Setup
   class SetupRcd : public edm::eventsetup::DependentRecordImplementation<SetupRcd, Rcds> {};
 
-}  // namespace trackerDTC
+}  // namespace tt
 
 #endif

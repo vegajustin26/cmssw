@@ -1,4 +1,4 @@
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "FWCore/Utilities/interface/Exception.h"
 #include "DataFormats/Provenance/interface/ProcessConfiguration.h"
 #include "DataFormats/L1TrackTrigger/interface/TTBV.h"
@@ -14,9 +14,8 @@
 
 using namespace std;
 using namespace edm;
-using namespace tt;
 
-namespace trackerDTC {
+namespace tt {
 
   Setup::Setup(const ParameterSet& iConfig,
                const MagneticField& magneticField,
@@ -462,7 +461,7 @@ namespace trackerDTC {
       // collection of so far connected modules to this dtc
       vector<SensorModule*>& dtcModules = dtcModules_[dtcId];
       // construct sendor module
-      sensorModules_.emplace_back(*this, detId, dtcId, dtcModules.size());
+      sensorModules_.emplace_back(this, detId, dtcId, dtcModules.size());
       SensorModule* sensorModule = &sensorModules_.back();
       // store connection between detId and sensor module
       detIdToSensorModule_.emplace(detId, sensorModule);
@@ -847,4 +846,4 @@ namespace trackerDTC {
     }
   }
 
-}  // namespace trackerDTC
+}  // namespace tt

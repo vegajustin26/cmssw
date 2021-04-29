@@ -13,7 +13,7 @@
 #include "DataFormats/Common/interface/Handle.h"
 
 #include "SimTracker/TrackTriggerAssociation/interface/StubAssociation.h"
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
 
 #include <TProfile.h>
@@ -29,7 +29,6 @@
 
 using namespace std;
 using namespace edm;
-using namespace trackerDTC;
 using namespace trackerTFP;
 using namespace tt;
 

@@ -11,7 +11,7 @@
 
 #include "SimTracker/TrackTriggerAssociation/interface/TTTypes.h"
 #include "SimTracker/TrackTriggerAssociation/interface/StubAssociation.h"
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 
 #include <vector>
 #include <map>
@@ -23,7 +23,6 @@
 
 using namespace std;
 using namespace edm;
-using namespace trackerDTC;
 
 namespace tt {
 
@@ -48,7 +47,7 @@ namespace tt {
     void fill(set<TPPtr>& tpPtrs, const TTStubRef& ttStubRef, const Handle<TTStubAssMap>& handle) const;
 
     // helper classe to store configurations
-    const trackerDTC::Setup* setup_;
+    const Setup* setup_;
     // ED input token of TTStubs
     EDGetTokenT<TTStubDetSetVec> getTokenTTStubDetSetVec_;
     // ED input token of TTClusterAssociation
@@ -60,7 +59,7 @@ namespace tt {
     // ED output token for selected stub association
     EDPutTokenT<StubAssociation> putTokenSelection_;
     // Setup token
-    ESGetToken<trackerDTC::Setup, trackerDTC::SetupRcd> esGetToken_;
+    ESGetToken<Setup, SetupRcd> esGetToken_;
     //
     bool useTTStubAssMap_;
   };
@@ -77,7 +76,7 @@ namespace tt {
     putTokenReconstructable_ = produces<StubAssociation>(iConfig.getParameter<string>("BranchReconstructable"));
     putTokenSelection_ = produces<StubAssociation>(iConfig.getParameter<string>("BranchSelection"));
     // book ES product
-    esGetToken_ = esConsumes<trackerDTC::Setup, trackerDTC::SetupRcd, Transition::BeginRun>();
+    esGetToken_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
   }
 
   void StubAssociator::beginRun(const Run& iRun, const EventSetup& iSetup) {

@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackerTFP_State_h
 #define L1Trigger_TrackerTFP_State_h
 
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
 
 #include <vector>
@@ -90,7 +90,7 @@ namespace trackerTFP {
     // provides data fomats
     const DataFormats* dataFormats_;
     // provides run-time constants
-    const trackerDTC::Setup* setup_;
+    const tt::Setup* setup_;
     // input track
     TrackKFin* track_;
     // track id

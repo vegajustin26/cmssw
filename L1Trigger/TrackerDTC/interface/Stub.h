@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackerDTC_Stub_h
 #define L1Trigger_TrackerDTC_Stub_h
 
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "SimTracker/TrackTriggerAssociation/interface/TTTypes.h"
 
 #include <utility>
@@ -12,7 +12,7 @@ namespace trackerDTC {
   // representation of a stub
   class Stub {
   public:
-    Stub(const edm::ParameterSet&, const Setup&, SensorModule*, const TTStubRef&);
+    Stub(const edm::ParameterSet&, const tt::Setup*, tt::SensorModule*, const TTStubRef&);
     ~Stub() {}
 
     // underlying TTStubRef
@@ -35,9 +35,9 @@ namespace trackerDTC {
     tt::Frame formatTMTT(int region) const;
 
     // stores, calculates and provides run-time constants
-    const Setup* setup_;
+    const tt::Setup* setup_;
     // representation of an outer tracker sensormodule
-    SensorModule* sm_;
+    tt::SensorModule* sm_;
     // underlying TTStubRef
     TTStubRef ttStubRef_;
     // chosen TT algorithm

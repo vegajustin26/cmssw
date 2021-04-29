@@ -2,7 +2,7 @@
 #define SimTracker_TrackTriggerAssociation_StubAssociation_h
 
 #include "SimTracker/TrackTriggerAssociation/interface/TTTypes.h"
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 
 #include <vector>
 #include <map>
@@ -17,7 +17,7 @@ namespace tt {
   class StubAssociation {
   public:
     StubAssociation() { setup_ = nullptr; }
-    StubAssociation(const trackerDTC::Setup* setup) : setup_(setup) {}
+    StubAssociation(const Setup* setup) : setup_(setup) {}
     ~StubAssociation() {}
 
     // insert a TPPtr and its associated collection of TTstubRefs into the underlayering maps
@@ -39,7 +39,7 @@ namespace tt {
 
   private:
     // stores, calculates and provides run-time constants
-    const trackerDTC::Setup* setup_;
+    const Setup* setup_;
     // map containing TTStubRef and their associated collection of TPPtrs
     std::map<TTStubRef, std::vector<TPPtr>> mapTTStubRefsTPPtrs_;
     // map containing TPPtr and their associated collection of TTStubRefs

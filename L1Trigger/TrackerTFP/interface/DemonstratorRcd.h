@@ -2,12 +2,12 @@
 #define L1Trigger_TrackerTFP_DemonstratorRcd_h
 
 #include "FWCore/Framework/interface/DependentRecordImplementation.h"
-#include "L1Trigger/TrackerDTC/interface/SetupRcd.h"
+#include "L1Trigger/TrackTrigger/interface/SetupRcd.h"
 #include "FWCore/Utilities/interface/mplVector.h"
 
 namespace trackerTFP {
 
-  typedef edm::mpl::Vector<trackerDTC::SetupRcd> RcdsDemonstrator;
+  typedef edm::mpl::Vector<tt::SetupRcd> RcdsDemonstrator;
 
   // record of trackerTFP::Demonstrator
   class DemonstratorRcd : public edm::eventsetup::DependentRecordImplementation<DemonstratorRcd, RcdsDemonstrator> {};

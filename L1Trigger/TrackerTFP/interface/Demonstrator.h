@@ -4,7 +4,7 @@
 #include "FWCore/Framework/interface/data_default_record_trait.h"
 #include "L1Trigger/TrackerTFP/interface/DemonstratorRcd.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 
 #include <vector>
 #include <string>
@@ -19,7 +19,7 @@ namespace trackerTFP {
   class Demonstrator {
   public:
     Demonstrator(){}
-    Demonstrator(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
+    Demonstrator(const edm::ParameterSet& iConfig, const tt::Setup* setup);
     ~Demonstrator(){}
     // plays input through modelsim and compares result with output
     void analyze(const std::vector<std::vector<tt::Frame>>& input, const std::vector<std::vector<tt::Frame>>& output) const;

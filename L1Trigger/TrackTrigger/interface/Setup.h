@@ -21,21 +21,21 @@
 
 #include "SimTracker/TrackTriggerAssociation/interface/TTTypes.h"
 #include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
-#include "L1Trigger/TrackerDTC/interface/SetupRcd.h"
-#include "L1Trigger/TrackerDTC/interface/SensorModule.h"
+#include "L1Trigger/TrackTrigger/interface/SensorModule.h"
+#include "L1Trigger/TrackTrigger/interface/SetupRcd.h"
 
 #include <vector>
 #include <set>
 #include <unordered_map>
 
-namespace trackerDTC {
+namespace tt {
 
   typedef TTStubAlgorithm<Ref_Phase2TrackerDigi_> StubAlgorithm;
   typedef TTStubAlgorithm_official<Ref_Phase2TrackerDigi_> StubAlgorithmOfficial;
   // handles 2 pi overflow
   inline double deltaPhi(double lhs, double rhs = 0.) { return reco::deltaPhi(lhs, rhs); }
 
-  /*! \class  trackerDTC::Setup
+  /*! \class  tt::Setup
    *  \brief  Class to process and provide run-time constants used by Track Trigger emulators
    *  \author Thomas Schuh
    *  \date   2020, Apr
@@ -942,8 +942,8 @@ namespace trackerDTC {
 
   };
 
-}  // namespace trackerDTC
+}  // namespace tt
 
-EVENTSETUP_DATA_DEFAULT_RECORD(trackerDTC::Setup, trackerDTC::SetupRcd);
+EVENTSETUP_DATA_DEFAULT_RECORD(tt::Setup, tt::SetupRcd);
 
 #endif

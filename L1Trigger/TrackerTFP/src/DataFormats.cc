@@ -12,7 +12,6 @@
 
 using namespace std;
 using namespace edm;
-using namespace trackerDTC;
 using namespace tt;
 
 namespace trackerTFP {
@@ -708,18 +707,18 @@ namespace trackerTFP {
   }
 
   template<>
-  Format<Variable::match, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(false) {
+  Format<Variable::match, Process::kf>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(false) {
     width_ = 1;
     range_ = 1.;
   }
 
   template<>
-  Format<Variable::hitPattern, Process::kfin>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(false) {
+  Format<Variable::hitPattern, Process::kfin>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(false) {
     width_ = setup->numLayers();
   }
 
   template<>
-  Format<Variable::phi0, Process::dr>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(true) {
+  Format<Variable::phi0, Process::dr>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(true) {
     const Format<Variable::inv2R, Process::ht> inv2R(iConfig, setup);
     const Format<Variable::phiT, Process::ht> phiT(iConfig, setup);
     const double chosenRofPhi = iConfig.getParameter<bool>("UseHybrid") ? setup->hybridChosenRofPhi() : setup->chosenRofPhi();
@@ -731,7 +730,7 @@ namespace trackerTFP {
   }
 
   template<>
-  Format<Variable::inv2R, Process::dr>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(true) {
+  Format<Variable::inv2R, Process::dr>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(true) {
     const Format<Variable::inv2R, Process::ht> inv2R(iConfig, setup);
     width_ = setup->tfpWidthInv2R();
     range_ = inv2R.range();
@@ -741,7 +740,7 @@ namespace trackerTFP {
   }
 
   template<>
-  Format<Variable::z0, Process::dr>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(true) {
+  Format<Variable::z0, Process::dr>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(true) {
     const Format<Variable::zT, Process::sf> zT(iConfig, setup);
     width_ = setup->tfpWidthZ0();
     range_ = 2. * setup->beamWindowZ();
@@ -751,7 +750,7 @@ namespace trackerTFP {
   }
 
   template<>
-  Format<Variable::cot, Process::dr>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(true) {
+  Format<Variable::cot, Process::dr>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(true) {
     const Format<Variable::cot, Process::sf> cot(iConfig, setup);
     width_ = setup->tfpWidthCot();
     range_ = 2. * setup->maxCot();
@@ -761,7 +760,7 @@ namespace trackerTFP {
   }
 
   template<>
-  Format<Variable::phiT, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(true) {
+  Format<Variable::phiT, Process::kf>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(true) {
     const Format<Variable::phi0, Process::dr> phi0(iConfig, setup);
     const Format<Variable::phiT, Process::ht> phiT(iConfig, setup);
     const double rangeFactor = iConfig.getParameter<ParameterSet>("KalmanFilter").getParameter<double>("RangeFactor");
@@ -771,7 +770,7 @@ namespace trackerTFP {
   }
 
   template<>
-  Format<Variable::inv2R, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(true) {
+  Format<Variable::inv2R, Process::kf>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(true) {
     const Format<Variable::inv2R, Process::dr> dr(iConfig, setup);
     const Format<Variable::inv2R, Process::mht> mht(iConfig, setup);
     const double rangeFactor = iConfig.getParameter<ParameterSet>("KalmanFilter").getParameter<double>("RangeFactor");
@@ -781,7 +780,7 @@ namespace trackerTFP {
   }
 
   template<>
-  Format<Variable::zT, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(true) {
+  Format<Variable::zT, Process::kf>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(true) {
     const Format<Variable::z0, Process::dr> z0(iConfig, setup);
     const Format<Variable::zT, Process::sf> zT(iConfig, setup);
     const double rangeFactor = iConfig.getParameter<ParameterSet>("KalmanFilter").getParameter<double>("RangeFactor");
@@ -791,7 +790,7 @@ namespace trackerTFP {
   }
 
   template<>
-  Format<Variable::cot, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(true) {
+  Format<Variable::cot, Process::kf>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(true) {
     const Format<Variable::cot, Process::dr> dr(iConfig, setup);
     const Format<Variable::cot, Process::sf> sf(iConfig, setup);
     const double rangeFactor = iConfig.getParameter<ParameterSet>("KalmanFilter").getParameter<double>("RangeFactor");
@@ -801,7 +800,7 @@ namespace trackerTFP {
   }
 
   template<>
-  Format<Variable::dPhi, Process::kfin>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(false) {
+  Format<Variable::dPhi, Process::kfin>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(false) {
     const Format<Variable::phi, Process::mht> phi(iConfig, setup);
     range_ = setup->maxdPhi();
     base_ = phi.base();
@@ -809,7 +808,7 @@ namespace trackerTFP {
   }
 
   template<>
-  Format<Variable::dZ, Process::kfin>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup) : DataFormat(false) {
+  Format<Variable::dZ, Process::kfin>::Format(const edm::ParameterSet& iConfig, const Setup* setup) : DataFormat(false) {
     const Format<Variable::z, Process::sf> z(iConfig, setup);
     range_ = setup->maxdZ();
     base_ = z.base();

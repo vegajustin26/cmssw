@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackerTFP_MiniHoughTransform_h
 #define L1Trigger_TrackerTFP_MiniHoughTransform_h
 
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 
@@ -14,7 +14,7 @@ namespace trackerTFP {
   // Class to refine HT track candidates in r-phi, by subdividing each HT cell into a finer granularity array
   class MiniHoughTransform {
   public:
-    MiniHoughTransform(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, int region);
+    MiniHoughTransform(const edm::ParameterSet& iConfig, const tt::Setup* setup, const DataFormats* dataFormats, int region);
     ~MiniHoughTransform(){}
 
     // read in and organize input product (fill vector input_)
@@ -36,7 +36,7 @@ namespace trackerTFP {
     // true if truncation is enbaled
     bool enableTruncation_;
     // provides run-time constants
-    const trackerDTC::Setup* setup_;
+    const tt::Setup* setup_;
     // provides dataformats
     const DataFormats* dataFormats_;
     // dataformat of inv2R

@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackerTFP_GeometricProcessor_h
 #define L1Trigger_TrackerTFP_GeometricProcessor_h
 
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
 #include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
 
@@ -13,7 +13,7 @@ namespace trackerTFP {
   // Class to route Stubs of one region to one stream per sector
   class GeometricProcessor {
   public:
-    GeometricProcessor(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup_, const DataFormats* dataFormats, int region);
+    GeometricProcessor(const edm::ParameterSet& iConfig, const tt::Setup* setup_, const DataFormats* dataFormats, int region);
     ~GeometricProcessor(){}
 
     // read in and organize input product (fill vector input_)
@@ -29,7 +29,7 @@ namespace trackerTFP {
     // true if truncation is enbaled
     bool enableTruncation_;
     // provides run-time constants
-    const trackerDTC::Setup* setup_;
+    const tt::Setup* setup_;
     // provides dataformats
     const DataFormats* dataFormats_;
     // processing region (0 - 8)

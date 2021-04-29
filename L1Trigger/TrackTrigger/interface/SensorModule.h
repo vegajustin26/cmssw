@@ -3,14 +3,14 @@
 
 #include "DataFormats/DetId/interface/DetId.h"
 
-namespace trackerDTC {
+namespace tt {
 
   class Setup;
 
   // representation of an outer tracker sensormodule
   class SensorModule {
   public:
-    SensorModule(const Setup& setup, const DetId& detId, int dtcId, int modId);
+    SensorModule(const Setup* setup, const DetId& detId, int dtcId, int modId);
     ~SensorModule() {}
 
     enum Type { BarrelPS, Barrel2S, DiskPS, Disk2S, NumTypes };
@@ -136,6 +136,6 @@ namespace trackerDTC {
     double tiltCorrectionIntercept_;
   };
 
-}  // namespace trackerDTC
+}  // namespace tt
 
 #endif

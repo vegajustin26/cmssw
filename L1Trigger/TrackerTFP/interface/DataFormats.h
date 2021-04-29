@@ -9,7 +9,7 @@ enabling automated conversions from frames to stubs/tracks and vice versa
 #include "FWCore/Framework/interface/data_default_record_trait.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormatsRcd.h"
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "DataFormats/L1TrackTrigger/interface/TTBV.h"
 
 #include <vector>
@@ -94,43 +94,43 @@ namespace trackerTFP {
   template<Variable v, Process p>
   class Format : public DataFormat {
   public:
-    Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
+    Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
     ~Format() {}
   };
 
-  template<> Format<Variable::phiT, Process::ht>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::phiT, Process::mht>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::inv2R, Process::ht>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::inv2R, Process::mht>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::r, Process::ht>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::phi, Process::ht>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::phi, Process::mht>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::phi, Process::sf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::phi, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::phi, Process::gp>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::phi, Process::dtc>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::z, Process::dtc>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::z, Process::gp>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::z, Process::sf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::z, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::zT, Process::sf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::cot, Process::sf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::layer, Process::ht>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::sectorEta, Process::gp>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::sectorPhi, Process::gp>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::sectorsPhi, Process::gp>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::match, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::hitPattern, Process::kfin>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::phi0, Process::dr>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::inv2R, Process::dr>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::z0, Process::dr>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::cot, Process::dr>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::phiT, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::inv2R, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::zT, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::cot, Process::kf>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::dPhi, Process::kfin>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
-  template<> Format<Variable::dZ, Process::kfin>::Format(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
+  template<> Format<Variable::phiT, Process::ht>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::phiT, Process::mht>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::inv2R, Process::ht>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::inv2R, Process::mht>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::r, Process::ht>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::phi, Process::ht>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::phi, Process::mht>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::phi, Process::sf>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::phi, Process::kf>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::phi, Process::gp>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::phi, Process::dtc>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::z, Process::dtc>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::z, Process::gp>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::z, Process::sf>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::z, Process::kf>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::zT, Process::sf>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::cot, Process::sf>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::layer, Process::ht>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::sectorEta, Process::gp>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::sectorPhi, Process::gp>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::sectorsPhi, Process::gp>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::match, Process::kf>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::hitPattern, Process::kfin>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::phi0, Process::dr>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::inv2R, Process::dr>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::z0, Process::dr>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::cot, Process::dr>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::phiT, Process::kf>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::inv2R, Process::kf>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::zT, Process::kf>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::cot, Process::kf>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::dPhi, Process::kfin>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
+  template<> Format<Variable::dZ, Process::kfin>::Format(const edm::ParameterSet& iConfig, const tt::Setup* setup);
 
   /*! \class  trackerTFP::DataFormats
    *  \brief  Class to calculate and provide dataformats used by Track Trigger emulator
@@ -188,7 +188,7 @@ namespace trackerTFP {
     }};
   public:
     DataFormats();
-    DataFormats(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup);
+    DataFormats(const edm::ParameterSet& iConfig, const tt::Setup* setup);
     ~DataFormats(){}
     // bool indicating if hybrid or tmtt being used
     bool hybrid() const { return iConfig_.getParameter<bool>("UseHybrid"); }
@@ -205,7 +205,7 @@ namespace trackerTFP {
     template<typename... Ts>
     void convertTrack(const std::tuple<Ts...>& data, tt::Frame& bv, Process p) const;
     // access to run-time constants
-    const trackerDTC::Setup* setup() const { return setup_; }
+    const tt::Setup* setup() const { return setup_; }
     // number of bits being used for specific variable flavour
     int width(Variable v, Process p) const { return formats_[+v][+p]->width(); }
     // precision being used for specific variable flavour
@@ -253,7 +253,7 @@ namespace trackerTFP {
     // configuration during construction
     edm::ParameterSet iConfig_;
     // stored run-time constants
-    const trackerDTC::Setup* setup_;
+    const tt::Setup* setup_;
     // collection of unique formats
     std::vector<DataFormat> dataFormats_;
     // variable flavour mapping
@@ -572,7 +572,7 @@ namespace trackerTFP {
     // precision of given variable
     double base(Variable v) const { return dataFormats_->base(v, p_); }
     // access to run-time constants
-    const trackerDTC::Setup* setup() const { return dataFormats_->setup(); }
+    const tt::Setup* setup() const { return dataFormats_->setup(); }
     // format of given variable
     const DataFormat& format(Variable v) const { return dataFormats_->format(v, p_); }
     // format of given variable and process

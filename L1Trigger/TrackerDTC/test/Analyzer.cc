@@ -22,7 +22,7 @@
 #include "DataFormats/GeometrySurface/interface/Plane.h"
 #include "DataFormats/SiStripDetId/interface/StripSubdetector.h"
 
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 
 #include <TProfile.h>
 #include <TProfile2D.h>

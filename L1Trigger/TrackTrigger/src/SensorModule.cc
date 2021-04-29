@@ -1,5 +1,5 @@
-#include "L1Trigger/TrackerDTC/interface/SensorModule.h"
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/SensorModule.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "DataFormats/GeometrySurface/interface/Plane.h"
 
 #include <cmath>
@@ -10,12 +10,12 @@
 using namespace std;
 using namespace edm;
 
-namespace trackerDTC {
+namespace tt {
 
-  SensorModule::SensorModule(const Setup& setup, const DetId& detId, int dtcId, int modId)
+  SensorModule::SensorModule(const Setup* setup, const DetId& detId, int dtcId, int modId)
       : detId_(detId), dtcId_(dtcId), modId_(modId) {
-    const TrackerGeometry* trackerGeometry = setup.trackerGeometry();
-    const TrackerTopology* trackerTopology = setup.trackerTopology();
+    const TrackerGeometry* trackerGeometry = setup->trackerGeometry();
+    const TrackerTopology* trackerTopology = setup->trackerTopology();
     const GeomDetUnit* geomDetUnit = trackerGeometry->idToDetUnit(detId);
     const PixelTopology* pixelTopology =
         dynamic_cast<const PixelTopology*>(&(dynamic_cast<const PixelGeomDetUnit*>(geomDetUnit)->specificTopology()));
@@ -24,11 +24,11 @@ namespace trackerDTC {
     const GlobalPoint pos1 =
         GlobalPoint(trackerGeometry->idToDetUnit(trackerTopology->partnerDetId(detId))->position());
     // detector region [0-8]
-    const int region = dtcId_ / setup.numDTCsPerRegion();
+    const int region = dtcId_ / setup->numDTCsPerRegion();
     // module radius in cm
     r_ = pos0.perp();
     // module phi w.r.t. detector region_ centre in rad
-    phi_ = deltaPhi(pos0.phi() - (region + .5) * setup.baseRegion());
+    phi_ = deltaPhi(pos0.phi() - (region + .5) * setup->baseRegion());
     // module z in cm
     z_ = pos0.z();
     // sensor separation in cm
@@ -58,9 +58,9 @@ namespace trackerDTC {
     cosTilt_ = std::cos(tilt_);
     // layer id [barrel: 0-5, endcap: 0-4]
     const int layer =
-        (barrel_ ? trackerTopology->layer(detId) : trackerTopology->tidWheel(detId)) - setup.offsetLayerId();
+        (barrel_ ? trackerTopology->layer(detId) : trackerTopology->tidWheel(detId)) - setup->offsetLayerId();
     // layer id [1-6,11-15]
-    layerId_ = layer + setup.offsetLayerId() + (barrel_ ? 0 : setup.offsetLayerDisks());
+    layerId_ = layer + setup->offsetLayerId() + (barrel_ ? 0 : setup->offsetLayerDisks());
     // TTStub row needs flip of sign
     signRow_ = signbit(deltaPhi(plane.rotation().x().phi() - pos0.phi()));
     // TTStub col needs flip of sign
@@ -79,48 +79,48 @@ namespace trackerDTC {
     // encoding for 2S endcap radii
     encodedR_ = -1;
     if (type_ == Disk2S) {
-      const int offset = setup.hybridNumRingsPS(layer);
+      const int offset = setup->hybridNumRingsPS(layer);
       const int ring = trackerTopology->tidRing(detId);
       encodedR_ = numColumns_ * (ring - offset);
     }
     // r and z offsets
     if (barrel_) {
-      offsetR_ = setup.hybridLayerR(layer);
+      offsetR_ = setup->hybridLayerR(layer);
       offsetZ_ = 0.;
     } else {
       offsetR_ = 0.;
-      offsetZ_ = side_ ? setup.hybridDiskZ(layer) : -setup.hybridDiskZ(layer);
+      offsetZ_ = side_ ? setup->hybridDiskZ(layer) : -setup->hybridDiskZ(layer);
     }
     const TypeTilt typeTilt = static_cast<TypeTilt>(trackerTopology->tobSide(detId));
     // getting bend window size
     double windowSize(-1.);
     if (barrel_) {
       if (typeTilt == flat)
-        windowSize = setup.windowSizeBarrelLayer(layerId_);
+        windowSize = setup->windowSizeBarrelLayer(layerId_);
       else {
         int ladder = trackerTopology->tobRod(detId);
         if (typeTilt == tiltedMinus)
           // Corrected ring number, bet 0 and barrelNTilt.at(layer), in ascending |z|
-          ladder = 1 + setup.numTiltedLayerRing(layerId_) - ladder;
-        windowSize = setup.windowSizeTiltedLayerRing(layerId_, ladder);
+          ladder = 1 + setup->numTiltedLayerRing(layerId_) - ladder;
+        windowSize = setup->windowSizeTiltedLayerRing(layerId_, ladder);
       }
     } else {
       const int ring = trackerTopology->tidRing(detId);
-      const int lay = layer + setup.offsetLayerId();
-      windowSize = setup.windowSizeEndcapDisksRing(lay, ring);
+      const int lay = layer + setup->offsetLayerId();
+      windowSize = setup->windowSizeEndcapDisksRing(lay, ring);
     }
-    windowSize_ = windowSize / setup.baseWindowSize();
+    windowSize_ = windowSize / setup->baseWindowSize();
     // getting encoded layer id
-    const vector<int>& encodingLayerId = setup.encodingLayerId(dtcId_);
+    const vector<int>& encodingLayerId = setup->encodingLayerId(dtcId_);
     const auto pos = find(encodingLayerId.begin(), encodingLayerId.end(), layerId_);
     encodedLayerId_ = distance(encodingLayerId.begin(), pos);
     // calculate tilt correction parameter used to project r to z uncertainty
     tiltCorrectionSlope_ = barrel_ ? 0. : 1.;
     tiltCorrectionIntercept_ = barrel_ ? 1. : 0.;
     if (typeTilt == tiltedMinus || typeTilt == tiltedPlus) {
-      tiltCorrectionSlope_ = setup.tiltApproxSlope();
-      tiltCorrectionIntercept_ = setup.tiltApproxIntercept();
+      tiltCorrectionSlope_ = setup->tiltApproxSlope();
+      tiltCorrectionIntercept_ = setup->tiltApproxIntercept();
     }
   }
 
-}  // namespace trackerDTC
+}  // namespace tt

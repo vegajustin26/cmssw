@@ -30,7 +30,7 @@ namespace trackerTFP {
     TTBV maybePattern(int binEta, int binZT, int binCot) const;
   private:
     // helper class providing run-time constants
-    const trackerDTC::Setup* setup_;
+    const tt::Setup* setup_;
     // helper class providing dataformats
     const DataFormats* dataFormats_;
     // data foramt of variable zT

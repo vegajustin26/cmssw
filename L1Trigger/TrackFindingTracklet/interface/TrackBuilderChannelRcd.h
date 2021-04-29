@@ -3,11 +3,11 @@
 
 #include "FWCore/Framework/interface/DependentRecordImplementation.h"
 #include "FWCore/Utilities/interface/mplVector.h"
-#include "L1Trigger/TrackerDTC/interface/SetupRcd.h"
+#include "L1Trigger/TrackTrigger/interface/SetupRcd.h"
 
 namespace trackFindingTracklet {
 
-  typedef edm::mpl::Vector<trackerDTC::SetupRcd> RcdsTrackBuilderChannel;
+  typedef edm::mpl::Vector<tt::SetupRcd> RcdsTrackBuilderChannel;
 
   class TrackBuilderChannelRcd : public edm::eventsetup::DependentRecordImplementation<TrackBuilderChannelRcd, RcdsTrackBuilderChannel> {};
 

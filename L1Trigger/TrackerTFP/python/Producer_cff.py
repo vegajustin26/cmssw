@@ -1,7 +1,7 @@
 # Produce L1 tracks with TMTT C++ emulation
 import FWCore.ParameterSet.Config as cms
 
-from L1Trigger.TrackerDTC.ProducerES_cff import TrackTriggerSetup
+from L1Trigger.TrackTrigger.ProducerSetup_cff import TrackTriggerSetup
 from L1Trigger.TrackerTFP.Producer_cfi import TrackerTFPProducer_params
 from L1Trigger.TrackerTFP.ProducerES_cff import TrackTriggerDataFormats
 from L1Trigger.TrackerTFP.ProducerLayerEncoding_cff import TrackTriggerLayerEncoding

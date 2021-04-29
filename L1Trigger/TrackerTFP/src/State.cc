@@ -1,7 +1,6 @@
 #include "L1Trigger/TrackerTFP/interface/State.h"
 
 using namespace std;
-using namespace trackerDTC;
 using namespace tt;
 
 namespace trackerTFP {

@@ -7,7 +7,6 @@
 
 using namespace std;
 using namespace edm;
-using namespace trackerDTC;
 using namespace tt;
 
 namespace trackerTFP {

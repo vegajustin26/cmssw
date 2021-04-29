@@ -100,7 +100,7 @@ namespace trackerTFP {
     KalmanFilterFormats();
     KalmanFilterFormats(const edm::ParameterSet& iConfig, const DataFormats* dataFormats);
     ~KalmanFilterFormats(){}
-    const trackerDTC::Setup* setup() const { return setup_; }
+    const tt::Setup* setup() const { return setup_; }
     const DataFormats* dataFormats() const { return dataFormats_; }
     int width(VariableKF v) const { return formats_[+v].width(); }
     double base(VariableKF v) const { return formats_[+v].base(); }
@@ -111,7 +111,7 @@ namespace trackerTFP {
     void fillFormats();
     const edm::ParameterSet iConfig_;
     const DataFormats* dataFormats_;
-    const trackerDTC::Setup* setup_;
+    const tt::Setup* setup_;
     std::vector<DataFormatKF> formats_;
   };
 

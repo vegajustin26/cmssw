@@ -1,7 +1,7 @@
 #ifndef L1Trigger_TrackerTFP_KalmanFilter_h
 #define L1Trigger_TrackerTFP_KalmanFilter_h
 
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "L1Trigger/TrackerTFP/interface/DataFormats.h"
 #include "L1Trigger/TrackerTFP/interface/KalmanFilterFormats.h"
 #include "L1Trigger/TrackerTFP/interface/State.h"
@@ -14,7 +14,7 @@ namespace trackerTFP {
   // Class to do helix fit to all tracks in a region.
   class KalmanFilter {
   public:
-    KalmanFilter(const edm::ParameterSet& iConfig, const trackerDTC::Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region);
+    KalmanFilter(const edm::ParameterSet& iConfig, const tt::Setup* setup, const DataFormats* dataFormats, KalmanFilterFormats* kalmanFilterFormats, int region);
     ~KalmanFilter(){}
 
     // read in and organize input tracks and stubs
@@ -42,7 +42,7 @@ namespace trackerTFP {
     // true if truncation is enbaled
     bool enableTruncation_;
     // provides run-time constants
-    const trackerDTC::Setup* setup_;
+    const tt::Setup* setup_;
     // provides dataformats
     const DataFormats* dataFormats_;
     // provides dataformats of Kalman filter internals

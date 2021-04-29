@@ -4,24 +4,24 @@
 #include "FWCore/Utilities/interface/ESGetToken.h"
 #include "FWCore/Utilities/interface/ESInputTag.h"
 #include "DataFormats/Provenance/interface/ParameterSetID.h"
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 
 #include <memory>
 
 using namespace std;
 using namespace edm;
 
-namespace trackerDTC {
+namespace tt {
 
-  /*! \class  trackerDTC::ProducerES
+  /*! \class  tt::ProducerSetup
    *  \brief  Class to produce setup of Track Trigger emulators
    *  \author Thomas Schuh
    *  \date   2020, Apr
    */
-  class ProducerES : public ESProducer {
+  class ProducerSetup : public ESProducer {
   public:
-    ProducerES(const ParameterSet& iConfig);
-    ~ProducerES() override {}
+    ProducerSetup(const ParameterSet& iConfig);
+    ~ProducerSetup() override {}
     unique_ptr<Setup> produce(const SetupRcd& setupRcd);
 
   private:
@@ -34,7 +34,7 @@ namespace trackerDTC {
     ESGetToken<DDCompactView, IdealGeometryRecord> getTokenGeometryConfiguration_;
   };
 
-  ProducerES::ProducerES(const ParameterSet& iConfig) : iConfig_(iConfig) {
+  ProducerSetup::ProducerSetup(const ParameterSet& iConfig) : iConfig_(iConfig) {
     setWhatProduced(this)
         .setConsumes(getTokenTTStubAlgorithm_)
         .setConsumes(getTokenMagneticField_)
@@ -44,7 +44,7 @@ namespace trackerDTC {
         .setConsumes(getTokenGeometryConfiguration_);
   }
 
-  unique_ptr<Setup> ProducerES::produce(const SetupRcd& setupRcd) {
+  unique_ptr<Setup> ProducerSetup::produce(const SetupRcd& setupRcd) {
     const MagneticField& magneticField = setupRcd.get(getTokenMagneticField_);
     const TrackerGeometry& trackerGeometry = setupRcd.get(getTokenTrackerGeometry_);
     const TrackerTopology& trackerTopology = setupRcd.get(getTokenTrackerTopology_);
@@ -69,6 +69,6 @@ namespace trackerDTC {
                               pSetIdGeometryConfiguration);
   }
 
-}  // namespace trackerDTC
+}  // namespace tt
 
-DEFINE_FWK_EVENTSETUP_MODULE(trackerDTC::ProducerES);
+DEFINE_FWK_EVENTSETUP_MODULE(tt::ProducerSetup);

@@ -11,87 +11,87 @@ using namespace tt;
 
 namespace trackerDTC {
 
-  Stub::Stub(const ParameterSet& iConfig, const Setup& setup, SensorModule* sm, const TTStubRef& ttStubRef)
-      : setup_(&setup), sm_(sm), ttStubRef_(ttStubRef), hybrid_(iConfig.getParameter<bool>("UseHybrid")), valid_(true) {
-    regions_.reserve(setup.numOverlappingRegions());
+  Stub::Stub(const ParameterSet& iConfig, const Setup* setup, SensorModule* sm, const TTStubRef& ttStubRef)
+      : setup_(setup), sm_(sm), ttStubRef_(ttStubRef), hybrid_(iConfig.getParameter<bool>("UseHybrid")), valid_(true) {
+    regions_.reserve(setup->numOverlappingRegions());
     // get stub local coordinates
     const MeasurementPoint& mp = ttStubRef->clusterRef(0)->findAverageLocalCoordinatesCentered();
 
     // convert to uniformed local coordinates
 
     // column number in pitch units
-    col_ = (int)floor(pow(-1, sm->signCol()) * (mp.y() - sm->numColumns() / 2) / setup.baseCol());
+    col_ = (int)floor(pow(-1, sm->signCol()) * (mp.y() - sm->numColumns() / 2) / setup->baseCol());
     // row number in half pitch units
-    row_ = (int)floor(pow(-1, sm->signRow()) * (mp.x() - sm->numRows() / 2) / setup.baseRow());
+    row_ = (int)floor(pow(-1, sm->signRow()) * (mp.x() - sm->numRows() / 2) / setup->baseRow());
     // bend number in quarter pitch units
-    bend_ = (int)floor(pow(-1, sm->signBend()) * (ttStubRef->bendBE()) / setup.baseBend());
+    bend_ = (int)floor(pow(-1, sm->signBend()) * (ttStubRef->bendBE()) / setup->baseBend());
     // reduced row number for look up
-    rowLUT_ = (int)floor((double)row_ / pow(2., setup.widthRow() - setup.dtcWidthRowLUT()));
+    rowLUT_ = (int)floor((double)row_ / pow(2., setup->widthRow() - setup->dtcWidthRowLUT()));
     // sub row number inside reduced row number
-    rowSub_ = row_ - (rowLUT_ + .5) * pow(2, setup.widthRow() - setup.dtcWidthRowLUT());
+    rowSub_ = row_ - (rowLUT_ + .5) * pow(2, setup->widthRow() - setup->dtcWidthRowLUT());
 
     // convert local to global coordinates
 
-    const double y = (col_ + .5) * setup.baseCol() * sm->pitchCol();
+    const double y = (col_ + .5) * setup->baseCol() * sm->pitchCol();
     // radius of a column of strips/pixel in cm
     d_ = sm->r() + y * sm->sinTilt();
     // stub z in cm
-    z_ = digi(sm->z() + y * sm->cosTilt(), setup.tmttBaseZ());
+    z_ = digi(sm->z() + y * sm->cosTilt(), setup->tmttBaseZ());
 
-    const double x0 = rowLUT_ * setup.baseRow() * setup.dtcNumMergedRows() * sm->pitchRow();
-    const double x1 = (rowLUT_ + 1) * setup.baseRow() * setup.dtcNumMergedRows() * sm->pitchRow();
-    const double x = (rowLUT_ + .5) * setup.baseRow() * setup.dtcNumMergedRows() * sm->pitchRow();
+    const double x0 = rowLUT_ * setup->baseRow() * setup->dtcNumMergedRows() * sm->pitchRow();
+    const double x1 = (rowLUT_ + 1) * setup->baseRow() * setup->dtcNumMergedRows() * sm->pitchRow();
+    const double x = (rowLUT_ + .5) * setup->baseRow() * setup->dtcNumMergedRows() * sm->pitchRow();
     // stub r in cm
     r_ = sqrt(d_ * d_ + x * x);
 
     const double phi0 = sm->phi() + atan2(x0, d_);
     const double phi1 = sm->phi() + atan2(x1, d_);
     const double c = (phi0 + phi1) / 2.;
-    const double m = (phi1 - phi0) / setup.dtcNumMergedRows();
+    const double m = (phi1 - phi0) / setup->dtcNumMergedRows();
 
     // intercept of linearized stub phi in rad
-    c_ = digi(c, setup.tmttBasePhi());
+    c_ = digi(c, setup->tmttBasePhi());
     // slope of linearized stub phi in rad / strip
-    m_ = digi(m, setup.dtcBaseM());
+    m_ = digi(m, setup->dtcBaseM());
 
     if (hybrid_) {
-      if (abs(z_ / r_) > setup.hybridMaxCot())
+      if (abs(z_ / r_) > setup->hybridMaxCot())
         // did not pass eta cut
         valid_ = false;
     } else {
       // extrapolated z at radius T assuming z0=0
-      const double zT = setup.chosenRofZ() * z_ / r_;
+      const double zT = setup->chosenRofZ() * z_ / r_;
       // extrapolated z0 window at radius T
-      const double dZT = setup.beamWindowZ() * abs(1. - setup.chosenRofZ() / r_);
+      const double dZT = setup->beamWindowZ() * abs(1. - setup->chosenRofZ() / r_);
       double zTMin = zT - dZT;
       double zTMax = zT + dZT;
-      if (zTMin >= setup.maxZT() || zTMax < -setup.maxZT())
+      if (zTMin >= setup->maxZT() || zTMax < -setup->maxZT())
         // did not pass "eta" cut
         valid_ = false;
       else {
-        zTMin = max(zTMin, -setup.maxZT());
-        zTMax = min(zTMax, setup.maxZT());
+        zTMin = max(zTMin, -setup->maxZT());
+        zTMax = min(zTMax, setup->maxZT());
       }
       // range of stub cot(theta)
-      cot_ = {zTMin / setup.chosenRofZ(), zTMax / setup.chosenRofZ()};
+      cot_ = {zTMin / setup->chosenRofZ(), zTMax / setup->chosenRofZ()};
     }
 
     // stub r w.r.t. chosenRofPhi in cm
-    static const double chosenRofPhi = hybrid_ ? setup.hybridChosenRofPhi() : setup.chosenRofPhi();
-    r_ = digi(r_ - chosenRofPhi, setup.tmttBaseR());
+    static const double chosenRofPhi = hybrid_ ? setup->hybridChosenRofPhi() : setup->chosenRofPhi();
+    r_ = digi(r_ - chosenRofPhi, setup->tmttBaseR());
 
     // radial (cylindrical) component of sensor separation
     const double dr = sm->sep() / (sm->cosTilt() - sm->sinTilt() * z_ / d_);
     // converts bend into inv2R in 1/cm
     const double inv2ROverBend = sm->pitchRow() / dr / d_;
     // inv2R in 1/cm
-    const double inv2R = -bend_ * setup.baseBend() * inv2ROverBend;
+    const double inv2R = -bend_ * setup->baseBend() * inv2ROverBend;
     // inv2R uncertainty in 1/cm
-    const double dInv2R = setup.bendCut() * inv2ROverBend;
-    const double minPt = hybrid_ ? setup.hybridMinPt() : setup.minPt();
-    const double maxInv2R = setup.invPtToDphi() / minPt - setup.dtcBaseInv2R() / 2.;
-    double inv2RMin = digi(inv2R - dInv2R, setup.dtcBaseInv2R());
-    double inv2RMax = digi(inv2R + dInv2R, setup.dtcBaseInv2R());
+    const double dInv2R = setup->bendCut() * inv2ROverBend;
+    const double minPt = hybrid_ ? setup->hybridMinPt() : setup->minPt();
+    const double maxInv2R = setup->invPtToDphi() / minPt - setup->dtcBaseInv2R() / 2.;
+    double inv2RMin = digi(inv2R - dInv2R, setup->dtcBaseInv2R());
+    double inv2RMax = digi(inv2R + dInv2R, setup->dtcBaseInv2R());
     if (inv2RMin > maxInv2R || inv2RMax < -maxInv2R) {
       // did not pass pt cut
       valid_ = false;
@@ -127,11 +127,11 @@ namespace trackerDTC {
     if (sm->type() == SensorModule::Disk2S) {
       // encoded r
       r_ = sm->encodedR() + (sm->side() ? -col_ : (col_ + sm->numColumns() / 2));
-      r_ = (r_ + 0.5) * setup.hybridBaseR(sm->type());
+      r_ = (r_ + 0.5) * setup->hybridBaseR(sm->type());
     }
 
     // encode bend
-    const vector<double>& encodingBend = setup.encodingBend(sm->windowSize(), sm->psModule());
+    const vector<double>& encodingBend = setup->encodingBend(sm->windowSize(), sm->psModule());
     const auto pos = find(encodingBend.begin(), encodingBend.end(), abs(ttStubRef->bendBE()));
     const int uBend = distance(encodingBend.begin(), pos);
     bend_ = pow(-1, signbit(bend_)) * uBend;

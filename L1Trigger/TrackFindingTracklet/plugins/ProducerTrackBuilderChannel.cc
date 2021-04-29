@@ -3,13 +3,13 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Utilities/interface/ESGetToken.h"
 #include "L1Trigger/TrackFindingTracklet/interface/TrackBuilderChannel.h"
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 
 #include <memory>
 
 using namespace std;
 using namespace edm;
-using namespace trackerDTC;
+using namespace tt;
 
 namespace trackFindingTracklet {
 

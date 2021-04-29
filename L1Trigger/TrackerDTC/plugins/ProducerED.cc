@@ -12,7 +12,7 @@
 
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 #include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
-#include "L1Trigger/TrackerDTC/interface/Setup.h"
+#include "L1Trigger/TrackTrigger/interface/Setup.h"
 #include "L1Trigger/TrackerDTC/interface/SensorModule.h"
 #include "L1Trigger/TrackerDTC/interface/DTC.h"
 
@@ -24,6 +24,7 @@
 
 using namespace std;
 using namespace edm;
+using namespace tt;
 
 namespace trackerDTC {
 
@@ -42,7 +43,7 @@ namespace trackerDTC {
     void produce(Event&, const EventSetup&) override;
     void endJob() {}
     // helper class to store configurations
-    Setup setup_;
+    const Setup* setup_;
     // ED input token of TTStubs
     EDGetTokenT<TTStubDetSetVec> edGetToken_;
     // ED output token for accepted stubs
@@ -71,30 +72,30 @@ namespace trackerDTC {
   }
 
   void ProducerED::beginRun(const Run& iRun, const EventSetup& iSetup) {
-    setup_ = iSetup.getData(esGetToken_);
-    if (!setup_.configurationSupported())
+    setup_ = &iSetup.getData(esGetToken_);
+    if (!setup_->configurationSupported())
       return;
     // check process history if desired
     if (checkHistory_)
-      setup_.checkHistory(iRun.processHistory());
+      setup_->checkHistory(iRun.processHistory());
   }
 
   void ProducerED::produce(Event& iEvent, const EventSetup& iSetup) {
     // empty DTC products
-    TTDTC productAccepted = setup_.ttDTC();
-    TTDTC productLost = setup_.ttDTC();
-    if (setup_.configurationSupported()) {
+    TTDTC productAccepted = setup_->ttDTC();
+    TTDTC productLost = setup_->ttDTC();
+    if (setup_->configurationSupported()) {
       // read in stub collection
       Handle<TTStubDetSetVec> handle;
       iEvent.getByToken(edGetToken_, handle);
       // apply cabling map, reorganise stub collections
-      vector<vector<vector<TTStubRef>>> stubsDTCs(setup_.numDTCs(),
-                                                  vector<vector<TTStubRef>>(setup_.numModulesPerDTC()));
+      vector<vector<vector<TTStubRef>>> stubsDTCs(setup_->numDTCs(),
+                                                  vector<vector<TTStubRef>>(setup_->numModulesPerDTC()));
       for (auto module = handle->begin(); module != handle->end(); module++) {
         // DetSetVec->detId + 1 = tk layout det id
-        const DetId detId = module->detId() + setup_.offsetDetIdDSV();
+        const DetId detId = module->detId() + setup_->offsetDetIdDSV();
         // corresponding sensor module
-        SensorModule* sm = setup_.sensorModule(detId);
+        SensorModule* sm = setup_->sensorModule(detId);
         // empty stub collection
         vector<TTStubRef>& stubsModule = stubsDTCs[sm->dtcId()][sm->modId()];
         stubsModule.reserve(module->size());
@@ -102,7 +103,7 @@ namespace trackerDTC {
           stubsModule.emplace_back(makeRefTo(handle, ttStub));
       }
       // board level processing
-      for (int dtcId = 0; dtcId < setup_.numDTCs(); dtcId++) {
+      for (int dtcId = 0; dtcId < setup_->numDTCs(); dtcId++) {
         // create single outer tracker DTC board
         DTC dtc(iConfig_, setup_, dtcId, stubsDTCs.at(dtcId));
         // route stubs and fill products
