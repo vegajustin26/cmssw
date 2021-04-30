@@ -110,10 +110,6 @@ namespace tt {
       windowSize = setup->windowSizeEndcapDisksRing(lay, ring);
     }
     windowSize_ = windowSize / setup->baseWindowSize();
-    // getting encoded layer id
-    const vector<int>& encodingLayerId = setup->encodingLayerId(dtcId_);
-    const auto pos = find(encodingLayerId.begin(), encodingLayerId.end(), layerId_);
-    encodedLayerId_ = distance(encodingLayerId.begin(), pos);
     // calculate tilt correction parameter used to project r to z uncertainty
     tiltCorrectionSlope_ = barrel_ ? 0. : 1.;
     tiltCorrectionIntercept_ = barrel_ ? 1. : 0.;

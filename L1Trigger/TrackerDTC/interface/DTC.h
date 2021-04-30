@@ -3,6 +3,7 @@
 
 #include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
 #include "L1Trigger/TrackTrigger/interface/Setup.h"
+#include "L1Trigger/TrackerDTC/interface/LayerEncoding.h"
 #include "L1Trigger/TrackerDTC/interface/Stub.h"
 
 #include <vector>
@@ -10,7 +11,11 @@
 
 namespace trackerDTC {
 
-  // representation of an outer tracker DTC board
+  /*! \class  trackerDTC::DTC
+   *  \brief  Class to represent an outer tracker DTC board
+   *  \author Thomas Schuh
+   *  \date   2020, Jan
+   */
   class DTC {
   private:
     typedef std::deque<Stub*> Stubs;
@@ -20,6 +25,7 @@ namespace trackerDTC {
   public:
     DTC(const edm::ParameterSet& iConfig,
         const tt::Setup* setup,
+        const LayerEncoding* layerEncoding,
         int dtcId,
         const std::vector<std::vector<TTStubRef>>& stubsDTC);
     ~DTC() {}

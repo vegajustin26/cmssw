@@ -13,6 +13,7 @@ namespace trackerDTC {
 
   DTC::DTC(const ParameterSet& iConfig,
            const Setup* setup,
+           const LayerEncoding* layerEncoding,
            int dtcId,
            const std::vector<std::vector<TTStubRef>>& stubsDTC)
       : setup_(setup),
@@ -40,7 +41,7 @@ namespace trackerDTC {
       // convert TTStubs and fill input channel
       Stubs& stubs = input_[blockId][channelId];
       for (const TTStubRef& ttStubRef : ttStubRefs) {
-        stubs_.emplace_back(iConfig, setup, module, ttStubRef);
+        stubs_.emplace_back(iConfig, setup, layerEncoding, module, ttStubRef);
         Stub& stub = stubs_.back();
         if (stub.valid())
           // passed pt and eta cut

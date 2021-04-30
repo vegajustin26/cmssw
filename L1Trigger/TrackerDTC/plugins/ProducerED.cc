@@ -13,7 +13,8 @@
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 #include "DataFormats/L1TrackTrigger/interface/TTDTC.h"
 #include "L1Trigger/TrackTrigger/interface/Setup.h"
-#include "L1Trigger/TrackerDTC/interface/SensorModule.h"
+#include "L1Trigger/TrackTrigger/interface/SensorModule.h"
+#include "L1Trigger/TrackerDTC/interface/LayerEncoding.h"
 #include "L1Trigger/TrackerDTC/interface/DTC.h"
 
 #include <numeric>
@@ -44,6 +45,8 @@ namespace trackerDTC {
     void endJob() {}
     // helper class to store configurations
     const Setup* setup_;
+    // class to encode layer ids used between DTC and TFP in Hybrid
+    const LayerEncoding* layerEncoding_;
     // ED input token of TTStubs
     EDGetTokenT<TTStubDetSetVec> edGetToken_;
     // ED output token for accepted stubs
@@ -51,15 +54,15 @@ namespace trackerDTC {
     // ED output token for lost stubs
     EDPutTokenT<TTDTC> edPutTokenLost_;
     // Setup token
-    ESGetToken<Setup, SetupRcd> esGetToken_;
+    ESGetToken<Setup, SetupRcd> esGetTokenSetup_;
+    // LayerEncoding token
+    ESGetToken<LayerEncoding, LayerEncodingRcd> esGetTokenLayerEncoding_;
     // configuration
     ParameterSet iConfig_;
-    // throws an exception if current configuration inconsitent with history
-    bool checkHistory_;
   };
 
   ProducerED::ProducerED(const ParameterSet& iConfig)
-      : iConfig_(iConfig), checkHistory_(iConfig.getParameter<bool>("CheckHistory")) {
+      : iConfig_(iConfig) {
     // book in- and output ED products
     const auto& inputTag = iConfig.getParameter<InputTag>("InputTag");
     const auto& branchAccepted = iConfig.getParameter<string>("BranchAccepted");
@@ -67,17 +70,22 @@ namespace trackerDTC {
     edGetToken_ = consumes<TTStubDetSetVec>(inputTag);
     edPutTokenAccepted_ = produces<TTDTC>(branchAccepted);
     edPutTokenLost_ = produces<TTDTC>(branchLost);
-    // book ES product
-    esGetToken_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
+    // book ES products
+    esGetTokenSetup_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
+    esGetTokenLayerEncoding_ = esConsumes<LayerEncoding, LayerEncodingRcd, Transition::BeginRun>();
+    // initial ES products
+    setup_ = nullptr;
+    layerEncoding_ = nullptr;
   }
 
   void ProducerED::beginRun(const Run& iRun, const EventSetup& iSetup) {
-    setup_ = &iSetup.getData(esGetToken_);
+    setup_ = &iSetup.getData(esGetTokenSetup_);
     if (!setup_->configurationSupported())
       return;
     // check process history if desired
-    if (checkHistory_)
+    if (iConfig_.getParameter<bool>("CheckHistory"))
       setup_->checkHistory(iRun.processHistory());
+    layerEncoding_ = &iSetup.getData(esGetTokenLayerEncoding_);
   }
 
   void ProducerED::produce(Event& iEvent, const EventSetup& iSetup) {
@@ -105,7 +113,7 @@ namespace trackerDTC {
       // board level processing
       for (int dtcId = 0; dtcId < setup_->numDTCs(); dtcId++) {
         // create single outer tracker DTC board
-        DTC dtc(iConfig_, setup_, dtcId, stubsDTCs.at(dtcId));
+        DTC dtc(iConfig_, setup_, layerEncoding_, dtcId, stubsDTCs.at(dtcId));
         // route stubs and fill products
         dtc.produce(productAccepted, productLost);
       }

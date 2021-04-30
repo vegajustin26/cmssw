@@ -1,5 +1,5 @@
-#ifndef L1Trigger_TrackerDTC_SensorModule_h
-#define L1Trigger_TrackerDTC_SensorModule_h
+#ifndef L1Trigger_TrackTrigger_SensorModule_h
+#define L1Trigger_TrackTrigger_SensorModule_h
 
 #include "DataFormats/DetId/interface/DetId.h"
 
@@ -61,8 +61,6 @@ namespace tt {
     double cosTilt() const { return cosTilt_; }
     // encoded radius of disk2S stubs, used in Hybrid
     int encodedR() const { return encodedR_; }
-    // encoded layer id [0-3]
-    int encodedLayerId() const { return encodedLayerId_; }
     // stub radius offset for barrelPS, barrel2S, used in Hybrid
     double offsetR() const { return offsetR_; }
     // stub z offset for diskPS, disk2S, used in Hybrid
@@ -122,8 +120,6 @@ namespace tt {
     Type type_;
     // encoded radius of disk2S stubs, used in Hybrid
     int encodedR_;
-    // encoded layer id [0-3]
-    int encodedLayerId_;
     // stub radius offset for barrelPS, barrel2S, used in Hybrid
     double offsetR_;
     // stub z offset for diskPS, disk2S, used in Hybrid

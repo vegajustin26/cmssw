@@ -1,5 +1,5 @@
-#ifndef L1Trigger_TrackerDTC_Setup_h
-#define L1Trigger_TrackerDTC_Setup_h
+#ifndef L1Trigger_TrackTrigger_Setup_h
+#define L1Trigger_TrackTrigger_Setup_h
 
 #include "FWCore/Framework/interface/data_default_record_trait.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -348,8 +348,6 @@ namespace tt {
     double dtcBaseM() const { return dtcBaseM_; }
     // sensor modules connected to given dtc id
     const std::vector<SensorModule*>& dtcModules(int dtcId) const { return dtcModules_.at(dtcId); }
-    // index = encoded layerId, inner value = decoded layerId for given tfp channel [0-47]
-    const std::vector<int>& encodingLayerId(int tfpChannel) const;
     // total number of output channel
     int dtcNumStreams() const { return dtcNumStreams_; }
 
@@ -464,8 +462,6 @@ namespace tt {
     void consumeStubAlgorithm();
     // create bend encodings
     void encodeBend(std::vector<std::vector<double>>&, bool) const;
-    // create encodingsLayerId
-    void encodeLayerId();
     // create sensor modules
     void produceSensorModules();
     // range check of dtc id
@@ -907,8 +903,6 @@ namespace tt {
     std::vector<std::vector<double>> encodingsBendPS_;
     // outer index = module window size, inner index = encoded bend, inner value = decoded bend, for 2s modules
     std::vector<std::vector<double>> encodingsBend2S_;
-    // outer index = dtc id in region, inner index = encoded layerId, inner value = decoded layerId
-    std::vector<std::vector<int>> encodingsLayerId_;
     // collection of outer tracker sensor modules
     std::vector<SensorModule> sensorModules_;
     // collection of outer tracker sensor modules organised in DTCS [0-215][0-71]

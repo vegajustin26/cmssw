@@ -2,6 +2,7 @@
 #define L1Trigger_TrackerDTC_Stub_h
 
 #include "L1Trigger/TrackTrigger/interface/Setup.h"
+#include "L1Trigger/TrackerDTC/interface/LayerEncoding.h"
 #include "SimTracker/TrackTriggerAssociation/interface/TTTypes.h"
 
 #include <utility>
@@ -9,10 +10,14 @@
 
 namespace trackerDTC {
 
-  // representation of a stub
+  /*! \class  trackerDTC::Stub
+   *  \brief  Class to represent an outer tracker Stub
+   *  \author Thomas Schuh
+   *  \date   2020, Jan
+   */
   class Stub {
   public:
-    Stub(const edm::ParameterSet&, const tt::Setup*, tt::SensorModule*, const TTStubRef&);
+    Stub(const edm::ParameterSet&, const tt::Setup*, const LayerEncoding*, tt::SensorModule*, const TTStubRef&);
     ~Stub() {}
 
     // underlying TTStubRef
@@ -36,6 +41,8 @@ namespace trackerDTC {
 
     // stores, calculates and provides run-time constants
     const tt::Setup* setup_;
+    // class to encode layer ids used between DTC and TFP in Hybrid
+    const LayerEncoding* layerEncoding_;
     // representation of an outer tracker sensormodule
     tt::SensorModule* sm_;
     // underlying TTStubRef

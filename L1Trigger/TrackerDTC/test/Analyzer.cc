@@ -23,6 +23,7 @@
 #include "DataFormats/SiStripDetId/interface/StripSubdetector.h"
 
 #include "L1Trigger/TrackTrigger/interface/Setup.h"
+#include "L1Trigger/TrackerDTC/interface/LayerEncoding.h"
 
 #include <TProfile.h>
 #include <TProfile2D.h>
@@ -114,7 +115,7 @@ namespace trackerDTC {
     // Setup token
     ESGetToken<Setup, SetupRcd> esGetToken_;
     // stores, calculates and provides run-time constants
-    Setup setup_;
+    const Setup* setup_;
     // selector to partly select TPs for efficiency measurements
     TrackingParticleSelector tpSelector_;
     //
@@ -161,6 +162,8 @@ namespace trackerDTC {
     }
     // book ES product
     esGetToken_ = esConsumes<Setup, SetupRcd, Transition::BeginRun>();
+    //initial ES product
+    setup_ = nullptr;
     // log config
     log_.setf(ios::fixed, ios::floatfield);
     log_.precision(4);
@@ -168,7 +171,7 @@ namespace trackerDTC {
 
   void Analyzer::beginRun(const Run& iEvent, const EventSetup& iSetup) {
     // helper class to store configurations
-    setup_ = iSetup.getData(esGetToken_);
+    setup_ = &iSetup.getData(esGetToken_);
     // configuring track particle selector
     configTPSelector();
     // book histograms
@@ -249,8 +252,8 @@ namespace trackerDTC {
           nStubsMatched++;
       }
     }
-    profMC_->Fill(1, nStubs / (double)setup_.numRegions());
-    profMC_->Fill(2, nStubsMatched / (double)setup_.numRegions());
+    profMC_->Fill(1, nStubs / (double)setup_->numRegions());
+    profMC_->Fill(2, nStubsMatched / (double)setup_->numRegions());
   }
 
   // organize reconstrucable TrackingParticles used for efficiency measurements
@@ -269,15 +272,15 @@ namespace trackerDTC {
           mapStubsTPs[ttStubRef].insert(mapTPStubs.first);
       }
     }
-    profMC_->Fill(3, nTPsReco / (double)setup_.numRegions());
-    profMC_->Fill(4, nTPsEff / (double)setup_.numRegions());
+    profMC_->Fill(3, nTPsReco / (double)setup_->numRegions());
+    profMC_->Fill(4, nTPsEff / (double)setup_->numRegions());
     profMC_->Fill(5, nTPsEff);
   }
 
   // checks if a stub selection is considered reconstructable
   bool Analyzer::reconstructable(const set<TTStubRef>& ttStubRefs) const {
-    const TrackerGeometry* trackerGeometry = setup_.trackerGeometry();
-    const TrackerTopology* trackerTopology = setup_.trackerTopology();
+    const TrackerGeometry* trackerGeometry = setup_->trackerGeometry();
+    const TrackerTopology* trackerTopology = setup_->trackerTopology();
     set<int> hitPattern;
     set<int> hitPatternPS;
     for (const TTStubRef& ttStubRef : ttStubRefs) {
@@ -289,7 +292,7 @@ namespace trackerDTC {
       if (psModule)
         hitPatternPS.insert(layerId);
     }
-    return (int)hitPattern.size() >= setup_.tpMinLayers() && (int)hitPatternPS.size() >= setup_.tpMinLayersPS();
+    return (int)hitPattern.size() >= setup_->tpMinLayers() && (int)hitPatternPS.size() >= setup_->tpMinLayersPS();
   }
 
   // checks if TrackingParticle is selected for efficiency measurements
@@ -301,7 +304,7 @@ namespace trackerDTC {
     const TrackingParticle::Point& v = tp.vertex();
     const double z0 = v.z() - (v.x() * c + v.y() * s) * cot;
     const double d0 = v.x() * s - v.y() * c;
-    return selected && (fabs(d0) < setup_.tpMaxD0()) && (fabs(z0) < setup_.tpMaxVertZ());
+    return selected && (fabs(d0) < setup_->tpMaxD0()) && (fabs(z0) < setup_->tpMaxVertZ());
   }
 
   // fills kinematic tp histograms
@@ -324,13 +327,13 @@ namespace trackerDTC {
                               const TTDTC* lost,
                               const map<TTStubRef, set<TPPtr>>& mapStubsTPs,
                               map<TPPtr, set<TTStubRef>>& mapTPsStubs) {
-    for (int region = 0; region < setup_.numRegions(); region++) {
+    for (int region = 0; region < setup_->numRegions(); region++) {
       int nStubs(0);
       int nLost(0);
-      for (int channel = 0; channel < setup_.numDTCsPerTFP(); channel++) {
+      for (int channel = 0; channel < setup_->numDTCsPerTFP(); channel++) {
         const StreamStub& stream = accepted->stream(region, channel);
         hisChannel_->Fill(stream.size());
-        profChannel_->Fill(region * setup_.numDTCsPerTFP() + channel, stream.size());
+        profChannel_->Fill(region * setup_->numDTCsPerTFP() + channel, stream.size());
         for (const FrameStub& frame : stream) {
           if (frame.first.isNull())
             continue;
@@ -354,8 +357,8 @@ namespace trackerDTC {
       if (frame.first.isNull())
         continue;
       sum++;
-      const GlobalPoint& pos = setup_.stubPos(hybrid_, frame, region, channel);
-      const GlobalPoint& ttPos = setup_.stubPos(frame.first);
+      const GlobalPoint& pos = setup_->stubPos(hybrid_, frame, region, channel);
+      const GlobalPoint& ttPos = setup_->stubPos(frame.first);
       const vector<double> resolutions = {
           ttPos.perp() - pos.perp(), deltaPhi(ttPos.phi() - pos.phi()), ttPos.z() - pos.z()};
       for (Resolution r : AllResolution) {
@@ -363,22 +366,15 @@ namespace trackerDTC {
         profResolution_[r]->Fill(ttPos.z(), ttPos.perp(), abs(resolutions[r]));
       }
       th2f->Fill(ttPos.z(), ttPos.perp());
-      // check layerId encoding
-      if (!hybrid_)
-        continue;
-      const vector<int>& encodingLayerId = setup_.encodingLayerId(channel);
-      const auto it = find(encodingLayerId.begin(), encodingLayerId.end(), layerId(frame.first));
-      if (it == encodingLayerId.end())
-        throw cms::Exception("LogicError") << "Stub send from a DTC which is not connected to stub's layer.";
     }
   }
 
   // returns layerId [1-6, 11-15] of stub
   int Analyzer::layerId(const TTStubRef& ttStubRef) const {
-    const TrackerTopology* trackerTopology = setup_.trackerTopology();
-    const DetId detId = ttStubRef->getDetId() + setup_.offsetDetIdDSV();
+    const TrackerTopology* trackerTopology = setup_->trackerTopology();
+    const DetId detId = ttStubRef->getDetId() + setup_->offsetDetIdDSV();
     const bool barrel = detId.subdetId() == StripSubdetector::TOB;
-    return barrel ? trackerTopology->layer(detId) : trackerTopology->tidWheel(detId) + setup_.offsetLayerDisks();
+    return barrel ? trackerTopology->layer(detId) : trackerTopology->tidWheel(detId) + setup_->offsetLayerDisks();
   }
 
   // analyze survived TPs
@@ -443,11 +439,11 @@ namespace trackerDTC {
 
   // configuring track particle selector
   void Analyzer::configTPSelector() {
-    const double ptMin = hybrid_ ? setup_.hybridMinPt() : setup_.minPt();
+    const double ptMin = hybrid_ ? setup_->hybridMinPt() : setup_->minPt();
     constexpr double ptMax = 9999999999.;
-    const double etaMax = setup_.tpMaxEta();
-    const double tip = setup_.tpMaxVertR();
-    const double lip = setup_.tpMaxVertZ();
+    const double etaMax = setup_->tpMaxEta();
+    const double tip = setup_->tpMaxVertR();
+    const double lip = setup_->tpMaxVertZ();
     constexpr int minHit = 0;
     constexpr bool signalOnly = true;
     constexpr bool intimeOnly = true;
@@ -487,7 +483,7 @@ namespace trackerDTC {
     profDTC_->GetXaxis()->SetBinLabel(3, "TPs");
     // channel occupancy
     constexpr int maxOcc = 180;
-    const int numChannels = setup_.numDTCs() * setup_.numOverlappingRegions();
+    const int numChannels = setup_->numDTCs() * setup_->numOverlappingRegions();
     hisChannel_ = dir.make<TH1F>("His Channel Occupancy", ";", maxOcc, -.5, maxOcc - .5);
     profChannel_ = dir.make<TProfile>("Prof Channel Occupancy", ";", numChannels, -.5, numChannels - .5);
     // max tracking efficiencies

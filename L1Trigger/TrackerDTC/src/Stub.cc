@@ -11,8 +11,8 @@ using namespace tt;
 
 namespace trackerDTC {
 
-  Stub::Stub(const ParameterSet& iConfig, const Setup* setup, SensorModule* sm, const TTStubRef& ttStubRef)
-      : setup_(setup), sm_(sm), ttStubRef_(ttStubRef), hybrid_(iConfig.getParameter<bool>("UseHybrid")), valid_(true) {
+  Stub::Stub(const ParameterSet& iConfig, const Setup* setup, const LayerEncoding* layerEncoding, SensorModule* sm, const TTStubRef& ttStubRef)
+      : setup_(setup), layerEncoding_(layerEncoding), sm_(sm), ttStubRef_(ttStubRef), hybrid_(iConfig.getParameter<bool>("UseHybrid")), valid_(true) {
     regions_.reserve(setup->numOverlappingRegions());
     // get stub local coordinates
     const MeasurementPoint& mp = ttStubRef->clusterRef(0)->findAverageLocalCoordinatesCentered();
@@ -149,6 +149,8 @@ namespace trackerDTC {
   // returns 64 bit stub in hybrid data format
   Frame Stub::formatHybrid(int region) const {
     const SensorModule::Type type = sm_->type();
+    // layer encoding
+    const int decodedLayerId = layerEncoding_->decode(sm_);
     // stub phi w.r.t. processing region border in rad
     double phi = phi_ - (region - .5) * setup_->baseRegion() + setup_->hybridRangePhi() / 2.;
     // convert stub variables into bit vectors
@@ -157,7 +159,7 @@ namespace trackerDTC {
     const TTBV hwZ(z_, setup_->hybridBaseZ(type), setup_->hybridWidthZ(type), true);
     const TTBV hwAlpha(row_, setup_->hybridBaseAlpha(type), setup_->hybridWidthAlpha(type), true);
     const TTBV hwBend(bend_, setup_->hybridWidthBend(type), true);
-    const TTBV hwLayer(sm_->encodedLayerId(), setup_->hybridWidthLayerId());
+    const TTBV hwLayer(decodedLayerId, setup_->hybridWidthLayerId());
     const TTBV hwGap(0, setup_->hybridNumUnusedBits(type));
     const TTBV hwValid(1, 1);
     // assemble final bitset

@@ -203,9 +203,6 @@ namespace tt {
     encodingsBend2S_.reserve(maxWindowSize_ + 1);
     encodeBend(encodingsBendPS_, true);
     encodeBend(encodingsBend2S_, false);
-    // create encodingsLayerId
-    encodingsLayerId_.reserve(numDTCsPerRegion_);
-    encodeLayerId();
     // create sensor modules
     produceSensorModules();
     // configure TPSelector
@@ -337,12 +334,6 @@ namespace tt {
     return encodingsBend.at(windowSize);
   }
 
-  // index = encoded layerId, inner value = decoded layerId for given dtcId or tfp channel
-  const vector<int>& Setup::encodingLayerId(int dtcId) const {
-    const int index = dtcId % numDTCsPerRegion_;
-    return encodingsLayerId_.at(index);
-  }
-
   // check if bField is supported
   void Setup::checkMagneticField() {
     const double bFieldES = magneticField_->inTesla(GlobalPoint(0., 0., 0.)).z();
@@ -404,36 +395,6 @@ namespace tt {
       for (int bend = 0; bend < window + 1; bend++)
         encoding.insert(stubAlgorithm_->degradeBend(ps, window, bend));
       encodings.emplace_back(encoding.begin(), encoding.end());
-    }
-  }
-
-  // create map indicating all tracker layers read by each DTC.
-  void Setup::encodeLayerId() {
-    vector<vector<DTCELinkId>> dtcELinkIds(numDTCs_);
-    for (vector<DTCELinkId>& dtcELinkId : dtcELinkIds)
-      dtcELinkId.reserve(numModulesPerDTC_);
-    for (const DTCELinkId& dtcLinkId : cablingMap_->getKnownDTCELinkIds())
-      dtcELinkIds[dtcId(dtcLinkId.dtc_id())].push_back(dtcLinkId);
-    for (int dtcBoard = 0; dtcBoard < numDTCsPerRegion_; dtcBoard++) {
-      set<int> encodingLayerId;
-      for (int region = 0; region < numRegions_; region++) {
-        const int dtcId = region * numDTCsPerRegion_ + dtcBoard;
-        for (const DTCELinkId& dtcLinkId : dtcELinkIds[dtcId]) {
-          const DetId& detId = cablingMap_->dtcELinkIdToDetId(dtcLinkId)->second;
-          const bool barrel = detId.subdetId() == StripSubdetector::TOB;
-          const int layerId =
-              barrel ? trackerTopology_->layer(detId) : trackerTopology_->tidWheel(detId) + offsetLayerDisks_;
-          encodingLayerId.insert(layerId);
-        }
-      }
-      // check configuration
-      if ((int)encodingLayerId.size() > hybridNumLayers_) {
-        cms::Exception exception("overflow");
-        exception << "Cabling map connects more than " << hybridNumLayers_ << " layers to a DTC.";
-        exception.addContext("tt::Setup::Setup");
-        throw exception;
-      }
-      encodingsLayerId_.emplace_back(encodingLayerId.begin(), encodingLayerId.end());
     }
   }
 
