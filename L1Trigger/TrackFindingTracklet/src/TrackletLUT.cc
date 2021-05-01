@@ -451,6 +451,10 @@ void TrackletLUT::initProjectionBend(double k_phider,
     }
   }
 
+  positive_ = false;
+  name_ = settings_.combined() ? "MP_" : "PR_";
+  name_ += "ProjectionBend_"+TrackletConfigBuilder::LayerName(N_LAYER+idisk)+".tab";
+
   writeTable();
 
 }
