@@ -158,24 +158,31 @@ void TrackletEngine::setVMPhiBin() {
   double outerphimin, outerphimax;
   outervmstubs_->getPhiRange(outerphimin, outerphimax, iSeed_, 1);
 
+  string innermem = innervmstubs_->getName().substr(6);
+  string outermem = outervmstubs_->getName().substr(6);
+  
   innerptlut_.initteptlut(true, false, iSeed_, layerdisk1_, layerdisk2_,
 			  innerphibits_, outerphibits_,
-			  innerphimin, innerphimax, outerphimin, outerphimax);
+			  innerphimin, innerphimax, outerphimin, outerphimax,
+			  innermem, outermem);
 
   outerptlut_.initteptlut(false, false, iSeed_, layerdisk1_, layerdisk2_,
 			  innerphibits_, outerphibits_,
-			  innerphimin, innerphimax, outerphimin, outerphimax);
+			  innerphimin, innerphimax, outerphimin, outerphimax,
+			  innermem, outermem);
 
   TrackletLUT innertememlut(settings_);
   TrackletLUT outertememlut(settings_);
   
   innertememlut.initteptlut(true, true, iSeed_, layerdisk1_, layerdisk2_,
-			     innerphibits_, outerphibits_,
-			     innerphimin, innerphimax, outerphimin, outerphimax);
+			    innerphibits_, outerphibits_,
+			    innerphimin, innerphimax, outerphimin, outerphimax,
+			    innermem, outermem);
   
   outertememlut.initteptlut(false, true, iSeed_, layerdisk1_, layerdisk2_,
-			     innerphibits_, outerphibits_,
-			     innerphimin, innerphimax, outerphimin, outerphimax);
+			    innerphibits_, outerphibits_,
+			    innerphimin, innerphimax, outerphimin, outerphimax,
+			    innermem, outermem);
 
   innervmstubs_->setbendtable(innertememlut);
   outervmstubs_->setbendtable(outertememlut);

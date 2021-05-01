@@ -1,6 +1,7 @@
 #include "L1Trigger/TrackFindingTracklet/interface/TrackletLUT.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Util.h"
 #include "L1Trigger/TrackFindingTracklet/interface/Settings.h"
+#include "L1Trigger/TrackFindingTracklet/interface/TrackletConfigBuilder.h"
 
 #include <filesystem>
 
@@ -9,28 +10,40 @@ using namespace trklet;
 
 TrackletLUT::TrackletLUT(const Settings& settings) : settings_(settings) {}
 
-void TrackletLUT::initmatchcut(unsigned int layerdisk, MatchType type) {
+void TrackletLUT::initmatchcut(unsigned int layerdisk, MatchType type, unsigned int region) {
+
+  char cregion =  'A'+region;
   
   for (unsigned int iSeed = 0; iSeed < 12; iSeed++) {
     if (type==barrelphi) {
       table_.push_back(settings_.rphimatchcut(iSeed, layerdisk) / (settings_.kphi1() * settings_.rmean(layerdisk)));
+      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_phicut.tab";
     }
     if (type==barrelz) {    
       table_.push_back(settings_.zmatchcut(iSeed, layerdisk) / settings_.kz());
+      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_zcut.tab";
     }
     if (type==diskPSphi) {
       table_.push_back(settings_.rphicutPS(iSeed, layerdisk - N_LAYER) / (settings_.kphi() * settings_.kr()));
+      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_PSphicut.tab";
     }
     if (type==disk2Sphi) {
       table_.push_back(settings_.rphicut2S(iSeed, layerdisk - N_LAYER) / (settings_.kphi() * settings_.kr()));
+      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_2Sphicut.tab";
     }
     if (type==disk2Sr) {
       table_.push_back(settings_.rcut2S(iSeed, layerdisk - N_LAYER) / settings_.krprojshiftdisk());
+      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_2Srcut.tab";
     }
     if (type==diskPSr) {
       table_.push_back(settings_.rcutPS(iSeed, layerdisk - N_LAYER) / settings_.krprojshiftdisk());
+      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_PSrcut.tab";
     }
   }
+
+  positive_ = false;
+  
+  writeTable();
 
 }
 
@@ -85,8 +98,6 @@ void TrackletLUT::initTPlut(bool fillInner, unsigned int iSeed, unsigned int lay
 
   int nbinsfinephidiff = (1 << nbitsfinephidiff);
 
-  //cout << "nbitsfinephidiff irouterbin : "<< nbitsfinephidiff << " " << outerrbins << endl;
-  
   for (int iphibin = 0; iphibin < nbinsfinephidiff; iphibin++) {
     int iphidiff = iphibin;
     if (iphibin >= nbinsfinephidiff / 2) {
@@ -160,6 +171,9 @@ void TrackletLUT::initTPlut(bool fillInner, unsigned int iSeed, unsigned int lay
       }
     }
   }
+
+  writeTable();
+
 }
 
 
@@ -197,9 +211,7 @@ void TrackletLUT::initTPregionlut(unsigned int iSeed, unsigned int layerdisk2,
             if (iSeed >= 4)
               idphi1 = (idphi << 3) + ir;
             int ptinnerindexnew = (idphi1 << nbendbitsinner) + innerbend;
-	    //cout << "ptinnerindex : "<<ptinnerindexnew <<endl;
             match = match || (inrange && tplutinner.lookup(ptinnerindexnew));
-	    //cout << "match : "<<match<<endl;
           }
           if (match) {
             usereg = usereg | (1 << ireg);
@@ -211,11 +223,15 @@ void TrackletLUT::initTPregionlut(unsigned int iSeed, unsigned int layerdisk2,
       }
     }
   }
+
+  writeTable();
+  
 }
 
 void TrackletLUT::initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
 			      unsigned int innerphibits, unsigned int outerphibits,
-			      double innerphimin, double innerphimax, double outerphimin, double outerphimax) {
+			      double innerphimin, double innerphimax, double outerphimin, double outerphimax,
+			      const std::string& innermem, const std::string& outermem) {
 
   int outerrbits = 3;
   if (iSeed < 4) {
@@ -225,12 +241,6 @@ void TrackletLUT::initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed
   int outerrbins = (1 << outerrbits);
   int innerphibins = (1 << innerphibits);
   int outerphibins = (1 << outerphibits);
-
-  //double innerphimin, innerphimax;
-  //innervmstubs_->getPhiRange(innerphimin, innerphimax, iSeed_, 0);
-
-  //double outerphimin, outerphimax;
-  //outervmstubs_->getPhiRange(outerphimin, outerphimax, iSeed_, 1);
 
   double phiinner[2];
   double phiouter[2];
@@ -342,6 +352,27 @@ void TrackletLUT::initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed
       }
     }
   }
+
+  positive_ = false;
+
+  if (fillTEMem) {
+    if (fillInner) {
+      name_ = "VMSTE_"+innermem+"_vmbendcut.tab";
+    } else {
+      name_ = "VMSTE_"+outermem+"_vmbendcut.tab";
+    }
+  } else {
+    name_ = "TE_"+innermem.substr(0,innermem.size()-2)+"_"+outermem.substr(0,outermem.size()-2);
+    if (fillInner) {
+      name_+="_stubptinnercut.tab";
+    } else {
+      name_+="_stubptoutercut.tab";
+    }
+  }
+
+  
+  writeTable();
+  
 }
 
 
@@ -367,7 +398,7 @@ void TrackletLUT::initProjectionBend(double k_phider,
 	iphider = iphider << (settings_.nbitsphiprojderL123() - nphiderbits);
 	
 	double rproj = ir * settings_.krprojshiftdisk();
-	double phider = iphider * k_phider; //globals->ITC_L1L2()->der_phiD_final.K();
+	double phider = iphider * k_phider;
 	double t = settings_.zmean(idisk) / rproj;
 	
 	if (isignbin)
@@ -388,6 +419,9 @@ void TrackletLUT::initProjectionBend(double k_phider,
       }
     }
   }
+
+  writeTable();
+
 }
 
 
@@ -434,10 +468,17 @@ void TrackletLUT::initBendMatch(unsigned int layerdisk) {
       }
     }
   }
+
+  positive_ = false;
+
+  name_ = "METable_"+TrackletConfigBuilder::LayerName(layerdisk)+".tab";
+  
+  writeTable();
+
 }
 
 
-void TrackletLUT::initVMRTable(unsigned int layerdisk, VMRTableType type) {
+void TrackletLUT::initVMRTable(unsigned int layerdisk, VMRTableType type, unsigned int region) {
 
   unsigned int zbits = settings_.vmrlutzbits(layerdisk);
   unsigned int rbits = settings_.vmrlutrbits(layerdisk);
@@ -560,6 +601,40 @@ void TrackletLUT::initVMRTable(unsigned int layerdisk, VMRTableType type) {
       }
     }
   }
+
+  if (type == VMRTableType::me) {
+
+    //This if a hack where the same memory is used in both ME and TE modules
+    if (layerdisk==1||layerdisk==2||layerdisk==3||layerdisk==4) {
+      positive_ = false;
+      name_ = "VMTableOuter"+TrackletConfigBuilder::LayerName(layerdisk)+".tab";
+      writeTable();
+    }
+    
+    char cregion='A'+region;
+    name_ = "VMR_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_finebin.tab";
+    positive_ = false;
+  }
+
+  if (type == VMRTableType::inner) {
+    positive_ = false;
+    name_ = "VMTableInner"+TrackletConfigBuilder::LayerName(layerdisk)
+      +TrackletConfigBuilder::LayerName(layerdisk+1)+".tab";
+  }
+
+  if (type == VMRTableType::inneroverlap) {
+    positive_ = false;
+    name_ = "VMTableInner"+TrackletConfigBuilder::LayerName(layerdisk)
+      +TrackletConfigBuilder::LayerName(N_LAYER)+".tab";
+  }
+
+  if (type == VMRTableType::disk) {
+    positive_ = false;
+    name_ = "VMTableOuter"+TrackletConfigBuilder::LayerName(layerdisk)+".tab";
+  }
+  
+  writeTable();
+
 }
 
 int TrackletLUT::getVMRLookup(unsigned int layerdisk, double z, double r, double dz, double dr, int iseed) const {
@@ -747,6 +822,8 @@ void TrackletLUT::initPhiCorrTable(unsigned int layerdisk, unsigned int rbits) {
   name_ = "VMPhiCorrL" + std::to_string(layerdisk+1) + ".tab";
   nbits_ = 14;
   positive_ = false;
+
+  writeTable();
   
 }
 
@@ -771,9 +848,17 @@ int TrackletLUT::getphiCorrValue(unsigned int layerdisk, unsigned int ibend, uns
 }
 
 
+// Write LUT table.
 void TrackletLUT::writeTable() const{
-  // Write LUT table.
 
+  if (!settings_.writeTable()) {
+    return;
+  }
+
+  if (name_ == "") {
+    return;
+  }
+  
   ofstream out = openfile(settings_.tablePath(), name_, __FILE__, __LINE__);
 
   out << "{" << endl;
@@ -796,7 +881,6 @@ void TrackletLUT::writeTable() const{
 }
 
 int TrackletLUT::lookup(unsigned int index) const {
-  //cout << "lookup : "<<index<<" "<<table_.size()<<endl;
   assert(index < table_.size());
   return table_[index];
 }

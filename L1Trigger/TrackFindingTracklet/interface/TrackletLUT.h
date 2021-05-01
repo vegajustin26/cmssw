@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <string>
 
 namespace trklet {
 
@@ -27,7 +28,8 @@ namespace trklet {
 
     enum MatchType { barrelphi, barrelz, disk2Sphi, disk2Sr, diskPSphi, diskPSr };
     
-    void initmatchcut(unsigned int layerdisk, MatchType type);
+    //region only used for name - should be removed
+    void initmatchcut(unsigned int layerdisk, MatchType type, unsigned int region);
 
     void initTPlut(bool fillInner, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
 		   unsigned int nbitsfinephidiff); 
@@ -38,7 +40,8 @@ namespace trklet {
     
     void initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
 		     unsigned int innerphibits, unsigned int outerphibits,
-		     double innerphimin, double innerphimax, double outerphimin, double outerphimax);
+		     double innerphimin, double innerphimax, double outerphimin, double outerphimax,
+		     const std::string& innermem, const std::string& outermem);
 
     
     void initProjectionBend(double k_phider, unsigned int idisk, unsigned int nrbits, unsigned int nphiderbits);
@@ -47,7 +50,8 @@ namespace trklet {
     
     enum VMRTableType { me, disk, inner, inneroverlap, innerthird };
 
-    void initVMRTable(unsigned int layerdisk, VMRTableType type);
+    //region only used for name - should be removed
+    void initVMRTable(unsigned int layerdisk, VMRTableType type, unsigned int region);
 
     void initPhiCorrTable(unsigned int layerdisk, unsigned int rbits);
 

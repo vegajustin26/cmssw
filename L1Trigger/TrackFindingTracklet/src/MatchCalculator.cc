@@ -46,14 +46,17 @@ MatchCalculator::MatchCalculator(string name, Settings const& settings, Globals*
     phi0shift_ = 0;
   }
 
+  unsigned int region = getName()[8]-'A';
+  assert(region < settings_.nallstubs(layerdisk_));
+  
   if (layerdisk_ < N_LAYER) {
-    phimatchcuttable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::barrelphi);
-    zmatchcuttable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::barrelz);
+    phimatchcuttable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::barrelphi, region);
+    zmatchcuttable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::barrelz, region);
   } else {
-    rphicutPStable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::diskPSphi);
-    rphicut2Stable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::disk2Sphi);
-    rcutPStable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::diskPSr);
-    rcut2Stable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::disk2Sr);
+    rphicutPStable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::diskPSphi, region);
+    rphicut2Stable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::disk2Sphi, region);
+    rcutPStable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::diskPSr, region);
+    rcut2Stable_.initmatchcut(layerdisk_, TrackletLUT::MatchType::disk2Sr, region);
   }
   
   for (unsigned int i = 0; i < N_DSS_MOD * 2; i++) {

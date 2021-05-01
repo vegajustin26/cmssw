@@ -84,12 +84,18 @@ TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Glob
   innerphibits_ = settings_.nfinephi(0, iSeed_);
   outerphibits_ = settings_.nfinephi(1, iSeed_);
 
+  unsigned int region = getName()[5]-'A';
+  assert(region < settings_.nallstubs(layerdisk1_));
+
+  
+
+  
   if (layerdisk1_ == 0 || layerdisk1_ == 1 || layerdisk1_ == 2 || layerdisk1_ == 4 || layerdisk1_ == 6 || layerdisk1_ == 8) {
-    innerTable_.initVMRTable(layerdisk1_, TrackletLUT::VMRTableType::inner);       //projection to next layer/disk
+    innerTable_.initVMRTable(layerdisk1_, TrackletLUT::VMRTableType::inner, region);       //projection to next layer/disk
   }
 
   if (layerdisk1_ == 0 || layerdisk1_ == 1 ) {
-    innerOverlapTable_.initVMRTable(layerdisk1_, TrackletLUT::VMRTableType::inneroverlap);  //projection to disk from layer
+    innerOverlapTable_.initVMRTable(layerdisk1_, TrackletLUT::VMRTableType::inneroverlap, region);  //projection to disk from layer
   }
   
   // set TC index

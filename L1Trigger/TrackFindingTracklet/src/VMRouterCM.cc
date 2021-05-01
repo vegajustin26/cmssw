@@ -19,15 +19,18 @@ VMRouterCM::VMRouterCM(string name, Settings const& settings, Globals* global)
 
   layerdisk_ = initLayerDisk(4);
 
+  unsigned int region = name[5]-'A';
+  assert(region < settings_.nallstubs(layerdisk_));
+  
   vmstubsMEPHI_.resize(1, nullptr);
 
   overlapbits_ = 7;
   nextrabits_ = overlapbits_ - (settings_.nbitsallstubs(layerdisk_) + settings_.nbitsvmme(layerdisk_));
 
-  meTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::me);                    //used for ME and outer TE barrel
+  meTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::me, region);                    //used for ME and outer TE barrel
 
   if (layerdisk_>= N_LAYER) {
-    diskTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::disk);         //outer disk used by D1, D2, and D4
+    diskTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::disk, region);         //outer disk used by D1, D2, and D4
   }
   
   nbitszfinebintable_ = settings_.vmrlutzbits(layerdisk_);

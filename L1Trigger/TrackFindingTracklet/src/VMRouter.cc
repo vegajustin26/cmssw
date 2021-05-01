@@ -21,25 +21,29 @@ VMRouter::VMRouter(string name, Settings const& settings, Globals* global)
 
   vmstubsMEPHI_.resize(settings_.nvmme(layerdisk_), nullptr);
 
+  unsigned int region = name[9]-'A';
+  assert(region < settings_.nallstubs(layerdisk_));
+  
   overlapbits_ = 7;
   nextrabits_ = overlapbits_ - (settings_.nbitsallstubs(layerdisk_) + settings_.nbitsvmme(layerdisk_));
 
-  meTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::me);                    //used for ME and outer TE barrel
+  meTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::me, region);                    //used for ME and outer TE barrel
 
-  if (layerdisk_>= N_LAYER) {
-    diskTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::disk);         //outer disk used by D1, D2, and D4
+  //if (layerdisk_>= N_LAYER) {
+  if (layerdisk_==6 || layerdisk_==7 || layerdisk_==9) { 
+   diskTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::disk, region);         //outer disk used by D1, D2, and D4
   }
   
   if (layerdisk_ == 0 || layerdisk_ == 1 || layerdisk_ == 2 || layerdisk_ == 4 || layerdisk_ == 6 || layerdisk_ == 8) {
-    innerTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::inner);       //projection to next layer/disk
+    innerTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::inner, region);       //projection to next layer/disk
   }
 
   if (layerdisk_ == 0 || layerdisk_ == 1 ) {
-    innerOverlapTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::inneroverlap);  //projection to disk from layer
+    innerOverlapTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::inneroverlap, region);  //projection to disk from layer
   }
 
   if (layerdisk_ == 1 || layerdisk_ == 2 || layerdisk_ == 4 || layerdisk_ == 6 ) {
-    innerThirdTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::innerthird);  //projection to third layer/disk 
+    innerThirdTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::innerthird, region);  //projection to third layer/disk 
   }
 
   nbitszfinebintable_ = settings_.vmrlutzbits(layerdisk_);
