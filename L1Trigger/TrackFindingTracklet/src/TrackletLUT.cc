@@ -17,28 +17,43 @@ void TrackletLUT::initmatchcut(unsigned int layerdisk, MatchType type, unsigned 
   for (unsigned int iSeed = 0; iSeed < 12; iSeed++) {
     if (type==barrelphi) {
       table_.push_back(settings_.rphimatchcut(iSeed, layerdisk) / (settings_.kphi1() * settings_.rmean(layerdisk)));
-      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_phicut.tab";
     }
     if (type==barrelz) {    
       table_.push_back(settings_.zmatchcut(iSeed, layerdisk) / settings_.kz());
-      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_zcut.tab";
     }
     if (type==diskPSphi) {
       table_.push_back(settings_.rphicutPS(iSeed, layerdisk - N_LAYER) / (settings_.kphi() * settings_.kr()));
-      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_PSphicut.tab";
     }
     if (type==disk2Sphi) {
       table_.push_back(settings_.rphicut2S(iSeed, layerdisk - N_LAYER) / (settings_.kphi() * settings_.kr()));
-      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_2Sphicut.tab";
     }
     if (type==disk2Sr) {
       table_.push_back(settings_.rcut2S(iSeed, layerdisk - N_LAYER) / settings_.krprojshiftdisk());
-      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_2Srcut.tab";
     }
     if (type==diskPSr) {
       table_.push_back(settings_.rcutPS(iSeed, layerdisk - N_LAYER) / settings_.krprojshiftdisk());
-      name_ = "MC_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_PSrcut.tab";
     }
+  }
+
+  name_ =  settings_.combined() ? "MP_" : "MC_";
+
+  if (type==barrelphi) {
+    name_ += TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_phicut.tab";
+  }
+  if (type==barrelz) {    
+    name_ += TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_zcut.tab";
+  }
+  if (type==diskPSphi) {
+    name_ += TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_PSphicut.tab";
+  }
+  if (type==disk2Sphi) {
+    name_ += TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_2Sphicut.tab";
+  }
+  if (type==disk2Sr) {
+    name_ += TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_2Srcut.tab";
+  }
+  if (type==diskPSr) {
+    name_ += TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_PSrcut.tab";
   }
 
   positive_ = false;
@@ -49,7 +64,7 @@ void TrackletLUT::initmatchcut(unsigned int layerdisk, MatchType type, unsigned 
 
 
 void TrackletLUT::initTPlut(bool fillInner, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
-			    unsigned int nbitsfinephidiff) {
+			    unsigned int nbitsfinephidiff, unsigned int iTP) {
   
   //number of fine phi bins in sector
   int nfinephibins =
@@ -172,14 +187,25 @@ void TrackletLUT::initTPlut(bool fillInner, unsigned int iSeed, unsigned int lay
     }
   }
 
+  positive_ = false;
+  char cTP='A'+iTP;
+  
+  name_="TP_"+TrackletConfigBuilder::LayerName(layerdisk1)+TrackletConfigBuilder::LayerName(layerdisk2)+cTP;
+
+  if (fillInner) {
+    name_+="_stubptinnercut.tab";
+  } else {
+    name_+="_stubptoutercut.tab";
+  }
+  
   writeTable();
 
 }
 
 
-void TrackletLUT::initTPregionlut(unsigned int iSeed, unsigned int layerdisk2,
+void TrackletLUT::initTPregionlut(unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
 			    unsigned int iAllStub, unsigned int nbitsfinephidiff, unsigned int nbitsfinephi,
-			    const TrackletLUT& tplutinner) {
+				  const TrackletLUT& tplutinner, unsigned int iTP) {
   
   int nirbits = 0;
   if (iSeed >= 4)
@@ -223,6 +249,11 @@ void TrackletLUT::initTPregionlut(unsigned int iSeed, unsigned int layerdisk2,
       }
     }
   }
+
+  positive_ = false;
+  char cTP='A'+iTP;
+  
+  name_="TP_"+TrackletConfigBuilder::LayerName(layerdisk1)+TrackletConfigBuilder::LayerName(layerdisk2)+cTP+"_usereg.tab";
 
   writeTable();
   
@@ -478,7 +509,7 @@ void TrackletLUT::initBendMatch(unsigned int layerdisk) {
 }
 
 
-void TrackletLUT::initVMRTable(unsigned int layerdisk, VMRTableType type, unsigned int region) {
+void TrackletLUT::initVMRTable(unsigned int layerdisk, VMRTableType type, int region) {
 
   unsigned int zbits = settings_.vmrlutzbits(layerdisk);
   unsigned int rbits = settings_.vmrlutrbits(layerdisk);
@@ -602,37 +633,63 @@ void TrackletLUT::initVMRTable(unsigned int layerdisk, VMRTableType type, unsign
     }
   }
 
-  if (type == VMRTableType::me) {
 
-    //This if a hack where the same memory is used in both ME and TE modules
-    if (layerdisk==1||layerdisk==2||layerdisk==3||layerdisk==4) {
+  if (settings_.combined()) {
+    if (type == VMRTableType::me) {
       positive_ = false;
-      name_ = "VMTableOuter"+TrackletConfigBuilder::LayerName(layerdisk)+".tab";
-      writeTable();
+      name_ = "VMRME_"+TrackletConfigBuilder::LayerName(layerdisk)+".tab";
+    }
+    if (type == VMRTableType::disk) {
+      positive_ = false;
+      name_ = "VMRTE_"+TrackletConfigBuilder::LayerName(layerdisk)+".tab";
+    }
+    if (type == VMRTableType::inner) {
+      positive_ = true;
+      nbits_ = 10;
+      name_ = "TP_"+TrackletConfigBuilder::LayerName(layerdisk)
+	+TrackletConfigBuilder::LayerName(layerdisk+1)+".tab";
     }
     
-    char cregion='A'+region;
-    name_ = "VMR_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_finebin.tab";
-    positive_ = false;
-  }
+    if (type == VMRTableType::inneroverlap) {
+      positive_ = true;
+      nbits_ = 10;
+      name_ = "TP_"+TrackletConfigBuilder::LayerName(layerdisk)
+	+TrackletConfigBuilder::LayerName(N_LAYER)+".tab";
+    }
 
-  if (type == VMRTableType::inner) {
-    positive_ = false;
-    name_ = "VMTableInner"+TrackletConfigBuilder::LayerName(layerdisk)
-      +TrackletConfigBuilder::LayerName(layerdisk+1)+".tab";
+  } else {
+    if (type == VMRTableType::me) {
+      //This if a hack where the same memory is used in both ME and TE modules
+      if (layerdisk==1||layerdisk==2||layerdisk==3||layerdisk==4) {
+	positive_ = false;
+	name_ = "VMTableOuter"+TrackletConfigBuilder::LayerName(layerdisk)+".tab";
+	writeTable();
+      }
+      
+      assert(region>=0);
+      char cregion='A'+region;
+      name_ = "VMR_"+TrackletConfigBuilder::LayerName(layerdisk)+"PHI"+cregion+"_finebin.tab";
+      positive_ = false;
+    }
+    
+    if (type == VMRTableType::inner) {
+      positive_ = false;
+      name_ = "VMTableInner"+TrackletConfigBuilder::LayerName(layerdisk)
+	+TrackletConfigBuilder::LayerName(layerdisk+1)+".tab";
+    }
+    
+    if (type == VMRTableType::inneroverlap) {
+      positive_ = false;
+      name_ = "VMTableInner"+TrackletConfigBuilder::LayerName(layerdisk)
+	+TrackletConfigBuilder::LayerName(N_LAYER)+".tab";
+    }
+    
+    if (type == VMRTableType::disk) {
+      positive_ = false;
+      name_ = "VMTableOuter"+TrackletConfigBuilder::LayerName(layerdisk)+".tab";
+    }
   }
-
-  if (type == VMRTableType::inneroverlap) {
-    positive_ = false;
-    name_ = "VMTableInner"+TrackletConfigBuilder::LayerName(layerdisk)
-      +TrackletConfigBuilder::LayerName(N_LAYER)+".tab";
-  }
-
-  if (type == VMRTableType::disk) {
-    positive_ = false;
-    name_ = "VMTableOuter"+TrackletConfigBuilder::LayerName(layerdisk)+".tab";
-  }
-  
+    
   writeTable();
 
 }

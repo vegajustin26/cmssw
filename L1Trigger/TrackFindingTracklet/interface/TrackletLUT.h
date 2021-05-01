@@ -32,11 +32,11 @@ namespace trklet {
     void initmatchcut(unsigned int layerdisk, MatchType type, unsigned int region);
 
     void initTPlut(bool fillInner, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
-		   unsigned int nbitsfinephidiff); 
+		   unsigned int nbitsfinephidiff, unsigned int iTP); 
 
-    void initTPregionlut(unsigned int iSeed, unsigned int layerdisk2,
+    void initTPregionlut(unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
 			 unsigned int iAllStub, unsigned int nbitsfinephidiff, unsigned int nbitsfinephi,
-			 const TrackletLUT& tplutinner);
+			 const TrackletLUT& tplutinner, unsigned int iTP);
     
     void initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed, unsigned int layerdisk1, unsigned int layerdisk2,
 		     unsigned int innerphibits, unsigned int outerphibits,
@@ -51,7 +51,7 @@ namespace trklet {
     enum VMRTableType { me, disk, inner, inneroverlap, innerthird };
 
     //region only used for name - should be removed
-    void initVMRTable(unsigned int layerdisk, VMRTableType type, unsigned int region);
+    void initVMRTable(unsigned int layerdisk, VMRTableType type, int region=-1);
 
     void initPhiCorrTable(unsigned int layerdisk, unsigned int rbits);
 

@@ -19,7 +19,7 @@ VMRouterCM::VMRouterCM(string name, Settings const& settings, Globals* global)
 
   layerdisk_ = initLayerDisk(4);
 
-  unsigned int region = name[5]-'A';
+  unsigned int region = name[9]-'A';
   assert(region < settings_.nallstubs(layerdisk_));
   
   vmstubsMEPHI_.resize(1, nullptr);
@@ -29,7 +29,7 @@ VMRouterCM::VMRouterCM(string name, Settings const& settings, Globals* global)
 
   meTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::me, region);                    //used for ME and outer TE barrel
 
-  if (layerdisk_>= N_LAYER) {
+  if ( layerdisk_ == 6 ||layerdisk_ == 7 || layerdisk_ == 9 ) {
     diskTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::disk, region);         //outer disk used by D1, D2, and D4
   }
   
