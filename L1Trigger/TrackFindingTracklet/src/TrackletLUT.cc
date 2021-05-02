@@ -74,27 +74,23 @@ void TrackletLUT::initTPlut(bool fillInner, unsigned int iSeed, unsigned int lay
   double rmin = -1.0;
   double rmax = -1.0;
 
-  if (iSeed < 4) {
+  int outerrbits = 3;
+
+  if (iSeed == Seed::L1L2 || iSeed == Seed::L2L3 ||iSeed == Seed::L3L4 || iSeed == Seed::L5L6 ) {
+    outerrbits = 0;
     rmin = settings_.rmean(layerdisk1);
     rmax = settings_.rmean(layerdisk2);
   } else {
-    if (iSeed > 5) {
-      if (iSeed == 6) {
-        rmax = settings_.rmaxdiskl1overlapvm();
-      }
-      if (iSeed == 7) {
-        rmax = settings_.rmaxdiskvm();
-      }
+    if (iSeed == Seed::L1D1) {
+      rmax = settings_.rmaxdiskl1overlapvm();
+      rmin = settings_.rmean(layerdisk1);
+    } else if (iSeed == Seed::L2D1) {
+      rmax = settings_.rmaxdiskvm();
       rmin = settings_.rmean(layerdisk1);
     } else {
       rmax = settings_.rmaxdiskvm();
       rmin = rmax * settings_.zmean(layerdisk2 - N_LAYER - 1) / settings_.zmean(layerdisk2 - N_LAYER);
     }
-  }
-
-  int outerrbits = 3;
-  if (iSeed < 4) {
-    outerrbits = 0;
   }
 
   int outerrbins = (1 << outerrbits);
@@ -104,9 +100,9 @@ void TrackletLUT::initTPlut(bool fillInner, unsigned int iSeed, unsigned int lay
 
   unsigned int nbendbitsinner = 3;
   unsigned int nbendbitsouter = 3;
-  if (iSeed == 2) {
+  if (iSeed == Seed::L3L4) {
     nbendbitsouter = 4;
-  } else if (iSeed == 3) {
+  } else if (iSeed == Seed::L5L6) {
     nbendbitsinner = 4;
     nbendbitsouter = 4;
   }
@@ -122,7 +118,7 @@ void TrackletLUT::initTPlut(bool fillInner, unsigned int iSeed, unsigned int lay
     dphi[0] = (iphidiff - 1.5) * dfinephi;
     dphi[1] = (iphidiff + 1.5) * dfinephi;
     for (int irouterbin = 0; irouterbin < outerrbins; irouterbin++) {
-      if (iSeed >= 4) {
+      if (iSeed == Seed::D1D2 || iSeed == Seed::D3D4 ||iSeed == Seed::L1D1 || iSeed == Seed::L2D1 ) {
         router[0] =
             settings_.rmindiskvm() + irouterbin * (settings_.rmaxdiskvm() - settings_.rmindiskvm()) / outerrbins;
         router[1] =
@@ -140,7 +136,7 @@ void TrackletLUT::initTPlut(bool fillInner, unsigned int iSeed, unsigned int lay
       for (int i2 = 0; i2 < 2; i2++) {
         for (int i3 = 0; i3 < 2; i3++) {
           double rinner = 0.0;
-          if (iSeed == 4 || iSeed == 5) {
+          if (iSeed == Seed::D1D2 || iSeed == Seed::D3D4) {
             rinner = router[i3] * settings_.zmean(layerdisk1 - N_LAYER) / settings_.zmean(layerdisk2 - N_LAYER);
           } else {
             rinner = settings_.rmean(layerdisk1);
@@ -208,14 +204,15 @@ void TrackletLUT::initTPregionlut(unsigned int iSeed, unsigned int layerdisk1, u
 				  const TrackletLUT& tplutinner, unsigned int iTP) {
   
   int nirbits = 0;
-  if (iSeed >= 4)
+  if (iSeed == Seed::D1D2 || iSeed == Seed::D3D4 ||iSeed == Seed::L1D1 || iSeed == Seed::L2D1 ) {
     nirbits = 3;
+  }
 
   unsigned int nbendbitsinner = 3;
   unsigned int nbendbitsouter = 3;
-  if (iSeed == 2) {
+  if (iSeed == Seed::L3L4) {
     nbendbitsouter = 4;
-  } else if (iSeed == 3) {
+  } else if (iSeed == Seed::L5L6) {
     nbendbitsinner = 4;
     nbendbitsouter = 4;
   }
@@ -264,9 +261,9 @@ void TrackletLUT::initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed
 			      double innerphimin, double innerphimax, double outerphimin, double outerphimax,
 			      const std::string& innermem, const std::string& outermem) {
 
-  int outerrbits = 3;
-  if (iSeed < 4) {
-    outerrbits = 0;
+  int outerrbits = 0;
+  if (iSeed == Seed::D1D2 || iSeed == Seed::D3D4 ||iSeed == Seed::L1D1 || iSeed == Seed::L2D1 ) {
+    outerrbits = 3;
   }
 
   int outerrbins = (1 << outerrbits);
@@ -279,10 +276,10 @@ void TrackletLUT::initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed
 
   unsigned int nbendbitsinner = 3;
   unsigned int nbendbitsouter = 3;
-  if (iSeed == 2) {
+  if (iSeed == Seed::L3L4) {
     nbendbitsouter = 4;
   }
-  if (iSeed == 3) {
+  if (iSeed == Seed::L5L6) {
     nbendbitsinner = 4;
     nbendbitsouter = 4;
   }
@@ -302,7 +299,7 @@ void TrackletLUT::initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed
       phiouter[0] = outerphimin + iphiouterbin * (outerphimax - outerphimin) / outerphibins;
       phiouter[1] = outerphimin + (iphiouterbin + 1) * (outerphimax - outerphimin) / outerphibins;
       for (int irouterbin = 0; irouterbin < outerrbins; irouterbin++) {
-        if (iSeed >= 4) {
+        if (iSeed == Seed::D1D2 || iSeed == Seed::D3D4 ||iSeed == Seed::L1D1 || iSeed == Seed::L2D1 ) {
           router[0] =
               settings_.rmindiskvm() + irouterbin * (settings_.rmaxdiskvm() - settings_.rmindiskvm()) / outerrbins;
           router[1] = settings_.rmindiskvm() +
@@ -321,7 +318,7 @@ void TrackletLUT::initteptlut(bool fillInner, bool fillTEMem, unsigned int iSeed
           for (int i2 = 0; i2 < 2; i2++) {
             for (int i3 = 0; i3 < 2; i3++) {
               double rinner = 0.0;
-              if (iSeed == 4 || iSeed == 5) {
+              if (iSeed == Seed::D1D2 || iSeed == Seed::D3D4) {
                 rinner = router[i3] * settings_.zmean(layerdisk1 - N_LAYER) / settings_.zmean(layerdisk2 - N_LAYER);
               } else {
                 rinner = settings_.rmean(layerdisk1);
