@@ -593,42 +593,43 @@ void TrackletLUT::initVMRTable(unsigned int layerdisk, VMRTableType type, int re
       }
 
       if (type == VMRTableType::inner ) {
-	if (layerdisk == 0 || layerdisk == 2 || layerdisk == 4 || layerdisk == 6 || layerdisk == 8) {
+	if (layerdisk == LayerDisk::L1 || layerdisk == LayerDisk::L3 || layerdisk == LayerDisk::L5 ||
+	    layerdisk == LayerDisk::D1 || layerdisk == LayerDisk::D3) {
 	  table_.push_back(getVMRLookup(layerdisk + 1, z, r, dz, dr));
 	}
-	if (layerdisk == 1) {
+	if (layerdisk == LayerDisk::L2) {
 	  table_.push_back(getVMRLookup(layerdisk + 1, z, r, dz, dr, 1));
 	}
       }
 
       if (type == VMRTableType::inneroverlap ) {
-	if (layerdisk == 0 || layerdisk == 1) {
+	if (layerdisk == LayerDisk::L1 || layerdisk == LayerDisk::L2) {
 	  table_.push_back(getVMRLookup(6, z, r, dz, dr, layerdisk + 6));
 	}
       }
       
       
       if (type == VMRTableType::innerthird ) {
-	if (layerdisk == 1) {  //projection from L2 to D1 for L2L3D1 seeding
+	if (layerdisk == LayerDisk::L2) {  //projection from L2 to D1 for L2L3D1 seeding
 	  table_.push_back(getVMRLookup(6, z, r, dz, dr, 10));
 	}
 	
-	if (layerdisk == 4) {  //projection from L5 to L4 for L5L6L4 seeding
+	if (layerdisk == LayerDisk::L5) {  //projection from L5 to L4 for L5L6L4 seeding
 	  table_.push_back(getVMRLookup(3, z, r, dz, dr));
 	}
 	
-	if (layerdisk == 2) {  //projection from L3 to L5 for L3L4L2 seeding
+	if (layerdisk == LayerDisk::L3) {  //projection from L3 to L5 for L3L4L2 seeding
 	  table_.push_back(getVMRLookup(1, z, r, dz, dr));
 	}
 	
-	if (layerdisk == 6) {  //projection from D1 to L2 for D1D2L2 seeding
+	if (layerdisk == LayerDisk::D1) {  //projection from D1 to L2 for D1D2L2 seeding
 	  table_.push_back(getVMRLookup(1, z, r, dz, dr));
 	}
       }
 
       if (type == VMRTableType::innerthird ) {
-	if (layerdisk == 0 || layerdisk == 1) {
-	  table_.push_back(getVMRLookup(6, z, r, dz, dr, layerdisk + 6));
+	if (layerdisk == LayerDisk::L1 || layerdisk == 1) {
+	  table_.push_back(getVMRLookup(N_LAYER, z, r, dz, dr, layerdisk + N_LAYER));
 	}
       }
     }

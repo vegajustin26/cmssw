@@ -41,21 +41,19 @@ TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Glob
   double rmin = -1.0;
   double rmax = -1.0;
 
-  if (iSeed_ < 4) {
+  if  (iSeed_ == Seed::L1L2 ||iSeed_ == Seed::L2L3 ||iSeed_ == Seed::L3L4 ||iSeed_ == Seed::L5L6 ) {
     rmin = settings_.rmean(layerdisk1_);
     rmax = settings_.rmean(layerdisk2_);
   } else {
-    if (iSeed_ > 5) {
-      if (iSeed_ == 6) {
-        rmax = settings_.rmaxdiskl1overlapvm();
-      }
-      if (iSeed_ == 7) {
-        rmax = settings_.rmaxdiskvm();
-      }
+    if (iSeed_ == Seed::L1D1) {
+      rmax = settings_.rmaxdiskl1overlapvm();
+      rmin = settings_.rmean(layerdisk1_);
+    } else if (iSeed_ == Seed::L2D1) {
+      rmax = settings_.rmaxdiskvm();
       rmin = settings_.rmean(layerdisk1_);
     } else {
       rmax = settings_.rmaxdiskvm();
-      rmin = rmax * settings_.zmean(layerdisk2_ - 6 - 1) / settings_.zmean(layerdisk2_ - 6);
+      rmin = rmax * settings_.zmean(layerdisk2_ - N_LAYER - 1) / settings_.zmean(layerdisk2_ - N_LAYER);
     }
   }
 
@@ -76,17 +74,18 @@ TrackletProcessor::TrackletProcessor(string name, Settings const& settings, Glob
   nbitsrfinebintable_ = settings_.vmrlutrbits(layerdisk1_);
 
   nbitsrzbin_ = N_RZBITS;
-  if (iSeed_ == 4 || iSeed_ == 5)
+  if (iSeed_ == Seed::D1D2 || iSeed_ == Seed::D3D4)
     nbitsrzbin_ = 2;
 
   innerphibits_ = settings_.nfinephi(0, iSeed_);
   outerphibits_ = settings_.nfinephi(1, iSeed_);
 
-  if (layerdisk1_ == 0 || layerdisk1_ == 1 || layerdisk1_ == 2 || layerdisk1_ == 4 || layerdisk1_ == 6 || layerdisk1_ == 8) {
+  if (layerdisk1_ == LayerDisk::L1 || layerdisk1_ == LayerDisk::L2 || layerdisk1_ == LayerDisk::L3 || layerdisk1_ == LayerDisk::L5
+      || layerdisk1_ == LayerDisk::D1 || layerdisk1_ == LayerDisk::D3) {
     innerTable_.initVMRTable(layerdisk1_, TrackletLUT::VMRTableType::inner);       //projection to next layer/disk
   }
 
-  if (layerdisk1_ == 0 || layerdisk1_ == 1 ) {
+  if (layerdisk1_ == LayerDisk::L1 || layerdisk1_ == LayerDisk::L2 ) {
     innerOverlapTable_.initVMRTable(layerdisk1_, TrackletLUT::VMRTableType::inneroverlap);  //projection to disk from layer
   }
   
@@ -158,9 +157,9 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
     assert(tmp != nullptr);
     outervmstubs_ = tmp;
     iAllStub_ = tmp->getName()[11] - 'A';
-    if (iSeed_ == 1)
+    if (iSeed_ == Seed::L2L3)
       iAllStub_ = tmp->getName()[11] - 'I';
-    if (iSeed_ == 6 || iSeed_ == 7) {
+    if (iSeed_ == Seed::L1D1 || iSeed_ == Seed::L2D1) {
       if (tmp->getName()[11] == 'X')
         iAllStub_ = 0;
       if (tmp->getName()[11] == 'Y')
@@ -331,11 +330,11 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
 
       bool accept = false;
 
-      if (iSeed_ < 4) {
+      if (iSeed_ == Seed::L1L2 || iSeed_ == Seed::L2L3 || iSeed_ == Seed::L3L4 || iSeed_ == Seed::L5L6 ) {
         if (print)
           cout << "istep=" << istep << " TEUnit read iTE=" << iTE << endl;
         accept = barrelSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
-      } else if (iSeed_ < 6) {
+      } else if ( iSeed_ == Seed::D1D2 || iSeed_ == Seed::D3D4 ) {
         accept = diskSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
       } else {
         accept = overlapSeeding(outerFPGAStub, outerStub, innerFPGAStub, innerStub);
@@ -434,7 +433,7 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
         int start = lookupbits.bits(NFINERZBITS + 1, nbitsrzbin_);  //rz bin
         int rzdiffmax = lookupbits.bits(NFINERZBITS + 1 + nbitsrzbin_, NFINERZBITS);
 
-        if ((iSeed_ == 4 || iSeed_ == 5) && negdisk) {  //TODO - need to store negative disk
+        if (( iSeed_ == Seed::D1D2 || iSeed_ == Seed::D3D4 ) && negdisk) {  //TODO - need to store negative disk
           start += (1 << nbitsrzbin_);
         }
         int last = start + next;
@@ -442,7 +441,7 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
         int nbins = (1 << N_RZBITS);
 
         unsigned int useregindex = (innerfinephi << innerbend.nbits()) + innerbend.value();
-        if (iSeed_ >= 4) {
+        if ( iSeed_ == Seed::D1D2 || iSeed_ == Seed::D3D4 || iSeed_ == Seed::L1D1 || iSeed_ == Seed::L2D1 ) {
           //FIXME If the lookupbits were rationally organized this would be much simpler
           unsigned int nrbits = 3;
           int ir = ((start & ((1 << (nrbits - 1)) - 1)) << 1) + (rzfinebinfirst >> (NFINERZBITS - 1));

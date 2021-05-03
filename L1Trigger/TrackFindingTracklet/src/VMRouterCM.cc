@@ -29,7 +29,7 @@ VMRouterCM::VMRouterCM(string name, Settings const& settings, Globals* global)
 
   meTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::me, region);                    //used for ME and outer TE barrel
 
-  if ( layerdisk_ == 6 ||layerdisk_ == 7 || layerdisk_ == 9 ) {
+  if ( layerdisk_ == LayerDisk::D1 ||layerdisk_ == LayerDisk::D2 || layerdisk_ == LayerDisk::D4 ) {
     diskTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::disk, region);         //outer disk used by D1, D2, and D4
   }
   
@@ -71,13 +71,12 @@ void VMRouterCM::addOutput(MemoryBase* memory, string output) {
     }
     if (memory->getName().substr(3, 2) == "TE") {
       VMStubsTEMemory* tmp = dynamic_cast<VMStubsTEMemory*>(memory);
-      int iseed = output[output.size() - 1] - '0';
-      assert(iseed >= 0);
-      assert(iseed < 8);
+      unsigned int iseed = output[output.size() - 1] - '0';
+      assert(iseed < N_SEED_PROMPT);
 
       int seedindex = -1;
       for (unsigned int k = 0; k < vmstubsTEPHI_.size(); k++) {
-        if (vmstubsTEPHI_[k].seednumber == (unsigned int)iseed) {
+        if (vmstubsTEPHI_[k].seednumber == iseed) {
           seedindex = k;
         }
       }
@@ -131,7 +130,7 @@ void VMRouterCM::execute() {
     for (unsigned int i = 0; i < stubinput->nStubs(); i++) {
       if (allStubCounter > settings_.maxStep("VMR"))
         continue;
-      if (allStubCounter > 127)
+      if (allStubCounter >= (1<<N_BITSMEMADDRESS))
         continue;
 
       Stub* stub = stubinput->getStub(i);
@@ -142,7 +141,7 @@ void VMRouterCM::execute() {
 
       //use &127 to make sure we fit into the number of bits -
       //though we should have protected against overflows above
-      FPGAWord allStubIndex(allStubCounter & 127, 7, true, __LINE__, __FILE__);
+      FPGAWord allStubIndex(allStubCounter & ((1<<N_BITSMEMADDRESS)-1), N_BITSMEMADDRESS, true, __LINE__, __FILE__);
 
       //TODO - should not be needed - but need to migrate some other pieces of code before removing
       stub->setAllStubIndex(allStubCounter);
@@ -159,7 +158,7 @@ void VMRouterCM::execute() {
       }
 
       FPGAWord iphi = stub->phicorr();
-      unsigned int iphipos = iphi.bits(iphi.nbits() - (settings_.nbitsallstubs(layerdisk_) + 3), 3);
+      unsigned int iphipos = iphi.bits(iphi.nbits() - (settings_.nbitsallstubs(layerdisk_) + N_PHIBITS), N_PHIBITS);
 
       unsigned int phicutmax = 4;
       unsigned int phicutmin = 4;
@@ -190,15 +189,15 @@ void VMRouterCM::execute() {
           continue;
 
         int absz = std::abs(stub->z().value());
-        if (layerdisk_ == 1 && absz <  VMROUTERCUTZL2 / settings_.kz(layerdisk_))
+        if (layerdisk_ == LayerDisk::L2 && absz <  VMROUTERCUTZL2 / settings_.kz(layerdisk_))
           continue;
-        if ((layerdisk_ == 2 || layerdisk_ == 4) && absz > VMROUTERCUTZL1L3L5 / settings_.kz(layerdisk_))
+        if ((layerdisk_ == LayerDisk::L3 || layerdisk_ == LayerDisk::L5) && absz > VMROUTERCUTZL1L3L5 / settings_.kz(layerdisk_))
           continue;
-        if ((layerdisk_ == 6 || layerdisk_ == 8) && stub->r().value() > VMROUTERCUTRD1D3 / settings_.kr())
+        if ((layerdisk_ == LayerDisk::D1 || layerdisk_ == LayerDisk::D3) && stub->r().value() > VMROUTERCUTRD1D3 / settings_.kr())
           continue;
-        if ((layerdisk_ == 6 || layerdisk_ == 8) && stub->r().value() < 2 * int(N_DSS_MOD))
+        if ((layerdisk_ == LayerDisk::D1 || layerdisk_ == LayerDisk::D3) && stub->r().value() < 2 * int(N_DSS_MOD))
           continue;
-        if (layerdisk_ == 0) {
+        if (layerdisk_ == LayerDisk::L1) {
           if (memtype == 'M' || memtype == 'R' || memtype == 'L') {
             if (absz < VMROUTERCUTZL1 / settings_.kz(layerdisk_))
               continue;
@@ -269,7 +268,7 @@ void VMRouterCM::execute() {
       vmstubsMEPHI_[0]->addStub(vmstub, ivm * nvmmebins_ + vmbin);
 
       //Fill the TE VM memories
-      if (layerdisk_ >= 6 && (!stub->isPSmodule()))
+      if (layerdisk_ >= N_LAYER && (!stub->isPSmodule()))
         continue;
 
       for (auto& ivmstubTEPHI : vmstubsTEPHI_) {
