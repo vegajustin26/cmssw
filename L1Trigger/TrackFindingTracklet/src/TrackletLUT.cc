@@ -700,7 +700,7 @@ int TrackletLUT::getVMRLookup(unsigned int layerdisk, double z, double r, double
   double z0cut = settings_.z0cut();
 
   if (layerdisk < N_LAYER) {
-    if (iseed == 1 && std::abs(z) < 52.0)
+    if (iseed == Seed::L2L3 && std::abs(z) < 52.0)
       return -1;
 
     double rmean = settings_.rmean(layerdisk);
@@ -786,11 +786,11 @@ int TrackletLUT::getVMRLookup(unsigned int layerdisk, double z, double r, double
     double rmindisk = settings_.rmindiskvm();
     double rmaxdisk = settings_.rmaxdiskvm();
 
-    if (iseed == 6)
+    if (iseed == Seed::L1D1)
       rmaxdisk = settings_.rmaxdiskl1overlapvm();
-    if (iseed == 7)
+    if (iseed == Seed::L2D1)
       rmindisk = settings_.rmindiskl2overlapvm();
-    if (iseed == 10)
+    if (iseed == Seed::L2L3D1)
       rmaxdisk = settings_.rmaxdisk();
 
     if (rmin > rmaxdisk)
@@ -806,7 +806,7 @@ int TrackletLUT::getVMRLookup(unsigned int layerdisk, double z, double r, double
     int rbin1 = NBINS * (rmin - settings_.rmindiskvm()) / (settings_.rmaxdiskvm() - settings_.rmindiskvm());
     int rbin2 = NBINS * (rmax - settings_.rmindiskvm()) / (settings_.rmaxdiskvm() - settings_.rmindiskvm());
 
-    if (iseed == 10) {
+    if (iseed == Seed::L2L3D1) {
       constexpr double rminspec = 40.0;
       rbin1 = NBINS * (rmin - rminspec) / (settings_.rmaxdisk() - rminspec);
       rbin2 = NBINS * (rmax - rminspec) / (settings_.rmaxdisk() - rminspec);
@@ -827,7 +827,7 @@ int TrackletLUT::getVMRLookup(unsigned int layerdisk, double z, double r, double
     //        and xxx is only 1,2, or 3
     //        should also reject xxx=0 as this means projection is outside range
 
-    bool overlap = iseed == 6 || iseed == 7 || iseed == 10;
+    bool overlap = iseed == Seed::L1D1 || iseed == Seed::L2D1 || iseed == Seed::L2L3D1;
 
     int value = rbin1 / 8;
     if (overlap) {

@@ -29,7 +29,6 @@ VMRouter::VMRouter(string name, Settings const& settings, Globals* global)
 
   meTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::me, region);                    //used for ME and outer TE barrel
 
-  //if (layerdisk_>= N_LAYER) {
   if (layerdisk_==LayerDisk::D1 || layerdisk_==LayerDisk::D2 || layerdisk_==D4) { 
    diskTable_.initVMRTable(layerdisk_, TrackletLUT::VMRTableType::disk, region);         //outer disk used by D1, D2, and D4
   }

@@ -170,14 +170,12 @@ void TrackletProcessor::addInput(MemoryBase* memory, string input) {
         iAllStub_ = 3;
     }
 
-    //cout << getName() << " " << nbitsfinephidiff_<<endl;
     unsigned int iTP = getName()[7]-'A';
-    
     
     pttableinner_.initTPlut(true, iSeed_, layerdisk1_, layerdisk2_, nbitsfinephidiff_, iTP); 
     pttableouter_.initTPlut(false, iSeed_, layerdisk1_, layerdisk2_, nbitsfinephidiff_, iTP); 
 
-    //need iAllStub_ set before building the table //FIXME should be in initiall
+    //need iAllStub_ set before building the table
     
     useregiontable_.initTPregionlut(iSeed_, layerdisk1_, layerdisk2_, iAllStub_,
 				    nbitsfinephidiff_, nbitsfinephi_, pttableinner_, iTP);
@@ -274,6 +272,9 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
   bool tebuffernearfull;
 
   for (unsigned int istep = 0; istep < maxStep_; istep++) {
+
+    // These print statements are not on by defaul but can be enabled for the
+    // comparison with HLS code to track differences.
     if (print) {
       CircularBuffer<TEData>& tedatabuffer = std::get<0>(tebuffer_);
       unsigned int& istub = std::get<1>(tebuffer_);
@@ -331,8 +332,6 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
       bool accept = false;
 
       if (iSeed_ == Seed::L1L2 || iSeed_ == Seed::L2L3 || iSeed_ == Seed::L3L4 || iSeed_ == Seed::L5L6 ) {
-        if (print)
-          cout << "istep=" << istep << " TEUnit read iTE=" << iTE << endl;
         accept = barrelSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
       } else if ( iSeed_ == Seed::D1D2 || iSeed_ == Seed::D3D4 ) {
         accept = diskSeeding(innerFPGAStub, innerStub, outerFPGAStub, outerStub);
@@ -367,9 +366,6 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
       if (teunit.idle()) {
         if (notemptytebuffer) {
           teunit.init(std::get<0>(tebuffer_).read());
-          if (print)
-            std::cout << "istep=" << istep << " TEUnit init iTE inner : " << ite << " "
-                      << teunit.innerStub()->allStubIndex().value() << std::endl;
           notemptytebuffer = false;  //prevent initialzing another TE unit
         }
       }
@@ -473,10 +469,6 @@ void TrackletProcessor::execute(unsigned int iSector, double phimin, double phim
             }
             assert(ireg * nbins + ibin < outervmstubs_->nBin());
             int nstubs = outervmstubs_->nVMStubsBinned(ireg * nbins + ibin);
-
-            if (print)
-              cout << "Add to TEBuffer stub ibin ireg nstubs: " << stub->allStubIndex().value() << " " << ibin << " "
-                   << ireg << " " << nstubs << endl;
 
             if (nstubs > 0) {
               mask = "1" + mask;
