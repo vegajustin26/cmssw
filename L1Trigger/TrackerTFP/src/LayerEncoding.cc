@@ -100,7 +100,7 @@ namespace trackerTFP {
     }
   }
 
-  // encoded layer id for given eta sector, bin in zT, bin in cotThea and decoed layer id
+  // Set of layers in each (zT,tanL) digi Bin of each eta sector numbered 0->N
   const int LayerEncoding::layerIdKF(int binEta, int binZT, int binCot, int layerId) const {
     const vector<int>& layers = layerEncoding_[binEta][binZT][binCot];
     int layer = distance(layers.begin(), find(layers.begin(), layers.end(), layerId));

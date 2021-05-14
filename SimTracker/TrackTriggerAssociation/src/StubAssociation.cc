@@ -28,7 +28,7 @@ namespace tt {
     return it != mapTPPtrsTTStubRefs_.end() ? it->second : emptyTTStubRefs_;
   }
 
-  // returns all TPs which are matched treating stub collection as track
+  // Get all TPs that are matched to these stubs in at least 'tpMinLayers' layers 
   vector<TPPtr> StubAssociation::associate(const vector<TTStubRef>& ttStubRefs) const {
     // count associated layer for each TP
     map<TPPtr, set<int>> m;

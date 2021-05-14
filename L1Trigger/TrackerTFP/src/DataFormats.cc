@@ -95,68 +95,68 @@ namespace trackerTFP {
 
   // converts bits to ntuple of variables
   template<typename ...Ts>
-  void DataFormats::convertStub(const Frame& bv, tuple<Ts...>& data, Process p) const {
+  void DataFormats::convertStub(Process p, const Frame& bv, tuple<Ts...>& data) const {
     TTBV ttBV(bv);
-    extractStub(ttBV, data, p);
+    extractStub(p, ttBV, data);
   }
 
   // helper (loop) to convert bits to ntuple of variables
   template<int it = 0, typename ...Ts>
-  void DataFormats::extractStub(TTBV& ttBV, std::tuple<Ts...>& data, Process p) const {
+  void DataFormats::extractStub(Process p, TTBV& ttBV, std::tuple<Ts...>& data) const {
     Variable v = *next(stubs_[+p].begin(), sizeof...(Ts) - 1 - it);
     formats_[+v][+p]->extract(ttBV, get<sizeof...(Ts) - 1 - it>(data));
     if constexpr(it + 1 != sizeof...(Ts))
-      extractStub<it + 1>(ttBV, data, p);
+      extractStub<it + 1>(p, ttBV, data);
   }
 
   // converts ntuple of variables to bits
   template<typename... Ts>
-  void DataFormats::convertStub(const std::tuple<Ts...>& data, Frame& bv, Process p) const {
+  void DataFormats::convertStub(Process p, const std::tuple<Ts...>& data, Frame& bv) const {
     TTBV ttBV(1, numUnusedBitsStubs_[+p]);
-    attachStub(data, ttBV, p);
+    attachStub(p, data, ttBV);
     bv = ttBV.bs();
   }
 
   // helper (loop) to convert ntuple of variables to bits
   template<int it = 0, typename... Ts>
-  void DataFormats::attachStub(const tuple<Ts...>& data, TTBV& ttBV, Process p) const {
+  void DataFormats::attachStub(Process p, const tuple<Ts...>& data, TTBV& ttBV) const {
     Variable v = *next(stubs_[+p].begin(), it);
     formats_[+v][+p]->attach(get<it>(data), ttBV);
     if constexpr(it + 1 != sizeof...(Ts))
-      attachStub<it + 1>(data, ttBV, p);
+      attachStub<it + 1>(p, data, ttBV);
   }
 
   // converts bits to ntuple of variables
   template<typename ...Ts>
-  void DataFormats::convertTrack(const Frame& bv, tuple<Ts...>& data, Process p) const {
+  void DataFormats::convertTrack(Process p, const Frame& bv, tuple<Ts...>& data) const {
     TTBV ttBV(bv);
-    extractTrack(ttBV, data, p);
+    extractTrack(p, ttBV, data);
   }
 
   // helper (loop) to convert bits to ntuple of variables
   template<int it = 0, typename ...Ts>
-  void DataFormats::extractTrack(TTBV& ttBV, std::tuple<Ts...>& data, Process p) const {
+  void DataFormats::extractTrack(Process p, TTBV& ttBV, std::tuple<Ts...>& data) const {
     Variable v = *next(tracks_[+p].begin(), sizeof...(Ts) - 1 - it);
     formats_[+v][+p]->extract(ttBV, get<sizeof...(Ts) - 1 - it>(data));
     if constexpr(it + 1 != sizeof...(Ts))
-      extractTrack<it + 1>(ttBV, data, p);
+      extractTrack<it + 1>(p, ttBV, data);
   }
 
   // converts ntuple of variables to bits
   template<typename... Ts>
-  void DataFormats::convertTrack(const std::tuple<Ts...>& data, Frame& bv, Process p) const {
+  void DataFormats::convertTrack(Process p, const std::tuple<Ts...>& data, Frame& bv) const {
     TTBV ttBV(1, numUnusedBitsTracks_[+p]);
-    attachTrack(data, ttBV, p);
+    attachTrack(p, data, ttBV);
     bv = ttBV.bs();
   }
 
   // helper (loop) to convert ntuple of variables to bits
   template<int it = 0, typename... Ts>
-  void DataFormats::attachTrack(const tuple<Ts...>& data, TTBV& ttBV, Process p) const {
+  void DataFormats::attachTrack(Process p, const tuple<Ts...>& data, TTBV& ttBV) const {
     Variable v = *next(tracks_[+p].begin(), it);
     formats_[+v][+p]->attach(get<it>(data), ttBV);
     if constexpr(it + 1 != sizeof...(Ts))
-      attachTrack<it + 1>(data, ttBV, p);
+      attachTrack<it + 1>(p, data, ttBV);
   }
 
   // construct Stub from Frame
@@ -167,7 +167,7 @@ namespace trackerTFP {
     frame_(frame),
     trackId_(0)
   {
-    dataFormats_->convertStub(frame.second, data_, p_);
+    dataFormats_->convertStub(p, frame.second, data_);
   }
 
   // construct Stub from other Stub
@@ -221,7 +221,7 @@ namespace trackerTFP {
     const Setup* setup = dataFormats_->setup();
     get<1>(data_) -= (sectorPhi_ - .5) * setup->baseSector();
     get<2>(data_) -= (r() + dataFormats_->chosenRofPhi()) * setup->sectorCot(sectorEta_);
-    dataFormats_->convertStub(data_, frame_.second, p_);
+    dataFormats_->convertStub(p_, data_, frame_.second);
   }
 
   // construct StubHT from Frame
@@ -238,7 +238,7 @@ namespace trackerTFP {
   {
     get<1>(data_) -= format(Variable::inv2R).floating(this->inv2R()) * r() + format(Variable::phiT).floating(this->phiT());
     fillTrackId();
-    dataFormats_->convertStub(data_, frame_.second, p_);
+    dataFormats_->convertStub(p_, data_, frame_.second);
   }
 
   void StubHT::fillTrackId() {
@@ -262,7 +262,7 @@ namespace trackerTFP {
     get<6>(data_) = this->phiT() * setup->mhtNumBinsPhiT() + phiT;
     get<7>(data_) = this->inv2R() * setup->mhtNumBinsInv2R() + inv2R;
     get<1>(data_) -= base(Variable::inv2R) * (inv2R - .5) * r() + base(Variable::phiT) * (phiT - .5);
-    dataFormats_->convertStub(data_, frame_.second, p_);
+    dataFormats_->convertStub(p_, data_, frame_.second);
     fillTrackId();
   }
 
@@ -287,7 +287,7 @@ namespace trackerTFP {
     const double cotD = format(Variable::cot).floating(cot);
     const Setup* setup = dataFormats_->setup();
     get<2>(data_) = stub.z() - (zTD + cotD * (stub.r() + dataFormats_->chosenRofPhi() - setup->chosenRofZ()));
-    dataFormats_->convertStub(data_, frame_.second, p_);
+    dataFormats_->convertStub(p_, data_, frame_.second);
     fillTrackId();
   }
 
@@ -307,7 +307,7 @@ namespace trackerTFP {
     Stub(stub, stub.r(), stub.phi(), stub.z(), dPhi, dZ),
     layer_(layer)
   {
-    dataFormats_->convertStub(data_, frame_.second, p_);
+    dataFormats_->convertStub(p_, data_, frame_.second);
   }
 
   // construct StubKFin from TTStubRef
@@ -315,7 +315,7 @@ namespace trackerTFP {
     Stub(ttStubRef, dataFormats, Process::kfin, r, phi, z, dPhi, dZ),
     layer_(layer)
   {
-    dataFormats_->convertStub(data_, frame_.second, p_);
+    dataFormats_->convertStub(p_, data_, frame_.second);
   }
 
   // construct StubKF from Frame
@@ -332,7 +332,7 @@ namespace trackerTFP {
     const double d = (dataFormats_->hybrid() ? setup->hybridChosenRofPhi() : setup->chosenRofPhi()) - setup->chosenRofZ();
     const double rz = format(Variable::r).digi(this->r() + d);
     get<2>(data_) = format(Variable::z).digi(stub.z() - (zT + rz * cot));
-    dataFormats_->convertStub(data_, frame_.second, p_);
+    dataFormats_->convertStub(p_, data_, frame_.second);
   }
 
   // construct Track from Frame
@@ -342,7 +342,7 @@ namespace trackerTFP {
     p_(p),
     frame_(frame)
   {
-    dataFormats_->convertTrack(frame.second, data_, p_);
+    dataFormats_->convertTrack(p_, frame.second, data_);
   }
 
   // construct Track from other Track
@@ -399,7 +399,7 @@ namespace trackerTFP {
     get<4>(data_) = format(Variable::inv2R, Process::mht).floating(stub.inv2R());
     get<5>(data_) = format(Variable::zT, Process::sf).floating(stub.zT());
     get<6>(data_) = format(Variable::cot, Process::sf).floating(stub.cot());
-    dataFormats_->convertTrack(data_, frame_.second, p_);
+    dataFormats_->convertTrack(p_, data_, frame_.second);
   }
 
   // construct TrackKFin from TTTrackRef
@@ -408,7 +408,7 @@ namespace trackerTFP {
     stubs_(setup()->numLayers()),
     hitPattern_(0, setup()->numLayers())
   {
-    dataFormats_->convertTrack(data_, frame_.second, p_);
+    dataFormats_->convertTrack(p_, data_, frame_.second);
   }
 
   vector<TTStubRef> TrackKFin::ttStubRefs(const TTBV& hitPattern, const vector<int>& layerMap) const {
@@ -433,13 +433,13 @@ namespace trackerTFP {
     get<4>(data_) += inv2R;
     get<5>(data_) += cot;
     get<6>(data_) += zT;
-    dataFormats_->convertTrack(data_, frame_.second, p_);
+    dataFormats_->convertTrack(p_, data_, frame_.second);
   }
 
   // conversion to TTTrack with given stubs
   TTTrack<Ref_Phase2TrackerDigi_> TrackKF::ttTrack(const vector<StubKF>& stubs) const {
     const double invR = -this->inv2R() * 2.;
-    const double phi0 = deltaPhi(this->phiT() - this->inv2R() * dataFormats_->chosenRofPhi() + setup()->baseSector() * (this->sectorPhi() - .5));
+    const double phi0 = deltaPhi(this->phiT() - this->inv2R() * dataFormats_->chosenRofPhi() + setup()->baseSector() * (this->sectorPhi() - .5) + setup()->baseRegion() * frame_.first->phiSector());
     const double cot = this->cot() + setup()->sectorCot(this->sectorEta());
     const double z0 = this->zT() - this->cot() * setup()->chosenRofZ();
     TTBV hitVector(0, setup()->numLayers());
@@ -455,13 +455,7 @@ namespace trackerTFP {
       chi2z += pow(stub.z(), 2) / setup()->v1(ttStubRef, cot);
       ttStubRefs.push_back(ttStubRef);
     }
-    static constexpr int nParPhi = 2;
-    static constexpr int nParZ = 2;
-    static constexpr int nPar = nParPhi + nParZ;
-    const int dofPhi = nLayer - nParPhi;
-    const int dofZ = nLayer - nParZ;
-    chi2phi /= dofPhi;
-    chi2z /= dofZ;
+    static constexpr int nPar = 4;
     static constexpr double d0 = 0.;
     static constexpr double trkMVA1 = 0.;
     static constexpr double trkMVA2 = 0.;
@@ -490,7 +484,7 @@ namespace trackerTFP {
     get<1>(data_) = track.inv2R();
     get<2>(data_) = track.zT() - track.cot() * setup()->chosenRofZ();
     get<3>(data_) = track.cot() + setup()->sectorCot(track.sectorEta());
-    dataFormats_->convertTrack(data_, frame_.second, p_);
+    dataFormats_->convertTrack(p_, data_, frame_.second);
   }
 
   // conversion to TTTrack

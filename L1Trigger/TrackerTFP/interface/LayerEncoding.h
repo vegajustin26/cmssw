@@ -20,7 +20,7 @@ namespace trackerTFP {
     LayerEncoding() {}
     LayerEncoding(const DataFormats* dataFormats);
     ~LayerEncoding(){}
-    // layerEncoding for given eta sector, bin in zT and bin in cotThea
+    // Set of layers in each (zT,tanL) digi Bin of each eta sector numbered 0->N
     const std::vector<int>& layerEncoding(int binEta, int binZT, int binCot) const { return layerEncoding_.at(binEta).at(binZT).at(binCot); }
     // maybe layers for given ets sector, bin in zT and bin in cotThea
     const std::vector<int>& maybeLayer(int binEta, int binZT, int binCot) const { return maybeLayer_.at(binEta).at(binZT).at(binCot); }

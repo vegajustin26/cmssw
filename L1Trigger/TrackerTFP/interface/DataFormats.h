@@ -4,6 +4,9 @@
 /*----------------------------------------------------------------------
 Classes to calculate and provide dataformats used by Track Trigger emulator
 enabling automated conversions from frames to stubs/tracks and vice versa
+In data members of classes Stub* & Track* below, the variables describing
+stubs/tracks are stored both in digitial format as a 64b word in frame_,
+and in undigitized format in an std::tuple. (This saves CPU)
 ----------------------------------------------------------------------*/
 
 #include "FWCore/Framework/interface/data_default_record_trait.h"
@@ -194,16 +197,16 @@ namespace trackerTFP {
     bool hybrid() const { return iConfig_.getParameter<bool>("UseHybrid"); }
     // converts bits to ntuple of variables
     template<typename ...Ts>
-    void convertStub(const tt::Frame& bv, std::tuple<Ts...>& data, Process p) const;
+    void convertStub(Process p, const tt::Frame& bv, std::tuple<Ts...>& data) const;
     // converts ntuple of variables to bits
     template<typename... Ts>
-    void convertStub(const std::tuple<Ts...>& data, tt::Frame& bv, Process p) const;
+    void convertStub(Process p, const std::tuple<Ts...>& data, tt::Frame& bv) const;
     // converts bits to ntuple of variables
     template<typename ...Ts>
-    void convertTrack(const tt::Frame& bv, std::tuple<Ts...>& data, Process p) const;
+    void convertTrack(Process p, const tt::Frame& bv, std::tuple<Ts...>& data) const;
     // converts ntuple of variables to bits
     template<typename... Ts>
-    void convertTrack(const std::tuple<Ts...>& data, tt::Frame& bv, Process p) const;
+    void convertTrack(Process p, const std::tuple<Ts...>& data, tt::Frame& bv) const;
     // access to run-time constants
     const tt::Setup* setup() const { return setup_; }
     // number of bits being used for specific variable flavour
@@ -240,16 +243,16 @@ namespace trackerTFP {
     void fillFormats();
     // helper (loop) to convert bits to ntuple of variables
     template<int it = 0, typename ...Ts>
-    void extractStub(TTBV& ttBV, std::tuple<Ts...>& data, Process p) const;
+    void extractStub(Process p, TTBV& ttBV, std::tuple<Ts...>& data) const;
     // helper (loop) to convert bits to ntuple of variables
     template<int it = 0, typename ...Ts>
-    void extractTrack(TTBV& ttBV, std::tuple<Ts...>& data, Process p) const;
+    void extractTrack(Process p, TTBV& ttBV, std::tuple<Ts...>& data) const;
     // helper (loop) to convert ntuple of variables to bits
     template<int it = 0, typename... Ts>
-    void attachStub(const std::tuple<Ts...>& data, TTBV& ttBV, Process p) const;
+    void attachStub(Process p, const std::tuple<Ts...>& data, TTBV& ttBV) const;
     // helper (loop) to convert ntuple of variables to bits
     template<int it = 0, typename... Ts>
-    void attachTrack(const std::tuple<Ts...>& data, TTBV& ttBV, Process p) const;
+    void attachTrack(Process p, const std::tuple<Ts...>& data, TTBV& ttBV) const;
     // configuration during construction
     edm::ParameterSet iConfig_;
     // stored run-time constants

@@ -22,7 +22,7 @@ using namespace tt;
 namespace trackerTFP {
 
   /*! \class  trackerTFP::ProducerAS
-   *  \brief  Associate TTTracks produced by fitter with those input to fitter.
+   *  \brief  Associate the TTTracks output by KF fitter with the tracks input to KF fitter.
    *  \author Thomas Schuh
    *  \date   2020, Oct
    */

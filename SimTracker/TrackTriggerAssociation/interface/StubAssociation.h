@@ -34,7 +34,7 @@ namespace tt {
     int numStubs() const { return mapTTStubRefsTPPtrs_.size(); };
     // total number of TPs associated with stubs
     int numTPs() const { return mapTPPtrsTTStubRefs_.size(); };
-    // returns all TPs which are matched treating stub collection as track
+    // Get all TPs that are matched to these stubs in at least 'tpMinLayers' layers 
     std::vector<TPPtr> associate(const std::vector<TTStubRef>& ttStubRefs) const;
 
   private:

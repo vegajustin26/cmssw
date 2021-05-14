@@ -341,17 +341,10 @@ namespace trackerTFP {
     C22 = C22_->digi(C22 - S12 * K21);
     C23 = C23_->digi(C23 - S13 * K21);
     C33 = C33_->digi(C33 - S13 * K31);
-    // update variable ranges to tune variable granularity
-    C22_->updateRangeActual(C22);
-    C23_->updateRangeActual(C23);
-    C33_->updateRangeActual(C33);
-    C00_->updateRangeActual(C00);
-    C01_->updateRangeActual(C01);
-    C11_->updateRangeActual(C11);
     // create updated state
     states_.emplace_back(State(state, (initializer_list<double>){x0, x1, x2, x3, C00, C11, C22, C33, C01, C23}));
     state = &states_.back();
-    // report internal values to tune variable granularity
+    // update variable ranges to tune variable granularity
     m0_->updateRangeActual(m0);
     m1_->updateRangeActual(m1);
     v0_->updateRangeActual(v0);
