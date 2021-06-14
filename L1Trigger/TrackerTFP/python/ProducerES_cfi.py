@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 TrackTriggerDataFormats_params = cms.PSet (
 
-  UseHybrid = cms.bool( True ),
+  UseHybrid = cms.bool( False ),
 
   SeedFilter = cms.PSet (
 

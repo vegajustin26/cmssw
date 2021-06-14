@@ -37,11 +37,12 @@ process.dtc = cms.Sequence( process.TrackerDTCProducer + process.TrackerDTCAnaly
 process.gp = cms.Sequence( process.TrackerTFPProducerGP + process.TrackerTFPAnalyzerGP )
 process.ht = cms.Sequence( process.TrackerTFPProducerHT + process.TrackerTFPAnalyzerHT )
 process.mht = cms.Sequence( process.TrackerTFPProducerMHT + process.TrackerTFPAnalyzerMHT )
+process.zht = cms.Sequence( process.TrackerTFPProducerZHT + process.TrackerTFPAnalyzerZHT )
 process.sf = cms.Sequence( process.TrackerTFPProducerSF + process.TrackerTFPAnalyzerSF )
 process.interIn = cms.Sequence( process.TrackerTFPProducerSFout + process.TrackerTFPProducerKFin + process.TrackerTFPAnalyzerKFin )
 process.kf = cms.Sequence( process.TrackerTFPProducerKF + process.TrackerTFPAnalyzerKF )
 process.interOut = cms.Sequence( process.TrackerTFPProducerTT + process.TrackerTFPProducerAS )#+ process.TrackerTFPAnalyzerTT )
-process.tt = cms.Path( process.mc + process.dtc + process.gp + process.ht + process.mht + process.sf + process.interIn + process.kf )#+ process.interOut )
+process.tt = cms.Path( process.mc + process.dtc + process.gp + process.ht + process.mht + process.zht + process.sf )#+ process.interIn + process.kf )#+ process.interOut )
 process.schedule = cms.Schedule( process.tt )
 
 # create options
@@ -72,7 +73,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.Even
 process.source = cms.Source(
   "PoolSource",
   fileNames = cms.untracked.vstring( options.inputMC ),
-  #skipEvents = cms.untracked.uint32( 60 ),
+  #skipEvents = cms.untracked.uint32( 3 + 8 ),
   secondaryFileNames = cms.untracked.vstring(),
   duplicateCheckMode = cms.untracked.string( 'noDuplicateCheck' )
 )

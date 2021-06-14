@@ -6,6 +6,7 @@ TrackerTFPProducer_params = cms.PSet (
   LabelGP          = cms.string( "TrackerTFPProducerGP"    ), #
   LabelHT          = cms.string( "TrackerTFPProducerHT"    ), #
   LabelMHT         = cms.string( "TrackerTFPProducerMHT"   ), #
+  LabelZHT         = cms.string( "TrackerTFPProducerZHT"   ), #
   LabelSF          = cms.string( "TrackerTFPProducerSF"    ), #
   LabelSFout       = cms.string( "TrackerTFPProducerSFout" ), #
   LabelKFin        = cms.string( "TrackerTFPProducerKFin"  ), #

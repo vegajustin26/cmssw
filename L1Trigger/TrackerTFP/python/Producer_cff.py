@@ -10,6 +10,7 @@ from L1Trigger.TrackerTFP.KalmanFilterFormats_cff import TrackTriggerKalmanFilte
 TrackerTFPProducerGP = cms.EDProducer( 'trackerTFP::ProducerGP', TrackerTFPProducer_params )
 TrackerTFPProducerHT = cms.EDProducer( 'trackerTFP::ProducerHT', TrackerTFPProducer_params )
 TrackerTFPProducerMHT = cms.EDProducer( 'trackerTFP::ProducerMHT', TrackerTFPProducer_params )
+TrackerTFPProducerZHT = cms.EDProducer( 'trackerTFP::ProducerZHT', TrackerTFPProducer_params )
 TrackerTFPProducerSF = cms.EDProducer( 'trackerTFP::ProducerSF', TrackerTFPProducer_params )
 TrackerTFPProducerSFout = cms.EDProducer( 'trackerTFP::ProducerSFout', TrackerTFPProducer_params )
 TrackerTFPProducerKFin = cms.EDProducer( 'trackerTFP::ProducerKFin', TrackerTFPProducer_params )

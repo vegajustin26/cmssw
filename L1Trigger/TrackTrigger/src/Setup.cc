@@ -550,7 +550,7 @@ namespace tt {
       exception.addContext("trackerDTC::Setup::dZ");
       exception << "Stub z uncertainty " << dZ << " "
                 << "is out of range " << mindZ_ << " to " << maxdZ_ << ".";
-      throw exception;
+      //throw exception;
     }
     return dZ;
   }

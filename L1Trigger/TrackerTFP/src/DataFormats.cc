@@ -277,6 +277,8 @@ namespace trackerTFP {
     Stub(frame, formats, Process::sf), chi2_(0.)
   {
     fillTrackId();
+    cot_ = 0.;
+    zT_ = 0.;
   }
 
   // construct StubSF from StubMHT
@@ -287,6 +289,34 @@ namespace trackerTFP {
     const double cotD = format(Variable::cot).floating(cot);
     const Setup* setup = dataFormats_->setup();
     get<2>(data_) = stub.z() - (zTD + cotD * (stub.r() + dataFormats_->chosenRofPhi() - setup->chosenRofZ()));
+    dataFormats_->convertStub(p_, data_, frame_.second);
+    fillTrackId();
+    cot_ = 0.;
+    zT_ = 0.;
+  }
+
+  // 
+  StubSF::StubSF(const StubSF& stub, double zT, double cot, int id) :
+    Stub(stub.frame().first, stub.dataFormats(), Process::sf, stub.r(), stub.phi(), stub.z(), stub.layer(), stub.sectorPhi(), stub.sectorEta(), stub.phiT(), stub.inv2R(), stub.zT(), stub.cot())
+  {
+    const Setup* setup = dataFormats_->setup();
+    // update track (zT, cot), and phi residuals w.r.t. track, to reflect ZHT cell assignment.
+    cot_ = stub.cotf() + cot;
+    zT_ = stub.ztf() + zT;
+    get<8>(data_) = format(Variable::zT).integer(zT_);
+    get<9>(data_) = format(Variable::cot).integer(cot_);
+    get<2>(data_) -= (zT - (this->r() + dataFormats_->chosenRofPhi() - setup->chosenRofZ()) * cot);
+    dataFormats_->convertStub(p_, data_, frame_.second);
+    trackId_ = stub.trackId() * 4 + id;
+    //fillTrackId();
+  }
+
+  // 
+  StubSF::StubSF(const StubSF& stub, double zT, double cot) :
+    Stub(stub.frame().first, stub.dataFormats(), Process::sf, stub.r(), stub.phi(), stub.z(), stub.layer(), stub.sectorPhi(), stub.sectorEta(), stub.phiT(), stub.inv2R(), stub.zT(), stub.cot())
+  {
+    get<8>(data_) = format(Variable::zT).integer(zT);
+    get<9>(data_) = format(Variable::cot).integer(cot);
     dataFormats_->convertStub(p_, data_, frame_.second);
     fillTrackId();
   }
