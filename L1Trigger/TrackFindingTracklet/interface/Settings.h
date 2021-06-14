@@ -778,7 +778,8 @@ namespace trklet {
                                                             {"TRE", false},          {"VMR", false},
                                                             {"StubsLayer", false},   {"StubsLayerSector", false},
                                                             {"HitEff", false},       {"MatchEff", false},
-                                                            {"IFit", false},         {"AS", false}};
+										       {"IFit", false},         {"AS", false},
+							    {"WriteEmptyProj", false}};
 
     std::array<double, N_DSS_MOD> rDSSinner_mod_{{68.9391, 78.7750, 85.4550, 96.3150, 102.3160}};
     std::array<double, N_DSS_MOD> rDSSouter_mod_{{66.4903, 76.7750, 84.4562, 94.9920, 102.3160}};
@@ -833,7 +834,7 @@ namespace trklet {
 
     unsigned int MEBinsBits_{3};
     unsigned int MEBinsDisks_{8};  //on each side
-    unsigned int maxStubsPerBin_{16};
+    unsigned int maxStubsPerBin_{15}; //16 causes overflow!
 
     // Options for chisq fit
     bool exactderivatives_{false};
