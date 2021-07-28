@@ -4,10 +4,11 @@ TrackTriggerDataFormats_params = cms.PSet (
 
   UseHybrid = cms.bool( False ),
 
-  SeedFilter = cms.PSet (
+  ZHoughTransform = cms.PSet (
 
-    WidthZT  = cms.int32( 5 ),
-    WidthCot = cms.int32( 5 )
+    NumBinsZT  = cms.int32( 2 ),
+    NumBinsCot = cms.int32( 2 ),
+    NumStages  = cms.int32( 5 )
 
   ),
 

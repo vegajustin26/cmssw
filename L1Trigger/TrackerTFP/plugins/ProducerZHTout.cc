@@ -24,15 +24,15 @@ using namespace tt;
 
 namespace trackerTFP {
 
-  /*! \class  trackerTFP::ProducerSFout
+  /*! \class  trackerTFP::ProducerZHTout
    *  \brief  transforms SF output into TTTracks
    *  \author Thomas Schuh
    *  \date   2020, July
    */
-  class ProducerSFout : public stream::EDProducer<> {
+  class ProducerZHTout : public stream::EDProducer<> {
   public:
-    explicit ProducerSFout(const ParameterSet&);
-    ~ProducerSFout() override {}
+    explicit ProducerZHTout(const ParameterSet&);
+    ~ProducerZHTout() override {}
 
   private:
     virtual void beginRun(const Run&, const EventSetup&) override;
@@ -55,10 +55,10 @@ namespace trackerTFP {
     const DataFormats* dataFormats_;
   };
 
-  ProducerSFout::ProducerSFout(const ParameterSet& iConfig) :
+  ProducerZHTout::ProducerZHTout(const ParameterSet& iConfig) :
     iConfig_(iConfig)
   {
-    const string& label = iConfig.getParameter<string>("LabelSF");
+    const string& label = iConfig.getParameter<string>("LabelZHT");
     const string& branchAcceptedStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
     const string& branchAcceptedTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
     // book in- and output ED products
@@ -72,7 +72,7 @@ namespace trackerTFP {
     dataFormats_ = nullptr;
   }
 
-  void ProducerSFout::beginRun(const Run& iRun, const EventSetup& iSetup) {
+  void ProducerZHTout::beginRun(const Run& iRun, const EventSetup& iSetup) {
     // helper class to store configurations
     setup_ = &iSetup.getData(esGetTokenSetup_);
     if (!setup_->configurationSupported())
@@ -84,11 +84,11 @@ namespace trackerTFP {
     dataFormats_ = &iSetup.getData(esGetTokenDataFormats_);
   }
 
-  void ProducerSFout::produce(Event& iEvent, const EventSetup& iSetup) {
-    const DataFormat& dfCot = dataFormats_->format(Variable::cot, Process::sf);
-    const DataFormat& dfZT = dataFormats_->format(Variable::zT, Process::sf);
-    const DataFormat& dfPhiT = dataFormats_->format(Variable::phiT, Process::sf);
-    const DataFormat& dfinv2R = dataFormats_->format(Variable::inv2R, Process::sf);
+  void ProducerZHTout::produce(Event& iEvent, const EventSetup& iSetup) {
+    const DataFormat& dfCot = dataFormats_->format(Variable::cot, Process::zht);
+    const DataFormat& dfZT = dataFormats_->format(Variable::zT, Process::zht);
+    const DataFormat& dfPhiT = dataFormats_->format(Variable::phiT, Process::zht);
+    const DataFormat& dfinv2R = dataFormats_->format(Variable::inv2R, Process::zht);
     // empty SFout product
     deque<TTTrack<Ref_Phase2TrackerDigi_>> ttTracks;
     // read in SF Product and produce SFout product
@@ -97,11 +97,11 @@ namespace trackerTFP {
       iEvent.getByToken<StreamsStub>(edGetToken_, handle);
       const StreamsStub& streams = *handle.product();
       for (int region = 0; region < setup_->numRegions(); region++ ) {
-        for (int channel = 0; channel < dataFormats_->numChannel(Process::sf); channel++) {
-          const int index = region * dataFormats_->numChannel(Process::sf) + channel;
+        for (int channel = 0; channel < dataFormats_->numChannel(Process::zht); channel++) {
+          const int index = region * dataFormats_->numChannel(Process::zht) + channel;
           // convert stream to stubs
           const StreamStub& stream = streams[index];
-          vector<StubSF> stubs;
+          vector<StubZHT> stubs;
           stubs.reserve(stream.size());
           for (const FrameStub& frame : stream)
             if(frame.first.isNonnull())
@@ -111,11 +111,11 @@ namespace trackerTFP {
           for (auto it = stubs.begin(); it != stubs.end();) {
             const auto start = it;
             const int id = it->trackId();
-            auto different = [id](const StubSF& stub){ return id != stub.trackId(); };
+            auto different = [id](const StubZHT& stub){ return id != stub.trackId(); };
             it = find_if(it, stubs.end(), different);
             vector<TTStubRef> ttStubRefs;
             ttStubRefs.reserve(distance(start, it));
-            transform(start, it, back_inserter(ttStubRefs), [](const StubSF& stub){ return stub.ttStubRef(); });
+            transform(start, it, back_inserter(ttStubRefs), [](const StubZHT& stub){ return stub.ttStubRef(); });
             const double zT = dfZT.floating(start->zT());
             const double cot = dfCot.floating(start->cot());
             const double phiT = dfPhiT.floating(start->phiT());
@@ -125,7 +125,7 @@ namespace trackerTFP {
             ttTracks.back().setPhiSector(start->sectorPhi() + region * setup_->numSectorsPhi());
             ttTracks.back().setEtaSector(start->sectorEta());
             ttTracks.back().setTrackSeedType(start->trackId());
-            if (i++ == setup_->sfMaxTracks())
+            if (i++ == setup_->zhtMaxTracks())
               break;
           }
         }
@@ -137,4 +137,4 @@ namespace trackerTFP {
 
 } // namespace trackerTFP
 
-DEFINE_FWK_MODULE(trackerTFP::ProducerSFout);
+DEFINE_FWK_MODULE(trackerTFP::ProducerZHTout);

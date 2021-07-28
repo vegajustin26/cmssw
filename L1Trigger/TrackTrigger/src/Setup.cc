@@ -171,13 +171,14 @@ namespace tt {
         mhtNumDLBNodes_(pSetMHT_.getParameter<int>("NumDLBNodes")),
         mhtNumDLBChannel_(pSetMHT_.getParameter<int>("NumDLBChannel")),
         mhtMinLayers_(pSetMHT_.getParameter<int>("MinLayers")),
-        // Parmeter specifying SeedFilter
-        pSetSF_(iConfig.getParameter<ParameterSet>("SeedFilter")),
-        sfWidthZT_(pSetSF_.getParameter<int>("WidthZT")),
-        sfWidthCot_(pSetSF_.getParameter<int>("WidthCot")),
-        sfMinLayers_(pSetSF_.getParameter<int>("MinLayers")),
-        sfMaxTracks_(pSetSF_.getParameter<int>("MaxTracks")),
-        sfMaxStubsPerLayer_(pSetSF_.getParameter<int>("MaxStubsPerLayer")),
+        // Parmeter specifying ZHoughTransform
+        pSetZHT_(iConfig.getParameter<ParameterSet>("ZHoughTransform")),
+        zhtNumBinsZT_(pSetZHT_.getParameter<int>("NumBinsZT")),
+        zhtNumBinsCot_(pSetZHT_.getParameter<int>("NumBinsCot")),
+        zhtNumStages_(pSetZHT_.getParameter<int>("NumStages")),
+        zhtMinLayers_(pSetZHT_.getParameter<int>("MinLayers")),
+        zhtMaxTracks_(pSetZHT_.getParameter<int>("MaxTracks")),
+        zhtMaxStubsPerLayer_(pSetZHT_.getParameter<int>("MaxStubsPerLayer")),
         // Parmeter specifying KalmanFilter
         pSetKF_(iConfig.getParameter<ParameterSet>("KalmanFilter")),
         kfNumWorker_(pSetKF_.getParameter<int>("NumWorker")),
@@ -687,8 +688,10 @@ namespace tt {
     dtcNumStreams_ = numDTCs_ * numOverlappingRegions_;
     // mht
     mhtNumCells_ = mhtNumBinsInv2R_ * mhtNumBinsPhiT_;
+    // zht
+    zhtNumCells_ = zhtNumBinsCot_ * zhtNumBinsZT_;
     //
-    kfWidthLayerCount_ = ceil(log2(sfMaxStubsPerLayer_));
+    kfWidthLayerCount_ = ceil(log2(zhtMaxStubsPerLayer_));
   }
 
   // returns bit accurate position of a stub from a given tfp identifier region [0-8] channel [0-47]

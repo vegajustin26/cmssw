@@ -15,11 +15,6 @@ using namespace tt;
 
 namespace trackerTFP {
 
-  static constexpr int numStages = 5;
-  static constexpr int numBinsZT = 2;
-  static constexpr int numBinsCot = 2;
-  static constexpr int numCells = numBinsZT + numBinsCot;
-
   ZHoughTransform::ZHoughTransform(const ParameterSet& iConfig, const Setup* setup, const DataFormats* dataFormats, int region) :
     enableTruncation_(iConfig.getParameter<bool>("EnableTruncation")),
     setup_(setup),
@@ -37,81 +32,79 @@ namespace trackerTFP {
       const StreamStub& stream = streams[offset + channel];
       nStubsMHT += accumulate(stream.begin(), stream.end(), 0, valid);
     }
-    stubsZHT_.reserve(nStubsMHT * ( numCells * numStages + 1 ));
+    stubsZHT_.reserve(nStubsMHT * (setup_->zhtNumCells() * setup_->zhtNumStages()));
     for (int channel = 0; channel < dataFormats_->numChannel(Process::mht); channel++) {
-      //if (channel != 2)
-        //continue;
       const StreamStub& stream = streams[offset + channel];
-      vector<StubSF*>& stubs = input_[channel];
+      vector<StubZHT*>& stubs = input_[channel];
       stubs.reserve(stream.size());
       // Store input stubs in vector, so rest of ZHT algo can work with pointers to them (saves CPU)
       for (const FrameStub& frame : stream) {
-        StubSF* stub = nullptr;
+        StubZHT* stub = nullptr;
         if (frame.first.isNonnull()) {
           StubMHT stubMHT(frame, dataFormats_);
-          stubsZHT_.emplace_back(stubMHT, stubMHT.layer(), 0, 0, 0.);
+          stubsZHT_.emplace_back(stubMHT);
           stub = &stubsZHT_.back();
         }
         stubs.push_back(stub);
       }
+      /*if (stubs.empty())
+        continue;
+      cout << region_ << " " << setw(2) << channel << " | ";
+      for (StubZHT* stub : stubs)
+        cout << (stub ? stub->trackId() : 0) << " ";
+      cout << endl;*/
     }
-    //sort(stubsZHT_.begin(), stubsZHT_.end(), [](const StubSF& lhs, const StubSF& rhs){ return lhs.z() > rhs.z(); });
   }
 
   // fill output products
   void ZHoughTransform::produce(StreamsStub& accepted, StreamsStub& lost) {
-    //if (region_ != 1)
-      //return;
-    vector<deque<StubSF*>> streams(dataFormats_->numChannel(Process::mht));
+    vector<deque<StubZHT*>> streams(dataFormats_->numChannel(Process::mht));
     for (int channel = 0; channel < dataFormats_->numChannel(Process::mht); channel++)
-      streams[channel] = deque<StubSF*>(input_[channel].begin(), input_[channel].end());
-    vector<deque<StubSF*>> stubsCells(dataFormats_->numChannel(Process::mht) * numCells);
-    for (stage_ = 0; stage_ < numStages; stage_++) {
+      streams[channel] = deque<StubZHT*>(input_[channel].begin(), input_[channel].end());
+    vector<deque<StubZHT*>> stubsCells(dataFormats_->numChannel(Process::mht) * setup_->zhtNumCells());
+    for (stage_ = 0; stage_ < setup_->zhtNumStages(); stage_++) {
       // fill ZHT cells
       for (int channel = 0; channel < dataFormats_->numChannel(Process::mht); channel++)
         fill(channel, streams[channel], stubsCells);
       // perform static load balancing
       for (int channel = 0; channel < dataFormats_->numChannel(Process::mht); channel++) {
-        vector<deque<StubSF*>> tmp(numCells);
+        vector<deque<StubZHT*>> tmp(setup_->zhtNumCells());
         // gather streams to mux together: same ZHT cell of 4 adjacent ZHT input streams
-        for (int k = 0; k < numCells; k++)
-          //swap(tmp[k], stubsCells[(channel / numCells) * dataFormats_->numChannel(Process::mht) + channel % numCells + k * numCells]);
-          swap(tmp[k], stubsCells[channel * numCells + k]);
+        for (int k = 0; k < setup_->zhtNumCells(); k++)
+          //swap(tmp[k], stubsCells[(channel / setup_->zhtNumCells()) * dataFormats_->numChannel(Process::mht) + channel % setup_->zhtNumCells() + k * setup_->zhtNumCells()]);
+          swap(tmp[k], stubsCells[channel * setup_->zhtNumCells() + k]);
         slb(tmp, streams[channel], lost[channel]);
       }
     }
+    /*for (int channel = 0; channel < dataFormats_->numChannel(Process::mht); channel++) {
+      if (streams[channel].empty())
+        continue;
+      cout << region_ << " " << setw(2) << channel << " | ";
+      for (StubZHT* stub : streams[channel])
+        cout << (stub ? stub->trackId() : 0) << " ";
+      cout << endl;
+    }*/
     // fill output product
     for (int channel = 0; channel < dataFormats_->numChannel(Process::mht); channel++) {
-      deque<StubSF*>& stubs = streams[channel];
+      deque<StubZHT*>& stubs = streams[channel];
       StreamStub& stream = accepted[region_ * dataFormats_->numChannel(Process::mht) + channel];
       merge(stubs, stream);
     }
-    // fill output product
-    /*for (int channel = 0; channel < dataFormats_->numChannel(Process::mht); channel++) {
-      const deque<StubSF*>& stubs = streams[channel];
-      StreamStub& stream = accepted[region_ * dataFormats_->numChannel(Process::mht) + channel];
-      stream.reserve(stubs.size());
-      for (StubSF* stub : stubs)
-        stream.emplace_back(stub ? stub->frame() : FrameStub());
-      //for (StubSF* stub : stubs)
-        //if (stub)
-          //cout << stub->cot() << " " << stub->zT() << " " << stub->r() << " " << stub->z() << endl;
-    }*/
   }
 
   // perform finer pattern recognition per track
-  void ZHoughTransform::fill(int channel, const deque<StubSF*>& stubs, vector<deque<StubSF*>>& streams) {
+  void ZHoughTransform::fill(int channel, const deque<StubZHT*>& stubs, vector<deque<StubZHT*>>& streams) {
     if (stubs.empty())
       return;
-    const double baseZT = dataFormats_->format(Variable::zT, Process::sf).base() * pow(2, numStages - stage_);
-    const double baseCot = dataFormats_->format(Variable::cot, Process::sf).base() * pow(2, numStages - stage_);
+    const double baseZT = dataFormats_->format(Variable::zT, Process::zht).base() * pow(2, setup_->zhtNumStages() - stage_);
+    const double baseCot = dataFormats_->format(Variable::cot, Process::zht).base() * pow(2, setup_->zhtNumStages() - stage_);
     int id;
-    auto different = [&id](StubSF* stub){ return !stub || id != stub->trackId(); };
+    auto different = [&id](StubZHT* stub){ return !stub || id != stub->trackId(); };
     for (auto it = stubs.begin(); it != stubs.end();) {
       if (!*it) {
-        const auto begin = find_if(it, stubs.end(), [](StubSF* stub){ return stub; });
+        const auto begin = find_if(it, stubs.end(), [](StubZHT* stub){ return stub; });
         const int nGaps = distance(it, begin);
-        for (deque<StubSF*>& stream : streams)
+        for (deque<StubZHT*>& stream : streams)
           stream.insert(stream.end(), nGaps, nullptr);
         it = begin;
         continue;
@@ -122,20 +115,18 @@ namespace trackerTFP {
       it = find_if(it, stubs.end(), different);
       const int size = distance(start, it);
       // create finer track candidates stub container
-      vector<vector<StubSF*>> mhtCells(numCells);
-      for (vector<StubSF*>& mhtCell : mhtCells)
+      vector<vector<StubZHT*>> mhtCells(setup_->zhtNumCells());
+      for (vector<StubZHT*>& mhtCell : mhtCells)
         mhtCell.reserve(size);
       // fill finer track candidates stub container
       for (auto stub = start; stub != it; stub++) {
         const double r = (*stub)->r() + setup_->chosenRofPhi() - setup_->chosenRofZ();
         const double chi = (*stub)->z();
         const double dChi = setup_->dZ((*stub)->ttStubRef(), cotGlobal);
-        //const double dChi = 0.;
-        //cout << region_ << " " << stage_ << " " << (*stub)->cot() << " " << (*stub)->zT() << " " << r << " " << chi << " " << dChi << " ";
         // identify finer track candidates for this stub
         // 0 and 1 belong to the ZHT cells with smaller cot; 0 and 2 belong to those with smaller zT
         vector<int> cells;
-        cells.reserve(numCells);
+        cells.reserve(setup_->zhtNumCells());
         const bool compA = 2. * abs(chi) < baseZT + dChi;
         const bool compB = 2. * abs(chi) < abs(r) * baseCot + dChi;
         const bool compC = 2. * abs(chi) < dChi;
@@ -144,31 +135,28 @@ namespace trackerTFP {
         if (chi <  0. && r >= 0.) { cells.push_back(2); if (compA) cells.push_back(0); if(compB) cells.push_back(3); if(compC) cells.push_back(1); }
         if (chi <  0. && r <  0.) { cells.push_back(0); if (compA) cells.push_back(2); if(compB) cells.push_back(1); if(compC) cells.push_back(3); }
         for (int cell : cells) {
-          const double cot = (cell / numBinsZT - .5) * baseCot / 2.;
-          const double zT = (cell % numBinsZT - .5) * baseZT / 2.;
+          const double cot = (cell / setup_->zhtNumBinsZT() - .5) * baseCot / 2.;
+          const double zT = (cell % setup_->zhtNumBinsZT() - .5) * baseZT / 2.;
           stubsZHT_.emplace_back(**stub, zT, cot, cell);
           mhtCells[cell].push_back(&stubsZHT_.back());
-          //cout << cell << " ";
         }
-        //cout << endl;
       }
-      //cout << endl;
       // perform pattern recognition
-      for (int sel = 0; sel < numCells; sel++) {
-        deque<StubSF*>& stream = streams[channel * numCells + sel];
-        vector<StubSF*>& mhtCell = mhtCells[sel];
+      for (int sel = 0; sel < setup_->zhtNumCells(); sel++) {
+        deque<StubZHT*>& stream = streams[channel * setup_->zhtNumCells() + sel];
+        vector<StubZHT*>& mhtCell = mhtCells[sel];
         set<int> layers;
-        auto toLayer = [](StubSF* stub){ return stub->layer(); };
+        auto toLayer = [](StubZHT* stub){ return stub->layer(); };
         transform(mhtCell.begin(), mhtCell.end(), inserter(layers, layers.begin()), toLayer);
         if ((int)layers.size() < setup_->mhtMinLayers())
           mhtCell.clear();
-        for (StubSF* stub : mhtCell)
+        for (StubZHT* stub : mhtCell)
           stream.push_back(stub);
         stream.insert(stream.end(), size - (int)mhtCell.size(), nullptr);
       }
     }
-    for (int sel = 0; sel < numCells; sel++) {
-      deque<StubSF*>& stream = streams[channel * numCells + sel];
+    for (int sel = 0; sel < setup_->zhtNumCells(); sel++) {
+      deque<StubZHT*>& stream = streams[channel * setup_->zhtNumCells() + sel];
       // remove all gaps between end and last stub
       for(auto it = stream.end(); it != stream.begin();)
         it = (*--it) ? stream.begin() : stream.erase(it);
@@ -199,33 +187,33 @@ namespace trackerTFP {
   }
 
   // Static load balancing of inputs: mux 4 streams to 1 stream
-  void ZHoughTransform::slb(vector<deque<StubSF*>>& inputs, deque<StubSF*>& accepted, StreamStub& lost) const {
+  void ZHoughTransform::slb(vector<deque<StubZHT*>>& inputs, deque<StubZHT*>& accepted, StreamStub& lost) const {
     accepted.clear();
-    if (all_of(inputs.begin(), inputs.end(), [](const deque<StubSF*>& stubs){ return stubs.empty(); }))
+    if (all_of(inputs.begin(), inputs.end(), [](const deque<StubZHT*>& stubs){ return stubs.empty(); }))
       return;
     // input fifos
-    vector<deque<StubSF*>> stacks(numCells);
+    vector<deque<StubZHT*>> stacks(setup_->zhtNumCells());
     // helper for handshake
-    TTBV empty(-1, numCells, true);
-    TTBV enable(0, numCells);
+    TTBV empty(-1, setup_->zhtNumCells(), true);
+    TTBV enable(0, setup_->zhtNumCells());
     // clock accurate firmware emulation, each while trip describes one clock tick, one stub in and one stub out per tick
-    while(!all_of(inputs.begin(), inputs.end(), [](const deque<StubSF*>& d){ return d.empty(); }) or
-          !all_of(stacks.begin(), stacks.end(), [](const deque<StubSF*>& d){ return d.empty(); })) {
+    while(!all_of(inputs.begin(), inputs.end(), [](const deque<StubZHT*>& d){ return d.empty(); }) or
+          !all_of(stacks.begin(), stacks.end(), [](const deque<StubZHT*>& d){ return d.empty(); })) {
       // store stub in fifo
-      for(int channel = 0; channel < numCells; channel++){
-        StubSF* stub = pop_front(inputs[channel]);
+      for(int channel = 0; channel < setup_->zhtNumCells(); channel++){
+        StubZHT* stub = pop_front(inputs[channel]);
         if (stub)
           stacks[channel].push_back(stub);
       }
       // identify empty fifos
-      for (int channel = 0; channel < numCells; channel++)
+      for (int channel = 0; channel < setup_->zhtNumCells(); channel++)
         empty[channel] = stacks[channel].empty();
       // chose new fifo to read from if current fifo got empty
       const int iEnableOld = enable.plEncode();
       if (enable.none() || empty[iEnableOld]) {
         enable.reset();
         const int iNotEmpty = empty.plEncode(false);
-        if (iNotEmpty < numCells)
+        if (iNotEmpty < setup_->zhtNumCells())
           enable.set(iNotEmpty);
       }
       // read from chosen fifo
@@ -240,7 +228,7 @@ namespace trackerTFP {
     // perform truncation if desired
     if (enableTruncation_ && (int)accepted.size() > setup_->numFrames()) {
       const auto limit = next(accepted.begin(), setup_->numFrames());
-      auto valid = [](int& sum, StubSF* stub){ return sum += stub ? 1 : 0; };
+      auto valid = [](int& sum, StubZHT* stub){ return sum += stub ? 1 : 0; };
       const int nLost = accumulate(limit, accepted.end(), 0, valid);
       lost.reserve(nLost);
       for (auto it = limit; it != accepted.end(); it++)
@@ -254,35 +242,30 @@ namespace trackerTFP {
   }
 
   //
-  void ZHoughTransform::merge(deque<StubSF*>& stubs, StreamStub& stream) const {
+  void ZHoughTransform::merge(deque<StubZHT*>& stubs, StreamStub& stream) const {
     stubs.erase(remove(stubs.begin(), stubs.end(), nullptr), stubs.end());
     set<int> candidates;
-    const int weight = numCells * pow(2, numStages);
-    for (const StubSF* stub : stubs)
+    const int weight = setup_->zhtNumCells() * pow(2, setup_->zhtNumStages());
+    for (const StubZHT* stub : stubs)
       candidates.insert(stub->trackId() / weight);
-    vector<deque<StubSF*>> tracks(candidates.size());
+    vector<deque<StubZHT*>> tracks(candidates.size());
     for (auto it = stubs.begin(); it != stubs.end();) {
       const auto start = it;
       const int id = (*it)->trackId();
       const int candId = id / weight;
       const int pos = distance(candidates.begin(), find(candidates.begin(), candidates.end(), candId));
-      deque<StubSF*>& track = tracks[pos];
-      auto different = [id](const StubSF* stub){ return id != stub->trackId(); };
+      deque<StubZHT*>& track = tracks[pos];
+      auto different = [id](const StubZHT* stub){ return id != stub->trackId(); };
       it = find_if(it, stubs.end(), different);
       for (auto s = start; s != it; s++)
-        if (find_if(track.begin(), track.end(), [s](const StubSF* stub){ return (*s)->ttStubRef() == stub->ttStubRef(); }) == track.end())
+        if (find_if(track.begin(), track.end(), [s](const StubZHT* stub){ return (*s)->ttStubRef() == stub->ttStubRef(); }) == track.end())
           track.push_back(*s);
     }
-    const int size = accumulate(tracks.begin(), tracks.end(), 0, [](int& sum, const deque<StubSF*>& stubs){ return sum += (int)stubs.size(); });
+    const int size = accumulate(tracks.begin(), tracks.end(), 0, [](int& sum, const deque<StubZHT*>& stubs){ return sum += (int)stubs.size(); });
     stream.reserve(size);
-    for (deque<StubSF*>& track : tracks) {
-      const double cot = (*track.begin())->cotf();
-      const double zT = (*track.begin())->ztf();
-      for (const StubSF* stub : track) {
-        const StubSF stubZHT(*stub, zT, cot);
-        stream.push_back(stubZHT.frame());
-      }
-    }
+    for (deque<StubZHT*>& track : tracks)
+      for (const StubZHT* stub : track)
+        stream.push_back(stub->frame());
   }
 
   // remove and return first element of deque, returns nullptr if empty

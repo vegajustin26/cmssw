@@ -75,8 +75,8 @@ namespace trackerTFP {
   ProducerKFin::ProducerKFin(const ParameterSet& iConfig) :
     iConfig_(iConfig)
   {
-    const string& labelTTTracks = iConfig.getParameter<string>("LabelSFout");
-    const string& labelStubs = iConfig.getParameter<string>("LabelSF");
+    const string& labelTTTracks = iConfig.getParameter<string>("LabelZHTout");
+    const string& labelStubs = iConfig.getParameter<string>("LabelZHT");
     const string& branchAcceptedStubs = iConfig.getParameter<string>("BranchAcceptedStubs");
     const string& branchAcceptedTracks = iConfig.getParameter<string>("BranchAcceptedTracks");
     const string& branchLostStubs = iConfig.getParameter<string>("BranchLostStubs");
@@ -135,19 +135,19 @@ namespace trackerTFP {
       const vector<TTTrack<Ref_Phase2TrackerDigi_>>& ttTracks = *handleTTTracks.product();
       for (int region = 0; region < setup_->numRegions(); region++) {
         // Unpack input SF data into vector
-        int nStubsSF(0);
-        for (int channel = 0; channel < dataFormats_->numChannel(Process::sf); channel++) {
-          const int index = region * dataFormats_->numChannel(Process::sf) + channel;
+        int nStubsZHR(0);
+        for (int channel = 0; channel < dataFormats_->numChannel(Process::zht); channel++) {
+          const int index = region * dataFormats_->numChannel(Process::zht) + channel;
           const StreamStub& stream = streams[index];
-          nStubsSF += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const FrameStub& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
+          nStubsZHR += accumulate(stream.begin(), stream.end(), 0, [](int& sum, const FrameStub& frame){ return sum += frame.first.isNonnull() ? 1 : 0; });
         }
-        vector<StubSF> stubsSF;
-        stubsSF.reserve(nStubsSF);
-        for (int channel = 0; channel < dataFormats_->numChannel(Process::sf); channel++) {
-          const int index = region * dataFormats_->numChannel(Process::sf) + channel;
+        vector<StubZHT> stubsZHT;
+        stubsZHT.reserve(nStubsZHR);
+        for (int channel = 0; channel < dataFormats_->numChannel(Process::zht); channel++) {
+          const int index = region * dataFormats_->numChannel(Process::zht) + channel;
           for (const FrameStub& frame : streams[index])
             if (frame.first.isNonnull())
-              stubsSF.emplace_back(frame, dataFormats_);
+              stubsZHT.emplace_back(frame, dataFormats_);
         }
         vector<deque<FrameStub>> dequesStubs(dataFormats_->numChannel(Process::kf) * setup_->numLayers());
         vector<deque<FrameTrack>> dequesTracks(dataFormats_->numChannel(Process::kf));
@@ -162,24 +162,24 @@ namespace trackerTFP {
           const int binEta = ttTrack.etaSector();
           const int binZT = dfzT.toUnsigned(dfzT.integer(ttTrack.z0()));
           const int binCot = dfcot.toUnsigned(dfcot.integer(ttTrack.tanL()));
-          StubSF* stubSF = nullptr;
+          StubZHT* stubZHT = nullptr;
           vector<int> layerCounts(setup_->numLayers(), 0);
           for (const TTStubRef& ttStubRef : ttTrack.getStubRefs()) {
             const int layerId = setup_->layerId(ttStubRef);
             const int layerIdKF = layerEncoding_->layerIdKF(binEta, binZT, binCot, layerId);
-            if (layerCounts[layerIdKF] == setup_->sfMaxStubsPerLayer())
+            if (layerCounts[layerIdKF] == setup_->zhtMaxStubsPerLayer())
               continue;
             layerCounts[layerIdKF]++;
             deque<FrameStub>& stubs = dequesStubs[sectorPhi * setup_->numLayers() + layerIdKF];
-            auto identical = [ttStubRef, ttTrack](const StubSF& stub){
+            auto identical = [ttStubRef, ttTrack](const StubZHT& stub){
               return (int)ttTrack.trackSeedType() == stub.trackId() && ttStubRef == stub.ttStubRef();
             };
-            stubSF = &*find_if(stubsSF.begin(), stubsSF.end(), identical);
-            const double inv2R = dfinv2R.floating(stubSF->inv2R());
-            const double cot = dfcot.floating(stubSF->cot()) + setup_->sectorCot(binEta);
+            stubZHT = &*find_if(stubsZHT.begin(), stubsZHT.end(), identical);
+            const double inv2R = dfinv2R.floating(stubZHT->inv2R());
+            const double cot = dfcot.floating(stubZHT->cot()) + setup_->sectorCot(binEta);
             const double dPhi = dfdPhi.digi(setup_->dPhi(ttStubRef, inv2R));
             const double dZ = dfdZ.digi(setup_->dZ(ttStubRef, cot));
-            const StubKFin stubKFin(*stubSF, dPhi, dZ, layerIdKF);
+            const StubKFin stubKFin(*stubZHT, dPhi, dZ, layerIdKF);
             stubs.emplace_back(stubKFin.frame());
           }
           const int size = *max_element(layerCounts.begin(), layerCounts.end());
@@ -190,7 +190,7 @@ namespace trackerTFP {
             stubs.insert(stubs.end(), nGaps, FrameStub());
           }
           const TTBV& maybePattern = layerEncoding_->maybePattern(binEta, binZT, binCot);
-          const TrackKFin track(*stubSF, TTTrackRef(handleTTTracks, i++), maybePattern);
+          const TrackKFin track(*stubZHT, TTTrackRef(handleTTTracks, i++), maybePattern);
           tracks.emplace_back(track.frame());
           const int nGaps = size - 1;
           tracks.insert(tracks.end(), nGaps, FrameTrack());

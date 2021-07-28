@@ -415,18 +415,22 @@ namespace tt {
     // number of mht cells
     int mhtNumCells() const { return mhtNumCells_; }
 
-    // Parameter specifying SeedFilter
+    // Parameter specifying ZHoughTransform
 
     //number of used zT bins
-    int sfWidthZT() const { return sfWidthZT_; }
+    int zhtNumBinsZT() const { return zhtNumBinsZT_; }
     // number of used cot bins
-    int sfWidthCot() const { return sfWidthCot_; }
+    int zhtNumBinsCot() const { return zhtNumBinsCot_; }
+    //  number of stages
+    int zhtNumStages() const { return zhtNumStages_; }
     // required number of stub layers to form a candidate
-    int sfMinLayers() const { return sfMinLayers_; }
+    int zhtMinLayers() const { return zhtMinLayers_; }
     // max number of output tracks per node
-    int sfMaxTracks() const { return sfMaxTracks_; }
+    int zhtMaxTracks() const { return zhtMaxTracks_; }
     // cut on number of stub per layer for input candidates
-    int sfMaxStubsPerLayer() const { return sfMaxStubsPerLayer_; }
+    int zhtMaxStubsPerLayer() const { return zhtMaxStubsPerLayer_; }
+    // number of zht cells
+    int zhtNumCells() const { return zhtNumCells_; }
 
     // Parameter specifying KalmanFilter
 
@@ -765,18 +769,20 @@ namespace tt {
     // required number of stub layers to form a candidate
     int mhtMinLayers_;
 
-    // Parameter specifying SeedFilter
-    edm::ParameterSet pSetSF_;
+    // Parameter specifying ZHoughTransform
+    edm::ParameterSet pSetZHT_;
     //number of used zT bins
-    int sfWidthZT_;
+    int zhtNumBinsZT_;
     // number of used cot bins
-    int sfWidthCot_;
+    int zhtNumBinsCot_;
+    // number of stages
+    int zhtNumStages_;
     // required number of stub layers to form a candidate
-    int sfMinLayers_;
+    int zhtMinLayers_;
     // max number of output tracks per node
-    int sfMaxTracks_;
+    int zhtMaxTracks_;
     // cut on number of stub per layer for input candidates
-    int sfMaxStubsPerLayer_;
+    int zhtMaxStubsPerLayer_;
 
     // Parameter specifying KalmanFilter
     edm::ParameterSet pSetKF_;
@@ -929,6 +935,11 @@ namespace tt {
 
     // number of mht cells
     int mhtNumCells_;
+
+    // ZHT
+
+    // number of zht cells
+    int zhtNumCells_;
 
     // KF
 

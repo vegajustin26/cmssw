@@ -206,6 +206,8 @@ namespace trackerDTC {
   }
 
   void Analyzer::endJob() {
+    if (nEvents_ == 0)
+      return;
     // create r-z stub fraction plot
     TH2F th2f("", ";;", 400, -300, 300., 400, 0., 120.);
     th2f.Add(hisRZStubsLost_);

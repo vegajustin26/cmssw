@@ -162,6 +162,8 @@ namespace trackerTFP {
   }
 
   void AnalyzerGP::endJob() {
+    if (nEvents_ == 0)
+      return;
     // printout GP summary
     const double numStubs = prof_->GetBinContent(1);
     const double numStubsLost = prof_->GetBinContent(2);

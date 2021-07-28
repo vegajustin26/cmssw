@@ -171,10 +171,11 @@ TrackTrigger_params = cms.PSet (
     MinLayers     = cms.int32( 5 )  # required number of stub layers to form a candidate
   ),
 
-  # Parmeter specifying SeedFilter
-  SeedFilter = cms.PSet (
-    WidthZT          = cms.int32(  5 ), # number of used zT bins
-    WidthCot         = cms.int32(  5 ), # number of used cot bins
+  # Parmeter specifying ZHoughTransform
+  ZHoughTransform = cms.PSet (
+    NumBinsZT        = cms.int32(  2 ), #
+    NumBinsCot       = cms.int32(  2 ), #
+    NumStages        = cms.int32(  5 ), #
     MinLayers        = cms.int32(  4 ), # required number of stub layers to form a candidate
     MaxTracks        = cms.int32( 16 ), # max number of output tracks per node
     MaxStubsPerLayer = cms.int32(  4 )  # cut on number of stub per layer for input candidates

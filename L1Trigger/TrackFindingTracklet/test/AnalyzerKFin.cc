@@ -223,6 +223,8 @@ namespace trackFindingTracklet {
   }
 
   void AnalyzerKFin::endJob() {
+    if (nEvents_ == 0)
+      return;
     // printout SF summary
     const double totalTPs = prof_->GetBinContent(9);
     const double numStubs = prof_->GetBinContent(1);

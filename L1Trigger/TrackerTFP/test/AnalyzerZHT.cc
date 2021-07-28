@@ -120,7 +120,7 @@ namespace trackerTFP {
     // book histograms
     Service<TFileService> fs;
     TFileDirectory dir;
-    dir = fs->mkdir("SF");
+    dir = fs->mkdir("ZHT");
     prof_ = dir.make<TProfile>("Counts", ";", 9, 0.5, 9.5);
     prof_->GetXaxis()->SetBinLabel(1, "Stubs");
     prof_->GetXaxis()->SetBinLabel(2, "Tracks");
@@ -133,7 +133,7 @@ namespace trackerTFP {
     prof_->GetXaxis()->SetBinLabel(9, "All TPs");
     // channel occupancy
     constexpr int maxOcc = 180;
-    const int numChannels = dataFormats_->numChannel(Process::sf);
+    const int numChannels = dataFormats_->numChannel(Process::zht);
     hisChannel_ = dir.make<TH1F>("His Channel Occupancy", ";", maxOcc, -.5, maxOcc - .5);
     profChannel_ = dir.make<TProfile>("Prof Channel Occupancy", ";", numChannels, -.5, numChannels - .5);
     // Efficiencies
@@ -215,6 +215,8 @@ namespace trackerTFP {
   }
 
   void AnalyzerZHT::endJob() {
+    if (nEvents_ == 0)
+      return;
     // effi
     eff_->SetPassedHistogram(*hisEff_, "f");
     eff_->SetTotalHistogram (*hisEffTotal_, "f");
@@ -255,7 +257,7 @@ namespace trackerTFP {
 
   //
   void AnalyzerZHT::formTracks(const StreamStub& stream, vector<vector<TTStubRef>>& tracks) const {
-    vector<StubSF> stubs;
+    vector<StubZHT> stubs;
     stubs.reserve(stream.size());
     for (const FrameStub& frame : stream)
       if(frame.first.isNonnull())
@@ -263,11 +265,11 @@ namespace trackerTFP {
     for (auto it = stubs.begin(); it != stubs.end();) {
       const auto start = it;
       const int id = it->trackId();
-      auto different = [id](const StubSF& stub){ return id != stub.trackId(); };
+      auto different = [id](const StubZHT& stub){ return id != stub.trackId(); };
       it = find_if(it, stubs.end(), different);
       vector<TTStubRef> ttStubRefs;
       ttStubRefs.reserve(distance(start, it));
-      transform(start, it, back_inserter(ttStubRefs), [](const StubSF& stub){ return stub.ttStubRef(); });
+      transform(start, it, back_inserter(ttStubRefs), [](const StubZHT& stub){ return stub.ttStubRef(); });
       tracks.push_back(ttStubRefs);
     }
   }

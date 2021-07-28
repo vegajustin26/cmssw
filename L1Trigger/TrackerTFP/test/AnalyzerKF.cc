@@ -283,6 +283,8 @@ namespace trackerTFP {
   }
 
   void AnalyzerKF::endJob() {
+    if (nEvents_ == 0)
+      return;
     // effi
     effEta_->SetPassedHistogram(*hisEffEta_, "f");
     effEta_->SetTotalHistogram (*hisEffEtaTotal_, "f");

@@ -26,11 +26,11 @@ namespace trackerTFP {
     template<class T>
     T* pop_front(std::deque<T*>& ts) const;
     // perform finer pattern recognition per track
-    void fill(int channel, const std::deque<StubSF*>& input, std::vector<std::deque<StubSF*>>& output);
+    void fill(int channel, const std::deque<StubZHT*>& input, std::vector<std::deque<StubZHT*>>& output);
     // Static load balancing of inputs: mux 4 streams to 1 stream
-    void slb(std::vector<std::deque<StubSF*>>& inputs, std::deque<StubSF*>& accepted, tt::StreamStub& lost) const;
+    void slb(std::vector<std::deque<StubZHT*>>& inputs, std::deque<StubZHT*>& accepted, tt::StreamStub& lost) const;
     //
-    void merge(std::deque<StubSF*>& stubs, tt::StreamStub& stream) const;
+    void merge(std::deque<StubZHT*>& stubs, tt::StreamStub& stream) const;
 
     // true if truncation is enbaled
     bool enableTruncation_;
@@ -41,9 +41,9 @@ namespace trackerTFP {
     // processing region (0 - 8)
     int region_;
     // container of in- and output stubs
-    std::vector<StubSF> stubsZHT_;
+    std::vector<StubZHT> stubsZHT_;
     // h/w liked organized pointer to input stubs
-    std::vector<std::vector<StubSF*>> input_;
+    std::vector<std::vector<StubZHT*>> input_;
     //
     int stage_;
   };

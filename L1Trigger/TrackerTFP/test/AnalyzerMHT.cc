@@ -214,6 +214,8 @@ namespace trackerTFP {
   }
 
   void AnalyzerMHT::endJob() {
+    if (nEvents_ == 0)
+      return;
     // effi
     eff_->SetPassedHistogram(*hisEff_, "f");
     eff_->SetTotalHistogram (*hisEffTotal_, "f");

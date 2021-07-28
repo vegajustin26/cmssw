@@ -14,8 +14,8 @@ namespace trackerTFP {
   LayerEncoding::LayerEncoding(const DataFormats* dataFormats) :
     setup_(dataFormats->setup()),
     dataFormats_(dataFormats),
-    zT_(&dataFormats->format(Variable::zT, Process::sf)),
-    cot_(&dataFormats->format(Variable::cot, Process::sf)),
+    zT_(&dataFormats->format(Variable::zT, Process::zht)),
+    cot_(&dataFormats->format(Variable::cot, Process::zht)),
     layerEncoding_(setup_->numSectorsEta(), vector<vector<vector<int>>>(pow(2, zT_->width()), vector<vector<int>>(pow(2, cot_->width())))),
     maybeLayer_(setup_->numSectorsEta(), vector<vector<vector<int>>>(pow(2, zT_->width()), vector<vector<int>>(pow(2, cot_->width()))))
   {

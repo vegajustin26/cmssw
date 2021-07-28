@@ -33,7 +33,7 @@ namespace trackerTFP {
     iConfig_(),
     dataFormats_(nullptr),
     setup_(nullptr)
-  {
+  {    
     formats_.reserve(+VariableKF::end);
   }
 

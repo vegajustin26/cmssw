@@ -237,7 +237,7 @@ namespace trackFindingTracklet {
             if (layer >= setup_->numLayers())
               layer = setup_->numLayers() - 1;
             // cut on max 4 stubs per layer
-            if (layerCounts[layer] >= setup_->sfMaxStubsPerLayer())
+            if (layerCounts[layer] >= setup_->zhtMaxStubsPerLayer())
               continue;
             layerCounts[layer]++;
             const StubKFin stubKFin(ttStubRef, dataFormats_, rphi, phi, z, dPhi, dZ, layer);
